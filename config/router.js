@@ -32,30 +32,39 @@ app.use(bodyParser.urlencoded({	extended: true })); // support encoded bodies
 
 //llamado de la clase con la que se podra cargar los controladores
 var intermed = require('../apps/controllers/intermed');
-
+var object = ["tacos","tortas","ahogadas"];//Esto es lo que se recibe de la vista para el envio de controlador 
 /**
 *	function encargada de tener listo todo 
+*	@author oscar
 */
 var iniciar = function()
 {
 	//Home
-	app.get('/', function( req, res ){ intermed.callController('Home', 'sayHello', '', res) });
+	app.get('/', function( req, res ){ intermed.callController('Home', 'sayHello', object, res) });
 
 	//Registro
-	app.get('/registro', function( req, res ){ intermed.callController('registro', 'index', '', res)});
+	app.get('/registro', function( req, res ){ intermed.callController('registro', 'index', object, res)});
 
 	app.post('/registro', function( req, res ){
 		console.log(req.body.getAll);
 		if (req.body.getAll === '1'){
-			intermed.callController('registro', 'getAll', '', res) 
+			intermed.callController('registro', 'getAll', object, res) 
 		} else {
-			/**
-			*	Con la creación de la siguiente variable se puede generar un json que es dinamico
-			*	atrapando todo tipo de post que se envia.
-			*	JSON.stringify recibe el post con req.body y lo convierte un valor dado en javascript a una cadena  JSON
-			*	JSON.parse analiza una cadena de texto como un JSON
-			*/
-			var object = JSON.parse( JSON.stringify(req.body) );
+			var object = {
+						'nombre': req.body.nombreMed,
+						'apellido': req.body.apellidoMed,
+						'correo': req.body.correoMed,
+						'telefono': req.body.telefonoMed,
+						'calle': req.body.calleMed,
+						'numero': req.body.numeroMed,
+						'calle1': req.body.calle1Med,
+						'calle2': req.body.calle2Med,
+						'colonia': req.body.coloniaMed,
+						'CP': req.body.cpMed,
+						'ciudad': req.body.ciudadMed,
+						'estado': req.body.estadoMed,
+						'especialidad': req.body.especialidadMed
+					};
 			intermed.callController('registro', 'registrar', object, res);
 		}
 

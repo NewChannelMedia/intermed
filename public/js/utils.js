@@ -49,13 +49,13 @@ function getAllDoctors(){
 
 function addMedico(record){
     var entreCalles = '', medicosRegistrados = '';
-    if (record.calle1Med && record.calle2Med){
+    if (record.calle1 && record.calle2){
       var conjucion = 'y';
-      if (record.calle2Med.length > 0 && record.calle2Med.toLowerCase().substring(0, 1) === 'i') conjucion = 'e';
-      entreCalles = 'Entre ' + record.calle1Med + ' ' + conjucion +' ' + record.calle2Med ;
+      if (record.calle2.length > 0 && record.calle2.toLowerCase().substring(0, 1) === 'i') conjucion = 'e';
+      entreCalles = 'Entre ' + record.calle1 + ' ' + conjucion +' ' + record.calle2 ;
     }
     try{
-      medicosRegistrados += '<tr><th scope="row">' + (++regTotalDoc) + '</th><td>' + record.nombreMed + ' ' + record.apellidoMed + '</td><td>' + record.correoMed + '</td><td>' + record.telefonoMed + '</td><td><address><strong>' + record.calleMed + ' #' + record.numeroMed + '</strong><br>' + entreCalles + ' <br>' + record.coloniaMed + ', CP:' + record.cpMed + '<br>' + record.ciudadMed + ', ' + record.estadoMed + '<br></address></td><td>' + record.especialidadMed + '</td><td><button class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span></button></td></tr>';
+      medicosRegistrados += '<tr><th scope="row">' + (++regTotalDoc) + '</th><td>' + record.nombre + ' ' + record.apellido + '</td><td>' + record.correo + '</td><td>' + record.telefono + '</td><td><address><strong>' + record.calle + ' #' + record.numero + '</strong><br>' + entreCalles + ' <br>' + record.colonia + ', CP:' + record.CP + '<br>' + record.ciudad + ', ' + record.estado + '<br></address></td><td>' + record.especialidad + '</td><td><button class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span></button></td></tr>';
     } catch (ex) {
       console.error('PARSE ERROR (Registro 190) : ' + ex);
     }
