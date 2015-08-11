@@ -7,6 +7,8 @@
 *	@author Oscar, Cinthia.
 *	@version 0.0.0.0
 */
+
+//ESTO es una prueba mas para comer tacos
 //librerias que se utilizaran en este archivo
 module.exports = {
 	index: function(object, req, res) {
