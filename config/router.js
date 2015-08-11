@@ -40,10 +40,8 @@ var iniciar = function()
 {
 	//Home
 	app.get('/', function( req, res ){ intermed.callController('Home', 'sayHello', '', res) });
-
 	//Registro
 	app.get('/registro', function( req, res ){ intermed.callController('registro', 'index', '', res)});
-
 	app.post('/registro', function( req, res ){
 		console.log(req.body.getAll);
 		if (req.body.getAll === '1'){
@@ -58,10 +56,8 @@ var iniciar = function()
 			var object = JSON.parse( JSON.stringify(req.body) );
 			intermed.callController('registro', 'registrar', object, res);
 		}
-
 	});
 }
 serv.server(app, 3000);
-
 //se exporta para que otro js lo pueda utilizar
 exports.iniciar = iniciar;
