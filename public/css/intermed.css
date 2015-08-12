@@ -1,68 +1,68 @@
 /* style.css */
 /*
 body {
-background: url('../img/whitey.png');
+  background: url('../img/whitey.png');
 }
 body.application {
-padding-top: 60px;
-padding-bottom: 40px;
+  padding-top: 60px;
+  padding-bottom: 40px;
 }
 code {
-white-space: pre;
+  white-space: pre;
 }
 
 .navbar-fixed-top {
-box-shadow: 0 0 3px #000;
-border-bottom: 1px solid #999;
+  box-shadow: 0 0 3px #000;
+  border-bottom: 1px solid #999;
 }
 
 .geddy-welcome-box {
-text-align: center;
-background: rgba(200, 200, 200, .5);
-box-shadow: 0px 0px 3px #bababa;
-border: 1px solid #EDEDED;
+  text-align: center;
+  background: rgba(200, 200, 200, .5);
+  box-shadow: 0px 0px 3px #bababa;
+  border: 1px solid #EDEDED;
 }
 
 .geddy-welcome-box h1 {º
-line-height: 1.25;
-margin-bottom: 20px;
+  line-height: 1.25;
+  margin-bottom: 20px;
 }
 
 .geddy-welcome-box p {
-max-width: 760px;
-margin: 0 auto;
+  max-width: 760px;
+  margin: 0 auto;
 }
 
 .geddy-welcome-box .btn-large {
-margin-top: 20px;
+  margin-top: 20px;
 }
 
 .list-item {
-margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .list-item div {
-background: white;
-border-bottom: 2px solid #ccc;
+  background: white;
+  border-bottom: 2px solid #ccc;
 }
 
 .list-item div > * {
-padding: 20px;
+  padding: 20px;
 }
 
 .list-item div h3 i {
-margin: 5px;
+  margin: 5px;
 }
 
 #flash-container {
-margin-top: 48px;
+  margin-top: 48px;
 }
 
 @media (max-width:480px) {
-.hero-unit .pull-right {
-float: none;
-margin-top: 10px;
-}
+  .hero-unit .pull-right {
+    float: none;
+    margin-top: 10px;
+  }
 }
 */
 
@@ -70,38 +70,10 @@ margin-top: 10px;
 
 /* --- */
 body { background-color: #d9d9d9; }
-
-a, a:hover, a:visited { text-transform: none; text-decoration: none;}
-
-#navHome { 
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 25px;
-	z-index: 1000;
-}
-
-#logo .logo-color{
-	width: auto;
-	height: 75px;
-	display: block;
-	margin: 0 auto;
-	float: right;
-}
-#logo a { font-weight: normal; }
-#logo a:hover { color: #6093bf; }
-
-#atnc-clientes a.login { color: #616161; }
-#atnc-clientes a.reg { color: #ff1400 }
-
-
-.bottom-border { border-bottom: 5px solid #ff4200; }
-.bottom-border-mini { border-bottom: 2px solid #aaaaaa; }
-
 .btn { border-radius: 0; } 
-
 #myCarousel {
 	height: 600px;
+	border-bottom: 7px solid #ff4200;
 	margin-bottom: 15px;
 }
 #myCarousel .carousel-inner { height: 100%; 
@@ -174,72 +146,45 @@ a, a:hover, a:visited { text-transform: none; text-decoration: none;}
 
 #myCarousel .carousel-control.left , #myCarousel .carousel-control.right { background: none; }
 
-.hideonmobile {}
-@media (max-width: 480px) {
-	.hideonmobile {
-		display: none;
-	}
-}
-@media (max-width: 768px) {
-	.hideonmobile {
-		display: none;
-	}
-}
-@media (min-width: 768px) {
-	.hideonmobile {
-		display: none;
-	}
-}
-@media (min-width: 998px) {
-	.hideonmobile {
-		display: inline;
-	}
-}
-@media (min-width: 1200px) {
-	.hideonmobile {
-		display: inline;
-	}
-}
-
 
 /*
-WHAT IS NEW IN 3.3: "Added transforms to improve carousel performance in modern browsers."
-Need to override the 3.3 new styles for modern browsers & apply opacity
+  WHAT IS NEW IN 3.3: "Added transforms to improve carousel performance in modern browsers."
+  Need to override the 3.3 new styles for modern browsers & apply opacity
 */
 @media all and (transform-3d), (-webkit-transform-3d) {
-	.carousel-fade .carousel-inner > .item.next,
-	.carousel-fade .carousel-inner > .item.active.right {
-		opacity: 0;
-		-webkit-transform: translate3d(0, 0, 0);
-		transform: translate3d(0, 0, 0);
-	}
-	.carousel-fade .carousel-inner > .item.prev,
-	.carousel-fade .carousel-inner > .item.active.left {
-		opacity: 0;
-		-webkit-transform: translate3d(0, 0, 0);
-		transform: translate3d(0, 0, 0);
-	}
-	.carousel-fade .carousel-inner > .item.next.left,
-	.carousel-fade .carousel-inner > .item.prev.right,
-	.carousel-fade .carousel-inner > .item.active {
-		opacity: 1;
-		-webkit-transform: translate3d(0, 0, 0);
-		transform: translate3d(0, 0, 0);
-	}
+    .carousel-fade .carousel-inner > .item.next,
+    .carousel-fade .carousel-inner > .item.active.right {
+      opacity: 0;
+      -webkit-transform: translate3d(0, 0, 0);
+              transform: translate3d(0, 0, 0);
+    }
+    .carousel-fade .carousel-inner > .item.prev,
+    .carousel-fade .carousel-inner > .item.active.left {
+      opacity: 0;
+      -webkit-transform: translate3d(0, 0, 0);
+              transform: translate3d(0, 0, 0);
+    }
+    .carousel-fade .carousel-inner > .item.next.left,
+    .carousel-fade .carousel-inner > .item.prev.right,
+    .carousel-fade .carousel-inner > .item.active {
+      opacity: 1;
+      -webkit-transform: translate3d(0, 0, 0);
+              transform: translate3d(0, 0, 0);
+    }
 }
 /* ---------------------------------- */
 .carousel-fade .item {
-	transition: opacity 1s;
+ transition: opacity 1s;
 }
 .carousel-fade .active.left, .carousel .active.right {
-	left:0;
-	opacity:0;
-	z-index:2;
+    left:0;
+    opacity:0;
+    z-index:2;
 }
 .carousel-fade .next, .carousel .prev {
-	left:0;
-	opacity:1;
-	z-index:1;
+    left:0;
+    opacity:1;
+    z-index:1;
 }
 
 /*-------------------*/
@@ -251,19 +196,16 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
 }
 
 
-.logo { 
-	height: 70px;
-	width: 100%;
-	border: solid 1px #333; 
-}
 
-.row { 
-	padding-top: 0; padding-bottom: 10px; 
-}
+
+.logo { height: 70px;
+width: 100%;
+border: solid 1px #333; }
+.row { padding-top: 10px; padding-bottom: 10px; }
 
 #principal { 
 	height: 100%;
-	padding-top: 120px;
+	padding-top: 25px;
 	padding-bottom: 25px;
 	background-image: url("../img/slideBG.png");
 	background-size: cover;
@@ -278,35 +220,6 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
 	background-repeat: no-repeat;
 }
 #buscador { }
-#buscador #panel-buscador {
-	-webkit-box-shadow: 0px 4px 10px 0px rgba(0,0,0,0.2);
-	-moz-box-shadow: 0px 4px 10px 0px rgba(0,0,0,0.2);
-	box-shadow: 0px 4px 10px 0px rgba(0,0,0,0.2);
-	border-radius: 20px;
-}
-
-#buscador .form-control {
-	background-color: #5288ac;
-	border: none;
-	color: #fff;
-	border-radius: 0px;
-}
-#buscador #sel-busqueda.form-control {
-	background-color: #328ecb;
-}
-#buscador input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { 
-	color: #ddd;
-}
-#buscador input:-moz-placeholder, textarea:-moz-placeholder { 
-	color: #ddd;
-}
-#buscador input::-moz-placeholder, textarea::-moz-placeholder { 
-	color: #ddd;
-}
-#buscador input:-ms-input-placeholder, textarea:-ms-input-placeholder { 
-	color: #ddd ;
-}
-
 #servicios {
 	padding-top: 80px;
 	padding-bottom: 80px;
@@ -357,20 +270,12 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
 
 
 
-#section3 {
-	height: 500px;
-	background-image: url("../img/section3bg.png");
-	border-top: 10px solid #ffffff;
-	background-repeat: no-repeat;
-	background-position: bottom center;
-	background-size: cover;
-}
-#section3 .section3cover {
-	background-color: rgba(255, 66, 0, .75);
-	height: 100%;
-	width: 100%;
+#vendedores {
+	height: auto;
 	padding-top: 25px;
 	padding-bottom: 25px;
+	background-color: #ff4200;
+	border-top: 10px solid #ffffff;
 }
 footer {
 	background-color: #ff1c00;
@@ -449,5 +354,3 @@ footer a, footer a:active, footer a:hover, footer a:visited { color:#fff; }
 	box-shadow: 0 0 0 10px rgba(255,255,255,1);
 	color: #fff;
 }
-
-.c-grey {}
