@@ -1,25 +1,7 @@
 <section id="principal">
   <section class="container">
-    <!-- empieza nav superior -->
-    <nav class="">
-      <div class="col-md-5 pull-left">
-        <div class="">
-          <h1>Home</h1>
-        </div>
-      </div>
-      <div class="col-md-5 pull-right">
-        <div class="">
-          <a href="/registro" class="btn btn-primary btn-block">Registro</a>
-          <a href="#" class="btn btn-success btn-block">Login</a>
-        </div>
-      </div>
-    </nav>
-  </section>
-
-  <!-- empieza zona de slide -->
-  <section class="container">
     <div class="row">
-      <div id="myCarousel" class="carousel slide carousel-fade" data-ride="carousel">
+      <div id="myCarousel" class="carousel slide carousel-fade bottom-border" data-ride="carousel">
         <!-- Indicators -->
         <ol class="carousel-indicators">
           <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
@@ -39,7 +21,7 @@
                 </div>
                 <div class="item-block">
                   <div class="normal-text">
-                    creada para ayudare a llevar un control de tu salud <br>
+                    creada para ayudarte a llevar un control de tu salud <br>
                     y optimizar tu comunicación con médicos, instituciones <br>
                     y demás profesionales del ramo.
                   </div>
@@ -108,7 +90,7 @@
   </section>
   <section id="buscador" class="container" >
     <!-- empieza buscador -->
-    <div class="panel">
+    <div id="panel-buscador" class="panel">
       <div class="panel-body">
         <form >
           <h4>Buscar</h4>
@@ -236,8 +218,8 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
-                  <button class="btn btn-info btn-md btn-block"id = "btn">
-                    <span class="glyphicon glyphicon-search"></span>
+                  <button class="btn btn-success btn-md btn-block"id = "btn">
+                    <span class="glyphicon glyphicon-search"></span>&nbsp Buscar
                   </button>
                 </div>
               </div>
@@ -287,36 +269,39 @@
         </div>
       </div>
     </div>
-  </section>
-  <section id="vendedores">
+  </div>
+</section>
+<section id="section3">
+  <div class="section3cover">
     <div class="container">
     </div>
-  </section>
-  <script type="text/javascript">
-  $(document).ready(function() {
-    $('.carousel').carousel({interval: 7000});
-  });
-  </script>
-  <script type="text/javascript">
-  $(document).ready(function(){
-    $("#sel-busqueda").change(function(){
-      $(this).find("option:selected").each(function(){
-        if($(this).attr("value")=="especialidad"){
-          $(".box").not(".esp").hide();
-          $(".esp").show();
-        }
-        else if($(this).attr("value")=="medico"){
-          $(".box").not(".med").hide();
-          $(".med").show();
-        }
-        else if($(this).attr("value")=="padecimiento"){
-          $(".box").not(".pad").hide();
-          $(".pad").show();
-        }
-        else{
-          $(".box").hide();
-        }
-      });
-    }).change();
-  });
-  </script>
+  </div>
+</section>
+<script type="text/javascript">
+$(document).ready(function() {
+  $('.carousel').carousel({interval: 7000});
+});
+</script>
+<script type="text/javascript">
+$(document).ready(function(){
+  $("#sel-busqueda").change(function(){
+    $(this).find("option:selected").each(function(){
+      if($(this).attr("value")=="especialidad"){
+        $(".box").not(".esp").hide();
+        $(".esp").show();
+      }
+      else if($(this).attr("value")=="medico"){
+        $(".box").not(".med").hide();
+        $(".med").show();
+      }
+      else if($(this).attr("value")=="padecimiento"){
+        $(".box").not(".pad").hide();
+        $(".pad").show();
+      }
+      else{
+        $(".box").hide();
+      }
+    });
+  }).change();
+});
+</script>
