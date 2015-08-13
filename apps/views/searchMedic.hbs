@@ -1,0 +1,43 @@
+<div class="container">
+    <div class="row">
+      <div class="panel">
+        <div class="panel-body">
+          <h4>Lista de medicos registrados</h4>
+          <form>
+            <table class="table">
+              <caption></caption>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>#</th>
+                  <th>#</th>
+                  <th>#</th>
+                  <th>#</th>
+                  <th>#</th>
+                  <th>#</th>
+                </tr>
+              </thead>
+              <tbody id='tbmedReg'>
+                  <!-- Especialidad -->
+                  {{#each especialidades}}
+                    <!-- Aqui se escriben los datos-->
+                    <tr>{{especialidad}}</tr>
+                    <tr></tr>
+                  {{/each}}
+                  <!-- Medicos -->
+                  {{#each medico}}
+                    <!-- Aqui se escriben los datos-->
+                    <tr></tr>
+                  {{/each}}
+                  <!-- padecimiento -->
+                  {{#each padecimiento}}
+                    <!-- Aqui se escriben los datos-->
+                    <tr></tr>
+                  {{/each}}
+              </tbody>
+            </table>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
