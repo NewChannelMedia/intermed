@@ -5,7 +5,7 @@ if (location.pathname === '/registro') $(document).ready(getAllDoctors());
 
 function regDoctor(){
   if (regMedValid() == true){
-      $.ajax({ 
+      $.ajax({
          url: '/registro',
          type: 'POST',
          dataType: "json",
@@ -29,7 +29,7 @@ function regDoctor(){
 
 function getAllDoctors(){
   regTotalDoc = 0;
-  $.ajax({ 
+  $.ajax({
     url: '/registro',
     type: 'POST',
     dataType: "json",

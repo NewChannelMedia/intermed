@@ -34,25 +34,30 @@ app.use(bodyParser.urlencoded({	extended: true })); // support encoded bodies
 var intermed = require('../apps/controllers/intermed');
 
 /**
-*	function encargada de tener listo todo 
+*	function encargada de tener listo todo
 */
 var iniciar = function()
 {
+	//Login
+	app.post('/*', function( req, res , next){
+		if (req.body.login === 'Ingresar'){
+			intermed.callController('session', 'login',req.body,res);
+		}
+	});
 	//Home
 	app.get('/', function( req, res ){ intermed.callController('Home', 'sayHello', '', res) });
 	// get y post de searchMedic
 	app.get( '/searchMedic', function( req, res){intermed.callController('Home', 'vacio','',res)});
 	app.post( '/searchMedic', function( req, res )
-	{ 
+	{
 		var busqueda = JSON.parse( JSON.stringify(req.body));
 		intermed.callController('Home', 'search',busqueda, res)
 	});
 	//Registro
 	app.get('/registro', function( req, res ){ intermed.callController('registro', 'index', '', res)});
 	app.post('/registro', function( req, res ){
-		console.log(req.body.getAll);
 		if (req.body.getAll === '1'){
-			intermed.callController('registro', 'getAll', '', res) 
+			intermed.callController('registro', 'getAll', '', res)
 		} else {
 			/**
 			*	Con la creación de la siguiente variable se puede generar un json que es dinamico
