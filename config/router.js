@@ -40,6 +40,13 @@ var iniciar = function()
 {
 	//Home
 	app.get('/', function( req, res ){ intermed.callController('Home', 'sayHello', '', res) });
+	// get y post de searchMedic
+	app.get( '/searchMedic', function( req, res){intermed.callController('Home', 'vacio','',res)});
+	app.post( '/searchMedic', function( req, res )
+	{ 
+		var busqueda = JSON.parse( JSON.stringify(req.body));
+		intermed.callController('Home', 'search',busqueda, res)
+	});
 	//Registro
 	app.get('/registro', function( req, res ){ intermed.callController('registro', 'index', '', res)});
 	app.post('/registro', function( req, res ){
