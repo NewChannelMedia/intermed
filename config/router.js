@@ -43,6 +43,7 @@ var iniciar = function()
 		if (req.body.login === 'Ingresar'){
 			intermed.callController('session', 'login',req.body,res);
 		}
+		next();
 	});
 	//Home
 	app.get('/', function( req, res ){ intermed.callController('Home', 'sayHello', '', res) });
@@ -51,7 +52,7 @@ var iniciar = function()
 	app.post( '/searchMedic', function( req, res )
 	{
 		var busqueda = JSON.parse( JSON.stringify(req.body));
-		intermed.callController('Home', 'search',busqueda, res)
+		intermed.callController('Home', 'search',busqueda, res);
 	});
 	//Registro
 	app.get('/registro', function( req, res ){ intermed.callController('registro', 'index', '', res)});
