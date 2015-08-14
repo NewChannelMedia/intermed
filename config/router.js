@@ -40,13 +40,24 @@ var iniciar = function()
 {
 	//Home
 	app.get('/', function( req, res ){ intermed.callController('Home', 'sayHello', '', res) });
-	// get y post de searchMedic
+	//<-------------------------------------->
+	/**
+	*	El primer get que se encuentra para searchMedic es para la respuesta get
+	*	el segundo es para el post al presionar el boton debe de atrapar los
+	*	resultados de los inputs. La function intermed.callController recibira los
+	*	siguientes parametros:
+	*	@param nombre del controlador
+	*	@param nombre del metodo
+	*	@param object que se recibe
+	* @param response
+	*/
 	app.get( '/searchMedic', function( req, res){intermed.callController('Home', 'vacio','',res)});
 	app.post( '/searchMedic', function( req, res )
 	{
 		var busqueda = JSON.parse( JSON.stringify(req.body));
-		intermed.callController('Home', 'search',busqueda, res)
+		intermed.callController('Home', 'searching',busqueda, res);
 	});
+	//<---------------------------------------->
 	//Registro
 	app.get('/registro', function( req, res ){ intermed.callController('registro', 'index', '', res)});
 	app.post('/registro', function( req, res ){
