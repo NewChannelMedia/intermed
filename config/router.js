@@ -31,7 +31,7 @@ app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({	extended: true })); // support encoded bodies
 
 //llamado de la clase con la que se podra cargar los controladores
-var intermed = require('../apps/controllers/intermed');
+var intermed = require('../apps/controllers/Intermed');
 
 /**
 *	function encargada de tener listo todo
@@ -60,7 +60,7 @@ var iniciar = function()
 			*	JSON.parse analiza una cadena de texto como un JSON
 			*/
 			var object = JSON.parse( JSON.stringify(req.body) );
-			intermed.callController('registro', 'registrar', object, res);
+			intermed.callController('medicos', 'registrar', object, res);
 		}
 	});
 }

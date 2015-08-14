@@ -10,6 +10,7 @@
 //librerias que se utilizaran en este archivo
 module.exports = {
 	index: function(object, req, res) {
+		console.log(object);
 		res.render('registro');
 	},
 	registrar: function(object, req, res) {
