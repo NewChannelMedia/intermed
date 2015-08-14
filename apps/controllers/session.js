@@ -15,11 +15,20 @@ module.exports = {
 	*	que se obtengan de la base de datos, se mandaran hacia la
 	*	vista.
 	*/
-	login:function(object, req, res ){
+	login:  function(object, req, res ){
         if (object.usuario === 'admin' && object.contraseña === 'admin'){
-		    res.redirect('/registro');
+			req.session.name = 'admin';
+			req.session.admin = true;
+			req.session.logged = true;
+			res.redirect('/registro');
         } else {
 		    res.redirect('/');
         }
+	},
+	logout: function (object, req, res) {
+		if (req.session){
+			req.session.destroy();
+		}
+		res.redirect('/');
 	}
 }
