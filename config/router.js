@@ -18,16 +18,10 @@ var url = require('url');
 var serv = require('./server');
 var bodyParser = require('body-parser');
 
-var session = require('express-session');
-
-app.use(session({secret: 'keyboard cat',resave: false,saveUninitialized: true}));
-
-var hps = require('../apps/helpers/helpers');
-
 //las siguientes lineas, son para indicar donde se encuentran los archivos y con cual sera el que sea el principal
 app.set('view engine', 'hbs');
 //se agrega la ruta donde se debe de jalar la plantilla
-app.engine('hbs', exphbs({ defaultLayout: __dirname + '/../apps/views/layouts/main.hbs', helpers: hps}) );
+app.engine('hbs', exphbs({ defaultLayout: __dirname + '/../apps/views/layouts/main.hbs'}) );
 //configure views path
 app.set('views', __dirname + '/../apps/views');
 //paginas estaticas donde se encontraran los archivos externos al proyecto en este caso css, js, img, etc...
@@ -44,34 +38,31 @@ var intermed = require('../apps/controllers/intermed');
 */
 var iniciar = function()
 {
-	app.all('*', function( req, res, next){
-		hps.varSession(req.session);
-		next();
-	});
-
-	//LogIn
-	app.post('/*', function( req, res , next){
-		if (req.body.loginType === 'admin') intermed.callController('session', 'login',req.body,req, res);
-		else next();
-	});
-
-	//LogOut
-	app.get('/logout', function( req, res , next){intermed.callController('session','logout', {}, req, res)});
-
 	//Home
-	app.get('/', function( req, res ){ intermed.callController('Home', 'sayHello', '', req, res) });
-	// get y post de searchMedic
-	app.get( '/searchMedic', function( req, res){intermed.callController('Home', 'vacio','', req, res)});
+	app.get('/', function( req, res ){ intermed.callController('Home', 'sayHello', '', res) });
+	//<-------------------------------------->
+	/**
+	*	El primer get que se encuentra para searchMedic es para la respuesta get
+	*	el segundo es para el post al presionar el boton debe de atrapar los
+	*	resultados de los inputs. La function intermed.callController recibira los
+	*	siguientes parametros:
+	*	@param nombre del controlador
+	*	@param nombre del metodo
+	*	@param object que se recibe
+	* @param response
+	*/
+	app.get( '/searchMedic', function( req, res){intermed.callController('Home', 'vacio','',res)});
 	app.post( '/searchMedic', function( req, res )
 	{
 		var busqueda = JSON.parse( JSON.stringify(req.body));
-		intermed.callController('Home', 'search',busqueda, req,  res);
+		intermed.callController('Home', 'searching',busqueda, res);
 	});
+	//<---------------------------------------->
 	//Registro
-	app.get('/registro', function( req, res ){intermed.callController('registro', 'index', '', req, res)});
+	app.get('/registro', function( req, res ){ intermed.callController('registro', 'index', '', res)});
 	app.post('/registro', function( req, res ){
 		if (req.body.getAll === '1'){
-			intermed.callController('registro', 'getAll', '', req, res)
+			intermed.callController('registro', 'getAll', '', res)
 		} else {
 			/**
 			*	Con la creación de la siguiente variable se puede generar un json que es dinamico
@@ -80,7 +71,7 @@ var iniciar = function()
 			*	JSON.parse analiza una cadena de texto como un JSON
 			*/
 			var object = JSON.parse( JSON.stringify(req.body) );
-			intermed.callController('registro', 'registrar', object, req, res);
+			intermed.callController('registro', 'registrar', object, res);
 		}
 	});
 }

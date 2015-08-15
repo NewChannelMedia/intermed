@@ -92,13 +92,13 @@
     <!-- empieza buscador -->
     <div id="panel-buscador" class="panel">
       <div class="panel-body">
-        <form >
+        <form method = "POST" action = "/searchMedic" ><!-- Form principal -->
           <h4>Buscar</h4>
           <div class="criterio col-md-2">
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
-                  <select id="sel-busqueda" class="form-control">
+                  <select id="sel-busqueda" name = "seleccionador" class="form-control">
                     <option value="especialidad">Especialidad</option>
                     <option value="medico">Medico</option>
                     <option value="padecimiento">Padecimiento</option>
@@ -110,10 +110,9 @@
           <div class="parametros col-md-8">
             <div class="row">
               <div class="esp box">
-                <form id="formEsp" class="">
                   <div class="col-md-4">
                     <div class="form-group">
-                      <select class="form-control">
+                      <select class="form-control" name = "especialidad">
                         <option>Especialidades</option>
                         <option>...</option>
                         <option>...</option>
@@ -123,7 +122,7 @@
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
-                      <select class="form-control">
+                      <select class="form-control" name = "ciudad">
                         <option>Ciudad</option>
                         <option>...</option>
                         <option>...</option>
@@ -133,7 +132,7 @@
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
-                      <select class="form-control">
+                      <select class="form-control" name = "colonia">
                         <option>Colonia</option>
                         <option>...</option>
                         <option>...</option>
@@ -141,22 +140,20 @@
                       </select>
                     </div>
                   </div>
-                </form>
               </div>
               <div class="med box">
                 <div id="formMed" class="">
                   <div class="col-md-12">
                     <div class="form-group">
-                      <input type="text" class="form-control" id="nombreMed" placeholder="Nombre del Medico">
+                      <input type="text" class="form-control" id="nombreMed" name = "nombreMedico" placeholder="Nombre del Medico">
                     </div>
                   </div>
                 </div>
               </div>
               <div class="pad box">
-                <form id="formPad" class="">
                   <div class="col-md-4">
                     <div class="form-group">
-                      <select class="form-control">
+                      <select class="form-control" name = "padecimiento">
                         <option>Padecimiento</option>
                         <option>...</option>
                         <option>...</option>
@@ -166,7 +163,7 @@
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
-                      <select class="form-control">
+                      <select class="form-control" name = "ciudadela">
                         <option>Ciudad</option>
                         <option>...</option>
                         <option>...</option>
@@ -176,7 +173,7 @@
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
-                      <select class="form-control">
+                      <select class="form-control" name = "coloniapad">
                         <option>Colonia</option>
                         <option>...</option>
                         <option>...</option>
@@ -184,7 +181,6 @@
                       </select>
                     </div>
                   </div>
-                </form>
               </div>
               <div class="col-md-12">
                 <ul class="list-inline">
@@ -192,21 +188,21 @@
                   <li>
                     <div class="checkbox">
                       <label>
-                        <input type="checkbox"> Hospital
+                        <input type="checkbox" name = "hospital" value = "hospital"> Hospital
                       </label>
                     </div>
                   </li>
                   <li>
                     <div class="checkbox">
                       <label>
-                        <input type="checkbox"> Aseguradora
+                        <input type="checkbox" name = "aseguradora" value = "aseguradora"> Aseguradora
                       </label>
                     </div>
                   </li>
                   <li>
                     <div class="checkbox">
                       <label>
-                        <input type="checkbox"> Costo
+                        <input type="checkbox" name = "costo" value = "costo"> Costo
                       </label>
                     </div>
                   </li>
@@ -218,14 +214,15 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
-                  <button class="btn btn-success btn-md btn-block"id = "btn">
+                  <!-- <button class="btn btn-success btn-md btn-block"id = "btn">
                     <span class="glyphicon glyphicon-search"></span>&nbsp Buscar
-                  </button>
+                  </button> -->
+                  <input type = "submit" value = "Buscar" class="btn btn-success btn-md btn-block"id = "btn"/>
                 </div>
               </div>
             </div>
           </div>
-        </form>
+        </form><!-- final del form principal -->
       </div>
     </div>
     <!-- espacio para icono scroll -->
