@@ -101,6 +101,7 @@ module.exports = {
                       titulo: '',
                       lugarEstudio: '',
                       medico_id: medico.id,
+                      fecha:  Date.now(),
                       especialidad_id: object['especialidadMed']   // Id de la especialidad
                   })
               })
