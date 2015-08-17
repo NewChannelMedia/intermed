@@ -5,7 +5,7 @@ module.exports = function(sequelize, DataTypes) {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
     tipo: {type: DataTypes.STRING, required: true},
     titulo: {type: DataTypes.STRING, required: true},
-    lugarestudio: {type:  DataTypes.STRING, required: true},
+    lugarEstudio: {type:  DataTypes.STRING, required: true},
     fecha: {type:  DataTypes.DATE, required: true},
     medico_id: {type: DataTypes.BIGINT, required: true},
     especialidad_id: {type: DataTypes.INTEGER, required: true}
