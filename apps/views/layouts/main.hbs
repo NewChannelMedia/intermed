@@ -60,9 +60,15 @@
           <div class="row">
             <div class="col-md-12">
               <p class="text-right">
+                {{#ifSession "name"}}
+                    Hola {{valSession "name"}} !!!&nbsp
+                    <a href="/userinfo">Información Personal</a>&nbsp
+                    <a class="reg" href="/logout" class="text-danger">Cerrar Sesión</a>
+                {{else}}
                     <a class="login" href="#" data-toggle="modal" data-target="#LoginModal">ingresa</a>
                     &nbsp
                     <a class="reg" href="#" class="text-danger">registrate</a>
+                  {{/ifSession}}
               </p>
             </div>
           </div>
@@ -88,7 +94,7 @@
 
     <div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog">
-        <form method="" action="">
+        <form method="POST" action="">
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -104,6 +110,9 @@
             </div>
             <div class="modal-footer">
               <input type="submit" name="login" value="Ingresar" class="btn btn-primary btn-block">
+              <center> - o - </center>
+              <input type="button" id="logFB" value="Ingresa con Facebook" class="btn btn-danger btn-block" onclick="window.location='/auth/facebook'" >
+              </optgroup>
             </div>
           </form>
         </div><!-- /.modal-content -->
