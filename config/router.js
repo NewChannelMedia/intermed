@@ -18,12 +18,10 @@ var url = require('url');
 //con esta linea se carga el servidor
 var serv = require('./server');
 var bodyParser = require('body-parser');
-
 var session = require('express-session');
-
 app.use(session({secret: 'intermedSession',resave: false,saveUninitialized: true}));
-
 var hps = require('../apps/helpers/helpers');
+
 
 //las siguientes lineas, son para indicar donde se encuentran los archivos y con cual sera el que sea el principal
 app.set('view engine', 'hbs');
@@ -66,7 +64,7 @@ var iniciar = function()
 	app.post( '/searchMedic', function( req, res )
 	{
 		var busqueda = JSON.parse( JSON.stringify(req.body));
-		intermed.callController('Home', 'search',busqueda, req,  res);
+		intermed.callController('Home', 'searching',busqueda, req,  res);
 	});
 	//Registro
 	app.get('/registro', function( req, res ){intermed.callController('registro', 'index', '', req, res)});

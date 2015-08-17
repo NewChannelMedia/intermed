@@ -20,28 +20,28 @@ var fs = require('fs');
 *	busque el archivo que se esta buscando por medio del parametro y retorne ese archivo
 *	para poderlo usar y asi mandar a llamar el o los metodos que pueda contener.
 */
-function callController( file, method, object, rq, rs )
+function callModels( file, method, object, rq, rs )
 {
-	var exists =  fs.exists(__dirname +  '/' + file + '.js', function (req, res)
+	var exists =  fs.exists( __dirname +  '/' + file + '.js', function (req, res)
 	{
 		if ( req === true )
 		{
-			var controller = require('./' + file + '.js');
+			var models = require('./' + file + '.js');
 			if(method)
 			{
 				try
 				{
-					controller[method](object, rq, rs);
+					models[method](object);
 				}
-				catch(e){ console.error("Error1: el método '" + method + "' no existe." + " Error "+e); }
+				catch(e){ console.error("Error1: el modelo no tiene este método '" + method + "' no existe." + " Error "+e); }
 			}
 			else
 				console.error("Error2: falta indicar medoto a llamar.");
 		}
 		else
-			console.error("Error3: El controlador \'" + file + "\' no existe.");
+			console.error("Error3: El modelo \'" + file + "\' no existe.");
 	});
 }
 
 // con la siguiente linea se podrá exportar este js a cualquier archivo del project
-exports.callController = callController;
+exports.callModels = callModels;

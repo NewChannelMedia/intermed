@@ -8,7 +8,6 @@
 *	@version 0.0.0.0
 */
 //librerias que se utilizaran en este archivo
-//var model = require('/../models/Medicos');
 module.exports = {
 	/**
 	*	En el siguiente metodo es el que se encargara del envio
