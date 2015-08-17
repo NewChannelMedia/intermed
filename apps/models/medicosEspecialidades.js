@@ -7,7 +7,8 @@ module.exports = function(sequelize, DataTypes) {
     titulo: {type: DataTypes.STRING, required: true},
     lugarestudio: {type:  DataTypes.STRING, required: true},
     fecha: {type:  DataTypes.DATE, required: true},
-    medico_id: {type: DataTypes.BIGINT, required: true}
+    medico_id: {type: DataTypes.BIGINT, required: true},
+    especialidad_id: {type: DataTypes.INTEGER, required: true}
   }, {
     classMethods: {
       associate: function(models) {
