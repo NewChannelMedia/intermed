@@ -16,7 +16,8 @@ module.exports = function(passport){
         clientID: FACEBOOK_APP_ID,
         clientSecret: FACEBOOK_APP_SECRET,
         callbackURL: "http://localhost:3000/auth/facebook/callback",
-        enableProof: false
+        enableProof: false,
+        profileFields: ['id', 'displayName', 'link', 'email']
       },
       function(accessToken, refreshToken, profile, done) {
         return done(null, profile._json);

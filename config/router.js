@@ -99,7 +99,7 @@ var iniciar = function()
 		}
 	});
 
-	app.get('/auth/facebook', passport.authenticate('facebook',  {scope: 'email'}));
+	app.get('/auth/facebook', passport.authenticate('facebook',  {scope: ['email']}));
 
 	app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }),
 		function(req, res) {
@@ -107,10 +107,8 @@ var iniciar = function()
 	});
 
 	app.get('/userinfo', function(req, res){
-		if (req.session.passport.user.provider === 'facebook'){
-			//req.session.passport.user.email = 'emailtest';
-		}
 		res.send('<b>Información de usuario: </b><hr/>' + JSON.stringify(req.session.passport) + '<hr/><a href="/">Regresar</a>');
+
 	});
 }
 serv.server(app, 3000);
