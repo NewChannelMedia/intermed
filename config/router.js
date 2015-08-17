@@ -99,7 +99,7 @@ var iniciar = function()
 		}
 	});
 
-	app.get('/auth/facebook', passport.authenticate('facebook',  {scope: ['email']}));
+	app.get('/auth/facebook', passport.authenticate('facebook',  {scope: ['email','user_about_me','user_hometown']}));
 
 	app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }),
 		function(req, res) {
