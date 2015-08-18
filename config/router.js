@@ -108,8 +108,6 @@ var iniciar = function()
 	app.post('/loginLocal', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
 		res.redirect('/');
 	});
-
-	app.get( '/test', function( req, res){intermed.callController('medicos', 'obtieneAjax','', req, res)});
 }
 serv.server(app, 3000);
 //se exporta para que otro js lo pueda utilizar
