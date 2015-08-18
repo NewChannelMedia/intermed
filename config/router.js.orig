@@ -1,3 +1,4 @@
+
 /**
 *	Este archivo es el encargado de hacer las rutas para las diferentes url que se van a estar mandando por get
 *	o por post, según sea el caso, estara trabajando dentro de una funcion donde esta se podrá exportar
@@ -80,7 +81,11 @@ var iniciar = function()
 			*	JSON.parse analiza una cadena de texto como un JSON
 			*/
 			var object = JSON.parse( JSON.stringify(req.body) );
-			intermed.callController('medicos', 'registrar', object, req, res);
+<<<<<<< HEAD
+			intermed.callController('registro', 'registrar', object, req, res);
+=======
+			intermed.callController('medicos', 'registrar', object, res);
+>>>>>>> dev4_140815_MedicosDirectorio
 		}
 	});
 }
