@@ -1,48 +1,55 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-  <title>Intermed | La red social de la salud</title>
-  <!-- Bootstrap -->
-  <link href="css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="css/intermed.css">
-  <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-  <!-- Include all compiled plugins (below), or include individual files as needed -->
-  <script src="js/bootstrap.min.js"></script>
 
-  <script src="js/utils.js"></script>
-  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Intermed | La red social de la salud</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/intermed.css">
+    <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <script src="js/utils.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
-</head>
-<!-- empieza nav superior -->
-<nav id="navHome">
-  <section class="container">
-    <div class="row">
-      <div id="logo" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-left">
-        <div class="">
-          <div class="col-md-3 col-sm-2 col-xs-2">
-            <a href="/"><img class="logo-color" src="img/logo-color.png"/></a>
-          </div>
-          <div class="col-md-9 col-sm-10 col-xs-10">
-            <div class="row">
-              <div class="bottom-border-mini flama-w200">
-                <p class="text-muted text-left"><strong><span class="s20">intermed &reg</span></strong> | <strong>La red social</strong> de la salud</p>
-              </div>
+  </head>
+  <!-- empieza nav superior -->
+  <nav id="navHome">
+    <section class="container">
+      <div class="row">
+        <div id="logo" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-left">
+          <div class="">
+            <div class="col-md-3 col-sm-2 col-xs-2">
+              <a href="/">
+                <img class="logo-color" src="img/logo-color.png" />
+              </a>
             </div>
-            <div class="row text-left text-muted flama-w900">
-              <p>Para: &nbsp
-                <a href="/pacientes" class="text-muted">Pacientes</a> |
-                <a href="/medicos" class="text-muted">Medicos</a> |
-                <a href="/instituciones" class="text-muted">Instituciones</a> </p>
+            <div class="col-md-9 col-sm-10 col-xs-10">
+              <div class="row">
+                <div class="bottom-border-mini flama-w200">
+                  <p class="text-muted text-left">
+                    <strong>
+                      <span class="s20">intermed &reg</span>
+                    </strong> |
+                    <strong>La red social</strong> de la salud</p>
+                </div>
+              </div>
+              <div class="row text-left text-muted flama-w900">
+                <p>Para: &nbsp
+                  <a href="/pacientes" class="text-muted">Pacientes</a> |
+                  <a href="/medicos" class="text-muted">Medicos</a> |
+                  <a href="/instituciones" class="text-muted">Instituciones</a> </p>
               </div>
             </div>
           </div>
@@ -52,7 +59,8 @@
             <div class="col-md-12">
               <div class="bottom-border flama-w200">
                 <p class="text-muted text-right">
-                  <span class="hideonmobile">Atención a clientes: (33) 3125-2200 &nbsp</span> <strong>soporte@intermed.mx</strong>
+                  <span class="hideonmobile">Atención a clientes: (33) 3125-2200 &nbsp</span>
+                  <strong>soporte@intermed.mx</strong>
                 </p>
               </div>
             </div>
@@ -60,8 +68,7 @@
           <div class="row">
             <div class="col-md-12">
               <p class="text-right">
-                <a class="login" href="#" data-toggle="modal" data-target="#LoginModal">ingresa</a>
-                &nbsp
+                <a class="login" href="#" data-toggle="modal" data-target="#LoginModal">ingresa</a> &nbsp
                 <a class="reg" href="/registro" class="text-danger">registrate</a>
               </p>
             </div>
@@ -70,6 +77,7 @@
       </div>
     </section>
   </nav>
+
   <body>
     {{{body}}}
     <footer>
@@ -78,29 +86,37 @@
         </p>
       </div>
     </footer>
-
-    <div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog">
-        <form method="POST" action="">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title">Porfavor, inicia sesión:</h4>
-            </div>
-            <div class="modal-body">
-              <div class="form-group">
-                <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Usuario">
+    <div>
+      <div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog">
+          <form method="POST" action="">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">Porfavor, inicia sesión:</h4>
               </div>
-              <div class="form-group">
-                <input type="text" class="form-control" id="contraseña" name="contraseña" placeholder="Contraseña">
+              <div class="modal-body">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Usuario">
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control" id="contraseña" name="contraseña" placeholder="Contraseña">
+                </div>
               </div>
-            </div>
-            <div class="modal-footer">
-              <input type="submit" name="login" value="Ingresar" class="btn btn-primary btn-block">
+              <div class="modal-footer">
+                <input type="submit" name="login" value="Ingresar" class="btn btn-primary btn-block">
+              </div>
             </div>
           </form>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+      <!-- /.modal -->
+    </div>
+
   </body>
-  </html>
+
+</html>
