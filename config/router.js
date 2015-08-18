@@ -16,9 +16,11 @@ var app = express();
 var url = require('url');
 //con esta linea se carga el servidor
 var serv = require('./server');
-var bodyParser = require('body-parser');
 
-var session = require('express-session');
+var passport = require('passport'),
+	bodyParser = require('body-parser'),
+	cookieParser = require("cookie-parser"),
+	session = require('express-session');
 
 app.use(session({secret: 'intermedSession',resave: false,saveUninitialized: true}));
 
@@ -36,6 +38,13 @@ app.use(express.static( __dirname + '/../public'));
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({	extended: true })); // support encoded bodies
 
+//Configurar passport
+require('./configPassport')(passport);
+// Initialize Passport!  Also use passport.session() middleware, to support
+// persistent login sessions (recommended).
+app.use(passport.initialize());
+app.use(passport.session());
+
 //llamado de la clase con la que se podra cargar los controladores
 var intermed = require('../apps/controllers/Intermed');
 
@@ -45,7 +54,8 @@ var intermed = require('../apps/controllers/Intermed');
 var iniciar = function()
 {
 	app.all('*', function( req, res, next){
-		hps.varSession(req.session);
+		if (req.session.passport.user) hps.varSession(req.session.passport.user);
+		else hps.varSession(req.session.passport);
 		next();
 	});
 
@@ -83,6 +93,23 @@ var iniciar = function()
 			intermed.callController('medicos', 'registrar', object, req, res);
 		}
 	});
+
+	app.get('/auth/facebook', passport.authenticate('facebook',  {scope: ['email','user_about_me','user_hometown']}));
+
+	app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }),
+		function(req, res) {
+			intermed.callController('usuarios', 'registrar',req.session.passport.user, req, res);
+	});
+
+	app.get('/userinfo', function(req, res){
+		res.send('<b>Información de usuario: </b><hr/>' + JSON.stringify(req.session.passport) + '<hr/><a href="/">Regresar</a>');
+	});
+
+	app.post('/loginLocal', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
+		res.redirect('/');
+	});
+
+	app.get( '/test', function( req, res){intermed.callController('medicos', 'obtieneAjax','', req, res)});
 }
 serv.server(app, 3000);
 //se exporta para que otro js lo pueda utilizar

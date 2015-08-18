@@ -17,9 +17,9 @@ module.exports = {
 	*/
 	login:  function(object, req, res ){
         if (object.usuario === 'admin' && object.contraseña === 'admin'){
-			req.session.name = 'admin';
-			req.session.admin = true;
-			req.session.logged = true;
+			req.session.passport.name = 'admin';
+			req.session.passport.admin = true;
+			req.session.passport.logged = true;
 			res.redirect('/registro');
         } else {
 		    res.redirect('/');
