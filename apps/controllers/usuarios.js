@@ -36,7 +36,7 @@ exports.mostrar = function(object, req, res) {
 };
 
 // Método que registra pacientes (facebook)
-exports.registrar = function(object, req, res) {
+exports.registrarUsuario = function(object, req, res) {
     // Inicia transacción de registro de usuarios
     models.sequelize.transaction({
         isolationLevel: models.Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
@@ -50,9 +50,9 @@ exports.registrar = function(object, req, res) {
             usuario: object['email'],
             correo:  object['email'],
             password: '',
-            tipoUsuario: 'P',
-            tipoRegistro: '',
-            estatusActivacion : '1'
+            tipoUsuario: object['tipoUsuario'],
+            tipoRegistro: object['tipoRegistro'],
+            estatusActivacion : '0'
         }}).then(function(usuario) {
             // si fue exitoso, actualizamos  datos generales, direcciones, telefonos y médicos
             // tomamos el id que le toco al usuario
@@ -70,35 +70,64 @@ exports.registrar = function(object, req, res) {
                   usuario_id: id
                 }
             });
-            /*
-            //Falta obtenerlo de facebook
-            models.Direccion.create({
-              calle: '',
-              numero: '',
-              calle1: '',
-              calle2: '',
-              colonia: '',
-              estado_id: '',  //Id del estado
-              ciudad: object['location']['name'],
-              cp: '',
-              principal: 1,
-              usuario_id: id
-            });
-            //Falta obtenerlo de facebook
-            models.Telefono.create({
-                tipo: '1',
-                telefono: '',
-                usuario_id: id
-            });*/
-            models.Paciente.findOrCreate({
-                where: {
-                    usuario_id: id
-                },
-                defaults: {
-                  fechaNac: object['birthday'],
+
+            if (object['tipoRegistro'] === 'F'){
+                console.log('REGISTRO POR FACEBOOK::::::');
+                models.Usuario.update({estatusActivacion : '1'},{where:{id: id}});
+            } else {
+                console.log('REGISTRO LOCAL::::::');
+                //Falta obtenerlo de facebook
+                models.Direccion.create({
+                  calle: '',
+                  numero: '',
+                  calle1: '',
+                  calle2: '',
+                  colonia: '',
+                  estado_id: '',  //Id del estado
+                  ciudad: object['location']['name'],
+                  cp: '',
+                  principal: 1,
                   usuario_id: id
-                }
-          });
+                });
+                //Falta obtenerlo de facebook
+                models.Telefono.create({
+                    tipo: '1',
+                    telefono: '',
+                    usuario_id: id
+                });
+            }
+
+            if (object['tipoUsuario'] === 'P'){
+                //Se trata de un paciente
+                models.Paciente.findOrCreate({
+                    where: {
+                        usuario_id: id
+                    },
+                    defaults: {
+                      fechaNac: object['birthday'],
+                      usuario_id: id
+                    }
+              });
+            } else if (object['tipoUsuario'] === 'M'){
+                //Se trata de un médico
+                models.Medico.create({
+                  cedula: '',
+                  codigoMedico: '',
+                  usuario_id: id
+                }).then(function(medico) {
+                    // si se pudo insertar el médico, tomamos su id para pasarlo a medicos especialidades y agregarla
+                    models.MedicoEspecialidad.create({
+                        tipo: '1',
+                        titulo: '',
+                        lugarEstudio: '',
+                        medico_id: medico.id,
+                        fecha:  Date.now(),
+                        especialidad_id: object['especialidadMed']   // Id de la especialidad
+                    })
+                });
+            }
+
+
         });
 
       }).then(function(result) {

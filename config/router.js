@@ -98,7 +98,9 @@ var iniciar = function()
 
 	app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }),
 		function(req, res) {
-			intermed.callController('usuarios', 'registrar',req.session.passport.user, req, res);
+			req.session.passport.user['tipoRegistro'] = 'F';
+			req.session.passport.user['tipoUsuario'] = 'P';
+			intermed.callController('usuarios', 'registrarUsuario',req.session.passport.user, req, res);
 	});
 
 	app.post('/loginLocal', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
