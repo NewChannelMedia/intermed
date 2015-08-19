@@ -101,10 +101,6 @@ var iniciar = function()
 			intermed.callController('usuarios', 'registrar',req.session.passport.user, req, res);
 	});
 
-	app.get('/userinfo', function(req, res){
-		res.send('<b>Información de usuario: </b><hr/>' + JSON.stringify(req.session.passport) + '<hr/><a href="/">Regresar</a>');
-	});
-
 	app.post('/loginLocal', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
 		res.redirect('/');
 	});
