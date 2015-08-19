@@ -35,28 +35,77 @@ exports.mostrar = function(object, req, res) {
   });
 };
 
-// Método que registra usuarios
+// Método que registra pacientes (facebook)
 exports.registrar = function(object, req, res) {
     // Inicia transacción de registro de usuarios
     models.sequelize.transaction({
         isolationLevel: models.Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
       }, function (t) {
-
         // Creando usuario
-        models.Usuario.findOrCreate({//create({
-            usuario: object['name'],
+        return models.Usuario.findOrCreate({
+        where: {
+            correo:  object['email']
+        },
+        defaults: {
+            usuario: object['email'],
             correo:  object['email'],
-            password: 'passtest',
+            password: '',
             tipoUsuario: 'P',
             tipoRegistro: '',
             estatusActivacion : '1'
+        }}).then(function(usuario) {
+            // si fue exitoso, actualizamos  datos generales, direcciones, telefonos y médicos
+            // tomamos el id que le toco al usuario
+            var id = usuario[0].id;
+
+            models.DatosGenerales.findOrCreate({
+                where: {
+                    usuario_id: id
+                },
+                defaults:{
+                  nombre: object['first_name'],
+                  apellidoP: object['last_name'],
+                  apellidoM: '',
+                  rfc: '',
+                  usuario_id: id
+                }
+            });
+            /*
+            //Falta obtenerlo de facebook
+            models.Direccion.create({
+              calle: '',
+              numero: '',
+              calle1: '',
+              calle2: '',
+              colonia: '',
+              estado_id: '',  //Id del estado
+              ciudad: object['location']['name'],
+              cp: '',
+              principal: 1,
+              usuario_id: id
+            });
+            //Falta obtenerlo de facebook
+            models.Telefono.create({
+                tipo: '1',
+                telefono: '',
+                usuario_id: id
+            });*/
+            models.Paciente.findOrCreate({
+                where: {
+                    usuario_id: id
+                },
+                defaults: {
+                  fechaNac: object['birthday'],
+                  usuario_id: id
+                }
+          });
         });
+
       }).then(function(result) {
-            // transacción completa
-            res.redirect('/');
-            //res.status(200).json({ok: true});
-      }).catch(function(err) {
           res.redirect('/');
-          //res.status(500).json({error: err});
+      }).catch(function(err) {
+          console.error('ERROR: ' + err);
+          req.session.passport = {};
+          res.redirect('/');
       });
 };

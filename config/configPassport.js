@@ -18,7 +18,7 @@ module.exports = function(passport){
         clientSecret: FACEBOOK_APP_SECRET,
         callbackURL: "http://localhost:3000/auth/facebook/callback",
         enableProof: false,
-        profileFields: ['id', 'displayName','gender','hometown','email']
+        profileFields: ['id', 'displayName','gender','email','first_name','last_name','birthday','location']
         //https://developers.facebook.com/docs/facebook-login/permissions/v2.4
         //https://developers.facebook.com/docs/graph-api/reference/user
       },
@@ -29,9 +29,6 @@ module.exports = function(passport){
 
     passport.use(new LocalStrategy(
         function(username, password, done) {
-            console.log('TEST');
-            console.log('USUARIO: ' + username);
-            console.log('CONTRASEÑA: ' + password);
             if (username === 'test' && password === 'test'){
                 var user = {'name' : username}
                 return done(null,user);
