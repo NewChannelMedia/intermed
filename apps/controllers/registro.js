@@ -10,8 +10,11 @@
 //librerias que se utilizaran en este archivo
 module.exports = {
 	index: function(object, req, res) {
-		console.log(object);
-		res.render('registro');
+		if (!req.session.admin){
+			res.redirect('/')
+		}
+		else
+			res.render('registro', {logged: req.session.logged});
 	},
 	registrar: function(object, req, res) {
 		object = [object];

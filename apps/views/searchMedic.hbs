@@ -1,39 +1,33 @@
+<section id = "principal">
 <div class="container">
     <div class="row">
       <div class="panel">
         <div class="panel-body">
-          <h4>Lista de medicos registrados</h4>
+          <h4>Resultados de su busqueda por:&nbsp{{titulo}} </br>Hospital:&nbsp{{hospital}}</br>Asegurado:&nbsp{{aseguradora}}</br>Costo:&nbsp{{costo}}</h4>
           <form>
             <table class="table">
               <caption></caption>
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>#</th>
-                  <th>#</th>
-                  <th>#</th>
-                  <th>#</th>
-                  <th>#</th>
-                  <th>#</th>
+                  <th><b>Especialidad</b></th>
+                  <th><b>Ciudad</b></th>
+                  <th><b>Colonia</b></th>
+                  <th><b>Padecimiento</b></th>
+                  <th><b>Nombre medico</b></th>
+                  <th><b>Ciudad padecimiento</b></th>
+                  <th><b>Colonia padecimiento</b></th>
                 </tr>
               </thead>
               <tbody id='tbmedReg'>
-                  <!-- Especialidad -->
-                  {{#each especialidades}}
-                    <!-- Aqui se escriben los datos-->
-                    <tr>{{especialidad}}</tr>
-                    <tr></tr>
-                  {{/each}}
-                  <!-- Medicos -->
-                  {{#each medico}}
-                    <!-- Aqui se escriben los datos-->
-                    <tr></tr>
-                  {{/each}}
-                  <!-- padecimiento -->
-                  {{#each padecimiento}}
-                    <!-- Aqui se escriben los datos-->
-                    <tr></tr>
-                  {{/each}}
+                <tr>
+                  <th><i>{{especialidad}}</i></th>
+                  <th><i>{{ciudad}}</i></th>
+                  <th><i>{{colonia}}</i></th>
+                  <th><i>{{padecimiento}}</i></th>
+                  <th><i>{{nombreMedico}}</i></th>
+                  <th><i>{{ciudadela}}</i></th>
+                  <th><i>{{coloniapad}}</i></th>
+                </tr>
               </tbody>
             </table>
           </form>
@@ -41,3 +35,4 @@
       </div>
     </div>
   </div>
+</section>

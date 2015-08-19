@@ -24,26 +24,55 @@ module.exports = {
 	vacio: function(object, req, res) {
 		res.render('searchMedic', {}, function(err, html){ res.send(html)});
 	},
-
-	// metodo para atrapar los post enviados cuando se eliga especialidad
-	searchEspecialidad: function( object, req, res )
+	/**
+	*	EL siguiente metodo es el que realizara las busquedas,
+	*	dependiendo del primer input, que es donde se elige
+	*	por que sera su busqueda. Teniendo ese valor del select
+	*	se mandara a un if para que se verifique que es lo que se tiene
+	*	que enviar y se devuelve a la vista el resultado de la busqueda
+	*
+	*	@param object recibe el objeto con todos los valores del input
+	*	@param req el request del servidor
+	*	@param response
+	*
+	*/
+	searching: function( object, req, res )
 	{
-		// Todo hacer la busqueda de medicos por especialidad
-		res.render( ' searchMedic', {}, function( err, html ){ res.send(html) });
-	},
-
-	// metodo para atrapar el post y enviarlo al modelo para generar la consulta
-	// para la busqueda de medicos, por nombre.
-	searchMedico: function( object, req, res )
-	{
-		// Todo hacer la busqueda por el nombre del medico
-		res.render('searchMedic',{}, function(err, html){res.send(html)});
-	},
-
-	// metodo para hacer la consulta para buscar por padecimientos se envia los datos al modelo
-	searchPadecimiento: function( object, req, res )
-	{
-		//Todo hacer la busqueda por padecimientos
-		res.render( 'searchMedic', {}, function( err, html ){ res.send(html)} );
+		console.log( object );//imprime en consola el objeto
+		// el siguiente if saca el valor que se encuentra en el primer input
+		if( object.seleccionador === "especialidad" )
+		{
+			// arreglo con los datos que se van a enviar
+			var envioEspecialidad = {
+				titulo: object.seleccionador,
+				especialidad : object.especialidad,
+				ciudad: object.ciudad,
+				colonia: object.colonia,
+				hospital: object.hospital,
+				aseguradora: object.aseguradora,
+				costo: object.costo
+			};
+			res.render('searchMedic', envioEspecialidad);
+		}else if( object.seleccionador === "medico"){
+			var envioMedico = {
+				titulo: object.seleccionador,
+				nombreMedico: object.nombreMedico,
+				hospital: object.hospital,
+				aseguradora: object.aseguradora,
+				costo: object.costo
+			};
+			res.render('searchMedic', envioMedico);
+		}else if ( object.seleccionador === "padecimiento") {
+			var envioPadecimiento = {
+				titulo: object.seleccionador,
+				padecimiento: object.padecimiento,
+				ciudadela: object.ciudadela,
+				coloniapad: object.coloniapad,
+				hospital: object.hospital,
+				aseguradora: object.aseguradora,
+				costo: object.costo
+			};
+			res.render('searchMedic', envioPadecimiento);
+		}
 	}
 }

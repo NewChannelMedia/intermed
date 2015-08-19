@@ -20,7 +20,7 @@ var fs = require('fs');
 *	busque el archivo que se esta buscando por medio del parametro y retorne ese archivo
 *	para poderlo usar y asi mandar a llamar el o los metodos que pueda contener.
 */
-function callController( file, method, object, rs )
+function callController( file, method, object, rq, rs )
 {
 	var exists =  fs.exists(__dirname +  '/' + file + '.js', function (req, res)
 	{
@@ -31,7 +31,7 @@ function callController( file, method, object, rs )
 			{
 				try
 				{
-					controller[method](object, req, rs);
+					controller[method](object, rq, rs);
 				}
 				catch(e){ console.error("Error1: el método '" + method + "' no existe." + " Error "+e); }
 			}
