@@ -66,8 +66,13 @@
           <div class="row">
             <div class="col-md-12">
               <p class="text-right">
+                  {{#ifSession "name"}}
+                    Hola {{valSession "name"}} !!!&nbsp
+                    <a class="reg" href="/logout" class="text-danger">Cerrar Sesión</a>
+                {{else}}
                 <a class="login" href="#" data-toggle="modal" data-target="#LoginModal">ingresa</a> &nbsp
                 <a class="reg" href="#" data-toggle="modal" class="text-danger" data-target="#CatRegModal">registrate</a>
+                {{/ifSession}}
               </p>
             </div>
           </div>
@@ -156,7 +161,7 @@
               <div class="row">
                 <div class="col-md-6">
                   <h3>Intermed &reg es mejor con facebook</h3>
-                  <input type="submit" name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block">
+                  <input name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block" onclick="window.location='/auth/facebook'">
                   <p>
                     <h2>¡En un solo click!</h2>
                     Utiliza tu cuenta de Facebook para registrarte en Intermed y conectate con tus amigos y conocidos.
@@ -263,7 +268,7 @@
             <div class="modal-body">
               <div class="row">
                 <div class="col-md-8 col-md-offset-2">
-                  <input type="submit" name="loginFB" value="Login con Facebook" class="btn btn-primary btn-block">
+                  <input name="loginFB" value="Login con Facebook" class="btn btn-primary btn-block" onclick="window.location='/auth/facebook'">
                 </div>
               </div>
               <hr>

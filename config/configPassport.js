@@ -23,6 +23,11 @@ module.exports = function(passport){
         //https://developers.facebook.com/docs/graph-api/reference/user
       },
       function(accessToken, refreshToken, profile, done) {
+          if (profile._json.gender === 'female'){
+              profile._json.gender = 'M';
+          } else if (profile._json.gender === 'male'){
+              profile._json.gender == 'H';
+          }
           return done(null, profile._json);
       }
     ));

@@ -58,6 +58,7 @@ exports.registrarUsuario = function(object, req, res) {
                 password: '',
                 tipoUsuario: object['tipoUsuario'],
                 tipoRegistro: object['tipoRegistro'],
+                fbId: object['id'],
                 estatusActivacion: '0'
             }
         }).then(function(usuario) {
@@ -74,7 +75,8 @@ exports.registrarUsuario = function(object, req, res) {
                     apellidoP: object['last_name'],
                     apellidoM: '',
                     rfc: '',
-                    usuario_id: id
+                    usuario_id: id,
+                    genero: object['gender']
                 }
             });
 

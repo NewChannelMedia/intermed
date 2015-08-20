@@ -5,6 +5,7 @@ module.exports = function(sequelize, DataTypes) {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
     usuario: {type : DataTypes.STRING },
     correo: {type : DataTypes.STRING },
+    fbId: {type : DataTypes.STRING },
     password: {type : DataTypes.STRING, allowNull: false, required: true},
     tipoUsuario: {type: DataTypes.STRING, required: true},
     tipoRegistro: {type: DataTypes.STRING, required: true},
