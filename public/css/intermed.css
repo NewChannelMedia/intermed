@@ -449,35 +449,37 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   color: #fff;
 }
 
-#LoginModal .modal-content {
+#CatRegModal .modal-content, #RegModal .modal.content, #LoginModal .modal-content {
   border-radius: 0px;
 }
-#LoginModal .modal-header {
-	margin: 20px 25px;
- 	padding: 5px 0px;
- 	border-bottom: solid 5px #76b6dd;
-}
-#LoginModal .modal-header .close {
-	margin: 12px;
+
+#CatRegModal .modal-header, #RegModal .modal.header, #LoginModal .modal-header {
+  margin: 20px 25px;
+  padding: 5px 0px;
+  border-bottom: solid 5px #76b6dd;
 }
 
-#LoginModal h1 {
+#CatRegModal .modal-header .close, #RegModal .modal-header .close, #LoginModal .modal-header .close {
+  margin: 12px;
+}
+
+#CatRegModal h1 {
   text-align: center;
   margin: 5px 0 15px 0;
 }
 
-#LoginModal h3 {
-	text-align: center;
-	margin: 5px 0;
-	color: #fbad18;
+#CatRegModal h3 {
+  text-align: center;
+  margin: 5px 0;
+  color: #fbad18;
 }
 
-#LoginModal .modal-footer {
+#CatRegModal .modal-footer, #RegModal .modal-footer {
   background-color: #fbad18;
   border: solid 5px #fff;
 }
 
-#LoginModal .hi-icon {
+#CatRegModal .hi-icon {
   background-color: #fbad18;
 }
 
