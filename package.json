@@ -3,6 +3,10 @@
 	"version":"0.0.0",
 	"description":"La red social de la salud",
 	"author": "New Channel",
+	"private": true,
+	"scripts":{
+		"start":"node app.js"
+	},
 	"contributors":
 	[
 		{
@@ -28,6 +32,9 @@
 		"express-handlebars": "2.0.1",
 		"handlebars": "3.0.3",
 		"mysql": "2.8.0",
-		"sequelize": "3.5.1"
+		"sequelize": "3.5.1",
+		"nodemailer": "1.4.0",
+		"nodemailer-smtp-transport": "1.0.3",
+		"nodemailser-express-handlebars": "1.0.0"
 	}
 }
