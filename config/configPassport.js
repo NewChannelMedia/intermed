@@ -24,9 +24,9 @@ module.exports = function(passport){
       },
       function(accessToken, refreshToken, profile, done) {
           if (profile._json.gender === 'female'){
-              profile._json.gender = 'M';
+              profile._json.gender = 'F';
           } else if (profile._json.gender === 'male'){
-              profile._json.gender == 'H';
+              profile._json.gender == 'M';
           }
           return done(null, profile._json);
       }

@@ -95,7 +95,7 @@ var iniciar = function()
 	});
 
 	app.get('/informacionusuario', function (req, res){
-		res.send(JSON.stringify(req.session.passport.user) + '<br/><a href="/">Regresar</a>');
+		res.send(JSON.stringify(req.session.passport) + '<br/><a href="/">Regresar</a>');
 	});
 
 	app.get('/auth/facebook', passport.authenticate('facebook',  {scope: ['email','user_birthday','user_location','publish_actions']}));
@@ -106,6 +106,17 @@ var iniciar = function()
 			req.session.passport.user['tipoUsuario'] = 'P';
 			intermed.callController('usuarios', 'registrarUsuario',req.session.passport.user, req, res);
 	});
+
+	app.post('/reg/local', function (req, res){
+		req.body.name = req.body.first_name + ' ' + req.body.last_name;
+		req.body['tipoRegistro'] = 'L';
+		req.body['tipoUsuario'] = 'P';
+		intermed.callController('usuarios', 'registrarUsuario',req.body, req, res);
+	});
+
+	app.post('/correoDisponible', function( req, res ){
+			intermed.callController('usuarios', 'correoDisponible', req.body, req, res);
+		});
 
 	app.post('/loginLocal', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
 		res.redirect('/');

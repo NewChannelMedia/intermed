@@ -7,7 +7,7 @@ module.exports = function(sequelize, DataTypes) {
     correo: {type : DataTypes.STRING },
     fbId: {type : DataTypes.STRING },
     urlFotoPerfil: {type : DataTypes.STRING },
-    password: {type : DataTypes.STRING, allowNull: false, required: true},
+    password: {type : DataTypes.STRING},
     tipoUsuario: {type: DataTypes.STRING, required: true},
     tipoRegistro: {type: DataTypes.STRING, required: true},
     estatusActivacion: {type: DataTypes.STRING, required: true}
@@ -16,6 +16,7 @@ module.exports = function(sequelize, DataTypes) {
       // asociaciones con otras tablas
       associate: function(models) {
         Usuario.hasOne(models.Medico);
+        Usuario.hasOne(models.Paciente);
         Usuario.hasOne(models.DatosGenerales);
         Usuario.hasOne(models.Direccion);
         Usuario.hasOne(models.Telefono);
