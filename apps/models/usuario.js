@@ -6,6 +6,7 @@ module.exports = function(sequelize, DataTypes) {
     usuario: {type : DataTypes.STRING },
     correo: {type : DataTypes.STRING },
     fbId: {type : DataTypes.STRING },
+    urlFotoPerfil: {type : DataTypes.STRING },
     password: {type : DataTypes.STRING, allowNull: false, required: true},
     tipoUsuario: {type: DataTypes.STRING, required: true},
     tipoRegistro: {type: DataTypes.STRING, required: true},

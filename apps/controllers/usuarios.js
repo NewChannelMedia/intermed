@@ -59,7 +59,8 @@ exports.registrarUsuario = function(object, req, res) {
                 tipoUsuario: object['tipoUsuario'],
                 tipoRegistro: object['tipoRegistro'],
                 fbId: object['id'],
-                estatusActivacion: '0'
+                estatusActivacion: '0',
+                urlFotoPerfil: object.picture.data.url
             }
         }).then(function(usuario) {
             // si fue exitoso, actualizamos  datos generales, direcciones, telefonos y médicos
