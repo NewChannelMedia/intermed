@@ -6,7 +6,7 @@ var Sequelize = require("sequelize");
 var env       = process.env.NODE_ENV || "development";
 var db = {};
 //var config    = require(__dirname + '/../config/config.json')[env];
-var sequelize = new Sequelize('intermed', 'root', 'x',
+var sequelize = new Sequelize('intermed', 'root', '',
 {
   host: 'localhost',
   dialect: 'mysql',
