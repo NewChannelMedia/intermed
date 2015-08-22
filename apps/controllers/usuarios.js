@@ -158,10 +158,15 @@ exports.correoDisponible = function(object, req, res) {
 var crearPaciente = function(req, res, object, usuario_id) {
     //Se trata de un paciente
     models.Paciente.create({
-        fechaNac: object['birthday'],
         usuario_id: usuario_id
-    }).then(function(result) {
-        generarSesion(req, res, usuario_id);
+    }).then(function(paciente) {
+        if (object['birthday'] != 'undefined-undefined-undefined'){
+            paciente.update({fechaNac: object['birthday']}).then(function(result){
+                generarSesion(req, res, usuario_id);
+            });
+        } else {
+            generarSesion(req, res, usuario_id);
+        }
     });
 }
 

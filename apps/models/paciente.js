@@ -3,7 +3,7 @@
 module.exports = function(sequelize, DataTypes) {
   var Paciente = sequelize.define("Paciente", {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
-    fechaNac: {type : DataTypes.DATE, required: true, unique: true },
+    fechaNac: {type : DataTypes.DATE},
     usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true},
   }, {
     classMethods: {
