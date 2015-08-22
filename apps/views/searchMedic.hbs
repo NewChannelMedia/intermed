@@ -1,7 +1,223 @@
-<section id = "principal">
-<div class="container">
+<section id="searchMedic">
+  <nav id="navIntern">
+    <section class="container">
+      <div class="row">
+        <div id="logo" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-left">
+          <div class="">
+            <div class="col-md-1 col-sm-2 col-xs-2">
+              <a href="/">
+                <img class="logo-color" src="img/logo-color.png" />
+              </a>
+            </div>
+            <div class="col-md-11 col-sm-10 col-xs-10">
+              <div class="row">
+                <div class="flama-w200 slogan">
+                  <p class="text-left">
+                    <span class="s25">intermed <sup><sup>&reg</sup></sup>
+                    </span> |
+                    <strong>La red social</strong> de la salud.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="atnc-clientes" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-right">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="bottom-border flama-w200">
+                <p class=" text-right">
+                  <span class="hideonmobile">Atención a clientes: (33) 3125-2200 &nbsp</span>
+                  <strong>soporte@intermed.mx</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <p class="text-right">
+                <a class="login" href="#" data-toggle="modal" data-target="#LoginModal">ingresa</a> &nbsp
+                <a class="reg" href="#" class="text-danger">registrate</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </nav>
+  <div class="container">
+    <div class="row">
+      <div class="upper">
+        <ol class="breadcrumb">
+          <li><a href="/">Intermed</a></li>
+          <li class="active">Resultados</li>
+        </ol>
+        <h4>Registrate para poder consultar los perfiles de cada médico.</h4>
+      </div>
+      <section class="">
+        <!-- empieza buscador -->
+        <div class="panel">
+          <div class="panel-body">
+            <form method="POST" action="/searchMedic">
+              <!-- Form principal -->
+              <h4>Filtra tu busqueda o inicia una nueva</h4>
+              <div class="parametros col-md-12">
+                <div class="row">
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <select class="form-control" name="especialidad">
+                        <option>Especialidades</option>
+                        <option>...</option>
+                        <option>...</option>
+                        <option>...</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <select class="form-control" name="ciudad">
+                        <option>Ciudad</option>
+                        <option>...</option>
+                        <option>...</option>
+                        <option>...</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <select class="form-control" name="colonia">
+                        <option>Colonia</option>
+                        <option>...</option>
+                        <option>...</option>
+                        <option>...</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <select class="form-control" name="padecimiento">
+                        <option>Padecimiento</option>
+                        <option>...</option>
+                        <option>...</option>
+                        <option>...</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <input type="text" class="form-control" id="nombreMed" name="nombreMedico" placeholder="Nombre del Medico">
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <ul class="list-inline">
+                      <li>
+                        <label>Añade a tu busqueda: </label>
+                      </li>
+                      <li>
+                        <div class="checkbox">
+                          <label>
+                            <input type="checkbox" name="hospital" value="hospital"> Hospital
+                          </label>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="checkbox">
+                          <label>
+                            <input type="checkbox" name="aseguradora" value="aseguradora"> Aseguradora
+                          </label>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="checkbox">
+                          <label>
+                            <input type="checkbox" name="costo" value="costo"> Costo
+                          </label>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-md-3">
+                    <div class="form-group">
+                      <!-- <button class="btn btn-success btn-md btn-block"id = "btn">
+                               <span class="glyphicon glyphicon-search"></span>&nbsp Buscar
+                             </button> -->
+                      <input type="submit" value="Buscar" class="btn btn-success btn-md btn-block" id="btn" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <!-- final del form principal -->
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist" id="resultTabs">
+          <li role="presentation" class="tab active"><a href="#medResults" aria-controls="medResults" role="tab" data-toggle="tab">Medicos</a></li>
+          <li role="presentation" class="tab"><a href="#centrosResult" aria-controls="centrosResult" role="tab" data-toggle="tab">Centros Medicos</a></li>
+          <li role="presentation" class="tab"><a href="#padResults" aria-controls="padResults" role="tab" data-toggle="tab">Padecimientos</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content" id="tabsContent">
+          <div class="panel">
+            <div class="panel-body">
+              <div role="tabpanel" class="tab-pane fade in active " id="medResults">
+                <div class="media-list">
+                  <div class="media">
+                    <div class="media-left">
+                       <div class="media-enclosure">
+                          <a href="#">
+                           <img class="media-object" src="img/logo-color.png" alt="">
+                         </a>
+                       </div>
+                    </div>
+                    <div class="media-body">
+                       <h4 class="media-heading">Cabecera</h4>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div role="tabpanel" class="tab-pane fade" id="centrosResult">
+                <div class="media-list">
+                  <div class="media">
+                    <div class="media-left">
+                      <a href="#">
+                        <img class="media-object" src="" alt="">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div role="tabpanel" class="tab-pane fade" id="padResults">
+                <div class="media-list">
+                  <div class="media">
+                    <div class="media-left">
+                      <a href="#">
+                        <img class="media-object" src="" alt="">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container">
     <div class="row">
       <div class="panel">
+        <div class="panel-body">
+        </div>
         <div class="panel-body">
           <h4>Resultados de su busqueda por:&nbsp{{titulo}} </br>Hospital:&nbsp{{hospital}}</br>Asegurado:&nbsp{{aseguradora}}</br>Costo:&nbsp{{costo}}</h4>
           <form>
@@ -35,4 +251,5 @@
       </div>
     </div>
   </div>
+
 </section>
