@@ -150,135 +150,58 @@
             <div class="panel-body">
               <div role="tabpanel" class="tab-pane fade in active " id="medResults">
                 <ul class="media-list">
-                   <li class="media result">
-                    <div class="media-left">
-                      <div class="media-enclosure">
-                        <a href="#">
-                          <img class="media-object" src="img/logo-color.png" alt="">
-                        </a>
-                      </div>
-                    </div>
-                    <div class="media-body">
-                      <div class="col-md-8">
-                        <h4 class="media-heading">
-                          <span class="label label-topDr">Top Doctor</span> Dr. Juan Carlos Medina Mtz. {{nombreMedico}}
-                        </h4>
-                        <ul class="list-unstyled">
-                          <li>
-                            <strong>Pediatría {{especialidad}}</strong>
-                          </li>
-                        </ul>
-                        <ul class="list-unstyled">
-                          <li>
-                            Neonatología. {{subEspecialidad}}
-                          </li>
-                        </ul>
-                        <ul class="list-inline">
-                          <li>
-                            <small>Sindrome de Werner{{padecimientos}}</small>
-                          </li>
-                          <li>
-                            <small>Falta de Apetito{{padecimientos}}</small>
-                          </li>
-                          <li>
-                            <small>Transtornos congenitos{{padecimientos}}</small>
-                          </li>
-                        </ul>
-                        <ul class="list-unstyled list-ubicaciones">
-                          <li>
-                              <button class="btn btn-warning">
-                                <span class="glyphicon glyphicon-map-marker"></span>
-                              </button>
-                              <a href="#">
-                                <strong>Consultorio Central{{nombreUbicacion}}</strong>
-                                <small>Calle paseo central {{calleUbicacion}} #555{{numeroUbicacion}} Colonia Centro {{coloniaUbicacion}}, Ciudad Central {{ciudadUbicacion}}</small>
-                              </a>
-                          </li>
-                          <li>
-                            <button class="btn btn-warning">
-                              <span class="glyphicon glyphicon-map-marker"></span>
-                            </button>
-                            <a href="#">
-                              <strong>Consultorio Norte{{nombreUbicacion}}</strong>
-                              <small>Calle Nórdica {{calleUbicacion}} #69{{numeroUbicacion}} Colonia Cielo Polar {{coloniaUbicacion}}, Ciudad del Norte {{ciudadUbicacion}}</small>
-                            </a>
-                          </li>
-                          <!-- Cada <li> en esta parte debe mostrar una ubicación en la que trabaja el Medico -->
-                        </ul>
-                      </div>
-                      <div class="resultOptions col-md-4">
-                        <ul class="list-unstyled">
-                          <li>
-                            Costo de consulta:
-                            <strong> $1,230</strong>
-                          </li>
-                          <li>
-                            <a>Agrega a tus favoritos</a>
-                          </li>
-                          <li>
-                            <a>Ver Teléfono</a>
-                          </li>
-                          <li>
-                            <a>Envía mensaje</a>
-                          </li>
-                          <li>
-                            <a>Visita su perfíl</a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </li>
+                {{#each medicos}}
                   <li class="media result">
                     <div class="media-left">
                       <div class="media-enclosure">
                         <a href="#">
-                          <img class="media-object" src="img/logo-color.png" alt="">
+                          <img class="media-object" src={{urlFotoPerfil}} alt="">
                         </a>
                       </div>
                     </div>
                     <div class="media-body">
                       <div class="col-md-8">
                         <h4 class="media-heading">
-                          <span class="label label-recomendado">Recomendado</span> Dr. Juan Carlos Medina Mtz. {{nombreMedico}}
+                          <span class="label label-topDr">Top Doctor</span> Dr.{{DatosGenerale.nombre}} {{DatosGenerale.apellidoP}} {{DatosGenerale.apellidoM}}.
                         </h4>
-                        <ul class="list-unstyled">
-                          <li>
-                            <strong>Pediatría {{especialidad}}</strong>
-                          </li>
+                        <ul class="list-unstyled list-inline">
+                            <li>
+                              <strong>Pediatría {{!especialidad}}</strong>
+                            </li>
                         </ul>
-                        <ul class="list-unstyled">
-                          <li>
-                            Neonatología. {{subEspecialidad}}
-                          </li>
+                        <ul class="list-unstyled list-inline">
+                            <li>
+                              Neonatología. {{!subEspecialidad}}
+                            </li>
                         </ul>
                         <ul class="list-inline">
                           <li>
-                            <small>Sindrome de Werner{{padecimientos}}</small>
+                            <small>Sindrome de Werner{{!padecimientos}}</small>
                           </li>
                           <li>
-                            <small>Falta de Apetito{{padecimientos}}</small>
+                            <small>Falta de Apetito{{!padecimientos}}</small>
                           </li>
                           <li>
-                            <small>Transtornos congenitos{{padecimientos}}</small>
+                            <small>Transtornos congenitos{{!padecimientos}}</small>
                           </li>
                         </ul>
                         <ul class="list-unstyled list-ubicaciones">
                           <li>
-                              <button class="btn btn-warning">
-                                <span class="glyphicon glyphicon-map-marker"></span>
-                              </button>
-                              <a href="#">
-                                <strong>Consultorio Central{{nombreUbicacion}}</strong>
-                                <small>Calle paseo central {{calleUbicacion}} #555{{numeroUbicacion}} Colonia Centro {{coloniaUbicacion}}, Ciudad Central {{ciudadUbicacion}}</small>
-                              </a>
+                            <button class="btn btn-warning">
+                              <span class="glyphicon glyphicon-map-marker"></span>
+                            </button>
+                            <a href="#">
+                              <strong>Consultorio Central{{nombreUbicacion}}</strong>
+                              <small>Calle paseo central {{calleUbicacion}} #555{{numeroUbicacion}} Colonia Centro {{coloniaUbicacion}}, Ciudad Central {{ciudadUbicacion}}</small>
+                            </a>
                           </li>
                           <li>
                             <button class="btn btn-warning">
                               <span class="glyphicon glyphicon-map-marker"></span>
                             </button>
                             <a href="#">
-                              <strong>Consultorio Norte{{nombreUbicacion}}</strong>
-                              <small>Calle Nórdica {{calleUbicacion}} #69{{numeroUbicacion}} Colonia Cielo Polar {{coloniaUbicacion}}, Ciudad del Norte {{ciudadUbicacion}}</small>
+                              <strong>Consultorio:{{Direccion.calle}}</strong>
+                              <small>Calle:{{Direccion.calle1}} #{{Direccion.numero}} Colonia:{{Direccion.colonia}}, Ciudad: {{Direccion.ciudad}}</small>
                             </a>
                           </li>
                           <!-- Cada <li> en esta parte debe mostrar una ubicación en la que trabaja el Medico -->
@@ -306,85 +229,8 @@
                       </div>
                     </div>
                   </li>
-                  <li class="media result">
-                    <div class="media-left">
-                      <div class="media-enclosure">
-                        <a href="#">
-                          <img class="media-object" src="img/logo-color.png" alt="">
-                        </a>
-                      </div>
-                    </div>
-                    <div class="media-body">
-                      <div class="col-md-8">
-                        <h4 class="media-heading">
-                           Dr. Juan Carlos Medina Mtz. {{nombreMedico}}
-                        </h4>
-                        <ul class="list-unstyled">
-                          <li>
-                            <strong>Pediatría {{especialidad}}</strong>
-                          </li>
-                        </ul>
-                        <ul class="list-unstyled">
-                          <li>
-                            Neonatología. {{subEspecialidad}}
-                          </li>
-                        </ul>
-                        <ul class="list-inline">
-                          <li>
-                            <small>Sindrome de Werner{{padecimientos}}</small>
-                          </li>
-                          <li>
-                            <small>Falta de Apetito{{padecimientos}}</small>
-                          </li>
-                          <li>
-                            <small>Transtornos congenitos{{padecimientos}}</small>
-                          </li>
-                        </ul>
-                        <ul class="list-unstyled list-ubicaciones">
-                          <li>
-                              <button class="btn btn-warning">
-                                <span class="glyphicon glyphicon-map-marker"></span>
-                              </button>
-                              <a href="#">
-                                <strong>Consultorio Central{{nombreUbicacion}}</strong>
-                                <small>Calle paseo central {{calleUbicacion}} #555{{numeroUbicacion}} Colonia Centro {{coloniaUbicacion}}, Ciudad Central {{ciudadUbicacion}}</small>
-                              </a>
-                          </li>
-                          <li>
-                            <button class="btn btn-warning">
-                              <span class="glyphicon glyphicon-map-marker"></span>
-                            </button>
-                            <a href="#">
-                              <strong>Consultorio Norte{{nombreUbicacion}}</strong>
-                              <small>Calle Nórdica {{calleUbicacion}} #69{{numeroUbicacion}} Colonia Cielo Polar {{coloniaUbicacion}}, Ciudad del Norte {{ciudadUbicacion}}</small>
-                            </a>
-                          </li>
-                          <!-- Cada <li> en esta parte debe mostrar una ubicación en la que trabaja el Medico -->
-                        </ul>
-                      </div>
-                      <div class="resultOptions col-md-4">
-                        <ul class="list-unstyled">
-                          <li>
-                            Costo de consulta:
-                            <strong> $1,230</strong>
-                          </li>
-                          <li>
-                            <a>Agrega a tus favoritos</a>
-                          </li>
-                          <li>
-                            <a>Ver Teléfono</a>
-                          </li>
-                          <li>
-                            <a>Envía mensaje</a>
-                          </li>
-                          <li>
-                            <a>Visita su perfíl</a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </li>
-               </ul>
+                {{/each}}
+                </ul>
               </div>
               <div role="tabpanel" class="tab-pane fade" id="centrosResult">
                 <div class="media-list">

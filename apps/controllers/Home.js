@@ -15,8 +15,14 @@ var consultas = {
 	clausulas: function(object){
 		if(object.seleccionador === "especialidad")
 			return objeto = {$or:{ciudad:object.ciudad,colonia:object.colonia}};
-		else if( object.seleccionador === "medico"){return  objeto = {nombre:{$like:object.nombreMedico + "%"}};}
-		else if( object.seleccionador === "padecimiento"){return objeto = {$or:{ciudad:object.ciudadela,colonia:object.coloniapad}};}
+		else if( object.seleccionador === "medico")
+		{
+			return  objeto = {nombre:{$like:object.nombreMedico + "%"}};
+		}
+		else if( object.seleccionador === "padecimiento")
+		{
+			return objeto = {$or:{ciudad:object.ciudadela,colonia:object.coloniapad}};
+		}
 	}
 };
 module.exports = {
@@ -62,7 +68,7 @@ module.exports = {
 												//{model: models.Especialidad, where:{descripcion:object.especialidad}}
 								]
 							}).then(function(medicos)
-							{
+							{console.log("1:"+JSON.parse(JSON.stringify(medicos)));
 									res.render('searchMedic', {medicos:JSON.parse(JSON.stringify(medicos)) });
 							});
 						break;
@@ -73,11 +79,11 @@ module.exports = {
 												{model: models.Medico},
 												{model: models.Direccion},
 												{model: models.Telefono}
-												//{model: models.Especialidad, where:{descripcion:object.especialidad}}
+												//{model: models.Especialidad}
 								]
 							}).then(function(medicos)
-							{
-									res.render('searchMedic', {medicos:JSON.parse(JSON.stringify(medicos)) });
+							{console.log("2:"+JSON.stringify(medicos));
+								res.render('searchMedic', {medicos:JSON.parse(JSON.stringify(medicos)) });
 							});
 						break;
 						case "padecimiento":
@@ -87,11 +93,23 @@ module.exports = {
 												{model: models.Medico},
 												{model: models.Direccion,where:consultas.clausulas(object)},
 												{model: models.Telefono}
-												//{model: models.padecimiento, where:{descripcion:object.padecimiento}}
+												//{model: models.padecimiento}
 								]
 							}).then(function(medicos)
-							{
+							{console.log("3:"+JSON.parse(JSON.stringify(medicos)));
 									res.render('searchMedic', {medicos:JSON.parse(JSON.stringify(medicos)) });
+							});
+						break;
+						default:
+							models.Usuario.findAll({
+								include: [{model: models.DatosGenerales, where:{nombre:{$like:object.nombreMedico + "%"}} },
+												{model: models.Medico },
+												{model: models.Direccion, where:{$or:{ciudad:object.ciudad,colonia:object.colonia} } },
+												{model: models.Telefono }
+											]
+							}).then(function(medicos)
+							{
+								res.render('searchMedic',{medicos:JSON.parse(JSON.stringify(medicos)) });
 							});
 						break;
 				}
