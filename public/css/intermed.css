@@ -346,28 +346,83 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
   position: relative;
   z-index: 1000000;
   display: block;
-  background-color: #d9d9d9;
-}
-#resultTabs .tab a {
-   background-color: #edf0f1;
-   margin: 5px;
-}
-#resultTabs .tab.active a {
-   margin: 0px;
-}
-#tabsContent .panel{
-   background-color: #edf0f1;
-}
-#tabsContent .media-enclosure{
-   width: 150px;
-   height: 150px;
-   border-radius: 150px;
-   border: solid 3px #ffffff;
-   overflow: hidden;
+  background-color: #cdd5da;
 }
 
-#tabsContent .media-object{
-   width: 100%;
+#searchMedic .upper .breadcrumb {
+  border-radius: 0;
+  background-color: transparent;
+  padding: 8px 0px;
+  margin: 0;
+}
+
+#searchMedic .searchbox {
+  background-color: #edf0f1;
+  border-radius: 0px;
+}
+
+#resultTabs .tab a {
+  background-color: #edf0f1;
+  margin: 0px 5px 5px 0px;
+  border: none;
+}
+
+#resultTabs .tab.active a {
+  padding-bottom: 15px;
+  margin-bottom: 0px;
+}
+
+#tabsContent .panel {
+  background-color: #edf0f1;
+  border-radius: 0;
+  border: none;
+}
+
+#tabsContent .result {
+  border-bottom: dashed 2px #aaa;
+  height: auto;
+  display: -webkit-box;
+  margin-top: 15px;
+  padding-bottom: 15px
+}
+.list-ubicaciones li {
+   margin: 2px auto;
+}
+.list-ubicaciones li .btn {
+   width: 35px;
+   height: 35px;
+   padding: 2px 2px 0 0;
+   text-align: center;
+}
+.list-ubicaciones li .btn .glyphicon {
+   font-size: 25px;
+   top: 0;
+   line-height: normal;
+   text-align: center;
+}
+.result .label.label-topDr {
+   background-color: #d9534f;
+}
+.result .label.label-recomendado {
+   background-color: #f0ad4e;
+}
+
+.result .resultOptions {
+  border-left: solid 2px #aaa;
+}
+
+#tabsContent .media-enclosure {
+  width: 170px;
+  height: 170px;
+  border-radius: 150px;
+  border: solid 5px #ffffff;
+  overflow: hidden;
+  margin: 0 20px;
+  background-color: #50a7dd;
+}
+
+#tabsContent .media-object {
+  width: 100%;
 }
 
 #registro {
