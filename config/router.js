@@ -65,7 +65,7 @@ var iniciar = function()
 	app.post( '/searchMedic', function( req, res )
 	{
 		var busqueda = JSON.parse( JSON.stringify(req.body));
-		intermed.callController('Home', 'search',busqueda, req,  res);
+		intermed.callController('Home', 'searching',busqueda, req,  res);
 	});
 	//Registro
 	app.get('/registro', function( req, res ){intermed.callController('registro', 'index', '', req, res)});

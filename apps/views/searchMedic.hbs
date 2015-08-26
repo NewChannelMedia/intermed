@@ -16,17 +16,28 @@
                   <th><b>Nombre medico</b></th>
                   <th><b>Ciudad padecimiento</b></th>
                   <th><b>Colonia padecimiento</b></th>
+                  <th><b>Medicos</b></th>
                 </tr>
               </thead>
               <tbody id='tbmedReg'>
                 <tr>
-                  <th><i>{{especialidad}}</i></th>
-                  <th><i>{{ciudad}}</i></th>
-                  <th><i>{{colonia}}</i></th>
-                  <th><i>{{padecimiento}}</i></th>
-                  <th><i>{{nombreMedico}}</i></th>
-                  <th><i>{{ciudadela}}</i></th>
-                  <th><i>{{coloniapad}}</i></th>
+                  {{#each medicos}}
+                <tr>
+                  <th scope="row">{{id}}</th>
+                  <td>{{DatosGenerale.nombre}} {{DatosGenerale.apellidoP}}  {{DatosGenerale.apellidoM}}</td>
+                  <td>{{correo}}</td>
+                  <td>{{Telefono.telefono}}</td>
+                  <td>
+                    <address>
+                      <strong>{{Direccion.calle}} #{{Direccion.numero}}</strong><br>
+                      Entre {{Direccion.calle1}} y {{Direccion.calle2}}<br>
+                      {{Direccion.colonia}}, CP:{{Direccion.cp}}<br>
+                      {{Direccion.ciudad}}, {{Direccion.estado}}<br>
+                    </address>
+                  </td>
+                  <td>{{Especialidad}}</td>
+                </tr>
+                {{/each}}
                 </tr>
               </tbody>
             </table>
