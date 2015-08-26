@@ -1,10 +1,10 @@
 var session = {};
 
 function varSession(variablesSesion){
-    session = variablesSesion;
+    session = JSON.parse(JSON.stringify(variablesSesion));
 }
 
-function session(input){
+function valSession(input){
     return session[input];
 }
 
@@ -16,5 +16,5 @@ function ifSession(input, options){
 }
 
 exports.varSession = varSession;
-exports.session = session;
+exports.valSession = valSession;
 exports.ifSession = ifSession;

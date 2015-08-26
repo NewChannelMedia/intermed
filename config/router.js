@@ -16,9 +16,11 @@ var app = express();
 var url = require('url');
 //con esta linea se carga el servidor
 var serv = require('./server');
-var bodyParser = require('body-parser');
 
-var session = require('express-session');
+var passport = require('passport'),
+	bodyParser = require('body-parser'),
+	cookieParser = require("cookie-parser"),
+	session = require('express-session');
 
 app.use(session({secret: 'intermedSession',resave: false,saveUninitialized: true}));
 
@@ -36,6 +38,13 @@ app.use(express.static( __dirname + '/../public'));
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({	extended: true })); // support encoded bodies
 
+//Configurar passport
+require('./configPassport')(passport);
+// Initialize Passport!  Also use passport.session() middleware, to support
+// persistent login sessions (recommended).
+app.use(passport.initialize());
+app.use(passport.session());
+
 //llamado de la clase con la que se podra cargar los controladores
 var intermed = require('../apps/controllers/Intermed');
 
@@ -45,7 +54,8 @@ var intermed = require('../apps/controllers/Intermed');
 var iniciar = function()
 {
 	app.all('*', function( req, res, next){
-		hps.varSession(req.session);
+		if (req.session.passport.user) hps.varSession(req.session.passport.user);
+		else hps.varSession(req.session.passport);
 		next();
 	});
 
@@ -82,6 +92,34 @@ var iniciar = function()
 			var object = JSON.parse( JSON.stringify(req.body) );
 			intermed.callController('medicos', 'registrar', object, req, res);
 		}
+	});
+
+	app.get('/informacionusuario', function (req, res){
+		res.send(JSON.stringify(req.session.passport) + '<br/><a href="/">Regresar</a>');
+	});
+
+	app.get('/auth/facebook', passport.authenticate('facebook',  {scope: ['email','user_birthday','user_location','publish_actions']}));
+
+	app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }),
+		function(req, res) {
+			req.session.passport.user['tipoRegistro'] = 'F';
+			req.session.passport.user['tipoUsuario'] = 'P';
+			intermed.callController('usuarios', 'registrarUsuario',req.session.passport.user, req, res);
+	});
+
+	app.post('/reg/local', function (req, res){
+		req.body.name = req.body.first_name + ' ' + req.body.last_name;
+		req.body['tipoRegistro'] = 'L';
+		req.body['tipoUsuario'] = 'P';
+		intermed.callController('usuarios', 'registrarUsuario',req.body, req, res);
+	});
+
+	app.post('/correoDisponible', function( req, res ){
+			intermed.callController('usuarios', 'correoDisponible', req.body, req, res);
+		});
+
+	app.post('/loginLocal', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
+		res.redirect('/');
 	});
 }
 serv.server(app, 3000);
