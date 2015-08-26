@@ -41,101 +41,129 @@ exports.mostrar = function(object, req, res) {
     });
 };
 
+exports.iniciarSesion = function(object, req, res) {
+    req.session.passport = {};
+    models.Usuario.findOne({
+        where: {
+            correo: object['email'],
+            password: object['password']
+        }
+    }).then(function(usuario) {
+        if (usuario) {
+            generarSesion(req, res, usuario.id)
+        } else {
+            res.redirect('/');
+        }
+    });
+};
+
 // Método que registra pacientes (facebook)
 exports.registrarUsuario = function(object, req, res) {
     req.session.passport = {};
-    var usuario_id = '';
-    object['birthday'] = object.birthdayYear + '-' + object.birthdayMonth + '-' + object.birthdayDay;
-    // Inicia transacción de registro de usuarios
+    // Registro por facebook
+    if (object['tipoRegistro'] === 'F') {
+        return models.Usuario.findOne({
+            where: {
+                fbId: object['id']
+            }
+        }).then(function(usuario) {
+            if (!usuario) {
+                crearUsuarioPorFB(object, req, res);
+            } else {
+                generarSesion(req, res, usuario.id);
+            }
+        });
+    } else { //Registro por correo
+        models.Usuario.findOne({
+            where: {
+                correo: object['email']
+            }
+        }).then(function(usuario) {
+            if (!usuario) {
+                crearUsuarioPorCorreo(object, req, res);
+            } //Usuario ya existente
+        })
+    }
+};
+
+function crearUsuarioPorFB(object, req, res) {
     models.sequelize.transaction({
         isolationLevel: models.Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
     }, function(t) {
-
-        if (object['tipoRegistro'] === 'F') {
-
-            return models.Usuario.findAll({
-                where: {
-                    fbId: object['id']
-                }
-            }).then(function(usuarios) {
-                usuario = usuarios[0];
-                if (!usuario) {
-                    //Usuario nuevo
-                    models.Usuario.create({
-                        usuario: object['email'],
-                        correo: object['email'],
-                        tipoUsuario: object['tipoUsuario'],
-                        tipoRegistro: object['tipoRegistro'],
-                        fbId: object['id'],
-                        estatusActivacion: '1',
-                        urlFotoPerfil: object.picture.data.url
-                    }).then(function(usuario) {
-                        usuario_id = usuario.id;
-                        models.DatosGenerales.create({
-                            nombre: object['first_name'],
-                            apellidoP: object['last_name'],
-                            apellidoM: '',
-                            rfc: '',
-                            usuario_id: usuario_id,
-                            genero: object['gender']
-                        }).then(function(result) {
-                            if (object['tipoUsuario'] === 'P') {
-                                crearPaciente(req, res, object, usuario_id);
-                            } else if (object['tipoUsuario'] === 'M') {
-                                crearMedico(req, res, object, usuario_id);
-                            }
-                        });
-                    })
-                } else {
-                    usuario_id = usuario.id;
-                    generarSesion(req, res, usuario_id);
-                }
+        //Usuario nuevo
+        return models.Usuario.create({
+            correo: object['email'],
+            tipoUsuario: object['tipoUsuario'],
+            tipoRegistro: object['tipoRegistro'],
+            fbId: object['id'],
+            estatusActivacion: '1',
+            urlFotoPerfil: object.picture.data.url
+        }, {transaction: t}).then(function(usuario) {
+            usuario_id = usuario.id;
+            return models.DatosGenerales.create({
+                nombre: object['first_name'],
+                apellidoP: object['last_name'],
+                apellidoM: '',
+                usuario_id: usuario_id
+            }, {transaction: t}).then(function(result) {
+                return models.Biometrico.create({
+                    genero: object.gender,
+                    usuario_id: usuario_id
+                }, {transaction: t}).then(function(result) {
+                    if (object['tipoUsuario'] === 'P') {
+                        crearPaciente(req, res, object, usuario_id);
+                    } else if (object['tipoUsuario'] === 'M') {
+                        crearMedico(req, res, object, usuario_id);
+                    }
+                });
             });
-        } else { //Registro por correo
-            return models.Usuario.findAll({
-                where: {
-                    correo: object['email']
-                }
-            }).then(function(usuarios) {
-                usuario = usuarios[0];
-                if (!usuario) {
-                    //Usuario nuevo
-                    models.Usuario.create({
-                        usuario: object['email'],
-                        correo: object['email'],
-                        tipoUsuario: object['tipoUsuario'],
-                        tipoRegistro: object['tipoRegistro'],
-                        estatusActivacion: '0'
-                    }).then(function(usuario) {
-                        usuario_id = usuario.id;
-                        models.DatosGenerales.create({
-                            nombre: object['first_name'],
-                            apellidoP: object['last_name'],
-                            apellidoM: '',
-                            rfc: '',
-                            usuario_id: usuario_id,
-                            genero: object['gender']
-                        }).then(function(result) {
-                            if (object['tipoUsuario'] === 'P') {
-                                crearPaciente(req, res, object, usuario_id);
-                            } else if (object['tipoUsuario'] === 'M') {
-                                crearMedico(req, res, object, usuario_id);
-                            }
-                        });
-                    });
-                } else {
-                    //Usuario ya existente
-                    console.log('El usuario con el correo ' + object['email'] + ' ya se encuentra registrado');
-                    generarSesion(req, res, usuario_id);
-                }
-            });
-        }
+        })
     }).catch(function(err) {
         console.error('ERROR: ' + err);
         req.session.passport = {};
         res.redirect('/');
     });
-};
+}
+
+function crearUsuarioPorCorreo(object, req, res) {
+    object['birthday'] = object.birthdayYear + '-' + object.birthdayMonth + '-' + object.birthdayDay;
+    console.log('Crear usuario por correo');
+    models.sequelize.transaction({
+        isolationLevel: models.Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
+    }, function(t) {
+        //Usuario nuevo
+        return models.Usuario.create({
+            correo: object['email'],
+            tipoUsuario: object['tipoUsuario'],
+            tipoRegistro: object['tipoRegistro'],
+            password: object['password'],
+            estatusActivacion: '0'
+        }, {transaction: t}).then(function(usuario) {
+            usuario_id = usuario.id;
+            return models.DatosGenerales.create({
+                nombre: object['first_name'],
+                apellidoP: object['last_name'],
+                apellidoM: '',
+                usuario_id: usuario_id
+            }, {transaction: t}).then(function(result) {
+                return models.Biometrico.create({
+                    genero: object.gender,
+                    usuario_id: usuario_id
+                }, {transaction: t}).then(function(result) {
+                    if (object['tipoUsuario'] === 'P') {
+                        crearPaciente(req, res, object, usuario_id);
+                    } else if (object['tipoUsuario'] === 'M') {
+                        crearMedico(req, res, object, usuario_id);
+                    }
+                });
+            });
+        });
+    }).catch(function(err) {
+        console.error('ERROR: ' + err);
+        req.session.passport = {};
+        res.redirect('/');
+    });
+}
 
 exports.correoDisponible = function(object, req, res) {
     models.Usuario.findAll({
@@ -157,11 +185,13 @@ exports.correoDisponible = function(object, req, res) {
 
 var crearPaciente = function(req, res, object, usuario_id) {
     //Se trata de un paciente
-    models.Paciente.create({
+    return models.Paciente.create({
         usuario_id: usuario_id
     }).then(function(paciente) {
-        if (object['birthday'] != 'undefined-undefined-undefined'){
-            paciente.update({fechaNac: object['birthday']}).then(function(result){
+        if (object['birthday'] != 'undefined-undefined-undefined') {
+            return paciente.update({
+                fechaNac: object['birthday']
+            }).then(function(result) {
                 generarSesion(req, res, usuario_id);
             });
         } else {
@@ -172,13 +202,13 @@ var crearPaciente = function(req, res, object, usuario_id) {
 
 var crearMedico = function(req, res, object, usuario_id) {
     //Se trata de un médico
-    models.Medico.create({
+    return models.Medico.create({
         cedula: '',
         codigoMedico: '',
         usuario_id: usuario_id
     }).then(function(medico) {
         // si se pudo insertar el médico, tomamos su id para pasarlo a medicos especialidades y agregarla
-        models.MedicoEspecialidad.create({
+        return models.MedicoEspecialidad.create({
             tipo: '1',
             titulo: '',
             lugarEstudio: '',

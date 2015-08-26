@@ -3,28 +3,27 @@
 module.exports = function(sequelize, DataTypes) {
   var Direccion = sequelize.define("Direccion", {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
-    ubicacionGoogleMaps: {type: DataTypes.STRING},
+    ubicacionGM: {type: DataTypes.STRING},
     calle: {type:  DataTypes.STRING, required: true},
     numero: {type: DataTypes.STRING, required: true},
     calle1: {type: DataTypes.STRING},
     calle2: {type: DataTypes.STRING},
     colonia: {type: DataTypes.STRING, required: true},
-    ciudad: {type: DataTypes.STRING, required: true},
-    estado_id: {type: DataTypes.INTEGER, required: true},
     cp: {type: DataTypes.STRING},
     principal: {type:  DataTypes.BOOLEAN},
-    usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true}
+    nombre: {type: DataTypes.STRING},
+    horaInicio: {type: DataTypes.STRING},
+    horaFin: {type: DataTypes.STRING},
+    dias: {type: DataTypes.STRING},
+    usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true},
+    ciudad_id: {type: DataTypes.INTEGER, required: true},
+    estado_id: {type: DataTypes.INTEGER, required: true}
   }, {
     classMethods: {
       associate: function(models) {
-    //    Direccion.hasOne(models.Estado);
-
-        Direccion.belongsTo(models.Usuario, {
-          onDelete: "CASCADE",
-          foreignKey: {
-            allowNull: false
-          }
-        });
+        Direccion.belongsTo(models.Estado);
+        Direccion.belongsTo(models.Ciudad);
+        Direccion.belongsTo(models.Usuario);
       }
     },
    timestamps: false,

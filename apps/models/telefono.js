@@ -4,7 +4,9 @@ module.exports = function(sequelize, DataTypes) {
   var Telefono = sequelize.define("Telefono", {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
     tipo: {type: DataTypes.STRING,required: true},
-    telefono: {type: DataTypes.STRING, required: true},
+    numero: {type: DataTypes.STRING, required: true},
+    claveRegion: {type: DataTypes.INTEGER},
+    lada: {type: DataTypes.INTEGER},
     usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true}
   }, {
     classMethods: {

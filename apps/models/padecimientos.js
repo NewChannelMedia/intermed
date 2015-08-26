@@ -1,22 +1,21 @@
 "use strict";
 
 module.exports = function(sequelize, DataTypes) {
-  var Estado = sequelize.define("Estado", {
+  var Padecimiento = sequelize.define("Padecimiento", {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
-    estado: {type : DataTypes.STRING, required: true, unique: true },
+    padecimiento: {type: DataTypes.STRING}
   }, {
     classMethods: {
       associate: function(models) {
-        Estado.hasMany(models.Ciudad);
-        Estado.hasMany(models.Direccion);
+        //User.hasOne(models.Medico)
       }
     },
     timestamps: false,
     paranoid: true,
     underscored: true,
     freezeTableName: true,
-    tableName: 'estados'
+    tableName: 'padecimientos'
   });
 
-  return Estado;
+  return Padecimiento;
 };

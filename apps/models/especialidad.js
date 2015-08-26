@@ -3,7 +3,9 @@
 module.exports = function(sequelize, DataTypes) {
   var Especialidad = sequelize.define("Especialidad", {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
-    descripcion: {type : DataTypes.STRING, required: true, unique: true },
+    especialidad: {type : DataTypes.STRING, required: true},
+    descripcion: {type : DataTypes.STRING, required: true},
+    tipoEspecialidad_id: {type : DataTypes.BIGINT, required: true}
   }, {
     classMethods: {
       associate: function(models) {

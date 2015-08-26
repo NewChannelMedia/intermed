@@ -55,8 +55,8 @@ module.exports = {
               correo:  object['correoMed'],
               password: 'intermed123',
               tipoUsuario: 'M',
-              tipoRegistro: '',
-              estatusActivacion : '1'
+              tipoRegistro: 'C',
+              estatusActivacion : '0'
           })
           .then(function(usuario) {
               // si fue exitoso, actualizamos  datos generales, direcciones, telefonos y médicos
@@ -78,7 +78,7 @@ module.exports = {
                 calle2: object['calle2Med'],
                 colonia: object['coloniaMed'],
                 estado_id: object['estadoMed'],  //Id del estado
-                ciudad: object['ciudadMed'],
+                ciudad_id: object['ciudadMed'],
                 cp: object['cpMed'],
                 principal: 1,
                 usuario_id: id
@@ -86,19 +86,21 @@ module.exports = {
 
               models.Telefono.create({
                   tipo: '1',
-                  telefono: object['telefonoMed'],
+                  numero: object['telefonoMed'],
                   usuario_id: id
               });
 
               models.Medico.create({
                 cedula: '',
+                curp: '',
+                token: '',
+                tokenMaestro: '',
                 codigoMedico: '',
                 usuario_id: id
               }).then(function(medico) {
                   // si se pudo insertar el médico, tomamos su id para pasarlo a medicos especialidades y agregarla
                   models.MedicoEspecialidad.create({
-                      tipo: '1',
-                      titulo: '',
+                      titulo: 'Titulo Especialidad',
                       lugarEstudio: '',
                       medico_id: medico.id,
                       fecha:  Date.now(),
