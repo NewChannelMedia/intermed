@@ -1,36 +1,415 @@
-<section id = "principal">
-<div class="container">
+<section id="searchMedic" class="Flama">
+  <nav id="navIntern">
+    <section class="container">
+      <div class="row">
+        <div id="logo" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-left">
+          <div class="col-md-1 col-sm-2 col-xs-2">
+            <a href="/">
+              <img class="logo-color" src="img/logo-color.png" />
+            </a>
+          </div>
+          <div class="col-md-11 col-sm-10 col-xs-10">
+            <div class="row">
+              <div class="flama-w200 slogan">
+                <p class="text-left">
+                  <span class="s25">intermed <sup><sup>&reg</sup></sup>
+                  </span> |
+                  <strong>La red social</strong> de la salud.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="atnc-clientes" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-right">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="bottom-border flama-w200">
+                <p class=" text-right">
+                  <span class="hideonmobile">Atención a clientes: (33) 3125-2200 &nbsp</span>
+                  <strong>soporte@intermed.mx</strong>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <p class="text-right">
+                <a class="login" href="#" data-toggle="modal" data-target="#LoginModal">ingresa</a> &nbsp
+                <a class="reg" href="#" class="text-danger">registrate</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </nav>
+  <div class="container">
     <div class="row">
-      <div class="panel">
+      <div class="upper">
+        <ol class="breadcrumb">
+          <li><a href="/">Intermed</a></li>
+          <li class="active">Resultados</li>
+        </ol>
+      </div>
+      <!-- empieza buscador -->
+      <div class="panel searchbox">
         <div class="panel-body">
-          <h4>Resultados de su busqueda por:&nbsp{{titulo}} </br>Hospital:&nbsp{{hospital}}</br>Asegurado:&nbsp{{aseguradora}}</br>Costo:&nbsp{{costo}}</h4>
-          <form>
-            <table class="table">
-              <caption></caption>
-              <thead>
-                <tr>
-                  <th><b>Especialidad</b></th>
-                  <th><b>Ciudad</b></th>
-                  <th><b>Colonia</b></th>
-                  <th><b>Padecimiento</b></th>
-                  <th><b>Nombre medico</b></th>
-                  <th><b>Ciudad padecimiento</b></th>
-                  <th><b>Colonia padecimiento</b></th>
-                </tr>
-              </thead>
-              <tbody id='tbmedReg'>
-                <tr>
-                  <th><i>{{especialidad}}</i></th>
-                  <th><i>{{ciudad}}</i></th>
-                  <th><i>{{colonia}}</i></th>
-                  <th><i>{{padecimiento}}</i></th>
-                  <th><i>{{nombreMedico}}</i></th>
-                  <th><i>{{ciudadela}}</i></th>
-                  <th><i>{{coloniapad}}</i></th>
-                </tr>
-              </tbody>
-            </table>
+          <form method="POST" action="/searchMedic">
+            <!-- Form principal -->
+            <h4>Filtra tu busqueda o inicia una nueva</h4>
+            <div class="parametros col-md-10">
+              <div class="row">
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <select class="form-control" name="especialidad">
+                      <option>Especialidades</option>
+                      <option>...</option>
+                      <option>...</option>
+                      <option>...</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <select class="form-control" name="ciudad">
+                      <option>Ciudad</option>
+                      <option>...</option>
+                      <option>...</option>
+                      <option>...</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <select class="form-control" name="colonia">
+                      <option>Colonia</option>
+                      <option>...</option>
+                      <option>...</option>
+                      <option>...</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <select class="form-control" name="padecimiento">
+                      <option>Padecimiento</option>
+                      <option>...</option>
+                      <option>...</option>
+                      <option>...</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="nombreMed" name="nombreMedico" placeholder="Nombre del Medico">
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="hospital" name="hospital" placeholder="Hospital">
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="aseguradora" name="aseguradora" placeholder="Aseguradora">
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="costoMed" name="costoMedico" placeholder="Costo de consulta">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="form-group">
+                <!-- <button class="btn btn-success btn-md btn-block"id = "btn">
+                           <span class="glyphicon glyphicon-search"></span>&nbsp Buscar
+                        </button> -->
+                <input type="submit" value="Buscar" class="btn btn-info btn-md btn-block" id="btn" />
+              </div>
+            </div>
           </form>
+          <!-- final del form principal -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist" id="resultTabs">
+          <li role="presentation" class="tab active"><a href="#medResults" aria-controls="medResults" role="tab" data-toggle="tab">Medicos</a></li>
+          <li role="presentation" class="tab"><a href="#centrosResult" aria-controls="centrosResult" role="tab" data-toggle="tab">Centros Medicos</a></li>
+          <li role="presentation" class="tab"><a href="#padResults" aria-controls="padResults" role="tab" data-toggle="tab">Padecimientos</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content" id="tabsContent">
+          <div class="panel">
+            <div class="panel-body">
+              <div role="tabpanel" class="tab-pane fade in active " id="medResults">
+                <ul class="media-list">
+                   <li class="media result">
+                    <div class="media-left">
+                      <div class="media-enclosure">
+                        <a href="#">
+                          <img class="media-object" src="img/logo-color.png" alt="">
+                        </a>
+                      </div>
+                    </div>
+                    <div class="media-body">
+                      <div class="col-md-8">
+                        <h4 class="media-heading">
+                          <span class="label label-topDr">Top Doctor</span> Dr. Juan Carlos Medina Mtz. {{nombreMedico}}
+                        </h4>
+                        <ul class="list-unstyled">
+                          <li>
+                            <strong>Pediatría {{especialidad}}</strong>
+                          </li>
+                        </ul>
+                        <ul class="list-unstyled">
+                          <li>
+                            Neonatología. {{subEspecialidad}}
+                          </li>
+                        </ul>
+                        <ul class="list-inline">
+                          <li>
+                            <small>Sindrome de Werner{{padecimientos}}</small>
+                          </li>
+                          <li>
+                            <small>Falta de Apetito{{padecimientos}}</small>
+                          </li>
+                          <li>
+                            <small>Transtornos congenitos{{padecimientos}}</small>
+                          </li>
+                        </ul>
+                        <ul class="list-unstyled list-ubicaciones">
+                          <li>
+                              <button class="btn btn-warning">
+                                <span class="glyphicon glyphicon-map-marker"></span>
+                              </button>
+                              <a href="#">
+                                <strong>Consultorio Central{{nombreUbicacion}}</strong>
+                                <small>Calle paseo central {{calleUbicacion}} #555{{numeroUbicacion}} Colonia Centro {{coloniaUbicacion}}, Ciudad Central {{ciudadUbicacion}}</small>
+                              </a>
+                          </li>
+                          <li>
+                            <button class="btn btn-warning">
+                              <span class="glyphicon glyphicon-map-marker"></span>
+                            </button>
+                            <a href="#">
+                              <strong>Consultorio Norte{{nombreUbicacion}}</strong>
+                              <small>Calle Nórdica {{calleUbicacion}} #69{{numeroUbicacion}} Colonia Cielo Polar {{coloniaUbicacion}}, Ciudad del Norte {{ciudadUbicacion}}</small>
+                            </a>
+                          </li>
+                          <!-- Cada <li> en esta parte debe mostrar una ubicación en la que trabaja el Medico -->
+                        </ul>
+                      </div>
+                      <div class="resultOptions col-md-4">
+                        <ul class="list-unstyled">
+                          <li>
+                            Costo de consulta:
+                            <strong> $1,230</strong>
+                          </li>
+                          <li>
+                            <a>Agrega a tus favoritos</a>
+                          </li>
+                          <li>
+                            <a>Ver Teléfono</a>
+                          </li>
+                          <li>
+                            <a>Envía mensaje</a>
+                          </li>
+                          <li>
+                            <a>Visita su perfíl</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="media result">
+                    <div class="media-left">
+                      <div class="media-enclosure">
+                        <a href="#">
+                          <img class="media-object" src="img/logo-color.png" alt="">
+                        </a>
+                      </div>
+                    </div>
+                    <div class="media-body">
+                      <div class="col-md-8">
+                        <h4 class="media-heading">
+                          <span class="label label-recomendado">Recomendado</span> Dr. Juan Carlos Medina Mtz. {{nombreMedico}}
+                        </h4>
+                        <ul class="list-unstyled">
+                          <li>
+                            <strong>Pediatría {{especialidad}}</strong>
+                          </li>
+                        </ul>
+                        <ul class="list-unstyled">
+                          <li>
+                            Neonatología. {{subEspecialidad}}
+                          </li>
+                        </ul>
+                        <ul class="list-inline">
+                          <li>
+                            <small>Sindrome de Werner{{padecimientos}}</small>
+                          </li>
+                          <li>
+                            <small>Falta de Apetito{{padecimientos}}</small>
+                          </li>
+                          <li>
+                            <small>Transtornos congenitos{{padecimientos}}</small>
+                          </li>
+                        </ul>
+                        <ul class="list-unstyled list-ubicaciones">
+                          <li>
+                              <button class="btn btn-warning">
+                                <span class="glyphicon glyphicon-map-marker"></span>
+                              </button>
+                              <a href="#">
+                                <strong>Consultorio Central{{nombreUbicacion}}</strong>
+                                <small>Calle paseo central {{calleUbicacion}} #555{{numeroUbicacion}} Colonia Centro {{coloniaUbicacion}}, Ciudad Central {{ciudadUbicacion}}</small>
+                              </a>
+                          </li>
+                          <li>
+                            <button class="btn btn-warning">
+                              <span class="glyphicon glyphicon-map-marker"></span>
+                            </button>
+                            <a href="#">
+                              <strong>Consultorio Norte{{nombreUbicacion}}</strong>
+                              <small>Calle Nórdica {{calleUbicacion}} #69{{numeroUbicacion}} Colonia Cielo Polar {{coloniaUbicacion}}, Ciudad del Norte {{ciudadUbicacion}}</small>
+                            </a>
+                          </li>
+                          <!-- Cada <li> en esta parte debe mostrar una ubicación en la que trabaja el Medico -->
+                        </ul>
+                      </div>
+                      <div class="resultOptions col-md-4">
+                        <ul class="list-unstyled">
+                          <li>
+                            Costo de consulta:
+                            <strong> $1,230</strong>
+                          </li>
+                          <li>
+                            <a>Agrega a tus favoritos</a>
+                          </li>
+                          <li>
+                            <a>Ver Teléfono</a>
+                          </li>
+                          <li>
+                            <a>Envía mensaje</a>
+                          </li>
+                          <li>
+                            <a>Visita su perfíl</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="media result">
+                    <div class="media-left">
+                      <div class="media-enclosure">
+                        <a href="#">
+                          <img class="media-object" src="img/logo-color.png" alt="">
+                        </a>
+                      </div>
+                    </div>
+                    <div class="media-body">
+                      <div class="col-md-8">
+                        <h4 class="media-heading">
+                           Dr. Juan Carlos Medina Mtz. {{nombreMedico}}
+                        </h4>
+                        <ul class="list-unstyled">
+                          <li>
+                            <strong>Pediatría {{especialidad}}</strong>
+                          </li>
+                        </ul>
+                        <ul class="list-unstyled">
+                          <li>
+                            Neonatología. {{subEspecialidad}}
+                          </li>
+                        </ul>
+                        <ul class="list-inline">
+                          <li>
+                            <small>Sindrome de Werner{{padecimientos}}</small>
+                          </li>
+                          <li>
+                            <small>Falta de Apetito{{padecimientos}}</small>
+                          </li>
+                          <li>
+                            <small>Transtornos congenitos{{padecimientos}}</small>
+                          </li>
+                        </ul>
+                        <ul class="list-unstyled list-ubicaciones">
+                          <li>
+                              <button class="btn btn-warning">
+                                <span class="glyphicon glyphicon-map-marker"></span>
+                              </button>
+                              <a href="#">
+                                <strong>Consultorio Central{{nombreUbicacion}}</strong>
+                                <small>Calle paseo central {{calleUbicacion}} #555{{numeroUbicacion}} Colonia Centro {{coloniaUbicacion}}, Ciudad Central {{ciudadUbicacion}}</small>
+                              </a>
+                          </li>
+                          <li>
+                            <button class="btn btn-warning">
+                              <span class="glyphicon glyphicon-map-marker"></span>
+                            </button>
+                            <a href="#">
+                              <strong>Consultorio Norte{{nombreUbicacion}}</strong>
+                              <small>Calle Nórdica {{calleUbicacion}} #69{{numeroUbicacion}} Colonia Cielo Polar {{coloniaUbicacion}}, Ciudad del Norte {{ciudadUbicacion}}</small>
+                            </a>
+                          </li>
+                          <!-- Cada <li> en esta parte debe mostrar una ubicación en la que trabaja el Medico -->
+                        </ul>
+                      </div>
+                      <div class="resultOptions col-md-4">
+                        <ul class="list-unstyled">
+                          <li>
+                            Costo de consulta:
+                            <strong> $1,230</strong>
+                          </li>
+                          <li>
+                            <a>Agrega a tus favoritos</a>
+                          </li>
+                          <li>
+                            <a>Ver Teléfono</a>
+                          </li>
+                          <li>
+                            <a>Envía mensaje</a>
+                          </li>
+                          <li>
+                            <a>Visita su perfíl</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </li>
+               </ul>
+              </div>
+              <div role="tabpanel" class="tab-pane fade" id="centrosResult">
+                <div class="media-list">
+                  <div class="media">
+                    <div class="media-left">
+                      <a href="#">
+                        <img class="media-object" src="" alt="">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div role="tabpanel" class="tab-pane fade" id="padResults">
+                <div class="media-list">
+                  <div class="media">
+                    <div class="media-left">
+                      <a href="#">
+                        <img class="media-object" src="" alt="">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
