@@ -69,6 +69,7 @@ module.exports = {
 								]
 							}).then(function(medicos)
 							{
+									console.log("especialidad");
 									res.render('searchMedic', {medicos:JSON.parse(JSON.stringify(medicos)) });
 							});
 						break;
@@ -83,6 +84,7 @@ module.exports = {
 								]
 							}).then(function(medicos)
 							{
+								console.log("medico");
 								res.render('searchMedic', {medicos:JSON.parse(JSON.stringify(medicos)) });
 							});
 						break;
@@ -97,6 +99,7 @@ module.exports = {
 								]
 							}).then(function(medicos)
 							{
+								console.log("padecimiento");
 									res.render('searchMedic', {medicos:JSON.parse(JSON.stringify(medicos)) });
 							});
 						break;
@@ -104,11 +107,12 @@ module.exports = {
 							models.Usuario.findAll({
 								include: [{model: models.DatosGenerales, where:{nombre:{$like:object.nombreMedico + "%"}} },
 												{model: models.Medico },
-												{model: models.Direccion, where:{$or:{ciudad:object.ciudad,colonia:object.colonia} } },
+												{model: models.Direccion },
 												{model: models.Telefono }
 											]
 							}).then(function(medicos)
 							{
+								console.log("default");
 								res.render('searchMedic',{medicos:JSON.parse(JSON.stringify(medicos)) });
 							});
 						break;
