@@ -103,6 +103,7 @@ exports.registrarUsuario = function(object, req, res) {
                     models.Usuario.create({
                         usuario: object['email'],
                         correo: object['email'],
+                        password: object['password'],
                         tipoUsuario: object['tipoUsuario'],
                         tipoRegistro: object['tipoRegistro'],
                         estatusActivacion: '0'
