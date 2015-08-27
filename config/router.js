@@ -16,7 +16,8 @@ var app = express();
 var url = require('url');
 //con esta linea se carga el servidor
 var serv = require('./server');
-
+//envio de correo variable
+var envia = require('../apps/controllers/emailSender');
 var passport = require('passport'),
 	bodyParser = require('body-parser'),
 	cookieParser = require("cookie-parser"),
@@ -119,12 +120,18 @@ var iniciar = function()
 			req.session.passport.user['tipoUsuario'] = 'P';
 			intermed.callController('usuarios', 'registrarUsuario',req.session.passport.user, req, res);
 	});
-
+	//registro pacientes
 	app.post('/reg/local', function (req, res){
 		req.body.name = req.body.first_name + ' ' + req.body.last_name;
 		req.body['tipoRegistro'] = 'L';
 		req.body['tipoUsuario'] = 'P';
+		var datos = {
+			to: req.body.email,
+			subject: "Activacion de tu cuenta.",
+			nombre: req.body.first_name
+		};
 		intermed.callController('usuarios', 'registrarUsuario',req.body, req, res);
+		envia.mailer(datos,'confirmar');// se envia el correo
 	});
 
 	app.post('/correoDisponible', function( req, res ){
