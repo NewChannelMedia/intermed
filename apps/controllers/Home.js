@@ -68,7 +68,7 @@ module.exports = {
 												//{model: models.Especialidad, where:{descripcion:object.especialidad}}
 								]
 							}).then(function(medicos)
-							{console.log("1:"+JSON.parse(JSON.stringify(medicos)));
+							{
 									res.render('searchMedic', {medicos:JSON.parse(JSON.stringify(medicos)) });
 							});
 						break;
@@ -82,7 +82,7 @@ module.exports = {
 												//{model: models.Especialidad}
 								]
 							}).then(function(medicos)
-							{console.log("2:"+JSON.stringify(medicos));
+							{
 								res.render('searchMedic', {medicos:JSON.parse(JSON.stringify(medicos)) });
 							});
 						break;
@@ -96,7 +96,7 @@ module.exports = {
 												//{model: models.padecimiento}
 								]
 							}).then(function(medicos)
-							{console.log("3:"+JSON.parse(JSON.stringify(medicos)));
+							{
 									res.render('searchMedic', {medicos:JSON.parse(JSON.stringify(medicos)) });
 							});
 						break;
