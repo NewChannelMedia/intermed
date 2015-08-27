@@ -46,6 +46,12 @@ a, a:hover, a:visited {
 #navHome #atnc-clientes .bottom-border-mini {
   border-bottom: 2px solid #aaa;
 }
+#navHome .bottom-border {
+   border-bottom: 5px solid #ff4200;
+}
+#navHome .bottom-border-mini {
+   border-bottom: 2px solid #aaaaaa;
+}
 
 #navIntern {
   position: relative;

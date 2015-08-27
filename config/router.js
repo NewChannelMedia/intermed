@@ -63,6 +63,7 @@ var iniciar = function()
 	app.all('*', function( req, res, next){
 		if (req.session.passport.user) hps.varSession(req.session.passport.user);
 		else hps.varSession(req.session.passport);
+		rutas.routeLife('main','main',hps);
 		next();
 	});
 
@@ -86,8 +87,12 @@ var iniciar = function()
 		intermed.callController('Home', 'searching',busqueda, req,  res);
 	});
 	//Registro
-	app.get('/registro', function( req, res ){intermed.callController('registro', 'index', '', req, res)});
+	app.get('/registro', function( req, res ){
+		rutas.routeLife('main','registro',hps);
+		intermed.callController('registro', 'index', '', req, res);
+	});
 	app.post('/registro', function( req, res ){
+		rutas.routeLife('main','registro',hps);
 		if (req.body.getAll === '1'){
 			intermed.callController('registro', 'getAll', '', req, res)
 		} else {
