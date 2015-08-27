@@ -1,4 +1,3 @@
-
 /**
 *	Este archivo es el encargado de hacer las rutas para las diferentes url que se van a estar mandando por get
 *	o por post, según sea el caso, estara trabajando dentro de una funcion donde esta se podrá exportar
@@ -17,25 +16,41 @@ var app = express();
 var url = require('url');
 //con esta linea se carga el servidor
 var serv = require('./server');
-var bodyParser = require('body-parser');
 
-var session = require('express-session');
+var passport = require('passport'),
+	bodyParser = require('body-parser'),
+	cookieParser = require("cookie-parser"),
+	session = require('express-session');
 
 app.use(session({secret: 'intermedSession',resave: false,saveUninitialized: true}));
 
 var hps = require('../apps/helpers/helpers');
 
-//las siguientes lineas, son para indicar donde se encuentran los archivos y con cual sera el que sea el principal
-app.set('view engine', 'hbs');
-//se agrega la ruta donde se debe de jalar la plantilla
-app.engine('hbs', exphbs({ defaultLayout: __dirname + '/../apps/views/layouts/main.hbs', helpers: hps}) );
-//configure views path
-app.set('views', __dirname + '/../apps/views');
-//paginas estaticas donde se encontraran los archivos externos al proyecto en este caso css, js, img, etc...
-app.use(express.static( __dirname + '/../public'));
-
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({	extended: true })); // support encoded bodies
+//<----------------------------------------------------------------------------->
+	/**
+	* function para cargar las rutas, como estatitcas los layouts
+	*
+	* @param plantilla, nombre del layouts
+	* @param cuerpos, nombre del archivo que tendra el body de la pantalla
+	*	@param hell, nombre del helper que se quiera utilizar
+	*/
+	var rutas = {
+		routeLife: function( plantilla, carpeta, hell ){
+			app.set('view engine', 'hbs');
+			app.engine('hbs',exphbs({defaultLayout:__dirname + '/../apps/views/layouts/'+plantilla+'.hbs',helpers:hell}));
+			app.set('views', __dirname+'/../apps/views/' + carpeta );
+			app.use(express.static( __dirname + '/../public'));
+		}
+	};
+//<----------------------------------------------------------------------------->
+//Configurar passport
+require('./configPassport')(passport);
+// Initialize Passport!  Also use passport.session() middleware, to support
+// persistent login sessions (recommended).
+app.use(passport.initialize());
+app.use(passport.session());
 
 //llamado de la clase con la que se podra cargar los controladores
 var intermed = require('../apps/controllers/Intermed');
@@ -46,7 +61,16 @@ var intermed = require('../apps/controllers/Intermed');
 var iniciar = function()
 {
 	app.all('*', function( req, res, next){
-		hps.varSession(req.session);
+		var sesion = false;
+		var layout = '';
+		if (sesion){
+			layout = 'plataforma';
+		} else{
+			layout = 'main';
+		}
+		rutas.routeLife(layout,'main', hps);
+		if (req.session.passport.user) hps.varSession(req.session.passport.user);
+		else hps.varSession(req.session.passport);
 		next();
 	});
 
@@ -58,15 +82,19 @@ var iniciar = function()
 
 	//LogOut
 	app.get('/logout', function( req, res , next){intermed.callController('session','logout', {}, req, res)});
-
 	//Home
-	app.get('/', function( req, res ){ intermed.callController('Home', 'sayHello', '', req, res) });
+	app.get('/', function( req, res ){intermed.callController('Home','index','',req,res)});//intermed.callController('Home', 'sayHello', '', req, res)});
+
 	// get y post de searchMedic
 	app.get( '/searchMedic', function( req, res){intermed.callController('Home', 'vacio','', req, res)});
 	app.post( '/searchMedic', function( req, res )
 	{
 		var busqueda = JSON.parse( JSON.stringify(req.body));
-		intermed.callController('Home', 'search',busqueda, req,  res);
+<<<<<<< HEAD
+=======
+		rutas.routeLife('main','searchMedic', hps);
+>>>>>>> dev2_250815_Rutas
+		intermed.callController('Home', 'searching',busqueda, req,  res);
 	});
 	//Registro
 	app.get('/registro', function( req, res ){intermed.callController('registro', 'index', '', req, res)});
@@ -81,12 +109,36 @@ var iniciar = function()
 			*	JSON.parse analiza una cadena de texto como un JSON
 			*/
 			var object = JSON.parse( JSON.stringify(req.body) );
-<<<<<<< HEAD
-			intermed.callController('registro', 'registrar', object, req, res);
-=======
-			intermed.callController('medicos', 'registrar', object, res);
->>>>>>> dev4_140815_MedicosDirectorio
+			intermed.callController('medicos', 'registrar', object, req, res);
 		}
+	});
+
+	app.get('/informacionusuario', function (req, res){
+		res.send(JSON.stringify(req.session.passport) + '<br/><a href="/">Regresar</a>');
+	});
+
+	app.get('/auth/facebook', passport.authenticate('facebook',  {scope: ['email','user_birthday','user_location','publish_actions']}));
+
+	app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }),
+		function(req, res) {
+			req.session.passport.user['tipoRegistro'] = 'F';
+			req.session.passport.user['tipoUsuario'] = 'P';
+			intermed.callController('usuarios', 'registrarUsuario',req.session.passport.user, req, res);
+	});
+
+	app.post('/reg/local', function (req, res){
+		req.body.name = req.body.first_name + ' ' + req.body.last_name;
+		req.body['tipoRegistro'] = 'L';
+		req.body['tipoUsuario'] = 'P';
+		intermed.callController('usuarios', 'registrarUsuario',req.body, req, res);
+	});
+
+	app.post('/correoDisponible', function( req, res ){
+			intermed.callController('usuarios', 'correoDisponible', req.body, req, res);
+		});
+
+	app.post('/loginLocal', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
+		res.redirect('/');
 	});
 }
 serv.server(app, 3000);

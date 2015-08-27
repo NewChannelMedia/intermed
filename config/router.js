@@ -26,18 +26,25 @@ app.use(session({secret: 'intermedSession',resave: false,saveUninitialized: true
 
 var hps = require('../apps/helpers/helpers');
 
-//las siguientes lineas, son para indicar donde se encuentran los archivos y con cual sera el que sea el principal
-app.set('view engine', 'hbs');
-//se agrega la ruta donde se debe de jalar la plantilla
-app.engine('hbs', exphbs({ defaultLayout: __dirname + '/../apps/views/layouts/main.hbs', helpers: hps}) );
-//configure views path
-app.set('views', __dirname + '/../apps/views');
-//paginas estaticas donde se encontraran los archivos externos al proyecto en este caso css, js, img, etc...
-app.use(express.static( __dirname + '/../public'));
-
 app.use(bodyParser.json()); // support json encoded bodies
 app.use(bodyParser.urlencoded({	extended: true })); // support encoded bodies
-
+//<----------------------------------------------------------------------------->
+	/**
+	* function para cargar las rutas, como estatitcas los layouts
+	*
+	* @param plantilla, nombre del layouts
+	* @param cuerpos, nombre del archivo que tendra el body de la pantalla
+	*	@param hell, nombre del helper que se quiera utilizar
+	*/
+	var rutas = {
+		routeLife: function( plantilla, carpeta, hell ){
+			app.set('view engine', 'hbs');
+			app.engine('hbs',exphbs({defaultLayout:__dirname + '/../apps/views/layouts/'+plantilla+'.hbs',helpers:hell}));
+			app.set('views', __dirname+'/../apps/views/' + carpeta );
+			app.use(express.static( __dirname + '/../public'));
+		}
+	};
+//<----------------------------------------------------------------------------->
 //Configurar passport
 require('./configPassport')(passport);
 // Initialize Passport!  Also use passport.session() middleware, to support
@@ -67,14 +74,15 @@ var iniciar = function()
 
 	//LogOut
 	app.get('/logout', function( req, res , next){intermed.callController('session','logout', {}, req, res)});
-
 	//Home
-	app.get('/', function( req, res ){ intermed.callController('Home', 'sayHello', '', req, res) });
+	app.get('/', function( req, res ){intermed.callController('Home','index','',req,res)});//intermed.callController('Home', 'sayHello', '', req, res)});
+
 	// get y post de searchMedic
 	app.get( '/searchMedic', function( req, res){intermed.callController('Home', 'vacio','', req, res)});
 	app.post( '/searchMedic', function( req, res )
 	{
 		var busqueda = JSON.parse( JSON.stringify(req.body));
+		rutas.routeLife('main','searchMedic', hps);
 		intermed.callController('Home', 'searching',busqueda, req,  res);
 	});
 	//Registro
