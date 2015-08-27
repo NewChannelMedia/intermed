@@ -515,17 +515,17 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   color: #fff;
 }
 
-#CatRegModal .modal-content, #RegModal .modal.content, #LoginModal .modal-content {
+#CatRegModal .modal-content, #RegPacModal .modal.content, #RegMedModal .modal.content, #LoginModal .modal-content {
   border-radius: 0;
 }
 
-#CatRegModal .modal-header, #RegModal .modal.header, #LoginModal .modal-header {
+#CatRegModal .modal-header, #RegPacModal .modal.header, #RegMedModal .modal.header, #LoginModal .modal-header {
   margin: 20px 25px;
   padding: 5px 0;
   border-bottom: solid 5px #76b6dd;
 }
 
-#CatRegModal .modal-header .close, #RegModal .modal-header .close, #LoginModal .modal-header .close {
+#CatRegModal .modal-header .close, #RegPacModal .modal-header .close, #RegMedModal .modal-header .close, #LoginModal .modal-header .close {
   margin: 12px;
 }
 
@@ -540,7 +540,7 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   color: #fbad18;
 }
 
-#CatRegModal .modal-footer, #RegModal .modal-footer {
+#CatRegModal .modal-footer, #RegPacModal .modal-footer, #RegMedModal .modal-footer {
   border: solid 5px #fff;
   background-color: #fbad18;
 }

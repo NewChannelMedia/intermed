@@ -92,7 +92,7 @@
         </div>
     </footer>
 
-    <div class="modal fade" id="CatRegModal" tabindex="-1" role="dialog" aria-labelledby="CatRegLabel">
+    <div  id="CatRegModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="CatRegLabel">
         <div class="modal-dialog modal-lg">
             <form method="" action="">
                 <div class="modal-content">
@@ -111,12 +111,12 @@
                             <div class="col-md-10 col-md-offset-1">
                                 <div class="iconos-servicios hi-icon-wrap hi-icon-effect hi-icon-effect-a">
                                     <div class="col-md-3 col-sm-3 col-xs-6">
-                                        <a href="#" class="hi-icon hi-icon-modal" data-dismiss="modal" data-toggle="modal" data-target="#RegModal">
+                                        <a href="#" class="hi-icon hi-icon-modal" data-dismiss="modal" data-toggle="modal" data-target="#RegPacModal">
                                             <img class="hi-icon-img" src="img/BotonPacientes.png">
                                         </a>
                                     </div>
                                     <div class="col-md-3 col-sm-3 col-xs-6">
-                                        <a href="#set-9" class="hi-icon hi-icon-modal">
+                                        <a href="#set-9" class="hi-icon hi-icon-modal" data-dismiss="modal" data-toggle="modal" data-target="#RegMedModal">
                                             <img class="hi-icon-img" src="img/BotonMedicos.png">
                                         </a>
                                     </div>
@@ -144,7 +144,117 @@
     </div>
     <!-- /.modal -->
 
-    <div class="modal fade" id="RegModal" tabindex="-1" role="dialog" aria-labelledby="RegLabel">
+    <div id="RegPacModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="RegPacLabel">
+        <div class="modal-dialog modal-lg">
+            <form method="POST" action="/reg/local" id="frm_regP">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4>Intermed&reg | Registro</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h3>Intermed &reg es mejor con facebook</h3>
+                                <input name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block" onclick="window.location='/auth/facebook'">
+                                <p>
+                                    <h2>¡En un solo click!</h2>
+                                    Utiliza tu cuenta de Facebook para registrarte en Intermed y conectate con tus amigos y conocidos.
+                                    <br>
+                                    <small>Intermed no comparte tus datos con terceras personas ni compañias externas</small>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h3>Registrate con tu correo electronico</h3>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div id="alertError"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="nombreReg" name="first_name" placeholder="Nombre" required="true">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="ApellidoReg" name="last_name" placeholder="Apellido" required="true">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="email" class="form-control" id="correoReg" name="email" placeholder="Correo Electrónico" required="true">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="password" class="form-control" id="contraseñaReg" name="password" placeholder="Contraseña" pattern=".{6,13}" required="true">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="password" class="form-control" id="contraseña2Reg" name="password2" placeholder="Confirma tu contraseña" pattern=".{6,13}" required="true">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <h4>
+                                            <small>Fecha de Nacimiento</small>
+                                        </h4>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" id="diaNacReg" name="birthdayDay" placeholder="Dia" required="true">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" id="mesNacReg" name="birthdayMonth" placeholder="Mes" required="true">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" id="añoNacReg" name="birthdayYear" placeholder="Año" required="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <h4>
+                                            <small>Sexo</small>
+                                        </h4>
+                                        <div class="col-md-6">
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="gender" id="sexM" value="M" checked required="true"> Masculino
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="radio">
+                                                <label>
+                                                    <input type="radio" name="gender" id="sexF" value="F" required="true"> Femenino
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <input type="submit" name="registroCorreo" value="Registrate" class="btn btn-success btn-block">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                        </div>
+                    </div>
+                    <div class="modal-footer"></div>
+            </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <div id="RegMedModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="RegMedLabel">
         <div class="modal-dialog modal-lg">
             <form method="POST" action="/reg/local" id="frm_regP">
                 <div class="modal-content">
