@@ -17,7 +17,8 @@ module.exports = function(sequelize, DataTypes) {
     dias: {type: DataTypes.STRING},
     usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true},
     ciudad_id: {type: DataTypes.INTEGER, required: true},
-    estado_id: {type: DataTypes.INTEGER, required: true}
+    estado_id: {type: DataTypes.INTEGER, required: true},
+    institucion_id: {type: DataTypes.INTEGER}
   }, {
     classMethods: {
       associate: function(models) {
