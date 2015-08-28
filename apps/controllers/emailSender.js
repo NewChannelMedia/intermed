@@ -16,9 +16,8 @@
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 var hbs = require('nodemailer-express-handlebars');
-//cryto
-var criptografo = require('crypto');
-
+//cryptomaniacs
+var cryptomaniacs = require('./encryption');
 /**
  *  funcion que se encargara de enviar un correo, con la
  *  plantilla correspondiente, desde los parametros se pedira
@@ -63,7 +62,7 @@ function mailer(object, carpeta) {
 		context: {
 			name: object.nombre,
 			correo: object.to,
-			enlace: 'enlace'
+			enlace: 'localhost:3000/activar/'+ object.token
 		}
 	};
 	var transporter = nodemailer.createTransport(smtpTransport(datos));

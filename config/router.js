@@ -128,12 +128,20 @@ var iniciar = function()
 		var datos = {
 			to: req.body.email,
 			subject: "Activacion de tu cuenta.",
-			nombre: req.body.first_name
+			nombre: req.body.first_name,
+			id:req.body.tiempoStamp
 		};
 		intermed.callController('usuarios', 'registrarUsuario',req.body, req, res);
-		envia.mailer(datos,'confirmar');// se envia el correo
 	});
-
+	//activar cuenta
+	//<------------------------------------------------------------------------->
+	app.get('/activar/:token', function(req, res)
+	{
+		var tok = req.params.token;
+		rutas.routeLife('mail','activar', hps);
+		intermed.callController('usuarios','activarCuenta', {token:tok}, req, res);
+	});
+	//<------------------------------------------------------------------------->
 	app.post('/correoDisponible', function( req, res ){
 			intermed.callController('usuarios', 'correoDisponible', req.body, req, res);
 		});
