@@ -16,6 +16,7 @@ var app = express();
 var url = require('url');
 //con esta linea se carga el servidor
 var serv = require('./server');
+var models  = require('../apps/models');
 
 var passport = require('passport'),
 	bodyParser = require('body-parser'),
@@ -125,6 +126,29 @@ var iniciar = function()
 	app.post('/loginLocal', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
 		res.redirect('/');
 	});
+
+
+	//  Pruebas  padecimientos y tipo especialidad
+
+	app.get('/padecimientos', function(req, res) {
+		models.Medico.findAll({
+			include :  [ { model: models.Padecimiento}  ]
+		})
+		.then(function(datos) {
+			res.send(datos);
+		});
+	});
+
+
+	app.get('/especialidades', function(req, res) {
+			models.Especialidad.findAll({
+				include :  [ { model: models.TipoEspecialidad}  ]
+			})
+			.then(function(datos) {
+				res.send(datos);
+			});
+	});
+
 }
 serv.server(app, 3000);
 //se exporta para que otro js lo pueda utilizar

@@ -2,13 +2,18 @@
 
 module.exports = function(sequelize, DataTypes) {
   var TipoEspecialidad = sequelize.define("TipoEspecialidad", {
-    id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
+    id: {type : DataTypes.INTEGER, autoIncrement: true, primaryKey: true},
     tipo: {type: DataTypes.STRING,required: true}
   }, {
     classMethods: {
       associate: function(models) {
+        //TipoEspecialidad.hasMany(models.Especialidad)
+        TipoEspecialidad.hasOne(models.Especialidad, {foreignKey: {
+          name: 'tipoEspecialidad_id',
+          field: 'tipoEspecialidad_id'
+        }})
       }
-    },
+   },
    timestamps: false,
    paranoid: true,
    underscored: true,
