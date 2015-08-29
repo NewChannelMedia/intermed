@@ -16,8 +16,6 @@
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 var hbs = require('nodemailer-express-handlebars');
-//cryto
-var criptografo = require('crypto');
 
 /**
  *  funcion que se encargara de enviar un correo, con la
@@ -25,18 +23,18 @@ var criptografo = require('crypto');
  *  el nombre de la plantilla que se desea enviar.
  *
  *  @param object este objeto traera todos los datos del mailOptions
- *  @param carpeta nombre del archivo hbs que se desea enviar por correo
+ *  @param file nombre del archivo hbs que se desea enviar por correo
  *
  */
-function mailer(object, carpeta) {
+function mailer(object, file) {
 	// se configuran las plantillas para el envio de cadad una
 	var options = {
 		viewEngine: {
 			extname: '.hbs',
-			layoutsDir: 'apps/views/layouts/',
-			defaultLayout: 'mail.hbs'
+			layoutsDir: 'views/layouts/',
+			defaultLayout: 'principal.hbs'
 		},
-		viewPath: 'apps/views/' + carpeta ,
+		viewPath: 'views/' + file,
 		extName: '.hbs'
 	};
 	// se configuran los datos del host
@@ -59,11 +57,9 @@ function mailer(object, carpeta) {
 		from: 'New Channel corps © <hola@newchannel.mx>',
 		to: object.to,
 		subject: object.subject,
-		template: carpeta,
+		template: file,
 		context: {
-			name: object.nombre,
-			correo: object.to,
-			enlace: 'enlace'
+			name: 'nombre'
 		}
 	};
 	var transporter = nodemailer.createTransport(smtpTransport(datos));
