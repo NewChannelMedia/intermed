@@ -69,6 +69,10 @@ exports.registrarUsuario = function(object, req, res) {
                         fbId: object['id'],
                         estatusActivacion: '1',
                         urlFotoPerfil: object.picture.data.url
+                    //}).then(function(usuario) {
+                    //  usuario.update({
+                        //token: //generarToken(uduario.id, time)
+                    //  })
                     }).then(function(usuario) {
                         usuario_id = usuario.id;
                         models.DatosGenerales.create({
