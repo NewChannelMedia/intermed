@@ -3,15 +3,13 @@
 module.exports = function(sequelize, DataTypes) {
   var Usuario = sequelize.define("Usuario", {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
-    usuario: {type : DataTypes.STRING },
     correo: {type : DataTypes.STRING },
     fbId: {type : DataTypes.STRING },
     urlFotoPerfil: {type : DataTypes.STRING },
     password: {type : DataTypes.STRING},
     tipoUsuario: {type: DataTypes.STRING, required: true},
     tipoRegistro: {type: DataTypes.STRING, required: true},
-    estatusActivacion: {type: DataTypes.STRING, required: true},
-    token:{type: DataTypes.STRING}
+    estatusActivacion: {type: DataTypes.STRING, required: true}
   }, {
     classMethods: {
       // asociaciones con otras tablas

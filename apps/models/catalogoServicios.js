@@ -1,12 +1,12 @@
 "use strict";
 
 module.exports = function(sequelize, DataTypes) {
-  var Biometrico = sequelize.define("Biometrico", {
+  var CatalogoServicios = sequelize.define("CatalogoServicios", {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
-    peso: {type: DataTypes.REAL},
-    altura: {type: DataTypes.REAL},
-    tipoSangre: {type: DataTypes.STRING},
-    genero: {type: DataTypes.STRING},
+    concepto: {type: DataTypes.STRING},
+    descripcion: {type: DataTypes.STRING},
+    precio: {type: DataTypes.DOUBLE},
+    duracion: {type: DataTypes.TIME},
     usuario_id: {type : DataTypes.BIGINT, allowNull:false}
   }, {
     classMethods: {
@@ -18,8 +18,8 @@ module.exports = function(sequelize, DataTypes) {
     paranoid: true,
     underscored: true,
     freezeTableName: true,
-    tableName: 'biometricos'
+    tableName: 'catalogoServicios'
   });
 
-  return Biometrico;
+  return CatalogoServicios;
 };

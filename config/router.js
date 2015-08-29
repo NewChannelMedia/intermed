@@ -140,9 +140,36 @@ var iniciar = function()
 			intermed.callController('usuarios', 'correoDisponible', req.body, req, res);
 		});
 
+	app.post('/auth/correo', function( req, res){
+		intermed.callController('usuarios', 'iniciarSesion', req.body, req, res);
+	});
+
 	app.post('/loginLocal', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
 		res.redirect('/');
 	});
+
+
+	//  Pruebas  padecimientos y tipo especialidad
+
+	app.get('/padecimientos', function(req, res) {
+		models.Medico.findAll({
+			include :  [ { model: models.Padecimiento}  ]
+		})
+		.then(function(datos) {
+			res.send(datos);
+		});
+	});
+
+
+	app.get('/especialidades', function(req, res) {
+			models.Especialidad.findAll({
+				include :  [ { model: models.TipoEspecialidad}  ]
+			})
+			.then(function(datos) {
+				res.send(datos);
+			});
+	});
+
 }
 serv.server(app, 3000);
 //se exporta para que otro js lo pueda utilizar

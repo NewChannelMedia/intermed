@@ -47,6 +47,22 @@ exports.mostrar = function(object, req, res) {
 		});
 };
 
+exports.iniciarSesion = function(object, req, res) {
+    req.session.passport = {};
+    models.Usuario.findOne({
+        where: {
+            correo: object['email'],
+            password: object['password']
+        }
+    }).then(function(usuario) {
+        if (usuario) {
+            generarSesion(req, res, usuario.id)
+        } else {
+            res.redirect('/');
+        }
+    });
+};
+
 // Método que registra pacientes (facebook)
 exports.registrarUsuario = function(object, req, res) {
 req.session.passport = {};
