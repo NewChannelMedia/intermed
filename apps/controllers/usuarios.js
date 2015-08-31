@@ -297,9 +297,9 @@ exports.activarCuenta = function(object, req, res) {
 		})
 		.then(function(usuario) {
 			if (usuario) {
-				if (usuario.estatusActivacion === "0") {
+				if (usuario.estatusActivacion === 0) {
 					usuario.update({
-						estatusActivacion: "1"
+						estatusActivacion: 1
 					});
 					res.render('activado',{correo:usuario.correo})
 				} else {
