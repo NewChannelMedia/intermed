@@ -3,10 +3,10 @@
 module.exports = function(sequelize, DataTypes) {
   var Medico = sequelize.define("Medico", {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
-    cedula: {type: DataTypes.STRING , required: true, unique:true},
-    curp: {type: DataTypes.STRING , required: true, unique:true},
-    token: {type: DataTypes.STRING , required: true, unique:true},
-    tokenMaestro: {type: DataTypes.STRING , required: true, unique:true},
+    cedula: {type: DataTypes.STRING , unique:true},
+    curp: {type: DataTypes.STRING , unique:true},
+    token: {type: DataTypes.STRING , unique:true},
+    tokenMaestro: {type: DataTypes.STRING},
     usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true}
   }, {
     classMethods: {
