@@ -86,7 +86,7 @@ module.exports = {
               password: 'intermed123',
               tipoUsuario: 'M',
               tipoRegistro: '',
-              estatusActivacion : '1'
+              estatusActivacion : 0
           })
           .then(function(usuario) {
               // si fue exitoso, actualizamos  datos generales, direcciones, telefonos y médicos

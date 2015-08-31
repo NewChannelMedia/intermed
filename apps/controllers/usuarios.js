@@ -90,7 +90,7 @@ models.sequelize.transaction({
 								tipoUsuario: object['tipoUsuario'],
 								tipoRegistro: object['tipoRegistro'],
 								fbId: object['id'],
-								estatusActivacion: '1',
+								estatusActivacion: 1,
 								urlFotoPerfil: object.picture.data.url
 							})
 							.then(function(usuario) {
@@ -132,7 +132,7 @@ models.sequelize.transaction({
 									password: object['password'],
 									tipoUsuario: object['tipoUsuario'],
 									tipoRegistro: object['tipoRegistro'],
-									estatusActivacion: '0',
+									estatusActivacion: 0,
 									token: ''
 								})
 								.then(function(usuario) {
