@@ -260,6 +260,7 @@ var generarSesion = function(req, res, usuario_id) {
 			}, ]
 		})
 		.then(function(usuario) {
+			console.log("TOKEN AUXILIAR 2: " + req.session.token);
 			if (usuario[0]) {
 				req.session.passport.user = JSON.parse(JSON.stringify(usuario[0]));
 				req.session.passport.user.name = usuario[0].DatosGenerale.nombre + ' ' + usuario[0].DatosGenerale.apellidoP;
@@ -276,7 +277,11 @@ var generarSesion = function(req, res, usuario_id) {
 					.then(function(extraInfo) {
 						if (extraInfo[0]) {
 							req.session.passport.user['userInfo'] = JSON.parse(JSON.stringify(extraInfo[0]));
-							res.redirect('/');
+						}
+						if (req.session.token){
+							var aux = req.session.token;
+							req.session.token = "";
+							res.redirect('/activar/' + aux);
 						} else {
 							res.redirect('/');
 						}
@@ -315,6 +320,7 @@ exports.activarCuenta = function(object, req, res) {
 					}
 				}
 				else{
+					req.session.token = object.token;
 					res.redirect('http://localhost:3000/loggin');
 				}
 			});
