@@ -24,10 +24,10 @@ var cryptomaniacs = require('./encryption');
  *  el nombre de la plantilla que se desea enviar.
  *
  *  @param object este objeto traera todos los datos del mailOptions
- *  @param carpeta nombre del archivo hbs que se desea enviar por correo
+ *  @param file nombre del archivo hbs que se desea enviar por correo
  *
  */
-function mailer(object, carpeta) {
+function mailer(object, file) {
 	// se configuran las plantillas para el envio de cadad una
 	var options = {
 		viewEngine: {
@@ -35,7 +35,7 @@ function mailer(object, carpeta) {
 			layoutsDir: 'apps/views/layouts/',
 			defaultLayout: 'mail.hbs'
 		},
-		viewPath: 'apps/views/' + carpeta ,
+		viewPath: 'apps/views/mail/',
 		extName: '.hbs'
 	};
 	// se configuran los datos del host
@@ -58,7 +58,7 @@ function mailer(object, carpeta) {
 		from: 'New Channel corps © <hola@newchannel.mx>',
 		to: object.to,
 		subject: object.subject,
-		template: carpeta,
+		template: file,
 		context: {
 			name: object.nombre,
 			correo: object.to,
