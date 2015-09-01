@@ -43,32 +43,24 @@
   </head>
 
   <body>
+     <!-- interno -->
     <!-- empieza nav superior -->
-    <nav id="navHome">
+    <nav id="navIntern">
       <section class="container">
         <div class="row">
           <div id="logo" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-left">
-            <div class="col-md-2 col-sm-2 col-xs-2">
+            <div class="col-md-1 col-sm-2 col-xs-2">
               <a href="/">
                 <img class="logo-color" src="img/logo-color.png" />
               </a>
             </div>
-            <div class="col-md-10 col-sm-10 col-xs-10">
+            <div class="col-md-11 col-sm-10 col-xs-10">
               <div class="row">
-                <div class="bottom-border-mini flama-w200">
-                  <p class="text-muted text-left">
-                    <strong>
-                      <span class="s20">intermed <sup>&reg</sup></span>
-                    </strong> |
-                    <strong>La red social</strong> de la salud</p>
+                <div class="flama-w200 slogan">
+                  <p class="text-left">
+                    <span class="s25">intermed <sup>&reg</sup></span> |
+                    <strong>La red social</strong> de la salud.</p>
                 </div>
-              </div>
-              <div class="row text-left text-muted flama-w900">
-                <p>Para: &nbsp
-                  <a href="/pacientes" class="text-muted">Pacientes</a> |
-                  <a href="/medicos" class="text-muted">Medicos</a> |
-                  <a href="/instituciones" class="text-muted">Instituciones</a> |
-                  <a href="/proveedores" class="text-muted">Proveedores</a></p>
               </div>
             </div>
           </div>
@@ -76,7 +68,7 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="bottom-border flama-w200">
-                  <p class="text-muted text-right">
+                  <p class=" text-right">
                     <span class="hideonmobile">Atención a clientes: (33) 3125-2200 &nbsp</span>
                     <strong>soporte@intermed.mx</strong>
                   </p>
@@ -86,10 +78,8 @@
             <div class="row">
               <div class="col-md-12">
                 <p class="text-right">
-                  {{#ifSession "name"}} Hola {{valSession "name"}} !!!&nbsp
-                  <a class="reg" href="/logout" class="text-danger">Cerrar Sesión</a> {{else}}
                   <a class="login" href="#" data-toggle="modal" data-target="#LoginModal">ingresa</a> &nbsp
-                  <a class="reg" href="#" data-toggle="modal" class="text-danger" data-target="#CatRegModal">registrate</a> {{/ifSession}}
+                  <a class="reg" href="#" class="text-danger">registrate</a>
                 </p>
               </div>
             </div>
@@ -97,6 +87,7 @@
         </div>
       </section>
     </nav>
+
     {{{body}}}
     <footer>
       <div class="container">
