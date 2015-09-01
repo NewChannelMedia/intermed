@@ -92,7 +92,6 @@
           <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
           <span class="sr-only">Next</span>
         </a>
-
       </div>
       <!-- /.carousel -->
     </div>
@@ -120,8 +119,8 @@
           </div>
           <div class="parametros col-md-8">
             <div class="row">
-              <div class="esp box">
-                <div class="col-md-4">
+              <div class="">
+                <div class="col-md-4 esp box">
                   <div class="form-group">
                     <select class="form-control" name="especialidad">
                       <option>Especialidades</option>
@@ -131,38 +130,7 @@
                     </select>
                   </div>
                 </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <select class="form-control" name="ciudad">
-                      <option>Ciudad</option>
-                      <option>Guadalajara</option>
-                      <option>Zapopan</option>
-                      <option>Tlaquepaque</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <select class="form-control" name="colonia">
-                      <option>Colonia</option>
-                      <option>chapalita</option>
-                      <option>arcos</option>
-                      <option>central</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="med box">
-                <div id="formMed" class="">
-                  <div class="col-md-12">
-                    <div class="form-group">
-                      <input type="text" class="form-control" id="nombreMed" name="nombreMedico" placeholder="Nombre del Medico">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="pad box">
-                <div class="col-md-4">
+                <div class="col-md-4 pad box">
                   <div class="form-group">
                     <select class="form-control" name="padecimiento">
                       <option>Padecimiento</option>
@@ -172,9 +140,9 @@
                     </select>
                   </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 esp pad box">
                   <div class="form-group">
-                    <select class="form-control" name="ciudadela">
+                    <select class="form-control" name="ciudad">
                       <option>Ciudad</option>
                       <option>Guadalajara</option>
                       <option>Zapopan</option>
@@ -182,14 +150,24 @@
                     </select>
                   </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-4 esp pad box">
                   <div class="form-group">
-                    <select class="form-control" name="coloniapad">
+                    <select class="form-control" name="colonia">
                       <option>Colonia</option>
                       <option>chapalita</option>
                       <option>arcos</option>
                       <option>central</option>
                     </select>
+                  </div>
+                </div>
+                <div class="col-md-6 med box">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="nombreMed" name="nombreMedico" placeholder="Nombres">
+                  </div>
+                </div>
+                <div class="col-md-6 med box">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="apellidoMed" name="apellidoMedico" placeholder="Apellidos">
                   </div>
                 </div>
               </div>
@@ -299,32 +277,3 @@
     </div>
   </div>
 </section>
-<script type="text/javascript">
-  $(document).ready(function() {
-    $('.carousel').carousel({
-      interval: 7000
-    });
-  });
-
-</script>
-<script type="text/javascript">
-  $(document).ready(function() {
-    $("#sel-busqueda").change(function() {
-      $(this).find("option:selected").each(function() {
-        if ($(this).attr("value") == "especialidad") {
-          $(".box").not(".esp").hide();
-          $(".esp").show();
-        } else if ($(this).attr("value") == "medico") {
-          $(".box").not(".med").hide();
-          $(".med").show();
-        } else if ($(this).attr("value") == "padecimiento") {
-          $(".box").not(".pad").hide();
-          $(".pad").show();
-        } else {
-          $(".box").hide();
-        }
-      });
-    }).change();
-  });
-
-</script>
