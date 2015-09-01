@@ -84,16 +84,16 @@ var iniciar = function()
 	app.post( '/searchMedic', function( req, res )
 	{
 		var busqueda = JSON.parse( JSON.stringify(req.body));
-		rutas.routeLife('main','searchMedic', hps);
+		rutas.routeLife('interno','interno', hps);
 		intermed.callController('Home', 'searching',busqueda, req,  res);
 	});
 	//Registro
 	app.get('/registro', function( req, res ){
-		rutas.routeLife('main','registro',hps);
+		rutas.routeLife('interno','interno',hps);
 		intermed.callController('registro', 'index', '', req, res);
 	});
 	app.post('/registro', function( req, res ){
-		rutas.routeLife('main','registro',hps);
+		rutas.routeLife('interno','interno',hps);
 		if (req.body.getAll === '1'){
 			intermed.callController('registro', 'getAll', '', req, res)
 		} else {
@@ -106,6 +106,12 @@ var iniciar = function()
 			var object = JSON.parse( JSON.stringify(req.body) );
 			intermed.callController('medicos', 'registrar', object, req, res);
 		}
+	});
+
+	//prueba AboutPaciente
+	app.get('/pacientes', function( req, res ){
+		rutas.routeLife('main','main',hps);
+		intermed.callController('Home', 'aboutPacientes', '', req, res);
 	});
 
 	app.get('/informacionusuario', function (req, res){
@@ -132,7 +138,7 @@ var iniciar = function()
 	app.get('/activar/:token', function(req, res)
 	{
 		var tok = req.params.token;
-		rutas.routeLife('mail','activar', hps);
+		rutas.routeLife('mail','interno', hps);
 		intermed.callController('usuarios','activarCuenta', {token:tok}, req, res);
 	});
 	//<------------------------------------------------------------------------->

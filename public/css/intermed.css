@@ -10,17 +10,23 @@ a, a:hover, a:visited {
 #navHome {
   position: absolute;
   z-index: 1000;
-  top: 25px;
   right: 0;
   left: 0;
+  padding: 5px 0;
+}
+#navHome .row {
+   padding: 2px 0;
+}
+#navHome p {
+   margin: 2px 0;
 }
 
 #navHome #logo .logo-color {
   display: block;
   float: right;
   width: auto;
-  height: 75px;
-  margin: 0 auto;
+  height: 60px;
+  margin: 10px auto;
 }
 
 #navHome #logo a {
@@ -298,18 +304,20 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
 
 #principal {
   height: 100%;
-  padding-top: 120px;
+  padding-top: 90px;
   padding-bottom: 25px;
   background-image: url('../img/slideBG.png');
   background-repeat: no-repeat;
   background-position: center center;
   background-size: cover;
 }
+#directorio {
+  height: 100%;
+  padding-top: 25px;
+  padding-bottom: 25px;
+}
 
 #searchMedic {
-  position: relative;
-  z-index: 1000000;
-  display: block;
   background-color: #cdd5da;
 }
 
