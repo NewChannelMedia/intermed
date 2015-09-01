@@ -77,7 +77,7 @@ var iniciar = function()
 	//LogOut
 	app.get('/logout', function( req, res , next){intermed.callController('session','logout', {}, req, res)});
 	//Home
-	app.get('/', function( req, res ){intermed.callController('Home','index','',req,res)});//intermed.callController('Home', 'sayHello', '', req, res)});
+	app.get('/', function( req, res ){intermed.callController('Home','index',req.body,req,res)});//intermed.callController('Home', 'sayHello', '', req, res)});
 
 	// get y post de searchMedic
 	app.get( '/searchMedic', function( req, res){intermed.callController('Home', 'vacio','', req, res)});

@@ -32,7 +32,16 @@ module.exports = {
 		*	vista.
 		*/
 		index:function(object, req, res ){
-			res.render('home', object)
+			res.render('home', object);
+				//consultas que llenaran los selects
+				/*if( object.seleccionador == "especialidad" ){
+					models.Usuario.findAll({
+						include[{ model: models.Medico }
+						]
+					}).then(function(usuario){
+
+					});
+				}*/
 		},
 		aboutPacientes:function(object, req, res ){
 			res.render('pacientes', object)
