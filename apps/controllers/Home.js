@@ -34,6 +34,9 @@ module.exports = {
 		index:function(object, req, res ){
 			res.render('home', object)
 		},
+		aboutPacientes:function(object, req, res ){
+			res.render('pacientes', object)
+		},
 		sayHello: function(object, req, res) {
 			res.render('home', {}, function(err, html){ res.send(html)});
 		},

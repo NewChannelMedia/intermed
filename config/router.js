@@ -16,7 +16,8 @@ var app = express();
 var url = require('url');
 //con esta linea se carga el servidor
 var serv = require('./server');
-
+//envio de correo variable
+var envia = require('../apps/controllers/emailSender');
 var passport = require('passport'),
 	bodyParser = require('body-parser'),
 	cookieParser = require("cookie-parser"),
@@ -83,16 +84,16 @@ var iniciar = function()
 	app.post( '/searchMedic', function( req, res )
 	{
 		var busqueda = JSON.parse( JSON.stringify(req.body));
-		rutas.routeLife('main','searchMedic', hps);
+		rutas.routeLife('interno','interno', hps);
 		intermed.callController('Home', 'searching',busqueda, req,  res);
 	});
 	//Registro
 	app.get('/registro', function( req, res ){
-		rutas.routeLife('main','registro',hps);
+		rutas.routeLife('interno','interno',hps);
 		intermed.callController('registro', 'index', '', req, res);
 	});
 	app.post('/registro', function( req, res ){
-		rutas.routeLife('main','registro',hps);
+		rutas.routeLife('interno','interno',hps);
 		if (req.body.getAll === '1'){
 			intermed.callController('registro', 'getAll', '', req, res)
 		} else {
@@ -107,6 +108,12 @@ var iniciar = function()
 		}
 	});
 
+	//prueba AboutPaciente
+	app.get('/pacientes', function( req, res ){
+		rutas.routeLife('main','main',hps);
+		intermed.callController('Home', 'aboutPacientes', '', req, res);
+	});
+
 	app.get('/informacionusuario', function (req, res){
 		res.send(JSON.stringify(req.session.passport) + '<br/><a href="/">Regresar</a>');
 	});
@@ -119,21 +126,56 @@ var iniciar = function()
 			req.session.passport.user['tipoUsuario'] = 'P';
 			intermed.callController('usuarios', 'registrarUsuario',req.session.passport.user, req, res);
 	});
-
+	//registro pacientes
 	app.post('/reg/local', function (req, res){
 		req.body.name = req.body.first_name + ' ' + req.body.last_name;
 		req.body['tipoRegistro'] = 'L';
 		req.body['tipoUsuario'] = 'P';
 		intermed.callController('usuarios', 'registrarUsuario',req.body, req, res);
 	});
-
+	//activar cuenta
+	//<------------------------------------------------------------------------->
+	app.get('/activar/:token', function(req, res)
+	{
+		var tok = req.params.token;
+		rutas.routeLife('mail','interno', hps);
+		intermed.callController('usuarios','activarCuenta', {token:tok}, req, res);
+	});
+	//<------------------------------------------------------------------------->
 	app.post('/correoDisponible', function( req, res ){
 			intermed.callController('usuarios', 'correoDisponible', req.body, req, res);
 		});
 
+	app.post('/auth/correo', function( req, res){
+		intermed.callController('usuarios', 'iniciarSesion', req.body, req, res);
+	});
+
 	app.post('/loginLocal', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
 		res.redirect('/');
 	});
+
+
+	//  Pruebas  padecimientos y tipo especialidad
+
+	app.get('/padecimientos', function(req, res) {
+		models.Medico.findAll({
+			include :  [ { model: models.Padecimiento}  ]
+		})
+		.then(function(datos) {
+			res.send(datos);
+		});
+	});
+
+
+	app.get('/especialidades', function(req, res) {
+			models.Especialidad.findAll({
+				include :  [ { model: models.TipoEspecialidad}  ]
+			})
+			.then(function(datos) {
+				res.send(datos);
+			});
+	});
+
 }
 serv.server(app, 3000);
 //se exporta para que otro js lo pueda utilizar

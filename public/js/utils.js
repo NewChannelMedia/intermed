@@ -172,7 +172,9 @@ function addMedico(record) {
         entreCalles = 'Entre ' + record.calle1Med + ' ' + conjucion + ' ' + record.calle2Med;
     }
     try {
-        medicosRegistrados += '<tr><th scope="row">' + (++regTotalDoc) + '</th><td>' + record.nombreMed + ' ' + record.apellidoMed + '</td><td>' + record.correoMed + '</td><td>' + record.telefonoMed + '</td><td><address><strong>' + record.calleMed + ' #' + record.numeroMed + '</strong><br>' + entreCalles + ' <br>' + record.coloniaMed + ', CP:' + record.cpMed + '<br>' + record.ciudadMed + ', ' + record.estadoMed + '<br></address></td><td>' + record.especialidadMed + '</td><td><button class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span></button></td></tr>';
+        // muestra los médicos con la funcionalidad de actualizar médico
+        medicosRegistrados += '<tr><th scope="row">' + (++regTotalDoc) + '</th><td>' + record.nombreMed + ' ' + record.apellidoMed + '</td><td>' + record.correoMed + '</td><td>' + record.telefonoMed + '</td><td><address><strong>' + record.calleMed + ' #' + record.numeroMed + '</strong><br>' + entreCalles + ' <br>' + record.coloniaMed + ', CP:' + record.cpMed + '<br>' + record.ciudadMed + ', ' + record.estadoMed + '<br></address></td><td>' + record.especialidadMed + '</td><td><button class="btn btn-info" onclick="muestraMedico(' + record.id + '); return false;"><span class="glyphicon glyphicon-pencil"></span></button></td></tr>';
+        //medicosRegistrados += '<tr><th scope="row">' + (++regTotalDoc) + '</th><td>' + record.nombreMed + ' ' + record.apellidoMed + '</td><td>' + record.correoMed + '</td><td>' + record.telefonoMed + '</td><td><address><strong>' + record.calleMed + ' #' + record.numeroMed + '</strong><br>' + entreCalles + ' <br>' + record.coloniaMed + ', CP:' + record.cpMed + '<br>' + record.ciudadMed + ', ' + record.estadoMed + '<br></address></td><td>' + record.especialidadMed + '</td><td><button class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span></button></td></tr>';
     } catch (ex) {
         console.error('PARSE ERROR (Registro 190) : ' + ex);
     }
@@ -189,4 +191,31 @@ function regMedValid() {
         }
     }
     return valid;
+}
+
+
+// función que actualiza médico.
+function actDoctor(){
+  $.ajax({
+     url: '/actualizaMedico',
+     type: 'POST',
+     dataType: "json",
+     cache: false,
+     data: $('#frmActMed').serialize(),
+     type: 'POST',
+     success: function(data){
+       // al guardar cambios oculta la forma
+       $("#UpdateModal").modal("hide");
+    }
+    , error: function(jqXHR, textStatus, err){
+     console.error('AJAX ERROR: (registro 166) : ' + err );
+   }
+ });
+}
+
+// muestra la ventana para editar al médico
+function muestraMedico(id){
+  $("#UpdateModal .modal-body").load("edicionMedico/" + id, function() {
+       $("#UpdateModal").modal("show");
+  });
 }

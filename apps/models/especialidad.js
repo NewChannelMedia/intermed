@@ -3,12 +3,17 @@
 module.exports = function(sequelize, DataTypes) {
   var Especialidad = sequelize.define("Especialidad", {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
-    descripcion: {type : DataTypes.STRING, required: true, unique: true },
+    especialidad: {type : DataTypes.STRING, required: true},
+    descripcion: {type : DataTypes.STRING, required: true},
+    //tipoEspecialidad_id: {type : DataTypes.BIGINT, required: true}
   }, {
     classMethods: {
       associate: function(models) {
-        //Especialidad.belongsTo(models.Medico,  {through: 'MedicoEspecialidad'})
-        //Especialidad.hasOne(models.Usuario);
+        Especialidad.belongsToMany(models.Medico,  {through: models.MedicoEspecialidad})
+        Especialidad.belongsTo(models.TipoEspecialidad, {foreignKey: {
+          name: 'tipoEspecialidad_id',
+          field: 'tipoEspecialidad_id'
+        }})
       }
     },
     timestamps: false,

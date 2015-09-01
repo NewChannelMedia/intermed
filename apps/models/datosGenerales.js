@@ -6,8 +6,6 @@ module.exports = function(sequelize, DataTypes) {
     nombre: {type : DataTypes.STRING },
     apellidoP: {type : DataTypes.STRING },
     apellidoM: {type : DataTypes.STRING},
-    genero: {type: DataTypes.STRING, required: true},
-    rfc: {type: DataTypes.STRING},
     usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true},
   }, {
     classMethods: {

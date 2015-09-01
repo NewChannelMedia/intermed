@@ -16,7 +16,8 @@
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 var hbs = require('nodemailer-express-handlebars');
-
+//cryptomaniacs
+var cryptomaniacs = require('./encryption');
 /**
  *  funcion que se encargara de enviar un correo, con la
  *  plantilla correspondiente, desde los parametros se pedira
@@ -31,10 +32,10 @@ function mailer(object, file) {
 	var options = {
 		viewEngine: {
 			extname: '.hbs',
-			layoutsDir: 'views/layouts/',
-			defaultLayout: 'principal.hbs'
+			layoutsDir: 'apps/views/layouts/',
+			defaultLayout: 'mail.hbs'
 		},
-		viewPath: 'views/' + file,
+		viewPath: 'apps/views/mail/',
 		extName: '.hbs'
 	};
 	// se configuran los datos del host
@@ -59,7 +60,9 @@ function mailer(object, file) {
 		subject: object.subject,
 		template: file,
 		context: {
-			name: 'nombre'
+			name: object.nombre,
+			correo: object.to,
+			enlace: 'localhost:3000/activar/'+ object.token
 		}
 	};
 	var transporter = nodemailer.createTransport(smtpTransport(datos));
