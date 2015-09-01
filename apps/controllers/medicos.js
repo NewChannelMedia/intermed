@@ -85,7 +85,7 @@ module.exports = {
               correo:  object['correoMed'],
               password: 'intermed123',
               tipoUsuario: 'M',
-              tipoRegistro: '',
+              tipoRegistro: 'D',
               estatusActivacion : 0
           })
           .then(function(usuario) {

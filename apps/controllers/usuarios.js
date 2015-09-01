@@ -288,26 +288,34 @@ var generarSesion = function(req, res, usuario_id) {
 		});
 };
 exports.activarCuenta = function(object, req, res) {
-	// se hace una consulta a usuario para traer el token condicionando lo del correo
-	//consulta
-	models.Usuario.findOne({
-			where: {
-				token: object.token
-			}
-		})
-		.then(function(usuario) {
-			if (usuario) {
-				if (usuario.estatusActivacion === 0) {
-					usuario.update({
-						estatusActivacion: 1
-					});
-					res.render('activado',{correo:usuario.correo})
-				} else {
-					res.render('noactivado', {correo:usuario.correo});
+		// se hace una consulta a usuario para traer el token condicionando lo del correo
+		//consulta
+		models.Usuario.findOne({
+				where: {
+					token: object.token
 				}
-			} else {
-				res.status(200)
-					.send('<h1>Usuario no existe</h1>');
-			}
-		});
+			})
+			.then(function(usuario) {
+				if (req.session.passport.user && req.session.passport.user.id === usuario.id) {
+					if (usuario) {
+						if (usuario.estatusActivacion === 0) {
+							usuario.update({
+								estatusActivacion: 1
+							});
+							res.render('activado', {
+								correo: usuario.correo
+							});
+						} else {
+							res.render('noactivado', {
+								correo: usuario.correo
+							});
+						}
+					} else {
+						res.status(200).send('<h1>Usuario no existe</h1>');
+					}
+				}
+				else{
+					res.redirect('http://localhost:3000/loggin');
+				}
+			});
 }

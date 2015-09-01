@@ -14,14 +14,14 @@ var objecto;
 var consultas = {
 	clausulas: function(object){
 		if(object.seleccionador === "especialidad")
-			return objeto = {$or:{ciudad:object.ciudad,colonia:object.colonia}};
+			return objeto = {$or:{ciudad_id:object.ciudad,colonia:object.colonia}};
 		else if( object.seleccionador === "medico")
 		{
 			return  objeto = {nombre:{$like:object.nombreMedico + "%"}};
 		}
 		else if( object.seleccionador === "padecimiento")
 		{
-			return objeto = {$or:{ciudad:object.ciudadela,colonia:object.coloniapad}};
+			return objeto = {$or:{ciudad_id:object.ciudadela,colonia:object.coloniapad}};
 		}
 	}
 };
