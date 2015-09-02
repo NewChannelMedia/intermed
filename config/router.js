@@ -355,6 +355,77 @@ var iniciar = function()
 							res.send(datos);
 						});
 		});
+
+		app.get('/hospitales', function(req, res) {
+						models.Medico.findAll({
+							include : [
+								{ model: models.Hospital}
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+		app.get('/medicosfav', function(req, res) {
+						models.MedicoFavorito.findAll({
+							include : [
+								{ model: models.Medico},
+								{ model: models.Usuario}
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+		app.get('/medicosfav2', function(req, res) {
+						models.Medico.findAll({
+							include : [
+								{ model: models.MedicoFavorito},
+								{ model: models.Usuario}
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+		app.get('/formacion', function(req, res) {
+						models.Medico.findAll({
+							include : [
+								{ model: models.MedicoFormacion}
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+		app.get('/colegios', function(req, res) {
+						models.Colegio.findAll({
+							include : [
+								{ model: models.Medico},
+								{ model: models.Institucion},
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+		app.get('/experiencia', function(req, res) {
+						models.Medico.findAll({
+							include : [
+								{ model: models.MedicoExperiencia,
+										include: [ { model: models.Ciudad},{ model: models.Estado}, { model: models.Institucion}]
+								}
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
 }
 serv.server(app, 3000);
 //se exporta para que otro js lo pueda utilizar

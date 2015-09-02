@@ -11,12 +11,17 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
+        Medico.hasOne(models.Hospital)
         Medico.hasOne(models.CalificacionCita)
         Medico.hasMany(models.ComentariosMedicos)
         Medico.hasMany(models.Aseguradora)
         Medico.hasMany(models.CalificacionMedico)
         Medico.belongsToMany(models.Especialidad,  {through: models.MedicoEspecialidad})
         Medico.belongsToMany(models.Padecimiento,  {through: models.MedicoPadecimiento})
+        Medico.hasMany(models.MedicoFavorito)
+        Medico.hasMany(models.MedicoFormacion)
+        Medico.hasMany(models.MedicoExperiencia)
+        Medico.hasMany(models.Colegio)
         Medico.belongsTo(models.Usuario, {
           onDelete: "CASCADE",
           foreignKey: {

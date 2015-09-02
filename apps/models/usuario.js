@@ -29,6 +29,7 @@ module.exports = function(sequelize, DataTypes) {
         Usuario.hasMany(models.CatalogoServicios)
         Usuario.hasOne(models.DatosFacturacion)
         Usuario.hasOne(models.Proveedor)
+        Usuario.hasMany(models.MedicoFavorito)
 /*
         Usuario.hasMany(models.Agenda, {foreignKey: {
           name: 'usuario_id',
