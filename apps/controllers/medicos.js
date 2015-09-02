@@ -109,10 +109,7 @@ module.exports = {
                 numero: object['numeroMed'],
                 calle1: object['calle1Med'],
                 calle2: object['calle2Med'],
-                colonia: object['coloniaMed'],
-                estado_id: object['estadoMed'],  //Id del estado
-                ciudad_id: object['ciudadMed'],
-                cp: object['cpMed'],
+                localidad_id: 20024,
                 principal: 1,
                 usuario_id: id
               });

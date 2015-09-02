@@ -245,37 +245,33 @@ var crearMedico = function(req, res, object, usuario_id) {
 }
 
 var generarSesion = function(req, res, usuario_id) {
-	models.Usuario.findAll({
+	models.Usuario.findOne({
 			where: {
 				id: usuario_id
 			},
+			attributes: ['id','urlFotoPerfil','tipoUsuario','tipoRegistro','estatusActivacion'],
 			include: [{
-				model: models.DatosGenerales
-			}, {
-				model: models.Paciente
-			}, {
-				model: models.Direccion
-			}, {
-				model: models.Telefono
-			}, ]
+				model: models.DatosGenerales, attributes: ['nombre','apellidoP']
+			}]
 		})
 		.then(function(usuario) {
-			if (usuario[0]) {
-				req.session.passport.user = JSON.parse(JSON.stringify(usuario[0]));
-				req.session.passport.user.name = usuario[0].DatosGenerale.nombre + ' ' + usuario[0].DatosGenerale.apellidoP;
-				if (usuario[0].tipoUsuario === 'P') {
+			console.log('--->Usuario: ' + JSON.stringify(usuario));
+			if (usuario) {
+				req.session.passport.user = JSON.parse(JSON.stringify(usuario));
+				req.session.passport.user.name = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP;
+				if (usuario.tipoUsuario === 'P') {
 					var tipoUsuario = 'Paciente';
-				} else if (usuario[0].tipoUsuario === 'M') {
+				} else if (usuario.tipoUsuario === 'M') {
 					var tipoUsuario = 'Medico';
 				}
-				models[tipoUsuario].findAll({
+				models[tipoUsuario].findOne({
 						where: {
 							usuario_id: usuario_id
 						}
 					})
 					.then(function(extraInfo) {
-						if (extraInfo[0]) {
-							req.session.passport.user['userInfo'] = JSON.parse(JSON.stringify(extraInfo[0]));
+						if (extraInfo) {
+							req.session.passport.user['userInfo'] = JSON.parse(JSON.stringify(extraInfo));
 							res.redirect('/');
 						} else {
 							res.redirect('/');
