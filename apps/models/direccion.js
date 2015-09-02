@@ -22,9 +22,12 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        Direccion.belongsTo(models.Estado);
-        Direccion.belongsTo(models.Ciudad);
-        Direccion.belongsTo(models.Usuario);
+        Direccion.belongsTo(models.Estado)
+        Direccion.belongsTo(models.Ciudad)
+        Direccion.belongsTo(models.Usuario)
+        Direccion.hasMany(models.Agenda)
+        Direccion.hasOne(models.DatosFacturacion)
+        Direccion.belongsTo(models.Institucion)
       }
     },
    timestamps: false,

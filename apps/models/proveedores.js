@@ -10,7 +10,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        //User.hasOne(models.Medico)
+        Proveedor.belongsTo(models.Usuario)
       }
     },
     timestamps: false,

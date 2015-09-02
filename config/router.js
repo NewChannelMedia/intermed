@@ -7,6 +7,8 @@
 *	@date Tuesday, August 4,  2015
 */
 
+var models  = require('../apps/models');
+
 //librerias requeridas
 ///librerias requeridas
 var express = require('express');
@@ -154,9 +156,7 @@ var iniciar = function()
 		res.redirect('/');
 	});
 
-
 	//  Pruebas  padecimientos y tipo especialidad
-
 	app.get('/padecimientos', function(req, res) {
 		models.Medico.findAll({
 			include :  [ { model: models.Padecimiento}  ]
@@ -165,7 +165,6 @@ var iniciar = function()
 			res.send(datos);
 		});
 	});
-
 
 	app.get('/especialidades', function(req, res) {
 			models.Especialidad.findAll({
@@ -176,6 +175,186 @@ var iniciar = function()
 			});
 	});
 
+	app.get('/especialidadesm', function(req, res) {
+			models.Medico.findAll({
+				include :  [ { model: models.Especialidad, include : [{ model: models.TipoEspecialidad}]}  ]
+			})
+			.then(function(datos) {
+				res.send(datos);
+			});
+	});
+
+	app.get('/comentariosMedicos', function(req, res) {
+			models.Medico.findAll({
+				include :  [
+					{ model: models.ComentariosMedicos},
+					{ model: models.Usuario}  ]
+			})
+			.then(function(datos) {
+				res.send(datos);
+			});
+	});
+
+		app.get('/comentariosUsuario', function(req, res) {
+				models.Usuario.findAll({
+					include :  [
+						{ model: models.ComentariosMedicos},
+						{ model: models.Medico}  ]
+				})
+				.then(function(datos) {
+					res.send(datos);
+				});
+		});
+
+		app.get('/biometricos', function(req, res) {
+				models.Biometrico.findAll({
+					include : [
+						{ model: models.Usuario, include : [ { model : models.Paciente} ] }
+					]
+				})
+				.then(function(datos) {
+					res.send(datos);
+				});
+		});
+
+		app.get('/direccion', function(req, res) {
+				models.Direccion.findAll({
+					include : [
+						{ model: models.Estado},
+						{ model: models.Ciudad}  ]
+				})
+				.then(function(datos) {
+					res.send(datos);
+				});
+		});
+
+		app.get('/estados', function(req, res) {
+				models.Estado.findAll({
+					include : [
+						{ model: models.Ciudad}  ]
+				})
+				.then(function(datos) {
+					res.send(datos);
+				});
+		});
+
+		app.get('/ciudades', function(req, res) {
+				models.Ciudad.findAll({
+					include : [
+						{ model: models.Estado},
+						{ model: models.Direccion}
+					]
+				})
+				.then(function(datos) {
+					res.send(datos);
+				});
+		});
+
+		app.get('/secretarias', function(req, res) {
+						models.Secretaria.findAll({
+							include : [
+								{ model: models.Usuario}
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+		app.get('/aseguradoras', function(req, res) {
+						models.Medico.findAll({
+							include : [
+								{ model: models.Aseguradora}
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+		app.get('/calificacionmedico', function(req, res) {
+						models.CalificacionMedico.findAll({
+							include : [
+								{ model: models.Usuario},
+								{ model: models.Medico}
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+		app.get('/calificacioncita', function(req, res) {
+						models.CalificacionCita.findAll({
+							include : [
+								{ model: models.Agenda},
+								{ model: models.Medico},
+								{ model: models.Paciente}
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+		app.get('/agenda', function(req, res) {
+						models.Agenda.findAll({
+							include : [
+								{ model: models.Usuario},
+								{ model: models.Direccion}
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+		app.get('/servicios', function(req, res) {
+						models.Usuario.findAll({
+							include : [
+								{ model: models.CatalogoServicios}
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+		app.get('/facturacion', function(req, res) {
+						models.DatosFacturacion.findAll({
+							include : [
+								{ model: models.Usuario},
+								{ model: models.Direccion}
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+		app.get('/institucion', function(req, res) {
+						models.Institucion.findAll({
+							include : [
+								{ model: models.Usuario},
+								{ model: models.Direccion}
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+		app.get('/proveedores', function(req, res) {
+						models.Proveedor.findAll({
+							include : [
+								{ model: models.Usuario,
+									include : [{ model: models.Direccion}]}
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
 }
 serv.server(app, 3000);
 //se exporta para que otro js lo pueda utilizar

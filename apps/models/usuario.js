@@ -15,12 +15,30 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       // asociaciones con otras tablas
       associate: function(models) {
-        Usuario.hasOne(models.Medico);
-        Usuario.hasOne(models.Paciente);
-        Usuario.hasOne(models.DatosGenerales);
-        Usuario.hasOne(models.Direccion);
-        Usuario.hasOne(models.Telefono);
-        //Usuario.hasOne(models.Especialidad);
+        Usuario.hasOne(models.Medico)
+        Usuario.hasOne(models.Paciente)
+        Usuario.hasOne(models.DatosGenerales)
+        Usuario.hasOne(models.Direccion)
+        Usuario.hasOne(models.Telefono)
+        Usuario.hasOne(models.Biometrico)
+        //Usuario.hasMany(models.Biometrico);
+        Usuario.hasMany(models.ComentariosMedicos)
+        Usuario.hasMany(models.CalificacionMedico)
+        Usuario.hasMany(models.Secretaria)
+        Usuario.hasMany(models.Agenda)
+        Usuario.hasMany(models.CatalogoServicios)
+        Usuario.hasOne(models.DatosFacturacion)
+        Usuario.hasOne(models.Proveedor)
+/*
+        Usuario.hasMany(models.Agenda, {foreignKey: {
+          name: 'usuario_id',
+          field: 'usuario_id'
+        }, as : 'Usuario'})
+
+        Usuario.hasMany(models.Agenda, {foreignKey: {
+          name: 'usuarioAtendido_id',
+          field: 'usuarioAtendido_id'
+        },  as: 'UsuarioAtendio'});*/
       }
     },
    timestamps: false,  //elimina los campos de crated_at, update_at y remove_at

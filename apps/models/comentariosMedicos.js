@@ -10,14 +10,15 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        //User.hasOne(models.Medico)
+        ComentariosMedicos.belongsTo(models.Usuario)
+        ComentariosMedicos.belongsTo(models.Medico)
       }
     },
     timestamps: false,
     paranoid: true,
     underscored: true,
     freezeTableName: true,
-    tableName: 'comentariosMedicos'
+    tableName: 'comentarios'
   });
 
   return ComentariosMedicos;
