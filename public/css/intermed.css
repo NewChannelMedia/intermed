@@ -14,11 +14,13 @@ a, a:hover, a:visited {
   left: 0;
   padding: 5px 0;
 }
+
 #navHome .row {
-   padding: 2px 0;
+  padding: 2px 0;
 }
+
 #navHome p {
-   margin: 2px 0;
+  margin: 2px 0;
 }
 
 #navHome #logo .logo-color {
@@ -52,11 +54,13 @@ a, a:hover, a:visited {
 #navHome #atnc-clientes .bottom-border-mini {
   border-bottom: 2px solid #aaa;
 }
+
 #navHome .bottom-border {
-   border-bottom: 5px solid #ff4200;
+  border-bottom: 5px solid #ff4200;
 }
+
 #navHome .bottom-border-mini {
-   border-bottom: 2px solid #aaaaaa;
+  border-bottom: 2px solid #aaaaaa;
 }
 
 #navIntern {
@@ -311,6 +315,7 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
   background-position: center center;
   background-size: cover;
 }
+
 #directorio {
   height: 100%;
   padding-top: 25px;
@@ -523,11 +528,11 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   color: #fff;
 }
 
-#CatRegModal .modal-content, #RegPacModal .modal.content, #RegMedModal .modal.content, #LoginModal .modal-content {
+#CatRegModal .modal-content, #RegPacModal .modal-content, #RegMedModal .modal-content, #LoginModal .modal-content {
   border-radius: 0;
 }
 
-#CatRegModal .modal-header, #RegPacModal .modal.header, #RegMedModal .modal.header, #LoginModal .modal-header {
+#CatRegModal .modal-header, #RegPacModal .modal-header, #RegMedModal .modal-header, #LoginModal .modal-header {
   margin: 20px 25px;
   padding: 5px 0;
   border-bottom: solid 5px #76b6dd;
@@ -548,15 +553,60 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   color: #fbad18;
 }
 
-#CatRegModal .modal-footer, #RegPacModal .modal-footer, #RegMedModal .modal-footer {
+#CatRegModal .modal-footer {
   border: solid 5px #fff;
   background-color: #fbad18;
 }
+
+#RegPacModal .modal-footer, #RegMedModal .modal-footer {
+  text-align: center;
+  border: 0;
+}
+
 
 #CatRegModal .hi-icon {
   background-color: #fbad18;
 }
 
+.regFacebook {
+  padding: 55px;
+  text-align: center;
+}
+
+.regCorreo {
+   padding: 0 50px;
+}
+
+.separator {
+  position: absolute;
+  right: 0;
+  bottom: 47%;
+  left: 0;
+  width: 500px;
+  -webkit-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+  border: 2px solid #757575;
+}
+.slide {}
+.stepBullets {
+   list-style: none;
+   margin: -30px 0;
+}
+.stepBullets li {
+   float: left;
+   margin-right: 15px;
+}
+
+
+.visibleSlide {
+   visibility: visible;
+   display: block;
+}
+.notVisibleSlide {
+   visibility: hidden;
+   display: none;
+}
 
 /* ------ icons hover effect ------ */
 
@@ -580,9 +630,10 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   /*background-color: #437eab;*/
   background-color: rgba(0, 0, 0, .3);
 }
-.hi-icon-modal{
-   width: 100%;
-   height: 100%;
+
+.hi-icon-modal {
+  width: 100%;
+  height: 100%;
 }
 
 .hi-icon-img {

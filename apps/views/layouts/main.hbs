@@ -129,22 +129,22 @@
                 <div class="col-md-10 col-md-offset-1">
                   <div class="iconos-servicios hi-icon-wrap hi-icon-effect hi-icon-effect-a">
                     <div class="col-md-3 col-sm-3 col-xs-6">
-                      <a href="#" class="hi-icon hi-icon-modal" data-dismiss="modal" data-toggle="modal" data-target="#RegModal">
+                      <a href="" class="hi-icon hi-icon-modal" data-dismiss="modal" data-toggle="modal" data-target="#RegPacModal">
                         <img class="hi-icon-img" src="img/BotonPacientes.png">
                       </a>
                     </div>
                     <div class="col-md-3 col-sm-3 col-xs-6">
-                      <a href="#set-9" class="hi-icon hi-icon-modal">
+                      <a href="" class="hi-icon hi-icon-modal">
                         <img class="hi-icon-img" src="img/BotonMedicos.png">
                       </a>
                     </div>
                     <div class="col-md-3 col-sm-3 col-xs-6">
-                      <a href="#set-9" class="hi-icon hi-icon-modal">
+                      <a href="" class="hi-icon hi-icon-modal">
                         <img class="hi-icon-img" src="img/BotonInstituciones.png">
                       </a>
                     </div>
                     <div class="col-md-3 col-sm-3 col-xs-6">
-                      <a href="#set-9" class="hi-icon hi-icon-modal">
+                      <a href="" class="hi-icon hi-icon-modal">
                         <img class="hi-icon-img" src="img/BotonProveedores.png">
                       </a>
                     </div>
@@ -162,8 +162,8 @@
     </div>
     <!-- /.modal -->
 
-    <div class="modal fade" id="RegModal" tabindex="-1" role="dialog" aria-labelledby="RegLabel">
-      <div class="modal-dialog modal-lg">
+    <div class="modal fade" id="RegPacModal" tabindex="-1" role="dialog" aria-labelledby="RegLabel">
+      <div class="modal-dialog modal-lg Flama-normal">
         <form method="POST" action="/reg/local" id="frm_regP">
           <div class="modal-content">
             <div class="modal-header">
@@ -174,17 +174,19 @@
             </div>
             <div class="modal-body">
               <div class="row">
-                <div class="col-md-6">
-                  <h3>Intermed &reg es mejor con facebook</h3>
-                  <input name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block" onclick="window.location='/auth/facebook'">
-                  <p>
-                    <h2>¡En un solo click!</h2>
-                    Utiliza tu cuenta de Facebook para registrarte en Intermed y conectate con tus amigos y conocidos.
-                    <br>
-                    <small>Intermed no comparte tus datos con terceras personas ni compañias externas</small>
+                 <div class="col-md-6 regFacebook">
+                   <h3>Intermed &reg es mejor <br>con Facebook</h3>
+                   <input name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block" onclick="window.location='/auth/facebook'">
+                   <h2 class="Flama-bold">¡En un solo click!</h2>
+                   <p class="s20 flamaBook-normal">
+                     Utiliza tu cuenta de Facebook para registrarte en Intermed y conectate con tus amigos y conocidos.
                   </p>
-                </div>
-                <div class="col-md-6">
+                  <p class="s15 flamaBook-normal">
+                     Intermed no comparte tus datos con terceras personas ni compañias externas.
+                   </p>
+                 </div>
+                 <hr class="separator">
+                <div class="col-md-6 regCorreo">
                   <h3>Registrate con tu correo electronico</h3>
                   <div class="row">
                     <div class="col-md-12">
@@ -265,7 +267,11 @@
               <div class="row">
               </div>
             </div>
-            <div class="modal-footer"></div>
+            <div class="modal-footer">
+               <p class="s15">
+                  <small>Al hacer clic en "Regístate", aceptas las <a href="">Condiciones</a> y confirmas que leíste nuestra <a href="">Política de datos</a>, incluido el <a href="">uso de cookies</a></small>.
+               </p>
+            </div>
         </form>
         </div>
         <!-- /.modal-content -->

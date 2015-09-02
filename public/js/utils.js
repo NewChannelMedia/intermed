@@ -219,3 +219,83 @@ function muestraMedico(id){
        $("#UpdateModal").modal("show");
   });
 }
+
+// formToWizard
+/* Created by jankoatwarpspeed.com */
+
+(function($) {
+    $.fn.formToWizard = function() {
+        /*options = $.extend({
+            submitButton: ''
+        }, options);*/
+
+        var element = this;
+
+        var steps = $(element).find(".slide");
+        var count = steps.size();
+        //var submmitButtonName = "#" + options.submitButton;
+        //$(submmitButtonName).hide();
+
+        // 2
+        $(element).find(".modal-header").find(".close").remove();
+        $(element).find(".modal-header").append("<ul id='steps' class='stepBullets pull-right'></ul>");
+
+        steps.each(function(i) {
+            $(this).wrap("<div id='step" + i + "'></div>");
+            $(this).find(".EndButtons").addClass("step" + i + "c");
+            $(this).find(".EndButtons").append("<p id='step" + i + "c'></p>");
+
+            // 2
+            var name = $(this).find(".modal-footer").html();
+            $("#steps").append("<li id='stepDesc" + i + "'><span class='glyphicon glyphicon-chevron-right'></span></li>");
+
+            if (i == 0) {
+                createNextButton(i);
+                selectStep(i);
+            }
+            else if (i == count - 1) {
+                $("#step" + i).hide();
+                createPrevButton(i);
+            }
+            else {
+                $("#step" + i).hide();
+                createPrevButton(i);
+                createNextButton(i);
+            }
+        });
+
+        function createPrevButton(i) {
+            var stepName = "step" + i;
+            //$("#" + stepName + "c").append("<a href='#' id='" + stepName + "Prev' class='prev'>< Back</a>");
+            $("#" + stepName + "c").append("<a href='#' id='" + stepName + "Prev' class='btn btn-default btn-block prev'><span class='glyphicon glyphicon-arrow-left'></span></a>");
+
+            $("#" + stepName + "Prev").bind("click", function(e) {
+                $("#" + stepName).hide();
+                $("#step" + (i - 1)).show();
+                //$(submmitButtonName).hide();
+                selectStep(i - 1);
+            });
+        }
+
+        function createNextButton(i) {
+            var stepName = "step" + i;
+            //$("#" + stepName + "c").append("<a href='#' id='" + stepName + "Next' class='next'>Next ></a>");
+            $("#" + stepName + "c").append("<a href='#' id='" + stepName + "Next' class='btn btn-default btn-block next'><span class='glyphicon glyphicon-arrow-right'></span></a>");
+
+
+            $("#" + stepName + "Next").bind("click", function(e) {
+                $("#" + stepName).hide();
+                $("#step" + (i + 1)).show();
+                if (i + 2 == count)
+                    //$(submmitButtonName).show();
+                selectStep(i + 1);
+            });
+        }
+
+        function selectStep(i) {
+            $("#steps li").removeClass("current");
+            $("#stepDesc" + i).addClass("current");
+        }
+
+    }
+})(jQuery);
