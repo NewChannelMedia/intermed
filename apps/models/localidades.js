@@ -12,9 +12,9 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-          Localidad.belongsTo(models.Estado);
-          Localidad.belongsTo(models.Municipio);
           Localidad.belongsTo(models.Ciudad);
+          Localidad.belongsTo(models.Municipio);
+          Localidad.belongsTo(models.Estado);
           Localidad.hasMany(models.Direccion);
           Localidad.belongsTo(models.TipoLocalidad);
       }

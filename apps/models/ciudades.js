@@ -12,7 +12,7 @@ module.exports = function(sequelize, DataTypes) {
           Ciudad.belongsTo(models.Estado);
           Ciudad.belongsTo(models.Municipio);
           Ciudad.hasMany(models.Localidad);
-      }
+      },
     },
     timestamps: false,
     paranoid: true,
