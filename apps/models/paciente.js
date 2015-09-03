@@ -9,7 +9,9 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         Paciente.belongsTo(models.Usuario)
-        Paciente.hasOne(models.CalificacionCita)
+        Paciente.hasMany(models.CalificacionCita)
+        Paciente.hasMany(models.Agenda, {foreignKey : 'usuarioAtendido_id'})
+        Paciente.hasMany(models.Contacto)
       }
     },
     timestamps: false,

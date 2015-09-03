@@ -18,10 +18,13 @@ module.exports = function(sequelize, DataTypes) {
         Medico.hasMany(models.CalificacionMedico)
         Medico.belongsToMany(models.Especialidad,  {through: models.MedicoEspecialidad})
         Medico.belongsToMany(models.Padecimiento,  {through: models.MedicoPadecimiento})
-        Medico.hasMany(models.MedicoFavorito)
+
         Medico.hasMany(models.MedicoFormacion)
         Medico.hasMany(models.MedicoExperiencia)
         Medico.hasMany(models.Colegio)
+
+        Medico.hasMany(models.MedicoFavorito)
+
         Medico.belongsTo(models.Usuario, {
           onDelete: "CASCADE",
           foreignKey: {

@@ -16,17 +16,7 @@ module.exports = function(sequelize, DataTypes) {
         Agenda.hasOne(models.CalificacionCita);
         Agenda.belongsTo(models.Direccion);
         Agenda.belongsTo(models.Usuario);
-
-      /*
-      Agenda.belongsTo(models.Usuario, {foreignKey: {
-        name: 'usuario_id',
-        field: 'usuario_id'
-      }, as : 'Usuario'})
-      Agenda.belongsTo(models.Usuario, {foreignKey: {
-        name: 'usuarioAtendido_id',
-        field: 'usuarioAtendido_id'
-      },  as: 'UsuarioAtendio'})*/
-
+        Agenda.belongsTo(models.Paciente, {foreignKey : 'usuarioAtendido_id'});
       }
     },
     timestamps: false,

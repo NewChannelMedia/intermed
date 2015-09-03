@@ -298,10 +298,9 @@ var iniciar = function()
 		});
 
 		app.get('/agenda', function(req, res) {
-						models.Agenda.findAll({
+						models.Paciente.findAll({
 							include : [
-								{ model: models.Usuario},
-								{ model: models.Direccion}
+								{ model: models.Agenda,  include :[{ model: models.Usuario} ]}
 							]
 						})
 						.then(function(datos) {
@@ -426,6 +425,58 @@ var iniciar = function()
 							res.send(datos);
 						});
 		});
+
+
+		app.get('/contactos', function(req, res) {
+						models.Contacto.findAll({
+							include : [
+								{ model: models.Usuario},
+								{ model: models.Paciente},
+							]
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+
+		app.get('/addMedicoFavorito', function(req, res) {
+						var object = {  idUsuario : 1,  idMedico: 5};
+
+						models.MedicoFavorito.create(
+							{ usuario_id: object.idUsuario,
+								medico_id : object.idMedico
+							}
+						);
+
+						models.MedicoFavorito.findOne({
+							where :  { 	usuario_id: object.idUsuario,
+													medico_id : object.idMedico }
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
+
+		app.get('/addMedicoColega', function(req, res) {
+						var object = {  idUsuario : 1,  idMedico: 5};
+
+						models.MedicoFavorito.create(
+							{ usuario_id: object.idUsuario,
+								medico_id : object.idMedico
+							}
+						);
+
+						models.MedicoFavorito.findOne({
+							where :  { 	usuario_id: object.idUsuario,
+													medico_id : object.idMedico }
+						})
+						.then(function(datos) {
+							res.send(datos);
+						});
+		});
+
 }
 serv.server(app, 3000);
 //se exporta para que otro js lo pueda utilizar

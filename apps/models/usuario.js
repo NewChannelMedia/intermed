@@ -29,17 +29,8 @@ module.exports = function(sequelize, DataTypes) {
         Usuario.hasMany(models.CatalogoServicios)
         Usuario.hasOne(models.DatosFacturacion)
         Usuario.hasOne(models.Proveedor)
+        Usuario.hasMany(models.Contacto)
         Usuario.hasMany(models.MedicoFavorito)
-/*
-        Usuario.hasMany(models.Agenda, {foreignKey: {
-          name: 'usuario_id',
-          field: 'usuario_id'
-        }, as : 'Usuario'})
-
-        Usuario.hasMany(models.Agenda, {foreignKey: {
-          name: 'usuarioAtendido_id',
-          field: 'usuarioAtendido_id'
-        },  as: 'UsuarioAtendio'});*/
       }
     },
    timestamps: false,  //elimina los campos de crated_at, update_at y remove_at
