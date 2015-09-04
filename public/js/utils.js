@@ -188,7 +188,7 @@ function addMedico(record) {
 }
 
 function regMedValid() {
-    var inputs = ['nombreMed', 'apellidoMed', 'correoMed', 'telefonoMed', 'especialidadMed', 'calleMed', 'numeroMed', 'coloniaMed', 'cpMed', 'calle1Med', 'calle2Med', 'ciudadMed', 'estadoMed'];
+    var inputs = ['nombreMed', 'apellidoMed', 'correoMed', 'telefonoMed', 'especialidadMed', 'calleMed', 'numeroMed', 'slc_colonias', 'nmb_cp', 'calle1Med', 'calle2Med', 'slc_ciudades', 'slc_estados'];
     var valid = true;
     for (i = 0; i < inputs.length; i++) {
         if (document.getElementById(inputs[i]).value.length <= 0) {
