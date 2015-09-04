@@ -75,16 +75,15 @@ models.sequelize.transaction({
 
 		if (object['tipoRegistro'] === 'F') {
 
-			return models.Usuario.findAll({
+			return models.Usuario.findOne({
 					where: {
 						fbId: object['id']
 					}
-				})
-				.then(function(usuarios) {
-					usuario = usuarios[0];
+				}, {transaction: t})
+				.then(function(usuario) {
 					if (!usuario) {
 						//Usuario nuevo
-						models.Usuario.create({
+						return models.Usuario.create({
 								usuario: object['email'],
 								correo: object['email'],
 								tipoUsuario: object['tipoUsuario'],
@@ -92,22 +91,22 @@ models.sequelize.transaction({
 								fbId: object['id'],
 								estatusActivacion: 1,
 								urlFotoPerfil: object.picture.data.url
-							})
+							}, {transaction: t})
 							.then(function(usuario) {
 								usuario_id = usuario.id;
-								models.DatosGenerales.create({
+								return models.DatosGenerales.create({
 										nombre: object['first_name'],
 										apellidoP: object['last_name'],
 										apellidoM: '',
 										rfc: '',
 										usuario_id: usuario_id,
 										genero: object['gender']
-									})
+									}, {transaction: t})
 									.then(function(result) {
 										if (object['tipoUsuario'] === 'P') {
-											crearPaciente(req, res, object, usuario_id);
+											return crearPaciente(req, res, object, usuario_id, t);
 										} else if (object['tipoUsuario'] === 'M') {
-											crearMedico(req, res, object, usuario_id);
+											return crearMedico(req, res, object, usuario_id, t);
 										}
 									});
 							});
@@ -117,16 +116,15 @@ models.sequelize.transaction({
 					}
 				});
 		} else { //Registro por correo
-			return models.Usuario.findAll({
+			return models.Usuario.findOne({
 					where: {
 						correo: object['email']
 					}
-				})
-				.then(function(usuarios) {
-						usuario = usuarios[0];
+				}, {transaction: t})
+				.then(function(usuario) {
 						if (!usuario) {
 							//Usuario nuevo
-							models.Usuario.create({
+							return models.Usuario.create({
 									usuario: object['email'],
 									correo: object['email'],
 									password: object['password'],
@@ -134,13 +132,13 @@ models.sequelize.transaction({
 									tipoRegistro: object['tipoRegistro'],
 									estatusActivacion: 0,
 									token: ''
-								})
+								}, {transaction: t})
 								.then(function(usuario) {
 									var tokens = String(cryptomaniacs.doEncriptToken(usuario.id, object['tiempoStamp']));
 									console.log("Token vato loco " + tokens);
-									usuario.update({
+									return usuario.update({
 											token: tokens
-										})
+										}, {transaction: t})
 										.then(function(usuario) {
 											var datos = {
 												to: usuario.correo,
@@ -149,22 +147,22 @@ models.sequelize.transaction({
 												correo: usuario.correo,
 												token: usuario.token
 											};
-                      correoUser = usuario.correo;
+                      						correoUser = usuario.correo;
 											mail.mailer(datos, 'confirmar');//se envia el correo
 											usuario_id = usuario.id;
-											models.DatosGenerales.create({
+											return models.DatosGenerales.create({
 													nombre: object['first_name'],
 													apellidoP: object['last_name'],
 													apellidoM: '',
 													rfc: '',
 													usuario_id: usuario_id,
 													genero: object['gender']
-												})
+												}, {transaction: t})
 												.then(function(result) {
 													if (object['tipoUsuario'] === 'P') {
-														crearPaciente(req, res, object, usuario_id);
+														return crearPaciente(req, res, object, usuario_id, t);
 													} else if (object['tipoUsuario'] === 'M') {
-														crearMedico(req, res, object, usuario_id);
+														return crearMedico(req, res, object, usuario_id, t);
 													}
 												});
 										});
@@ -202,16 +200,16 @@ exports.correoDisponible = function(object, req, res) {
 		});
 };
 
-var crearPaciente = function(req, res, object, usuario_id) {
+var crearPaciente = function(req, res, object, usuario_id, t) {
 	//Se trata de un paciente
-	models.Paciente.create({
+	return models.Paciente.create({
 			usuario_id: usuario_id
-		})
+		}, {transaction: t})
 		.then(function(paciente) {
 			if (object['birthday'] != 'undefined-undefined-undefined') {
-				paciente.update({
+				return paciente.update({
 						fechaNac: object['birthday']
-					})
+					}, {transaction: t})
 					.then(function(result) {
 						generarSesion(req, res, usuario_id);
 					});
@@ -221,23 +219,23 @@ var crearPaciente = function(req, res, object, usuario_id) {
 		});
 }
 
-var crearMedico = function(req, res, object, usuario_id) {
+var crearMedico = function(req, res, object, usuario_id, t) {
 	//Se trata de un médico
-	models.Medico.create({
+	return models.Medico.create({
 			cedula: '',
 			codigoMedico: '',
 			usuario_id: usuario_id
-		})
+		}, {transaction: t})
 		.then(function(medico) {
 			// si se pudo insertar el médico, tomamos su id para pasarlo a medicos especialidades y agregarla
-			models.MedicoEspecialidad.create({
+			return models.MedicoEspecialidad.create({
 					tipo: '1',
 					titulo: '',
 					lugarEstudio: '',
 					medico_id: medico.id,
 					fecha: Date.now(),
 					especialidad_id: object['especialidadMed'] // Id de la especialidad
-				})
+				}, {transaction: t})
 				.then(function(result) {
 					generarSesion(req, res, usuario_id);
 				});
