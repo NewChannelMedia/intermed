@@ -114,12 +114,9 @@ var iniciar = function()
 		intermed.callController('Home', 'aboutPacientes', '', req, res);
 	});
 
-	app.get('/informacionusuario', function (req, res){
-		res.send(JSON.stringify(req.session.passport) + '<br/><a href="/">Regresar</a>');
-	});
-
+	//Router para request inicio de sesion o registro con facebook por medio de passport
 	app.get('/auth/facebook', passport.authenticate('facebook',  {scope: ['email','user_birthday','user_location','publish_actions']}));
-
+	//Callback con respuesta del inicio de sesion de facebook por passport (trae los datos del usuario)
 	app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }),
 		function(req, res) {
 			req.session.passport.user['tipoRegistro'] = 'F';
@@ -142,28 +139,33 @@ var iniciar = function()
 		intermed.callController('usuarios','activarCuenta', {token:tok}, req, res);
 	});
 	//<------------------------------------------------------------------------->
+	//Verificar por ajax si una cuenta de correo esta disponible para su registro
 	app.post('/correoDisponible', function( req, res ){
 			intermed.callController('usuarios', 'correoDisponible', req.body, req, res);
 		});
-
+	//Inicio de sesión para usuarios registrados por correo
 	app.post('/auth/correo', function( req, res){
 		intermed.callController('usuarios', 'iniciarSesion', req.body, req, res);
 	});
-
+	//Login para el usuario tipo admin
 	app.post('/loginLocal', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
 		res.redirect('/');
 	});
-
+	//Obtener con ajax las ciudades del estado_id enviado por post
 	app.post('/obtenerCiudades', function (req, res){
 		intermed.callController('ubicacion','obtieneCiudades', req.body, req, res);
 	});
-
+	//Obtener con ajax las localidades del estado_id y ciudad_id enviados por post
 	app.post('/obtenerLocalidades', function (req, res){
 		intermed.callController('ubicacion','obtieneLocalidades', req.body, req, res);
 	});
-
+	//Obtener con ajax el codigo postal de la localidad_id enviada por post
 	app.post('/buscarCP', function (req, res){
 		intermed.callController('ubicacion','encontrarPorCP', req.body, req, res);
+	});
+	//::Temporal::, solo para ver la información que tiene el usuario en su variable sesión
+	app.get('/informacionusuario', function (req, res){
+		res.send(JSON.stringify(req.session.passport) + '<br/><a href="/">Regresar</a>');
 	});
 
 	//  Pruebas  padecimientos y tipo especialidad
