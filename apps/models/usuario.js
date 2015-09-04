@@ -18,9 +18,13 @@ module.exports = function(sequelize, DataTypes) {
         Usuario.hasOne(models.Medico);
         Usuario.hasOne(models.Paciente);
         Usuario.hasOne(models.DatosGenerales);
-        Usuario.hasOne(models.Direccion);
-        Usuario.hasOne(models.Telefono);
-        //Usuario.hasOne(models.Especialidad);
+        Usuario.hasMany(models.Direccion);
+        Usuario.hasMany(models.Telefono);
+        Usuario.hasMany(models.Especialidad);
+        Usuario.hasOne(models.Estado);
+        Usuario.hasOne(models.Ciudad);
+        Usuario.hasMany(models.Padecimiento);
+        Usuario.hasOne(models.MedicoEspecialidad);
       }
     },
    timestamps: false,  //elimina los campos de crated_at, update_at y remove_at

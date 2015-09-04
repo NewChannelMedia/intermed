@@ -80,7 +80,10 @@ var iniciar = function()
 	app.get('/', function( req, res ){intermed.callController('Home','index',req.body,req,res)});//intermed.callController('Home', 'sayHello', '', req, res)});
 
 	// get y post de searchMedic
-	app.get( '/searchMedic', function( req, res){intermed.callController('Home', 'vacio','', req, res)});
+	app.get( '/searchMedic', function( req, res){
+		rutas.routeLife('interno','interno', hps);
+		intermed.callController('Home', 'vacio','', req, res);
+	});
 	app.post( '/searchMedic', function( req, res )
 	{
 		var busqueda = JSON.parse( JSON.stringify(req.body));
