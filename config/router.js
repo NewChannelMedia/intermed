@@ -151,6 +151,15 @@ var iniciar = function()
 	app.post('/loginLocal', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
 		res.redirect('/');
 	});
+	//Obtener el perfil del usuario de la sesión
+	app.get('/perfil', function (req, res){
+		rutas.routeLife('plataforma','plataforma/paciente', hps);
+		intermed.callController('home','perfil', req.body, req, res);
+	});
+	//Obtener con ajax la información de la sesión del usuario
+	app.post('/obtenerInformacionUsuario', function (req, res){
+		intermed.callController('usuarios','obtenerInformacionUsuario', '', req, res);
+	});
 	//Obtener con ajax las ciudades del estado_id enviado por post
 	app.post('/obtenerCiudades', function (req, res){
 		intermed.callController('ubicacion','obtieneCiudades', req.body, req, res);

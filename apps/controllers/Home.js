@@ -36,6 +36,30 @@ module.exports = {
 				res.render('home', {estados: estados})
 			});
 		},
+		perfil:function(object, req, res ){
+			req.session.passport.user = JSON.parse(JSON.stringify(
+				{
+					id:1,
+					fotoPerfil:'https://fbcdn-profile-a.akamaihd.net/hprofile-ak-xtf1/v/t1.0-1/p200x200/11889468_10206461139939549_4785168678102146365_n.jpg?oh=d0bc56911475435244e11a3fc0945a7d&oe=5661203E&__gda__=1454011048_7e69721703154a83648e218a21f8e996',
+					tipoUsuario:"P",
+					tipoRegistro:"F",
+					estatusActivacion:1,
+					name:'Cinthia Bermúdez Acosta',
+					Paciente_id:1,
+					ciudad:"Los Mochis",
+					estado:"Sinaloa"
+				}
+				));
+
+				var sesion = req.session.passport.user;
+
+				//Contar mensajes sin leer
+				sesion.mensajes = 1;
+				//Contar eventos nuevos o cercanos (Sin ver)
+				sesion.calendario = 5;
+
+			res.render('perfil', sesion);
+		},
 		aboutPacientes:function(object, req, res ){
 			res.render('pacientes', object)
 		},

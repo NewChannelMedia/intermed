@@ -287,7 +287,14 @@ var generarSesion = function(req, res, usuario_id) {
                             }));
                             req.session.passport.user[tipoUsuario + '_id'] = JSON.parse(JSON.stringify(extraInfo.id));
                         }
-                        res.redirect('/');
+                        var DireccionPrincipal = usuario.Direccions[0];
+                        if (DireccionPrincipal){
+                            console.log('DIRECCION');
+                            obtenerDatosLocalidad(DireccionPrincipal.localidad_id, req, res);
+                        }else{
+                            console.log('NO DIRECCION');
+                            res.redirect('/');
+                        }
                     });
             } else {
                 res.redirect('/');
@@ -295,14 +302,49 @@ var generarSesion = function(req, res, usuario_id) {
         });
 };
 
-function obtenerDatosLocalidad(localidad_id) {
+function obtenerDatosLocalidad(localidad_id, req, res) {
     models.sequelize.query("SELECT `Localidad`.`CP`, `Localidad`.`localidad`, `TipoLocalidad`.`id` AS 'tipo_id', `TipoLocalidad`.`tipo`, `Ciudad`.`id` AS 'ciudad_id', `Ciudad`.`ciudad`, `Municipio`.`id` AS 'municipio_id', `Municipio`.`municipio`, `Estado`.`id` AS 'estado_id', `Estado`.`estado` FROM `localidades` AS `Localidad`INNER JOIN `tipoLocalidad` AS `TipoLocalidad` ON `TipoLocalidad`.`id` = `Localidad`.`tipo_localidad_id` INNER JOIN `ciudades` AS `Ciudad` ON `Localidad`.`ciudad_id` = `Ciudad`.`id` and `Localidad`.`municipio_id` = `Ciudad`.`municipio_id` and `Localidad`.`estado_id` = `Ciudad`.`estado_id` INNER JOIN `municipios` AS `Municipio` ON `Localidad`.`municipio_id` = `Municipio`.`id` and `Localidad`.`estado_id` = `Municipio`.`estado_id` INNER JOIN `estados` AS `Estado` ON `Localidad`.`estado_id` = `Estado`.`id` WHERE `Localidad`.`id` = " + localidad_id + ";", {
             type: models.sequelize.QueryTypes.SELECT
         })
         .then(function(localidad) {
-            return JSON.parse(JSON.stringify(localidad));
+            console.log('LOCALIDAD: ' + JSON.stringify(localidad));
+            req.session.passport.user.ciudad = localidad[0].ciudad;
+            req.session.passport.user.estado = localidad[0].estado;
+            res.redirect('/');
         })
 }
+
+exports.obtenerInformacionUsuario = function (object, req, res){
+    if (req.session.passport.user && req.session.passport.user.id > 0){
+        var usuario_id = req.session.passport.user.id;
+        var tipoUsuario = 'Paciente';
+        if (req.session.passport.user.tipoUsuario == 'M'){
+            tipoUsuario = 'Medico';
+        }
+        {
+        models.Usuario.findOne({
+            where: {
+                id: usuario_id
+            },
+            attributes: ['id', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion'],
+            include: [{
+                model: models.DatosGenerales
+            }, {
+                model: models.Direccion, include: [{model: models.Localidad}]
+            }, {
+                model: models.Telefono
+            }, {
+                model: models.Biometrico
+            }, {
+                model: models.Paciente
+            }]
+        }).then(function (usuario){
+            usuario = JSON.parse(JSON.stringify(usuario));
+            res.send(usuario);
+        });
+    }
+}
+};
 
 exports.activarCuenta = function(object, req, res) {
     // se hace una consulta a usuario para traer el token condicionando lo del correo

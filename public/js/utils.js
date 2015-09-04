@@ -262,6 +262,22 @@ function obtenerCP() {
     });
 }
 
+function cargarInfoSesion(){
+    $.ajax({
+        url: '/obtenerInformacionUsuario',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        type: 'POST',
+        success: function(data) {
+            // al guardar cambios oculta la forma
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: (registro 166) : ' + err);
+        }
+    });
+}
+
 // función que actualiza médico.
 function actDoctor() {
     $.ajax({
