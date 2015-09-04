@@ -32,7 +32,9 @@ module.exports = {
 		*	vista.
 		*/
 		index:function(object, req, res ){
-			res.render('home', object)
+			models.Estado.findAll().then(function(estados){
+				res.render('home', {estados: estados})
+			});
 		},
 		aboutPacientes:function(object, req, res ){
 			res.render('pacientes', object)

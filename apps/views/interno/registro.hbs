@@ -1,153 +1,160 @@
 <section id="directorio">
-  <div class="container">
-    <div class="row">
-      <div class="panel">
-        <div class="panel-body">
-          <h4>Registrar nuevo:</h4>
-          <form method="POST" name="frmRegMed" id="frmRegMed">
-            <input type="hidden" id="id" name="id" value="">
-            <div class="col-md-6">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="nombreMed" name="nombreMed" placeholder="Nombre">
-                  </div>
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="apellidoMed" name="apellidoMed" placeholder="Apellido">
-                  </div>
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="correoMed" name="correoMed" placeholder="Correo">
-                  </div>
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="telefonoMed" name="telefonoMed" placeholder="Teléfono">
-                  </div>
+    <div class="container">
+        <div class="row">
+            <div class="panel">
+                <div class="panel-body">
+                    <h4>Registrar nuevo:</h4>
+                    <form method="POST" name="frmRegMed" id="frmRegMed">
+                        <input type="hidden" id="id" name="id" value="">
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="nombreMed" name="nombreMed" placeholder="Nombre">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="apellidoMed" name="apellidoMed" placeholder="Apellido">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="correoMed" name="correoMed" placeholder="Correo">
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="telefonoMed" name="telefonoMed" placeholder="Teléfono">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="especialidadMed" name="especialidadMed" placeholder="Especialidad">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control" name="estadoMed" id="slc_estados" onchange="obtenerCiudades()" required="true">
+                                            <option value="">Estado</option>
+                                            {{#each estados}}
+                                                <option value="{{id}}">{{estado}}</option>
+                                            {{/each}}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <select class="form-control" name="ciudadMed" id="slc_ciudades" onchange="obtenerColonias()" required="true">
+                                            <option value="">Ciudad</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <select class="form-control" name="coloniaMed" id="slc_colonias" onchange="obtenerCP()" required="true">
+                                        <option value="">Colonia</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <input type="number" class="form-control" minlength="4" maxlength="5" id="nmb_cp" name="cpMed" placeholder="Codigo Postal">
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="calleMed" name="calleMed" placeholder="Calle">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="numeroMed" name="numeroMed" placeholder="Numero">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="calle1Med" name="calle1Med" placeholder="Entre calle A">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" id="calle2Med" name="calle2Med" placeholder="Y calle B">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Guardar" onclick="regDoctor()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="especialidadMed" name="especialidadMed" placeholder="Especialidad">
-                  </div>
-                </div>
-              </div>
             </div>
-            <div class="col-md-6">
-              <div class="row">
-                <div class="col-md-8">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="calleMed" name="calleMed" placeholder="Calle">
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="numeroMed" name="numeroMed" placeholder="Numero">
-                  </div>
-                </div>
-                <div class="col-md-8">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="coloniaMed" name="coloniaMed" placeholder="Colonia">
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="cpMed" name="cpMed" placeholder="Codigo Postal">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="calle1Med" name="calle1Med" placeholder="Entre calle A">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="calle2Med" name="calle2Med" placeholder="Y calle B">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="ciudadMed" name="ciudadMed" placeholder="Ciudad">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="estadoMed" name="estadoMed" placeholder="Estado">
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Guardar" onclick="regDoctor()">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
         </div>
-      </div>
     </div>
-  </div>
 
-  <div class="container">
-    <div class="row">
-      <div class="panel">
-        <div class="panel-body">
-          <h4>Lista de medicos registrados</h4>
-          <form>
-            <table class="table">
-              <caption></caption>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Nombre Completo</th>
-                  <th>Correo</th>
-                  <th>Teléfono</th>
-                  <th>Dirección</th>
-                  <th>Especialidad</th>
-                  <th>Editar
-                    <a href="#" data-toggle="modal" data-target="#UpdateModal" onclick="muestraMedico(12);">
-                      <span class="glyphicon glyphicon-pencil"></span>
-                    </a>
-                  </th>
-                </tr>
-              </thead>
-              <tbody id='tbmedReg'>
-              </tbody>
-            </table>
-          </form>
+    <div class="container">
+        <div class="row">
+            <div class="panel">
+                <div class="panel-body">
+                    <h4>Lista de medicos registrados</h4>
+                    <form>
+                        <table class="table">
+                            <caption></caption>
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nombre Completo</th>
+                                    <th>Correo</th>
+                                    <th>Teléfono</th>
+                                    <th>Dirección</th>
+                                    <th>Especialidad</th>
+                                    <th>Editar
+                                        <a href="#" data-toggle="modal" data-target="#UpdateModal" onclick="muestraMedico(12);">
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                        </a>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id='tbmedReg'>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </section>
 
 <div>
-  <div class="modal fade" id="UpdateModal" tab-index="-1" role="dialog" aria-labelledby="UpdateLabel">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-          <h4>Actualizar</h4>
-        </div>
+    <div class="modal fade" id="UpdateModal" tab-index="-1" role="dialog" aria-labelledby="UpdateLabel">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4>Actualizar</h4>
+                </div>
 
-        <div class="modal-body">
+                <div class="modal-body">
 
-        </div>
+                </div>
 
-        <div class="modal-footer">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="form-group">
-                <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Guardar" onclick="actDoctor()">
-              </div>
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Guardar" onclick="actDoctor()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <!--

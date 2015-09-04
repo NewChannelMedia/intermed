@@ -154,6 +154,17 @@ var iniciar = function()
 		res.redirect('/');
 	});
 
+	app.post('/obtenerCiudades', function (req, res){
+		intermed.callController('ubicacion','obtieneCiudades', req.body, req, res);
+	});
+
+	app.post('/obtenerLocalidades', function (req, res){
+		intermed.callController('ubicacion','obtieneLocalidades', req.body, req, res);
+	});
+
+	app.post('/buscarCP', function (req, res){
+		intermed.callController('ubicacion','encontrarPorCP', req.body, req, res);
+	});
 
 	//  Pruebas  padecimientos y tipo especialidad
 
