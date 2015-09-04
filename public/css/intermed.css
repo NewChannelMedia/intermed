@@ -533,8 +533,8 @@ footer a, footer a:active, footer a:hover, footer a:visited {
 }
 
 #CatRegModal .modal-header, #RegPacModal .modal-header, #RegMedModal .modal-header, #LoginModal .modal-header {
-  margin: 20px 25px;
-  padding: 5px 0;
+  margin: 20px 15px;
+  padding: 5px 15px;
   border-bottom: solid 5px #76b6dd;
 }
 
@@ -558,55 +558,82 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   background-color: #fbad18;
 }
 
+#RegPacModal .modal-body, #RegMedModal .modal-body {
+  padding: 0 15px;
+  position: relative;
+}
+
 #RegPacModal .modal-footer, #RegMedModal .modal-footer {
   text-align: center;
   border: 0;
+  padding: 0 15px;
 }
-
 
 #CatRegModal .hi-icon {
   background-color: #fbad18;
 }
 
+.regCorreo, .regFacebook, .regPersonales {
+  padding: 20px 30px;
+}
+
 .regFacebook {
-  padding: 55px;
   text-align: center;
 }
 
-.regCorreo {
-   padding: 0 50px;
-}
-
 .separator {
-  position: absolute;
-  right: 0;
-  bottom: 47%;
-  left: 0;
-  width: 500px;
+  position: relative;
+  top: 205px;
+  width: 400px;
+  margin: 0 auto;
+  padding: 0;
   -webkit-transform: rotate(90deg);
   -ms-transform: rotate(90deg);
   transform: rotate(90deg);
   border: 2px solid #757575;
 }
-.slide {}
+.separator2{
+   border: 5px solid #fbad18;
+   margin: 10px 0;
+}
 .stepBullets {
-   list-style: none;
-   margin: -30px 0;
+  margin: -30px 0;
+  list-style: none;
 }
+
 .stepBullets li {
-   float: left;
-   margin-right: 15px;
+  float: left;
+  margin-left: 15px;
 }
 
+.stepBullets .current {
+  background-color: #fbad18;
+}
 
-.visibleSlide {
-   visibility: visible;
-   display: block;
+.bnvndReg {
+   padding-top: 18px;
 }
-.notVisibleSlide {
-   visibility: hidden;
-   display: none;
+
+.bnvndReg h4 {
+  margin: 0;
+  padding: 10px 15px;
+  color: #fff;
+  background-color: #fbad18;
 }
+.grlsReg {
+  display: block;
+  height: auto;
+  padding: 10px 15px;
+  background-color: #d8d8d8;
+}
+.verificarAddon {
+   padding: 0;
+}
+.verificarBtn {
+   padding: 5px 12px;
+   border-radius: 0px;
+}
+
 
 /* ------ icons hover effect ------ */
 
