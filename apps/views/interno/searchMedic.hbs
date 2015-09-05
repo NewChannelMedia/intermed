@@ -124,17 +124,21 @@
                           <span class="label label-topDr">Top Doctor</span> Dr.{{DatosGenerale.nombre}} {{DatosGenerale.apellidoP}} {{DatosGenerale.apellidoM}}.
                         </h4>
                         <ul class="list-unstyled list-inline">
-                            {{#each Medico.Especialidads}}
-                              <li>
-                                <strong>{{especialidad}}</strong>
-                              </li>
+                            {{#each Medico.MedicoEspecialidads}}
+                                {{#unless subEsp}}
+                                <li>
+                                  <strong>{{Especialidad.especialidad}}</strong>
+                                </li>
+                                {{/unless}}
                             {{/each}}
                         </ul>
                         <ul class="list-unstyled list-inline">
                             {{#each Medico.MedicoEspecialidads}}
-                              <li>
-                                {{subEs}}
-                              </li>
+                                {{#if subEsp}}
+                                <li>
+                                  {{Especialidad.especialidad}}
+                                </li>
+                                {{/if}}
                             {{/each}}
                         </ul>
                         <ul class="list-inline">
