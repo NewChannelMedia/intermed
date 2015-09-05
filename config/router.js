@@ -79,10 +79,13 @@ var iniciar = function()
 	//LogOut
 	app.get('/logout', function( req, res , next){intermed.callController('session','logout', {}, req, res)});
 	//Home
-	app.get('/', function( req, res ){intermed.callController('Home','index','',req,res)});//intermed.callController('Home', 'sayHello', '', req, res)});
+	app.get('/', function( req, res ){intermed.callController('Home','index',req.body,req,res)});//intermed.callController('Home', 'sayHello', '', req, res)});
 
 	// get y post de searchMedic
-	app.get( '/searchMedic', function( req, res){intermed.callController('Home', 'vacio','', req, res)});
+	app.get( '/searchMedic', function( req, res){
+		rutas.routeLife('interno','interno', hps);
+		intermed.callController('Home', 'vacio','', req, res);
+	});
 	app.post( '/searchMedic', function( req, res )
 	{
 		var busqueda = JSON.parse( JSON.stringify(req.body));

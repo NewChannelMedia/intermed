@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        Especialidad.belongsToMany(models.Medico,  {through: models.MedicoEspecialidad})
+        Especialidad.hasMany(models.MedicoEspecialidad)
         Especialidad.belongsTo(models.TipoEspecialidad, {foreignKey: {
           name: 'tipoEspecialidad_id',
           field: 'tipoEspecialidad_id'
