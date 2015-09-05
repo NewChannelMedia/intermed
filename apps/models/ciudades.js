@@ -8,8 +8,9 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-          Ciudad.belongsTo(models.Estado);
-          Ciudad.hasMany(models.Direccion);
+          Ciudad.belongsTo(models.Estado)
+          Ciudad.hasMany(models.Direccion)
+          Ciudad.hasMany(models.MedicoExperiencia)        
       }
     },
     timestamps: false,

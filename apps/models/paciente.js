@@ -8,7 +8,10 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        //User.hasOne(models.Medico)
+        Paciente.belongsTo(models.Usuario)
+        Paciente.hasMany(models.CalificacionCita)
+        Paciente.hasMany(models.Agenda, {foreignKey : 'usuarioAtendido_id'})
+        Paciente.hasMany(models.Contacto)
       }
     },
     timestamps: false,

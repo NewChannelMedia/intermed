@@ -11,7 +11,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        //User.hasOne(models.Medico)
+        Biometrico.belongsTo(models.Usuario)
       }
     },
     timestamps: false,
