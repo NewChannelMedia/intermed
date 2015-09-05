@@ -243,69 +243,88 @@ var crearMedico = function(req, res, object, usuario_id, t) {
 }
 
 var generarSesion = function(req, res, usuario_id) {
-	models.Usuario.findAll({
-			where: {
-				id: usuario_id
-			},
-			include: [{
-				model: models.DatosGenerales
-			}, {
-				model: models.Paciente
-			}, {
-				model: models.Direccion
-			}, {
-				model: models.Telefono
-			}, ]
-		})
-		.then(function(usuario) {
-			if (usuario[0]) {
-				req.session.passport.user = JSON.parse(JSON.stringify(usuario[0]));
-				req.session.passport.user.name = usuario[0].DatosGenerale.nombre + ' ' + usuario[0].DatosGenerale.apellidoP;
-				if (usuario[0].tipoUsuario === 'P') {
-					var tipoUsuario = 'Paciente';
-				} else if (usuario[0].tipoUsuario === 'M') {
-					var tipoUsuario = 'Medico';
-				}
-				models[tipoUsuario].findAll({
-						where: {
-							usuario_id: usuario_id
-						}
-					})
-					.then(function(extraInfo) {
-						if (extraInfo[0]) {
-							req.session.passport.user['userInfo'] = JSON.parse(JSON.stringify(extraInfo[0]));
-							res.redirect('/');
-						} else {
-							res.redirect('/');
-						}
-					});
-			} else {
-				req.session.passport = {};
-				res.redirect('/');
-			}
-		});
+    req.session.passport = {};
+    models.Usuario.findOne({
+            where: {
+                id: usuario_id
+            },
+            attributes: ['id', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion'],
+            include: [{
+                model: models.DatosGenerales,
+                attributes: ['nombre', 'apellidoP']
+            }, {
+                model: models.Direccion,
+                attributes: ['localidad_id']
+            }]
+        })
+        .then(function(usuario) {
+            if (usuario) {
+                console.log('Generando variables de sesión...');
+                if (usuario.tipoUsuario === 'P') {
+                    var tipoUsuario = 'Paciente';
+                } else if (usuario.tipoUsuario === 'M') {
+                    var tipoUsuario = 'Medico';
+                }
+                models[tipoUsuario].findOne({
+                        where: {
+                            usuario_id: usuario_id
+                        },
+                        attributes: ['id']
+                    })
+                    .then(function(extraInfo) {
+                        if (extraInfo) {
+                            req.session.passport.user = JSON.parse(JSON.stringify({
+                                'id': usuario.id,
+                                'fotoPerfil': usuario.urlFotoPerfil,
+                                'tipoUsuario': usuario.tipoUsuario,
+                                'tipoRegistro': usuario.tipoRegistro,
+                                'estatusActivacion': usuario.estatusActivacion,
+                                'name': usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP
+                            }));
+                            req.session.passport.user[tipoUsuario + '_id'] = JSON.parse(JSON.stringify(extraInfo.id));
+                        }
+                        res.redirect('/');
+                    });
+            } else {
+                res.redirect('/');
+            }
+        });
 };
+
+function obtenerDatosLocalidad(localidad_id) {
+    models.sequelize.query("SELECT `Localidad`.`CP`, `Localidad`.`localidad`, `TipoLocalidad`.`id` AS 'tipo_id', `TipoLocalidad`.`tipo`, `Ciudad`.`id` AS 'ciudad_id', `Ciudad`.`ciudad`, `Municipio`.`id` AS 'municipio_id', `Municipio`.`municipio`, `Estado`.`id` AS 'estado_id', `Estado`.`estado` FROM `localidades` AS `Localidad`INNER JOIN `tipoLocalidad` AS `TipoLocalidad` ON `TipoLocalidad`.`id` = `Localidad`.`tipo_localidad_id` INNER JOIN `ciudades` AS `Ciudad` ON `Localidad`.`ciudad_id` = `Ciudad`.`id` and `Localidad`.`municipio_id` = `Ciudad`.`municipio_id` and `Localidad`.`estado_id` = `Ciudad`.`estado_id` INNER JOIN `municipios` AS `Municipio` ON `Localidad`.`municipio_id` = `Municipio`.`id` and `Localidad`.`estado_id` = `Municipio`.`estado_id` INNER JOIN `estados` AS `Estado` ON `Localidad`.`estado_id` = `Estado`.`id` WHERE `Localidad`.`id` = " + localidad_id + ";", {
+            type: models.sequelize.QueryTypes.SELECT
+        })
+        .then(function(localidad) {
+            return JSON.parse(JSON.stringify(localidad));
+        })
+}
+
 exports.activarCuenta = function(object, req, res) {
-	// se hace una consulta a usuario para traer el token condicionando lo del correo
-	//consulta
-	models.Usuario.findOne({
-			where: {
-				token: object.token
-			}
-		})
-		.then(function(usuario) {
-			if (usuario) {
-				if (usuario.estatusActivacion === 0) {
-					usuario.update({
-						estatusActivacion: 1
-					});
-					res.render('activado',{correo:usuario.correo})
-				} else {
-					res.render('noactivado', {correo:usuario.correo});
-				}
-			} else {
-				res.status(200)
-					.send('<h1>Usuario no existe</h1>');
-			}
-		});
+    // se hace una consulta a usuario para traer el token condicionando lo del correo
+    //consulta
+    models.Usuario.findOne({
+            where: {
+                token: object.token
+            }
+        })
+        .then(function(usuario) {
+            if (usuario) {
+                if (usuario.estatusActivacion === 0) {
+                    usuario.update({
+                        estatusActivacion: 1
+                    });
+                    res.render('activado', {
+                        correo: usuario.correo
+                    })
+                } else {
+                    res.render('noactivado', {
+                        correo: usuario.correo
+                    });
+                }
+            } else {
+                res.status(200)
+                    .send('<h1>Usuario no existe</h1>');
+            }
+        });
 }

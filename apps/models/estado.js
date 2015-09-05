@@ -7,9 +7,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        Estado.hasMany(models.Ciudad);
-        Estado.hasMany(models.Direccion);
-        Estado.hasMany(models.MedicoExperiencia);
+        Estado.hasMany(models.Localidad);
       }
     },
     timestamps: false,

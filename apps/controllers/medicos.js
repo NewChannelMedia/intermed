@@ -105,15 +105,12 @@ module.exports = {
             }, {transaction: t}).then(function (result){
                   return models.Direccion.create({
                     calle: object['calleMed'],
-                    numero: object['numeroMed'],
-                    calle1: object['calle1Med'],
-                    calle2: object['calle2Med'],
-                    colonia: object['coloniaMed'],
-                    estado_id: object['estadoMed'],  //Id del estado
-                    ciudad_id: object['ciudadMed'],
-                    cp: object['cpMed'],
-                    principal: 1,
-                    usuario_id: id
+                numero: object['numeroMed'],
+                calle1: object['calle1Med'],
+                calle2: object['calle2Med'],
+                localidad_id: 20024,
+                principal: 1,
+                usuario_id: id
                 }, {transaction: t}).then(function (result){
                       return models.Telefono.create({
                           tipo: '1',

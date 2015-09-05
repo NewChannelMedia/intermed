@@ -2,7 +2,9 @@
  *   Archivo creado por Cinthia
  *
  */
+
 var regTotalDoc = 0;
+
 
 if (location.pathname === '/registro') {
     $(document).ready(getAllDoctors());
@@ -36,16 +38,18 @@ if (location.pathname === '/registro') {
                 }
             }
 
-            if (submit){
+            if (submit) {
                 var correo = document.getElementById('correoReg').value;
                 if (correoValido(correo)) {
                     $.ajax({
-                        async:false,
+                        async: false,
                         url: '/correoDisponible',
                         type: 'POST',
                         dataType: "json",
                         cache: false,
-                        data: {'email':correo},
+                        data: {
+                            'email': correo
+                        },
                         success: function(data) {
                             submit = data.result;
                             if (!submit) mensaje = "El correo " + correo + ' ya se encuentra registrado.';
@@ -95,12 +99,14 @@ function existeCorreo() {
     var correo = document.getElementById('correoReg').value;
     if (correoValido(correo)) {
         $.ajax({
-            async:true,
+            async: true,
             url: '/correoDisponible',
             type: 'POST',
             dataType: "json",
             cache: false,
-            data: {'email':correo},
+            data: {
+                'email': correo
+            },
             success: function(data) {
                 console.log('DATA ' + data.result);
                 return data.result;
@@ -113,7 +119,7 @@ function existeCorreo() {
     }
 }
 
-function correoValido(correo){
+function correoValido(correo) {
     return true;
 }
 
@@ -182,7 +188,7 @@ function addMedico(record) {
 }
 
 function regMedValid() {
-    var inputs = ['nombreMed', 'apellidoMed', 'correoMed', 'telefonoMed', 'especialidadMed', 'calleMed', 'numeroMed', 'coloniaMed', 'cpMed', 'calle1Med', 'calle2Med', 'ciudadMed', 'estadoMed'];
+    var inputs = ['nombreMed', 'apellidoMed', 'correoMed', 'telefonoMed', 'especialidadMed', 'calleMed', 'numeroMed', 'slc_colonias', 'nmb_cp', 'calle1Med', 'calle2Med', 'slc_ciudades', 'slc_estados'];
     var valid = true;
     for (i = 0; i < inputs.length; i++) {
         if (document.getElementById(inputs[i]).value.length <= 0) {
@@ -193,29 +199,91 @@ function regMedValid() {
     return valid;
 }
 
+function obtenerCiudades() {
+    document.getElementById('slc_ciudades').innerHTML = '<option value="">Ciudad</option>';
+    $.ajax({
+        url: '/obtenerCiudades',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: {
+            'estado_id': document.getElementById('slc_estados').value
+        },
+        success: function(data) {
+            data.ciudades.forEach(function(record) {
+                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.id + '">' +  record.ciudad + '</option>';
+            });
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
+
+function obtenerColonias() {
+    document.getElementById('slc_colonias').innerHTML = '<option value="">Colonia</option>';
+    $.ajax({
+        url: '/obtenerLocalidades',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: {
+            'estado_id': document.getElementById('slc_estados').value,
+            'ciudad_id': document.getElementById('slc_ciudades').value
+        },
+        success: function(data) {
+            data.localidades.forEach(function(record) {
+                document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' +  record.localidad + '</option>';
+            });
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
+
+
+function obtenerCP() {
+    document.getElementById('nmb_cp').value = '';
+    $.ajax({
+        url: '/buscarCP',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: {
+            'localidad_id': document.getElementById('slc_colonias').value
+        },
+        success: function(data) {
+            document.getElementById('nmb_cp').value = data.cp;
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
 
 // función que actualiza médico.
-function actDoctor(){
-  $.ajax({
-     url: '/actualizaMedico',
-     type: 'POST',
-     dataType: "json",
-     cache: false,
-     data: $('#frmActMed').serialize(),
-     type: 'POST',
-     success: function(data){
-       // al guardar cambios oculta la forma
-       $("#UpdateModal").modal("hide");
-    }
-    , error: function(jqXHR, textStatus, err){
-     console.error('AJAX ERROR: (registro 166) : ' + err );
-   }
- });
+function actDoctor() {
+    $.ajax({
+        url: '/actualizaMedico',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: $('#frmActMed').serialize(),
+        type: 'POST',
+        success: function(data) {
+            // al guardar cambios oculta la forma
+            $("#UpdateModal").modal("hide");
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: (registro 166) : ' + err);
+        }
+    });
 }
 
 // muestra la ventana para editar al médico
-function muestraMedico(id){
-  $("#UpdateModal .modal-body").load("edicionMedico/" + id, function() {
-       $("#UpdateModal").modal("show");
-  });
+function muestraMedico(id) {
+    $("#UpdateModal .modal-body").load("edicionMedico/" + id, function() {
+        $("#UpdateModal").modal("show");
+    });
 }

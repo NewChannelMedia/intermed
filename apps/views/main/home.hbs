@@ -133,21 +133,18 @@
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
-                    <select class="form-control" name="ciudad">
-                      <option>Ciudad</option>
-                      <option>Guadalajara</option>
-                      <option>Zapopan</option>
-                      <option>Tlaquepaque</option>
+                    <select class="form-control" name="estado" id="slc_estados"  onchange="obtenerCiudades()">
+                      <option value ="0">Estado</option>
+                      {{#each estados}}
+                        <option value="{{id}}">{{estado}}</option>
+                      {{/each}}
                     </select>
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
-                    <select class="form-control" name="colonia">
-                      <option>Colonia</option>
-                      <option>chapalita</option>
-                      <option>arcos</option>
-                      <option>central</option>
+                    <select class="form-control" name="ciudad" id="slc_ciudades">
+                      <option value="0">Ciudad</option>
                     </select>
                   </div>
                 </div>
