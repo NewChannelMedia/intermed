@@ -93,6 +93,9 @@ module.exports = {
 			var condicionEstado = (object.estado != '0')?{ estado_id: object.estado}:condicionEstado = '';
 			var condicionCiudad = (object.ciudad != '0')?{ ciudad_id:object.ciudad}:condicionCiudad = '';
 			models.Usuario.findAll({
+				where: {
+					tipoUsuario: 'M'
+				},
 				include:[
 					{model: models.Medico,attributes:['id','cedula'],
 						include: [
