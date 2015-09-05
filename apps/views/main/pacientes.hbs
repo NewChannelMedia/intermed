@@ -103,7 +103,7 @@
           <div class="slide">
             <div class="modal-body regPersonales">
               <form class="">
-                <div class="row bnvndReg">
+                <div class="row topMsgReg">
                   <div class="col-md-12">
                     <h4 class="Flama-bold">¡Bienvenido Dr. Fulano de Tal!
                       <small>Por favor llena los siguientes campos para continuar con tu registro.</small>
@@ -115,7 +115,7 @@
                     <div id="alertError"></div>
                   </div>
                   <div class="col-md-12">
-                    <div class="grlsReg">
+                    <div class="regBox rB-gray">
                       <div class="row">
                         <div class="col-md-4">
                           <div class="form-group">
@@ -138,11 +138,11 @@
                       </div>
                       <div class="row">
                         <div class="col-md-6">
-                           <div class="row">
-                              <div class="col-md-12">
-                                 <label class="Flama-normal s15" >Fecha de Nacimiento</label>
-                              </div>
-                           </div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <label class="Flama-normal s15">Fecha de Nacimiento</label>
+                            </div>
+                          </div>
                           <div class="row">
                             <div class="col-md-4">
                               <div class="form-group">
@@ -162,9 +162,9 @@
                           </div>
                         </div>
                         <div class="col-md-6">
-                          <h4>
-                            <small>Sexo</small>
-                          </h4>
+                          <div class="col-md-12">
+                            <label class="Flama-normal s15">Sexo</label>
+                          </div>
                           <div class="col-md-6">
                             <div class="radio">
                               <label>
@@ -183,7 +183,7 @@
                       </div>
                     </div>
                     <hr class="separator2">
-                    <div class="grlsReg">
+                    <div class="regBox rB-gray">
                       <div class="row">
                         <div class="col-md-6">
                           <div class="form-group">
@@ -216,19 +216,42 @@
             </div>
           </div>
           <div class="slide">
-            <div class="modal-body">
+            <div class="modal-body regPago">
+<form></form>
+              <div class="row topMsgReg">
+                 <div class="col-md-8">
+                    <h4 class="Flama-bold">Selecciona tu forma de pago.</h4>
+                 </div>
+                 <div class="col-md-4 msgPrecio">
+                    <p class="FlamaBook s15">Recuerda que tu suscripción tiene un costo mensual de $1,000.00</h4>
+                 </div>
+              </div>
               <div class="row">
-                <div class="col-md-12 regCorreo">
-                  <h3>Regístra tu forma de pago</h3>
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div id="alertError"></div>
-                    </div>
+                 <div class="col-md-12">
+                    <div id="alertError"></div>
+                 </div>
+                 <div class="col-md-12">
+                    <div class="regBox rB-gray">
+                       <div class="row">
+                          <div class="col-md-3">
+                             <div class="form-group">
+                               <label class="Flama-normal s15" for="nombreRegMed">Nombres</label>
+                               <input type="text" class="form-control" id="nombreRegMed" name="nombreRegMed" placeholder="Nombres">
+                             </div>
+                          </div>
+                          <div class="col-md-6">
 
-                    <div class="col-md-12">
-                      <input type="submit" id="regi" name="registroCorreo" value="Registrate" class="btn btn-success btn-block btn-step">
+                          </div>
+                          <div class="col-md-3">
+
+                          </div>
+                       </div>
                     </div>
-                  </div>
+                 </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">
+                  <input type="submit" id="regresaPersonales" name="regresaPersonales" value="Regresar" class="btn btn-danger btn-block">
                 </div>
               </div>
               <div class="row EndButtons"></div>

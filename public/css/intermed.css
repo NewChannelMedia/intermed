@@ -610,22 +610,30 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   background-color: #fbad18;
 }
 
-.bnvndReg {
+.topMsgReg {
    padding-top: 18px;
 }
-
-.bnvndReg h4 {
+.topMsgReg .msgPrecio {
+   margin-bottom: -40px;
+   top: -38px;
+}
+.topMsgReg .msgPrecio p {
+   background-color: none;
+}
+.topMsgReg h4 {
   margin: 0;
   padding: 10px 15px;
   color: #fff;
   background-color: #fbad18;
 }
-.grlsReg {
+.regBox {
   display: block;
   height: auto;
   padding: 10px 15px;
-  background-color: #d8d8d8;
 }
+.rB-gray { background-color: #d8d8d8; }
+.rB-orange { background-color: #fbad18; }
+
 .verificarAddon {
    padding: 0;
 }
