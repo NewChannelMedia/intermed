@@ -230,88 +230,94 @@ function muestraMedico( id ) {
 	} );
 }
 
+$( document ).ready( function MakeWizard() {
+	$( "#RegMedModal" ).formToWizard()
+} );
 
+// formToWizard
+( function( $ ) {
+	$.fn.formToWizard = function() {
+		var element = this;
 
-     $(document).ready(function MakeWizard() {
-       $("#RegMedModal").formToWizard({
-         submitButton: 'SaveAccount'
-       })
-     });
+		var steps = $( element ).find( ".step" );
+		var count = steps.size();
 
-	// formToWizard
-	( function( $ ) {
-		$.fn.formToWizard = function() {
-			/*options = $.extend({
-			    submitButton: ''
-			}, options);*/
+		$( element ).find( ".modal-header" ).find( ".close" ).remove();
+		$( element ).find( ".modal-header" ).append( "<div class='stepsContainer pull-right'><ul id='steps' class='stepsList'></ul></div>" );
+		$( element ).find( ".stepsContainer" ).append( "<span class='stepsConnector'></span>" );
 
-			var element = this;
+		steps.each( function( i ) {
+			$( this ).wrap( "<div id='step" + i + "'></div>" );
+			$( this ).find( ".EndButtons" ).addClass( "step" + i + "c" );
+			$( this ).find( ".EndButtons" ).append( "<p id='step" + i + "c'></p>" );
 
-			var steps = $( element ).find( ".slide" );
-			var count = steps.size();
-			//var submmitButtonName = "#" + options.submitButton;
-			//$(submmitButtonName).hide();
+			var name = $( this ).find( ".modal-footer" ).html();
+			$( "#steps" ).append( "<li id='stepDesc" + i + "' class='stepBullets'>" + i + "</li>" );
+			if ( i == 0 ) {
+				createNextButton( i );
+				selectStep( i );
+			}
+			else if ( i == count - 1 ) {
+				$( "#step" + i ).hide();
+				createPrevButton( i );
+			}
+			else {
+				$( "#step" + i ).hide();
+				createPrevButton( i );
+				createNextButton( i );
+			}
+		} );
 
-			// 2
-			$( element ).find( ".modal-header" ).find( ".close" ).remove();
-			$( element ).find( ".modal-header" ).append( "<ul id='steps' class='stepBullets pull-right'></ul>" );
-
-			steps.each( function( i ) {
-				$( this ).wrap( "<div id='step" + i + "'></div>" );
-				$( this ).find( ".EndButtons" ).addClass( "step" + i + "c" );
-				$( this ).find( ".EndButtons" ).append( "<p id='step" + i + "c'></p>" );
-
-				// 2
-				var name = $( this ).find( ".modal-footer" ).html();
-				$( "#steps" ).append( "<li id='stepDesc" + i + "'><span class='glyphicon glyphicon-chevron-right'></span></li>" );
-
-				if ( i == 0 ) {
-					createNextButton( i );
-					selectStep( i );
-				}
-				else if ( i == count - 1 ) {
-					$( "#step" + i ).hide();
-					createPrevButton( i );
-				}
-				else {
-					$( "#step" + i ).hide();
-					createPrevButton( i );
-					createNextButton( i );
-				}
+		function createPrevButton( i ) {
+			var stepName = "step" + i;
+			$( "#" + stepName + "c" ).append( "<a href='#' id='" + stepName + "Prev' class='btn btn-default btn-block prev'><span class='glyphicon glyphicon-arrow-left'></span></a>" );
+			$( "#" + stepName + "Prev" ).bind( "click", function( e ) {
+				$( "#" + stepName ).hide();
+				$( "#step" + ( i - 1 ) ).show();
+				selectStep( i - 1 );
 			} );
-
-			function createPrevButton( i ) {
-				var stepName = "step" + i;
-				//$("#" + stepName + "c").append("<a href='#' id='" + stepName + "Prev' class='prev'>< Back</a>");
-				$( "#" + stepName + "c" ).append( "<a href='#' id='" + stepName + "Prev' class='btn btn-default btn-block prev'><span class='glyphicon glyphicon-arrow-left'></span></a>" );
-
-				$( "#" + stepName + "Prev" ).bind( "click", function( e ) {
-					$( "#" + stepName ).hide();
-					$( "#step" + ( i - 1 ) ).show();
-					//$(submmitButtonName).hide();
-					selectStep( i - 1 );
-				} );
-			}
-
-			function createNextButton( i ) {
-				var stepName = "step" + i;
-				//$("#" + stepName + "c").append("<a href='#' id='" + stepName + "Next' class='next'>Next ></a>");
-				$( "#" + stepName + "c" ).append( "<a href='#' id='" + stepName + "Next' class='btn btn-default btn-block next'><span class='glyphicon glyphicon-arrow-right'></span></a>" );
-
-
-				$( "#" + stepName + "Next" ).bind( "click", function( e ) {
-					$( "#" + stepName ).hide();
-					$( "#step" + ( i + 1 ) ).show();
-					//if ( i + 2 == count )
-					//$(submmitButtonName).show();
-						selectStep( i + 1 );
-				} );
-			}
-
-			function selectStep( i ) {
-				$( "#steps li" ).removeClass( "current" );
-				$( "#stepDesc" + i ).addClass( "current" );
-			}
-
 		}
-	} )( jQuery );
+
+		function createNextButton( i ) {
+			var stepName = "step" + i;
+			$( "#" + stepName + "c" ).append( "<a href='#' id='" + stepName + "Next' class='btn btn-default btn-block next'><span class='glyphicon glyphicon-arrow-right'></span></a>" );
+			$( "#" + stepName + "Next" ).bind( "click", function( e ) {
+				$( "#" + stepName ).hide();
+				$( "#step" + ( i + 1 ) ).show();
+				selectStep( i + 1 );
+			} );
+		}
+
+		function selectStep( i ) {
+			$( "#steps li" ).removeClass( "current" );
+			$( "#stepDesc" + i ).addClass( "current" );
+		}
+
+	}
+} )( jQuery );
+
+$( function() {
+	$( '[data-toggle="popover"]' ).popover()
+} )
+
+$( document ).ready( function() {
+	if ( $( "#tarjetaOptReg" ).is( ":checked" ) ) {
+		//$( '#paypalOpt' ).find( ".disabledBox" ).addClass( "dB" );
+		$( '#paypalOptBox' ).find( $( "input" ) ).prop( 'disabled', true );
+	}
+	$( "#tarjetaOptReg" ).change( function() {
+		//$( '#tarjOpt' ).find( ".disabledBox" ).removeClass( "dB" );
+		$( '#tarjOptBox' ).find( $( "input" ) ).prop( 'disabled', false );
+
+		//$( '#paypalOpt' ).find( ".disabledBox" ).addClass( "dB" );
+		$( '#paypalOptBox' ).find( $( "input" ) ).prop( 'disabled', true );
+	} );
+	$( "#paypalOptReg" ).change( function() {
+		//$( '#tarjOpt' ).find( ".disabledBox" ).addClass( "dB" );
+		$( '#tarjOptBox' ).find( $( "input" ) ).prop( 'disabled', true );
+
+		//$( '#paypalOpt' ).find( ".disabledBox" ).removeClass( "dB" );
+		$( '#paypalOptBox' ).find( $( "input" ) ).prop( 'disabled', false );
+
+	} );
+} );
