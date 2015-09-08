@@ -101,15 +101,15 @@ exports.registrarUsuario = function(object, req, res) {
                                         port: 80,
                                         path: object.picture.data.url
                                     }
-                                    http.get(options, function(res) {
-                                        var imagedata = ''
-                                        res.setEncoding('binary')
+                                    http.get(options, function(resultado) {
+                                        var imagedata = '';
+                                        resultado.setEncoding('binary');
 
-                                        res.on('data', function(chunk) {
+                                        resultado.on('data', function(chunk) {
                                             imagedata += chunk
                                         })
 
-                                        res.on('end', function() {
+                                        resultado.on('end', function() {
                                             var path = './garage/profilepics/' + usuario.id + '/' + usuario.id + '_' + getDateTime() + '.png';
                                             fs.writeFile(path, imagedata, 'binary', function(err) {
                                                 if (err) throw err
