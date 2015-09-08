@@ -4,8 +4,10 @@
             <!-- empieza buscador -->
             <div class="panel searchbox">
                 <div class="panel-body">
-                    <div class="col-md-3">
-                        <img src="{{fotoPerfil}}" width="200" height="200">
+                    <div class="col-md-3" id="ProfilePicture">
+                        <img src="{{fotoPerfil}}" width="200" height="200" class="img-rounded">
+                        <label for="imageFile">Cambiar Imagen</label>
+                        <input type="file" id="imageFile" style="display:none">
                     </div>
                     <div class="container">
                         <div class="row">
@@ -82,42 +84,25 @@
 </section>
 
 <div class="modal fade" id="ModificarPerfilModal" name="modificarPerfilModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <form id="perfilPaciente" action="perfil" method="POST">
+    <div class="modal-dialog  modal-lg">
+        <form id="perfilPaciente" action="/perfil" method="POST">
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="row">
+                        Datos Generales
+                        <hr/>
                         <div class="col-md-12">
-                            Datos Generales
-                            <hr/>
                             <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre">
-                                        </div>
-                                    </div>
-                                </div>
+                                <input type="text" class="form-control" id="prf_nombre" name="nombre" placeholder="Nombre">
                             </div>
                             <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="apellidoPat" name="apellidoPat" placeholder="Apellido">
-                                        </div>
-                                    </div>
-                                </div>
+                                <input type="text" class="form-control" id="prf_apellidoPat" name="apellidoPat" placeholder="Apellido">
                             </div>
                             <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="apellidoMat" name="apellidoMat" placeholder="Apellido">
-                                        </div>
-                                    </div>
-                                </div>
+                                <input type="text" class="form-control" id="prf_apellidoMat" name="apellidoMat" placeholder="Apellido">
                             </div>
                         </div>
+                        {{!Biométrico}}
                         <div class="col-md-12">
                             Biométrico
                             <hr/>
@@ -125,7 +110,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre">
+                                            <input type="text" class="form-control" id="test" name="test" placeholder="Nombre">
                                         </div>
                                     </div>
                                 </div>
@@ -134,7 +119,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" id="apellidoPat" name="apellidoPat" placeholder="Apellido">
+                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
                                         </div>
                                     </div>
                                 </div>
@@ -143,7 +128,39 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <input type="text" class="form-control" id="apellidoMat" name="apellidoMat" placeholder="Apellido">
+                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{!Direcciones}}
+                        <div class="col-md-12">
+                            Direcciones
+                            <hr/>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="test" name="test" placeholder="Nombre">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
                                         </div>
                                     </div>
                                 </div>
@@ -161,5 +178,32 @@
     <!-- /.modal-content -->
 </div>
 <!-- /.modal-dialog -->
+
+
+<div class="modal fade" id="CambiarFotoPerfil" name="CambiarFotoPerfil" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <form method="POST" action="" onsubmit="verificarImagen()">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row" style="display: flex;align-items: center;justify-content: center;flex-direction: column;">
+                                <h4 class="modal-title">Selecciona el area a guardar</h4>
+                                <hr/>
+                                <input type="hidden" value="" name="base64file" id="base64file">
+                                <div class="col-md-12" id="contenedorFoto" class="text-center" style="width: auto;margin: auto"></div>
+                                <canvas id="canvas" height="300" width="300" style="display: none"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Guardar" class="btn btn-primary" id="btnCrop">
+                    <input type="button" value="Cancelar" class="btn btn-danger" data-toggle="modal" data-target="#CambiarFotoPerfil">
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- /.modal-content -->
 </div>
-<!-- /.modal -->
+<!-- /.modal-dialog -->

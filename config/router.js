@@ -27,8 +27,8 @@ app.use(session({secret: 'intermedSession',resave: false,saveUninitialized: true
 
 var hps = require('../apps/helpers/helpers');
 
-app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({	extended: true })); // support encoded bodies
+app.use(bodyParser.json({limit: '5mb'})); // support json encoded bodies
+app.use(bodyParser.urlencoded({	extended: true ,limit: '5mb'})); // support encoded bodies
 //<----------------------------------------------------------------------------->
 	/**
 	* function para cargar las rutas, como estatitcas los layouts
@@ -155,6 +155,11 @@ var iniciar = function()
 	app.get('/perfil', function (req, res){
 		rutas.routeLife('plataforma','plataforma/paciente', hps);
 		intermed.callController('home','perfil', req.body, req, res);
+	});
+	//Modificar la información del usuario de la sesión
+	app.post('/perfil', function (req, res){
+		rutas.routeLife('plataforma','plataforma/paciente', hps);
+		intermed.callController('pacientes','modificarPerfil', req.body, req, res);
 	});
 	//Obtener con ajax la información de la sesión del usuario
 	app.post('/obtenerInformacionUsuario', function (req, res){

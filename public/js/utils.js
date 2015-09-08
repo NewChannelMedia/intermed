@@ -211,7 +211,7 @@ function obtenerCiudades() {
         },
         success: function(data) {
             data.ciudades.forEach(function(record) {
-                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.id + '">' +  record.ciudad + '</option>';
+                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.id + '">' + record.ciudad + '</option>';
             });
         },
         error: function(jqXHR, textStatus, err) {
@@ -233,7 +233,7 @@ function obtenerColonias() {
         },
         success: function(data) {
             data.localidades.forEach(function(record) {
-                document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' +  record.localidad + '</option>';
+                document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
             });
         },
         error: function(jqXHR, textStatus, err) {
@@ -262,7 +262,7 @@ function obtenerCP() {
     });
 }
 
-function cargarInfoSesion(){
+function cargarInfoSesion() {
     $.ajax({
         url: '/obtenerInformacionUsuario',
         type: 'POST',
@@ -270,7 +270,9 @@ function cargarInfoSesion(){
         cache: false,
         type: 'POST',
         success: function(data) {
-            // al guardar cambios oculta la forma
+            document.getElementById('prf_nombre').value = data.DatosGenerale.nombre;
+            document.getElementById('prf_apellidoPat').value = data.DatosGenerale.apellidoP;
+            document.getElementById('prf_apellidoMat').value = data.DatosGenerale.apellidoM;
         },
         error: function(jqXHR, textStatus, err) {
             console.error('AJAX ERROR: (registro 166) : ' + err);
@@ -303,3 +305,73 @@ function muestraMedico(id) {
         $("#UpdateModal").modal("show");
     });
 }
+
+$('#CambiarFotoPerfil').on('hidden.bs.modal', function(e) {
+    $('#imageFile').val('');
+})
+
+var base64file;
+
+$(function() {
+    $('#imageFile').change(function() {
+        base64file = '';
+        var tamanio = $(this)[0].files[0].size;
+        if (tamanio < 1048576) {
+            $('#btnCrop').hide();
+            $('#CambiarFotoPerfil').modal("show");
+            document.getElementById("contenedorFoto").innerHTML = '<img id="fotoPerfilNueva" >';
+            var reader = new FileReader();
+            var fotoPerfilNueva = $('#fotoPerfilNueva');
+            reader.onload = function(e) {
+                fotoPerfilNueva.attr("src", e.target.result);
+                var x = document.getElementById("fotoPerfilNueva").width;
+                var y = document.getElementById("fotoPerfilNueva").height;
+                if (x > y) x = y;
+                fotoPerfilNueva.Jcrop({
+                    onChange: SetCoordinates,
+                    onSelect: SetCoordinates,
+                    boxWidth: 570,
+                    aspectRatio: 1,
+                    setSelect: [ x*0.1, x*0.1, x-(x*0.1),  x-(x*0.1)]
+                });
+            }
+            reader.readAsDataURL($(this)[0].files[0]);
+        } else {
+            $('#imageFile').val('');
+            alert("La imagen es muy grande, selecciona otra");
+        }
+    });
+});
+
+function verificarImagen() {
+    $('#base64file').val(base64file);
+}
+
+function SetCoordinates(c) {
+    var imgX1 = c.x,
+        imgY1 = c.y,
+        imgWidth = c.w,
+        imgHeight = c.h;
+    if (c.w > 0) {
+        $('#btnCrop').show();
+        var canvas = $("#canvas")[0];
+        var context = canvas.getContext('2d');
+        var img = new Image();
+        var imgPreview = new Image();
+        imgPreview.onload = function() {
+            canvas.width = 200;
+            canvas.height = 200;
+            context.drawImage(imgPreview, 0, 0, 200, 200);
+            base64file = canvas.toDataURL();
+        };
+        img.onload = function() {
+            canvas.height = imgHeight;
+            canvas.width = imgWidth;
+            context.drawImage(img, imgX1, imgY1, imgWidth, imgHeight, 0, 0, imgWidth, imgHeight);
+            imgPreview.src = canvas.toDataURL();
+        };
+        img.src = $('#fotoPerfilNueva').attr("src");
+    } else {
+        $('#btnCrop').hide();
+    }
+};
