@@ -128,9 +128,9 @@ var iniciar = function()
 	});
 	//registro pacientes
 	app.post('/reg/local', function (req, res){
-		req.body.name = req.body.first_name + ' ' + req.body.last_name;
 		req.body['tipoRegistro'] = 'L';
-		req.body['tipoUsuario'] = 'P';
+		if (req.body.tipoUsuario) req.body['tipoUsuario'] = req.body.tipoUsuario;
+		else req.body['tipoUsuario'] = 'P';
 		intermed.callController('usuarios', 'registrarUsuario',req.body, req, res);
 	});
 	//activar cuenta

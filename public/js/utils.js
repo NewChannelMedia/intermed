@@ -69,6 +69,57 @@ else {
 				document.getElementById( 'alertError' ).innerHTML = '<div class="alert alert-danger" role="alert" >' + mensaje + '</div>';
 			}
 		} );
+
+
+			$( '#frm_regM' ).on( 'submit', function( e ) {
+				e.preventDefault();
+				var pass1 = $( '#contraseñaRegM' ).val();
+				var pass2 = $( '#contraseña2RegM' ).val();
+				var correo = $( '#correoRegM' ).val();
+				var correo2 = $( '#correoConfirmRegM' ).val();
+				var submit = true,
+					mensaje = '';
+				//Validar contraseña y confirmacion de contraseña
+				if ( pass1 != pass2 ) {
+					submit = false;
+					mensaje = 'Confirmación de contraseña no coincide';
+				}
+				//Validar correo y confirmacion de correo
+				else if ( correo != correo2 ) {
+					submit = false;
+					mensaje = 'Confirmación de correo no coincide';
+				}
+				//Validar correo no registrado
+				else {
+					if ( correoValido( correo ) ) {
+						$.ajax( {
+							async: false,
+							url: '/correoDisponible',
+							type: 'POST',
+							dataType: "json",
+							cache: false,
+							data: {
+								'email': correo
+							},
+							success: function( data ) {
+								submit = data.result;
+								if ( !submit ) mensaje = "El correo " + correo + ' ya se encuentra registrado.';
+							},
+							error: function( jqXHR, textStatus, err ) {
+								console.error( 'AJAX ERROR: ' + err );
+							}
+						} );
+					}
+				}
+
+				if ( submit ) {
+					document.getElementById( 'alertErrorM' ).innerHTML = '';
+					this.submit();
+				}
+				else {
+					document.getElementById( 'alertErrorM' ).innerHTML = '<div class="alert alert-danger" role="alert" >' + mensaje + '</div>';
+				}
+			} );
 	} );
 }
 
