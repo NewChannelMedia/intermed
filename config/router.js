@@ -130,7 +130,7 @@ var iniciar = function()
 	});
 	//registro pacientes
 	app.post('/reg/local', function (req, res){
-		req.body['tipoRegistro'] = 'L';
+		req.body['tipoRegistro'] = 'C';
 		if (req.body.tipoUsuario) req.body['tipoUsuario'] = req.body.tipoUsuario;
 		else req.body['tipoUsuario'] = 'P';
 		intermed.callController('usuarios', 'registrarUsuario',req.body, req, res);
@@ -155,6 +155,18 @@ var iniciar = function()
 	//Login para el usuario tipo admin
 	app.post('/loginLocal', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
 		res.redirect('/');
+	});
+	//Obtener el perfil del usuario de la sesión
+	app.get('/perfil', function (req, res){
+		if (req.session.passport.user){
+			var tipoUsuario = 'paciente';
+			if (req.session.passport.user.tipoUsuario === 'M') tipoUsuario = 'medico';
+			rutas.routeLife('plataforma','plataforma/'+tipoUsuario, hps);
+			res.render('perfil');
+			//intermed.callController('home','perfil', req.body, req, res);
+		} else {
+			res.redirect('/');
+		}
 	});
 	//Obtener con ajax las ciudades del estado_id enviado por post
 	app.post('/obtenerCiudades', function (req, res){
