@@ -373,12 +373,10 @@ $( document ).ready( function() {
 											dato = String(password.trim());
 											var expreg = new RegExp(/([^\s][a-zA-Z0-9\d\D]){4,}/);
 											comprobando = expreg.test(password) ? true: false;
-											console.log(dato);
 										break;
 										case "input-validPass":
 											var atrapada = String($("#"+nameForm).val());
 											var tam = dato.length;
-											//var expreg = new RegExp(/(?!^[0-9]*$)(?!^[a-zA-Z]*$)([\D]*$)^([a-zA-Z0-9]{8,})$/);
 											var expreg = new RegExp(/([^\s][a-zA-Z0-9\d\D]){4,}/);
 											comprobar = expreg.test(atrapada) ? true: false;
 											comprobando = ((tam === atrapada.length) && ( dato === atrapada ) && (comprobar === true))? true:false;
@@ -399,16 +397,10 @@ $( document ).ready( function() {
 											comprobando =expreg.test(año) ? true: false;
 										break;
 										case "input-checkbox":
-											$("#" +  nameForm).click(function(){
 												comprobando = ($(this).attr('checked'))?true:false;
-												console.log("Comprobando check: "+comprobando);
-											});
 										break;
-										case "input-select":console.log("ALGO con select");
-											//$("#" + nameForm ).change(function(){
+										case "input-select":
 												comprobando = ($(this).val() > 0)?true:false;
-												console.log("Comprobando select: " + comprobando);
-											//});
 										break;
 								}
 								//carga del ajax
