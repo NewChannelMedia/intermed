@@ -100,7 +100,7 @@
     <!-- empieza buscador -->
     <div id="panel-buscador" class="panel">
       <div class="panel-body">
-        <form method="POST" action="/searchMedic">
+        <form method="POST" id="buscaMedico" action="/searchMedic">
           <!-- Form principal -->
           <input type="hidden" value="homeAlone" name="local" />
           <h4>Buscar</h4>
@@ -122,7 +122,7 @@
               <div class="">
                 <div class="col-md-4 esp box">
                   <div class="form-group">
-                    <select class="form-control" name="especialidad">
+                    <select class="form-control" id= "especialidad"name="especialidad">
                       <option value = "0" >Especialidades</option>
                       {{#each especia}}
                         <option value = {{id}}>{{especialidad}}</option>
@@ -132,7 +132,7 @@
                 </div>
                 <div class="col-md-4 pad box">
                   <div class="form-group">
-                    <select class="form-control" name="padecimiento">
+                    <select class="form-control" id="padecimiento"name="padecimiento">
                       <option value = "0" >Padecimiento</option>
                       {{#each padecimiento}}
                         <option value = {{id}}>{{padecimiento}}</option>

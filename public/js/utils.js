@@ -340,3 +340,92 @@ $( document ).ready( function() {
 		$( "#tiempo" ).val( str );
 	} );
 } );
+
+//<---------------------------------------------------->
+	/**
+	*	function hecha para validar todos los inputs, de las paginas,
+	*	en los selects y radio button se revisara que se haya seleccionado
+	* alguna opción. Se escaparan los caracteres, para evitar ataques
+	*	XSS e inyecciones sql, se hara con JQUERY y expresiones regulares.
+	*
+	*	@param nameForm, nameForm es el input o los tipos de input que hay, para poderlos validad uno a uno
+	*/
+	var password;
+	var dato;
+	function validateForm( tipoForm, nameForm ){
+				var comprobando = false;
+				$(document).ready(function(){
+						//se carga el id del formualio a validar
+						$("#"+nameForm).change(function(){
+								switch (tipoForm) {
+										case "input-nombre":
+											var m = $("#"+nameForm).val();
+											var expreg = new RegExp(/^[A-Za-z\s\xF1\xD1]([a-z ñáéíóú]{2,60})+$/i);
+											comprobando = expreg.test(m)?true:false;
+										break;
+										case "input-correo":
+											var correo = String($("#"+nameForm).val());
+											var expreg = new RegExp(/[\w-\.]{3,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/);
+											comprobando = expreg.test(correo)? true : false;
+										break;
+										case "input-password":
+											password = $("#"+nameForm).val().trim();
+											dato = String(password.trim());
+											var expreg = new RegExp(/([^\s][a-zA-Z0-9\d\D]){4,}/);
+											comprobando = expreg.test(password) ? true: false;
+											console.log(dato);
+										break;
+										case "input-validPass":
+											var atrapada = String($("#"+nameForm).val());
+											var tam = dato.length;
+											//var expreg = new RegExp(/(?!^[0-9]*$)(?!^[a-zA-Z]*$)([\D]*$)^([a-zA-Z0-9]{8,})$/);
+											var expreg = new RegExp(/([^\s][a-zA-Z0-9\d\D]){4,}/);
+											comprobar = expreg.test(atrapada) ? true: false;
+											comprobando = ((tam === atrapada.length) && ( dato === atrapada ) && (comprobar === true))? true:false;
+										break;
+										case "input-dia":
+											var dia = $("#" + nameForm ).val();
+											var expreg = new RegExp(/^\d{1,2}/);
+											comprobando =expreg.test(dia) ? true: false;
+										break;
+										case "input-mes":
+											var mes = $("#" + nameForm ).val();
+											var expreg = new RegExp(/^\d{1,2}/);
+											comprobando =expreg.test(mes) ? true: false;
+										break;
+										case "input-año":
+											var año = $("#" + nameForm ).val();
+											var expreg = new RegExp(/^\d{4}/);
+											comprobando =expreg.test(año) ? true: false;
+										break;
+										case "input-checkbox":
+											$("#" +  nameForm).click(function(){
+												comprobando = ($(this).attr('checked'))?true:false;
+												console.log("Comprobando check: "+comprobando);
+											});
+										break;
+										case "input-select":console.log("ALGO con select");
+											//$("#" + nameForm ).change(function(){
+												comprobando = ($(this).val() > 0)?true:false;
+												console.log("Comprobando select: " + comprobando);
+											//});
+										break;
+								}
+								//carga del ajax
+								$.ajax({
+									asyn:true,
+									data:{},
+									success:function(data){
+										if(comprobando)
+											$("#"+nameForm).css('background-color','#66FF33');
+										else
+											$("#"+nameForm).css('background-color','red');
+									},
+									error:function(){
+										console.log("ERROR2 nombre");
+									}
+								});
+						});
+				});
+	}// fin de la funcion principal
+//<---------------------------------------------------->
