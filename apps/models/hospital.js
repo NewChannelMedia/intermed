@@ -1,25 +1,24 @@
 "use strict";
 
 module.exports = function(sequelize, DataTypes) {
-  var ComentariosMedicos = sequelize.define("ComentariosMedicos", {
+  var Hospital = sequelize.define("Hospital", {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
-    comentario: {type: DataTypes.STRING},
-    anonimo: {type: DataTypes.BOOLEAN},
+    nombre: {type: DataTypes.STRING},
     medico_id: {type : DataTypes.BIGINT, allowNull:false},
-    usuario_id: {type : DataTypes.BIGINT, allowNull:false}
+    institucion_id: {type : DataTypes.BIGINT, allowNull:false}
   }, {
     classMethods: {
       associate: function(models) {
-        ComentariosMedicos.belongsTo(models.Usuario)
-        ComentariosMedicos.belongsTo(models.Medico)
+        Hospital.belongsTo(models.Institucion)
+        Hospital.belongsTo(models.Medico)
       }
     },
     timestamps: false,
     paranoid: true,
     underscored: true,
     freezeTableName: true,
-    tableName: 'comentarios'
+    tableName: 'hospClinicas'
   });
 
-  return ComentariosMedicos;
+  return Hospital;
 };

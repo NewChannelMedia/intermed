@@ -1,3 +1,4 @@
+var models  = require('../models');
 /**
 * 	En este archivo se atraparan los eventos de la plantilla home.handlebars,
 *	asi como también hara la función de recibir y enviar los datos del modelo,
@@ -13,8 +14,11 @@ module.exports = {
 		if (!req.session.passport.admin){
 			res.redirect('/')
 		}
-		else
-			res.render('registro', {logged: req.session.passport.logged});
+		else{
+			models.Estado.findAll().then(function (estados){
+				res.render('registro', {logged: req.session.passport.logged, estados: estados});
+			})
+		}
 	},
 	registrar: function(object, req, res) {
 		object = [object];

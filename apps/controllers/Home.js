@@ -10,21 +10,6 @@
 //librerias que se utilizaran en este archivo
 var models  = require('../models');
 var objecto;
-
-var consultas = {
-	clausulas: function(object){
-		if(object.seleccionador === "especialidad")
-			return objeto = {$or:{ciudad:object.ciudad,colonia:object.colonia}};
-		else if( object.seleccionador === "medico")
-		{
-			return  objeto = {nombre:{$like:object.nombreMedico + "%"}};
-		}
-		else if( object.seleccionador === "padecimiento")
-		{
-			return objeto = {$or:{ciudad:object.ciudadela,colonia:object.coloniapad}};
-		}
-	}
-};
 module.exports = {
 		/**
 		*	En el siguiente metodo es el que se encargara del envio
@@ -32,7 +17,22 @@ module.exports = {
 		*	vista.
 		*/
 		index:function(object, req, res ){
-			res.render('home', object)
+					models.Especialidad.findAll({
+						attributes:['id','especialidad']
+					}).then(function(especia){
+						models.Padecimiento.findAll({
+							attributes:['id','padecimiento']
+						}).then(function(padeci){
+							models.Estado.findAll({
+								attributes:['id','estado']
+							}).then(function(estado){
+								models.Ciudad.findAll({
+								}).then(function(ciudad){
+									res.render('home', {especia:especia,padecimiento:padeci, estado:estado,ciudad:ciudad});
+								});
+							});
+						});
+					});
 		},
 		aboutPacientes:function(object, req, res ){
 			res.render('pacientes', object)
@@ -41,7 +41,22 @@ module.exports = {
 			res.render('home', {}, function(err, html){ res.send(html)});
 		},
 		vacio: function(object, req, res) {
-			res.render('searchMedic', {}, function(err, html){ res.send(html)});
+			models.Especialidad.findAll({
+				attributes:['id','especialidad']
+			}).then(function(especia){
+				models.Padecimiento.findAll({
+					attributes:['id','padecimiento']
+				}).then(function(padeci){
+					models.Estado.findAll({
+						attributes:['id','estado']
+					}).then(function(estado){
+						models.Ciudad.findAll({
+						}).then(function(ciudad){
+							res.render('searchMedic' ,{especia:especia,padecimiento:padeci, estado:estado,ciudad:ciudad});
+						});
+					});
+				});
+			});
 		},
 		/**
 		*	EL siguiente metodo es el que realizara las busquedas,
@@ -55,70 +70,55 @@ module.exports = {
 		*	@param response
 		*
 		*/
-		searching: function( object, req, res )
+		searching: function(object, req, res)
 		{
-				console.log( object );//imprime en consola el objeto
-				console.log("Consulta ---> " + consultas.clausulas(object) + "\n" );
-				switch( object.seleccionador )
-				{
-						case "especialidad":
-							models.Usuario.findAll({
-								//se incluyen las siguientes tablas
-								include: [{model: models.DatosGenerales},
-												{model: models.Medico},
-												{model: models.Direccion, where:consultas.clausulas(object)},
-												{model: models.Telefono}
-												//{model: models.Especialidad, where:{descripcion:object.especialidad}}
-								]
-							}).then(function(medicos)
-							{
-									console.log("especialidad");
-									res.render('searchMedic', {medicos:JSON.parse(JSON.stringify(medicos)) });
-							});
-						break;
-						case "medico":
-							models.Usuario.findAll({
-								//se incluyen las siguientes tablas
-								include: [{model: models.DatosGenerales, where:consultas.clausulas(object)},
-												{model: models.Medico},
-												{model: models.Direccion},
-												{model: models.Telefono}
-												//{model: models.Especialidad}
-								]
-							}).then(function(medicos)
-							{
-								console.log("medico");
-								res.render('searchMedic', {medicos:JSON.parse(JSON.stringify(medicos)) });
-							});
-						break;
-						case "padecimiento":
-							models.Usuario.findAll({
-								//se incluyen las siguientes tablas
-								include: [{model: models.DatosGenerales},
-												{model: models.Medico},
-												{model: models.Direccion,where:consultas.clausulas(object)},
-												{model: models.Telefono}
-												//{model: models.padecimiento}
-								]
-							}).then(function(medicos)
-							{
-								console.log("padecimiento");
-									res.render('searchMedic', {medicos:JSON.parse(JSON.stringify(medicos)) });
-							});
-						break;
-						default:
-							models.Usuario.findAll({
-								include: [{model: models.DatosGenerales, where:{nombre:{$like:object.nombreMedico + "%"}} },
-												{model: models.Medico },
-												{model: models.Direccion },
-												{model: models.Telefono }
-											]
-							}).then(function(medicos)
-							{
-								console.log("default");
-								res.render('searchMedic',{medicos:JSON.parse(JSON.stringify(medicos)) });
-							});
-						break;
-				}
-		}
+			var condicionNombre;
+			if( object.nombreMedico != '' && object.apellidoMedico != '' ){
+				// los dos campos con datos
+				condicionNombre = {
+					nombre:{$like:"%"+object.nombreMedico+"%"},
+					apellidoP:{$like:"%"+object.apellidoMedico+"%"}
+				};
+			}else if( object.nombreMedico != '' && object.apellidoMedico == '' ){
+				// solo el input nombre tiene información
+				condicionNombre = {nombre:{$like:"%"+object.nombreMedico+"%"}};
+			}else if( object.nombreMedico == '' && object.apellidoMedico != '' ){
+				//el input apellido medico viene con informacion
+				condicionNombre={	apellidoP:{$like:"%"+object.apellidoMedico+"%"}};
+			}else if(object.nombreMedico == '' && object.apellidoMedico == ''){
+				condicionNombre = '';
+			}
+			var condicionEspecia =(object.especialidad != '0')?{ especialidad_id: object.especialidad}:condicionEspecia = '';
+			var condicionPadecimiento = (object.padecimiento != '0')?condicionPadecimiento = {id:object.padecimiento}:condicionPadecimiento = '';
+			var condicionEstado = (object.estado != '0')?{ estado_id: object.estado}:condicionEstado = '';
+			var condicionCiudad = (object.ciudad != '0')?{ ciudad_id:object.ciudad}:condicionCiudad = '';
+			models.Usuario.findAll({
+				where: {
+					tipoUsuario: 'M'
+				},
+				include:[
+					{model: models.Medico,attributes:['id','cedula'],
+						include: [
+							{model: models.Padecimiento, where:condicionPadecimiento, attributes:['id','padecimiento']},
+							{model: models.MedicoEspecialidad,where:condicionEspecia, attributes:['id','subEsp'],include:[
+								{model: models.Especialidad}
+							]}
+						]
+					},
+					{model: models.DatosGenerales,where:condicionNombre, attributes:['id','nombre','apellidoP','apellidoM']},
+					{model: models.Direccion,attributes:['id','ubicacionGM','calle','numero','nombre'],
+					include: [
+						{model: models.Localidad, include:[
+							{model: models.Estado,where:condicionEstado, attributes:['id','estado']},
+							{model: models.Ciudad, where:condicionCiudad, attributes:['id','ciudad']}
+						]}
+					]},
+					{model: models.Telefono, attributes:['tipo','numero','claveRegion','lada']}
+				],
+				attributes:['id','urlFotoPerfil']
+			}).then(function(usuarios){
+				console.log('USUARIOS: ' + JSON.stringify(usuarios));
+				res.render('searchMedic',{usuarios:usuarios});
+			});
+		}//fin del metodo searching
 }

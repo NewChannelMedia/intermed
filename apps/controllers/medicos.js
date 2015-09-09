@@ -80,14 +80,14 @@ module.exports = {
         }, function (t) {
 
           // Creando usuario
-          models.Usuario.create({
+          return models.Usuario.create({
               usuario: object['correoMed'],
               correo:  object['correoMed'],
               password: 'intermed123',
               tipoUsuario: 'M',
-              tipoRegistro: '',
+              tipoRegistro: 'D',
               estatusActivacion : 0
-          })
+          }, {transaction: t})
           .then(function(usuario) {
               // si fue exitoso, actualizamos  datos generales, direcciones, telefonos y médicos
               // tomamos el id que le toco al usuario
@@ -96,45 +96,42 @@ module.exports = {
             //  delete object["id"];
               object["id"] = 1;
 
-              models.DatosGenerales.create({
+              return models.DatosGenerales.create({
                 nombre: object['nombreMed'],
                 apellidoP: object['apellidoMed'],
                 apellidoM: object['apellidoMed'],
                 rfc: '',
                 usuario_id: id
-              });
-
-              models.Direccion.create({
-                calle: object['calleMed'],
+            }, {transaction: t}).then(function (result){
+                  return models.Direccion.create({
+                    calle: object['calleMed'],
                 numero: object['numeroMed'],
                 calle1: object['calle1Med'],
                 calle2: object['calle2Med'],
-                colonia: object['coloniaMed'],
-                estado_id: object['estadoMed'],  //Id del estado
-                ciudad_id: object['ciudadMed'],
-                cp: object['cpMed'],
+                localidad_id: 20024,
                 principal: 1,
                 usuario_id: id
-              });
-
-              models.Telefono.create({
-                  tipo: '1',
-                  numero: object['telefonoMed'],
-                  usuario_id: id
-              });
-
-              models.Medico.create({
-                usuario_id: id
-              }).then(function(medico) {
-                  // si se pudo insertar el médico, tomamos su id para pasarlo a medicos especialidades y agregarla
-                  models.MedicoEspecialidad.create({
-                      tipo: '1',
-                      titulo: '',
-                      lugarEstudio: '',
-                      medico_id: medico.id,
-                      especialidad_id: object['especialidadMed']   // Id de la especialidad
-                  })
-              })
+                }, {transaction: t}).then(function (result){
+                      return models.Telefono.create({
+                          tipo: '1',
+                          numero: object['telefonoMed'],
+                          usuario_id: id
+                      }, {transaction: t}).then(function(result){
+                            return models.Medico.create({
+                              usuario_id: id
+                            }, {transaction: t}).then(function(medico) {
+                                // si se pudo insertar el médico, tomamos su id para pasarlo a medicos especialidades y agregarla
+                                return models.MedicoEspecialidad.create({
+                                    tipo: '1',
+                                    titulo: '',
+                                    lugarEstudio: '',
+                                    medico_id: medico.id,
+                                    especialidad_id: object['especialidadMed']   // Id de la especialidad
+                                }, {transaction: t})
+                            })
+                      });
+                });
+            });
           });
 
         }).then(function(result) {
@@ -142,6 +139,7 @@ module.exports = {
           //  res.status(200).json({ok: true});
               res.send(object);
         }).catch(function(err) {
+            console.log('ERROR: ' + err);
               res.json(object);
         });
     },

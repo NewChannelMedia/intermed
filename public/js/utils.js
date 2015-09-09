@@ -254,6 +254,68 @@ function regMedValid() {
 	return valid;
 }
 
+function obtenerCiudades() {
+    document.getElementById('slc_ciudades').innerHTML = '<option value="">Ciudad</option>';
+    $.ajax({
+        url: '/obtenerCiudades',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: {
+            'estado_id': document.getElementById('slc_estados').value
+        },
+        success: function(data) {
+            data.ciudades.forEach(function(record) {
+                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.id + '">' +  record.ciudad + '</option>';
+            });
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
+
+function obtenerColonias() {
+    document.getElementById('slc_colonias').innerHTML = '<option value="">Colonia</option>';
+    $.ajax({
+        url: '/obtenerLocalidades',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: {
+            'estado_id': document.getElementById('slc_estados').value,
+            'ciudad_id': document.getElementById('slc_ciudades').value
+        },
+        success: function(data) {
+            data.localidades.forEach(function(record) {
+                document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' +  record.localidad + '</option>';
+            });
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
+
+
+function obtenerCP() {
+    document.getElementById('nmb_cp').value = '';
+    $.ajax({
+        url: '/buscarCP',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: {
+            'localidad_id': document.getElementById('slc_colonias').value
+        },
+        success: function(data) {
+            document.getElementById('nmb_cp').value = data.cp;
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
 
 // función que actualiza médico.
 function actDoctor() {
@@ -280,6 +342,55 @@ function muestraMedico( id ) {
 		$( "#UpdateModal" ).modal( "show" );
 	} );
 }
+
+// script que muestra u oculta campos de la busqueda del home
+if ( location.pathname === '/' ) {
+	$( document ).ready( function() {
+		$( "#sel-busqueda" ).change( function() {
+			$( this ).find( "option:selected" ).each( function() {
+				if ( $( this ).attr( "value" ) == "especialidad" ) {
+					$( ".box" ).not( ".esp" ).hide();
+					$( ".esp" ).show();
+				}
+				else if ( $( this ).attr( "value" ) == "medico" ) {
+					$( ".box" ).not( ".med" ).hide();
+					$( ".med" ).show();
+				}
+				else if ( $( this ).attr( "value" ) == "padecimiento" ) {
+					$( ".box" ).not( ".pad" ).hide();
+					$( ".pad" ).show();
+				}
+				else {
+					$( ".box" ).hide();
+				}
+			} );
+		} ).change();
+	} );
+}
+
+// script para los intervalos del carousel
+$( document ).ready( function() {
+	$( '.carousel' ).carousel( {
+		interval: 5000
+	} );
+} );
+
+// script para obtener el DateStamp
+$( document ).ready( function() {
+	var str = "";
+	var currentTime = new Date();
+	var hours = currentTime.getHours();
+	var minutes = currentTime.getMinutes();
+	var seconds = currentTime.getSeconds();
+	if ( minutes < 10 )
+		minutes = "0" + minutes;
+	if ( seconds < 10 )
+		seconds = "0" + seconds;
+	str += hours + ":" + minutes + ":" + seconds;
+	$( "#regi" ).click( function() {
+		$( "#tiempo" ).val( str );
+	} );
+} );
 
 $( document ).ready( function MakeWizard() {
 	$( "#RegMedModal" ).formToWizard()

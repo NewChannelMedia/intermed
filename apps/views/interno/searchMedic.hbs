@@ -1,3 +1,12 @@
+<!--
+  EN ESTA VISTA SE DEBE DE CONDICIONAR LOS SELECT DONDE SI SELECCIONA
+  ESPECIALIDAD AL MENOS DEBE DE SELECCIONAR UNA EN EL CAMPO DONDE APARECEN LAS
+  ESPECIALIDADES, LOS CAMPOS DE ESTADO Y CIUDAD PUEDEN IR VACIOS,
+  TAMBIEN SE DEBE DE HACER ESO EN LOS CAMPOS DONDE SE PIDA LOS NOMBRES,
+  Y EN EL INPUT DONDE SE PIDE PADECIMIENTO, ALMENOS DEBE DE TENER UNA SELECCION
+  EN EL INPUT SELECT DE PADECIMIENTOS. LOS CAMPOS DE ESTADO Y CIUDAD PUEDEN
+  IR VACIOS.
+-->
 <section id="searchMedic" class="Flama">
   <div class="container">
     <div class="row">
@@ -19,40 +28,41 @@
                 <div class="col-md-3">
                   <div class="form-group">
                     <select class="form-control" name="especialidad">
-                      <option>Especialidades</option>
-                      <option>...</option>
-                      <option>...</option>
-                      <option>...</option>
+                      <option value = "0" >Especialidades</option>
+                      {{#each especia}}
+                        <option value = {{id}}>{{especialidad}}</option>
+                      {{/each}}
+                    </select>
                     </select>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="form-group">
-                    <select class="form-control" name="ciudad">
-                      <option>Ciudad</option>
-                      <option>...</option>
-                      <option>...</option>
-                      <option>...</option>
+                    <select class="form-control" id = "slc_estados"name="estado">
+                      <option value = "0" >Estado</option>
+                      {{#each estado}}
+                        <option value = {{id}}>{{estado}}</option>
+                      {{/each}}
                     </select>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="form-group">
-                    <select class="form-control" name="colonia">
-                      <option>Colonia</option>
-                      <option>...</option>
-                      <option>...</option>
-                      <option>...</option>
+                    <select class="form-control" id = "slc_ciudades"name="ciudad">
+                      <option value = "0" >Ciudad</option>
+                      {{#each ciudad}}
+                        <option value = {{id}}>{{ciudad}}</option>
+                      {{/each}}
                     </select>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="form-group">
                     <select class="form-control" name="padecimiento">
-                      <option>Padecimiento</option>
-                      <option>...</option>
-                      <option>...</option>
-                      <option>...</option>
+                      <option value = "0" >Padecimiento</option>
+                      {{#each padecimiento}}
+                        <option value = {{id}}>{{padecimiento}}</option>
+                      {{/each}}
                     </select>
                   </div>
                 </div>
@@ -108,7 +118,7 @@
             <div class="panel-body">
               <div role="tabpanel" class="tab-pane fade in active " id="medResults">
                 <ul class="media-list">
-                {{#each medicos}}
+                {{#each usuarios}}
                   <li class="media result">
                     <div class="media-left">
                       <div class="media-enclosure">
@@ -123,45 +133,42 @@
                           <span class="label label-topDr">Top Doctor</span> Dr.{{DatosGenerale.nombre}} {{DatosGenerale.apellidoP}} {{DatosGenerale.apellidoM}}.
                         </h4>
                         <ul class="list-unstyled list-inline">
-                            <li>
-                              <strong>Pediatría {{!especialidad}}</strong>
-                            </li>
+                            {{#each Medico.MedicoEspecialidads}}
+                                {{#unless subEsp}}
+                                <li>
+                                  <strong>{{Especialidad.especialidad}}</strong>
+                                </li>
+                                {{/unless}}
+                            {{/each}}
                         </ul>
                         <ul class="list-unstyled list-inline">
-                            <li>
-                              Neonatología. {{!subEspecialidad}}
-                            </li>
+                            {{#each Medico.MedicoEspecialidads}}
+                                {{#if subEsp}}
+                                <li>
+                                  {{Especialidad.especialidad}}
+                                </li>
+                                {{/if}}
+                            {{/each}}
                         </ul>
                         <ul class="list-inline">
-                          <li>
-                            <small>Sindrome de Werner{{!padecimientos}}</small>
-                          </li>
-                          <li>
-                            <small>Falta de Apetito{{!padecimientos}}</small>
-                          </li>
-                          <li>
-                            <small>Transtornos congenitos{{!padecimientos}}</small>
-                          </li>
+                          {{#each Medico.Padecimientos}}
+                            <li>
+                              <small>{{padecimiento}}</small>
+                            </li>
+                          {{/each}}
                         </ul>
                         <ul class="list-unstyled list-ubicaciones">
-                          <li>
-                            <button class="btn btn-warning">
-                              <span class="glyphicon glyphicon-map-marker"></span>
-                            </button>
-                            <a href="#">
-                              <strong>Consultorio Central{{nombreUbicacion}}</strong>
-                              <small>Calle paseo central {{calleUbicacion}} #555{{numeroUbicacion}} Colonia Centro {{coloniaUbicacion}}, Ciudad Central {{ciudadUbicacion}}</small>
-                            </a>
-                          </li>
-                          <li>
-                            <button class="btn btn-warning">
-                              <span class="glyphicon glyphicon-map-marker"></span>
-                            </button>
-                            <a href="#">
-                              <strong>Consultorio:{{Direccion.calle}}</strong>
-                              <small>Calle:{{Direccion.calle1}} #{{Direccion.numero}} Colonia:{{Direccion.colonia}}, Ciudad: {{Direccion.ciudad}}</small>
-                            </a>
-                          </li>
+                          {{#each Direccions }}
+                            <li>
+                              <button class="btn btn-warning">
+                                <span class="glyphicon glyphicon-map-marker"></span>
+                              </button>
+                              <a href={{ubicacionGM}}>
+                                  <strong>{{nombre}}</strong>
+                                  <small>Calle :{{calle}} #{{numero}} Estado :{{Estado.estado}}, Ciudad :{{Ciudad.ciudad}}</small>
+                              </a>
+                            </li>
+                          {{/each}}
                           <!-- Cada <li> en esta parte debe mostrar una ubicación en la que trabaja el Medico -->
                         </ul>
                       </div>

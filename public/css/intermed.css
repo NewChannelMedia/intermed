@@ -425,7 +425,6 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
 #buscador .form-control {
   color: #fff;
   border: none;
-  border-radius: 0;
   background-color: #5288ac;
 }
 

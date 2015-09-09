@@ -13,6 +13,10 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
+        Agenda.hasOne(models.CalificacionCita);
+        Agenda.belongsTo(models.Direccion);
+        Agenda.belongsTo(models.Usuario);
+        Agenda.belongsTo(models.Paciente, {foreignKey : 'usuarioAtendido_id'});
       }
     },
     timestamps: false,

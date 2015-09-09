@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         //TipoEspecialidad.hasMany(models.Especialidad)
-        TipoEspecialidad.hasOne(models.Especialidad, {foreignKey: {
+        TipoEspecialidad.hasMany(models.Especialidad, {foreignKey: {
           name: 'tipoEspecialidad_id',
           field: 'tipoEspecialidad_id'
         }})
