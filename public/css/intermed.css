@@ -112,6 +112,191 @@ a, a:hover, a:visited {
   margin: 2px 0;
 }
 
+
+/* ----- */
+
+#navPlatform {
+  position: relative;
+  display: block;
+  background-color: #50a7dd;
+}
+
+.navContainer {
+  padding: 5px 0;
+}
+
+.navContainer .row {
+  padding: 0;
+}
+
+.navBlock {}
+
+.navLogo {}
+
+.navLogo a,
+.navLogo a:hover,
+.navLogo a:active,
+.navLogo a:visited,
+.navLogo a:hover
+{
+  text-decoration: none;
+  text-transform: none;
+}
+
+.navLogoImg {
+  float: left;
+  padding: 7px 5px 3px 0;
+}
+
+.navLogoImg img {
+  height: 45px;
+}
+
+.navLogoText {}
+
+.navLogoText p {
+  line-height: 1;
+  margin: 0;
+  padding: 9px 0 16px 0;
+  color: #fff;
+}
+.navLogoText p sup {
+  font-size: 50%;
+  top: -1em;
+  margin-left: -5px;
+}
+
+.navSearch {
+   margin-top: 15px;
+   margin-bottom: 15px;
+}
+
+.navSearchBox {
+  margin: 0;
+}
+.navSearchBox .form-control{
+   padding: 0 10px;
+   font-size: 12px;
+   height: 25px;
+}
+.navSearchBox .btn {
+   padding: 2px 5px 1px;
+}
+
+.navControl {
+   margin-top: 15px;
+}
+
+.navControl .dropdown-menu {
+  right: 0;
+  left: inherit;
+  float: right;
+  margin-top: 14px;
+  text-align: right;
+  border-radius: 0;
+  background-color: #f9f9f9;
+}
+
+.navControlIcons {
+  margin: 0;
+}
+
+.navControlIcons li {
+  float: left;
+  margin: 0 5px;
+  padding: 0;
+}
+
+.navControlIcons li .navSeparator {
+  display: inline-block;
+  width: 3px;
+  height: 25px;
+  margin-right: 1px;
+  margin-left: 3px;
+  padding: 0;
+  background-color: #fff;
+}
+
+.navControlIcons .profileLink {
+  overflow: hidden;
+  width: 25px;
+  height: 25px;
+  border: solid 2px #fff;
+  border-radius: 50px;
+}
+.navControlIcons .profileLink .navControlImg {
+  width: 21px;
+  height: 21px;
+  margin: 0 auto;
+}
+
+.navControlIcon {
+  font-size: 21px;
+  padding: 2px;
+  vertical-align: middle;
+  color: #fff;
+}
+
+.navControlImg {
+  display: block;
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+}
+
+.navControlImg img{
+  width: 100%;
+}
+
+#plataforma{
+}
+/*
+#navPlatform #logo .logoImg img {
+  display: inline-block;
+  float: left;
+  width: auto;
+  height: 40px;
+  margin: 15px 4px 6px 0;
+}
+
+#navPlatform #logo .logoText {
+  display: inline-block;
+  float: left;
+  margin: 13px 0;
+}
+
+#navPlatform #logo a {
+  font-weight: normal;
+  color: #fff;
+}
+
+#navPlatform #logo a:hover {
+  color: #fff;
+}
+
+#navPlatform .iconcontainer img {
+  display: block;
+  float: right;
+  width: auto;
+  height: 40px;
+  margin: 15px 0 6px 0;
+}
+
+#navPlatform .iconcontainer a {
+  font-weight: normal;
+}
+
+#navPlatform .iconcontainer a:hover {
+  color: #fff;
+}
+
+#navPlatform .iconcontainer ul.btnicons {}
+
+#navPlatform .iconcontainer li.btnicon {}
+
+
+/* ----- */
+
 .btn {
   border-radius: 0;
 }
@@ -646,4 +831,43 @@ footer a, footer a:active, footer a:hover, footer a:visited {
 .hi-icon-effect-a .hi-icon:hover {
   color: #fff;
   box-shadow: 0 0 0 7px rgba(255, 255, 255, 1);
+}
+
+.profileHolder {
+   padding: 0;
+   margin: 0;
+}
+
+.profileHeader{
+   background-image: url('../img/profileBG.png');
+   background-repeat: no-repeat;
+   background-size: cover;
+   padding-top: 20px;
+   padding-bottom: 20px;
+}
+
+.profilePic {
+   width: 200px;
+   height: 200px;
+   border-radius: 100px;
+   border: solid 5px #ffffff;
+   overflow: hidden;
+   background-color: #009cde;
+}
+.profilePic img{
+   width: 100%;
+}
+
+.profileBody {
+
+}
+.profileBodyNav {
+   background-color: #edf0f1;
+}
+.profileBodyElements {
+   margin-top: 10px;
+}
+.profileBodyElements .panel, .profileBodyElements .panel-body, .profileBodyElements .panel-heading{
+   border-radius: 0;
+   border: 0;
 }

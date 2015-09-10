@@ -34,8 +34,11 @@ module.exports = {
 						});
 					});
 		},
-		aboutPacientes:function(object, req, res ){
+		aboutPacientes: function(object, req, res ){
 			res.render('pacientes', object)
+		},
+		perfilMedicos: function(object, req, res){
+			res.render('perfil', object)
 		},
 		sayHello: function(object, req, res) {
 			res.render('home', {}, function(err, html){ res.send(html)});
