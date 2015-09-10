@@ -261,6 +261,83 @@ module.exports = {
       }).catch(function(err) {
             res.status(500).json({error: err});
       });
+  },
+
+    informacionRegistro: function (object, req, res){
+        if (req.session.passport){
+            models.Usuario.findOne({
+                where:{ id: req.session.passport.user.id},
+                attributes: ['id'],
+                include: [{
+                    model: models.DatosGenerales
+                }, {
+                    model: models.Medico
+                },{
+                    model: models.Biometrico
+                }, {
+                    model: models.Direccion
+                }, {
+                    model: models.Telefono
+                }, {
+                    model: models.DatosFacturacion, include: [{model: models.Direccion, include: [{model: models.Localidad}]}]
+                }]
+            }).then(function (usuario){
+                res.send(usuario);
+            });
+        } else {
+            res.send({'response':'error'});
+        }
+    },
+
+    regMedPasoUno: function (object, req, res){
+        if (req.session.passport.user && req.session.passport.user.tipoUsuario === "M"){
+            var usuario_id = req.session.passport.user.id;
+            models.DatosGenerales.create({
+                  nombre: object['nombreRegMed'],
+                  apellidoP: object['apePatRegMed'],
+                  apellidoM: object['apeMatRegMed'],
+                  usuario_id: usuario_id
+            }).then(function (result){
+                models.Biometrico.create({
+                    genero: object['gender'],
+                    usuario_id: usuario_id
+                }).then(function (result){
+                    models.Medico.create({
+                        curp: object['curpRegMed'],
+                        cedula: object['cedulaRegMed'],
+                        usuario_id: usuario_id
+                    }).then(function (result){
+                        res.send({'result':'success'});
+                    })
+                })
+            })
+        } else {
+            res.send({'result':'error'});
+        }
+    },
+
+    regMedPasoTres: function (object, req, res){
+        if (req.session.passport.user && req.session.passport.user.tipoUsuario === "M"){
+            var usuario_id = req.session.passport.user.id;
+            console.log('DATOS: ' + JSON.stringify(object));
+            models.Direccion.create({
+                calle: object['calleFact'],
+                numero: object['numeroFact'],
+                localidad_id: object['locFact'],
+                usuario_id: usuario_id
+              }).then(function(Direccion){
+                  models.DatosFacturacion.create({
+                      RFC: object["rfcFact"],
+                      razonSocial: object["nomRSocialFact"],
+                      usuario_id: usuario_id,
+                      direccion_id: Direccion.id
+                  }).then(function(result){
+                      res.send({'result':'success'});
+                  });
+              });
+        } else {
+            res.send({'result':'error'});
+        }
     }
 
 }

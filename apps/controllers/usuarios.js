@@ -48,6 +48,7 @@ exports.mostrar = function(object, req, res) {
 };
 
 exports.iniciarSesion = function(object, req, res) {
+    console.log('-->OBJECT: ' + JSON.stringify(object));
     req.session.passport = {};
     models.Usuario.findOne({
         where: {
@@ -56,7 +57,7 @@ exports.iniciarSesion = function(object, req, res) {
         }
     }).then(function(usuario) {
         if (usuario) {
-            generarSesion(req, res, usuario.id);
+            generarSesion(req, res, usuario.id, true);
         } else {
             res.redirect('/');
         }
@@ -75,49 +76,58 @@ exports.registrarUsuario = function(object, req, res) {
 
             if (object['tipoRegistro'] === 'F') {
 
-			return models.Usuario.findOne({
-					where: {
-						fbId: object['id']
-					}
-				}, {transaction: t}).then(function(usuario) {
-					if (!usuario) {
-						//Usuario nuevo
-						return models.Usuario.create({
-								usuario: object['email'],
-								correo: object['email'],
-								tipoUsuario: object['tipoUsuario'],
-								tipoRegistro: object['tipoRegistro'],
-								fbId: object['id']
-							}, {transaction: t})
-							.then(function(usuario) {
-                                if (object['email']){
-                                    return usuario.update({estatusActivacion: 1},{transaction: t});
+                return models.Usuario.findOne({
+                    where: {
+                        fbId: object['id']
+                    }
+                }, {
+                    transaction: t
+                }).then(function(usuario) {
+                    if (!usuario) {
+                        return models.Usuario.create({
+                                usuario: object['email'],
+                                correo: object['email'],
+                                tipoUsuario: object['tipoUsuario'],
+                                tipoRegistro: object['tipoRegistro'],
+                                fbId: object['id']
+                            }, {
+                                transaction: t
+                            })
+                            .then(function(usuario) {
+                                if (object['email']) {
+                                    return usuario.update({
+                                        estatusActivacion: 1
+                                    }, {
+                                        transaction: t
+                                    });
                                 }
-                                if (object.picture){
+                                if (object.picture) {
                                     guardarImagenDePerfil(object, usuario, req, res);
                                 }
-								usuario_id = usuario.id;
-								return models.DatosGenerales.create({
-										nombre: object['first_name'],
-										apellidoP: object['last_name'],
-										apellidoM: '',
-										rfc: '',
-										usuario_id: usuario_id,
-										genero: object['gender']
-									}, {transaction: t})
-									.then(function(result) {
-										if (object['tipoUsuario'] === 'P') {
-											return crearPaciente(req, res, object, usuario_id, t);
-										} else if (object['tipoUsuario'] === 'M') {
-											return crearMedico(req, res, object, usuario_id, t);
-										}
-									});
-							});
-					} else {
-						usuario_id = usuario.id;
-						generarSesion(req, res, usuario_id);
-					}
-				});
+                                usuario_id = usuario.id;
+                                return models.DatosGenerales.create({
+                                        nombre: object['first_name'],
+                                        apellidoP: object['last_name'],
+                                        apellidoM: '',
+                                        rfc: '',
+                                        usuario_id: usuario_id,
+                                        genero: object['gender']
+                                    }, {
+                                        transaction: t
+                                    })
+                                    .then(function(result) {
+                                        if (object['tipoUsuario'] === 'P') {
+                                            return crearPaciente(req, res, object, usuario_id, t);
+                                        } else if (object['tipoUsuario'] === 'M') {
+                                            return crearMedico(req, res, object, usuario_id, t);
+                                        }
+                                    });
+                            });
+                    } else {
+                        usuario_id = usuario.id;
+                        generarSesion(req, res, usuario_id, true);
+                    }
+                });
             } else { //Registro por correo
                 return models.Usuario.findOne({
                         where: {
@@ -141,7 +151,7 @@ exports.registrarUsuario = function(object, req, res) {
                                 }, {
                                     transaction: t
                                 }).then(function(usuario) {
-                                    generarSesion(req, res, usuario.id);
+                                    generarSesion(req, res, usuario.id, true);
                                 })
                             } else if (object.tipoUsuario === 'P') {
                                 console.log('___Creando paciente.')
@@ -193,7 +203,7 @@ exports.registrarUsuario = function(object, req, res) {
                         } else {
                             //Usuario ya existente
                             console.log('El usuario con el correo ' + object['email'] + ' ya se encuentra registrado');
-                            generarSesion(req, res, usuario_id);
+                            generarSesion(req, res, usuario_id, true);
                         }
                     });
             }
@@ -224,7 +234,7 @@ exports.correoDisponible = function(object, req, res) {
 };
 
 
-function guardarImagenDePerfil(object, usuario){
+function guardarImagenDePerfil(object, usuario) {
     options = {
         host: 'fbcdn-profile-a.akamaihd.net',
         port: 80,
@@ -239,7 +249,9 @@ function guardarImagenDePerfil(object, usuario){
         })
 
         resultado.on('end', function() {
-            fs.mkdirSync('./garage/profilepics/' + usuario.id, 0777);
+            if (!fs.existsSync('./garage/profilepics/' + usuario.id)) {
+                fs.mkdirSync('./garage/profilepics/' + usuario.id, 0777);
+            };
             var path = './garage/profilepics/' + usuario.id + '/' + usuario.id + '_' + getDateTime() + '.png';
             fs.writeFile(path, imagedata, 'binary', function(err) {
                 if (err) console.error('___Error al guardar imagen de perfil (' + err + ')');
@@ -267,10 +279,16 @@ var crearPaciente = function(req, res, object, usuario_id, t) {
                         transaction: t
                     })
                     .then(function(result) {
-                        generarSesion(req, res, usuario_id);
+                        console.log('CREAR PACIENTE');
+                        setTimeout(function() {
+                            generarSesion(req, res, usuario_id, true);
+                        }, 1000);
                     });
             } else {
-                generarSesion(req, res, usuario_id);
+                console.log('CREAR PACIENTE sin fecha');
+                setTimeout(function() {
+                    generarSesion(req, res, usuario_id, true);
+                }, 1000);
             }
         });
 }
@@ -297,15 +315,23 @@ var crearMedico = function(req, res, object, usuario_id, t) {
                     transaction: t
                 })
                 .then(function(result) {
-                    generarSesion(req, res, usuario_id);
+                    setTimeout(function() {
+                        generarSesion(req, res, usuario_id, true);
+                    }, 1000);
                 });
         });
 }
 
+exports.actualizarSesion = function(object, req, res) {
+    var usuario_id = '';
+    if (req.session.passport.user) {
+        usuario_id = req.session.passport.user.id;
+    }
+    generarSesion(req, res, usuario_id, false);
+}
 
-
-
-var generarSesion = function(req, res, usuario_id) {
+var generarSesion = function(req, res, usuario_id, redirect) {
+    if (!redirect) redirect = false;
     req.session.passport = {};
     models.Usuario.findOne({
             where: {
@@ -314,7 +340,10 @@ var generarSesion = function(req, res, usuario_id) {
             attributes: ['id', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion'],
             include: [{
                 model: models.DatosGenerales,
-                attributes: ['nombre', 'apellidoP']
+                attributes: ['nombre', 'apellidoP', 'apellidoM']
+            }, {
+                model: models.Biometrico,
+                attributes: ['genero']
             }, {
                 model: models.Direccion,
                 attributes: ['localidad_id']
@@ -329,24 +358,34 @@ var generarSesion = function(req, res, usuario_id) {
                     'tipoRegistro': usuario.tipoRegistro,
                     'estatusActivacion': usuario.estatusActivacion
                 }));
-                if (usuario.DatosGenerale) req.session.passport.user.name = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP;
+                //
+                req.session.passport.user.registroCompleto = "1";
+                if (!usuario.DatosGenerale) req.session.passport.user.registroCompleto = "0";
+                if (!usuario.Direccions) req.session.passport.user.registroCompleto = "0";
+                if (!usuario.Biometrico || !usuario.Biometrico.genero) req.session.passport.user.registroCompleto = "0";
+                if (usuario.DatosGenerale) req.session.passport.user.name = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM;
                 else req.session.passport.user.name = 'Fulano De Tal';
                 if (usuario.urlFotoPerfil) {
                     fs.readFile(usuario.urlFotoPerfil, function(err, data) {
                         if (err) throw err;
                         req.session.passport.user.fotoPerfil = 'data:image/jpeg;base64,' + (data).toString('base64');
-                        cargarExtraInfo(usuario, req, res);
+                        cargarExtraInfo(usuario, redirect, req, res);
                     });
                 } else {
-                    cargarExtraInfo(usuario, req, res);
+                    cargarExtraInfo(usuario, redirect, req, res);
                 }
             } else {
-                res.redirect('/');
+                if (redirect) {
+                    res.redirect('/');
+                } else res.send({
+                    'result': 'error',
+                    'error': 'El usuario no existe'
+                })
             }
         });
 };
 
-function cargarExtraInfo(usuario, req, res) {
+function cargarExtraInfo(usuario, redirect, req, res) {
     var tipoUsuario = '';
     if (usuario.tipoUsuario === 'P') {
         tipoUsuario = 'Paciente';
@@ -364,14 +403,20 @@ function cargarExtraInfo(usuario, req, res) {
             .then(function(extraInfo) {
                 if (extraInfo) {
                     req.session.passport.user[tipoUsuario + '_id'] = JSON.parse(JSON.stringify(extraInfo.id));
+                } else {
+                    req.session.passport.user.registroCompleto = "0";
                 }
                 var DireccionPrincipal = usuario.Direccions[0];
                 if (DireccionPrincipal) {
-                    console.log('DIRECCION');
-                    obtenerDatosLocalidad(DireccionPrincipal.localidad_id, req, res);
+                    obtenerDatosLocalidad(DireccionPrincipal.localidad_id, redirect, req, res);
                 } else {
-                    console.log('NO DIRECCION');
-                    res.redirect('/perfil');
+                    req.session.passport.user.registroCompleto = "0";
+                    if (redirect) {
+                        res.redirect('/perfil');
+                    } else res.send({
+                        'result': 'success',
+                        'session': req.session.passport.user
+                    });
                 }
             });
     } else {
@@ -381,24 +426,19 @@ function cargarExtraInfo(usuario, req, res) {
     }
 }
 
-function obtenerDatosLocalidad(localidad_id, req, res) {
+function obtenerDatosLocalidad(localidad_id, redirect, req, res) {
     models.sequelize.query("SELECT `Localidad`.`CP`, `Localidad`.`localidad`, `TipoLocalidad`.`id` AS 'tipo_id', `TipoLocalidad`.`tipo`, `Ciudad`.`id` AS 'ciudad_id', `Ciudad`.`ciudad`, `Municipio`.`id` AS 'municipio_id', `Municipio`.`municipio`, `Estado`.`id` AS 'estado_id', `Estado`.`estado` FROM `localidades` AS `Localidad`INNER JOIN `tipoLocalidad` AS `TipoLocalidad` ON `TipoLocalidad`.`id` = `Localidad`.`tipo_localidad_id` INNER JOIN `ciudades` AS `Ciudad` ON `Localidad`.`ciudad_id` = `Ciudad`.`id` and `Localidad`.`municipio_id` = `Ciudad`.`municipio_id` and `Localidad`.`estado_id` = `Ciudad`.`estado_id` INNER JOIN `municipios` AS `Municipio` ON `Localidad`.`municipio_id` = `Municipio`.`id` and `Localidad`.`estado_id` = `Municipio`.`estado_id` INNER JOIN `estados` AS `Estado` ON `Localidad`.`estado_id` = `Estado`.`id` WHERE `Localidad`.`id` = " + localidad_id + ";", {
             type: models.sequelize.QueryTypes.SELECT
         })
         .then(function(localidad) {
-            console.log('LOCALIDAD: ' + JSON.stringify(localidad));
             req.session.passport.user.ciudad = localidad[0].ciudad;
             req.session.passport.user.estado = localidad[0].estado;
-            res.redirect('/');
-        })
-}
-
-function obtenerDatosLocalidad(localidad_id) {
-    models.sequelize.query("SELECT `Localidad`.`CP`, `Localidad`.`localidad`, `TipoLocalidad`.`id` AS 'tipo_id', `TipoLocalidad`.`tipo`, `Ciudad`.`id` AS 'ciudad_id', `Ciudad`.`ciudad`, `Municipio`.`id` AS 'municipio_id', `Municipio`.`municipio`, `Estado`.`id` AS 'estado_id', `Estado`.`estado` FROM `localidades` AS `Localidad`INNER JOIN `tipoLocalidad` AS `TipoLocalidad` ON `TipoLocalidad`.`id` = `Localidad`.`tipo_localidad_id` INNER JOIN `ciudades` AS `Ciudad` ON `Localidad`.`ciudad_id` = `Ciudad`.`id` and `Localidad`.`municipio_id` = `Ciudad`.`municipio_id` and `Localidad`.`estado_id` = `Ciudad`.`estado_id` INNER JOIN `municipios` AS `Municipio` ON `Localidad`.`municipio_id` = `Municipio`.`id` and `Localidad`.`estado_id` = `Municipio`.`estado_id` INNER JOIN `estados` AS `Estado` ON `Localidad`.`estado_id` = `Estado`.`id` WHERE `Localidad`.`id` = " + localidad_id + ";", {
-            type: models.sequelize.QueryTypes.SELECT
-        })
-        .then(function(localidad) {
-            return JSON.parse(JSON.stringify(localidad));
+            if (redirect) {
+                res.redirect('/perfil');
+            } else res.send({
+                'result': 'success',
+                'session': req.session.passport.user
+            });
         })
 }
 

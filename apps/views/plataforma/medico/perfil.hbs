@@ -5,20 +5,21 @@
             <div class="panel searchbox">
                 <div class="panel-body">
                     <div class="col-md-3" id="ProfilePicture">
-                        <img src="{{fotoPerfil}}" width="200" height="200" class="img-rounded">
+                        <img src="{{valSession 'fotoPerfil'}}" width="200" height="200" class="img-rounded" id="fotoPerfil">
                         <label for="imageFile">Cambiar Imagen</label>
                         <input type="file" id="imageFile" style="display:none">
                     </div>
                     <div class="container">
                         <div class="row">
-                            <div class="col-md-9">
-                                {{name}}
+                            <div class="col-md-9" id='session_nombreUsuario'>
+                                {{valSession "name"}}
                             </div>
-                            {{#if ciudad}}
-                                <div class="col-md-9">
-                                    {{ciudad}}, {{estado}}
-                                </div>
-                            {{/if}}
+                            <div class="col-md-9" id="session_ubicacion">
+                                {{#ifSession "ciudad"}}
+                                    {{valSession "ciudad"}}, {{valSession "estado"}}
+
+                                {{/ifSession}}
+                            </div>
                             <div class="col-md-9">
                                 <a class="login" href="#" data-toggle="modal" data-target="#ModificarPerfilModal" onclick="cargarInfoSesion()">Edita tu perfil</a>
                             </div>

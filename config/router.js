@@ -162,8 +162,7 @@ var iniciar = function()
 			var tipoUsuario = 'paciente';
 			if (req.session.passport.user.tipoUsuario === 'M') tipoUsuario = 'medico';
 			rutas.routeLife('plataforma','plataforma/'+tipoUsuario, hps);
-			res.render('perfil');
-			//intermed.callController('home','perfil', req.body, req, res);
+			intermed.callController('home','perfil', req.body, req, res);
 		} else {
 			res.redirect('/');
 		}
@@ -183,6 +182,22 @@ var iniciar = function()
 	//::Temporal::, solo para ver la información que tiene el usuario en su variable sesión
 	app.get('/informacionusuario', function (req, res){
 		res.send(JSON.stringify(req.session.passport) + '<br/><a href="/">Regresar</a>');
+	});
+
+	app.post('/informacionRegistroMedico', function ( req, res){
+		intermed.callController('medicos', 'informacionRegistro', '', req, res);
+	});
+
+	app.post('/regMedPasoUno',function (req, res){
+		intermed.callController('medicos','regMedPasoUno', req.body, req, res);
+	});
+
+	app.post('/regMedPasoTres',function (req, res){
+		intermed.callController('medicos','regMedPasoTres', req.body, req, res);
+	});
+
+	app.post('/actualizarSesion',function (req, res){
+		intermed.callController('usuarios', 'actualizarSesion', req.body, req, res);
 	});
 
 	//  Pruebas  padecimientos y tipo especialidad
