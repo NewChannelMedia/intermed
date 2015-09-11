@@ -117,7 +117,7 @@ if (location.pathname === '/registro') {
             }
         });
 
-        if (document.getElementById('registroCompleto') && document.getElementById('registroCompleto').value === "0") {
+        if ($('#registroCompleto') && $('#registroCompleto').val() === "0" && $('#logueado').val() === "0") {
             if (document.getElementById('tipoUsuario').value === "M") {
                 $.ajax({
                     async: true,

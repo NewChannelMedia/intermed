@@ -49,6 +49,7 @@ module.exports = {
 				attributes:['id','estado']
 			}).then(function(estados){
 				res.render('perfil', {sesion: sesion, estados: estados});
+				req.session.passport.user.logueado = "1";
 			});
 	    },
 		aboutPacientes:function(object, req, res ){

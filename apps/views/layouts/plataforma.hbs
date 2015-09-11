@@ -78,8 +78,10 @@
             </div>
         </section>
     </nav>
+    <input type="hidden" id="logueado" value="{{valSession 'logueado'}}">
     <input type="hidden" id="registroCompleto" value="{{valSession 'registroCompleto'}}">
-    <input type="hidden" id="tipoUsuario" value="{{valSession 'tipoUsuario'}}"> {{{body}}}
+    <input type="hidden" id="tipoUsuario" value="{{valSession 'tipoUsuario'}}">
+    {{{body}}}
     <footer>
         <div class="container">
             <p class="navbar-text">
@@ -514,7 +516,7 @@
                                                     <select class="form-control" id="slc_estados" onchange="obtenerCiudades()">
                                                         <option value=""></option>
                                                         {{#each estados}}
-                                                        <option value={ {id}}>{{estado}}</option>
+                                                        <option value='{{id}}'>{{estado}}</option>
                                                         {{/each}}
                                                     </select>
                                                 </div>

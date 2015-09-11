@@ -254,11 +254,13 @@ function guardarImagenDePerfil(object, usuario) {
             };
             var path = './garage/profilepics/' + usuario.id + '/' + usuario.id + '_' + getDateTime() + '.png';
             fs.writeFile(path, imagedata, 'binary', function(err) {
+                console.log('Guardando: ' + object.picture.data.url);
                 if (err) console.error('___Error al guardar imagen de perfil (' + err + ')');
-                console.log('__Imagen guardada en: ' + path);
-                usuario.update({
-                    urlFotoPerfil: path
-                });
+                else {console.log('__Imagen guardada en: ' + path);
+                    usuario.update({
+                        urlFotoPerfil: path
+                    });
+                }
             });
         });
     });
@@ -337,7 +339,7 @@ var generarSesion = function(req, res, usuario_id, redirect) {
             where: {
                 id: usuario_id
             },
-            attributes: ['id', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion'],
+            attributes: ['id', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion','logueado'],
             include: [{
                 model: models.DatosGenerales,
                 attributes: ['nombre', 'apellidoP', 'apellidoM']
@@ -356,24 +358,26 @@ var generarSesion = function(req, res, usuario_id, redirect) {
                     'id': usuario.id,
                     'tipoUsuario': usuario.tipoUsuario,
                     'tipoRegistro': usuario.tipoRegistro,
-                    'estatusActivacion': usuario.estatusActivacion
+                    'estatusActivacion': usuario.estatusActivacion,
+                    'logueado': usuario.logueado
                 }));
-                //
-                req.session.passport.user.registroCompleto = "1";
-                if (!usuario.DatosGenerale) req.session.passport.user.registroCompleto = "0";
-                if (!usuario.Direccions) req.session.passport.user.registroCompleto = "0";
-                if (!usuario.Biometrico || !usuario.Biometrico.genero) req.session.passport.user.registroCompleto = "0";
-                if (usuario.DatosGenerale) req.session.passport.user.name = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM;
-                else req.session.passport.user.name = 'Fulano De Tal';
-                if (usuario.urlFotoPerfil) {
-                    fs.readFile(usuario.urlFotoPerfil, function(err, data) {
-                        if (err) throw err;
-                        req.session.passport.user.fotoPerfil = 'data:image/jpeg;base64,' + (data).toString('base64');
+                usuario.update({logueado:1}).then(function(result){
+                    req.session.passport.user.registroCompleto = "1";
+                    if (!usuario.DatosGenerale) req.session.passport.user.registroCompleto = "0";
+                    if (!usuario.Direccions) req.session.passport.user.registroCompleto = "0";
+                    if (!usuario.Biometrico || !usuario.Biometrico.genero) req.session.passport.user.registroCompleto = "0";
+                    if (usuario.DatosGenerale) req.session.passport.user.name = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM;
+                    else req.session.passport.user.name = 'Fulano De Tal';
+                    if (usuario.urlFotoPerfil) {
+                        fs.readFile(usuario.urlFotoPerfil, function(err, data) {
+                            if (err) console.log('Error al leer la imagen de perfil: ' + err);
+                            req.session.passport.user.fotoPerfil = 'data:image/jpeg;base64,' + (data).toString('base64');
+                            cargarExtraInfo(usuario, redirect, req, res);
+                        });
+                    } else {
                         cargarExtraInfo(usuario, redirect, req, res);
-                    });
-                } else {
-                    cargarExtraInfo(usuario, redirect, req, res);
-                }
+                    }
+                });
             } else {
                 if (redirect) {
                     res.redirect('/');
