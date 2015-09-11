@@ -1,0 +1,279 @@
+<section id="principal">
+  <section class="container">
+    <div class="row">
+      <div id="myCarousel" class="carousel slide carousel-fade bottom-border" data-ride="carousel">
+        <!-- Indicators -->
+        <ol class="carousel-indicators">
+          <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+          <li data-target="#myCarousel" data-slide-to="1"></li>
+          <li data-target="#myCarousel" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner" role="listbox">
+          <div class="item active" id="item-1">
+            <div class="container">
+              <div class="carousel-caption">
+                <img class="item-title" src="img/que-es-intermed.png" alt="¿Qué es Intermed?">
+                <div class="clearfix"></div>
+                <div class="item-block">
+                  <div class="large-text">
+                    <strong>INTERMED <sup>&reg</sup></strong> es la primera
+                    <br>red social
+                    <strong>médico-paciente.</strong>
+                  </div>
+                </div>
+                <div class="item-block">
+                  <div class="normal-text">
+                    creada para ayudarte a llevar un control de tu salud
+                    <br> y optimizar tu comunicación con médicos, instituciones
+                    <br> y demás profesionales del ramo.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item" id="item-2">
+            <div class="container">
+              <div class="carousel-caption">
+                <h1 class="item-title-text">
+                  <small>Agenda tus citas</small>
+                  <br>con un click
+                </h1>
+                <div class="clearfix"></div>
+                <div class="clearfix"></div>
+                <div class="item-block">
+                  <div class="large-text">
+                    <strong>Seguridad y rapidez</strong>
+                  </div>
+                </div>
+                <div class="item-block">
+                  <div class="normal-text">
+                    Desde cualquier lugar y en cualquier momento, agenda
+                    <br> tus citas a traves de Intermed, y sin costo alguno
+                    <br> nosotros la reservaremos para ti, recordandote
+                    <br> la fecha y registrando tu visita.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="item" id="item-3">
+            <div class="container">
+              <div class="carousel-caption">
+                <h1 class="item-title-text">
+                  <small>Lleva un registro</small>
+                  <br>detallado
+                  <small>de tu</small>
+                  <br>
+                  <small>historial de salud</small>
+                </h1>
+                <div class="clearfix"></div>
+                <div class="item-block">
+                  <div class="large-text">
+                    Seguridad y
+                    <strong>rapidez</strong>
+                  </div>
+                </div>
+                <div class="item-block">
+                  <div class="normal-text">
+                    Cada vez que visitas a un médico de Intermed, la
+                    <br> registramos y la incluímos en una bitacora que
+                    <br> puedes consultar en cualquier momento.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
+      <!-- /.carousel -->
+    </div>
+  </section>
+  <section id="buscador" class="container">
+    <!-- empieza buscador -->
+    <div id="panel-buscador" class="panel">
+      <div class="panel-body">
+        <form method="POST" action="/searchMedic">
+          <!-- Form principal -->
+          <input type="hidden" value="homeAlone" name="local" />
+          <h4>Buscar</h4>
+          <div class="criterio col-md-2">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <select id="sel-busqueda" name="seleccionador" class="form-control">
+                    <option value="medico">Medico</option>
+                    <option value="especialidad">Especialidad</option>
+                    <option value="padecimiento">Padecimiento</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="parametros col-md-8">
+            <div class="row">
+              <div class="">
+                <div class="col-md-4 esp box">
+                  <div class="form-group">
+                    <select class="form-control" name="especialidad">
+                      <option value = "0" >Especialidades</option>
+                      {{#each especia}}
+                        <option value = {{id}}>{{especialidad}}</option>
+                      {{/each}}
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4 pad box">
+                  <div class="form-group">
+                    <select class="form-control" name="padecimiento">
+                      <option value = "0" >Padecimiento</option>
+                      {{#each padecimiento}}
+                        <option value = {{id}}>{{padecimiento}}</option>
+                      {{/each}}
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4 esp pad box">
+                  <div class="form-group">
+                    <select class="form-control" id = "slc_estado"name="estado">
+                      <option value = "0" >Estado</option>
+                      {{#each estado}}
+                        <option value = {{id}}>{{estado}}</option>
+                      {{/each}}
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-4 esp pad box">
+                  <div class="form-group">
+                    <select class="form-control" id = "slc_ciudad"name="ciudad">
+                      <option value = "0" >Ciudad</option>
+                      {{#each ciudad}}
+                        <option value = {{id}}>{{ciudad}}</option>
+                      {{/each}}
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6 med box">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="nombreMed" name="nombreMedico" placeholder="Nombres">
+                  </div>
+                </div>
+                <div class="col-md-6 med box">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="apellidoMed" name="apellidoMedico" placeholder="Apellidos">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <ul class="list-inline">
+                  <li>
+                    <label>Añade a tu busqueda: </label>
+                  </li>
+                  <li>
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" name="hospital" value="hospital"> Hospital
+                      </label>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" name="aseguradora" value="aseguradora"> Aseguradora
+                      </label>
+                    </div>
+                  </li>
+                  <li>
+                    <div class="checkbox">
+                      <label>
+                        <input type="checkbox" name="costo" value="costo"> Costo
+                      </label>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <!-- <button class="btn btn-success btn-md btn-block"id = "btn">
+                    <span class="glyphicon glyphicon-search"></span>&nbsp Buscar
+                  </button> -->
+                  <input type="submit" value="Buscar" class="btn btn-success btn-md btn-block" id="btn" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+        <!-- final del form principal -->
+      </div>
+    </div>
+    <!-- espacio para icono scroll -->
+    <div class="row ">
+      <div style="text-align:center;">
+        <span class="center-block glyphicon glyphicon-hand-down btn-lg"></span>
+      </div>
+    </div>
+  </section>
+</section>
+<section id="servicios" style="text-align:center; color:#fff;">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <span class="icon-white"></span>
+        <article>
+          <h2>
+            <strong>Intermed<sup>&reg</sup></strong> Es la primera red social dedicada a la salud.
+          </h2>
+          <div class="medium-text">Es una plataforma diseñada para conectar a pacientes, medicos e instituciones, ofreciéndoles una
+            <br> selección de útiles herramientas creadas especialmente para cada uno de ellos.
+          </div>
+          <h1>Conoce los servicios que
+            <strong>Intermed<sup>&reg</sup></strong> tiene para ti.</br>
+            <small>Selecciona tu categoría:</small>
+          </h1>
+        </article>
+      </div>
+    </div>
+    <div class="row">
+      <div class="iconos-servicios hi-icon-wrap hi-icon-effect hi-icon-effect-a">
+        <div class="col-md-3">
+          <a href="/pacientes" class="hi-icon">
+            <img class=" hi-icon-img" src="img/BotonPacientes.png">
+          </a>
+        </div>
+        <div class="col-md-3">
+          <a href="/medicos" class="hi-icon">
+            <img class=" hi-icon-img" src="img/BotonMedicos.png">
+          </a>
+        </div>
+        <div class="col-md-3">
+          <a href="/instituciones" class="hi-icon">
+            <img class=" hi-icon-img" src="img/BotonInstituciones.png">
+          </a>
+        </div>
+        <div class="col-md-3">
+          <a href="/proveedores" class="hi-icon">
+            <img class=" hi-icon-img" src="img/BotonProveedores.png">
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+<section id="section3">
+  <div class="section3cover">
+    <div class="container">
+    </div>
+  </div>
+</section>
