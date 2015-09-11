@@ -119,13 +119,18 @@ var iniciar = function()
 		intermed.callController('Home', 'aboutPacientes', '', req, res);
 	});
 
-	//Router para request inicio de sesion o registro con facebook por medio de passport
-	app.get('/auth/facebook', passport.authenticate('facebook',  {scope: ['email','user_birthday','user_location','publish_actions']}));
+	app.get('/auth/facebook/request/:tipo', function (req, res, next){
+		req.session.tipo = '';
+		if (req.params.tipo === "M" || req.params.tipo === "P")	req.session.tipo = req.params.tipo;
+		next();
+	},  passport.authenticate('facebook',  {scope: ['email','user_birthday','user_location','publish_actions']}));
+
 	//Callback con respuesta del inicio de sesion de facebook por passport (trae los datos del usuario)
 	app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }),
 		function(req, res) {
+			console.log('______TIPO USUARIO: ' + req.session.tipo);
 			req.session.passport.user['tipoRegistro'] = 'F';
-			req.session.passport.user['tipoUsuario'] = 'P';
+			req.session.passport.user['tipoUsuario'] = req.session.tipo;
 			intermed.callController('usuarios', 'registrarUsuario',req.session.passport.user, req, res);
 	});
 	//registro pacientes

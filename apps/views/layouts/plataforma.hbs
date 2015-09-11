@@ -67,10 +67,11 @@
                 <div id="atnc-clientes" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-right">
                     <div class="row">
                         <div class="col-md-12">
-                            <p class="text-right">
+                            <p class="text-right" id="menubar">
                                 <img src="{{valSession 'fotoPerfil'}}" width="50" height="50" id="fotoPerfilMini">
-                                <a href="">Calendario {{sesion.calendario}}</a>
-                                <a href="">Mensajes {{sesion.mensajes}}</a>
+                                <a href="">Calendario {{sesion.calendario}}</a> |
+                                <a href="">Mensajes {{sesion.mensajes}}</a> |
+                                <a href="/logout">Cerrar Sesión</a>
                             </p>
                         </div>
                     </div>
@@ -78,7 +79,7 @@
             </div>
         </section>
     </nav>
-    <input type="hidden" id="logueado" value="{{valSession 'logueado'}}">
+    <input type="hidden" id="inicio" value="{{valSession 'inicio'}}">
     <input type="hidden" id="registroCompleto" value="{{valSession 'registroCompleto'}}">
     <input type="hidden" id="tipoUsuario" value="{{valSession 'tipoUsuario'}}">
     {{{body}}}

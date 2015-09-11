@@ -117,72 +117,89 @@ if (location.pathname === '/registro') {
             }
         });
 
-        if ($('#registroCompleto') && $('#registroCompleto').val() === "0" && $('#logueado').val() === "0") {
-            if (document.getElementById('tipoUsuario').value === "M") {
-                $.ajax({
-                    async: true,
-                    url: '/informacionRegistroMedico',
-                    type: 'POST',
-                    dataType: "json",
-                    cache: false,
-                    success: function(data) {
-                        var continuar = true;
-                        //PASO 1 de 3 (falta fecha de nacimiento)
-                        if (data.DatosGenerale) {
-                            document.getElementById('nombreRegMed').value = data.DatosGenerale.nombre;
-                            document.getElementById('apePatRegMed').value = data.DatosGenerale.apellidoP;
-                            document.getElementById('apeMatRegMed').value = data.DatosGenerale.apellidoM;
-                        } else continuar = false;
-                        if (data.Biometrico) {
-                            if (data.Biometrico.genero == "F") document.getElementById("sexF").checked = true;
-                            else if (data.Biometrico.genero == "M") document.getElementById("sexM").checked = true;
-                        } else continuar = false;
-                        if (data.Medico) {
-                            document.getElementById('curpRegMed').value = data.Medico.curp;
-                            document.getElementById('cedulaRegMed').value = data.Medico.cedula;
-                        } else continuar = false;
-                        i = 0;
+        if ( $('#inicio').val() === "0"){
+            actualizarSesion();
+        }
 
-                        //Pasar al paso 2 de 3 (Datos de págo)
-                        if (continuar) {
-                            goToNextStep(i++);
-                        }
-                        /*
-                        						//Pasar al paso 3 de 3 (Datos de facturación)
-                        						if (continuar){
-                                                    console.log('SIMULANDO PAGO CORRECTO');
-                                                    goToNextStep(i++);
-                        						}
-                        */
-                        if (data.DatosFacturacion) {
-                            document.getElementById('nomRSocialFact').value = data.DatosFacturacion.razonSocial;
-                            document.getElementById('rfcFact').value = data.DatosFacturacion.RFC;
-                            if (data.DatosFacturacion.Direccion) {
-                                document.getElementById('calleFact').value = data.DatosFacturacion.Direccion.calle;
-                                document.getElementById('numeroFact').value = data.DatosFacturacion.Direccion.numero;
-                                if (data.DatosFacturacion.Direccion.Localidad) {
-                                    document.getElementById('slc_estados').value = data.DatosFacturacion.Direccion.Localidad.estado_id;
-                                    obtenerCiudades();
-                                    setTimeout(function() {
-                                        document.getElementById('slc_ciudades').value = data.DatosFacturacion.Direccion.Localidad.ciudad_id;
-                                        obtenerColonias();
-                                        setTimeout(function() {
-                                            document.getElementById('slc_colonias').value = data.DatosFacturacion.Direccion.Localidad.id;
-                                            document.getElementById('nmb_cp').value = data.DatosFacturacion.Direccion.Localidad.CP;
-                                        }, 1000);
-                                    }, 1000);
+        if ($('#registroCompleto') && $('#registroCompleto').val() === "0" && $('#registroCompleto') && $('#tipoUsuario').val() === "M"){
+            $('#menubar').append(' | <a onclick="informacionRegistroMedico()" >Terminar registro</a>');
+        }
 
-                                } else continuar = false;
-                            } else continuar = false;
-                        } else continuar = false;
-
-                        $("#RegMedModal").modal("show");
-                    },
-                    error: function(jqXHR, textStatus, err) {
-                        console.error('AJAX ERROR: ' + err);
-                    }
-                });
+        if ($('#registroCompleto') && $('#registroCompleto').val() === "0" && $('#inicio').val() === "1") {
+            actualizarSesion();
+            if ($('#tipoUsuario').val() === "M") {
+                informacionRegistroMedico();
             }
+        }
+    });
+}
+
+function informacionRegistroMedico(){
+    $.ajax({
+        async: true,
+        url: '/informacionRegistroMedico',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        success: function(data) {
+            var continuar = true;
+            //PASO 1 de 3 (falta fecha de nacimiento)
+            if (data.DatosGenerale) {
+                document.getElementById('nombreRegMed').value = data.DatosGenerale.nombre;
+                document.getElementById('apePatRegMed').value = data.DatosGenerale.apellidoP;
+                document.getElementById('apeMatRegMed').value = data.DatosGenerale.apellidoM;
+            } else continuar = false;
+            if (data.Biometrico) {
+                if (data.Biometrico.genero == "F") document.getElementById("sexF").checked = true;
+                else if (data.Biometrico.genero == "M") document.getElementById("sexM").checked = true;
+            } else continuar = false;
+            if (data.Medico) {
+                document.getElementById('curpRegMed').value = data.Medico.curp;
+                document.getElementById('cedulaRegMed').value = data.Medico.cedula;
+            } else continuar = false;
+            i = 0;
+
+            //Pasar al paso 2 de 3 (Datos de págo)
+            if (continuar) {
+                goToNextStep(i++);
+            }
+            /*
+            //Pasar al paso 3 de 3 (Datos de facturación)
+            if (continuar){
+                console.log('SIMULANDO PAGO CORRECTO');
+                goToNextStep(i++);
+            }
+            */
+            if (data.DatosFacturacion) {
+                document.getElementById('nomRSocialFact').value = data.DatosFacturacion.razonSocial;
+                document.getElementById('rfcFact').value = data.DatosFacturacion.RFC;
+                if (data.DatosFacturacion.Direccion) {
+                    document.getElementById('calleFact').value = data.DatosFacturacion.Direccion.calle;
+                    document.getElementById('numeroFact').value = data.DatosFacturacion.Direccion.numero;
+                    if (data.DatosFacturacion.Direccion.Localidad) {
+                        document.getElementById('slc_estados').value = data.DatosFacturacion.Direccion.Localidad.estado_id;
+                        obtenerCiudades();
+                        setTimeout(function() {
+                            document.getElementById('slc_ciudades').value = data.DatosFacturacion.Direccion.Localidad.ciudad_id;
+                            obtenerColonias();
+                            setTimeout(function() {
+                                document.getElementById('slc_colonias').value = data.DatosFacturacion.Direccion.Localidad.id;
+                                document.getElementById('nmb_cp').value = data.DatosFacturacion.Direccion.Localidad.CP;
+                            }, 1000);
+                        }, 1000);
+
+                    } else continuar = false;
+                } else continuar = false;
+            } else continuar = false;
+
+            $("#RegMedModal").on('hidden.bs.modal', function() {
+                    actualizarSesion();
+            });
+            $("#RegMedModal").modal("show");
+
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
         }
     });
 }
@@ -219,7 +236,6 @@ function saveStepTree() {
         success: function(data) {
             if (data.result === "success") {
                 $("#RegMedModal").modal("hide");
-                actualizarSesion();
             }
         },
         error: function(jqXHR, textStatus, err) {

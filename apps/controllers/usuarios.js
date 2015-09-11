@@ -83,7 +83,7 @@ exports.registrarUsuario = function(object, req, res) {
                 }, {
                     transaction: t
                 }).then(function(usuario) {
-                    if (!usuario) {
+                    if (!usuario && req.session.tipo != '') {
                         return models.Usuario.create({
                                 usuario: object['email'],
                                 correo: object['email'],
@@ -109,23 +109,39 @@ exports.registrarUsuario = function(object, req, res) {
                                         nombre: object['first_name'],
                                         apellidoP: object['last_name'],
                                         apellidoM: '',
-                                        rfc: '',
                                         usuario_id: usuario_id,
                                         genero: object['gender']
                                     }, {
                                         transaction: t
                                     })
                                     .then(function(result) {
-                                        if (object['tipoUsuario'] === 'P') {
-                                            return crearPaciente(req, res, object, usuario_id, t);
-                                        } else if (object['tipoUsuario'] === 'M') {
-                                            return crearMedico(req, res, object, usuario_id, t);
+                                        console.log('______OBJECT: ' + JSON.stringify(object));
+                                        if (object.gender){
+                                            return models.Biometrico.create({
+                                                genero: object['gender'],
+                                                usuario_id: usuario_id
+                                            }, {transaction: t}).then(function (result){
+                                                if (object['tipoUsuario'] === 'P') {
+                                                    return crearPaciente(req, res, object, usuario_id, t);
+                                                } else if (object['tipoUsuario'] === 'M') {
+                                                    setTimeout(function() {
+                                                        generarSesion(req, res, usuario_id, true);
+                                                    }, 1000);
+                                                }
+                                            })
+                                        } else {
+                                            setTimeout(function() {
+                                                generarSesion(req, res, usuario_id, true);
+                                            }, 1000);
                                         }
                                     });
                             });
-                    } else {
+                    } else if (usuario) {
                         usuario_id = usuario.id;
                         generarSesion(req, res, usuario_id, true);
+                    } else {
+                        console.log('El usuario no se encuentra registrado');
+                        generarSesion(req, res, '', true);
                     }
                 });
             } else { //Registro por correo
@@ -146,8 +162,7 @@ exports.registrarUsuario = function(object, req, res) {
                                     password: object['password'],
                                     tipoUsuario: object['tipoUsuario'],
                                     tipoRegistro: object['tipoRegistro'],
-                                    estatusActivacion: 0,
-                                    token: ''
+                                    estatusActivacion: 0
                                 }, {
                                     transaction: t
                                 }).then(function(usuario) {
@@ -203,7 +218,8 @@ exports.registrarUsuario = function(object, req, res) {
                         } else {
                             //Usuario ya existente
                             console.log('El usuario con el correo ' + object['email'] + ' ya se encuentra registrado');
-                            generarSesion(req, res, usuario_id, true);
+                            req.session.passport = {};
+                            res.redirect('/');
                         }
                     });
             }
@@ -281,46 +297,15 @@ var crearPaciente = function(req, res, object, usuario_id, t) {
                         transaction: t
                     })
                     .then(function(result) {
-                        console.log('CREAR PACIENTE');
                         setTimeout(function() {
                             generarSesion(req, res, usuario_id, true);
                         }, 1000);
                     });
             } else {
-                console.log('CREAR PACIENTE sin fecha');
                 setTimeout(function() {
                     generarSesion(req, res, usuario_id, true);
                 }, 1000);
             }
-        });
-}
-
-var crearMedico = function(req, res, object, usuario_id, t) {
-    //Se trata de un médico
-    return models.Medico.create({
-            cedula: '',
-            codigoMedico: '',
-            usuario_id: usuario_id
-        }, {
-            transaction: t
-        })
-        .then(function(medico) {
-            // si se pudo insertar el médico, tomamos su id para pasarlo a medicos especialidades y agregarla
-            return models.MedicoEspecialidad.create({
-                    tipo: '1',
-                    titulo: '',
-                    lugarEstudio: '',
-                    medico_id: medico.id,
-                    fecha: Date.now(),
-                    especialidad_id: object['especialidadMed'] // Id de la especialidad
-                }, {
-                    transaction: t
-                })
-                .then(function(result) {
-                    setTimeout(function() {
-                        generarSesion(req, res, usuario_id, true);
-                    }, 1000);
-                });
         });
 }
 
@@ -334,6 +319,8 @@ exports.actualizarSesion = function(object, req, res) {
 
 var generarSesion = function(req, res, usuario_id, redirect) {
     if (!redirect) redirect = false;
+    var actualizacion = false;
+    if (req.session.passport.user) actualizacion = true;
     req.session.passport = {};
     models.Usuario.findOne({
             where: {
@@ -361,6 +348,11 @@ var generarSesion = function(req, res, usuario_id, redirect) {
                     'estatusActivacion': usuario.estatusActivacion,
                     'logueado': usuario.logueado
                 }));
+                if (actualizacion){
+                    req.session.passport.user.inicio = 0;
+                } else {
+                    req.session.passport.user.inicio = 1;
+                }
                 usuario.update({logueado:1}).then(function(result){
                     req.session.passport.user.registroCompleto = "1";
                     if (!usuario.DatosGenerale) req.session.passport.user.registroCompleto = "0";
