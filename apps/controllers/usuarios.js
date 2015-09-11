@@ -326,7 +326,7 @@ var generarSesion = function(req, res, usuario_id, redirect) {
             where: {
                 id: usuario_id
             },
-            attributes: ['id', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion','logueado'],
+            attributes: ['id', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion'],
             include: [{
                 model: models.DatosGenerales,
                 attributes: ['nombre', 'apellidoP', 'apellidoM']
@@ -359,7 +359,7 @@ var generarSesion = function(req, res, usuario_id, redirect) {
                     if (!usuario.Direccions) req.session.passport.user.registroCompleto = "0";
                     if (!usuario.Biometrico || !usuario.Biometrico.genero) req.session.passport.user.registroCompleto = "0";
                     if (usuario.DatosGenerale) req.session.passport.user.name = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM;
-                    else req.session.passport.user.name = 'Fulano De Tal';
+                    else req.session.passport.user.name = '';
                     if (usuario.urlFotoPerfil) {
                         fs.readFile(usuario.urlFotoPerfil, function(err, data) {
                             if (err) console.log('Error al leer la imagen de perfil: ' + err);
@@ -386,7 +386,6 @@ function cargarExtraInfo(usuario, redirect, req, res) {
     if (usuario.tipoUsuario === 'P') {
         tipoUsuario = 'Paciente';
     } else if (usuario.tipoUsuario === 'M') {
-        req.session.passport.user.name = 'Dr. ' + req.session.passport.user.name;
         tipoUsuario = 'Medico';
     }
     if (tipoUsuario) {

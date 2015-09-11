@@ -117,12 +117,8 @@ if (location.pathname === '/registro') {
             }
         });
 
-        if ( $('#inicio').val() === "0"){
-            actualizarSesion();
-        }
-
-        if ($('#registroCompleto') && $('#registroCompleto').val() === "0" && $('#registroCompleto') && $('#tipoUsuario').val() === "M"){
-            $('#menubar').append(' | <a onclick="informacionRegistroMedico()" >Terminar registro</a>');
+        if ($('#registroCompleto') && $('#registroCompleto').val() === "0" && $('#tipoUsuario').val() === "M"){
+            $('#registroIncompleto').css('display', 'inline-block');
         }
 
         if ($('#registroCompleto') && $('#registroCompleto').val() === "0" && $('#inicio').val() === "1") {
@@ -253,10 +249,19 @@ function actualizarSesion() {
         success: function(data) {
             if (data.result === "success") {
                 var fotoPerfil = '';
+                if (data.session.registroCompleto === "1"){
+                    $('#registroIncompleto').css('display', 'none');
+                }
                 if (data.session.fotoPerfil) fotoPerfil = data.session.fotoPerfil;
                 $('#fotoPerfilMini').attr("src", fotoPerfil);
                 $('#fotoPerfil').attr("src", fotoPerfil);
-                $('#session_nombreUsuario').html(data.session.name);
+                if (data.session.tipoUsuario === "M") {
+                    if (!data.session.name) $('#session_nombreUsuario').html('No tenemos registrado tu nombre, por favor continua con tu registro <a onclick="informacionRegistroMedico()">aquí</a>');
+                    else $('#session_nombreUsuario').html(data.session.name);
+                } else {
+                    $('#session_nombreUsuario').html(data.session.name);
+                }
+
                 if (data.session.ciudad) {
                     $('#session_ubicacion').html(data.session.ciudad + ', ' + data.session.estado);
                 }

@@ -12,7 +12,11 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-9" id='session_nombreUsuario'>
-                                {{valSession "name"}}
+                                {{#ifSession "name"}}
+                                    Dr. {{valSession "name"}}
+                                {{else}}
+                                    No tenemos registrado tu nombre, por favor continua con tu registro <a onclick="informacionRegistroMedico()">aquí</a>
+                                {{/ifSession}}
                             </div>
                             <div class="col-md-9" id="session_ubicacion">
                                 {{#ifSession "ciudad"}}

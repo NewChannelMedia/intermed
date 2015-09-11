@@ -67,11 +67,12 @@
                 <div id="atnc-clientes" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-right">
                     <div class="row">
                         <div class="col-md-12">
-                            <p class="text-right" id="menubar">
+                            <p class="text-right">
                                 <img src="{{valSession 'fotoPerfil'}}" width="50" height="50" id="fotoPerfilMini">
                                 <a href="">Calendario {{sesion.calendario}}</a> |
                                 <a href="">Mensajes {{sesion.mensajes}}</a> |
-                                <a href="/logout">Cerrar Sesión</a>
+                                <a href="/logout">Cerrar Sesión</a> |
+                                <a id="registroIncompleto" onclick="informacionRegistroMedico()" style="display: none">Continuar registro</a>
                             </p>
                         </div>
                     </div>
@@ -237,7 +238,7 @@
                         <form id="regMedStepOne">
                             <div class="row topMsgReg">
                                 <div class="col-md-12">
-                                    <h4 class="Flama-bold s20">¡Bienvenido Dr. Fulano de Tal!
+                                    <h4 class="Flama-bold s20">¡Bienvenido Dr{{#ifSession "name"}}. {{valSession "name"}} {{/ifSession}}!
                                         <small>Por favor llena los siguientes campos para continuar con tu registro.</small>
                                     </h4>
                                 </div>

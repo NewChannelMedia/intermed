@@ -10,8 +10,7 @@ module.exports = function(sequelize, DataTypes) {
     tipoUsuario: {type: DataTypes.STRING, required: true},
     tipoRegistro: {type: DataTypes.STRING, required: true},
     estatusActivacion: {type: DataTypes.INTEGER, required: true},
-    token: {type: DataTypes.STRING },
-    logueado: {type: DataTypes.INTEGER}
+    token: {type: DataTypes.STRING }
   }, {
     classMethods: {
       // asociaciones con otras tablas
