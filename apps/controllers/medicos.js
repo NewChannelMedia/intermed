@@ -1,4 +1,5 @@
 var models  = require('../models');
+var cryptomaniacs = require('./encryption');
 
 /**
 Controlador de para médicos
@@ -306,8 +307,11 @@ module.exports = {
                         curp: object['curpRegMed'],
                         cedula: object['cedulaRegMed'],
                         usuario_id: usuario_id
-                    }).then(function (result){
-                        res.send({'result':'success'});
+                    }).then(function (medico){
+                        var token = String(cryptomaniacs.doEncriptToken(medico.id, ''));
+                        medico.update({token: token}).then(function(result){
+                            res.send({'result':'success'});
+                        });
                     })
                 })
             })
