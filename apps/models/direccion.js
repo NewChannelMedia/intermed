@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
     numero: {type: DataTypes.STRING, required: true},
     calle1: {type: DataTypes.STRING},
     calle2: {type: DataTypes.STRING},
-    principal: {type:  DataTypes.BOOLEAN},
+    principal: {type:  DataTypes.INTEGER},
     nombre: {type: DataTypes.STRING},
     horaInicio: {type: DataTypes.STRING},
     horaFin: {type: DataTypes.STRING},
