@@ -34,6 +34,19 @@ module.exports = {
 						});
 					});
 		},
+		perfil: function(object, req, res) {
+		    if (!req.session.passport.user) {
+		        res.redirect('/');
+		    }
+		    var sesion = req.session.passport.user;
+
+		    //Contar mensajes sin leer
+		    sesion.mensajes = 1;
+		    //Contar eventos nuevos o cercanos (Sin ver)
+		    sesion.calendario = 5;
+
+		    res.render('perfil', sesion);
+		},
 		aboutPacientes:function(object, req, res ){
 			res.render('pacientes', object)
 		},
