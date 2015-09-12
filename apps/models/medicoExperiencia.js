@@ -10,6 +10,7 @@ module.exports = function(sequelize, DataTypes) {
     fechaFin: {type: DataTypes.DATE},
     actual: {type: DataTypes.INTEGER, required: true},
     ciudad_id: {type: DataTypes.INTEGER, required: true},
+    municipio_id: {type: DataTypes.INTEGER, required: true},
     estado_id: {type: DataTypes.INTEGER, required: true},
     medico_id: {type: DataTypes.BIGINT, required: true},
     institucion_id: {type: DataTypes.BIGINT, required: true}

@@ -7,7 +7,9 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function(models) {
-        Padecimiento.belongsToMany(models.Medico,  {through: models.MedicoPadecimiento})
+        Padecimiento.belongsToMany(models.Medico,  {through: models.MedicoPadecimiento});
+        Padecimiento.hasMany(models.PacientePadecimiento);
+        Padecimiento.belongsToMany(models.Paciente,  {through: models.PacientePadecimiento});
       }
     },
     timestamps: false,
