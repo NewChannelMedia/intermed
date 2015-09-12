@@ -7,6 +7,11 @@ a, a:hover, a:visited {
   text-transform: none;
 }
 
+.block {
+  position: relative;
+  clear: both;
+}
+
 #navHome {
   position: absolute;
   z-index: 1000;
@@ -133,12 +138,7 @@ a, a:hover, a:visited {
 
 .navLogo {}
 
-.navLogo a,
-.navLogo a:hover,
-.navLogo a:active,
-.navLogo a:visited,
-.navLogo a:hover
-{
+.navLogo a, .navLogo a:hover, .navLogo a:active, .navLogo a:visited, .navLogo a:hover {
   text-decoration: none;
   text-transform: none;
 }
@@ -160,6 +160,7 @@ a, a:hover, a:visited {
   padding: 9px 0 16px 0;
   color: #fff;
 }
+
 .navLogoText p sup {
   font-size: 50%;
   top: -1em;
@@ -167,24 +168,26 @@ a, a:hover, a:visited {
 }
 
 .navSearch {
-   margin-top: 15px;
-   margin-bottom: 15px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .navSearchBox {
   margin: 0;
 }
-.navSearchBox .form-control{
-   padding: 0 10px;
-   font-size: 12px;
-   height: 25px;
+
+.navSearchBox .form-control {
+  padding: 0 10px;
+  font-size: 12px;
+  height: 25px;
 }
+
 .navSearchBox .btn {
-   padding: 2px 5px 1px;
+  padding: 2px 5px 1px;
 }
 
 .navControl {
-   margin-top: 15px;
+  margin-top: 15px;
 }
 
 .navControl .dropdown-menu {
@@ -224,6 +227,7 @@ a, a:hover, a:visited {
   border: solid 2px #fff;
   border-radius: 50px;
 }
+
 .navControlIcons .profileLink .navControlImg {
   width: 21px;
   height: 21px;
@@ -244,12 +248,14 @@ a, a:hover, a:visited {
   vertical-align: middle;
 }
 
-.navControlImg img{
-  width: 100%;
+.navControlImg img {
+  height: 100%;
+  vertical-align: bottom;
 }
 
-#plataforma{
-}
+#plataforma {}
+
+
 /*
 #navPlatform #logo .logoImg img {
   display: inline-block;
@@ -834,40 +840,169 @@ footer a, footer a:active, footer a:hover, footer a:visited {
 }
 
 .profileHolder {
-   padding: 0;
-   margin: 0;
+  margin: 0;
+  padding: 0;
 }
 
-.profileHeader{
-   background-image: url('../img/profileBG.png');
-   background-repeat: no-repeat;
-   background-size: cover;
-   padding-top: 20px;
-   padding-bottom: 20px;
+.profileHeader {
+  padding-top: 35px;
+  background-image: url('../img/profileBG.png');
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: cover;
+}
+
+.profileGeneralInfo {
+  position: relative;
+  padding-bottom: 35px;
+  vertical-align: bottom;
+  color: #fff;
 }
 
 .profilePic {
-   width: 200px;
-   height: 200px;
-   border-radius: 100px;
-   border: solid 5px #ffffff;
-   overflow: hidden;
-   background-color: #009cde;
-}
-.profilePic img{
-   width: 100%;
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  width: 175px;
+  height: 175px;
+  margin-bottom: 35px;
+  margin-left: 35px;
+  border: solid 5px #fff;
+  border-radius: 100px;
+  background-color: #009cde;
 }
 
-.profileBody {
-
+.topDrBadge {
+  font-weight: bold;
+  position: absolute;
+  z-index: 0;
+  top: 5px;
+  right: -120px;
+  width: 200px;
+  padding: 5px 10px;
+  text-align: right;
+  text-transform: uppercase;
+  background-color: orange;
 }
+
+.profilePic img {
+  height: 100%;
+}
+
+.profileGenerales {
+  position: relative;
+}
+
+.vCard {
+  margin-bottom: 5px;
+}
+
+.vCard .nombreMedico {}
+
+.vCardMainInfo {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.vCardEspInfo {}
+
+.vCard .espList, .vCard .subEspList {
+  margin-bottom: 0;
+}
+
+.profileExtraNav {
+   margin: 0;
+}
+.profileExtraNav, .profileExtraNav li {
+   padding-left: 0;
+}
+
+.profileOptions {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  margin: 0;
+  padding: 20px;
+  color: #fff;
+  background-color: rgba(20, 20, 20, .5);
+}
+
+.profileMobileOptions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  margin: 0;
+  padding: 20px;
+  color: #fff;
+  background-color: rgba(20, 20, 20, .5);
+  display: none;
+}
+
+.profileOptions .options {
+  vertical-align: bottom;
+}
+
+.profileMobileOptions .options {
+   vertical-align: top;
+   font-size: 21px;
+}
+.profileMobileOptions .options li {
+   margin-bottom: 10px;
+}
+
+
+.profileBody {}
+
 .profileBodyNav {
-   background-color: #edf0f1;
+  background-color: #edf0f1;
 }
+
+.profileBodyNav ul {
+  border-left: solid 1px #dedede;
+}
+
+.profileBodyNav ul li {
+  border-right: solid 1px #dedede;
+}
+
+.profileBodyNav ul li a {
+  border-radius: 0!important;
+  border: 0;
+}
+
+#addFavoriteContact {
+  background-color: #50a7dd;
+  border-radius: 20px!important;
+  padding: 5px;
+}
+
+.profileBodyNav ul li a#addFavoriteContact:hover, .profileBodyNav ul li a#addFavoriteContact:focus {
+  background-color: #50a7dd;
+  border: 0!important;
+}
+
+.profileBodyNav ul li.active a, .profileBodyNav ul li.active a:hover, .profileBodyNav ul li.active a:focus {
+  border-radius: 0;
+  border: 0!important;
+}
+
 .profileBodyElements {
-   margin-top: 10px;
+  margin-top: 10px;
 }
-.profileBodyElements .panel, .profileBodyElements .panel-body, .profileBodyElements .panel-heading{
-   border-radius: 0;
-   border: 0;
+
+.profileBodyElements .panel, .profileBodyElements .panel-body, .profileBodyElements .panel-heading {
+  border-radius: 0;
+  border: 0;
+}
+
+.profileBodyElements .element {
+  /*float: left;*/
+}
+
+.element .panelIcon {
+  margin-left: 0;
+  margin-right: 7px;
 }
