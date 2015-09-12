@@ -176,6 +176,7 @@ a, a:hover, a:visited {
   margin: 10px 0;
   padding: 3px 7px;
   background: #ff9a07;
+  background: -webkit-linear-gradient(left, #ff9a07 0%, #f2cc39 100%);
   background: linear-gradient(to right, #ff9a07 0%, #f2cc39 100%);
   background-color: #ffaf00;
   filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#ff9a07', endColorstr='#f2cc39', GradientType=1);
@@ -269,6 +270,7 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
 /* ---------------------------------- */
 
 .carousel-fade .item {
+  -webkit-transition: opacity 1s;
   transition: opacity 1s;
 }
 
@@ -417,8 +419,6 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
 
 #buscador #panel-buscador {
   border-radius: 20px;
-  -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .2);
-  -moz-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .2);
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .2);
 }
 
@@ -527,17 +527,17 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   color: #fff;
 }
 
-#CatRegModal .modal-content, #RegModal .modal.content, #LoginModal .modal-content {
+#CatRegModal .modal-content, #RegPacModal .modal-content, #RegMedModal .modal-content, #LoginModal .modal-content {
   border-radius: 0;
 }
 
-#CatRegModal .modal-header, #RegModal .modal.header, #LoginModal .modal-header {
-  margin: 20px 25px;
-  padding: 5px 0;
+#CatRegModal .modal-header, #RegPacModal .modal-header, #RegMedModal .modal-header, #LoginModal .modal-header {
+  margin: 20px 15px;
+  padding: 5px 0px;
   border-bottom: solid 5px #76b6dd;
 }
 
-#CatRegModal .modal-header .close, #RegModal .modal-header .close, #LoginModal .modal-header .close {
+#CatRegModal .modal-header .close, #RegPacModal .modal-header .close, #RegMedModal .modal-header .close, #LoginModal .modal-header .close {
   margin: 12px;
 }
 
@@ -552,13 +552,198 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   color: #fbad18;
 }
 
-#CatRegModal .modal-footer, #RegModal .modal-footer {
+#CatRegModal .modal-footer {
   border: solid 5px #fff;
   background-color: #fbad18;
 }
 
+#RegPacModal .modal-body, #RegMedModal .modal-body {
+  position: relative;
+  min-height: 460px;
+  padding: 0 15px;
+}
+
+#RegPacModal .modal-footer, #RegMedModal .modal-footer {
+  text-align: center;
+  border: 0;
+  padding: 0 15px;
+}
+
 #CatRegModal .hi-icon {
   background-color: #fbad18;
+}
+
+.regHeader b{
+   color: #fbad18;
+}
+
+.regCorreo, .regFacebook, .regPersonales {
+  padding: 20px 30px;
+}
+
+.regFacebook {
+  text-align: center;
+}
+
+.separator {
+  position: relative;
+  top: 205px;
+  width: 400px;
+  margin: 0 auto;
+  padding: 0;
+  -webkit-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+  border: 2px solid #757575;
+}
+
+.separator2 {
+  border: 5px solid #fbad18;
+  margin: 10px 0;
+}
+
+.separator3 {
+  width: 80%;
+  float: right;
+  border: 8px solid #fbad18;
+  margin: 10px 0;
+}
+
+.stepsContainer {
+  position: relative;
+  margin: -53px 0;
+  padding: 10px 0;
+  background-color: #d8d8d8;
+}
+
+.stepsList {
+  padding: 0;
+  list-style: none;
+}
+
+.stepBullets {
+  position: relative;
+  z-index: 5;
+  float: left;
+  width: 30px;
+  height: 30px;
+  margin: 0 10px;
+  padding: 5px;
+  text-align: center;
+  color: #fb0018;
+  border-radius: 50px;
+  background-color: #fbad18;
+}
+
+.stepBullets.current {
+  color: #fff;
+  font-weight: bold;
+}
+
+.stepsConnector {
+  position: absolute;
+  z-index: 0;
+  z-index: 1;
+  top: 45%;
+  right: 0;
+  left: 0;
+  width: 80%;
+  height: 5px;
+  margin: 0 auto;
+  background-color: #fbad18;
+}
+
+.topMsgReg {}
+
+.topMsgReg .msgPrecio {
+  font-size: 18px;
+  margin: 0 -1px 0 -30px;
+  margin-bottom: 0;
+  padding: 10px 15px;
+  color: #fff;
+  background-color: #009cde;
+}
+
+.msgPrecio .trngl {
+  position: absolute;
+  top: 12px;
+  left: -25px;
+  width: 20px;
+  height: 20px;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+  background-color: #009cde;
+}
+
+.topMsgReg h4 {
+  margin: 0;
+  padding: 10px 15px;
+  color: #fff;
+  background-color: #fbad18;
+}
+
+.topMsgReg .msgSuccess {
+  padding: 20px 15px;
+  text-align: center;
+  background-color: #009cde;
+}
+
+.regBox {
+  position: relative;
+  display: block;
+  height: auto;
+  padding: 10px 15px;
+}
+
+.selTipoPago {
+  position: relative;
+  top: -45px;
+  margin-bottom: -55px;
+}
+
+.bigLabel {
+  font-size: 25px;
+  margin: 0;
+  padding: 0 30px;
+  letter-spacing: 1px;
+}
+
+.selTipoPago .labelRadio input {
+  width: 30px;
+  height: 30px;
+  margin-top: 2px;
+  margin-left: -23px;
+}
+
+.rB-gray {
+  background-color: #d8d8d8;
+}
+
+.rB-orange {
+  background-color: #fbad18;
+}
+
+.verificarAddon {
+  padding: 0;
+}
+
+.verificarBtn {
+  padding: 5px 12px;
+  border-radius: 0;
+}
+
+.secureStamp p {
+  margin: 0;
+}
+
+.secureStamp img {
+  height: 26px;
+}
+
+.secureStamp .securedImgs.row {
+  padding: 0;
+  margin: 0;
 }
 
 
@@ -622,6 +807,7 @@ footer a, footer a:active, footer a:hover, footer a:visited {
 
 .hi-icon-effect .hi-icon {
   display: block;
+  -webkit-transition: box-shadow .3s;
   transition: box-shadow .3s;
 }
 
@@ -629,6 +815,7 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   top: 0;
   left: 0;
   padding: 0;
+  -webkit-transition: -webkit-transform .3s, opacity .3s;
   transition: -webkit-transform .3s, opacity .3s;
   transition: transform .3s, opacity .3s;
   box-shadow: 0 0 0 3px #fff;
@@ -639,6 +826,7 @@ footer a, footer a:active, footer a:hover, footer a:visited {
 
 .hi-icon-effect-a .hi-icon:hover:after {
   -webkit-transform: scale(.6);
+  -ms-transform: scale(.6);
   transform: scale(.6);
   opacity: 0;
 }

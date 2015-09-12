@@ -56,7 +56,7 @@ exports.iniciarSesion = function(object, req, res) {
         }
     }).then(function(usuario) {
         if (usuario) {
-            generarSesion(req, res, usuario.id)
+            generarSesion(req, res, usuario.id, true);
         } else {
             res.redirect('/');
         }
@@ -115,13 +115,11 @@ exports.registrarUsuario = function(object, req, res) {
                                     })
                                     .then(function(result) {
                                         console.log('______OBJECT: ' + JSON.stringify(object));
-                                        if (object.gender) {
+                                        if (object.gender){
                                             return models.Biometrico.create({
                                                 genero: object['gender'],
                                                 usuario_id: usuario_id
-                                            }, {
-                                                transaction: t
-                                            }).then(function(result) {
+                                            }, {transaction: t}).then(function (result){
                                                 if (object['tipoUsuario'] === 'P') {
                                                     return crearPaciente(req, res, object, usuario_id, t);
                                                 } else if (object['tipoUsuario'] === 'M') {
@@ -186,7 +184,7 @@ exports.registrarUsuario = function(object, req, res) {
 
                                             generarSesion(req, res, usuario.id, true);
                                         });
-                                });
+                                    });
                             } else if (object.tipoUsuario === 'P') {
                                 console.log('___Creando paciente.')
                                 return models.Usuario.create({
@@ -249,7 +247,6 @@ exports.registrarUsuario = function(object, req, res) {
             res.redirect('/');
         });
 };
-
 exports.correoDisponible = function(object, req, res) {
     models.Usuario.findAll({
             where: {
@@ -268,8 +265,6 @@ exports.correoDisponible = function(object, req, res) {
             }
         });
 };
-
-
 
 
 function guardarImagenDePerfil(object, usuario) {
@@ -294,8 +289,7 @@ function guardarImagenDePerfil(object, usuario) {
             fs.writeFile(path, imagedata, 'binary', function(err) {
                 console.log('Guardando: ' + object.picture.data.url);
                 if (err) console.error('___Error al guardar imagen de perfil (' + err + ')');
-                else {
-                    console.log('__Imagen guardada en: ' + path);
+                else {console.log('__Imagen guardada en: ' + path);
                     usuario.update({
                         urlFotoPerfil: path
                     });
@@ -357,9 +351,18 @@ var crearMedico = function(req, res, object, usuario_id, t) {
                     generarSesion(req, res, usuario_id);
                 });
         });
+exports.actualizarSesion = function(object, req, res) {
+    var usuario_id = '';
+    if (req.session.passport.user) {
+        usuario_id = req.session.passport.user.id;
+    }
+    generarSesion(req, res, usuario_id, false);
 }
 
-var generarSesion = function(req, res, usuario_id) {
+var generarSesion = function(req, res, usuario_id, redirect) {
+    if (!redirect) redirect = false;
+    var actualizacion = false;
+    if (req.session.passport.user) actualizacion = true;
     req.session.passport = {};
     models.Usuario.findOne({
             where: {
@@ -369,6 +372,9 @@ var generarSesion = function(req, res, usuario_id) {
             include: [{
                 model: models.DatosGenerales,
                 attributes: ['nombre', 'apellidoP', 'apellidoM']
+            }, {
+                model: models.Biometrico,
+                attributes: ['genero']
             }, {
                 model: models.Direccion,
                 attributes: ['localidad_id']
@@ -381,27 +387,43 @@ var generarSesion = function(req, res, usuario_id) {
                     'id': usuario.id,
                     'tipoUsuario': usuario.tipoUsuario,
                     'tipoRegistro': usuario.tipoRegistro,
-                    'estatusActivacion': usuario.estatusActivacion
+                    'estatusActivacion': usuario.estatusActivacion,
+                    'logueado': usuario.logueado
                 }));
-                if (usuario.DatosGenerale) {
-                    req.session.passport.user.name = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM;
-                }
-                if (usuario.urlFotoPerfil) {
-                    fs.readFile(usuario.urlFotoPerfil, function(err, data) {
-                        if (err) throw err;
-                        req.session.passport.user.fotoPerfil = 'data:image/jpeg;base64,' + (data).toString('base64');
-                        cargarExtraInfo(usuario, req, res);
-                    });
+                if (actualizacion){
+                    req.session.passport.user.inicio = 0;
                 } else {
-                    cargarExtraInfo(usuario, req, res);
+                    req.session.passport.user.inicio = 1;
                 }
+                usuario.update({logueado:1}).then(function(result){
+                    req.session.passport.user.registroCompleto = "1";
+                    if (!usuario.DatosGenerale) req.session.passport.user.registroCompleto = "0";
+                    if (!usuario.Direccions) req.session.passport.user.registroCompleto = "0";
+                    if (!usuario.Biometrico || !usuario.Biometrico.genero) req.session.passport.user.registroCompleto = "0";
+                    if (usuario.DatosGenerale) req.session.passport.user.name = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM;
+                    else req.session.passport.user.name = '';
+                    if (usuario.urlFotoPerfil) {
+                        fs.readFile(usuario.urlFotoPerfil, function(err, data) {
+                            if (err) console.log('Error al leer la imagen de perfil: ' + err);
+                            req.session.passport.user.fotoPerfil = 'data:image/jpeg;base64,' + (data).toString('base64');
+                            cargarExtraInfo(usuario, redirect, req, res);
+                        });
+                    } else {
+                        cargarExtraInfo(usuario, redirect, req, res);
+                    }
+                });
             } else {
-                res.redirect('/');
+                if (redirect) {
+                    res.redirect('/');
+                } else res.send({
+                    'result': 'error',
+                    'error': 'El usuario no existe'
+                })
             }
         });
 };
 
-function cargarExtraInfo(usuario, req, res) {
+function cargarExtraInfo(usuario, redirect, req, res) {
     var tipoUsuario = '';
     if (usuario.tipoUsuario === 'P') {
         tipoUsuario = 'Paciente';
@@ -418,14 +440,20 @@ function cargarExtraInfo(usuario, req, res) {
             .then(function(extraInfo) {
                 if (extraInfo) {
                     req.session.passport.user[tipoUsuario + '_id'] = JSON.parse(JSON.stringify(extraInfo.id));
+                } else {
+                    req.session.passport.user.registroCompleto = "0";
                 }
                 var DireccionPrincipal = usuario.Direccions[0];
                 if (DireccionPrincipal) {
-                    console.log('DIRECCION');
-                    obtenerDatosLocalidad(DireccionPrincipal.localidad_id, req, res);
+                    obtenerDatosLocalidad(DireccionPrincipal.localidad_id, redirect, req, res);
                 } else {
-                    console.log('NO DIRECCION');
-                    res.redirect('/perfil');
+                    req.session.passport.user.registroCompleto = "0";
+                    if (redirect) {
+                        res.redirect('/perfil');
+                    } else res.send({
+                        'result': 'success',
+                        'session': req.session.passport.user
+                    });
                 }
             });
     } else {
@@ -435,15 +463,19 @@ function cargarExtraInfo(usuario, req, res) {
     }
 }
 
-function obtenerDatosLocalidad(localidad_id, req, res) {
+function obtenerDatosLocalidad(localidad_id, redirect, req, res) {
     models.sequelize.query("SELECT `Localidad`.`CP`, `Localidad`.`localidad`, `TipoLocalidad`.`id` AS 'tipo_id', `TipoLocalidad`.`tipo`, `Ciudad`.`id` AS 'ciudad_id', `Ciudad`.`ciudad`, `Municipio`.`id` AS 'municipio_id', `Municipio`.`municipio`, `Estado`.`id` AS 'estado_id', `Estado`.`estado` FROM `localidades` AS `Localidad`INNER JOIN `tipoLocalidad` AS `TipoLocalidad` ON `TipoLocalidad`.`id` = `Localidad`.`tipo_localidad_id` INNER JOIN `ciudades` AS `Ciudad` ON `Localidad`.`ciudad_id` = `Ciudad`.`id` and `Localidad`.`municipio_id` = `Ciudad`.`municipio_id` and `Localidad`.`estado_id` = `Ciudad`.`estado_id` INNER JOIN `municipios` AS `Municipio` ON `Localidad`.`municipio_id` = `Municipio`.`id` and `Localidad`.`estado_id` = `Municipio`.`estado_id` INNER JOIN `estados` AS `Estado` ON `Localidad`.`estado_id` = `Estado`.`id` WHERE `Localidad`.`id` = " + localidad_id + ";", {
             type: models.sequelize.QueryTypes.SELECT
         })
         .then(function(localidad) {
-            console.log('LOCALIDAD: ' + JSON.stringify(localidad));
             req.session.passport.user.ciudad = localidad[0].ciudad;
             req.session.passport.user.estado = localidad[0].estado;
-            res.redirect('/');
+            if (redirect) {
+                res.redirect('/perfil');
+            } else res.send({
+                'result': 'success',
+                'session': req.session.passport.user
+            });
         })
 }
 

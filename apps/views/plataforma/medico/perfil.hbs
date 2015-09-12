@@ -5,14 +5,18 @@
             <div class="panel searchbox">
                 <div class="panel-body">
                     <div class="col-md-3" id="ProfilePicture">
-                        <img src="{{valSession 'fotoPerfil'}}" width="200" height="200" class="img-rounded">
+                        <img src="{{valSession 'fotoPerfil'}}" width="200" height="200" class="img-rounded" id="fotoPerfil">
                         <label for="imageFile">Cambiar Imagen</label>
                         <input type="file" id="imageFile" style="display:none">
                     </div>
                     <div class="container">
                         <div class="row">
                             <div class="col-md-9" id='session_nombreUsuario'>
-                                {{valSession "name"}}
+                                {{#ifSession "name"}}
+                                    Dr. {{valSession "name"}}
+                                {{else}}
+                                    No tenemos registrado tu nombre, por favor continua con tu registro <a onclick="informacionRegistroMedico()">aquí</a>
+                                {{/ifSession}}
                             </div>
                             <div class="col-md-9" id="session_ubicacion">
                                 {{#ifSession "ciudad"}}

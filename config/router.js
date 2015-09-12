@@ -119,20 +119,25 @@ var iniciar = function()
 		intermed.callController('Home', 'aboutPacientes', '', req, res);
 	});
 
-	//Router para request inicio de sesion o registro con facebook por medio de passport
-	app.get('/auth/facebook', passport.authenticate('facebook',  {scope: ['email','user_birthday','user_location','publish_actions']}));
+	app.get('/auth/facebook/request/:tipo', function (req, res, next){
+		req.session.tipo = '';
+		if (req.params.tipo === "M" || req.params.tipo === "P")	req.session.tipo = req.params.tipo;
+		next();
+	},  passport.authenticate('facebook',  {scope: ['email','user_birthday','user_location','publish_actions']}));
+
 	//Callback con respuesta del inicio de sesion de facebook por passport (trae los datos del usuario)
 	app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }),
 		function(req, res) {
+			console.log('______TIPO USUARIO: ' + req.session.tipo);
 			req.session.passport.user['tipoRegistro'] = 'F';
-			req.session.passport.user['tipoUsuario'] = 'P';
+			req.session.passport.user['tipoUsuario'] = req.session.tipo;
 			intermed.callController('usuarios', 'registrarUsuario',req.session.passport.user, req, res);
 	});
 	//registro pacientes
 	app.post('/reg/local', function (req, res){
-		req.body.name = req.body.first_name + ' ' + req.body.last_name;
-		req.body['tipoRegistro'] = 'L';
-		req.body['tipoUsuario'] = 'P';
+		req.body['tipoRegistro'] = 'C';
+		if (req.body.tipoUsuario) req.body['tipoUsuario'] = req.body.tipoUsuario;
+		else req.body['tipoUsuario'] = 'P';
 		intermed.callController('usuarios', 'registrarUsuario',req.body, req, res);
 	});
 	//activar cuenta
@@ -158,8 +163,14 @@ var iniciar = function()
 	});
 	//Obtener el perfil del usuario de la sesión
 	app.get('/perfil', function (req, res){
-		rutas.routeLife('plataforma','plataforma/paciente', hps);
-		intermed.callController('home','perfil', req.body, req, res);
+		if (req.session.passport.user){
+			var tipoUsuario = 'paciente';
+			if (req.session.passport.user.tipoUsuario === 'M') tipoUsuario = 'medico';
+			rutas.routeLife('plataforma','plataforma/'+tipoUsuario, hps);
+			intermed.callController('home','perfil', req.body, req, res);
+		} else {
+			res.redirect('/');
+		}
 	});
 	//Modificar la información del usuario de la sesión
 	app.post('/perfil', function (req, res){
@@ -185,6 +196,22 @@ var iniciar = function()
 	//::Temporal::, solo para ver la información que tiene el usuario en su variable sesión
 	app.get('/informacionusuario', function (req, res){
 		res.send(JSON.stringify(req.session.passport) + '<br/><a href="/">Regresar</a>');
+	});
+
+	app.post('/informacionRegistroMedico', function ( req, res){
+		intermed.callController('medicos', 'informacionRegistro', '', req, res);
+	});
+
+	app.post('/regMedPasoUno',function (req, res){
+		intermed.callController('medicos','regMedPasoUno', req.body, req, res);
+	});
+
+	app.post('/regMedPasoTres',function (req, res){
+		intermed.callController('medicos','regMedPasoTres', req.body, req, res);
+	});
+
+	app.post('/actualizarSesion',function (req, res){
+		intermed.callController('usuarios', 'actualizarSesion', req.body, req, res);
 	});
 
 	//  Pruebas  padecimientos y tipo especialidad

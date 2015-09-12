@@ -1,4 +1,5 @@
 var models  = require('../models');
+var cryptomaniacs = require('./encryption');
 
 /**
 Controlador de para médicos
@@ -7,6 +8,12 @@ Controlador de para médicos
 */
 
 module.exports = {
+
+  obtieneMedicos: function(object, req, res){
+    middle.obtieneMedicos(function(datos) {
+      res.send(datos);
+    });
+  },
 
   obtieneAjax: function(object, req, res){
     models.Medico.findAll({
@@ -256,7 +263,95 @@ module.exports = {
       }).catch(function(err) {
             res.status(500).json({error: err});
       });
+  },
+
+    informacionRegistro: function (object, req, res){
+        if (req.session.passport){
+            models.Usuario.findOne({
+                where:{ id: req.session.passport.user.id},
+                attributes: ['id'],
+                include: [{
+                    model: models.DatosGenerales
+                }, {
+                    model: models.Medico
+                },{
+                    model: models.Biometrico
+                }, {
+                    model: models.Direccion
+                }, {
+                    model: models.Telefono
+                }, {
+                    model: models.DatosFacturacion, include: [{model: models.Direccion, include: [{model: models.Localidad}]}]
+                }]
+            }).then(function (usuario){
+                res.send(usuario);
+            });
+        } else {
+            res.send({'response':'error'});
+        }
     },
+
+    regMedPasoUno: function (object, req, res){
+        if (req.session.passport.user && req.session.passport.user.tipoUsuario === "M"){
+            var usuario_id = req.session.passport.user.id;
+            models.DatosGenerales.upsert({
+                  nombre: object['nombreRegMed'],
+                  apellidoP: object['apePatRegMed'],
+                  apellidoM: object['apeMatRegMed'],
+                  usuario_id: usuario_id
+            }).then(function (result){
+                models.Biometrico.upsert({
+                    genero: object['gender'],
+                    usuario_id: usuario_id
+                }).then(function (result){
+                    models.Medico.upsert({
+                        curp: object['curpRegMed'],
+                        cedula: object['cedulaRegMed'],
+                        usuario_id: usuario_id
+                    }).then(function (medico){
+                        models.Medico.findOne({
+                            where: {usuario_id: usuario_id}
+                        }).then(function(medico){
+                            var token = String(cryptomaniacs.doEncriptToken(medico.id, ''));
+                            medico.update({token: token}).then(function(result){
+                                res.send({'result':'success'});
+                            });
+                        })
+                    })
+                })
+            })
+        } else {
+            res.send({'result':'error'});
+        }
+    },
+
+    regMedPasoTres: function (object, req, res){
+        if (req.session.passport.user && req.session.passport.user.tipoUsuario === "M"){
+            var usuario_id = req.session.passport.user.id;
+            console.log('DATOS: ' + JSON.stringify(object));
+            models.Direccion.upsert({
+                calle: object['calleFact'],
+                numero: object['numeroFact'],
+                localidad_id: object['locFact'],
+                usuario_id: usuario_id
+              }).then(function(Direccion){
+                  models.Direccion.findOne({
+                      where: { usuario_id: usuario_id }
+                  }).then(function(Direccion){
+                      models.DatosFacturacion.upsert({
+                          RFC: object["rfcFact"],
+                          razonSocial: object["nomRSocialFact"],
+                          usuario_id: usuario_id,
+                          direccion_id: Direccion.id
+                      }).then(function(result){
+                          res.send({'result':'success'});
+                      });
+                  })
+              });
+        } else {
+            res.send({'result':'error'});
+        }
+    }
 
     agregaMedicoFavorito : function(object, req, res) {
         models.MedicoFavorito.create({

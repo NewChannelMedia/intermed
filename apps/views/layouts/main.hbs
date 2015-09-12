@@ -42,62 +42,61 @@
     validateForm('input-checkbox','sexM');
   </script>
   </head>
-
-  <body>
-    <!-- empieza nav superior -->
-    <nav id="navHome">
-      <section class="container">
-        <div class="row">
-          <div id="logo" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-left">
-            <div class="col-md-2 col-sm-2 col-xs-2">
-              <a href="/">
-                <img class="logo-color" src="img/logo-color.png" />
-              </a>
+  <!-- empieza nav superior -->
+  <nav id="navHome">
+    <section class="container">
+      <div class="row">
+        <div id="logo" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-left">
+          <div class="col-md-3 col-sm-2 col-xs-2">
+            <a href="/">
+              <img class="logo-color" src="img/logo-color.png" />
+            </a>
+          </div>
+          <div class="col-md-9 col-sm-10 col-xs-10">
+            <div class="row">
+              <div class="bottom-border-mini flama-w200">
+                <p class="text-muted text-left">
+                  <strong>
+                    <span class="s20">intermed &reg</span>
+                  </strong> |
+                  <strong>La red social</strong> de la salud</p>
+              </div>
             </div>
-            <div class="col-md-10 col-sm-10 col-xs-10">
-              <div class="row">
-                <div class="bottom-border-mini flama-w200">
-                  <p class="text-muted text-left">
-                    <strong>
-                      <span class="s20">intermed <sup>&reg</sup></span>
-                    </strong> |
-                    <strong>La red social</strong> de la salud</p>
-                </div>
-              </div>
-              <div class="row text-left text-muted flama-w900">
-                <p>Para: &nbsp
-                  <a href="/pacientes" class="text-muted">Pacientes</a> |
-                  <a href="/medicos" class="text-muted">Medicos</a> |
-                  <a href="/instituciones" class="text-muted">Instituciones</a> |
-                  <a href="/proveedores" class="text-muted">Proveedores</a></p>
-              </div>
+            <div class="row text-left text-muted flama-w900">
+              <p>Para: &nbsp
+                <a href="/pacientes" class="text-muted">Pacientes</a> |
+                <a href="/medicos" class="text-muted">Medicos</a> |
+                <a href="/instituciones" class="text-muted">Instituciones</a> </p>
             </div>
           </div>
-          <div id="atnc-clientes" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-right">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="bottom-border flama-w200">
-                  <p class="text-muted text-right">
-                    <span class="hideonmobile">Atención a clientes: (33) 3125-2200 &nbsp</span>
-                    <strong>soporte@intermed.mx</strong>
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-md-12">
-                <p class="text-right">
-                  {{#ifSession "id"}} Hola {{valSession "name"}} !!!&nbsp
-                  <a class="reg" href="/logout" class="text-danger">Cerrar Sesión</a> {{else}}
-                  <a class="login" href="#" data-toggle="modal" data-target="#LoginModal">ingresa</a> &nbsp
-                  <a class="reg" href="#" data-toggle="modal" class="text-danger" data-target="#CatRegModal">registrate</a> {{/ifSession}}
+        </div>
+        <div id="atnc-clientes" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-right">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="bottom-border flama-w200">
+                <p class="text-muted text-right">
+                  <span class="hideonmobile">Atención a clientes: (33) 3125-2200 &nbsp</span>
+                  <strong>soporte@intermed.mx</strong>
                 </p>
               </div>
             </div>
           </div>
+          <div class="row">
+            <div class="col-md-12">
+              <p class="text-right">
+                {{#ifSession "id"}} Hola {{valSession "name"}} !!!&nbsp
+                <a class="reg" href="/logout" class="text-danger">Cerrar Sesión</a> {{else}}
+                <a class="login" href="#" data-toggle="modal" data-target="#LoginModal">ingresa</a> &nbsp
+                <a class="reg" href="#" data-toggle="modal" class="text-danger" data-target="#CatRegModal">registrate</a> {{/ifSession}}
+              </p>
+            </div>
+          </div>
         </div>
-      </section>
-    </nav>
+      </div>
+    </section>
+  </nav>
+
+  <body>
     {{{body}}}
     <footer>
       <div class="container">
@@ -127,12 +126,12 @@
                 <div class="col-md-10 col-md-offset-1">
                   <div class="iconos-servicios hi-icon-wrap hi-icon-effect hi-icon-effect-a">
                     <div class="col-md-3 col-sm-3 col-xs-6">
-                      <a href="#" class="hi-icon hi-icon-modal" data-dismiss="modal" data-toggle="modal" data-target="#RegModal">
+                      <a href="#" class="hi-icon hi-icon-modal" data-dismiss="modal" data-toggle="modal" data-target="#RegPacModal">
                         <img class="hi-icon-img" src="img/BotonPacientes.png">
                       </a>
                     </div>
                     <div class="col-md-3 col-sm-3 col-xs-6">
-                      <a href="#set-9" class="hi-icon hi-icon-modal">
+                      <a href="#set-9" class="hi-icon hi-icon-modal"  data-dismiss="modal" data-toggle="modal" data-target="#RegMedModal">
                         <img class="hi-icon-img" src="img/BotonMedicos.png">
                       </a>
                     </div>
@@ -160,7 +159,7 @@
     </div>
     <!-- /.modal -->
 
-    <div class="modal fade" id="RegModal" tabindex="-1" role="dialog" aria-labelledby="RegLabel">
+    <div class="modal fade" id="RegPacModal" tabindex="-1" role="dialog" aria-labelledby="RegLabel">
       <div class="modal-dialog modal-lg">
         <form method="POST" action="/reg/local" id="frm_regP">
           <div class="modal-content">
@@ -168,21 +167,26 @@
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
-              <h4>Intermed&reg | Registro</h4>
+              <h4 class="FlamaBook-normal s25 regHeader">Intermed&reg / <b>Registro Pacientes</b></h4>
             </div>
             <div class="modal-body">
+               <hr class="separator">
               <div class="row">
-                <div class="col-md-6">
-                  <h3>Intermed &reg es mejor con facebook</h3>
-                  <input name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block" onclick="window.location='/auth/facebook'">
-                  <p>
-                    <h2>¡En un solo click!</h2>
-                    Utiliza tu cuenta de Facebook para registrarte en Intermed y conectate con tus amigos y conocidos.
-                    <br>
-                    <small>Intermed no comparte tus datos con terceras personas ni compañias externas</small>
-                  </p>
-                </div>
-                <div class="col-md-6">
+                 <div class="col-md-6 regFacebook">
+                   <h3>Intermed &reg es mejor
+                     <br>con Facebook</h3>
+                   <br>
+                   <input name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block s20" onclick="window.location='/auth/facebook/request/P'">
+                   <br>
+                   <h2 class="Flama-bold">¡En un solo click!</h2>
+                   <p class="s20 flamaBook-normal">
+                     Utiliza tu cuenta de Facebook para registrarte en Intermed y conectate con tus amigos y conocidos.
+                   </p>
+                   <p class="s15 flamaBook-normal">
+                     Intermed no comparte tus datos con terceras personas ni compañias externas.
+                   </p>
+                 </div>
+                <div class="col-md-6" class="regCorreo">
                   <h3>Registrate con tu correo electronico</h3>
                   <div class="row">
                     <div class="col-md-12">
@@ -263,7 +267,11 @@
               <div class="row">
               </div>
             </div>
-            <div class="modal-footer"></div>
+            <div class="modal-footer">
+               <p class="s15">
+                 <small>Al hacer clic en "Regístate", aceptas las <a href="">Condiciones</a> y confirmas que leíste nuestra <a href="">Política de datos</a>, incluido el <a href="">uso de cookies</a></small>.
+               </p>
+            </div>
         </form>
         </div>
         <!-- /.modal-content -->
@@ -271,7 +279,6 @@
       <!-- /.modal-dialog -->
     </div>
     <!-- /.modal -->
-
 
     <div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-labelledby="LoginLabel">
       <div class="modal-dialog">
@@ -286,7 +293,7 @@
             <div class="modal-body">
               <div class="row">
                 <div class="col-md-8 col-md-offset-2">
-                  <input name="loginFB" value="Login con Facebook" class="btn btn-primary btn-block" onclick="window.location='/auth/facebook'">
+                  <input name="loginFB" value="Login con Facebook" class="btn btn-primary btn-block" onclick="window.location='/auth/facebook/request/loguin'">
                 </div>
               </div>
               <hr>
@@ -317,8 +324,108 @@
     </div>
     <!-- /.modal -->
 
+    <div class="modal fade" id="RegMedModal">
+      <div class="modal-dialog modal-lg Flama-normal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="FlamaBook-normal s25 regHeader">Intermed&reg / <b>Registro Médicos</b> </h4>
+          </div>
+            <div class="modal-body">
+              <hr class="separator">
+              <div class="row">
+                <div class="col-md-6 regFacebook">
+                  <h3>Intermed &reg es mejor
+                    <br>con Facebook</h3>
+                  <br>
+                  <input name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block s20" onclick="window.location='/auth/facebook/request/M'">
+                  <br>
+                  <h2 class="Flama-bold">¡En un solo click!</h2>
+                  <p class="s20 flamaBook-normal">
+                    Utiliza tu cuenta de Facebook para registrarte en Intermed y conectate con tus amigos y conocidos.
+                  </p>
+                  <p class="s15 flamaBook-normal">
+                    Intermed no comparte tus datos con terceras personas ni compañias externas.
+                  </p>
+                </div>
+                <div class="col-md-6 regCorreo">
+                  <h3>Regístrate con tu correo electronico</h3>
+                  <div class="row">
+                    <form method="POST" action="/reg/local" id="frm_regM">
+                      <div class="col-md-12">
+                        <div id="alertErrorM"></div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="hidden" name="tipoUsuario" value="M">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="email" class="form-control" id="correoRegM" name="email" placeholder="Correo Electrónico">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="email" class="form-control" id="correoConfirmRegM" placeholder="Confirma tu correo Electrónico">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="password" class="form-control" id="contraseñaRegM" name="password" placeholder="Contraseña" pattern=".{6,13}">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="password" class="form-control" id="contraseña2RegM" placeholder="Confirma tu contraseña" pattern=".{6,13}">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <input type="hidden" id="tiempo" name="tiempoStamp" value="tiempo" />
+                        <input type="submit" id="regi" name="registroCorreo" value="Registrate" class="btn btn-success btn-block s20">
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div class="row text-center">
+                <p class="s15">
+                  <small>Al hacer clic en "Regístate", aceptas las <a href="">Condiciones</a> y confirmas que leíste nuestra <a href="">Política de datos</a>, incluido el <a href="">uso de cookies</a></small>.
+                </p>
+              </div>
+            </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+   </div><!-- end modal regMedico -->
 
-    <!-- /.modal -->
+
+    <script>
+      $(document).ready(function() {
+
+        $.get('/medicosregistrados', function(data) {
+
+          console.log(data);
+          console.log(data[0]['info'][0]['Telefono']['numero']);
+
+          for (var i = 0; i < data.length; i++) {
+
+            $('#tbmedReg').append('<tr><td></td><td>' + data[i]['info'][0]["DatosGenerale"]["nombre"] + ' ' + data[i]['info'][0]["DatosGenerale"]["apellidoM"] + ' ' + data[i]['info'][0]["DatosGenerale"]["apellidoP"] + '</td><td>' + data[i][
+              'info'
+            ][0]["correo"] + '</td><td>' + data[i]['info'][0]["Telefono"]["numero"] + '</td><td>' + data[i]['info'][0]['Direccion']['calle'] + ' ' + data[i]['info'][0]['Direccion']['numero'] + '</td><td>' + data[i]['especialidades'][0][
+              'titulo'
+            ] + '<td></tr>');
+
+          }
+
+        });
+
+      });
+
+    </script>
   </body>
 
 </html>
