@@ -308,10 +308,10 @@ module.exports = {
                         cedula: object['cedulaRegMed'],
                         usuario_id: usuario_id
                     }).then(function (medico){
-                        var token = String(cryptomaniacs.doEncriptToken(medico.id, ''));
                         models.Medico.findOne({
                             where: {usuario_id: usuario_id}
                         }).then(function(medico){
+                            var token = String(cryptomaniacs.doEncriptToken(medico.id, ''));
                             medico.update({token: token}).then(function(result){
                                 res.send({'result':'success'});
                             });
