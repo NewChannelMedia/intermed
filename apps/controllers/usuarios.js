@@ -351,6 +351,7 @@ var crearMedico = function(req, res, object, usuario_id, t) {
                     generarSesion(req, res, usuario_id);
                 });
         });
+     }
 exports.actualizarSesion = function(object, req, res) {
     var usuario_id = '';
     if (req.session.passport.user) {

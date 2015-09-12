@@ -351,7 +351,7 @@ module.exports = {
         } else {
             res.send({'result':'error'});
         }
-    }
+    },
 
     agregaMedicoFavorito : function(object, req, res) {
         models.MedicoFavorito.create({
