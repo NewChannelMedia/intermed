@@ -21,6 +21,7 @@ module.exports = function(sequelize, DataTypes) {
         Usuario.hasOne(models.Biometrico);
         Usuario.hasMany(models.Direccion);
         Usuario.hasMany(models.Telefono);
+        Usuario.hasMany(models.ContactoEmergencia);
         //Usuario.hasOne(models.Especialidad);
       }
     },

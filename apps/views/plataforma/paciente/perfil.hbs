@@ -85,92 +85,53 @@
 
 <div class="modal fade" id="ModificarPerfilModal" name="modificarPerfilModal" tabindex="-1" role="dialog">
     <div class="modal-dialog  modal-lg">
-        <form id="perfilPaciente" action="/perfil" method="POST">
+        <form id="perfilPaciente" >
             <div class="modal-content">
                 <div class="modal-body">
                     <div class="row">
-                        Datos Generales
-                        <hr/>
+                        <label>Datos Generales</label>
                         <div class="col-md-12">
+                            <div class = "col-md-4">
+                                <img src="{{fotoPerfil}}" width="200" height="200" class="img-rounded">
+                            </div>
                             <div class="col-md-4">
                                 <input type="text" class="form-control" id="prf_nombre" name="nombre" placeholder="Nombre">
                             </div>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" id="prf_apellidoPat" name="apellidoPat" placeholder="Apellido">
+                                <input type="text" class="form-control" id="prf_apellidoPat" name="apellidoP" placeholder="Apellido">
                             </div>
                             <div class="col-md-4">
-                                <input type="text" class="form-control" id="prf_apellidoMat" name="apellidoMat" placeholder="Apellido">
+                                <input type="text" class="form-control" id="prf_apellidoMat" name="apellidoM" placeholder="Apellido">
                             </div>
-                        </div>
-                        {{!Biométrico}}
-                        <div class="col-md-12">
-                            Biométrico
                             <hr/>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="test" name="test" placeholder="Nombre">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {{!Direcciones}}
-                        <div class="col-md-12">
-                            Direcciones
+                            <label>Direcciones</label>
+                              <div id = "direccions" class = "col-md-4"></div>
                             <hr/>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="test" name="test" placeholder="Nombre">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <label>Telefonos</label>
+                              <div class = "col-md-4" id = "telefonos"></div>
+                            <hr/>
+                            <label>Biometrico</label>
+                              <div class = "col-md-4" id = "biometrico"></div>
+                            <hr/>
+                            <label>Paciente</label>
+                              <div class = "col-md-4" id = "paciente">
+                                <label>Contacto de Emergencia</label>
+                                  <div class = "" id = "contactoEmergencia"></div>
+                                <hr/>
+                                <label>Paciente padecimiento</label>
+                                  <div class = "" id = "pacientePadi"></div>
+                                <hr/>
+                                <label>Paciente alergia</label>
+                                  <div class = "" id = "pacienteAlergi"></div>
+                                </hr>
+                              </div>
+                            <hr/>
                         </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
-                    <input type="submit" value="Guardar Cambios" class="btn btn-primary">
+                    <input type="button" value="Guardar Cambios" onclick = "actualizarBiometricos()" class="btn btn-primary">
                     <input type="button" value="Cancelar" class="btn btn-danger" data-toggle="modal" data-target="#ModificarPerfilModal">
+                </div>
                 </div>
             </div>
         </form>

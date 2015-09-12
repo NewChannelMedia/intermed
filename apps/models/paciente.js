@@ -9,6 +9,9 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         //User.hasOne(models.Medico)
+        Paciente.hasMany(models.PacientePadecimiento);
+        Paciente.hasMany(models.PacienteAlergia);
+        Paciente.hasMany(models.ContactoEmergencia);
       }
     },
     timestamps: false,

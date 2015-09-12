@@ -110,6 +110,7 @@ exports.registrarUsuario = function(object, req, res) {
                                         })
 
                                         resultado.on('end', function() {
+                                            fs.mkdirSync('./garage/profilepics/' + usuario.id, 0777);
                                             var path = './garage/profilepics/' + usuario.id + '/' + usuario.id + '_' + getDateTime() + '.png';
                                             fs.writeFile(path, imagedata, 'binary', function(err) {
                                                 if (err) throw err
@@ -362,37 +363,41 @@ function obtenerDatosLocalidad(localidad_id, req, res) {
 exports.obtenerInformacionUsuario = function(object, req, res) {
     if (req.session.passport.user && req.session.passport.user.id > 0) {
         var usuario_id = req.session.passport.user.id;
-        var tipoUsuario = 'Paciente';
-        if (req.session.passport.user.tipoUsuario == 'M') {
-            tipoUsuario = 'Medico';
-        } {
-            models.Usuario.findOne({
-                where: {
-                    id: usuario_id
-                },
-                attributes: ['id', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion'],
-                include: [{
-                    model: models.DatosGenerales
-                }, {
-                    model: models.Direccion,
-                    include: [{
-                        model: models.Localidad
-                    }]
-                }, {
-                    model: models.Telefono
-                }, {
-                    model: models.Biometrico
-                }, {
-                    model: models.Paciente
-                }]
-            }).then(function(usuario) {
-                usuario = JSON.parse(JSON.stringify(usuario));
-                res.send(usuario);
-            });
-        }
+        models.Usuario.findOne({
+            where: {
+                id: usuario_id
+            },
+            attributes: ['id', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion'],
+            include: [
+              {model: models.DatosGenerales, attributes:['nombre','apellidoP','apellidoM']},
+              {model: models.Direccion, attributes:['ubicacionGM','calle','numero','calle1','calle2','nombre','horaInicio','horaFin','dias'], include:[{ model: models.Localidad }] },
+              {model: models.Telefono, attributes:['numero','claveRegion','lada']},
+              {model: models.Biometrico, attributes:['peso','altura','tipoSangre','genero']},
+              {model: models.Paciente, include:[
+                    {model: models.ContactoEmergencia, attributes:['nombre','tel']},
+                    {model: models.PacientePadecimiento, include:[{model:models.Padecimiento, attributes:['padecimiento']}]},
+                    {model: models.PacienteAlergia, include:[ { model: models.Alergias, attributes:['alergia'] } ] }
+                  ]
+              }
+            ]
+        }).then(function(usuario) {
+            usuario = JSON.parse(JSON.stringify(usuario));
+            console.log("PAciente padecimiento " + JSON.parse(JSON.stringify(usuario)));
+            res.send(usuario);
+        });
     }
 };
-
+//<---------------------------------------------------->
+  exports.biometricosActualizados = function( object, req, res){
+    //funcntion para hacer la actualizacion de los datos que el usuario quizo actualizar de biometricos
+    if( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      // se hace la actualizacion
+      console.log(JSON.parse(JSON.stringify(object) ) );
+      
+    }
+  };
+//<---------------------------------------------------->
 exports.activarCuenta = function(object, req, res) {
     // se hace una consulta a usuario para traer el token condicionando lo del correo
     //consulta

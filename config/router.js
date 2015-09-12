@@ -163,7 +163,12 @@ var iniciar = function()
 	});
 	//Obtener con ajax la información de la sesión del usuario
 	app.post('/obtenerInformacionUsuario', function (req, res){
+		rutas.routeLife('plataforma','plataforma/pacientes',hps);
 		intermed.callController('usuarios','obtenerInformacionUsuario', '', req, res);
+	});
+	//actualiza la informacion del paciente de los biometricos
+	app.post("/modificarInformacionPaciente", function(req, res){
+			intermed.callController('usuarios','biometricosActualizados',req.body, req, res);
 	});
 	//Obtener con ajax las ciudades del estado_id enviado por post
 	app.post('/obtenerCiudades', function (req, res){
