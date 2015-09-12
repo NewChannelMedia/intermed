@@ -293,25 +293,29 @@ module.exports = {
     regMedPasoUno: function (object, req, res){
         if (req.session.passport.user && req.session.passport.user.tipoUsuario === "M"){
             var usuario_id = req.session.passport.user.id;
-            models.DatosGenerales.create({
+            models.DatosGenerales.upsert({
                   nombre: object['nombreRegMed'],
                   apellidoP: object['apePatRegMed'],
                   apellidoM: object['apeMatRegMed'],
                   usuario_id: usuario_id
             }).then(function (result){
-                models.Biometrico.create({
+                models.Biometrico.upsert({
                     genero: object['gender'],
                     usuario_id: usuario_id
                 }).then(function (result){
-                    models.Medico.create({
+                    models.Medico.upsert({
                         curp: object['curpRegMed'],
                         cedula: object['cedulaRegMed'],
                         usuario_id: usuario_id
                     }).then(function (medico){
                         var token = String(cryptomaniacs.doEncriptToken(medico.id, ''));
-                        medico.update({token: token}).then(function(result){
-                            res.send({'result':'success'});
-                        });
+                        models.Medico.findOne({
+                            where: {usuario_id: usuario_id}
+                        }).then(function(medico){
+                            medico.update({token: token}).then(function(result){
+                                res.send({'result':'success'});
+                            });
+                        })
                     })
                 })
             })
@@ -324,20 +328,24 @@ module.exports = {
         if (req.session.passport.user && req.session.passport.user.tipoUsuario === "M"){
             var usuario_id = req.session.passport.user.id;
             console.log('DATOS: ' + JSON.stringify(object));
-            models.Direccion.create({
+            models.Direccion.upsert({
                 calle: object['calleFact'],
                 numero: object['numeroFact'],
                 localidad_id: object['locFact'],
                 usuario_id: usuario_id
               }).then(function(Direccion){
-                  models.DatosFacturacion.create({
-                      RFC: object["rfcFact"],
-                      razonSocial: object["nomRSocialFact"],
-                      usuario_id: usuario_id,
-                      direccion_id: Direccion.id
-                  }).then(function(result){
-                      res.send({'result':'success'});
-                  });
+                  models.Direccion.findOne({
+                      where: { usuario_id: usuario_id }
+                  }).then(function(Direccion){
+                      models.DatosFacturacion.upsert({
+                          RFC: object["rfcFact"],
+                          razonSocial: object["nomRSocialFact"],
+                          usuario_id: usuario_id,
+                          direccion_id: Direccion.id
+                      }).then(function(result){
+                          res.send({'result':'success'});
+                      });
+                  })
               });
         } else {
             res.send({'result':'error'});

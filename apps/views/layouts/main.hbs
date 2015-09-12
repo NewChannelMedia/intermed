@@ -61,7 +61,7 @@
           <div class="row">
             <div class="col-md-12">
               <p class="text-right">
-                {{#ifSession "name"}} Hola {{valSession "name"}} !!!&nbsp
+                {{#ifSession "id"}} Hola {{valSession "name"}} !!!&nbsp
                 <a class="reg" href="/logout" class="text-danger">Cerrar Sesión</a> {{else}}
                 <a class="login" href="#" data-toggle="modal" data-target="#LoginModal">ingresa</a> &nbsp
                 <a class="reg" href="#" data-toggle="modal" class="text-danger" data-target="#CatRegModal">registrate</a> {{/ifSession}}

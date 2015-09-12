@@ -166,8 +166,26 @@ exports.registrarUsuario = function(object, req, res) {
                                 }, {
                                     transaction: t
                                 }).then(function(usuario) {
-                                    generarSesion(req, res, usuario.id, true);
-                                })
+                                    var tokens = String(cryptomaniacs.doEncriptToken(usuario.id, getDateTime()));
+                                    return usuario.update({
+                                            token: tokens
+                                        }, {
+                                            transaction: t
+                                        })
+                                        .then(function(usuario) {
+                                            var datos = {
+                                                to: usuario.correo,
+                                                subject: 'Activa tu cuenta',
+                                                name: usuario.nombre,
+                                                correo: usuario.correo,
+                                                token: usuario.token
+                                            };
+                                            correoUser = usuario.correo;
+                                            mail.mailer(datos, 'confirmar'); //se envia el correo
+
+                                            generarSesion(req, res, usuario.id, true);
+                                        });
+                                    });
                             } else if (object.tipoUsuario === 'P') {
                                 console.log('___Creando paciente.')
                                 return models.Usuario.create({
