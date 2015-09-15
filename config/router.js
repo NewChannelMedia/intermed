@@ -761,6 +761,14 @@ var iniciar = function()
 								var object = { id :  1}
 								intermed.callController('instituciones','borraAseguradora', object, req, res);
 				});
+
+				app.get('/direccionloca', function(req, res) {
+					models.Direccion.findAll({
+									include : [{model: models.Localidad},{model: models.Municipio},{model: models.Estado}]
+					}).then(function(datos) {
+							res.send(datos);
+					});
+				});
 }
 serv.server(app, 3000);
 //se exporta para que otro js lo pueda utilizar

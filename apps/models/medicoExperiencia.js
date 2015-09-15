@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
     fechaInicio: {type: DataTypes.DATE, required: true},
     fechaFin: {type: DataTypes.DATE},
     actual: {type: DataTypes.INTEGER, required: true},
-    ciudad_id: {type: DataTypes.INTEGER, required: true},
+//    ciudad_id: {type: DataTypes.INTEGER, required: true},
     municipio_id: {type: DataTypes.INTEGER, required: true},
     estado_id: {type: DataTypes.INTEGER, required: true},
     medico_id: {type: DataTypes.BIGINT, required: true},
@@ -20,7 +20,8 @@ module.exports = function(sequelize, DataTypes) {
           MedicoExperiencia.belongsTo(models.Medico)
           MedicoExperiencia.belongsTo(models.Institucion)
           MedicoExperiencia.belongsTo(models.Estado)
-          MedicoExperiencia.belongsTo(models.Ciudad)
+          MedicoExperiencia.belongsTo(models.Municipio)
+  //        MedicoExperiencia.belongsTo(models.Ciudad)
       }
     },
     timestamps: false,
