@@ -29,8 +29,8 @@ app.use(session({secret: 'intermedSession',resave: false,saveUninitialized: true
 
 var hps = require('../apps/helpers/helpers');
 
-app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({	extended: true })); // support encoded bodies
+app.use(bodyParser.json({limit: '5mb'})); // support json encoded bodies
+app.use(bodyParser.urlencoded({	extended: true ,limit: '5mb'})); // support encoded bodies
 //<----------------------------------------------------------------------------->
 	/**
 	* function para cargar las rutas, como estatitcas los layouts
@@ -127,20 +127,25 @@ var iniciar = function()
 		intermed.callController('Home', 'perfilPacientes', '', req, res);
 	});
 
-	//Router para request inicio de sesion o registro con facebook por medio de passport
-	app.get('/auth/facebook', passport.authenticate('facebook',  {scope: ['email','user_birthday','user_location','publish_actions']}));
+	app.get('/auth/facebook/request/:tipo', function (req, res, next){
+		req.session.tipo = '';
+		if (req.params.tipo === "M" || req.params.tipo === "P")	req.session.tipo = req.params.tipo;
+		next();
+	},  passport.authenticate('facebook',  {scope: ['email','user_birthday','user_location','publish_actions']}));
+
 	//Callback con respuesta del inicio de sesion de facebook por passport (trae los datos del usuario)
 	app.get('/auth/facebook/callback', passport.authenticate('facebook', { failureRedirect: '/' }),
 		function(req, res) {
+			console.log('______TIPO USUARIO: ' + req.session.tipo);
 			req.session.passport.user['tipoRegistro'] = 'F';
-			req.session.passport.user['tipoUsuario'] = 'P';
+			req.session.passport.user['tipoUsuario'] = req.session.tipo;
 			intermed.callController('usuarios', 'registrarUsuario',req.session.passport.user, req, res);
 	});
 	//registro pacientes
 	app.post('/reg/local', function (req, res){
-		req.body.name = req.body.first_name + ' ' + req.body.last_name;
-		req.body['tipoRegistro'] = 'L';
-		req.body['tipoUsuario'] = 'P';
+		req.body['tipoRegistro'] = 'C';
+		if (req.body.tipoUsuario) req.body['tipoUsuario'] = req.body.tipoUsuario;
+		else req.body['tipoUsuario'] = 'P';
 		intermed.callController('usuarios', 'registrarUsuario',req.body, req, res);
 	});
 	//activar cuenta
@@ -164,6 +169,26 @@ var iniciar = function()
 	app.post('/loginLocal', passport.authenticate('local', { failureRedirect: '/' }),function(req, res) {
 		res.redirect('/');
 	});
+	//Obtener el perfil del usuario de la sesión
+	app.get('/perfil', function (req, res){
+		if (req.session.passport.user){
+			var tipoUsuario = 'paciente';
+			if (req.session.passport.user.tipoUsuario === 'M') tipoUsuario = 'medico';
+			rutas.routeLife('plataforma','plataforma/'+tipoUsuario, hps);
+			intermed.callController('home','perfil', req.body, req, res);
+		} else {
+			res.redirect('/');
+		}
+	});
+	//Modificar la información del usuario de la sesión
+	app.post('/perfil', function (req, res){
+		rutas.routeLife('plataforma','plataforma/paciente', hps);
+		intermed.callController('pacientes','modificarPerfil', req.body, req, res);
+	});
+	//Obtener con ajax la información de la sesión del usuario
+	app.post('/obtenerInformacionUsuario', function (req, res){
+		intermed.callController('usuarios','obtenerInformacionUsuario', '', req, res);
+	});
 	//Obtener con ajax las ciudades del estado_id enviado por post
 	app.post('/obtenerCiudades', function (req, res){
 		intermed.callController('ubicacion','obtieneCiudades', req.body, req, res);
@@ -179,6 +204,22 @@ var iniciar = function()
 	//::Temporal::, solo para ver la información que tiene el usuario en su variable sesión
 	app.get('/informacionusuario', function (req, res){
 		res.send(JSON.stringify(req.session.passport) + '<br/><a href="/">Regresar</a>');
+	});
+
+	app.post('/informacionRegistroMedico', function ( req, res){
+		intermed.callController('medicos', 'informacionRegistro', '', req, res);
+	});
+
+	app.post('/regMedPasoUno',function (req, res){
+		intermed.callController('medicos','regMedPasoUno', req.body, req, res);
+	});
+
+	app.post('/regMedPasoTres',function (req, res){
+		intermed.callController('medicos','regMedPasoTres', req.body, req, res);
+	});
+
+	app.post('/actualizarSesion',function (req, res){
+		intermed.callController('usuarios', 'actualizarSesion', req.body, req, res);
 	});
 
 	//  Pruebas  padecimientos y tipo especialidad
@@ -451,7 +492,6 @@ var iniciar = function()
 						});
 		});
 
-
 		app.get('/contactos', function(req, res) {
 						models.Contacto.findAll({
 							include : [
@@ -464,44 +504,271 @@ var iniciar = function()
 						});
 		});
 
-
-		app.get('/addMedicoFavorito', function(req, res) {
-						var object = {  idUsuario : 1,  idMedico: 5};
-
-						models.MedicoFavorito.create(
-							{ usuario_id: object.idUsuario,
-								medico_id : object.idMedico
-							}
-						);
-
-						models.MedicoFavorito.findOne({
-							where :  { 	usuario_id: object.idUsuario,
-													medico_id : object.idMedico }
-						})
-						.then(function(datos) {
-							res.send(datos);
-						});
-		});
-
+		// Routers para el perfil de medicos
 
 		app.get('/addMedicoColega', function(req, res) {
-						var object = {  idUsuario : 1,  idMedico: 5};
-
-						models.MedicoFavorito.create(
-							{ usuario_id: object.idUsuario,
-								medico_id : object.idMedico
-							}
-						);
-
-						models.MedicoFavorito.findOne({
-							where :  { 	usuario_id: object.idUsuario,
-													medico_id : object.idMedico }
-						})
-						.then(function(datos) {
-							res.send(datos);
-						});
+			var object = { idUsuario :  1, idMedico: 1}
+			intermed.callController('medicos','agregaMedicoFavorito', object, req, res);
 		});
 
+		app.get('/obtieneMedicosFavoritos', function(req, res) {
+						var object = { idUsuario :  1}
+						intermed.callController('medicos','obtieneMedicoFavorito', object, req, res);
+		});
+
+		app.get('/borraMedicoFavorito', function(req, res) {
+						var object = { id :  1}
+						intermed.callController('medicos','borraMedicoFavorito', object, req, res);
+		});
+
+				app.get('/obtieneFormacion', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('medicos','obtieneFormacion', object, req, res);
+				});
+
+				app.get('/agregaFormacion', function(req, res) {
+								var object = {
+				          nivel: 'Licenciatura',
+				          especialidad: 'orejologo',
+				          lugarDeEstudio: 'torreon',
+				          fechaInicio: '01/01/2010',
+				          fechaFin: '01/01/2010',
+				          fechaTitulo: '01/01/2010',
+				          actual: 1,
+				          idMedico: 1
+				        }
+								intermed.callController('medicos','agregaFormacion', object, req, res);
+				});
+
+				app.get('/actualizaFormacion', function(req, res) {
+								var object = {
+									nivel: 'Licenciatura',
+									especialidad: 'orejologo',
+									lugarDeEstudio: 'torreon',
+									fechaInicio: '01/01/2010',
+									fechaFin: '01/01/2010',
+									fechaTitulo: '01/01/2010',
+									actual: 1,
+									idMedico: 1,
+									id : 1
+								}
+								intermed.callController('medicos','actualizaFormacion', object, req, res);
+				});
+
+				app.get('/borraFormacion', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('medicos','borraFormacion', object, req, res);
+				});
+
+
+				app.get('/obtieneExperiencia', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('medicos','obtieneExperiencia', object, req, res);
+				});
+
+				app.get('/agregaExperiencia', function(req, res) {
+								var object = {
+									titulo: 'Licenciatura',
+									descripcion: 'orejologo ',
+									lugarTrabajo: 'torreon',
+									fechaInicio: '01/01/2010',
+									fechaFin: '01/01/2010',
+									fechaTitulo: '01/01/2010',
+									idCiudad : 1,
+									idEstado : 1,
+									idMunicipio : 1,
+									actual: 1,
+									idMedico: 1,
+									idInstitucion: 2
+								}
+								intermed.callController('medicos','insertaExperiencia', object, req, res);
+				});
+
+				app.get('/actualizaExperiencia', function(req, res) {
+								var object = {
+									titulo: 'Licenciatura',
+									descripcion: 'orejologo ',
+									lugarTrabajo: 'torreon',
+									fechaInicio: '01/01/2010',
+									fechaFin: '01/01/2010',
+									fechaTitulo: '01/01/2010',
+									ciudad_id : 1,
+									estado_id : 2,
+									actual: 1,
+									idMunicipio : 1,
+									idInstitucion: 2,
+									//idMedico: 1,
+									id: 1
+								}
+								intermed.callController('medicos','actualizaExperiencia', object, req, res);
+				});
+
+				app.get('/borraExperiencia', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('medicos','borraExperiencia', object, req, res);
+				});
+
+				app.get('/obtienePadecimientosMedicos', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('padecimientos','obtienePadecimientosMedico', object, req, res);
+				});
+
+				app.get('/borraPadecimientosMedicos', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('padecimientos','borraPadecimientosMedico', object, req, res);
+				});
+
+				app.get('/agregaPadecimientosMedicos', function(req, res) {
+								var object = { idMedico :  1, idPadecimiento: 1}
+								intermed.callController('padecimientos','agregaPadecimientosMedico', object, req, res);
+				});
+
+				app.get('/obtieneComentarios', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('medicos','obtieneComentarios', object, req, res);
+				});
+
+				app.get('/agregaComentario', function(req, res) {
+								var object = {
+									comentario : 'comentario',
+									anonimo : 1,
+									idMedico : 1,
+									idUsuario: 1
+								}
+								intermed.callController('medicos','agregaComentario', object, req, res);
+				});
+
+				app.get('/actualizaComentario', function(req, res) {
+								var object = {
+									comentario : 'comentario2',
+									anonimo : 1,
+									idMedico : 1,
+									idUsuario: 1,
+									id:1
+								}
+								intermed.callController('medicos','actualizaComentario', object, req, res);
+				});
+
+				app.get('/borraComentario', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('medicos','borraComentarios', object, req, res);
+				});
+
+				app.get('/obtieneHospitalesMedico', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('instituciones','obtieneHospitalesMedico', object, req, res);
+				});
+
+				app.get('/agregaHospitales', function(req, res) {
+								var object = {
+									nombre :  'nombre',
+									idInstitucion: 2,
+									idMedico: 1,
+								}
+								intermed.callController('instituciones','insertaHospital', object, req, res);
+				});
+
+				app.get('/actualizaHospitales', function(req, res) {
+						var object = {
+							id :  1,
+							nombre :  'nombre3',
+							idInstitucion: 2,
+							idMedico: 1,
+						}
+						intermed.callController('instituciones','actualizaHospital', object, req, res);
+				});
+
+				app.get('/borraHospitales', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('instituciones','borraHospital', object, req, res);
+				});
+
+				app.get('/obtieneColegiosMedico', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('instituciones','obtieneColegiosMedico', object, req, res);
+				});
+
+				app.get('/agregaColegio', function(req, res) {
+								var object = {
+									nombre :  'nombre',
+									fechaInicio : '01/01/2015',
+									idInstitucion: 2,
+									idMedico: 1,
+								}
+								intermed.callController('instituciones','insertaColegio', object, req, res);
+				});
+
+				app.get('/actualizaColegio', function(req, res) {
+								var object = {
+									nombre :  'nombre3',
+									fechaInicio : '01/01/2015',
+									idInstitucion: 2,
+									idMedico: 1,
+									id : 1
+								}
+								intermed.callController('instituciones','actualizaColegio', object, req, res);
+				});
+
+				app.get('/borraColegio', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('instituciones','borraColegio', object, req, res);
+				});
+
+				app.get('/obtieneInstitucionesMedico', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('instituciones','obtieneInstitucionesMedico', object, req, res);
+				});
+
+				app.get('/agregaInstitucion', function(req, res) {
+								var object = {
+									micrositio :  'nombre',
+									razonSocial : 'gfdgd',
+									idUsuario: 1
+								}
+								intermed.callController('instituciones','insertaInstitucion', object, req, res);
+				});
+
+				app.get('/actualizaInstitucion', function(req, res) {
+								var object = {
+									micrositio :  'nombre',
+									razonSocial : 'gfdgd',
+									idUsuario: 1,
+									id: 1
+								}
+								intermed.callController('instituciones','actualizaInstitucion', object, req, res);
+				});
+
+				app.get('/borraInstitucion', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('instituciones','borraInstitucion', object, req, res);
+				});
+
+				app.get('/obtieneAseguradorasMedico', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('instituciones','obtieneAseguradorasMedico', object, req, res);
+				});
+
+				app.get('/agregaAseguradora', function(req, res) {
+								var object = {
+									nombre :  'nombre',
+									idMedico: 1
+								}
+								intermed.callController('instituciones','insertaAseguradora', object, req, res);
+				});
+
+				app.get('/actualizaAseguradora', function(req, res) {
+								var object = {
+									nombre :  'nombre',
+									idMedico: 1,
+									id: 1
+								}
+								intermed.callController('instituciones','actualizaAseguradora', object, req, res);
+				});
+
+				app.get('/borraAseguradora', function(req, res) {
+								var object = { id :  1}
+								intermed.callController('instituciones','borraAseguradora', object, req, res);
+				});
 }
 serv.server(app, 3000);
 //se exporta para que otro js lo pueda utilizar

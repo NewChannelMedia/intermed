@@ -34,7 +34,25 @@ module.exports = {
 						});
 					});
 		},
-		aboutPacientes: function(object, req, res ){
+	    perfil: function(object, req, res) {
+	        if (!req.session.passport.user) {
+	            res.redirect('/');
+	        }
+
+			var sesion = [];
+	        //Contar mensajes sin leer
+	        sesion.mensajes = 1;
+	        //Contar eventos nuevos o cercanos (Sin ver)
+	        sesion.calendario = 5;
+
+			models.Estado.findAll({
+				attributes:['id','estado']
+			}).then(function(estados){
+				res.render('perfil', {sesion: sesion, estados: estados});
+				req.session.passport.user.logueado = "1";
+			});
+	    },
+		aboutPacientes:function(object, req, res ){
 			res.render('pacientes', object)
 		},
 		perfilMedicos: function(object, req, res){

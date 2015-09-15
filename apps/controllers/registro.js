@@ -11,7 +11,7 @@ var models  = require('../models');
 //librerias que se utilizaran en este archivo
 module.exports = {
 	index: function(object, req, res) {
-		if (!req.session.passport.admin){
+		if (req.session.passport.user.tipoUsuario != 'A'){
 			res.redirect('/')
 		}
 		else{

@@ -1,0 +1,210 @@
+<section id="searchMedic" class="Flama">
+    <div class="container">
+        <div class="row">
+            <!-- empieza buscador -->
+            <div class="panel searchbox">
+                <div class="panel-body">
+                    <div class="col-md-3" id="ProfilePicture">
+                        <img src="{{valSession 'fotoPerfil'}}" width="200" height="200" class="img-rounded">
+                        <label for="imageFile">Cambiar Imagen</label>
+                        <input type="file" id="imageFile" style="display:none">
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-9" id='session_nombreUsuario'>
+                                {{valSession "name"}}
+                            </div>
+                            <div class="col-md-9" id="session_ubicacion">
+                                {{#ifSession "ciudad"}}
+                                    {{valSession "ciudad"}}, {{valSession "estado"}}
+
+                                {{/ifSession}}
+                            </div>
+                            <div class="col-md-9">
+                                <a class="login" href="#" data-toggle="modal" data-target="#ModificarPerfilModal" onclick="cargarInfoSesion()">Edita tu perfil</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist" id="resultTabs">
+                    <li role="presentation" class="tab active"><a href="#medResults" aria-controls="medResults" role="tab" data-toggle="tab">Medicos</a></li>
+                    <li role="presentation" class="tab"><a href="#centrosResult" aria-controls="centrosResult" role="tab" data-toggle="tab">Centros Medicos</a></li>
+                    <li role="presentation" class="tab"><a href="#padResults" aria-controls="padResults" role="tab" data-toggle="tab">Padecimientos</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content" id="tabsContent">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <div role="tabpanel" class="tab-pane fade in active " id="medResults">
+                                medResults
+                                <br/>
+                                <br/>
+                                <br/>
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="centrosResult">
+                                centrosResult
+                            </div>
+                            <div role="tabpanel" class="tab-pane fade" id="padResults">
+                                padResults
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist" id="resultTabs">
+                    <li role="presentation" class="tab active"><a href="#medResults" aria-controls="medResults" role="tab" data-toggle="tab">Medicos</a></li>
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content" id="tabsContent">
+                    <div class="panel">
+                        <div class="panel-body">
+                            <div role="tabpanel" class="tab-pane fade in active " id="medResults">
+                                medResults
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                                <br/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="ModificarPerfilModal" name="modificarPerfilModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog  modal-lg">
+        <form id="perfilPaciente" action="/perfil" method="POST">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        Datos Generales
+                        <hr/>
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="prf_nombre" name="nombre" placeholder="Nombre">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="prf_apellidoPat" name="apellidoPat" placeholder="Apellido">
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control" id="prf_apellidoMat" name="apellidoMat" placeholder="Apellido">
+                            </div>
+                        </div>
+                        {{!Biométrico}}
+                        <div class="col-md-12">
+                            Biométrico
+                            <hr/>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="test" name="test" placeholder="Nombre">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {{!Direcciones}}
+                        <div class="col-md-12">
+                            Direcciones
+                            <hr/>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="test" name="test" placeholder="Nombre">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Guardar Cambios" class="btn btn-primary">
+                    <input type="button" value="Cancelar" class="btn btn-danger" data-toggle="modal" data-target="#ModificarPerfilModal">
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+
+
+<div class="modal fade" id="CambiarFotoPerfil" name="CambiarFotoPerfil" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <form method="POST" action="" onsubmit="verificarImagen()">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row" style="display: flex;align-items: center;justify-content: center;flex-direction: column;">
+                                <h4 class="modal-title">Selecciona el area a guardar</h4>
+                                <hr/>
+                                <input type="hidden" value="" name="base64file" id="base64file">
+                                <div class="col-md-12" id="contenedorFoto" class="text-center" style="width: auto;margin: auto"></div>
+                                <canvas id="canvas" height="300" width="300" style="display: none"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" value="Guardar" class="btn btn-primary" id="btnCrop">
+                    <input type="button" value="Cancelar" class="btn btn-danger" data-toggle="modal" data-target="#CambiarFotoPerfil">
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->

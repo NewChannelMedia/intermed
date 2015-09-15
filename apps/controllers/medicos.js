@@ -1,4 +1,5 @@
 var models  = require('../models');
+var cryptomaniacs = require('./encryption');
 
 /**
 Controlador de para médicos
@@ -48,6 +49,7 @@ module.exports = {
   		});
   	});
   },
+
   seleccionaEdicion: function(object, req, res) {
 		//Obteniendo usuarios para edicion por ajax
           models.Usuario.findOne({
@@ -246,7 +248,7 @@ module.exports = {
                   layout: null,
                   medico: medico
                 });
-            });
+        });
     },
 
     //  actualiza Usuario
@@ -261,6 +263,279 @@ module.exports = {
       }).catch(function(err) {
             res.status(500).json({error: err});
       });
-    }
+  },
+
+    informacionRegistro: function (object, req, res){
+        if (req.session.passport){
+            models.Usuario.findOne({
+                where:{ id: req.session.passport.user.id},
+                attributes: ['id'],
+                include: [{
+                    model: models.DatosGenerales
+                }, {
+                    model: models.Medico
+                },{
+                    model: models.Biometrico
+                }, {
+                    model: models.Direccion
+                }, {
+                    model: models.Telefono
+                }, {
+                    model: models.DatosFacturacion, include: [{model: models.Direccion, include: [{model: models.Localidad}]}]
+                }]
+            }).then(function (usuario){
+                res.send(usuario);
+            });
+        } else {
+            res.send({'response':'error'});
+        }
+    },
+
+    regMedPasoUno: function (object, req, res){
+        if (req.session.passport.user && req.session.passport.user.tipoUsuario === "M"){
+            var usuario_id = req.session.passport.user.id;
+            models.DatosGenerales.upsert({
+                  nombre: object['nombreRegMed'],
+                  apellidoP: object['apePatRegMed'],
+                  apellidoM: object['apeMatRegMed'],
+                  usuario_id: usuario_id
+            }).then(function (result){
+                models.Biometrico.upsert({
+                    genero: object['gender'],
+                    usuario_id: usuario_id
+                }).then(function (result){
+                    models.Medico.upsert({
+                        curp: object['curpRegMed'],
+                        cedula: object['cedulaRegMed'],
+                        usuario_id: usuario_id
+                    }).then(function (medico){
+                        models.Medico.findOne({
+                            where: {usuario_id: usuario_id}
+                        }).then(function(medico){
+                            var token = String(cryptomaniacs.doEncriptToken(medico.id, ''));
+                            medico.update({token: token}).then(function(result){
+                                res.send({'result':'success'});
+                            });
+                        })
+                    })
+                })
+            })
+        } else {
+            res.send({'result':'error'});
+        }
+    },
+
+    regMedPasoTres: function (object, req, res){
+        if (req.session.passport.user && req.session.passport.user.tipoUsuario === "M"){
+            var usuario_id = req.session.passport.user.id;
+            console.log('DATOS: ' + JSON.stringify(object));
+            models.Direccion.upsert({
+                calle: object['calleFact'],
+                numero: object['numeroFact'],
+                localidad_id: object['locFact'],
+                usuario_id: usuario_id
+              }).then(function(Direccion){
+                  models.Direccion.findOne({
+                      where: { usuario_id: usuario_id }
+                  }).then(function(Direccion){
+                      models.DatosFacturacion.upsert({
+                          RFC: object["rfcFact"],
+                          razonSocial: object["nomRSocialFact"],
+                          usuario_id: usuario_id,
+                          direccion_id: Direccion.id
+                      }).then(function(result){
+                          res.send({'result':'success'});
+                      });
+                  })
+              });
+        } else {
+            res.send({'result':'error'});
+        }
+    },
+
+    agregaMedicoFavorito : function(object, req, res) {
+        models.MedicoFavorito.create({
+           usuario_id: object.idUsuario,
+            medico_id : object.idMedico
+        }).then(function(datos) {
+          res.send(datos);
+        });
+    },
+
+    obtieneMedicoFavorito : function(object, req, res) {
+      models.Medico.findAll({
+        include: [{ model: models.MedicoFavorito },
+          { model: models.Usuario },
+          { model: models.Especialidad },
+        ],
+        where : { usuario_id : object.idUsuario },
+      }).then(function(datos) {
+          res.send(datos)
+      });
+    },
+
+    borraMedicoFavorito : function(object, req, res) {
+      models.MedicoFavorito.destroy({
+        where : { id : object.id }
+      }).then(function() {
+          res.status(200).json({ok: true});
+      });
+    },
+
+    borraFormacion : function(object, req, res) {
+      models.MedicoFormacion.destroy({
+        where : { id : object.id }
+      }).then(function() {
+          res.status(200).json({ok: true});
+      });
+    },
+
+    obtieneFormacion: function(object, req, res) {
+      models.MedicoFormacion.findAll({
+        where : { medico_id : object.id }
+      }).then(function(datos) {
+          res.send(datos)
+      });
+    },
+
+    agregaFormacion : function(object, req, res) {
+        models.MedicoFormacion.create({
+          nivel: object.nivel,
+          especialidad: object.especialidad,
+          lugarDeEstudio: object.lugarDeEstudio,
+          fechaInicio: object.fechaInicio,
+          fechaFin: object.fechaFin,
+          fechaTitulo: object.fechaTitulo,
+          actual: object.actual,
+          medico_id: object.idMedico
+        }).then(function(datos) {
+            res.status(200).json({ok: true});
+        }).catch(function(err) {
+            res.status(500).json({error: err});
+        });
+    },
+
+    actualizaFormacion : function(object, req, res) {
+        models.MedicoFormacion.update({
+          nivel: object.nivel,
+          especialidad: object.especialidad,
+          lugarDeEstudio: object.lugarDeEstudio,
+          fechaInicio: object.fechaInicio,
+          fechaFin: object.fechaFin,
+          fechaTitulo: object.fechaTitulo,
+          actual: object.actual
+        }, { where  : {  id: object.id }
+        }).then(function(datos) {
+            res.status(200).json({ok: true});
+        }).catch(function(err) {
+              res.status(500).json({error: err});
+        });
+    },
+
+    obtieneExperiencia: function(object, req, res) {
+      models.MedicoFormacion.findAll({
+        where : { medico_id : object.id }
+      }).then(function(datos) {
+          res.send(datos)
+      });
+    },
+
+    insertaExperiencia : function(object, req, res) {
+        models.MedicoExperiencia.create({
+          nivel: object.nivel,
+          titulo: object.especialidad,
+          lugarTrabajo: object.lugarDeEstudio,
+          descripcion: object.descripcion,
+          fechaInicio: object.fechaInicio,
+          fechaFin: object.fechaFin,
+          fechaTitulo: object.fechaTitulo,
+          actual: object.actual,
+          ciudad_id: object.idCiudad,
+          municipio_id: object.idMunicipio,
+          estado_id: object.idEstado,
+          medico_id: object.idMedico,
+          institucion_id: object.idInstitucion
+        }).then(function(datos) {
+            res.status(200).json({ok: true});
+        }).catch(function(err) {
+            res.status(500).json({error: err});
+        });
+    },
+
+    actualizaExperiencia : function(object, req, res) {
+        models.MedicoExperiencia.update({
+          nivel: object.nivel,
+          titulo: object.especialidad,
+          lugarTrabajo: object.lugarDeEstudio,
+          descripcion: object.lugarDeEstudio,
+          fechaInicio: object.fechaInicio,
+          fechaFin: object.fechaFin,
+          fechaTitulo: object.fechaTitulo,
+          actual: object.actual,
+          ciudad_id: object.idCiudad,
+          municipio_id: object.idMunicipio,
+          estado_id: object.idEstado,
+          medico_id: object.idMedico,
+          institucion_id: object.idInstitucion
+        }, { where :  { id: object.id }}).then(function(datos) {
+            res.status(200).json({ok: true});
+        }).catch(function(err) {
+              res.status(500).json({error: err});
+        });
+    },
+
+    borraExperiencia: function(object, req, res) {
+      models.MedicoExperiencia.destroy({
+        where : { id : object.id }
+      }).then(function() {
+          res.status(200).json({ok: true});
+      });
+    },
+
+    obtieneComentario: function(object, req, res) {
+      models.ComentariosMedicos.findAll({
+        include: [{ models : Usuario }],
+        where : { medico_id : object.id }
+      }).then(function(datos) {
+          res.send(datos)
+      });
+    },
+
+    actualizaComentario: function(object, req, res) {
+      models.ComentariosMedicos.update({
+        comentario: object.comentario,
+        aninimo: object.anonimo,
+        medico_id: object.idMedico,
+        usuario_id: object.idUsuario
+      }, { where :  { id: object.id }}).then(function(datos) {
+          res.status(200).json({ok: true});
+      }).catch(function(err) {
+          res.status(500).json({error: err});
+      });
+    },
+
+    agregaComentario: function(object, req, res) {
+      models.ComentariosMedicos.create({
+        comentario: object.comentario,
+        aninimo: object.anonimo,
+        medico_id: object.idMedico,
+        usuario_id: object.idUsuario
+      }).then(function(datos) {
+          res.status(200).json({ok: true});
+      }).catch(function(err) {
+          res.status(500).json({error: err});
+      });
+    },
+
+    borraComentarios: function(object, req, res) {
+      models.ComentariosMedicos.destroy({
+          where :  { id: object.id }
+      }).then(function(datos) {
+          res.status(200).json({ok: true});
+      }).catch(function(err) {
+          res.status(500).json({error: err})
+      });
+    },
+
 
 }
