@@ -369,7 +369,7 @@ var generarSesion = function(req, res, usuario_id, redirect) {
             where: {
                 id: usuario_id
             },
-            attributes: ['id', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion'],
+            attributes: ['id', 'usuario' ,'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion'],
             include: [{
                 model: models.DatosGenerales,
                 attributes: ['nombre', 'apellidoP', 'apellidoM']
@@ -386,6 +386,7 @@ var generarSesion = function(req, res, usuario_id, redirect) {
                 console.log('Generando variables de sesión...');
                 req.session.passport.user = JSON.parse(JSON.stringify({
                     'id': usuario.id,
+                    'usuario': usuario.usuario,
                     'tipoUsuario': usuario.tipoUsuario,
                     'tipoRegistro': usuario.tipoRegistro,
                     'estatusActivacion': usuario.estatusActivacion,
@@ -541,7 +542,42 @@ exports.activarCuenta = function(object, req, res) {
                     .send('<h1>Usuario no existe</h1>');
             }
         });
+};
+
+exports.verPerfil = function(object, req, res){
+    usuario = object.usuario;
+    if (!usuario || (req.session.passport.user && usuario === req.session.passport.user.usuario)){
+        //mi perfil
+        res.status(200).send('Quieres ver tu propio perfil.');
+    } else {
+        //Perfil de otro usuario
+        models.Usuario.findOne({
+            where: {usuario: usuario},
+            include: [{
+                model: models.DatosGenerales
+            }, {
+                model: models.Direccion
+            }, {
+                model: models.Biometrico
+            }]
+        }).then(function(usuario){
+            if (usuario){
+                var tipoUsuario = 'Paciente';
+                if (usuario.tipoUsuario == 'M') tipoUsuario = 'Medico';
+                models[tipoUsuario].findOne({
+                    where: {usuario_id : usuario.id}
+                }).then(function (result){
+                    var Usuario = JSON.parse(JSON.stringify(usuario));
+                    Usuario[tipoUsuario] = JSON.parse(JSON.stringify(result));
+                    res.status(200).send(JSON.stringify(Usuario));
+                })
+            } else {
+                res.status(200).send('El usuario \'' + object.usuario + '\' no existe.');
+            }
+        });
+    }
 }
+
 
 function getDateTime() {
     var date = new Date();

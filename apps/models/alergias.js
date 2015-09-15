@@ -6,7 +6,7 @@
       },{
           classMethods:{
               associate: function(models){
-                  Alergia.hasMany(models.Paciente);
+                  //Alergia.hasMany(models.Paciente);
               }
           },
           timestamps: false,
