@@ -127,11 +127,19 @@ var iniciar = function() {
         }
     });
 
-    //prueba AboutPaciente
-    app.get('/pacientes', function(req, res) {
-        rutas.routeLife('main', 'main', hps);
-        intermed.callController('Home', 'aboutPacientes', '', req, res);
-    });
+	//prueba AboutPaciente
+	app.get('/pacientes', function( req, res ){
+		rutas.routeLife('main','main',hps);
+		intermed.callController('Home', 'aboutPacientes', '', req, res);
+	});
+	app.get('/perfilMedicos', function( req, res ){
+		rutas.routeLife('plataforma','plataforma/medicos',hps);
+		intermed.callController('Home', 'perfilMedicos', '', req, res);
+	});
+	app.get('/perfilPacientes', function( req, res ){
+		rutas.routeLife('plataforma','plataforma/pacientes',hps);
+		intermed.callController('Home', 'perfilPacientes', '', req, res);
+	});
 
     app.get('/auth/facebook/request/:tipo', function(req, res, next) {
         req.session.tipo = '';
