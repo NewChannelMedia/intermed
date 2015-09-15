@@ -122,6 +122,10 @@ var iniciar = function()
 		rutas.routeLife('plataforma','plataforma/medicos',hps);
 		intermed.callController('Home', 'perfilMedicos', '', req, res);
 	});
+	app.get('/perfilPacientes', function( req, res ){
+		rutas.routeLife('plataforma','plataforma/pacientes',hps);
+		intermed.callController('Home', 'perfilPacientes', '', req, res);
+	});
 
 	//Router para request inicio de sesion o registro con facebook por medio de passport
 	app.get('/auth/facebook', passport.authenticate('facebook',  {scope: ['email','user_birthday','user_location','publish_actions']}));

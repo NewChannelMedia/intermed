@@ -1,5 +1,5 @@
 <section id="plataforma">
-  <div class="container-fluid profileHolder">
+  <div id="medico" class="container-fluid profileHolder">
     <div class="profileHeader">
       <div class="container">
         <div class="media block">
@@ -65,17 +65,17 @@
           <div class="profileOptions">
             <ul class="options list-unstyled">
               <li>
-                Añadir a Medicos Favoritos
+                <span class="glyphicon glyphicon-plus"></span> Agenda una cita
               </li>
               <hr>
               <li>
-                <a>Recomienda a un amigo</a>
+                <a><span class="glyphicon glyphicon-chevron-right"></span> Recomienda a un amigo</a>
               </li>
               <li>
-                <a>Califica su servicio</a>
+                <a><span class="glyphicon glyphicon-chevron-right"></span> Califica su servicio</a>
               </li>
               <li>
-                <a>Envía un mensaje</a>
+                <a><span class="glyphicon glyphicon-chevron-right"></span> Envía un mensaje</a>
               </li>
             </ul>
           </div>
@@ -105,12 +105,12 @@
         <div role="tabpanel" class="tab-pane fade in container active" id="profileElements">
           <div class="row">
             <div class="element col-lg-7 col-md-7 col-sm-12 col-xs-12">
-              <div class="panel panel-primary" id="profileCV">
+              <div class="panel panel-primary cvPanel" id="profileCV">
                 <div class="panel-heading">
                   <h3 class="panel-title">
                     <span class="panelIcon glyphicon glyphicon-user"></span> Currículum</h3>
                 </div>
-                <div class="panel-body" style="height:554px;">
+                <div class="panel-body cvBody">
 
                   <!-- Nav tabs -->
                   <ul class="nav nav-tabs" role="tablist">
@@ -119,9 +119,26 @@
                   </ul>
 
                   <!-- Tab panes -->
-                  <div class="tab-content">
+                  <div class="tab-content cvContent">
                     <div role="tabpanel" class="tab-pane fade in active" id="formacionExperiencia">
-                      <h4>Formación y experiencia</h4>
+                      <div class="cvSection">
+                        <div class="cvSectionHead">
+                           <h4>Formación y experiencia</h4>
+                           <div class="addExp">
+                              <button class="btn btn-primary btn-block"><span class="glyphicon glyphicon-plus"> Añadir Experiencia</span></button>
+                           </div>
+                        </div>
+                        <div class="cvSectionBody">
+                           <p>
+                              <h4>Licenciatura</h4>
+                              Institución: Universidad Regiomontana <br>
+                              Nombre del Programa: Contador Público y Auditor <br>
+                              Especialidad: Finanzas <br>
+                              Periodo: 1967 - 1972 <br>
+                              Fecha de obtención del grado: Julio de 1972
+                           </p>
+                        </div>
+                      </div>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="colegiosAsociaciones">
                       <h4>Colegios y asociaciones</h4>
