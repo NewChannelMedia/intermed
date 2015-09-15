@@ -655,8 +655,26 @@ $(function() {
     });
 });
 
-function verificarImagen() {
-    $('#base64file').val(base64file);
+function guardarImagenPerfil() {
+    $.ajax({
+        async: false,
+        url: '/perfil',
+        type: 'POST',
+        dataType: "json",
+        data: {base64file: base64file},
+        cache: false,
+        success: function(data) {
+            if (data.result === 'success'){
+                $('#CambiarFotoPerfil').modal('toggle');
+                actualizarSesion();
+            } else {
+                alert('No se pudo guardar la imagen');
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
 }
 
 function SetCoordinates(c) {
