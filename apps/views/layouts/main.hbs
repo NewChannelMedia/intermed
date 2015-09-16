@@ -25,9 +25,9 @@
   <![endif]-->
   <script>
     validateForm('input-nombre','nombreMed');
-    validateForm('input-nombre','apellidoMed');
+    validateForm('input-apellido','ApellidoReg');
     validateForm('input-nombre','nombreReg');
-    validateForm('input-nombre','ApellidoReg');
+    //validateForm('input-nombre','ApellidoReg');
     validateForm('input-correo','correoReg');
     validateForm('input-password','contraseñaReg');
     validateForm('input-validPass','contraseña2Reg');
@@ -193,28 +193,38 @@
                       <div id="alertError"></div>
                     </div>
                     <div class="col-md-6">
-                      <div class="form-group">
+                      <div class="form-group" id = "nameGroup">
                         <input type="text" class="form-control" id="nombreReg" name="first_name" placeholder="Nombre" required="true">
+                        <span id = "nameIcon" class="" aria-hidden="true"></span>
+                        <div id = "nombre-error"></div>
                       </div>
                     </div>
                     <div class="col-md-6">
-                      <div class="form-group">
+                      <div class="form-group" id = "apellidoGroup">
                         <input type="text" class="form-control" id="ApellidoReg" name="last_name" placeholder="Apellido" required="true">
+                        <span id = "apellidoIcon" class="" aria-hidden="true"></span>
+                        <div id = "apellido-error"></div>
                       </div>
                     </div>
                     <div class="col-md-12">
-                      <div class="form-group">
+                      <div class="form-group" id = "emailGroup">
                         <input type="email" class="form-control" id="correoReg" name="email" placeholder="Correo Electrónico" required="true">
+                        <span id = "emailIcon" class="" aria-hidden="true"></span>
+                        <div id = "email-error"></div>
                       </div>
                     </div>
                     <div class="col-md-12">
-                      <div class="form-group">
+                      <div class="form-group" id = "passwordGroup">
                         <input type="password" class="form-control" id="contraseñaReg" name="password" placeholder="Contraseña" pattern=".{6,13}" required="true">
+                        <span id = "passwordIcon" class="" aria-hidden="true"></span>
+                        <div id = "pass-error"></div>
                       </div>
                     </div>
                     <div class="col-md-12">
-                      <div class="form-group">
+                      <div class="form-group" id = "confirmGroup">
                         <input type="password" class="form-control" id="contraseña2Reg" name="password2" placeholder="Confirma tu contraseña" pattern=".{6,13}" required="true">
+                        <span id = "confirmIcon" class="" aria-hidden="true"></span>
+                        <div id = "conf-error"></div>
                       </div>
                     </div>
                     <div class="col-md-12">
@@ -222,18 +232,24 @@
                         <small>Fecha de Nacimiento</small>
                       </h4>
                       <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="form-group" id = "diaGroup">
                           <input type="text" class="form-control" id="diaNacReg" name="birthdayDay" placeholder="Dia" required="true">
+                          <span id = "diaIcon" class="" aria-hidden="true"></span>
+                          <div id = "dia-error"></div>
                         </div>
                       </div>
                       <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="form-group" id = "mesGroup">
                           <input type="text" class="form-control" id="mesNacReg" name="birthdayMonth" placeholder="Mes" required="true">
+                          <span id = "mesIcon" class="" aria-hidden="true"></span>
+                          <div id = "mes-error"></div>
                         </div>
                       </div>
                       <div class="col-md-4">
-                        <div class="form-group">
+                        <div class="form-group" id = "añoGroup">
                           <input type="text" class="form-control" id="añoNacReg" name="birthdayYear" placeholder="Año" required="true">
+                          <span id = "añoIcon" class="" aria-hidden="true"></span>
+                          <div id = "año-error"></div>
                         </div>
                       </div>
                     </div>
