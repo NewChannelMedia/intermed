@@ -2,7 +2,9 @@ body {
   background-color: #d9d9d9;
 }
 
-a, a:hover, a:visited {
+a,
+a:hover,
+a:visited {
   text-decoration: none;
   text-transform: none;
 }
@@ -138,7 +140,11 @@ a, a:hover, a:visited {
 
 .navLogo {}
 
-.navLogo a, .navLogo a:hover, .navLogo a:active, .navLogo a:visited, .navLogo a:hover {
+.navLogo a,
+.navLogo a:hover,
+.navLogo a:active,
+.navLogo a:visited,
+.navLogo a:hover {
   text-decoration: none;
   text-transform: none;
   color: #ffffff;
@@ -400,7 +406,8 @@ a, a:hover, a:visited {
   background-image: url('../img/slide-item3.png');
 }
 
-#myCarousel .carousel-control.left, #myCarousel .carousel-control.right {
+#myCarousel .carousel-control.left,
+#myCarousel .carousel-control.right {
   background: none;
 }
 
@@ -440,18 +447,23 @@ WHAT IS NEW IN 3.3: "Added transforms to improve carousel performance in modern 
 Need to override the 3.3 new styles for modern browsers & apply opacity
 */
 
-@media all and (transform-3d), (-webkit-transform-3d) {
-  .carousel-fade .carousel-inner > .item.next, .carousel-fade .carousel-inner > .item.active.right {
+@media all and (transform-3d),
+(-webkit-transform-3d) {
+  .carousel-fade .carousel-inner > .item.next,
+  .carousel-fade .carousel-inner > .item.active.right {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     opacity: 0;
   }
-  .carousel-fade .carousel-inner > .item.prev, .carousel-fade .carousel-inner > .item.active.left {
+  .carousel-fade .carousel-inner > .item.prev,
+  .carousel-fade .carousel-inner > .item.active.left {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     opacity: 0;
   }
-  .carousel-fade .carousel-inner > .item.next.left, .carousel-fade .carousel-inner > .item.prev.right, .carousel-fade .carousel-inner > .item.active {
+  .carousel-fade .carousel-inner > .item.next.left,
+  .carousel-fade .carousel-inner > .item.prev.right,
+  .carousel-fade .carousel-inner > .item.active {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     opacity: 1;
@@ -466,13 +478,15 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
   transition: opacity 1s;
 }
 
-.carousel-fade .active.left, .carousel .active.right {
+.carousel-fade .active.left,
+.carousel .active.right {
   z-index: 2;
   left: 0;
   opacity: 0;
 }
 
-.carousel-fade .next, .carousel .prev {
+.carousel-fade .next,
+.carousel .prev {
   z-index: 1;
   left: 0;
   opacity: 1;
@@ -626,19 +640,23 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
   background-color: #328ecb;
 }
 
-#buscador input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+#buscador input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
   color: #ddd;
 }
 
-#buscador input:-moz-placeholder, textarea:-moz-placeholder {
+#buscador input:-moz-placeholder,
+textarea:-moz-placeholder {
   color: #ddd;
 }
 
-#buscador input::-moz-placeholder, textarea::-moz-placeholder {
+#buscador input::-moz-placeholder,
+textarea::-moz-placeholder {
   color: #ddd;
 }
 
-#buscador input:-ms-input-placeholder, textarea:-ms-input-placeholder {
+#buscador input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
   color: #ddd;
 }
 
@@ -717,21 +735,33 @@ footer {
   background-color: #ff1c00;
 }
 
-footer a, footer a:active, footer a:hover, footer a:visited {
+footer a,
+footer a:active,
+footer a:hover,
+footer a:visited {
   color: #fff;
 }
 
-#CatRegModal .modal-content, #RegPacModal .modal-content, #RegMedModal .modal-content, #LoginModal .modal-content {
+#CatRegModal .modal-content,
+#RegPacModal .modal-content,
+#RegMedModal .modal-content,
+#LoginModal .modal-content {
   border-radius: 0;
 }
 
-#CatRegModal .modal-header, #RegPacModal .modal-header, #RegMedModal .modal-header, #LoginModal .modal-header {
+#CatRegModal .modal-header,
+#RegPacModal .modal-header,
+#RegMedModal .modal-header,
+#LoginModal .modal-header {
   margin: 20px 15px;
   padding: 5px 0px;
   border-bottom: solid 5px #76b6dd;
 }
 
-#CatRegModal .modal-header .close, #RegPacModal .modal-header .close, #RegMedModal .modal-header .close, #LoginModal .modal-header .close {
+#CatRegModal .modal-header .close,
+#RegPacModal .modal-header .close,
+#RegMedModal .modal-header .close,
+#LoginModal .modal-header .close {
   margin: 12px;
 }
 
@@ -751,13 +781,15 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   background-color: #fbad18;
 }
 
-#RegPacModal .modal-body, #RegMedModal .modal-body {
+#RegPacModal .modal-body,
+#RegMedModal .modal-body {
   position: relative;
   min-height: 460px;
   padding: 0 15px;
 }
 
-#RegPacModal .modal-footer, #RegMedModal .modal-footer {
+#RegPacModal .modal-footer,
+#RegMedModal .modal-footer {
   text-align: center;
   border: 0;
   padding: 0 15px;
@@ -767,11 +799,13 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   background-color: #fbad18;
 }
 
-.regHeader b{
-   color: #fbad18;
+.regHeader b {
+  color: #fbad18;
 }
 
-.regCorreo, .regFacebook, .regPersonales {
+.regCorreo,
+.regFacebook,
+.regPersonales {
   padding: 20px 30px;
 }
 
@@ -1030,22 +1064,22 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   box-shadow: 0 0 0 7px rgba(255, 255, 255, 1);
 }
 
-#ProfilePicture label{
-    position:relative;
-    color: white;
-    display: none;
-    background: rgba(0, 0, 0, .5);
-    text-align: center;
-    margin-top: -42px;
-    height: 35px;
-    cursor: pointer;
+#ProfilePicture label {
+  position: relative;
+  color: white;
+  display: none;
+  background: rgba(0, 0, 0, .5);
+  text-align: center;
+  margin-top: -42px;
+  height: 35px;
+  cursor: pointer;
 }
 
-#ProfilePicture:hover label{
-     display: block;
-     float: left;
-     padding: 10px;
-     width: 200px;
+#ProfilePicture:hover label {
+  display: block;
+  float: left;
+  padding: 10px;
+  width: 200px;
 }
 
 .profileHolder {
@@ -1066,19 +1100,21 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   padding-bottom: 35px;
   color: #fff;
 }
-#medico .profileGeneralInfo{
-   vertical-align: bottom;
+
+#medico .profileGeneralInfo {
+  vertical-align: bottom;
 }
+
 #paciente .profileGeneralInfo {
-   vertical-align: middle;
+  vertical-align: middle;
 }
 
 .profilePic {
   position: relative;
   z-index: 2;
   overflow: hidden;
-  width: 175px;
-  height: 175px;
+  width: 165px;
+  height: 165px;
   margin-bottom: 35px;
   margin-left: 35px;
   border: solid 5px #fff;
@@ -1093,10 +1129,17 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   top: 20px;
   right: -120px;
   width: 200px;
-  padding: 5px 10px;
+  padding: 3px 10px;
   text-align: right;
   text-transform: uppercase;
-  background-color: orange;
+  background: rgb(240, 170, 8);
+  background: -moz-linear-gradient(left, rgba(240, 170, 8, 1) 0%, rgba(238, 230, 25, 1) 100%);
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(240, 170, 8, 1)), color-stop(100%, rgba(238, 230, 25, 1)));
+  background: -webkit-linear-gradient(left, rgba(240, 170, 8, 1) 0%, rgba(238, 230, 25, 1) 100%);
+  background: -o-linear-gradient(left, rgba(240, 170, 8, 1) 0%, rgba(238, 230, 25, 1) 100%);
+  background: -ms-linear-gradient(left, rgba(240, 170, 8, 1) 0%, rgba(238, 230, 25, 1) 100%);
+  background: linear-gradient(to right, rgba(240, 170, 8, 1) 0%, rgba(238, 230, 25, 1) 100%);
+  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#f0aa08', endColorstr='#eee619', GradientType=1);
 }
 
 .profilePic img {
@@ -1108,10 +1151,12 @@ footer a, footer a:active, footer a:hover, footer a:visited {
 }
 
 .vCard {
-  margin-bottom: 5px;
+  margin: 0px;
 }
 
-.vCard .profileNombre {}
+.vCard .vcNombre {
+   margin: 0;
+}
 
 .vCardMainInfo {
   margin-top: 0;
@@ -1120,15 +1165,18 @@ footer a, footer a:active, footer a:hover, footer a:visited {
 
 .vCardEspInfo {}
 
-.vCard .espList, .vCard .subEspList {
+.vCard .espList,
+.vCard .subEspList {
   margin-bottom: 0;
 }
 
 .profileExtraNav {
-   margin: 0;
+  margin: 0;
 }
-.profileExtraNav, .profileExtraNav li {
-   padding-left: 0;
+
+.profileExtraNav,
+.profileExtraNav li {
+  padding-left: 0;
 }
 
 .profileOptions {
@@ -1160,13 +1208,13 @@ footer a, footer a:active, footer a:hover, footer a:visited {
 }
 
 .profileMobileOptions .options {
-   vertical-align: top;
-   font-size: 21px;
-}
-.profileMobileOptions .options li {
-   margin-bottom: 10px;
+  vertical-align: top;
+  font-size: 21px;
 }
 
+.profileMobileOptions .options li {
+  margin-bottom: 10px;
+}
 
 .profileBody {}
 
@@ -1193,12 +1241,15 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   padding: 5px;
 }
 
-.profileBodyNav ul li a#addFavoriteContact:hover, .profileBodyNav ul li a#addFavoriteContact:focus {
+.profileBodyNav ul li a#addFavoriteContact:hover,
+.profileBodyNav ul li a#addFavoriteContact:focus {
   background-color: #50a7dd;
   border: 0!important;
 }
 
-.profileBodyNav ul li.active a, .profileBodyNav ul li.active a:hover, .profileBodyNav ul li.active a:focus {
+.profileBodyNav ul li.active a,
+.profileBodyNav ul li.active a:hover,
+.profileBodyNav ul li.active a:focus {
   border-radius: 0;
   border: 0!important;
 }
@@ -1207,7 +1258,9 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   margin-top: 10px;
 }
 
-.profileBodyElements .panel, .profileBodyElements .panel-body, .profileBodyElements .panel-heading {
+.profileBodyElements .panel,
+.profileBodyElements .panel-body,
+.profileBodyElements .panel-heading {
   border-radius: 0;
   border: 0;
 }
@@ -1222,7 +1275,7 @@ footer a, footer a:active, footer a:hover, footer a:visited {
 }
 
 .cvPanel {
-   background-color: #e3e7ea;
+  background-color: #e3e7ea;
 }
 
 .cvBody {
@@ -1231,13 +1284,11 @@ footer a, footer a:active, footer a:hover, footer a:visited {
 }
 
 .cvContent {
-   padding: 5px 30px;
-   background-color: #f1f3f5;
+  padding: 5px 30px;
+  background-color: #f1f3f5;
 }
 
-.cvSection {
-
-}
+.cvSection {}
 
 .cvSectionHead {
   margin-top: 5px;
@@ -1248,9 +1299,8 @@ footer a, footer a:active, footer a:hover, footer a:visited {
 }
 
 .cvSectionHead h4 {
-   color: #fff;
+  color: #fff;
 }
-
 
 .homeBody {}
 
@@ -1272,18 +1322,20 @@ footer a, footer a:active, footer a:hover, footer a:visited {
 }
 
 .homeBodyElements {
-   margin-top: 10px;
+  margin-top: 10px;
 }
 
-.homeBodyElements .panel, .homeBodyElements .panel-body, .homeBodyElements .panel-heading {
-   border-radius: 0;
-   border: 0;
+.homeBodyElements .panel,
+.homeBodyElements .panel-body,
+.homeBodyElements .panel-heading {
+  border-radius: 0;
+  border: 0;
 }
 
 .homeBodyElements .element {
-   /*float: left;*/
+  /*float: left;*/
 }
 
 #homeNewsFeed {
-   height: 1000px;
+  height: 1000px;
 }
