@@ -15,6 +15,20 @@ function ifSession(input, options){
         return options.inverse(session[input]);
 }
 
+function ifSessionVal(input, options){
+    if (session[input] > 0)
+        return options.fn(true);
+    else
+        return options.inverse(false);
+}
+
+function unlessSessionVal(input, options){
+    if (session[input] === 0)
+        return options.fn(true);
+    else
+        return options.inverse(false);
+}
+
 function ifID(value, options){
     if (session.id == value)
         return options.fn(true);
@@ -33,5 +47,7 @@ function ifTipoMedico (options){
 exports.varSession = varSession;
 exports.valSession = valSession;
 exports.ifSession = ifSession;
+exports.ifSessionVal = ifSessionVal;
+exports.unlessSessionVal = unlessSessionVal;
 exports.ifID = ifID;
 exports.ifTipoMedico = ifTipoMedico;

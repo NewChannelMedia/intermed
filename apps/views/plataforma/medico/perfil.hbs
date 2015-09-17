@@ -73,9 +73,9 @@
                                 {{#unless usuario.id}}
                                 <ul class="media-right profileExtraNav list-inline">
                                     <li class="active"><a href="#">Editar Perfil</a></li>
-                                    {{#ifSession 'registroCompleto'}}
-                                        <li><a onclick="informacionRegistroMedico()">Continuar registro</a></li>
-                                    {{/ifSession}}
+                                    {{#unlessSessionVal 'registroCompleto'}}
+                                        <li id="registroIncompleto"><a onclick="informacionRegistroMedico()">Continuar registro</a></li>
+                                    {{/unlessSessionVal}}
                                     <li><a href="#">algo</a></li>
                                     <li><a href="#">otra cosa</a></li>
                                 </ul>

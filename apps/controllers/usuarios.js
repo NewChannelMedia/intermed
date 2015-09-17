@@ -190,7 +190,9 @@ exports.registrarUsuario = function(object, req, res) {
                                             correoUser = usuario.correo;
                                             mail.mailer(datos, 'confirmar'); //se envia el correo
 
-                                            generarSesion(req, res, usuario.id, true);
+                                            setTimeout(function() {
+                                                generarSesion(req, res, usuario.id, true);
+                                            }, 500);
                                         });
                                     });
                             } else if (object.tipoUsuario === 'P') {
@@ -408,10 +410,10 @@ var generarSesion = function(req, res, usuario_id, redirect) {
                     req.session.passport.user.inicio = 1;
                 }
                 usuario.update({logueado:1}).then(function(result){
-                    req.session.passport.user.registroCompleto = "1";
-                    if (!usuario.DatosGenerale) req.session.passport.user.registroCompleto = "0";
-                    if (!usuario.Direccions) req.session.passport.user.registroCompleto = "0";
-                    if (!usuario.Biometrico || !usuario.Biometrico.genero) req.session.passport.user.registroCompleto = "0";
+                    req.session.passport.user.registroCompleto = 1;
+                    if (!usuario.DatosGenerale) req.session.passport.user.registroCompleto = 0;
+                    if (!usuario.Direccions) req.session.passport.user.registroCompleto = 0;
+                    if (!usuario.Biometrico || !usuario.Biometrico.genero) req.session.passport.user.registroCompleto = 0;
                     if (usuario.DatosGenerale) req.session.passport.user.name = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM;
                     else req.session.passport.user.name = '';
                     if (usuario.urlFotoPerfil) {
@@ -453,13 +455,13 @@ function cargarExtraInfo(usuario, redirect, req, res) {
                 if (extraInfo) {
                     req.session.passport.user[tipoUsuario + '_id'] = JSON.parse(JSON.stringify(extraInfo.id));
                 } else {
-                    req.session.passport.user.registroCompleto = "0";
+                    req.session.passport.user.registroCompleto = 0;
                 }
                 var DireccionPrincipal = usuario.Direccions[0];
                 if (DireccionPrincipal) {
                     obtenerDatosLocalidad(DireccionPrincipal.localidad_id, redirect, req, res);
                 } else {
-                    req.session.passport.user.registroCompleto = "0";
+                    req.session.passport.user.registroCompleto = 0;
                     if (redirect) {
                         res.redirect('/perfil');
                     } else res.send({

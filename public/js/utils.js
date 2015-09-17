@@ -117,10 +117,6 @@ if (location.pathname === '/registro') {
             }
         });
 
-        if ($('#registroCompleto') && $('#registroCompleto').val() === "0" && $('#tipoUsuario').val() === "M"){
-            $('#registroIncompleto').css('display', 'inline-block');
-        }
-
         if ($('#registroCompleto') && $('#registroCompleto').val() === "0" && $('#inicio').val() === "1") {
             actualizarSesion();
             if ($('#tipoUsuario').val() === "M") {
@@ -253,7 +249,7 @@ function actualizarSesion() {
         success: function(data) {
             if (data.result === "success") {
                 var fotoPerfil = '';
-                if (data.session.registroCompleto === "1"){
+                if (data.session.registroCompleto === 1){
                     $('#registroIncompleto').css('display', 'none');
                 }
                 if (data.session.fotoPerfil) fotoPerfil = data.session.fotoPerfil;
@@ -730,6 +726,7 @@ $(document).ready(function MakeWizard() {
         $(element).find(".stepsContainer").append("<span class='stepsConnector'></span>");
 
         steps.each(function(i) {
+            if (i == 0) $("#steps").html("");
             $(this).wrap("<div id='step" + i + "'></div>");
             $(this).find(".EndButtons").addClass("step" + i + "c");
             $(this).find(".EndButtons").append("<p id='step" + i + "c'></p>");
@@ -856,7 +853,6 @@ function eliminarFavoritos(){
                 if ($('#tipoUsuario').val() === "P") $('#addFavoriteContact').html('Agregar a favoritos');
                 else if ($('#tipoUsuario').val() === "M") $('#addFavoriteContact').html('Agregar a colegas');
                 $("#addFavoriteContact").attr("onclick", "agregarFavoritos()");
-
             } else {
                 alert('Error al guardar medico favorito');
             }
