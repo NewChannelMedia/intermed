@@ -129,9 +129,7 @@ if (location.pathname === '/registro') {
         }
 
         if (location.pathname.substring(0, 7) === '/perfil') {
-            if ( $('#tipoUsuario').val() == "P" && $('#usuarioPerfil').val() == ''){
-                cargarMedFav();
-            }
+            cargarFavCol($('#usuarioPerfil').val());
         }
     });
 }
@@ -830,7 +828,8 @@ function agregarFavoritos(){
         cache: false,
         success: function(data) {
             if (data.result == 'success'){
-                $('#addFavoriteContact').html('Eliminar de favoritos');
+                if ($('#tipoUsuario').val() === "P") $('#addFavoriteContact').html('Eliminar de favoritos');
+                else if ($('#tipoUsuario').val() === "M") $('#addFavoriteContact').html('Eliminar de colegas');
                 $("#addFavoriteContact").attr("onclick", "eliminarFavoritos()");
             } else {
                 alert('Error al guardar medico favorito');
@@ -854,7 +853,8 @@ function eliminarFavoritos(){
         cache: false,
         success: function(data) {
             if (data.result == 'success'){
-                $('#addFavoriteContact').html('Agregar a favoritos');
+                if ($('#tipoUsuario').val() === "P") $('#addFavoriteContact').html('Agregar a favoritos');
+                else if ($('#tipoUsuario').val() === "M") $('#addFavoriteContact').html('Agregar a colegas');
                 $("#addFavoriteContact").attr("onclick", "agregarFavoritos()");
 
             } else {
@@ -867,15 +867,20 @@ function eliminarFavoritos(){
     });
 }
 
-function cargarMedFav(){
+function cargarFavCol(usuario){
+    $('#FavColPanel').html('');
     $.ajax({
         async: false,
-        url: '/cargarMedFav',
+        url: '/cargarFavCol',
         type: 'POST',
+        data: {usuario: usuario},
         dataType: "json",
         cache: false,
         success: function(data) {
             if (data){
+                for (var p in data) {
+                    $('#FavColPanel').append('<li> <a href="http://'+ window.location.host +'/perfil/' + data[p].Medico.Usuario.usuarioUrl + '" > Dr. ' + data[p].Medico.Usuario.DatosGenerale.nombre + ' ' + data[p].Medico.Usuario.DatosGenerale.apellidoP + ' ' + data[p].Medico.Usuario.DatosGenerale.apellidoM + '</a></li>');
+                }
                 //alert('Success');
             }
         },

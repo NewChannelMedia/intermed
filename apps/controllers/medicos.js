@@ -328,7 +328,6 @@ module.exports = {
     regMedPasoTres: function (object, req, res){
         if (req.session.passport.user && req.session.passport.user.tipoUsuario === "M"){
             var usuario_id = req.session.passport.user.id;
-            console.log('DATOS: ' + JSON.stringify(object));
             models.Direccion.upsert({
                 calle: object['calleFact'],
                 numero: object['numeroFact'],
@@ -579,29 +578,29 @@ module.exports = {
         }
     },
 
-    cargarMedFav: function (object, req, res){
-        if (req.session.passport.user){
-            models.MedicoFavorito.findAll({
-                where: {
-                    usuario_id: req.session.passport.user.id
-                },
-                  include: [
-                    { model: models.Medico ,attributes: ['id'],
-                    include: [
-                        { model: models.Usuario,attributes: ['id'], include:[{
-                            model: models.DatosGenerales
-                        }] }
-                    ]},
-                  ]
-            }).then(function(result){
-                if (result){
-                    console.log('RESULTADO: ' + JSON.stringify(result));
-                    res.send(result);
-                } else {
-                    res.send({});
-                }
-            });
+    cargarFavCol: function (object, req, res){
+        if (object.usuario == '' && req.session.passport.user){
+            object.usuario = req.session.passport.user.id;
         }
+        models.MedicoFavorito.findAll({
+            where: {
+                usuario_id: object.usuario
+            },
+              include: [
+                { model: models.Medico ,attributes: ['id'],
+                include: [
+                    { model: models.Usuario,attributes: ['id','usuarioUrl','urlFotoPerfil'], include:[{
+                        model: models.DatosGenerales
+                    }] }
+                ]},
+              ]
+        }).then(function(result){
+            if (result){
+                res.send(result);
+            } else {
+                res.send({});
+            }
+        });
     }
 
 }

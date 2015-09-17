@@ -22,7 +22,16 @@ function ifID(value, options){
         return options.inverse(true);
 }
 
+function ifTipoMedico (options){
+    if (session.tipoUsuario == 'M'){
+        return options.fn(true);
+    } else {
+        return options.inverse(true);
+    }
+}
+
 exports.varSession = varSession;
 exports.valSession = valSession;
 exports.ifSession = ifSession;
 exports.ifID = ifID;
+exports.ifTipoMedico = ifTipoMedico;

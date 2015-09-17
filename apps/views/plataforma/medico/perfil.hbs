@@ -136,17 +136,29 @@
                             <a href="#profileFotografias" role="tab" data-toggle="tab" aria-controls="profileFotografias">Fotografias</a>
                         </li>
                         {{#if usuario.id}}
-                                {{#if usuario.medFav}}
+                                {{#if usuario.medFavCol}}
                                     {{#ifSession "id"}}
-                                    <li role="presentation" id="favoriteContact">
-                                        <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos()">Eliminar de favoritos</a>
-                                    </li>
+                                        {{#ifTipoMedico}}
+                                        <li role="presentation" id="favoriteContact">
+                                            <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos()">Eliminar de colegas</a>
+                                        </li>
+                                        {{else}}
+                                        <li role="presentation" id="favoriteContact">
+                                            <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos()">Eliminar de favoritos</a>
+                                        </li>
+                                        {{/ifTipoMedico}}
                                     {{/ifSession}}
                                 {{else}}
                                     {{#ifSession "id"}}
-                                    <li role="presentation" id="favoriteContact">
-                                        <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos()">Agregar a favoritos</a>
-                                    </li>
+                                        {{#ifTipoMedico}}
+                                        <li role="presentation" id="favoriteContact">
+                                            <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos()">Agregar a colegas</a>
+                                        </li>
+                                        {{else}}
+                                        <li role="presentation" id="favoriteContact">
+                                            <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos()">Agregar de favoritos</a>
+                                        </li>
+                                        {{/ifTipoMedico}}
                                     {{/ifSession}}
                                 {{/if}}
                             </li>
@@ -236,7 +248,7 @@
                                 <div class="panel-heading">
                                     <h3 class="panel-title">Colegas Favoritos</h3>
                                 </div>
-                                <div class="panel-body" style="height:250px;">
+                                <div class="panel-body" style="height:250px;" id="FavColPanel">
                                 </div>
                             </div>
                         </div>

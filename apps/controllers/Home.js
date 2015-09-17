@@ -88,7 +88,7 @@ module.exports = {
                             }
                         }).then(function(result){
                             if (result) {
-                                usuario.medFav = result.id;
+                                usuario.medFavCol = result.id;
                             }
 
                             models.Direccion.findOne({

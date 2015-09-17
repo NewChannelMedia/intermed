@@ -890,8 +890,8 @@ var iniciar = function() {
         intermed.callController('medicos','eliminarFav',req.body, req, res);
     });
 
-    app.post('/cargarMedFav', function (req, res){
-        intermed.callController('medicos','cargarMedFav', '', req, res);
+    app.post('/cargarFavCol', function (req, res){
+        intermed.callController('medicos','cargarFavCol', {usuario: req.body.usuario} , req, res);
     });
 }
 serv.server(app, 3000);
