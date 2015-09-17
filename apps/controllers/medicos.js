@@ -537,5 +537,71 @@ module.exports = {
       });
     },
 
+    agregarFav: function(object, req, res){
+        if (req.session.passport.user){
+            models.MedicoFavorito.findOrCreate({
+                defaults: {
+                    usuario_id: req.session.passport.user.id,
+                    medico_id: object.medicoID
+                },
+                where: {
+                    usuario_id: req.session.passport.user.id,
+                    medico_id: object.medicoID
+                }
+            }).then(function(result){
+                if (result){
+                    res.send({result:'success'});
+                } else {
+                    res.send({result:'error'});
+                }
+            });
+        } else {
+            res.send({result:'error', error : 'Necesitas iniciar sesión'});
+        }
+    },
+
+    eliminarFav: function(object, req, res){
+        if (req.session.passport.user){
+            models.MedicoFavorito.destroy({
+                where: {
+                    usuario_id: req.session.passport.user.id,
+                    medico_id: object.medicoID
+                }
+            }).then(function(result){
+                if (result){
+                    res.send({result:'success'});
+                } else {
+                    res.send({result:'error'});
+                }
+            });
+        } else {
+            res.send({result:'error', error : 'Necesitas iniciar sesión'});
+        }
+    },
+
+    cargarMedFav: function (object, req, res){
+        if (req.session.passport.user){
+            models.MedicoFavorito.findAll({
+                where: {
+                    usuario_id: req.session.passport.user.id
+                },
+                  include: [
+                    { model: models.Medico ,attributes: ['id'],
+                    include: [
+                        { model: models.Usuario,attributes: ['id'], include:[{
+                            model: models.DatosGenerales
+                        }] }
+                    ]},
+                  ]
+            }).then(function(result){
+                if (result){
+                    console.log('RESULTADO: ' + JSON.stringify(result));
+                    res.send(result);
+                } else {
+                    res.send({});
+                }
+            });
+        }
+    }
 
 }

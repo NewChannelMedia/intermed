@@ -63,6 +63,14 @@ exports.iniciarSesion = function(object, req, res) {
     });
 };
 
+exports.logout = function (object, req, res) {
+    if (req.session){
+        res.clearCookie('intermed_sesion');
+        req.session.destroy();
+    }
+    res.redirect('/');
+};
+
 // Método que registra pacientes (facebook)
 exports.registrarUsuario = function(object, req, res) {
     req.session.passport = {};
@@ -165,7 +173,7 @@ exports.registrarUsuario = function(object, req, res) {
                                 }, {
                                     transaction: t
                                 }).then(function(usuario) {
-                                    var tokens = String(cryptomaniacs.doEncriptToken(usuario.id, getDateTime()));
+                                    var tokens = String(cryptomaniacs.doEncriptToken(usuario.id, getDateTime(false)));
                                     return usuario.update({
                                             token: tokens
                                         }, {
@@ -285,7 +293,7 @@ function guardarImagenDePerfil(object, usuario) {
             if (!fs.existsSync('./garage/profilepics/' + usuario.id)) {
                 fs.mkdirSync('./garage/profilepics/' + usuario.id, 0777);
             };
-            var path = './garage/profilepics/' + usuario.id + '/' + usuario.id + '_' + getDateTime() + '.png';
+            var path = './garage/profilepics/' + usuario.id + '/' + usuario.id + '_' + getDateTime(false) + '.png';
             fs.writeFile(path, imagedata, 'binary', function(err) {
                 console.log('Guardando: ' + object.picture.data.url);
                 if (err) console.error('___Error al guardar imagen de perfil (' + err + ')');
@@ -369,7 +377,7 @@ var generarSesion = function(req, res, usuario_id, redirect) {
             where: {
                 id: usuario_id
             },
-            attributes: ['id', 'usuario' ,'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion'],
+            attributes: ['id', 'usuarioUrl' ,'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion'],
             include: [{
                 model: models.DatosGenerales,
                 attributes: ['nombre', 'apellidoP', 'apellidoM']
@@ -390,8 +398,10 @@ var generarSesion = function(req, res, usuario_id, redirect) {
                     'tipoUsuario': usuario.tipoUsuario,
                     'tipoRegistro': usuario.tipoRegistro,
                     'estatusActivacion': usuario.estatusActivacion,
-                    'logueado': usuario.logueado
+                    'logueado': usuario.logueado,
+                    'usuarioUrl': usuario.usuarioUrl
                 }));
+                res.cookie('intermed_sesion', {id: usuario.id, usuario: usuario.usuarioUrl, tiempo: getDateTime(true)});
                 if (actualizacion){
                     req.session.passport.user.inicio = 0;
                 } else {
@@ -544,42 +554,8 @@ exports.activarCuenta = function(object, req, res) {
         });
 };
 
-exports.verPerfil = function(object, req, res){
-    usuario = object.usuario;
-    if (!usuario || (req.session.passport.user && usuario === req.session.passport.user.usuario)){
-        //mi perfil
-        res.status(200).send('Quieres ver tu propio perfil.');
-    } else {
-        //Perfil de otro usuario
-        models.Usuario.findOne({
-            where: {usuario: usuario},
-            include: [{
-                model: models.DatosGenerales
-            }, {
-                model: models.Direccion
-            }, {
-                model: models.Biometrico
-            }]
-        }).then(function(usuario){
-            if (usuario){
-                var tipoUsuario = 'Paciente';
-                if (usuario.tipoUsuario == 'M') tipoUsuario = 'Medico';
-                models[tipoUsuario].findOne({
-                    where: {usuario_id : usuario.id}
-                }).then(function (result){
-                    var Usuario = JSON.parse(JSON.stringify(usuario));
-                    Usuario[tipoUsuario] = JSON.parse(JSON.stringify(result));
-                    res.status(200).send(JSON.stringify(Usuario));
-                })
-            } else {
-                res.status(200).send('El usuario \'' + object.usuario + '\' no existe.');
-            }
-        });
-    }
-}
 
-
-function getDateTime() {
+function getDateTime(format) {
     var date = new Date();
     var hour = date.getHours();
     hour = (hour < 10 ? "0" : "") + hour;
@@ -592,5 +568,9 @@ function getDateTime() {
     month = (month < 10 ? "0" : "") + month;
     var day = date.getDate();
     day = (day < 10 ? "0" : "") + day;
-    return year + month + day + hour + min + sec;
+    if (format){
+        return year +'-'+ month +'-'+ day + ' ' + hour +':'+ min +':'+ sec;
+    } else {
+        return year + month + day + hour + min + sec;
+    }
 }

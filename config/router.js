@@ -25,9 +25,11 @@ var passport = require('passport'),
     cookieParser = require("cookie-parser"),
     session = require('express-session');
 
+app.use(cookieParser('intermedSession'));
+
 app.use(session({
     secret: 'intermedSession',
-    resave: false,
+    resave: true,
     saveUninitialized: true
 }));
 
@@ -40,6 +42,11 @@ app.use(bodyParser.urlencoded({
     extended: true,
     limit: '5mb'
 })); // support encoded bodies
+
+app.set('view engine', 'hbs');
+app.use('/', express.static(__dirname + '/../public'));
+app.use('/perfil', express.static(__dirname + '/../public'));
+
 //<----------------------------------------------------------------------------->
 /**
  * function para cargar las rutas, como estatitcas los layouts
@@ -50,13 +57,11 @@ app.use(bodyParser.urlencoded({
  */
 var rutas = {
     routeLife: function(plantilla, carpeta, hell) {
-        app.set('view engine', 'hbs');
         app.engine('hbs', exphbs({
             defaultLayout: __dirname + '/../apps/views/layouts/' + plantilla + '.hbs',
             helpers: hell
         }));
         app.set('views', __dirname + '/../apps/views/' + carpeta);
-        app.use(express.static(__dirname + '/../public'));
     }
 };
 //<----------------------------------------------------------------------------->
@@ -89,7 +94,7 @@ var iniciar = function() {
 
     //LogOut
     app.get('/logout', function(req, res, next) {
-        intermed.callController('session', 'logout', {}, req, res)
+        intermed.callController('usuarios', 'logout', {}, req, res)
     });
     //Home
     app.get('/', function(req, res) {
@@ -193,10 +198,8 @@ var iniciar = function() {
     //Obtener el perfil del usuario de la sesión
     app.get('/perfil', function(req, res) {
         if (req.session.passport.user) {
-            var tipoUsuario = 'paciente';
-            if (req.session.passport.user.tipoUsuario === 'M') tipoUsuario = 'medico';
-            rutas.routeLife('plataforma', 'plataforma/' + tipoUsuario, hps);
-            intermed.callController('home', 'perfil', req.body, req, res);
+            rutas.routeLife('plataforma', 'plataforma', hps);
+            intermed.callController('home', 'perfil', '', req, res);
         } else {
             res.redirect('/');
         }
@@ -872,11 +875,23 @@ var iniciar = function() {
         intermed.callController('instituciones', 'borraAseguradora', object, req, res);
     });
 
-    //Modificar la información del usuario de la sesión
     app.get('/perfil/:usuario', function(req, res) {
-        var usuario = req.params.usuario;
-        //rutas.routeLife('plataforma', 'plataforma/paciente', hps);
-        intermed.callController('usuarios', 'verPerfil', {usuario: usuario}, req, res);
+        var usuario = '';
+        if (req.params.usuario) usuario = req.params.usuario;
+        rutas.routeLife('plataforma', 'plataforma', hps);
+        intermed.callController('home', 'perfil', {usuario: usuario}, req, res);
+    });
+
+    app.post('/agregarMedFav', function (req, res){
+        intermed.callController('medicos','agregarFav',req.body, req, res);
+    });
+
+    app.post('/eliminarMedFav', function (req, res){
+        intermed.callController('medicos','eliminarFav',req.body, req, res);
+    });
+
+    app.post('/cargarMedFav', function (req, res){
+        intermed.callController('medicos','cargarMedFav', '', req, res);
     });
 }
 serv.server(app, 3000);

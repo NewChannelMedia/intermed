@@ -1030,18 +1030,18 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   box-shadow: 0 0 0 7px rgba(255, 255, 255, 1);
 }
 
-#ProfilePicture label{
+.profilePic label{
     position:relative;
     color: white;
     display: none;
     background: rgba(0, 0, 0, .5);
     text-align: center;
-    margin-top: -42px;
+    margin-top: -50px;
     height: 35px;
     cursor: pointer;
 }
 
-#ProfilePicture:hover label{
+.profilePic:hover label{
      display: block;
      float: left;
      padding: 10px;

@@ -1,210 +1,299 @@
-<section id="searchMedic" class="Flama">
-    <div class="container">
-        <div class="row">
-            <!-- empieza buscador -->
-            <div class="panel searchbox">
-                <div class="panel-body">
-                    <div class="col-md-3" id="ProfilePicture">
-                        <img src="{{valSession 'fotoPerfil'}}" width="200" height="200" class="img-rounded" id="fotoPerfil">
-                        <label for="imageFile">Cambiar Imagen</label>
-                        <input type="file" id="imageFile" style="display:none">
+<section id="plataforma">
+    <div id="paciente" class="container-fluid profileHolder">
+        <div class="profileHeader">
+            <div class="container">
+                <div class="media block">
+                    <div class="media-left block">
+                        <div class="profilePic">
+                            {{#if usuario.id}}
+                                <img src="{{usuario.urlFotoPerfil}}" />
+                            {{else}}
+                                <img src="{{valSession 'fotoPerfil'}}" id='fotoPerfil' />
+                                <label for="imageFile">Cambiar Imagen</label>
+                                <input type="file" id="imageFile" style="display:none">
+                            {{/if}}
+                        </div>
                     </div>
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-9" id='session_nombreUsuario'>
-                                {{valSession "name"}}
-                            </div>
-                            <div class="col-md-9" id="session_ubicacion">
-                                {{#ifSession "ciudad"}}
-                                    {{valSession "ciudad"}}, {{valSession "estado"}}
-
-                                {{/ifSession}}
-                            </div>
-                            <div class="col-md-9">
-                                <a class="login" href="#" data-toggle="modal" data-target="#ModificarPerfilModal" onclick="cargarInfoSesion()">Edita tu perfil</a>
+                    <div class="media-body profileGeneralInfo">
+                        <div class="col-lg-12 col-md-12 col-sm-10 col-xs-10">
+                            <div class="profileGenerales">
+                                <div class="vCard">
+                                    {{#if usuario.id}}
+                                        <div class="main">
+                                            <h4 class="media-heading profileNombre Flama-normal s20">
+                                                {{#if usuario.DatosGenerale}}
+                                                    {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
+                                                {{/if}}
+                                            </h4>
+                                            <h4 class="media-heading profileUbicacion Flama-w200 s15">
+                                                {{#if usuario.Direccions}}
+                                                    Guadalajara, Jalisco. MX
+                                                {{/if}}
+                                            </h4>
+                                        </div>
+                                    {{else}}
+                                        <div class="main">
+                                            <h4 class="media-heading profileNombre Flama-normal s20">
+                                                {{valSession "name"}}
+                                            </h4>
+                                            <h4 class="media-heading profileUbicacion Flama-w200 s15">
+                                                {{#ifSession "ciudad"}}
+                                                    {{valSession "ciudad"}}, {{valSession "estado"}}
+                                                {{/ifSession}}
+                                            </h4>
+                                        </div>
+                                    {{/if}}
+                                </div>
+                                {{#unless usuario.id}}
+                                <ul class="media-right profileExtraNav list-inline">
+                                    <li class="active"><a href="#">Editar Perfil</a></li>
+                                </ul>
+                                {{/unless}}
                             </div>
                         </div>
+                    </div>
+                    <div class="media-right profileMobileOptions">
+                        <ul class="options list-unstyled">
+                            <li>
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </li>
+                            <li>
+                                <span class="glyphicon glyphicon-thumbs-up"></span>
+                            </li>
+                            <li>
+                                <span class="glyphicon glyphicon-ok"></span>
+                            </li>
+                            <li>
+                                <span class="glyphicon glyphicon-comment"></span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="profileOptions">
+                        <ul class="options list-unstyled">
+                            <li>
+                                <span class="glyphicon glyphicon-plus"></span> Crear nueva entrada en bitácora
+                            </li>
+                            <hr>
+                            <li>
+                                <a>
+                                    <span class="glyphicon glyphicon-chevron-right"></span> Consulta en línea</a>
+                            </li>
+                            <li>
+                                <a>
+                                    <span class="glyphicon glyphicon-chevron-right"></span> Intermarket</a>
+                            </li>
+                            <li>
+                                <a>
+                                    <span class="glyphicon glyphicon-chevron-right"></span> Foros</a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-md-8">
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs" role="tablist" id="resultTabs">
-                    <li role="presentation" class="tab active"><a href="#medResults" aria-controls="medResults" role="tab" data-toggle="tab">Medicos</a></li>
-                    <li role="presentation" class="tab"><a href="#centrosResult" aria-controls="centrosResult" role="tab" data-toggle="tab">Centros Medicos</a></li>
-                    <li role="presentation" class="tab"><a href="#padResults" aria-controls="padResults" role="tab" data-toggle="tab">Padecimientos</a></li>
+    <div class="homeBody">
+        <div class="homeBodyNav">
+            <div class="container">
+                <ul class="nav nav-tabs nav-justified" role="tablist">
+                    <li class="active" role="presentation">
+                        <a href="#homeInicio" role="tab" data-toggle="tab" aria-controls="homeInicio">Inicio</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#homeBitacora" role="tab" data-toggle="tab" aria-controls="homeBitacora">Bitacora</a>
+                    </li>
                 </ul>
-                <!-- Tab panes -->
-                <div class="tab-content" id="tabsContent">
-                    <div class="panel">
-                        <div class="panel-body">
-                            <div role="tabpanel" class="tab-pane fade in active " id="medResults">
-                                medResults
-                                <br/>
-                                <br/>
-                                <br/>
+            </div>
+        </div>
+        <div class="tab-content homeBodyElements">
+            <div role="tabpanel" class="tab-pane fade in container active" id="homeInicio">
+                <div class="row">
+                    <div class="element col-lg-7 col-md-7 col-sm-12 col-xs-12">
+                        <div class="panel panel-primary newsFeedPanel" id="homeNewsFeed">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <span class="panelIcon glyphicon glyphicon-user"></span> News Feed</h3>
                             </div>
-                            <div role="tabpanel" class="tab-pane fade" id="centrosResult">
-                                centrosResult
+                            <div class="panel-body newsFeedBody">
+
                             </div>
-                            <div role="tabpanel" class="tab-pane fade" id="padResults">
-                                padResults
+                        </div>
+                    </div>
+                    <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Proximas Citas</h3>
+                            </div>
+                            <div class="panel-body" style="height:250px;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Calendario</h3>
+                            </div>
+                            <div class="panel-body" style="height:250px;">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Medicos Favoritos</h3>
+                            </div>
+                            <div class="panel-body" style="height:250px;">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <!-- Nav tabs -->
-                <ul class="nav nav-tabs" role="tablist" id="resultTabs">
-                    <li role="presentation" class="tab active"><a href="#medResults" aria-controls="medResults" role="tab" data-toggle="tab">Medicos</a></li>
-                </ul>
-                <!-- Tab panes -->
-                <div class="tab-content" id="tabsContent">
-                    <div class="panel">
-                        <div class="panel-body">
-                            <div role="tabpanel" class="tab-pane fade in active " id="medResults">
-                                medResults
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
+            <!-- ... -->
+            <div role="tabpanel" class="tab-pane fade container" id="homeBitacora">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+
+                            </div>
+                            <div class="panel-body">
+
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-4">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+
+                            </div>
+                            <div class="panel-body">
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+
+                            </div>
+                            <div class="panel-body">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ... -->
+            <div role="tabpanel" class="tab-pane fade container" id="profileFotografias">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="panel panel-info">
+                            <div class="panel-heading">
+                            </div>
+                            <div class="panel-body">
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<div class="modal fade" id="ModificarPerfilModal" name="modificarPerfilModal" tabindex="-1" role="dialog">
-    <div class="modal-dialog  modal-lg">
-        <form id="perfilPaciente" action="/perfil" method="POST">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="row">
-                        Datos Generales
-                        <hr/>
-                        <div class="col-md-12">
-                            <div class="col-md-4">
-                                <input type="text" class="form-control" id="prf_nombre" name="nombre" placeholder="Nombre">
-                            </div>
-                            <div class="col-md-4">
-                                <input type="text" class="form-control" id="prf_apellidoPat" name="apellidoPat" placeholder="Apellido">
-                            </div>
-                            <div class="col-md-4">
-                                <input type="text" class="form-control" id="prf_apellidoMat" name="apellidoMat" placeholder="Apellido">
-                            </div>
-                        </div>
-                        {{!Biométrico}}
-                        <div class="col-md-12">
-                            Biométrico
-                            <hr/>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="test" name="test" placeholder="Nombre">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        {{!Direcciones}}
-                        <div class="col-md-12">
-                            Direcciones
-                            <hr/>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="test" name="test" placeholder="Nombre">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <input type="text" class="form-control" id="test" name="test" placeholder="Apellido">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="submit" value="Guardar Cambios" class="btn btn-primary">
-                    <input type="button" value="Cancelar" class="btn btn-danger" data-toggle="modal" data-target="#ModificarPerfilModal">
-                </div>
-            </div>
-        </form>
-    </div>
-    <!-- /.modal-content -->
-</div>
-<!-- /.modal-dialog -->
-
-
-<div class="modal fade" id="CambiarFotoPerfil" name="CambiarFotoPerfil" tabindex="-1" role="dialog">
-    <div class="modal-dialog">
-        <form>
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="row" style="display: flex;align-items: center;justify-content: center;flex-direction: column;">
-                                <h4 class="modal-title">Selecciona el area a guardar</h4>
-                                <hr/>
-                                <input type="hidden" value="" name="base64file" id="base64file">
-                                <div class="col-md-12" id="contenedorFoto" class="text-center" style="width: auto;margin: auto"></div>
-                                <canvas id="canvas" height="300" width="300" style="display: none"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <input type="button" value="Guardar" class="btn btn-primary" id="btnCrop" onclick="guardarImagenPerfil()">
-                    <input type="button" value="Cancelar" class="btn btn-danger" data-toggle="modal" data-target="#CambiarFotoPerfil">
-                </div>
-            </div>
-        </form>
-    </div>
-    <!-- /.modal-content -->
-</div>
-<!-- /.modal-dialog -->

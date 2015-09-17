@@ -28,6 +28,7 @@ module.exports = {
 	},
 	logout: function (object, req, res) {
 		if (req.session){
+			res.clearCookie('intermed_sesion');
 			req.session.destroy();
 		}
 		res.redirect('/');

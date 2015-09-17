@@ -127,6 +127,12 @@ if (location.pathname === '/registro') {
                 informacionRegistroMedico();
             }
         }
+
+        if (location.pathname.substring(0, 7) === '/perfil') {
+            if ( $('#tipoUsuario').val() == "P" && $('#usuarioPerfil').val() == ''){
+                cargarMedFav();
+            }
+        }
     });
 }
 
@@ -257,7 +263,10 @@ function actualizarSesion() {
                 $('#fotoPerfil').attr("src", fotoPerfil);
                 if (data.session.tipoUsuario === "M") {
                     if (!data.session.name) $('#session_nombreUsuario').html('No tenemos registrado tu nombre, por favor continua con tu registro <a onclick="informacionRegistroMedico()">aquí</a>');
-                    else $('#session_nombreUsuario').html(data.session.name);
+                    else {
+                        if (data.session.tipoUsuario == "M") $('#session_nombreUsuario').html('Dr. ' + data.session.name)
+                        else $('#session_nombreUsuario').html(data.session.name);
+                    }
                 } else {
                     $('#session_nombreUsuario').html(data.session.name);
                 }
@@ -808,3 +817,70 @@ $(document).ready(function() {
 
     });
 });
+
+function agregarFavoritos(){
+    var ruta = '/agregarMedFav';
+    var medicoID = $('#MedicoId').val();
+    $.ajax({
+        async: false,
+        url: ruta,
+        type: 'POST',
+        dataType: "json",
+        data: {medicoID: medicoID},
+        cache: false,
+        success: function(data) {
+            if (data.result == 'success'){
+                $('#addFavoriteContact').html('Eliminar de favoritos');
+                $("#addFavoriteContact").attr("onclick", "eliminarFavoritos()");
+            } else {
+                alert('Error al guardar medico favorito');
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
+
+function eliminarFavoritos(){
+    var ruta = '/eliminarMedFav';
+    var medicoID = $('#MedicoId').val();
+    $.ajax({
+        async: false,
+        url: ruta,
+        type: 'POST',
+        dataType: "json",
+        data: {medicoID: medicoID},
+        cache: false,
+        success: function(data) {
+            if (data.result == 'success'){
+                $('#addFavoriteContact').html('Agregar a favoritos');
+                $("#addFavoriteContact").attr("onclick", "agregarFavoritos()");
+
+            } else {
+                alert('Error al guardar medico favorito');
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
+
+function cargarMedFav(){
+    $.ajax({
+        async: false,
+        url: '/cargarMedFav',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        success: function(data) {
+            if (data){
+                //alert('Success');
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}

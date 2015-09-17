@@ -15,6 +15,14 @@ function ifSession(input, options){
         return options.inverse(session[input]);
 }
 
+function ifID(value, options){
+    if (session.id == value)
+        return options.fn(true);
+    else
+        return options.inverse(true);
+}
+
 exports.varSession = varSession;
 exports.valSession = valSession;
 exports.ifSession = ifSession;
+exports.ifID = ifID;
