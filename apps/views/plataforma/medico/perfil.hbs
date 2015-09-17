@@ -140,11 +140,11 @@
                                     {{#ifSession "id"}}
                                         {{#ifTipoMedico}}
                                         <li role="presentation" id="favoriteContact">
-                                            <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos()">Eliminar de colegas</a>
+                                            <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(true)">Eliminar de colegas</a>
                                         </li>
                                         {{else}}
                                         <li role="presentation" id="favoriteContact">
-                                            <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos()">Eliminar de favoritos</a>
+                                            <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(true)">Eliminar de favoritos</a>
                                         </li>
                                         {{/ifTipoMedico}}
                                     {{/ifSession}}
@@ -152,11 +152,11 @@
                                     {{#ifSession "id"}}
                                         {{#ifTipoMedico}}
                                         <li role="presentation" id="favoriteContact">
-                                            <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos()">Agregar a colegas</a>
+                                            <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(true)">Agregar a colegas</a>
                                         </li>
                                         {{else}}
                                         <li role="presentation" id="favoriteContact">
-                                            <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos()">Agregar de favoritos</a>
+                                            <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(true)">Agregar de favoritos</a>
                                         </li>
                                         {{/ifTipoMedico}}
                                     {{/ifSession}}

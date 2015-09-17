@@ -538,15 +538,22 @@ module.exports = {
 
     agregarFav: function(object, req, res){
         if (req.session.passport.user){
-            models.MedicoFavorito.findOrCreate({
-                defaults: {
-                    usuario_id: req.session.passport.user.id,
-                    medico_id: object.medicoID
-                },
-                where: {
+            var condiciones = '';
+            if (object.medicoID){
+                condiciones = {
                     usuario_id: req.session.passport.user.id,
                     medico_id: object.medicoID
                 }
+            } else if (object.pacienteID){
+                condiciones = {
+                    usuario_id: req.session.passport.user.id,
+                    paciente_id: object.pacienteID
+                }
+            }
+
+            models.MedicoFavorito.findOrCreate({
+                defaults: condiciones,
+                where: condiciones
             }).then(function(result){
                 if (result){
                     res.send({result:'success'});
@@ -561,11 +568,21 @@ module.exports = {
 
     eliminarFav: function(object, req, res){
         if (req.session.passport.user){
-            models.MedicoFavorito.destroy({
-                where: {
+            var condiciones = '';
+            if (object.medicoID){
+                condiciones = {
                     usuario_id: req.session.passport.user.id,
                     medico_id: object.medicoID
                 }
+            } else if (object.pacienteID){
+                condiciones = {
+                    usuario_id: req.session.passport.user.id,
+                    paciente_id: object.pacienteID
+                }
+            }
+
+            models.MedicoFavorito.destroy({
+                where: condiciones
             }).then(function(result){
                 if (result){
                     res.send({result:'success'});
@@ -588,11 +605,18 @@ module.exports = {
             },
               include: [
                 { model: models.Medico ,attributes: ['id'],
-                include: [
+                    include: [
                     { model: models.Usuario,attributes: ['id','usuarioUrl','urlFotoPerfil'], include:[{
                         model: models.DatosGenerales
                     }] }
                 ]},
+                { model: models.Paciente ,attributes: ['id'],
+                    include: [
+                      { model: models.Usuario,attributes: ['id','usuarioUrl','urlFotoPerfil'], include:[{
+                          model: models.DatosGenerales
+                      }] }
+                    ]
+                },
               ]
         }).then(function(result){
             if (result){

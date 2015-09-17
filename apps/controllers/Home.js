@@ -75,19 +75,32 @@ module.exports = {
                             model: models.Especialidad
                         }]
                     }]
+                }, {
+                    model: models.Paciente,
+                    attributes: ['id']
                 }]
             }).then(function(usuario) {
                 if (usuario) {
                     usuario = JSON.parse(JSON.stringify(usuario));
 
-                    if (usuario.Medico && usuario.Medico.id && req.session.passport.user){
-                        models.MedicoFavorito.findOne({
-                            where:{
+                    if (req.session.passport.user && ((usuario.Medico && usuario.Medico.id) || (usuario.Paciente && usuario.Paciente.id))){
+                        var condiciones;
+                        if (usuario.Medico){
+                            condiciones = {
                                 usuario_id : req.session.passport.user.id,
                                 medico_id : parseInt(usuario.Medico.id)
                             }
+                        } else {
+                            condiciones = {
+                                usuario_id : req.session.passport.user.id,
+                                paciente_id : parseInt(usuario.Paciente.id)
+                            }
+                        }
+                        models.MedicoFavorito.findOne({
+                            where: condiciones
                         }).then(function(result){
                             if (result) {
+
                                 usuario.medFavCol = result.id;
                             }
 

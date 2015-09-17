@@ -813,19 +813,27 @@ $(document).ready(function() {
     });
 });
 
-function agregarFavoritos(){
+function agregarFavoritos(medico){
     var ruta = '/agregarMedFav';
-    var medicoID = $('#MedicoId').val();
+    var medicoID = '', pacienteID = '';
+    if ($('#MedicoId').val()) medicoID = $('#MedicoId').val();
+    if ($('#PacienteId').val()) pacienteID = $('#PacienteId').val();
     $.ajax({
         async: false,
         url: ruta,
         type: 'POST',
         dataType: "json",
-        data: {medicoID: medicoID},
+        data: {medicoID: medicoID, pacienteID: pacienteID},
         cache: false,
         success: function(data) {
             if (data.result == 'success'){
-                if ($('#tipoUsuario').val() === "P") $('#addFavoriteContact').html('Eliminar de favoritos');
+                if ($('#tipoUsuario').val() === "P"){
+                    if (medicoID){
+                        $('#addFavoriteContact').html('Eliminar de favoritos');
+                    } else {
+                        $('#addFavoriteContact').html('Eliminar de contactos');
+                    }
+                }
                 else if ($('#tipoUsuario').val() === "M") $('#addFavoriteContact').html('Eliminar de colegas');
                 $("#addFavoriteContact").attr("onclick", "eliminarFavoritos()");
             } else {
@@ -838,19 +846,27 @@ function agregarFavoritos(){
     });
 }
 
-function eliminarFavoritos(){
+function eliminarFavoritos(medico){
     var ruta = '/eliminarMedFav';
-    var medicoID = $('#MedicoId').val();
+    var medicoID = '', pacienteID = '';
+    if ($('#MedicoId').val()) medicoID = $('#MedicoId').val();
+    if ($('#PacienteId').val()) pacienteID = $('#PacienteId').val();
     $.ajax({
         async: false,
         url: ruta,
         type: 'POST',
         dataType: "json",
-        data: {medicoID: medicoID},
+        data: {medicoID: medicoID, pacienteID: pacienteID},
         cache: false,
         success: function(data) {
             if (data.result == 'success'){
-                if ($('#tipoUsuario').val() === "P") $('#addFavoriteContact').html('Agregar a favoritos');
+                if ($('#tipoUsuario').val() === "P"){
+                    if (medicoID){
+                        $('#addFavoriteContact').html('Agregar a favoritos');
+                    } else {
+                        $('#addFavoriteContact').html('Agregar a contactos');
+                    }
+                }
                 else if ($('#tipoUsuario').val() === "M") $('#addFavoriteContact').html('Agregar a colegas');
                 $("#addFavoriteContact").attr("onclick", "agregarFavoritos()");
             } else {
@@ -865,6 +881,7 @@ function eliminarFavoritos(){
 
 function cargarFavCol(usuario){
     $('#FavColPanel').html('');
+    $('#ContColPanel').html('');
     $.ajax({
         async: false,
         url: '/cargarFavCol',
@@ -875,7 +892,11 @@ function cargarFavCol(usuario){
         success: function(data) {
             if (data){
                 for (var p in data) {
+                    if (data[p].medico_id)
                     $('#FavColPanel').append('<li> <a href="http://'+ window.location.host +'/perfil/' + data[p].Medico.Usuario.usuarioUrl + '" > Dr. ' + data[p].Medico.Usuario.DatosGenerale.nombre + ' ' + data[p].Medico.Usuario.DatosGenerale.apellidoP + ' ' + data[p].Medico.Usuario.DatosGenerale.apellidoM + '</a></li>');
+                    else
+                    $('#ContColPanel').append('<li> <a href="http://'+ window.location.host +'/perfil/' + data[p].Paciente.Usuario.usuarioUrl + '" >' + data[p].Paciente.Usuario.DatosGenerale.nombre + ' ' + data[p].Paciente.Usuario.DatosGenerale.apellidoP + ' ' + data[p].Paciente.Usuario.DatosGenerale.apellidoM + '</a></li>');
+
                 }
                 //alert('Success');
             }
@@ -885,3 +906,9 @@ function cargarFavCol(usuario){
         }
     });
 }
+
+$(document).ready( function() {
+  $(".dropdown-form").click(function(event){
+        event.stopPropagation();
+    });
+});

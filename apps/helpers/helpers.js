@@ -44,6 +44,14 @@ function ifTipoMedico (options){
     }
 }
 
+function ifTipoPaciente (options){
+    if (session.tipoUsuario == 'P'){
+        return options.fn(true);
+    } else {
+        return options.inverse(true);
+    }
+}
+
 exports.varSession = varSession;
 exports.valSession = valSession;
 exports.ifSession = ifSession;
@@ -51,3 +59,4 @@ exports.ifSessionVal = ifSessionVal;
 exports.unlessSessionVal = unlessSessionVal;
 exports.ifID = ifID;
 exports.ifTipoMedico = ifTipoMedico;
+exports.ifTipoPaciente = ifTipoPaciente;

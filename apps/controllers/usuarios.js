@@ -1,5 +1,6 @@
 var models = require('../models');
 var http = require('http'),
+    request = require('request'),
     fs = require('fs');
 var cryptomaniacs = require('./encryption');
 var mail = require('./emailSender');
@@ -278,34 +279,16 @@ exports.correoDisponible = function(object, req, res) {
 
 
 function guardarImagenDePerfil(object, usuario) {
-    options = {
-        host: 'fbcdn-profile-a.akamaihd.net',
-        port: 80,
-        path: object.picture.data.url
-    }
-    http.get(options, function(resultado) {
-        var imagedata = '';
-        resultado.setEncoding('binary');
+    if (!fs.existsSync('./garage/profilepics/' + usuario.id)) {
+        fs.mkdirSync('./garage/profilepics/' + usuario.id, 0777);
+    };
+    var path = './garage/profilepics/' + usuario.id + '/' + usuario.id + '_' + getDateTime(false) + '.png';
 
-        resultado.on('data', function(chunk) {
-            imagedata += chunk
-        })
-
-        resultado.on('end', function() {
-            if (!fs.existsSync('./garage/profilepics/' + usuario.id)) {
-                fs.mkdirSync('./garage/profilepics/' + usuario.id, 0777);
-            };
-            var path = './garage/profilepics/' + usuario.id + '/' + usuario.id + '_' + getDateTime(false) + '.png';
-            fs.writeFile(path, imagedata, 'binary', function(err) {
-                console.log('Guardando: ' + object.picture.data.url);
-                if (err) console.error('___Error al guardar imagen de perfil (' + err + ')');
-                else {console.log('__Imagen guardada en: ' + path);
-                    usuario.update({
-                        urlFotoPerfil: path
-                    });
-                }
-            });
+    download(object.picture.data.url, path, function(){
+        usuario.update({
+            urlFotoPerfil: path
         });
+        console.log('IMAGEN GUARDADA');
     });
 }
 
@@ -576,3 +559,12 @@ function getDateTime(format) {
         return year + month + day + hour + min + sec;
     }
 }
+
+var download = function(uri, filename, callback){
+  request.head(uri, function(err, res, body){
+    console.log('content-type:', res.headers['content-type']);
+    console.log('content-length:', res.headers['content-length']);
+
+    request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
+  });
+};
