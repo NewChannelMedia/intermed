@@ -65,6 +65,10 @@ function mailer(object, file) {
 			enlace: 'localhost:3000/activar/'+ object.token
 		}
 	};
+	if (object.enlace) mailOptions.context.enlace = object.enlace;
+	if (object.nombreSesion) mailOptions.context.nombresesion = object.nombreSesion;
+	if (object.mensaje) mailOptions.context.mensaje = object.mensaje;
+
 	var transporter = nodemailer.createTransport(smtpTransport(datos));
 	transporter.use('compile', hbs(options));
 	// se hace la funcion para el envio de el correo

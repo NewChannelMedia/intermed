@@ -75,6 +75,7 @@ exports.logout = function (object, req, res) {
 // Método que registra pacientes (facebook)
 exports.registrarUsuario = function(object, req, res) {
     req.session.passport = {};
+    //Usuario que lo invito: req.session.invito;
     var usuario_id = '';
     object['birthday'] = object.birthdayYear + '-' + object.birthdayMonth + '-' + object.birthdayDay;
     // Inicia transacción de registro de usuarios
@@ -102,9 +103,20 @@ exports.registrarUsuario = function(object, req, res) {
                                 transaction: t
                             })
                             .then(function(usuario) {
+                                generarRelacion(usuario, req, res);
+                                var usuarioUrl = String(usuario.id);
+                                for (var i = usuarioUrl.length ; i < 7; i++){usuarioUrl = '0' + usuarioUrl;}
+
                                 if (object['email']) {
                                     return usuario.update({
-                                        estatusActivacion: 1
+                                        estatusActivacion: 1,
+                                        usuarioUrl: usuarioUrl
+                                    }, {
+                                        transaction: t
+                                    });
+                                } else {
+                                    return usuario.update({
+                                        usuarioUrl: usuarioUrl
                                     }, {
                                         transaction: t
                                     });
@@ -174,9 +186,14 @@ exports.registrarUsuario = function(object, req, res) {
                                 }, {
                                     transaction: t
                                 }).then(function(usuario) {
+                                    generarRelacion(usuario, req, res);
+
+                                    var usuarioUrl = String(usuario.id);
+                                    for (var i = usuarioUrl.length ; i < 7; i++){usuarioUrl = '0' + usuarioUrl;}
                                     var tokens = String(cryptomaniacs.doEncriptToken(usuario.id, getDateTime(false)));
                                     return usuario.update({
-                                            token: tokens
+                                            token: tokens,
+                                            usuarioUrl: usuarioUrl
                                         }, {
                                             transaction: t
                                         })
@@ -209,10 +226,16 @@ exports.registrarUsuario = function(object, req, res) {
                                         transaction: t
                                     })
                                     .then(function(usuario) {
+                                        generarRelacion(usuario, req, res);
+
+                                        var usuarioUrl = String(usuario.id);
+                                        for (var i = usuarioUrl.length ; i < 7; i++){usuarioUrl = '0' + usuarioUrl;}
+
                                         var tokens = String(cryptomaniacs.doEncriptToken(usuario.id, object['tiempoStamp']));
                                         console.log("Token vato loco " + tokens);
                                         return usuario.update({
-                                                token: tokens
+                                                token: tokens,
+                                                usuarioUrl: usuarioUrl
                                             }, {
                                                 transaction: t
                                             })
@@ -539,6 +562,23 @@ exports.activarCuenta = function(object, req, res) {
         });
 };
 
+exports.invitar = function (object, req, res){
+        if (object.nombre && object.correo && object.mensaje){
+            var datos = {
+                to: object.correo,
+                subject: 'Te invito a usar Intermed',
+                nombre: object.nombre,
+                nombreSesion: req.session.passport.user.name,
+                enlace: 'localhost:3000/' + req.session.passport.user.usuarioUrl,
+                mensaje: object.mensaje
+            };
+            mail.mailer(datos, 'invitar'); //se envia el correo
+            res.send({result: 'success'});
+        } else {
+            res.send({result: 'error', error: 'información incompleta'});
+        }
+};
+
 
 function getDateTime(format) {
     var date = new Date();
@@ -558,6 +598,49 @@ function getDateTime(format) {
     } else {
         return year + month + day + hour + min + sec;
     }
+}
+
+function generarRelacion(usuario, req, res){
+    //Usuario que lo invito: req.session.invito;
+    if (req.session.invito){
+        models.Usuario.findOne({
+            where: {usuarioUrl: req.session.invito},
+            attributes: ['id','usuarioUrl','tipoUsuario'],
+            include: [{
+                model: models.Medico
+            }, {
+                model: models.Paciente
+            }]
+        }).then(function(usuarioInvito){
+            if (!(usuarioInvito.tipoUsuario == "P" && usuario.tipoUsuario == "M")){
+                var condiciones = {};
+                if (usuarioInvito.tipoUsuario == "M"){
+                    condiciones = {
+                        usuario_id: usuario.id,
+                        medico_id: usuarioInvito.Medico.id
+                    };
+                } else {
+                    condiciones = {
+                        usuario_id: usuario.id,
+                        paciente_id: usuarioInvito.Paciente.id
+                    };
+                }
+                models.MedicoFavorito.findOrCreate({
+                    defaults: condiciones,
+                    where: condiciones
+                }).then(function(result){
+                    if (result){
+                        console.log('________Médico/Colega/Contacto agregado')
+                    } else {
+                        console.log('________Error al agregar la relación')
+                    }
+                });
+            } else {
+                console.log('________Tipo medico');
+            }
+        });
+    }
+    req.session.invito = '';
 }
 
 var download = function(uri, filename, callback){

@@ -9,6 +9,10 @@ if (location.pathname === '/registro') {
     $(document).ready(getAllDoctors());
 } else {
     $(document).ready(function() {
+        $(".dropdown-form").click(function(event){
+              event.stopPropagation();
+          });
+
         $('#frm_regP').on('submit', function(e) {
             e.preventDefault();
             var pass1 = $('#contraseñaReg').val();
@@ -896,7 +900,6 @@ function cargarFavCol(usuario){
                     $('#FavColPanel').append('<li> <a href="http://'+ window.location.host +'/perfil/' + data[p].Medico.Usuario.usuarioUrl + '" > Dr. ' + data[p].Medico.Usuario.DatosGenerale.nombre + ' ' + data[p].Medico.Usuario.DatosGenerale.apellidoP + ' ' + data[p].Medico.Usuario.DatosGenerale.apellidoM + '</a></li>');
                     else
                     $('#ContColPanel').append('<li> <a href="http://'+ window.location.host +'/perfil/' + data[p].Paciente.Usuario.usuarioUrl + '" >' + data[p].Paciente.Usuario.DatosGenerale.nombre + ' ' + data[p].Paciente.Usuario.DatosGenerale.apellidoP + ' ' + data[p].Paciente.Usuario.DatosGenerale.apellidoM + '</a></li>');
-
                 }
                 //alert('Success');
             }
@@ -907,8 +910,26 @@ function cargarFavCol(usuario){
     });
 }
 
-$(document).ready( function() {
-  $(".dropdown-form").click(function(event){
-        event.stopPropagation();
+function enviarInvitacion(){
+    var nombre = $('#invitar_nombre').val(),
+        correo = $('#invitar_correo').val(),
+        mensaje = $('#invitar_mensaje').val();
+    $.ajax({
+        async: false,
+        url: '/enviarInvitacion',
+        type: 'POST',
+        data: {nombre: nombre, correo: correo, mensaje: mensaje},
+        dataType: "json",
+        cache: false,
+        success: function(data) {
+            if (data.result == 'success') {
+                $('#addFormaForm').hide();
+            } else {
+                alert('Error al enviar la invitación');
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
     });
-});
+}

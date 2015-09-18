@@ -98,8 +98,9 @@ var iniciar = function() {
     });
     //Home
     app.get('/', function(req, res) {
+        req.session.invitoUrl = '';
         intermed.callController('Home', 'index', req.body, req, res)
-    }); //intermed.callController('Home', 'sayHello', '', req, res)});
+    });
 
     // get y post de searchMedic
     app.get('/searchMedic', function(req, res) {
@@ -892,6 +893,16 @@ var iniciar = function() {
 
     app.post('/cargarFavCol', function (req, res){
         intermed.callController('medicos','cargarFavCol', {usuario: req.body.usuario} , req, res);
+    });
+
+    app.post('/enviarInvitacion',function (req, res){
+        intermed.callController('usuarios','invitar',req.body,req, res);
+    });
+
+    //Home
+    app.get('/:usuarioUrl', function(req, res) {
+        req.session.invito = req.params.usuarioUrl;
+        intermed.callController('Home', 'index', req.body, req, res)
     });
 }
 serv.server(app, 3000);
