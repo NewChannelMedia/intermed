@@ -65,14 +65,22 @@ function mailer(object, file) {
 			enlace: 'localhost:3000/activar/'+ object.token
 		}
 	};
+	if (object.enlace) mailOptions.context.enlace = object.enlace;
+	if (object.nombreSesion) mailOptions.context.nombresesion = object.nombreSesion;
+	if (object.mensaje) mailOptions.context.mensaje = object.mensaje;
+
 	var transporter = nodemailer.createTransport(smtpTransport(datos));
 	transporter.use('compile', hbs(options));
 	// se hace la funcion para el envio de el correo
 	transporter.sendMail(mailOptions, function(err, informacion) {
-		if (err)
-			return console.log("1 :- " + err);
-		else
+		if (err){
+			console.log("1 :- " + err);
+			return false;
+		}
+		else{
 			console.log("Sending mail: " + informacion.response);
+			return true;
+		}
 	});
 }
 exports.mailer = mailer;

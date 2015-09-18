@@ -1,8 +1,8 @@
 var FacebookStrategy = require('passport-facebook').Strategy;
 var LocalStrategy = require('passport-local').Strategy;
 
-var FACEBOOK_APP_ID = '717734195021820';
-var FACEBOOK_APP_SECRET = 'e97243728bf098efdcf6b2141fbb13ac';
+var FACEBOOK_APP_ID = '734404383354801';
+var FACEBOOK_APP_SECRET = '071c03a5c2d517de080491b88c5cd5cc';
 
 module.exports = function(passport){
     passport.serializeUser(function(user, done) {

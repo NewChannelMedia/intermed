@@ -117,15 +117,15 @@ if (location.pathname === '/registro') {
             }
         });
 
-        if ($('#registroCompleto') && $('#registroCompleto').val() === "0" && $('#tipoUsuario').val() === "M"){
-            $('#registroIncompleto').css('display', 'inline-block');
-        }
-
         if ($('#registroCompleto') && $('#registroCompleto').val() === "0" && $('#inicio').val() === "1") {
             actualizarSesion();
             if ($('#tipoUsuario').val() === "M") {
                 informacionRegistroMedico();
             }
+        }
+
+        if (location.pathname.substring(0, 7) === '/perfil') {
+            cargarFavCol($('#usuarioPerfil').val());
         }
     });
 }
@@ -249,7 +249,7 @@ function actualizarSesion() {
         success: function(data) {
             if (data.result === "success") {
                 var fotoPerfil = '';
-                if (data.session.registroCompleto === "1"){
+                if (data.session.registroCompleto === 1){
                     $('#registroIncompleto').css('display', 'none');
                 }
                 if (data.session.fotoPerfil) fotoPerfil = data.session.fotoPerfil;
@@ -257,7 +257,10 @@ function actualizarSesion() {
                 $('#fotoPerfil').attr("src", fotoPerfil);
                 if (data.session.tipoUsuario === "M") {
                     if (!data.session.name) $('#session_nombreUsuario').html('No tenemos registrado tu nombre, por favor continua con tu registro <a onclick="informacionRegistroMedico()">aquí</a>');
-                    else $('#session_nombreUsuario').html(data.session.name);
+                    else {
+                        if (data.session.tipoUsuario == "M") $('#session_nombreUsuario').html('Dr. ' + data.session.name)
+                        else $('#session_nombreUsuario').html(data.session.name);
+                    }
                 } else {
                     $('#session_nombreUsuario').html(data.session.name);
                 }
@@ -299,8 +302,10 @@ function existeFecha(fecha) {
     return true;
 }
 
-function existeCorreo() {
-    var correo = document.getElementById('correoReg').value;
+function existeCorreo(correo) {
+    if (!correo){
+        var correo = document.getElementById('correoReg').value;
+    }
     if (correoValido(correo)) {
         $.ajax({
             async: true,
@@ -775,8 +780,26 @@ $(function() {
     });
 });
 
-function verificarImagen() {
-    $('#base64file').val(base64file);
+function guardarImagenPerfil() {
+    $.ajax({
+        async: false,
+        url: '/perfil',
+        type: 'POST',
+        dataType: "json",
+        data: {base64file: base64file},
+        cache: false,
+        success: function(data) {
+            if (data.result === 'success'){
+                $('#CambiarFotoPerfil').modal('toggle');
+                actualizarSesion();
+            } else {
+                alert('No se pudo guardar la imagen');
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
 }
 
 function SetCoordinates(c) {
@@ -825,6 +848,7 @@ $(document).ready(function MakeWizard() {
         $(element).find(".stepsContainer").append("<span class='stepsConnector'></span>");
 
         steps.each(function(i) {
+            if (i == 0) $("#steps").html("");
             $(this).wrap("<div id='step" + i + "'></div>");
             $(this).find(".EndButtons").addClass("step" + i + "c");
             $(this).find(".EndButtons").append("<p id='step" + i + "c'></p>");
@@ -910,6 +934,142 @@ $(document).ready(function() {
 
     });
 });
+
+function agregarFavoritos(medico){
+    var ruta = '/agregarMedFav';
+    var medicoID = '', pacienteID = '';
+    if ($('#MedicoId').val()) medicoID = $('#MedicoId').val();
+    if ($('#PacienteId').val()) pacienteID = $('#PacienteId').val();
+    $.ajax({
+        async: false,
+        url: ruta,
+        type: 'POST',
+        dataType: "json",
+        data: {medicoID: medicoID, pacienteID: pacienteID},
+        cache: false,
+        success: function(data) {
+            if (data.result == 'success'){
+                if ($('#tipoUsuario').val() === "P"){
+                    if (medicoID){
+                        $('#addFavoriteContact').html('Eliminar de favoritos');
+                    } else {
+                        $('#addFavoriteContact').html('Eliminar de contactos');
+                    }
+                }
+                else if ($('#tipoUsuario').val() === "M") $('#addFavoriteContact').html('Eliminar de colegas');
+                $("#addFavoriteContact").attr("onclick", "eliminarFavoritos()");
+            } else {
+                alert('Error al guardar medico favorito');
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
+
+function eliminarFavoritos(medico){
+    var ruta = '/eliminarMedFav';
+    var medicoID = '', pacienteID = '';
+    if ($('#MedicoId').val()) medicoID = $('#MedicoId').val();
+    if ($('#PacienteId').val()) pacienteID = $('#PacienteId').val();
+    $.ajax({
+        async: false,
+        url: ruta,
+        type: 'POST',
+        dataType: "json",
+        data: {medicoID: medicoID, pacienteID: pacienteID},
+        cache: false,
+        success: function(data) {
+            if (data.result == 'success'){
+                if ($('#tipoUsuario').val() === "P"){
+                    if (medicoID){
+                        $('#addFavoriteContact').html('Agregar a favoritos');
+                    } else {
+                        $('#addFavoriteContact').html('Agregar a contactos');
+                    }
+                }
+                else if ($('#tipoUsuario').val() === "M") $('#addFavoriteContact').html('Agregar a colegas');
+                $("#addFavoriteContact").attr("onclick", "agregarFavoritos()");
+            } else {
+                alert('Error al guardar medico favorito');
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
+
+function cargarFavCol(usuario){
+    $('#FavColPanel').html('');
+    $('#ContColPanel').html('');
+    $.ajax({
+        async: false,
+        url: '/cargarFavCol',
+        type: 'POST',
+        data: {usuario: usuario},
+        dataType: "json",
+        cache: false,
+        success: function(data) {
+            if (data){
+                for (var p in data) {
+                    if (data[p].medico_id)
+                    $('#FavColPanel').append('<li> <a href="http://'+ window.location.host +'/perfil/' + data[p].Medico.Usuario.usuarioUrl + '" > Dr. ' + data[p].Medico.Usuario.DatosGenerale.nombre + ' ' + data[p].Medico.Usuario.DatosGenerale.apellidoP + ' ' + data[p].Medico.Usuario.DatosGenerale.apellidoM + '</a></li>');
+                    else
+                    $('#ContColPanel').append('<li> <a href="http://'+ window.location.host +'/perfil/' + data[p].Paciente.Usuario.usuarioUrl + '" >' + data[p].Paciente.Usuario.DatosGenerale.nombre + ' ' + data[p].Paciente.Usuario.DatosGenerale.apellidoP + ' ' + data[p].Paciente.Usuario.DatosGenerale.apellidoM + '</a></li>');
+                }
+                //alert('Success');
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
+
+function procesarInvitacion(){
+    var nombre = $('#invitar_nombre').val(),
+        correo = $('#invitar_correo').val(),
+        mensaje = $('#invitar_mensaje').val();
+        $.ajax({
+            async: true,
+            url: '/correoDisponible',
+            type: 'POST',
+            dataType: "json",
+            cache: false,
+            data: {'email': correo},
+            success: function(data) {
+                if (data.result == true){
+                    enviarInvitacion(nombre, correo, mensaje);
+                } else {
+                    alert('El usuario ya se encuentra registrado en intermed')
+                }
+            },
+            error: function(jqXHR, textStatus, err) {
+                console.error('AJAX ERROR: ' + err);
+            }
+        });
+}
+
+function enviarInvitacion(nombre, correo, mensaje){
+    $.ajax({
+        async: false,
+        url: '/enviarInvitacion',
+        type: 'POST',
+        data: {nombre: nombre, correo: correo, mensaje: mensaje},
+        dataType: "json",
+        cache: false,
+        success: function(data) {
+            if (!data.result == 'success') {
+                alert('Error al enviar la invitación');
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
 
 //Funcion que previene que un dropdown se cierre al dar click dentro de el
 $(function() {

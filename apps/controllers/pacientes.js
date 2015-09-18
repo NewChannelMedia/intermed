@@ -40,7 +40,7 @@ exports.modificarPerfil = function(object, req, res) {
         var newPath = './garage/profilepics/'+ req.session.passport.user.id +'/' + req.session.passport.user.id + '_' + getDateTime() + '.jpg';
         var base64Data = req.body.base64file.replace(/^data:image\/png;base64,/, "");
         fs.writeFile(newPath, base64Data, 'base64', function(err, succes) {
-          if (err){ console.log('ERROR: ' + err)}
+          if (err){ res.send({result: 'error', message : err });}
           else{
                console.log("archivo subido: " + newPath);
                models.Usuario.update({
@@ -53,7 +53,7 @@ exports.modificarPerfil = function(object, req, res) {
                    fs.readFile(newPath, function(err, data) {
                       if (err) throw err;
                       req.session.passport.user.fotoPerfil = 'data:image/jpeg;base64,' + (data).toString('base64');
-                      res.render('perfil', sesion);
+                      res.send({result: 'success'});
                     });
                });
            }

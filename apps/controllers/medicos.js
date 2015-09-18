@@ -304,19 +304,15 @@ module.exports = {
                     genero: object['gender'],
                     usuario_id: usuario_id
                 }).then(function (result){
-                    models.Medico.upsert({
-                        curp: object['curpRegMed'],
-                        cedula: object['cedulaRegMed'],
-                        usuario_id: usuario_id
-                    }).then(function (medico){
-                        models.Medico.findOne({
-                            where: {usuario_id: usuario_id}
-                        }).then(function(medico){
-                            var token = String(cryptomaniacs.doEncriptToken(medico.id, ''));
-                            medico.update({token: token}).then(function(result){
-                                res.send({'result':'success'});
-                            });
-                        })
+                    models.Medico.findOne({
+                        where: { usuario_id: usuario_id }
+                    }).then(function(medico){
+                        medico.update({
+                            curp: object['curpRegMed'],
+                            cedula: object['cedulaRegMed']
+                        }).then(function(result){
+                            res.send({'result':'success'});
+                        });
                     })
                 })
             })
@@ -328,7 +324,6 @@ module.exports = {
     regMedPasoTres: function (object, req, res){
         if (req.session.passport.user && req.session.passport.user.tipoUsuario === "M"){
             var usuario_id = req.session.passport.user.id;
-            console.log('DATOS: ' + JSON.stringify(object));
             models.Direccion.upsert({
                 calle: object['calleFact'],
                 numero: object['numeroFact'],
@@ -537,5 +532,95 @@ module.exports = {
       });
     },
 
+    agregarFav: function(object, req, res){
+        if (req.session.passport.user){
+            var condiciones = '';
+            if (object.medicoID){
+                condiciones = {
+                    usuario_id: req.session.passport.user.id,
+                    medico_id: object.medicoID
+                }
+            } else if (object.pacienteID){
+                condiciones = {
+                    usuario_id: req.session.passport.user.id,
+                    paciente_id: object.pacienteID
+                }
+            }
+
+            models.MedicoFavorito.findOrCreate({
+                defaults: condiciones,
+                where: condiciones
+            }).then(function(result){
+                if (result){
+                    res.send({result:'success'});
+                } else {
+                    res.send({result:'error'});
+                }
+            });
+        } else {
+            res.send({result:'error', error : 'Necesitas iniciar sesión'});
+        }
+    },
+
+    eliminarFav: function(object, req, res){
+        if (req.session.passport.user){
+            var condiciones = '';
+            if (object.medicoID){
+                condiciones = {
+                    usuario_id: req.session.passport.user.id,
+                    medico_id: object.medicoID
+                }
+            } else if (object.pacienteID){
+                condiciones = {
+                    usuario_id: req.session.passport.user.id,
+                    paciente_id: object.pacienteID
+                }
+            }
+
+            models.MedicoFavorito.destroy({
+                where: condiciones
+            }).then(function(result){
+                if (result){
+                    res.send({result:'success'});
+                } else {
+                    res.send({result:'error'});
+                }
+            });
+        } else {
+            res.send({result:'error', error : 'Necesitas iniciar sesión'});
+        }
+    },
+
+    cargarFavCol: function (object, req, res){
+        if (object.usuario == '' && req.session.passport.user){
+            object.usuario = req.session.passport.user.id;
+        }
+        models.MedicoFavorito.findAll({
+            where: {
+                usuario_id: object.usuario
+            },
+              include: [
+                { model: models.Medico ,attributes: ['id'],
+                    include: [
+                    { model: models.Usuario,attributes: ['id','usuarioUrl','urlFotoPerfil'], include:[{
+                        model: models.DatosGenerales
+                    }] }
+                ]},
+                { model: models.Paciente ,attributes: ['id'],
+                    include: [
+                      { model: models.Usuario,attributes: ['id','usuarioUrl','urlFotoPerfil'], include:[{
+                          model: models.DatosGenerales
+                      }] }
+                    ]
+                },
+              ]
+        }).then(function(result){
+            if (result){
+                res.send(result);
+            } else {
+                res.send({});
+            }
+        });
+    }
 
 }

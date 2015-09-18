@@ -418,30 +418,6 @@
       </div>
    </div><!-- end modal regMedico -->
 
-
-    <script>
-      $(document).ready(function() {
-
-        $.get('/medicosregistrados', function(data) {
-
-          console.log(data);
-          console.log(data[0]['info'][0]['Telefono']['numero']);
-
-          for (var i = 0; i < data.length; i++) {
-
-            $('#tbmedReg').append('<tr><td></td><td>' + data[i]['info'][0]["DatosGenerale"]["nombre"] + ' ' + data[i]['info'][0]["DatosGenerale"]["apellidoM"] + ' ' + data[i]['info'][0]["DatosGenerale"]["apellidoP"] + '</td><td>' + data[i][
-              'info'
-            ][0]["correo"] + '</td><td>' + data[i]['info'][0]["Telefono"]["numero"] + '</td><td>' + data[i]['info'][0]['Direccion']['calle'] + ' ' + data[i]['info'][0]['Direccion']['numero'] + '</td><td>' + data[i]['especialidades'][0][
-              'titulo'
-            ] + '<td></tr>');
-
-          }
-
-        });
-
-      });
-
-    </script>
   </body>
 
 </html>

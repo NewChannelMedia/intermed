@@ -4,6 +4,7 @@ module.exports = function(sequelize, DataTypes) {
   var Usuario = sequelize.define("Usuario", {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
     correo: {type : DataTypes.STRING },
+    usuarioUrl: {type: DataTypes.STRING},
     fbId: {type : DataTypes.STRING },
     urlFotoPerfil: {type : DataTypes.STRING },
     password: {type : DataTypes.STRING},
