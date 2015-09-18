@@ -369,32 +369,46 @@ exports.obtenerInformacionUsuario = function(object, req, res) {
             },
             attributes: ['id', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion'],
             include: [
-              {model: models.DatosGenerales, attributes:['nombre','apellidoP','apellidoM']},
-              {model: models.Direccion, attributes:['ubicacionGM','calle','numero','calle1','calle2','nombre','horaInicio','horaFin','dias'], include:[{ model: models.Localidad }] },
-              {model: models.Telefono, attributes:['numero','claveRegion','lada']},
-              {model: models.Biometrico, attributes:['peso','altura','tipoSangre','genero']},
+              {model: models.DatosGenerales, attributes:['id','nombre','apellidoP','apellidoM']},
+              {model: models.Direccion,attributes:['id','localidad_id'],
+                  include:[{ model: models.Localidad, attributes:['id','CP','estado_id','localidad','municipio_id','estado_id'],
+                    include:[
+                        {model:models.Estado, attributes:['id','estado']},
+                        {model:models.Ciudad, attributes:['id','ciudad']}
+                    ]
+                  }]
+              },
+              {model: models.Telefono, attributes:['id','numero','claveRegion','lada']},
+              {model: models.Biometrico, attributes:['id','peso','altura','tipoSangre','genero']},
               {model: models.Paciente, include:[
-                    {model: models.ContactoEmergencia, attributes:['nombre','tel']},
-                    {model: models.PacientePadecimiento, include:[{model:models.Padecimiento, attributes:['padecimiento']}]},
-                    {model: models.PacienteAlergia, include:[ { model: models.Alergias, attributes:['alergia'] } ] }
+                    {model: models.ContactoEmergencia, attributes:[ 'id','nombre','tel']},
+                    {model: models.PacientePadecimiento, include:[{model:models.Padecimiento, attributes:['id','padecimiento']}]},
+                    {model: models.PacienteAlergia, include:[ { model: models.Alergias, attributes:['id','alergia'] } ] }
                   ]
               }
             ]
         }).then(function(usuario) {
             usuario = JSON.parse(JSON.stringify(usuario));
-            console.log("PAciente padecimiento " + JSON.parse(JSON.stringify(usuario)));
+            console.log("USUARIOSSSS -------> " + JSON.stringify(usuario) );
             res.send(usuario);
         });
     }
 };
 //<---------------------------------------------------->
-  exports.biometricosActualizados = function( object, req, res){
-    //funcntion para hacer la actualizacion de los datos que el usuario quizo actualizar de biometricos
+  exports.crearDatos = function( object, req, res){
     if( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
-      // se hace la actualizacion
-      console.log(JSON.parse(JSON.stringify(object) ) );
       
+    }
+  };
+  exports.actualizarDatos = function( object, req, res){
+    if( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+    }
+  };
+  exports.deleteDatos = function( object, req, res){
+    if( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
     }
   };
 //<---------------------------------------------------->

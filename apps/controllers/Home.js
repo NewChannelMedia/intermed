@@ -59,8 +59,17 @@ module.exports = {
         sesion.mensajes = 1;
         //Contar eventos nuevos o cercanos (Sin ver)
         sesion.calendario = 5;
-
-        res.render('perfil', sesion);
+        models.Estado.findAll().then(function(estados){
+          models.Padecimiento.findAll().then(function(padecimientos){
+            models.Alergias.findAll().then(function(alergias){
+              sesion.estados = estados;
+              sesion.padecimientos = padecimientos;
+              sesion.alergias = alergias;
+              res.render('perfil', sesion);
+            });
+          });
+        });
+        //res.render('perfil', sesion);
     },
     aboutPacientes: function(object, req, res) {
         res.render('pacientes', object)
