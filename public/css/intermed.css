@@ -1320,6 +1320,7 @@ footer a:visited {
 .profileBodyElements .panel-heading {
   border-radius: 0;
   border: 0;
+  position: relative;
 }
 
 .profileBodyElements .element {
@@ -1511,10 +1512,25 @@ div::-webkit-scrollbar-thumb:window-inactive {
   position: relative;
   display: block;
   width: 100%;
-  height: 238px;
+  height: auto;
 }
 
-.ubicaciones {}
+.ubicacionesContainer .uIndicator {
+   position: absolute;
+   right: 0;
+   width: 100px;
+   top: 0;
+   margin: 0;
+   left: inherit;
+   padding: 0;
+   text-align: right;
+   bottom: 0;
+}
+.ubicacionesContainer .uIndicator li {
+
+}
+
+.ubicacion {}
 
 .uMapa {
   background-image: url("/img/mapa-test.jpg");
@@ -1526,6 +1542,14 @@ div::-webkit-scrollbar-thumb:window-inactive {
 .uMapa#maptest1 {
    background-position: center;
    background-size: 250% auto;
+}
+.uMapa#maptest2 {
+   background-position: top;
+   background-size: 250% auto;
+}
+.uMapa#maptest3 {
+   background-position: bottom;
+   background-size: 100% auto;
 }
 
 .uDireccion {

@@ -191,9 +191,9 @@
                                         </div>
                                       </div>
                                       <div class="row">
-                                         <div class="col-md-12">
-                                           <button type="button" id="guardarFormacion" class="btn btn-primary btn-block dropdown-form-guardar" data-target="#FormacionForm">Guardar</button>
-                                         </div>
+                                        <div class="col-md-12">
+                                          <button type="button" id="guardarFormacion" class="btn btn-primary btn-block dropdown-form-guardar" data-target="#FormacionForm">Guardar</button>
+                                        </div>
                                       </div>
                                     </form>
                                   </div>
@@ -204,11 +204,11 @@
                         </div>
                         <div class="cvSectionBody">
                           <div class="cvElement">
-                             <div class="elementEditButtons  pull-right">
-                                <button class="dropdown-toggle btn btn-default btn-sm editOpenDropdown" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
-                                 <span class="glyphicon glyphicon-pencil"></span>
-                               </button>
-                             </div>
+                            <div class="elementEditButtons  pull-right">
+                              <button class="dropdown-toggle btn btn-default btn-sm editOpenDropdown" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                              </button>
+                            </div>
                             <h4>Licenciatura</h4>
                             Institución: Universidad Regiomontana
                             <br> Nombre del Programa: Contador Público y Auditor
@@ -275,16 +275,15 @@
                                         </div>
                                       </div>
                                       <div class="row">
-                                         <div class="col-md-12">
-                                           <button type="button" id="guardarExperiencia" class="btn btn-primary btn-block dropdown-form-guardar">Guardar</button>
-                                         </div>
+                                        <div class="col-md-12">
+                                          <button type="button" id="guardarExperiencia" class="btn btn-primary btn-block dropdown-form-guardar">Guardar</button>
+                                        </div>
                                       </div>
                                     </form>
                                   </div>
                                 </div>
                               </div>
                             </div>
-
                           </div>
                         </div>
                         <div class="cvSectionBody">
@@ -314,29 +313,80 @@
                 </div>
               </div>
             </div>
-            <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
-              <div class="panel panel-primary profilePanel">
+            <div class="element carousel slide col-lg-5 col-md-5 col-sm-6 col-xs-6" data-ride="carousel">
+              <div class="panel panel-primary profilePanel ubicacionesContainer">
                 <div class="panel-heading">
                   <h3 class="panel-title">Ubicaciones</h3>
+                  <ol class="carousel-indicators uIndicator">
+                    <li data-target="#ubicacionesCarousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#ubicacionesCarousel" data-slide-to="1"></li>
+                    <li data-target="#ubicacionesCarousel" data-slide-to="2"></li>
+                  </ol>
                 </div>
                 <div class="panel-body profilePanelBody">
-                  <div class="ubicacionesContainer">
-                    <div class="ubicaciones">
-                      <div class="uMapa" id="maptest1">
-                        <img src="">
-                      </div>
-                      <div class="uDireccion">
-                        <div class="iconLeft">
-                          <div class="uBigIcon">
-                            <span class="glyphicon glyphicon-map-marker"></span>
+                  <div id="ubicacionesCarousel" class="">
+                    <div class="carousel-inner" role="listbox">
+                      <div class="item active">
+                        <div class="ubicacion">
+                          <div class="uMapa" id="maptest1">
+                            <img src="">
+                          </div>
+                          <div class="uDireccion">
+                            <div class="iconLeft">
+                              <div class="uBigIcon">
+                                <span class="glyphicon glyphicon-map-marker"></span>
+                              </div>
+                            </div>
+                            <div class="address">
+                              <address>
+                                <strong>Wayne Tower</strong>
+                                <br> Gate Blvd. #2015 Midtown
+                                <br> Gotham City
+                              </address>
+                            </div>
                           </div>
                         </div>
-                        <div class="address">
-                          <address>
-                            <strong>Wayne Tower</strong>
-                            <br> Gate Blvd. #2015 Midtown
-                            <br> Gotham City
-                          </address>
+                      </div>
+                      <div class="item">
+                        <div class="ubicacion">
+                          <div class="uMapa" id="maptest2">
+                            <img src="">
+                          </div>
+                          <div class="uDireccion">
+                            <div class="iconLeft">
+                              <div class="uBigIcon">
+                                <span class="glyphicon glyphicon-map-marker"></span>
+                              </div>
+                            </div>
+                            <div class="address">
+                              <address>
+                                <strong>Wayne Tower</strong>
+                                <br> Gate Blvd. #2015 Midtown
+                                <br> Gotham City
+                              </address>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="item">
+                        <div class="ubicacion">
+                          <div class="uMapa" id="maptest3">
+                            <img src="">
+                          </div>
+                          <div class="uDireccion">
+                            <div class="iconLeft">
+                              <div class="uBigIcon">
+                                <span class="glyphicon glyphicon-map-marker"></span>
+                              </div>
+                            </div>
+                            <div class="address">
+                              <address>
+                                <strong>Wayne Tower</strong>
+                                <br> Gate Blvd. #2015 Midtown
+                                <br> Gotham City
+                              </address>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
