@@ -1,10 +1,27 @@
+html {
+  position: relative;
+}
+
+html,
+html a,
+* {
+  -webkit-font-smoothing: antialiased !important;
+}
+
 body {
   background-color: #d9d9d9;
 }
 
-a, a:hover, a:visited {
+a,
+a:hover,
+a:visited {
   text-decoration: none;
   text-transform: none;
+}
+
+.block {
+  position: relative;
+  clear: both;
 }
 
 #navHome {
@@ -112,6 +129,197 @@ a, a:hover, a:visited {
   margin: 2px 0;
 }
 
+
+/* ----- */
+
+#navPlatform {
+  position: relative;
+  display: block;
+  background-color: #50a7dd;
+}
+
+.navContainer {
+  padding: 5px 0;
+}
+
+.navContainer .row {
+  padding: 0;
+}
+
+.navBlock {}
+
+.navLogo {}
+
+.navLogo a,
+.navLogo a:hover,
+.navLogo a:active,
+.navLogo a:visited,
+.navLogo a:hover {
+  text-decoration: none;
+  text-transform: none;
+  color: #ffffff;
+}
+
+.navLogoImg {
+  float: left;
+  padding: 7px 5px 3px 0;
+}
+
+.navLogoImg img {
+  height: 45px;
+}
+
+.navLogoText {}
+
+.navLogoText p {
+  line-height: 1;
+  margin: 0;
+  padding: 9px 0 16px 0;
+  color: #fff;
+}
+
+.navLogoText p sup {
+  font-size: 50%;
+  top: -1em;
+  margin-left: -5px;
+}
+
+.navSearch {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+.navSearchBox {
+  margin: 0;
+}
+
+.navSearchBox .form-control {
+  padding: 0 10px;
+  font-size: 12px;
+  height: 25px;
+}
+
+.navSearchBox .btn {
+  padding: 2px 5px 1px;
+}
+
+.navControl {
+  margin-top: 15px;
+}
+
+.navControl .dropdown-menu {
+  right: 0;
+  left: inherit;
+  float: right;
+  margin-top: 14px;
+  text-align: right;
+  border-radius: 0;
+  background-color: #f9f9f9;
+}
+
+.navControlIcons {
+  margin: 0;
+}
+
+.navControlIcons li {
+  float: left;
+  margin: 0 5px;
+  padding: 0;
+}
+
+.navControlIcons li .navSeparator {
+  display: inline-block;
+  width: 3px;
+  height: 25px;
+  margin-right: 1px;
+  margin-left: 3px;
+  padding: 0;
+  background-color: #fff;
+}
+
+.navControlIcons .profileLink {
+  overflow: hidden;
+  width: 25px;
+  height: 25px;
+  border: solid 2px #fff;
+  border-radius: 50px;
+}
+
+.navControlIcons .profileLink .navControlImg {
+  width: 21px;
+  height: 21px;
+  margin: 0 auto;
+}
+
+.navControlIcon {
+  font-size: 21px;
+  padding: 2px;
+  vertical-align: middle;
+  color: #fff;
+}
+
+.navControlImg {
+  display: block;
+  width: 25px;
+  height: 25px;
+  vertical-align: middle;
+}
+
+.navControlImg img {
+  height: 100%;
+  vertical-align: bottom;
+}
+
+#plataforma {}
+
+
+/*
+#navPlatform #logo .logoImg img {
+  display: inline-block;
+  float: left;
+  width: auto;
+  height: 40px;
+  margin: 15px 4px 6px 0;
+}
+
+#navPlatform #logo .logoText {
+  display: inline-block;
+  float: left;
+  margin: 13px 0;
+}
+
+#navPlatform #logo a {
+  font-weight: normal;
+  color: #fff;
+}
+
+#navPlatform #logo a:hover {
+  color: #fff;
+}
+
+#navPlatform .iconcontainer img {
+  display: block;
+  float: right;
+  width: auto;
+  height: 40px;
+  margin: 15px 0 6px 0;
+}
+
+#navPlatform .iconcontainer a {
+  font-weight: normal;
+}
+
+#navPlatform .iconcontainer a:hover {
+  color: #fff;
+}
+
+#navPlatform .iconcontainer ul.btnicons {}
+
+#navPlatform .iconcontainer li.btnicon {}
+
+
+/* ----- */
+
 .btn {
   border-radius: 0;
 }
@@ -208,7 +416,8 @@ a, a:hover, a:visited {
   background-image: url('../img/slide-item3.png');
 }
 
-#myCarousel .carousel-control.left, #myCarousel .carousel-control.right {
+#myCarousel .carousel-control.left,
+#myCarousel .carousel-control.right {
   background: none;
 }
 
@@ -248,18 +457,23 @@ WHAT IS NEW IN 3.3: "Added transforms to improve carousel performance in modern 
 Need to override the 3.3 new styles for modern browsers & apply opacity
 */
 
-@media all and (transform-3d), (-webkit-transform-3d) {
-  .carousel-fade .carousel-inner > .item.next, .carousel-fade .carousel-inner > .item.active.right {
+@media all and (transform-3d),
+(-webkit-transform-3d) {
+  .carousel-fade .carousel-inner > .item.next,
+  .carousel-fade .carousel-inner > .item.active.right {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     opacity: 0;
   }
-  .carousel-fade .carousel-inner > .item.prev, .carousel-fade .carousel-inner > .item.active.left {
+  .carousel-fade .carousel-inner > .item.prev,
+  .carousel-fade .carousel-inner > .item.active.left {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     opacity: 0;
   }
-  .carousel-fade .carousel-inner > .item.next.left, .carousel-fade .carousel-inner > .item.prev.right, .carousel-fade .carousel-inner > .item.active {
+  .carousel-fade .carousel-inner > .item.next.left,
+  .carousel-fade .carousel-inner > .item.prev.right,
+  .carousel-fade .carousel-inner > .item.active {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
     opacity: 1;
@@ -274,13 +488,15 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
   transition: opacity 1s;
 }
 
-.carousel-fade .active.left, .carousel .active.right {
+.carousel-fade .active.left,
+.carousel .active.right {
   z-index: 2;
   left: 0;
   opacity: 0;
 }
 
-.carousel-fade .next, .carousel .prev {
+.carousel-fade .next,
+.carousel .prev {
   z-index: 1;
   left: 0;
   opacity: 1;
@@ -419,6 +635,8 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
 
 #buscador #panel-buscador {
   border-radius: 20px;
+  -webkit-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .2);
+  -moz-box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .2);
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .2);
 }
 
@@ -432,19 +650,23 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
   background-color: #328ecb;
 }
 
-#buscador input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+#buscador input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
   color: #ddd;
 }
 
-#buscador input:-moz-placeholder, textarea:-moz-placeholder {
+#buscador input:-moz-placeholder,
+textarea:-moz-placeholder {
   color: #ddd;
 }
 
-#buscador input::-moz-placeholder, textarea::-moz-placeholder {
+#buscador input::-moz-placeholder,
+textarea::-moz-placeholder {
   color: #ddd;
 }
 
-#buscador input:-ms-input-placeholder, textarea:-ms-input-placeholder {
+#buscador input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
   color: #ddd;
 }
 
@@ -523,21 +745,33 @@ footer {
   background-color: #ff1c00;
 }
 
-footer a, footer a:active, footer a:hover, footer a:visited {
+footer a,
+footer a:active,
+footer a:hover,
+footer a:visited {
   color: #fff;
 }
 
-#CatRegModal .modal-content, #RegPacModal .modal-content, #RegMedModal .modal-content, #LoginModal .modal-content {
+#CatRegModal .modal-content,
+#RegPacModal .modal-content,
+#RegMedModal .modal-content,
+#LoginModal .modal-content {
   border-radius: 0;
 }
 
-#CatRegModal .modal-header, #RegPacModal .modal-header, #RegMedModal .modal-header, #LoginModal .modal-header {
+#CatRegModal .modal-header,
+#RegPacModal .modal-header,
+#RegMedModal .modal-header,
+#LoginModal .modal-header {
   margin: 20px 15px;
   padding: 5px 0px;
   border-bottom: solid 5px #76b6dd;
 }
 
-#CatRegModal .modal-header .close, #RegPacModal .modal-header .close, #RegMedModal .modal-header .close, #LoginModal .modal-header .close {
+#CatRegModal .modal-header .close,
+#RegPacModal .modal-header .close,
+#RegMedModal .modal-header .close,
+#LoginModal .modal-header .close {
   margin: 12px;
 }
 
@@ -557,13 +791,15 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   background-color: #fbad18;
 }
 
-#RegPacModal .modal-body, #RegMedModal .modal-body {
+#RegPacModal .modal-body,
+#RegMedModal .modal-body {
   position: relative;
   min-height: 460px;
   padding: 0 15px;
 }
 
-#RegPacModal .modal-footer, #RegMedModal .modal-footer {
+#RegPacModal .modal-footer,
+#RegMedModal .modal-footer {
   text-align: center;
   border: 0;
   padding: 0 15px;
@@ -573,11 +809,13 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   background-color: #fbad18;
 }
 
-.regHeader b{
-   color: #fbad18;
+.regHeader b {
+  color: #fbad18;
 }
 
-.regCorreo, .regFacebook, .regPersonales {
+.regCorreo,
+.regFacebook,
+.regPersonales {
   padding: 20px 30px;
 }
 
@@ -836,20 +1074,507 @@ footer a, footer a:active, footer a:hover, footer a:visited {
   box-shadow: 0 0 0 7px rgba(255, 255, 255, 1);
 }
 
-#ProfilePicture label{
-    position:relative;
-    color: white;
-    display: none;
-    background: rgba(0, 0, 0, .5);
-    text-align: center;
-    margin-top: -42px;
-    height: 35px;
-    cursor: pointer;
+#ProfilePicture label {
+  position: relative;
+  color: white;
+  display: none;
+  background: rgba(0, 0, 0, .5);
+  text-align: center;
+  margin-top: -42px;
+  height: 35px;
+  cursor: pointer;
 }
 
-#ProfilePicture:hover label{
-     display: block;
-     float: left;
-     padding: 10px;
-     width: 200px;
+#ProfilePicture:hover label {
+  display: block;
+  float: left;
+  padding: 10px;
+  width: 200px;
+}
+
+.profileHolder {
+  margin: 0;
+  padding: 0;
+}
+
+.profileHeader {
+  padding-top: 35px;
+  background-image: url('../img/profileBG.png');
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  background-size: cover;
+}
+
+.profileGeneralInfo {
+  position: relative;
+  padding-bottom: 35px;
+  color: #fff;
+}
+
+#medico .profileGeneralInfo {
+  vertical-align: bottom;
+}
+
+#paciente .profileGeneralInfo {
+  vertical-align: middle;
+}
+
+.profilePic {
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+  width: 165px;
+  height: 165px;
+  margin-bottom: 35px;
+  margin-left: 35px;
+  border: solid 5px #fff;
+  border-radius: 100px;
+  background-color: #009cde;
+}
+
+.topDrBadge {
+  font-weight: bold;
+  position: absolute;
+  z-index: 0;
+  top: 20px;
+  right: -120px;
+  width: 200px;
+  padding: 3px 10px;
+  text-align: right;
+  text-transform: uppercase;
+  background: rgb(240, 170, 8);
+  background: -moz-linear-gradient(left, rgba(240, 170, 8, 1) 0%, rgba(238, 230, 25, 1) 100%);
+  background: -webkit-gradient(linear, left top, right top, color-stop(0%, rgba(240, 170, 8, 1)), color-stop(100%, rgba(238, 230, 25, 1)));
+  background: -webkit-linear-gradient(left, rgba(240, 170, 8, 1) 0%, rgba(238, 230, 25, 1) 100%);
+  background: -o-linear-gradient(left, rgba(240, 170, 8, 1) 0%, rgba(238, 230, 25, 1) 100%);
+  background: -ms-linear-gradient(left, rgba(240, 170, 8, 1) 0%, rgba(238, 230, 25, 1) 100%);
+  background: linear-gradient(to right, rgba(240, 170, 8, 1) 0%, rgba(238, 230, 25, 1) 100%);
+  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#f0aa08', endColorstr='#eee619', GradientType=1);
+}
+
+.profilePic img {
+  height: 100%;
+}
+
+.profileGenerales {
+  position: relative;
+}
+
+.vCard {
+  margin: 0 0 5px 0;
+  vertical-align: top;
+  height: 70px;
+  width: 65%;
+}
+
+.vCard .vcNombre,
+.vCard .vcUbicacion {
+  margin: 0;
+  margin-bottom: 6px;
+  line-height: .8
+}
+
+.vCardMainInfo {
+  margin: 0;
+  line-height: .7
+}
+
+.vCardExtraInfo {
+  margin-top: 8px;
+  line-height: .7;
+}
+
+.vCardEspInfo {
+  line-height: .7;
+  margin-top: 11px;
+}
+
+.vCard .espList,
+.vCard .subEspList {
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.vCard .telList,
+.vCard .mailList {
+  line-height: 1;
+}
+
+
+/* Transition for carousel items */
+
+#vCard.carousel .item {
+  -webkit-transition: .4s;
+  /*adjust timing here */
+  -moz-transition: .4s;
+  -o-transition: .4s;
+  transition: .4s;
+}
+
+.profileExtraNav {
+  margin: 0;
+}
+
+.profileExtraNav,
+.profileExtraNav li {
+  padding-left: 0;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.profileExtraNav li:hover {
+  text-decoration: underline;
+}
+
+.profileExtraNav li a,
+.profileExtraNav li a:hover,
+.profileExtraNav li a:active,
+.profileExtraNav li a:focus {
+  color: #ffffff;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.profileOptions {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 27.9%;
+  margin: 0;
+  padding: 20px;
+  color: #fff;
+  background-color: rgba(20, 20, 20, .5);
+}
+
+.profileMobileOptions {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: auto;
+  margin: 0;
+  padding: 20px;
+  color: #fff;
+  background-color: rgba(20, 20, 20, .5);
+  display: none;
+}
+
+.profileOptions .options {
+  vertical-align: bottom;
+}
+
+.profileMobileOptions .options {
+  vertical-align: top;
+  font-size: 21px;
+}
+
+.profileMobileOptions .options li {
+  margin-bottom: 10px;
+}
+
+.profileBody {}
+
+.profileBodyNav {
+  background-color: #edf0f1;
+}
+
+.profileBodyNav ul {
+  border-left: solid 1px #dedede;
+}
+
+.profileBodyNav ul li {
+  border-right: solid 1px #dedede;
+}
+
+.profileBodyNav ul li a {
+  border-radius: 0!important;
+  border: 0;
+}
+
+#addFavoriteContact {
+  background-color: #50a7dd;
+  border-radius: 20px!important;
+  padding: 5px;
+}
+
+.profileBodyNav ul li a#addFavoriteContact:hover,
+.profileBodyNav ul li a#addFavoriteContact:focus {
+  background-color: #50a7dd;
+  border: 0!important;
+}
+
+.profileBodyNav ul li.active a,
+.profileBodyNav ul li.active a:hover,
+.profileBodyNav ul li.active a:focus {
+  border-radius: 0;
+  border: 0!important;
+}
+
+.profileBodyElements {
+  margin-top: 10px;
+}
+
+.profileBodyElements .panel,
+.profileBodyElements .panel-body,
+.profileBodyElements .panel-heading {
+  border-radius: 0;
+  border: 0;
+  position: relative;
+}
+
+.profileBodyElements .element {
+  /*float: left;*/
+}
+
+.element .panelIcon {
+  margin-left: 0;
+  margin-right: 7px;
+}
+
+.cvPanel {
+  background-color: #e3e7ea;
+}
+
+.cvBody {
+  min-height: 555px;
+  padding: 6px;
+}
+
+.cvBody .nav-tabs {
+  border-bottom: solid 5px #50a7dd;
+}
+
+.cvBody .nav-tabs li {
+  margin-bottom: 0px;
+}
+
+.cvBody .nav-tabs>li>a,
+.cvBody .nav-tabs>li>a:focus,
+.cvBody .nav-tabs>li>a:hover {
+  border: 0px;
+  border-radius: 0px;
+  background-color: #4f6c7f;
+  color: #fff;
+  margin: 0;
+}
+
+.cvBody .nav-tabs>li.active>a,
+.cvBody .nav-tabs>li.active>a:focus,
+.cvBody .nav-tabs>li.active>a:hover {
+  border-radius: 0px;
+  border: 0px;
+  background-color: #50a7dd;
+  color: #fff;
+}
+
+.cvContent {
+  padding: 0;
+}
+
+.cvSection {
+  margin-top: 6px;
+  background-color: #f1f3f5;
+  padding-bottom: 6px;
+}
+
+.cvSectionHead {
+  padding: 5px 30px;
+  background-color: #b4cfe0;
+}
+
+.cvSectionHead .row {
+  padding: 0;
+}
+
+.cvSectionHead h4 {
+  color: #4f6c7f;
+  margin: 8px auto;
+}
+
+.cvSectionHead .btn {
+  background-color: #4f6c7f;
+  color: #fff;
+  position: relative;
+}
+
+.cvSectionBody {
+  padding-left: 30px;
+  max-height: 300px;
+  overflow-y: scroll;
+  overflow: auto;
+  margin-right: 5px;
+}
+
+.dropdown-form {
+  width: 100%;
+  position: absolute;
+  top: 45px;
+}
+
+.dropdown-form .panel {
+  margin: 0;
+}
+
+.cvSectionBody .cvElement {
+
+}
+
+.cvSectionBody .cvElement .elementEditButtons {
+   margin: 0 10px;
+}
+
+.cvSectionBody .cvElement .elementEditButtons a {
+
+}
+
+.homeBody {}
+
+.homeBodyNav {
+  background-color: #edf0f1;
+}
+
+.homeBodyNav ul {
+  border-left: solid 1px #dedede;
+}
+
+.homeBodyNav ul li {
+  border-right: solid 1px #dedede;
+}
+
+.homeBodyNav ul li a {
+  border-radius: 0!important;
+  border: 0;
+}
+
+.homeBodyElements {
+  margin-top: 10px;
+}
+
+.homeBodyElements .panel,
+.homeBodyElements .panel-body,
+.homeBodyElements .panel-heading {
+  border-radius: 0;
+  border: 0;
+}
+
+.homeBodyElements .element {
+  /*float: left;*/
+}
+
+#homeNewsFeed {
+  height: 1000px;
+}
+
+div::-webkit-scrollbar {
+  width: 10px;
+  background-color: transparent;
+}
+
+div::-webkit-scrollbar-button {
+  width: 8px;
+  height: 5px;
+}
+
+div::-webkit-scrollbar-track {
+  border: 0;
+  -webkit-border-radius: 0;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+div::-webkit-scrollbar-thumb {
+  border: 0;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background-color: rgba(210, 210, 210, .5);
+}
+
+div::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(210, 210, 210, .8);
+}
+
+/* Pseudo-clase */
+div::-webkit-scrollbar-thumb:window-inactive {
+  background-color: rgba(210, 210, 210, .5);
+}
+
+.profilePanel {
+  background-color: #e3e7ea;
+}
+
+.profilePanelBody {
+  min-height: 250px;
+  padding: 6px;
+}
+
+.ubicacionesContainer {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.ubicacionesContainer .uIndicator {
+   position: absolute;
+   right: 0;
+   width: 100px;
+   top: 0;
+   margin: 0;
+   left: inherit;
+   padding: 0;
+   text-align: right;
+   bottom: 0;
+}
+.ubicacionesContainer .uIndicator li {
+
+}
+
+.ubicacion {}
+
+.uMapa {
+  background-image: url("/img/mapa-test.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 250px;
+  margin-bottom: 5px;
+}
+.uMapa#maptest1 {
+   background-position: center;
+   background-size: 250% auto;
+}
+.uMapa#maptest2 {
+   background-position: top;
+   background-size: 250% auto;
+}
+.uMapa#maptest3 {
+   background-position: bottom;
+   background-size: 100% auto;
+}
+
+.uDireccion {
+
+}
+
+.uDireccion .iconLeft{
+   width: 48px;
+   height: 48px;
+   background-color: #009cde;
+   float: left;
+   margin-right: 5px;
+}
+
+.uDireccion .iconLeft .uBigIcon{
+   width: 100%;
+   height: 100%;
+   padding: 5px;
+   font-size: 33px;
+   color: #fff;
+}
+
+.uDireccion .address address{
+   float: left;
+   font-size: 13px;
+   margin: 0;
+   line-height: 1.3;
 }
