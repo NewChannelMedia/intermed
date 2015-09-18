@@ -548,6 +548,7 @@ $( document ).ready( function() {
 	*/
 	var password;
 	var dato;
+  var mensaje;
 	function validateForm( tipoForm, nameForm ){
 				var comprobando = false;
 				$(document).ready(function(){
@@ -558,39 +559,59 @@ $( document ).ready( function() {
 											var m = $("#"+nameForm).val();
 											var expreg = new RegExp(/^[A-Za-z\s\xF1\xD1]([a-z ñáéíóú]{2,60})+$/i);
 											comprobando = expreg.test(m)?true:false;
+                      mensaje = "nombre-error";
 										break;
+                    case "input-apellido":
+                      var m = $("#"+nameForm).val();
+                      var expreg = new RegExp(/^[A-Za-z\s\xF1\xD1]([a-z ñáéíóú]{2,60})+$/i);
+                      comprobando = expreg.test(m)?true:false;
+                      mensaje = "apellido-error";
+                    break;
 										case "input-correo":
 											var correo = String($("#"+nameForm).val());
-											var expreg = new RegExp(/[\w-\.]{3,}@([\w-]{2,}\.)*([\w-]{2,}\.)[\w-]{2,4}/);
-											comprobando = expreg.test(correo)? true : false;
+                      var expreg = new RegExp(/^(?:(?:[\w`~!#$%^&*\-=+;:{}'|,?\/]+(?:(?:\.(?:"(?:\\?[\w`~!#$%^&*\-=+;:{}'|,?\/\.()<>\[\] @]|\\"|\\\\)*"|[\w`~!#$%^&*\-=+;:{}'|,?\/]+))*\.[\w`~!#$%^&*\-=+;:{}'|,?\/]+)?)|(?:"(?:\\?[\w`~!#$%^&*\-=+;:{}'|,?\/\.()<>\[\] @]|\\"|\\\\)+"))@(?:[a-zA-Z\d\-]+(?:\.[a-zA-Z\d\-]+)*|\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\])$/gm);
+                      comprobando = expreg.test(correo)? true : false;
+                      mensaje = "mail-error";
 										break;
 										case "input-password":
-											password = $("#"+nameForm).val().trim();
-											dato = String(password.trim());
-											var expreg = new RegExp(/([^\s][a-zA-Z0-9\d\D]){4,}/);
-											comprobando = expreg.test(password) ? true: false;
+											password = $("#"+nameForm).val();
+											dato = String(password);
+                      for(var i in dato ){
+                        console.log("STRING:" + dato);var t = dato.length;
+                        if(dato.length < 8 && (dato[0] != " " || dato[t] || " " && dato[i] != " ") ){
+                          comprobando = false;
+                        }else{
+                          var expreg = new RegExp(/^([^\s])+[(\w\d)+][^\s]{4,64}([^\s?])$/gm);
+                          comprobando = expreg.test(password) ? true: false;
+                          mensaje = "pass-error";
+                        }
+                      }
 										break;
 										case "input-validPass":
 											var atrapada = String($("#"+nameForm).val());
 											var tam = dato.length;
-											var expreg = new RegExp(/([^\s][a-zA-Z0-9\d\D]){4,}/);
+											var expreg = new RegExp(/^[^\s]+[(\w\W\d.)+][^\s]{4,64}[^\s]$/gm);
 											comprobar = expreg.test(atrapada) ? true: false;
 											comprobando = ((tam === atrapada.length) && ( dato === atrapada ) && (comprobar === true))? true:false;
+                      mensaje = "conf-error";
 										break;
 										case "input-dia":
 											var dia = $("#" + nameForm ).val();
 											var expreg = new RegExp(/^\d{1,2}/);
 											comprobando =expreg.test(dia) ? true: false;
+                      mensaje = "dia-error";
 										break;
 										case "input-mes":
 											var mes = $("#" + nameForm ).val();
 											var expreg = new RegExp(/^\d{1,2}/);
 											comprobando =expreg.test(mes) ? true: false;
+                      mensaje = "mes-error";
 										break;
 										case "input-año":
 											var año = $("#" + nameForm ).val();
 											var expreg = new RegExp(/^\d{4}/);
 											comprobando =expreg.test(año) ? true: false;
+                      mensaje = "año-error";
 										break;
 										case "input-checkbox":
 												comprobando = ($(this).attr('checked'))?true:false;
@@ -604,10 +625,109 @@ $( document ).ready( function() {
 									asyn:true,
 									data:{},
 									success:function(data){
-										if(comprobando)
-											$("#"+nameForm).css('background-color','#66FF33');
-										else
-											$("#"+nameForm).css('background-color','red');
+										if(comprobando){
+                      switch(mensaje){
+                        case "nombre-error":
+                          $("#aviso-error").remove();
+                          $("#nameGroup").removeClass('has-error has-feedback');
+                          $('#nameIcon').removeClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#nameGroup").addClass('has-success has-feedback');
+                          $('#nameIcon').addClass('glyphicon glyphicon-ok form-control-feedback');
+                        break;
+                        case "apellido-error":
+                          $("#aviso-error").remove();
+                          $("#apellidoGroup").removeClass('has-error has-feedback');
+                          $('#apellidoIcon').removeClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#apellidoGroup").addClass('has-success has-feedback');
+                          $('#apellidoIcon').addClass('glyphicon glyphicon-ok form-control-feedback');
+                        break;
+                        case "mail-error":
+                          $("#aviso-error").remove();
+                          $("#emailGroup").removeClass('has-error has-feedback');
+                          $('#emailIcon').removeClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#emailGroup").addClass('has-success has-feedback');
+                          $('#emailIcon').addClass('glyphicon glyphicon-ok form-control-feedback');
+                        break;
+                        case "pass-error":
+                          $("#aviso-error").remove();
+                          $("#passwordGroup").removeClass('has-error has-feedback');
+                          $('#passwordIcon').removeClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#passwordGroup").addClass('has-success has-feedback');
+                          $('#passwordIcon').addClass('glyphicon glyphicon-ok form-control-feedback');
+                        break;
+                        case "conf-error":
+                          $("#aviso-error").remove();
+                          $("#confirmGroup").removeClass('has-error has-feedback');
+                          $('#confirmIcon').removeClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#confirmGroup").addClass('has-success has-feedback');
+                          $('#confirmIcon').addClass('glyphicon glyphicon-ok form-control-feedback');
+                        break;
+                        case "dia-error":
+                          $("#aviso-error").remove();
+                          $("#diaGroup").removeClass('has-error has-feedback');
+                          $('#diaIcon').removeClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#diaGroup").addClass('has-success has-feedback');
+                          $('#diaIcon').addClass('glyphicon glyphicon-ok form-control-feedback');
+                        break;
+                        case "mes-error":
+                          $("#aviso-error").remove();
+                          $("#mesGroup").removeClass('has-error has-feedback');
+                          $('#mesIcon').removeClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#mesGroup").addClass('has-success has-feedback');
+                          $('#mesIcon').addClass('glyphicon glyphicon-ok form-control-feedback');
+                        break;
+                        case "año-error":
+                          $("#aviso-error").remove();
+                          $("#añoGroup").removeClass('has-error has-feedback');
+                          $('#añoIcon').removeClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#añoGroup").addClass('has-success has-feedback');
+                          $('#añoIcon').addClass('glyphicon glyphicon-ok form-control-feedback');
+                        break;
+                      }//fin switch
+                    }else{
+                      switch(mensaje){
+                        case "nombre-error":
+                          $("#nameGroup").addClass('has-error has-feedback');
+                          $('#nameIcon').addClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#nombre-error").html('<div id = "aviso-error"><small><b>Error: El campo que esta intentando llenar, numeros, ni caracteres como los siguientes !\"·$%&/=¿¡\'\'?%\"\\</b></small></div>');
+                        break;
+                        case "apellido-error":
+                          $("#apellidoGroup").addClass('has-error has-feedback');
+                          $('#apellidoIcon').addClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#apellido-error").html('<div id = "aviso-error"><small><b>Error: El campo que esta intentando llenar, numeros, ni caracteres como los siguientes !\"·$%&/=¿¡\'\'?%\"\\</b></small></div>');
+                        break;
+                        case "mail-error":
+                          $("#emailGroup").addClass('has-error has-feedback');
+                          $('#emailIcon').addClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#email-error").html('<div id = "aviso-error"><small><b>Error: El campo que esta intentando llenar, no debe de llevar espacios o numeros, ni caracteres como los siguientes !\"·$%&/=¿¡\'\'?%\"\\</b></small></div>');
+                        break;
+                        case "pass-error":
+                          $("#passwordGroup").addClass('has-error has-feedback');
+                          $('#passwordIcon').addClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#pass-error").html('<div id = "aviso-error"><small><b>Error: El campo que esta intentando llenar, no debe de llevar espacios</b></small></div>');
+                        break;
+                        case "conf-error":
+                          $("#confirmGroup").addClass('has-error has-feedback');
+                          $('#confirmIcon').addClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#conf-error").html('<div id = "aviso-error"><small><b>Error: El campo que esta intentando llenar, no debe de llevar espacios o no coincide con la contraseña</b></small></div>');
+                        break;
+                        case "dia-error":
+                          $("#diaGroup").addClass('has-error has-feedback');
+                          $('#diaIcon').addClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#dia-error").html('<div id = "aviso-error"><small><b>Error: El campo que esta intentando llenar, solo debe de contener numeros</b></small></div>');
+                        break;
+                        case "mes-error":
+                          $("#mesGroup").addClass('has-error has-feedback');
+                          $('#mesIcon').addClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#mes-error").html('<div id = "aviso-error"><small><b>Error: El campo que esta intentando llenar, solo debe de contener numeros</b></small></div>');
+                        break;
+                        case "año-error":
+                          $("#añoGroup").addClass('has-error has-feedback');
+                          $('#añoIcon').addClass('glyphicon glyphicon-remove form-control-feedback');
+                          $("#año-error").html('<div id = "aviso-error"><small><b>Error: El campo que esta intentando llenar, solo debe de contener numeros</b></small></div>');
+                        break;
+                      }//fin switch
+                    }
 									},
 									error:function(){
 										console.log("ERROR2 nombre");
