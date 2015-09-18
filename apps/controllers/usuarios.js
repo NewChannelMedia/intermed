@@ -103,9 +103,11 @@ exports.registrarUsuario = function(object, req, res) {
                                 transaction: t
                             })
                             .then(function(usuario) {
-                                generarRelacion(usuario, req, res);
+
                                 var usuarioUrl = String(usuario.id);
                                 for (var i = usuarioUrl.length ; i < 7; i++){usuarioUrl = '0' + usuarioUrl;}
+
+                                usuario_id = usuario.id;
 
                                 if (object['email']) {
                                     return usuario.update({
@@ -113,48 +115,18 @@ exports.registrarUsuario = function(object, req, res) {
                                         usuarioUrl: usuarioUrl
                                     }, {
                                         transaction: t
+                                    }).then(function (resutl){
+                                        return crearDatosGeneralesFB(usuario,object,req, res, t);
                                     });
                                 } else {
                                     return usuario.update({
                                         usuarioUrl: usuarioUrl
                                     }, {
                                         transaction: t
+                                    }).then(function(resutl){
+                                        return crearDatosGeneralesFB(usuario,object, req, res, t);
                                     });
                                 }
-                                if (object.picture) {
-                                    guardarImagenDePerfil(object, usuario, req, res);
-                                }
-                                usuario_id = usuario.id;
-                                return models.DatosGenerales.create({
-                                        nombre: object['first_name'],
-                                        apellidoP: object['last_name'],
-                                        apellidoM: '',
-                                        usuario_id: usuario_id,
-                                        genero: object['gender']
-                                    }, {
-                                        transaction: t
-                                    })
-                                    .then(function(result) {
-                                        console.log('______OBJECT: ' + JSON.stringify(object));
-                                        if (object.gender){
-                                            return models.Biometrico.create({
-                                                genero: object['gender'],
-                                                usuario_id: usuario_id
-                                            }, {transaction: t}).then(function (result){
-                                                if (object['tipoUsuario'] === 'P') {
-                                                    return crearPaciente(req, res, object, usuario_id, t);
-                                                } else if (object['tipoUsuario'] === 'M') {
-                                                    setTimeout(function() {
-                                                        generarSesion(req, res, usuario_id, true);
-                                                    }, 1000);
-                                                }
-                                            })
-                                        } else {
-                                            setTimeout(function() {
-                                                generarSesion(req, res, usuario_id, true);
-                                            }, 1000);
-                                        }
-                                    });
                             });
                     } else if (usuario) {
                         usuario_id = usuario.id;
@@ -176,7 +148,6 @@ exports.registrarUsuario = function(object, req, res) {
                         if (!usuario) {
                             //Usuario nuevo
                             if (object.tipoUsuario === 'M') {
-                                console.log('___Creando médico.')
                                 return models.Usuario.create({
                                     correo: object['email'],
                                     password: object['password'],
@@ -186,8 +157,6 @@ exports.registrarUsuario = function(object, req, res) {
                                 }, {
                                     transaction: t
                                 }).then(function(usuario) {
-                                    generarRelacion(usuario, req, res);
-
                                     var usuarioUrl = String(usuario.id);
                                     for (var i = usuarioUrl.length ; i < 7; i++){usuarioUrl = '0' + usuarioUrl;}
                                     var tokens = String(cryptomaniacs.doEncriptToken(usuario.id, getDateTime(false)));
@@ -198,41 +167,24 @@ exports.registrarUsuario = function(object, req, res) {
                                             transaction: t
                                         })
                                         .then(function(usuario) {
-                                            var datos = {
-                                                to: usuario.correo,
-                                                subject: 'Activa tu cuenta',
-                                                name: usuario.nombre,
-                                                correo: usuario.correo,
-                                                token: usuario.token
-                                            };
-                                            correoUser = usuario.correo;
-                                            mail.mailer(datos, 'confirmar'); //se envia el correo
-
-                                            setTimeout(function() {
-                                                generarSesion(req, res, usuario.id, true);
-                                            }, 500);
+                                            return crearMedico(req, res, object, usuario, t);
                                         });
                                     });
                             } else if (object.tipoUsuario === 'P') {
-                                console.log('___Creando paciente.')
                                 return models.Usuario.create({
                                         correo: object['email'],
                                         password: object['password'],
                                         tipoUsuario: object['tipoUsuario'],
                                         tipoRegistro: object['tipoRegistro'],
-                                        estatusActivacion: 0,
-                                        token: ''
+                                        estatusActivacion: 0
                                     }, {
                                         transaction: t
                                     })
                                     .then(function(usuario) {
-                                        generarRelacion(usuario, req, res);
-
                                         var usuarioUrl = String(usuario.id);
                                         for (var i = usuarioUrl.length ; i < 7; i++){usuarioUrl = '0' + usuarioUrl;}
 
                                         var tokens = String(cryptomaniacs.doEncriptToken(usuario.id, object['tiempoStamp']));
-                                        console.log("Token vato loco " + tokens);
                                         return usuario.update({
                                                 token: tokens,
                                                 usuarioUrl: usuarioUrl
@@ -240,28 +192,17 @@ exports.registrarUsuario = function(object, req, res) {
                                                 transaction: t
                                             })
                                             .then(function(usuario) {
-                                                var datos = {
-                                                    to: usuario.correo,
-                                                    subject: 'Activa tu cuenta',
-                                                    name: usuario.nombre,
-                                                    correo: usuario.correo,
-                                                    token: usuario.token
-                                                };
-                                                correoUser = usuario.correo;
-                                                mail.mailer(datos, 'confirmar'); //se envia el correo
-                                                usuario_id = usuario.id;
                                                 return models.DatosGenerales.create({
-                                                        nombre: object['first_name'],
-                                                        apellidoP: object['last_name'],
+                                                        nombre: object.first_name,
+                                                        apellidoP: object.last_name,
                                                         apellidoM: '',
-                                                        rfc: '',
-                                                        usuario_id: usuario_id,
-                                                        genero: object['gender']
+                                                        usuario_id: usuario.id,
+                                                        genero: object.gender
                                                     }, {
                                                         transaction: t
                                                     })
                                                     .then(function(result) {
-                                                        return crearPaciente(req, res, object, usuario_id, t);
+                                                        return crearPaciente(req, res, object, usuario, t);
                                                     });
                                             });
                                     });
@@ -315,14 +256,15 @@ function guardarImagenDePerfil(object, usuario) {
     });
 }
 
-var crearPaciente = function(req, res, object, usuario_id, t) {
+var crearPaciente = function(req, res, object, usuario, t) {
     //Se trata de un paciente
     return models.Paciente.create({
-            usuario_id: usuario_id
+            usuario_id: usuario.id
         }, {
             transaction: t
         })
         .then(function(paciente) {
+            generarRelacion(usuario, paciente.id, req, res);
             if (object['birthday'] != 'undefined-undefined-undefined') {
                 return paciente.update({
                         fechaNac: object['birthday']
@@ -330,44 +272,56 @@ var crearPaciente = function(req, res, object, usuario_id, t) {
                         transaction: t
                     })
                     .then(function(result) {
+                        if (usuario.tipoRegistro == "C") enviarCorreoConfirmacion(usuario);
                         setTimeout(function() {
-                            generarSesion(req, res, usuario_id, true);
+                            if (object.email) borrarInvitaciones(object.email);
+                            generarSesion(req, res, usuario.id, true);
                         }, 1000);
                     });
             } else {
+                if (usuario.tipoRegistro == "C") enviarCorreoConfirmacion(usuario);
                 setTimeout(function() {
-                    generarSesion(req, res, usuario_id, true);
+                    if (object.email) borrarInvitaciones(object.email);
+                    generarSesion(req, res, usuario.id, true);
                 }, 1000);
             }
         });
 }
 
-var crearMedico = function(req, res, object, usuario_id, t) {
-    //Se trata de un médico
+var crearMedico = function(req, res, object, usuario, t) {
     return models.Medico.create({
-            cedula: '',
-            codigoMedico: '',
-            usuario_id: usuario_id
+            usuario_id: usuario.id
         }, {
             transaction: t
         })
         .then(function(medico) {
-            // si se pudo insertar el médico, tomamos su id para pasarlo a medicos especialidades y agregarla
-            return models.MedicoEspecialidad.create({
-                    tipo: '1',
-                    titulo: '',
-                    lugarEstudio: '',
-                    medico_id: medico.id,
-                    fecha: Date.now(),
-                    especialidad_id: object['especialidadMed'] // Id de la especialidad
-                }, {
-                    transaction: t
-                })
-                .then(function(result) {
-                    generarSesion(req, res, usuario_id);
-                });
+            var token = String(cryptomaniacs.doEncriptToken(medico.id, ''));
+            medico.update({
+                token:token
+            }).then(function(result){
+                generarRelacion(usuario, medico.id, req, res);
+                if (usuario.tipoRegistro == "C") enviarCorreoConfirmacion(usuario);
+
+                setTimeout(function() {
+                    if (object.email) borrarInvitaciones(object['email']);
+                    generarSesion(req, res, usuario.id, true);
+                }, 1000);
+            });
         });
-     }
+    };
+
+var enviarCorreoConfirmacion = function(usuario){
+    var datos = {
+        to: usuario.correo,
+        subject: 'Activa tu cuenta',
+        name: usuario.nombre,
+        correo: usuario.correo,
+        token: usuario.token
+    };
+    correoUser = usuario.correo;
+    mail.mailer(datos, 'confirmar'); //se envia el correo
+}
+
 exports.actualizarSesion = function(object, req, res) {
     var usuario_id = '';
     if (req.session.passport.user) {
@@ -564,21 +518,70 @@ exports.activarCuenta = function(object, req, res) {
 
 exports.invitar = function (object, req, res){
         if (object.nombre && object.correo && object.mensaje){
-            var datos = {
-                to: object.correo,
-                subject: 'Te invito a usar Intermed',
+            models.Invitacion.create({
+                usuario_id: req.session.passport.user.id,
                 nombre: object.nombre,
-                nombreSesion: req.session.passport.user.name,
-                enlace: 'localhost:3000/' + req.session.passport.user.usuarioUrl,
+                correo: object.correo,
                 mensaje: object.mensaje
-            };
-            mail.mailer(datos, 'invitar'); //se envia el correo
-            res.send({result: 'success'});
+            }).then(function(invitacion){
+                var tokens = String(cryptomaniacs.doEncriptToken(invitacion.id, ''));
+                invitacion.update({
+                    token: tokens
+                }).then(function (result){
+                    var datos = {
+                        to: object.correo,
+                        subject: 'Te invito a usar Intermed',
+                        nombre: object.nombre,
+                        nombreSesion: req.session.passport.user.name,
+                        enlace: 'localhost:3000/' + tokens,
+                        mensaje: object.mensaje
+                    };
+                    var result = mail.mailer(datos, 'invitar'); //se envia el correo
+                    setTimeout(function(){
+                        res.send({result:'success'});
+                    }, 1000);
+                });
+            });
         } else {
             res.send({result: 'error', error: 'información incompleta'});
         }
 };
 
+var crearDatosGeneralesFB = function (usuario, object, req, res, t){
+    var usuario_id = usuario.id;
+    return models.DatosGenerales.create({
+            nombre: object['first_name'],
+            apellidoP: object['last_name'],
+            apellidoM: '',
+            usuario_id: usuario_id,
+            genero: object['gender']
+        }, {
+            transaction: t
+        })
+        .then(function(result) {
+            if (object.picture) {
+                guardarImagenDePerfil(object, usuario, req, res);
+            }
+            if (object.gender){
+                return models.Biometrico.create({
+                    genero: object['gender'],
+                    usuario_id: usuario_id
+                }, {transaction: t}).then(function (result){
+                    if (object['tipoUsuario'] === 'P') {
+                        return crearPaciente(req, res, object, usuario, t);
+                    } else if (object['tipoUsuario'] === 'M') {
+                        return crearMedico(req, res, object, usuario, t);
+                    }
+                })
+            } else {
+                if (object['tipoUsuario'] === 'P') {
+                    return crearPaciente(req, res, object, usuario, t);
+                } else if (object['tipoUsuario'] === 'M') {
+                    return crearMedico(req, res, object, usuario, t);
+                }
+            }
+        });
+};
 
 function getDateTime(format) {
     var date = new Date();
@@ -600,48 +603,102 @@ function getDateTime(format) {
     }
 }
 
-function generarRelacion(usuario, req, res){
+function generarRelacion(usuario, medicopaciente_id, req, res){
     //Usuario que lo invito: req.session.invito;
-    if (req.session.invito){
-        models.Usuario.findOne({
-            where: {usuarioUrl: req.session.invito},
-            attributes: ['id','usuarioUrl','tipoUsuario'],
-            include: [{
-                model: models.Medico
-            }, {
-                model: models.Paciente
-            }]
-        }).then(function(usuarioInvito){
-            if (!(usuarioInvito.tipoUsuario == "P" && usuario.tipoUsuario == "M")){
-                var condiciones = {};
-                if (usuarioInvito.tipoUsuario == "M"){
-                    condiciones = {
-                        usuario_id: usuario.id,
-                        medico_id: usuarioInvito.Medico.id
-                    };
-                } else {
-                    condiciones = {
-                        usuario_id: usuario.id,
-                        paciente_id: usuarioInvito.Paciente.id
-                    };
+    if (req.cookies.intermed_invitacion && req.cookies.intermed_invitacion.token){
+        var token =  req.cookies.intermed_invitacion.token;
+        res.clearCookie('intermed_invitacion');
+        models.Invitacion.findOne({
+            where:{token:token}
+        }).then(function(invitacion){
+            if (invitacion){
+                if (usuario.tipoRegistro == 'C' && usuario.tipoUsuario == 'M'){
+                    models.DatosGenerales.upsert({
+                        nombre: invitacion.nombre,
+                        apellidoP: '',
+                        apellidoM: '',
+                        usuario_id: usuario.id
+                    });
                 }
-                models.MedicoFavorito.findOrCreate({
-                    defaults: condiciones,
-                    where: condiciones
-                }).then(function(result){
-                    if (result){
-                        console.log('________Médico/Colega/Contacto agregado')
+
+                console.log('________GENERANDO RELACIONES');
+                console.log('________INVITO: ' + token);
+                models.Usuario.findOne({
+                    where: {id: invitacion.usuario_id},
+                    attributes: ['id','usuarioUrl','tipoUsuario'],
+                    include: [{
+                        model: models.Medico
+                    }, {
+                        model: models.Paciente
+                    }]
+                }).then(function(usuarioInvito){
+                    if (!(usuarioInvito.tipoUsuario == "P" && usuario.tipoUsuario == "M")){
+                        var condiciones = {};
+                        if (usuarioInvito.tipoUsuario == "M"){
+                            condiciones = {
+                                usuario_id: usuario.id,
+                                medico_id: usuarioInvito.Medico.id
+                            };
+                        } else {
+                            condiciones = {
+                                usuario_id: usuario.id,
+                                paciente_id: usuarioInvito.Paciente.id
+                            };
+                        }
+                        models.MedicoFavorito.findOrCreate({
+                            defaults: condiciones,
+                            where: condiciones
+                        }).then(function(result){
+                            if (result){
+                                console.log('________Médico/Colega/Contacto agregado')
+                            } else {
+                                console.log('________Error al agregar la relación')
+                            }
+                        });
                     } else {
-                        console.log('________Error al agregar la relación')
+                        console.log('________Tipo medico');
                     }
+                    generarRelacionInversa(usuarioInvito, usuario.tipoUsuario ,medicopaciente_id, req, res);
                 });
             } else {
-                console.log('________Tipo medico');
+                console.log('________LA INVITACIÓN NO EXISTE');
             }
         });
     }
-    req.session.invito = '';
 }
+
+function generarRelacionInversa(usuario, tipoUsuario, medicopaciente_id, req, res){
+    //Usuario que lo invito: req.session.invito;
+    console.log('________GENERANDO RELACIONES INVERSAS');
+
+    if (!(tipoUsuario== "P" && usuario.tipoUsuario  == "M")){
+        var condiciones = {};
+        if (tipoUsuario == "M"){
+            condiciones = {
+                usuario_id: usuario.id,
+                medico_id: medicopaciente_id
+            };
+        } else {
+            condiciones = {
+                usuario_id: usuario.id,
+                paciente_id: medicopaciente_id
+            };
+        }
+        models.MedicoFavorito.findOrCreate({
+            defaults: condiciones,
+            where: condiciones
+        }).then(function(result){
+            if (result){
+                console.log('________Médico/Colega/Contacto agregado (inversa)')
+            } else {
+                console.log('________Error al agregar la relación (inversa)')
+            }
+        });
+    } else {
+        console.log('________Tipo medico (inversa)');
+    }
+}
+
 
 var download = function(uri, filename, callback){
   request.head(uri, function(err, res, body){
@@ -651,3 +708,11 @@ var download = function(uri, filename, callback){
     request(uri).pipe(fs.createWriteStream(filename)).on('close', callback);
   });
 };
+
+var borrarInvitaciones = function(correo){
+    models.Invitacion.destroy({
+        where:{correo: correo}
+    }).then(function(result){
+        console.log('Invitaciones eliminadas: ' + JSON.stringify(result));
+    })
+}

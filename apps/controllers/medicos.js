@@ -304,19 +304,15 @@ module.exports = {
                     genero: object['gender'],
                     usuario_id: usuario_id
                 }).then(function (result){
-                    models.Medico.upsert({
-                        curp: object['curpRegMed'],
-                        cedula: object['cedulaRegMed'],
-                        usuario_id: usuario_id
-                    }).then(function (medico){
-                        models.Medico.findOne({
-                            where: {usuario_id: usuario_id}
-                        }).then(function(medico){
-                            var token = String(cryptomaniacs.doEncriptToken(medico.id, ''));
-                            medico.update({token: token}).then(function(result){
-                                res.send({'result':'success'});
-                            });
-                        })
+                    models.Medico.findOne({
+                        where: { usuario_id: usuario_id }
+                    }).then(function(medico){
+                        medico.update({
+                            curp: object['curpRegMed'],
+                            cedula: object['cedulaRegMed']
+                        }).then(function(result){
+                            res.send({'result':'success'});
+                        });
                     })
                 })
             })

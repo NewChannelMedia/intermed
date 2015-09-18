@@ -306,8 +306,10 @@ function existeFecha(fecha) {
     return true;
 }
 
-function existeCorreo() {
-    var correo = document.getElementById('correoReg').value;
+function existeCorreo(correo) {
+    if (!correo){
+        var correo = document.getElementById('correoReg').value;
+    }
     if (correoValido(correo)) {
         $.ajax({
             async: true,
@@ -910,10 +912,31 @@ function cargarFavCol(usuario){
     });
 }
 
-function enviarInvitacion(){
+function procesarInvitacion(){
     var nombre = $('#invitar_nombre').val(),
         correo = $('#invitar_correo').val(),
         mensaje = $('#invitar_mensaje').val();
+        $.ajax({
+            async: true,
+            url: '/correoDisponible',
+            type: 'POST',
+            dataType: "json",
+            cache: false,
+            data: {'email': correo},
+            success: function(data) {
+                if (data.result == true){
+                    enviarInvitacion(nombre, correo, mensaje);
+                } else {
+                    alert('El usuario ya se encuentra registrado en intermed')
+                }
+            },
+            error: function(jqXHR, textStatus, err) {
+                console.error('AJAX ERROR: ' + err);
+            }
+        });
+}
+
+function enviarInvitacion(nombre, correo, mensaje){
     $.ajax({
         async: false,
         url: '/enviarInvitacion',
@@ -922,9 +945,7 @@ function enviarInvitacion(){
         dataType: "json",
         cache: false,
         success: function(data) {
-            if (data.result == 'success') {
-                $('#addFormaForm').hide();
-            } else {
+            if (!data.result == 'success') {
                 alert('Error al enviar la invitación');
             }
         },
@@ -933,3 +954,12 @@ function enviarInvitacion(){
         }
     });
 }
+
+
+$(function(){
+  $(".dropdown-form-guardar").dropdown();
+  $(".dropdown-form-guardar").click(function(){
+      var allInputs = $(".dropdown-form :input");
+      allInputs.val("");
+  });
+})

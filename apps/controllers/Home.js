@@ -83,24 +83,25 @@ module.exports = {
                 if (usuario) {
                     usuario = JSON.parse(JSON.stringify(usuario));
 
-                    if (req.session.passport.user && ((usuario.Medico && usuario.Medico.id) || (usuario.Paciente && usuario.Paciente.id))){
+                    if (req.session.passport.user && (usuario.Medico || usuario.Paciente )){
                         var condiciones;
                         if (usuario.Medico){
+                            console.log('_____VERAS a un medico');
                             condiciones = {
                                 usuario_id : req.session.passport.user.id,
-                                medico_id : parseInt(usuario.Medico.id)
+                                medico_id : usuario.Medico.id
                             }
                         } else {
+                            console.log('_____VERAS a un paciente');
                             condiciones = {
                                 usuario_id : req.session.passport.user.id,
-                                paciente_id : parseInt(usuario.Paciente.id)
+                                paciente_id : usuario.Paciente.id
                             }
                         }
                         models.MedicoFavorito.findOne({
                             where: condiciones
                         }).then(function(result){
                             if (result) {
-
                                 usuario.medFavCol = result.id;
                             }
 
@@ -303,7 +304,7 @@ function armarPerfil(usuario, req, res) {
     if (usuario.tipoUsuario == "M" && usuario.Medico.MedicoEspecialidads){
         usuario.especialidades = JSON.parse(JSON.stringify(usuario.Medico.MedicoEspecialidads));
     }
-    console.log('________________MÉDICO FAVORITO: ' + JSON.stringify(usuario.medFav));
+    console.log('________________MÉDICO FAVORITO: ' + JSON.stringify(usuario.medFavCol));
     if (usuario.urlFotoPerfil) {
         fs.readFile(usuario.urlFotoPerfil, function(err, data) {
             if (err) console.log('Error al leer la imagen de perfil: ' + err);

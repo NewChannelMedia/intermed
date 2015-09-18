@@ -98,7 +98,6 @@ var iniciar = function() {
     });
     //Home
     app.get('/', function(req, res) {
-        req.session.invitoUrl = '';
         intermed.callController('Home', 'index', req.body, req, res)
     });
 
@@ -900,9 +899,9 @@ var iniciar = function() {
     });
 
     //Home
-    app.get('/:usuarioUrl', function(req, res) {
-        req.session.invito = req.params.usuarioUrl;
-        intermed.callController('Home', 'index', req.body, req, res)
+    app.get('/:tokeninvitacion', function(req, res) {
+        res.cookie('intermed_invitacion', {token: req.params.tokeninvitacion}, { expires: new Date(Date.now() + (900000*4*24)) });
+        res.redirect('/');
     });
 }
 serv.server(app, 3000);
