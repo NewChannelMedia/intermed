@@ -1,3 +1,13 @@
+html {
+  position: relative;
+}
+
+html,
+html a,
+* {
+  -webkit-font-smoothing: antialiased !important;
+}
+
 body {
   background-color: #d9d9d9;
 }
@@ -1151,23 +1161,55 @@ footer a:visited {
 }
 
 .vCard {
-  margin: 0px;
+  margin: 0 0 5px 0;
+  vertical-align: top;
+  height: 70px;
+  width: 65%;
 }
 
-.vCard .vcNombre {
-   margin: 0;
+.vCard .vcNombre,
+.vCard .vcUbicacion {
+  margin: 0;
+  margin-bottom: 6px;
+  line-height: .8
 }
 
 .vCardMainInfo {
-  margin-top: 0;
-  margin-bottom: 10px;
+  margin: 0;
+  line-height: .7
 }
 
-.vCardEspInfo {}
+.vCardExtraInfo {
+  margin-top: 8px;
+  line-height: .7;
+}
+
+.vCardEspInfo {
+  line-height: .7;
+  margin-top: 11px;
+}
 
 .vCard .espList,
 .vCard .subEspList {
-  margin-bottom: 0;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  font-size: 13px;
+}
+
+.vCard .telList,
+.vCard .mailList {
+  line-height: 1;
+}
+
+
+/* Transition for carousel items */
+
+#vCard.carousel .item {
+  -webkit-transition: .4s;
+  /*adjust timing here */
+  -moz-transition: .4s;
+  -o-transition: .4s;
+  transition: .4s;
 }
 
 .profileExtraNav {
@@ -1177,6 +1219,21 @@ footer a:visited {
 .profileExtraNav,
 .profileExtraNav li {
   padding-left: 0;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.profileExtraNav li:hover {
+  text-decoration: underline;
+}
+
+.profileExtraNav li a,
+.profileExtraNav li a:hover,
+.profileExtraNav li a:active,
+.profileExtraNav li a:focus {
+  color: #ffffff;
+  text-decoration: none;
+  text-transform: uppercase;
 }
 
 .profileOptions {
@@ -1283,23 +1340,91 @@ footer a:visited {
   padding: 6px;
 }
 
-.cvContent {
-  padding: 5px 30px;
-  background-color: #f1f3f5;
+.cvBody .nav-tabs {
+  border-bottom: solid 5px #50a7dd;
 }
 
-.cvSection {}
+.cvBody .nav-tabs li {
+  margin-bottom: 0px;
+}
+
+.cvBody .nav-tabs>li>a,
+.cvBody .nav-tabs>li>a:focus,
+.cvBody .nav-tabs>li>a:hover {
+  border: 0px;
+  border-radius: 0px;
+  background-color: #4f6c7f;
+  color: #fff;
+  margin: 0;
+}
+
+.cvBody .nav-tabs>li.active>a,
+.cvBody .nav-tabs>li.active>a:focus,
+.cvBody .nav-tabs>li.active>a:hover {
+  border-radius: 0px;
+  border: 0px;
+  background-color: #50a7dd;
+  color: #fff;
+}
+
+.cvContent {
+  padding: 0;
+}
+
+.cvSection {
+  margin-top: 6px;
+  background-color: #f1f3f5;
+  padding-bottom: 6px;
+}
 
 .cvSectionHead {
-  margin-top: 5px;
-  margin-right: -30px;
-  margin-left: -30px;
-  padding: 3px 30px;
+  padding: 5px 30px;
   background-color: #b4cfe0;
 }
 
+.cvSectionHead .row {
+  padding: 0;
+}
+
 .cvSectionHead h4 {
+  color: #4f6c7f;
+  margin: 8px auto;
+}
+
+.cvSectionHead .btn {
+  background-color: #4f6c7f;
   color: #fff;
+  position: relative;
+}
+
+.cvSectionBody {
+  padding-left: 30px;
+  max-height: 300px;
+  overflow-y: scroll;
+  overflow: auto;
+  margin-right: 5px;
+}
+
+.dropdown-form {
+  width: 100%;
+  position: absolute;
+  top: 45px;
+}
+
+.dropdown-form .panel {
+  margin: 0;
+}
+
+.cvSectionBody .cvElement {
+
+}
+
+.cvSectionBody .cvElement .elementEditButtons {
+   margin: 0 10px;
+}
+
+.cvSectionBody .cvElement .elementEditButtons a {
+
 }
 
 .homeBody {}
@@ -1338,4 +1463,94 @@ footer a:visited {
 
 #homeNewsFeed {
   height: 1000px;
+}
+
+div::-webkit-scrollbar {
+  width: 10px;
+  background-color: transparent;
+}
+
+div::-webkit-scrollbar-button {
+  width: 8px;
+  height: 5px;
+}
+
+div::-webkit-scrollbar-track {
+  border: 0;
+  -webkit-border-radius: 0;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+div::-webkit-scrollbar-thumb {
+  border: 0;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  background-color: rgba(210, 210, 210, .5);
+}
+
+div::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(210, 210, 210, .8);
+}
+
+/* Pseudo-clase */
+div::-webkit-scrollbar-thumb:window-inactive {
+  background-color: rgba(210, 210, 210, .5);
+}
+
+.profilePanel {
+  background-color: #e3e7ea;
+}
+
+.profilePanelBody {
+  min-height: 250px;
+  padding: 6px;
+}
+
+.ubicacionesContainer {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 238px;
+}
+
+.ubicaciones {}
+
+.uMapa {
+  background-image: url("/img/mapa-test.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  height: 250px;
+  margin-bottom: 5px;
+}
+.uMapa#maptest1 {
+   background-position: center;
+   background-size: 250% auto;
+}
+
+.uDireccion {
+
+}
+
+.uDireccion .iconLeft{
+   width: 48px;
+   height: 48px;
+   background-color: #009cde;
+   float: left;
+   margin-right: 5px;
+}
+
+.uDireccion .iconLeft .uBigIcon{
+   width: 100%;
+   height: 100%;
+   padding: 5px;
+   font-size: 33px;
+   color: #fff;
+}
+
+.uDireccion .address address{
+   float: left;
+   font-size: 13px;
+   margin: 0;
+   line-height: 1.3;
 }

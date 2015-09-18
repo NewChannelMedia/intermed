@@ -13,35 +13,62 @@
             <div class="col-lg-12 col-md-12 col-sm-10 col-xs-10">
               <div class="profileGenerales">
                 <div class="vCard">
-                  <div class="main">
-                    <h4 class="media-heading vcNombre Flama-normal s20">
-                      Dr. Juan Carlos Medina Martínez
-                    </h4>
-                    <h4 class="media-heading vcUbicacion Flama-w200 s15">
-                      Zapopan, Jalisco. MX
-                    </h4>
+                  <div id="vCard" class="carousel slide" data-interval="false" data-ride="carousel">
+                    <div class="vCardMainInfo">
+                      <h4 class="media-heading vcNombre s20">
+                        Dr. Juan Carlos Medina Martínez
+                      </h4>
+                    </div>
+                    <div class="carousel-inner" role="listbox">
+                      <div class="item active">
+                        <div class="vCardMainInfo">
+                          <h4 class="media-heading vcUbicacion Flama-w200 s15">
+                            Zapopan, Jalisco. MX
+                          </h4>
+                        </div>
+                        <div class="vCardEspInfo">
+                          <ul class="list-unstyled list-inline espList Flama-bold s15">
+                            <li>
+                              Urgencias medicas
+                            </li>
+                          </ul>
+                          <ul class="list-unstyled list-inline subEspList Flama-Normal s15">
+                            <li>
+                              <small>Primeros Auxilios</small>
+                            </li>
+                            <li>
+                              <small>Rescate urbano</small>
+                            </li>
+                            <li>
+                              <small>RCP</small>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="item">
+                        <div class="vCardExtraInfo">
+                          <h4 class="media-heading Flama-w200 s15 pull-left">
+                            Teléfonos:&nbsp
+                          </h4>
+                          <div class="telList Flama-Normal s15 pull-left">
+                            (871) 2602226 | (123) 4567890
+                          </div>
+                          <div class="clearfix"></div>
+                          <h4 class="media-heading Flama-w200 s15 pull-left">
+                            Correos:&nbsp
+                          </h4>
+                          <div class="mailList Flama-Normal s15 pull-left">
+                            jcmedina@midrfavorito.com | jcmedina@newchannel.mx
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <ul class="list-unstyled list-inline espList s15">
-                    <li>
-                      Urgencias medicas
-                    </li>
-                  </ul>
-                  <ul class="list-unstyled list-inline subEspList s15">
-                    <li>
-                      <small>Primeros Auxilios</small>
-                    </li>
-                    <li>
-                      <small>Rescate urbano</small>
-                    </li>
-                    <li>
-                      <small>RCP</small>
-                    </li>
-                  </ul>
                 </div>
                 <ul class="media-right profileExtraNav list-inline">
-                  <li class="active"><a href="#">Editar Perfil</a></li>
-                  <li><a href="#">algo</a></li>
-                  <li><a href="#">otra cosa</a></li>
+                  <li data-target="#vCard" data-slide-to="0">Perfil</li>
+                  <li data-target="#vCard" data-slide-to="1">Contacto</li>
+                  <li><a href="#">Editar</a></li>
                 </ul>
               </div>
             </div>
@@ -69,13 +96,16 @@
               </li>
               <hr>
               <li>
-                <a><span class="glyphicon glyphicon-chevron-right"></span> Recomienda a un amigo</a>
+                <a>
+                  <span class="glyphicon glyphicon-chevron-right"></span> Recomienda a un amigo</a>
               </li>
               <li>
-                <a><span class="glyphicon glyphicon-chevron-right"></span> Califica su servicio</a>
+                <a>
+                  <span class="glyphicon glyphicon-chevron-right"></span> Califica su servicio</a>
               </li>
               <li>
-                <a><span class="glyphicon glyphicon-chevron-right"></span> Envía un mensaje</a>
+                <a>
+                  <span class="glyphicon glyphicon-chevron-right"></span> Envía un mensaje</a>
               </li>
             </ul>
           </div>
@@ -114,29 +144,165 @@
 
                   <!-- Nav tabs -->
                   <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#formacionExperiencia" aria-controls="formacionExperiencia" role="tab" data-toggle="tab">Home</a></li>
-                    <li role="presentation"><a href="#colegiosAsociaciones" aria-controls="colegiosAsociaciones" role="tab" data-toggle="tab">Profile</a></li>
+                    <li role="presentation" class="active"><a href="#formacionExperiencia" class="Flama-w200" aria-controls="formacionExperiencia" role="tab" data-toggle="tab">Formación y Experiencia</a></li>
+                    <li role="presentation"><a href="#colegiosAsociaciones" class="Flama-w200" aria-controls="colegiosAsociaciones" role="tab" data-toggle="tab">Colegios y Asociaciones</a></li>
                   </ul>
 
                   <!-- Tab panes -->
                   <div class="tab-content cvContent">
                     <div role="tabpanel" class="tab-pane fade in active" id="formacionExperiencia">
-                      <div class="cvSection">
+                      <div id="formacionSection" class="cvSection dropdown ddForm">
                         <div class="cvSectionHead">
-                           <h4>Formación y experiencia</h4>
-                           <div class="addExp">
-                              <button class="btn btn-primary btn-block"><span class="glyphicon glyphicon-plus"> Añadir Experiencia</span></button>
-                           </div>
+                          <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                              <h4>Formación académica</h4>
+                            </div>
+                            <div class="pull-right">
+                              <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
+                                <span class="glyphicon glyphicon-plus"></span> Añadir formación
+                              </button>
+                              <div id="FormacionForm" class="dropdown-form dropdown-menu dropdown-menu-right" arialabelledby="addForma">
+                                <div class="panel">
+                                  <div class="panel-body">
+                                    <form class="form-horizontal">
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Nivel</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Institución</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Programa</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Especialidad</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                         <div class="col-md-12">
+                                           <button type="button" id="guardarFormacion" class="btn btn-primary btn-block dropdown-form-guardar" data-target="#FormacionForm">Guardar</button>
+                                         </div>
+                                      </div>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                         <div class="cvSectionBody">
-                           <p>
-                              <h4>Licenciatura</h4>
-                              Institución: Universidad Regiomontana <br>
-                              Nombre del Programa: Contador Público y Auditor <br>
-                              Especialidad: Finanzas <br>
-                              Periodo: 1967 - 1972 <br>
-                              Fecha de obtención del grado: Julio de 1972
-                           </p>
+                          <div class="cvElement">
+                             <div class="elementEditButtons  pull-right">
+                                <button class="dropdown-toggle btn btn-default btn-sm editOpenDropdown" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
+                                 <span class="glyphicon glyphicon-pencil"></span>
+                               </button>
+                             </div>
+                            <h4>Licenciatura</h4>
+                            Institución: Universidad Regiomontana
+                            <br> Nombre del Programa: Contador Público y Auditor
+                            <br> Especialidad: Finanzas
+                            <br> Periodo: 1967 - 1972
+                            <br> Fecha de obtención del grado: Julio de 1972
+                          </div>
+                          <div class="cvElement">
+                            <h4>Licenciatura</h4>
+                            Institución: Universidad Regiomontana
+                            <br> Nombre del Programa: Contador Público y Auditor
+                            <br> Especialidad: Finanzas
+                            <br> Periodo: 1967 - 1972
+                            <br> Fecha de obtención del grado: Julio de 1972
+                          </div>
+                          <div class="cvElement">
+                            <h4>Licenciatura</h4>
+                            Institución: Universidad Regiomontana
+                            <br> Nombre del Programa: Contador Público y Auditor
+                            <br> Especialidad: Finanzas
+                            <br> Periodo: 1967 - 1972
+                            <br> Fecha de obtención del grado: Julio de 1972
+                          </div>
+                          <div class="cvElement">
+                            <h4>Licenciatura</h4>
+                            Institución: Universidad Regiomontana
+                            <br> Nombre del Programa: Contador Público y Auditor
+                            <br> Especialidad: Finanzas
+                            <br> Periodo: 1967 - 1972
+                            <br> Fecha de obtención del grado: Julio de 1972
+                          </div>
+                        </div>
+                      </div>
+                      <div id="formacionSection" class="cvSection dropdown">
+                        <div class="cvSectionHead ">
+                          <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                              <h4>Experiencia</h4>
+                            </div>
+                            <div class="pull-right">
+                              <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addExp" data-toggle="dropdown" aria-expanded="false">
+                                <span class="glyphicon glyphicon-plus"></span> Añadir experiencia
+                              </button>
+                              <div id="ExpForm" class="dropdown-form dropdown-menu dropdown-menu-right" arialabelledby="addExp">
+                                <div class="panel">
+                                  <div class="panel-body">
+                                    <form class="form-horizontal">
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Programa</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Periodo</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Obtencion de Grado</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                         <div class="col-md-12">
+                                           <button type="button" id="guardarExperiencia" class="btn btn-primary btn-block dropdown-form-guardar">Guardar</button>
+                                         </div>
+                                      </div>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                          </div>
+                        </div>
+                        <div class="cvSectionBody">
+                          <div class="cvElement">
+                            <br> Nombre del Programa: Contador Público y Auditor
+                            <br> Periodo: 1967 - 1972
+                            <br> Fecha de obtención del grado: Julio de 1972
+                          </div>
+                          <div class="cvElement">
+                            <br> Nombre del Programa: Contador Público y Auditor
+                            <br> Periodo: 1967 - 1972
+                            <br> Fecha de obtención del grado: Julio de 1972
+                          </div>
+                          <div class="cvElement">
+                            <br> Nombre del Programa: Contador Público y Auditor
+                            <br> Periodo: 1967 - 1972
+                            <br> Fecha de obtención del grado: Julio de 1972
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -149,11 +315,32 @@
               </div>
             </div>
             <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
-              <div class="panel panel-primary">
+              <div class="panel panel-primary profilePanel">
                 <div class="panel-heading">
                   <h3 class="panel-title">Ubicaciones</h3>
                 </div>
-                <div class="panel-body" style="height:250px;">
+                <div class="panel-body profilePanelBody">
+                  <div class="ubicacionesContainer">
+                    <div class="ubicaciones">
+                      <div class="uMapa" id="maptest1">
+                        <img src="">
+                      </div>
+                      <div class="uDireccion">
+                        <div class="iconLeft">
+                          <div class="uBigIcon">
+                            <span class="glyphicon glyphicon-map-marker"></span>
+                          </div>
+                        </div>
+                        <div class="address">
+                          <address>
+                            <strong>Wayne Tower</strong>
+                            <br> Gate Blvd. #2015 Midtown
+                            <br> Gotham City
+                          </address>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

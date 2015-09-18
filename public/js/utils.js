@@ -790,3 +790,24 @@ $(document).ready(function() {
 
     });
 });
+
+//Funcion que previene que un dropdown se cierre al dar click dentro de el
+$(function() {
+   $(".dropdown-form").click(function(event){
+        event.stopPropagation();
+     });
+})
+
+//funcion que vacia la forma dentro de un dropdown y lo cierra al click del boton de guardar
+$(function(){
+   $(".dropdown-form-guardar").dropdown();
+   $(".dropdown-form-guardar").click(function(){
+      var allInputs = $(".dropdown-form :input");
+      allInputs.val("");
+   });
+})
+
+//Funcion que previene que un carousel gire
+$(function() {
+   $('#vCard').carousel('pause');
+})
