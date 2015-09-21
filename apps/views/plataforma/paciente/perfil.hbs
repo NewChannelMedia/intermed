@@ -103,25 +103,38 @@
                         <a href="#homeBitacora" role="tab" data-toggle="tab" aria-controls="homeBitacora">Bitacora</a>
                     </li>
                     {{#if usuario.id}}
-                            <input type="hidden" id="PacienteId" value="{{usuario.Paciente.id}}" />
+                        <input type="hidden" id="PacienteId" value="{{usuario.Paciente.id}}" />
+
                             {{#if usuario.medFavCol}}
-                                {{#ifSession "id"}}
-                                    {{#ifTipoPaciente}}
-                                    <li role="presentation" id="favoriteContact">
-                                        <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(false)">Eliminar de contactos</a>
-                                    </li>
-                                    {{/ifTipoPaciente}}
-                                {{/ifSession}}
+                                {{#ifTipoPaciente}}
+                                <li role="presentation" id="favoriteContact">
+                                    <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(false)">Eliminar de contactos</a>
+                                </li>
+                                {{/ifTipoPaciente}}
                             {{else}}
-                                {{#ifSession "id"}}
+                                {{#if usuario.invitacionEnviada}}
                                     {{#ifTipoPaciente}}
                                     <li role="presentation" id="favoriteContact">
-                                        <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(false)">Agregar a contactos</a>
+                                        <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(false)">Invitación enviada</a>
                                     </li>
                                     {{/ifTipoPaciente}}
-                                {{/ifSession}}
+                                {{else}}
+                                    {{#if usuario.invitacionEspera}}
+                                        {{#ifTipoPaciente}}
+                                        <li role="presentation" id="favoriteContact">
+                                            <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="aceptarInvitacion()">Aceptar invitación</a>
+                                        </li>
+                                        {{/ifTipoPaciente}}
+                                    {{else}}
+                                        {{#ifTipoPaciente}}
+                                        <li role="presentation" id="favoriteContact">
+                                            <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(false)">Agregar a contactos</a>
+                                        </li>
+                                        {{/ifTipoPaciente}}
+                                    {{/if}}
+                                {{/if}}
                             {{/if}}
-                        </li>
+
                     {{/if}}
                 </ul>
             </div>
@@ -167,63 +180,53 @@
                             </div>
                         </div>
                     </div>
-                    {{#if usuario.id}}
-                        <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
-                            <div class="panel panel-primary dropup">
-                              <div class="panel-heading">
-                                  <h4>Contactos</h4>
-                              </div>
-                              <div class="panel-body" id="ContColPanel">
+                    <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
+                        <div class="panel panel-primary">
+                          <div class="panel-heading">
+                              <h3 class="panel-title">Contactos</h3>
+                          </div>
+                          <div class="panel-body" style="height:250px;" id="ContColPanel">
 
-                              </div>
-                            </div>
-                        </div>
-                    {{else}}
-                        <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
-                            <div class="panel panel-primary dropup">
-                              <div class="panel-heading">
-                                  <h4>Contactos</h4>
-                              </div>
-                              <div class="panel-body" id="ContColPanel">
+                          </div>
 
-                              </div>
-                              <div class="panel-footer">
-                                    <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
-                                      <span class="glyphicon glyphicon-plus"></span> Invitar
-                                    </button>
-                                    <div id="addFormaForm" class="dropdown-form dropdown-menu dropdown-menu-right" arialabelledby="addForma">
-                                      <div class="panel">
-                                        <div class="panel-body">
-                                          <form class="form-horizontal">
-                                            <div class="form-group">
-                                              <label class="col-md-3 control-label">Nombre</label>
-                                              <div class="col-md-9">
-                                                <input type="text" class="form-control" id="invitar_nombre">
-                                              </div>
-                                            </div>
-                                            <div class="form-group">
-                                              <label class="col-md-3 control-label">Correo</label>
-                                              <div class="col-md-9">
-                                                <input type="text" class="form-control" id="invitar_correo">
-                                              </div>
-                                            </div>
-                                            <div class="form-group">
-                                              <label class="col-md-3 control-label">Mensaje</label>
-                                              <div class="col-md-9">
-                                                <textarea class="form-control" id="invitar_mensaje">Te invito a unirte a Intermed</textarea>
-                                              </div>
-                                            </div>
-                                            <div class="col-md-4 col-md-offset-8">
-                                              <button type="button" class="btn btn-primary btn-block dropdown-form-guardar" onclick="procesarInvitacion()">Enviar</button>
-                                            </div>
-                                          </form>
+                          {{#unless usuario.id}}
+                          <div class="panel-footer">
+                                <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
+                                  <span class="glyphicon glyphicon-plus"></span> Invitar
+                                </button>
+                                <div id="addFormaForm" class="dropdown-form dropdown-menu dropdown-menu-right" arialabelledby="addForma">
+                                  <div class="panel">
+                                    <div class="panel-body">
+                                      <form class="form-horizontal">
+                                        <div class="form-group">
+                                          <label class="col-md-3 control-label">Nombre</label>
+                                          <div class="col-md-9">
+                                            <input type="text" class="form-control" id="invitar_nombre">
+                                          </div>
                                         </div>
-                                      </div>
+                                        <div class="form-group">
+                                          <label class="col-md-3 control-label">Correo</label>
+                                          <div class="col-md-9">
+                                            <input type="text" class="form-control" id="invitar_correo">
+                                          </div>
+                                        </div>
+                                        <div class="form-group">
+                                          <label class="col-md-3 control-label">Mensaje</label>
+                                          <div class="col-md-9">
+                                            <textarea class="form-control" id="invitar_mensaje">Te invito a unirte a Intermed</textarea>
+                                          </div>
+                                        </div>
+                                        <div class="col-md-4 col-md-offset-8">
+                                          <button type="button" class="btn btn-primary btn-block dropdown-form-guardar" onclick="procesarInvitacion()">Enviar</button>
+                                        </div>
+                                      </form>
+                                    </div>
                                   </div>
                               </div>
-                            </div>
+                          </div>
+                          {{/unless}}
                         </div>
-                    {{/if}}
+                    </div>
                 </div>
             </div>
             <!-- ... -->

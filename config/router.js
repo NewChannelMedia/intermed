@@ -903,6 +903,10 @@ var iniciar = function() {
         res.cookie('intermed_invitacion', {token: req.params.tokeninvitacion}, { expires: new Date(Date.now() + (900000*4*24)) });
         res.redirect('/');
     });
+
+    app.post('/aceptarInvitacion', function (req, res){
+        intermed.callController('medicos','aceptarInvitacion',req.body, req, res);
+    });
 }
 serv.server(app, 3000);
 //se exporta para que otro js lo pueda utilizar

@@ -379,7 +379,9 @@ var generarSesion = function(req, res, usuario_id, redirect) {
                     if (usuario.urlFotoPerfil) {
                         fs.readFile(usuario.urlFotoPerfil, function(err, data) {
                             if (err) console.log('Error al leer la imagen de perfil: ' + err);
-                            req.session.passport.user.fotoPerfil = 'data:image/jpeg;base64,' + (data).toString('base64');
+                            if (data) {
+                                req.session.passport.user.fotoPerfil = 'data:image/jpeg;base64,' + (data).toString('base64');
+                            }
                             cargarExtraInfo(usuario, redirect, req, res);
                         });
                     } else {

@@ -5,7 +5,8 @@ module.exports = function(sequelize, DataTypes) {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
     medico_id: {type : DataTypes.BIGINT},
     paciente_id: {type: DataTypes.BIGINT},
-    usuario_id: {type: DataTypes.INTEGER, allowNull:false}
+    usuario_id: {type: DataTypes.INTEGER, allowNull:false},
+    aprobado: {type: DataTypes.INTEGER}
   }, {
     classMethods: {
       associate: function(models) {

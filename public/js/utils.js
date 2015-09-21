@@ -953,11 +953,13 @@ function agregarFavoritos(medico){
                     if (medicoID){
                         $('#addFavoriteContact').html('Eliminar de favoritos');
                     } else {
-                        $('#addFavoriteContact').html('Eliminar de contactos');
+                        $('#addFavoriteContact').html('Invitación enviada');
                     }
                 }
                 else if ($('#tipoUsuario').val() === "M") $('#addFavoriteContact').html('Eliminar de colegas');
                 $("#addFavoriteContact").attr("onclick", "eliminarFavoritos()");
+
+                cargarFavCol($('#usuarioPerfil').val());
             } else {
                 alert('Error al guardar medico favorito');
             }
@@ -991,6 +993,7 @@ function eliminarFavoritos(medico){
                 }
                 else if ($('#tipoUsuario').val() === "M") $('#addFavoriteContact').html('Agregar a colegas');
                 $("#addFavoriteContact").attr("onclick", "agregarFavoritos()");
+                cargarFavCol($('#usuarioPerfil').val());
             } else {
                 alert('Error al guardar medico favorito');
             }
@@ -1091,3 +1094,23 @@ $(function(){
 $(function() {
    $('#vCard').carousel('pause');
 })
+
+function aceptarInvitacion(){
+    $.ajax({
+        async: false,
+        url: '/aceptarInvitacion',
+        type: 'POST',
+        dataType: "json",
+        data: {pacienteID: $('#PacienteId').val()},
+        cache: false,
+        success: function(data) {
+            if (data.result == 'success'){
+                $('#addFavoriteContact').html('Eliminar de contactos');
+                cargarFavCol($('#usuarioPerfil').val());
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
