@@ -1090,4 +1090,22 @@ $(function(){
 //Funcion que previene que un carousel gire
 $(function() {
    $('#vCard').carousel('pause');
-})
+   $('#vCard').carousel({
+      interval: false
+   });
+});
+
+$(function(){
+  $('.uIndicators li').click(function(e){
+        e.stopPropagation();
+        var goTo = $(this).data('slide-to');
+        $('.carousel-inner .item').each(function(index){
+            if($(this).data('id') == goTo){
+                goTo = index;
+                return false;
+            }
+        });
+
+        $('#ubicacionesCarousel').carousel(goTo); 
+    });
+});

@@ -204,17 +204,22 @@ a:visited {
 }
 
 .navControl {
-  margin-top: 15px;
+  margin-top: 10px;
 }
 
 .navControl .dropdown-menu {
   right: 0;
   left: inherit;
   float: right;
-  margin-top: 14px;
+  margin-top: 16px;
   text-align: right;
   border-radius: 0;
   background-color: #f9f9f9;
+}
+
+.navControl .dropdown-menu li {
+  width: 100%;
+  margin: 0 auto;
 }
 
 .navControlIcons {
@@ -222,22 +227,46 @@ a:visited {
 }
 
 .navControlIcons li {
-  float: left;
-  margin: 0 5px;
+  position: relative;
+  width: 33px;
+  height: 33px;
+  margin: 0 0 0 5px;
   padding: 0;
 }
 
-.navControlIcons li .navSeparator {
-  display: inline-block;
-  width: 3px;
-  height: 25px;
-  margin-right: 1px;
-  margin-left: 3px;
-  padding: 0;
+.navControlIcons li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+}
+
+.navControlBtn {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.navControlIcons .navSeparator {
+  width: 4px;
+  height: 33px;
+  margin-right: 5px;
+}
+
+.navSeparator .navS {
+  position: absolute;
+  top: 6px;
+  display: block;
+  width: 100%;
+  height: 23px;
   background-color: #fff;
 }
 
 .navControlIcons .profileLink {
+  top: 5px;
+  left: 0;
   overflow: hidden;
   width: 25px;
   height: 25px;
@@ -245,29 +274,54 @@ a:visited {
   border-radius: 50px;
 }
 
-.navControlIcons .profileLink .navControlImg {
-  width: 21px;
-  height: 21px;
-  margin: 0 auto;
-}
-
 .navControlIcon {
-  font-size: 21px;
-  padding: 2px;
-  vertical-align: middle;
+  font-size: 23px;
   color: #fff;
+  position: absolute;
+  top: 6px;
 }
 
-.navControlImg {
-  display: block;
+.navControlBtn img {
+  position: absolute;
+}
+
+.navControlBtn .badge {
+  position: absolute;
+  top: -5px;
+  right: 0;
+  background-color: #ffae00;
+}
+
+.navControlIcons #officeIcon img {
+  top: 6px;
+  width: 23px;
+}
+
+.navControlIcons #agendaIcon img {
+  top: 3px;
+  width: 23px;
+  height: 26px;
+}
+
+.navControlIcons #notificationIcon img {
+  top: 6px;
   width: 25px;
-  height: 25px;
-  vertical-align: middle;
+  height: 27px;
 }
 
-.navControlImg img {
-  height: 100%;
-  vertical-align: bottom;
+.notificationDropdown {
+  right: -59px!important;
+  width: 250px;
+  min-height: 52px;
+  max-height: 200px;
+  overflow-y: scroll;
+  overflow: auto;
+}
+
+.notificationDropdown li {
+  width: 100%;
+  height: 40px;
+  padding: 3px;
 }
 
 #plataforma {}
@@ -1131,23 +1185,27 @@ footer a:visited {
   border-radius: 100px;
   background-color: #009cde;
 }
+
+
 /* profilePic cinthia */
-.profilePic label{
-    position:relative;
-    color: white;
-    display: none;
-    background: rgba(0, 0, 0, .5);
-    text-align: center;
-    margin-top: -50px;
-    height: 35px;
-    cursor: pointer;
+
+.profilePic label {
+  position: absolute;
+  color: white;
+  display: none;
+  background: rgba(0, 0, 0, .5);
+  text-align: center;
+  margin: 0 auto;
+  height: 35px;
+  cursor: pointer;
+  bottom: 10px;
+  left: 0;
+  right: 0;
 }
 
-.profilePic:hover label{
-     display: block;
-     float: left;
-     padding: 10px;
-     width: 200px;
+.profilePic:hover label {
+  display: block;
+  padding: 10px;
 }
 
 .topDrBadge {
@@ -1341,23 +1399,27 @@ footer a:visited {
   position: relative;
 }
 
-.profileBodyElements .element {
-  /*float: left;*/
-}
+.profileBodyElements .element {}
 
 .element .panelIcon {
   margin-left: 0;
   margin-right: 7px;
 }
 
+.element .elementPanel {
+  background-color: #e3e7ea;
+}
+
+.element .elementPanel>.panel-body {
+  padding: 5px;
+  min-height: 327px;
+}
+
 .cvPanel {
   background-color: #e3e7ea;
 }
 
-.cvBody {
-  min-height: 555px;
-  padding: 6px;
-}
+.cvBody {}
 
 .cvBody .nav-tabs {
   border-bottom: solid 5px #50a7dd;
@@ -1367,23 +1429,23 @@ footer a:visited {
   margin-bottom: 0px;
 }
 
-.cvBody .nav-tabs>li>a,
-.cvBody .nav-tabs>li>a:focus,
-.cvBody .nav-tabs>li>a:hover {
-  border: 0px;
-  border-radius: 0px;
-  background-color: #4f6c7f;
-  color: #fff;
+.cvBody .nav-tabs > li > a,
+.cvBody .nav-tabs > li > a:focus,
+.cvBody .nav-tabs > li > a:hover {
   margin: 0;
+  color: #fff;
+  border: 0;
+  border-radius: 0;
+  background-color: #4f6c7f;
 }
 
-.cvBody .nav-tabs>li.active>a,
-.cvBody .nav-tabs>li.active>a:focus,
-.cvBody .nav-tabs>li.active>a:hover {
-  border-radius: 0px;
-  border: 0px;
-  background-color: #50a7dd;
+.cvBody .nav-tabs > li.active > a,
+.cvBody .nav-tabs > li.active > a:focus,
+.cvBody .nav-tabs > li.active > a:hover {
   color: #fff;
+  border: 0;
+  border-radius: 0;
+  background-color: #50a7dd;
 }
 
 .cvContent {
@@ -1391,9 +1453,9 @@ footer a:visited {
 }
 
 .cvSection {
-  margin-top: 6px;
+  margin-top: 5px;
+  padding-bottom: 5px;
   background-color: #f1f3f5;
-  padding-bottom: 6px;
 }
 
 .cvSectionHead {
@@ -1418,7 +1480,7 @@ footer a:visited {
 
 .cvSectionBody {
   padding-left: 30px;
-  max-height: 300px;
+  height: 601px;
   overflow-y: scroll;
   overflow: auto;
   margin-right: 5px;
@@ -1435,16 +1497,14 @@ footer a:visited {
 }
 
 .cvSectionBody .cvElement {
-
+  margin-bottom: 20px;
 }
 
 .cvSectionBody .cvElement .elementEditButtons {
-   margin: 0 10px;
+  margin: 0 10px;
 }
 
-.cvSectionBody .cvElement .elementEditButtons a {
-
-}
+.cvSectionBody .cvElement .elementEditButtons a {}
 
 .homeBody {}
 
@@ -1512,7 +1572,9 @@ div::-webkit-scrollbar-thumb:hover {
   background-color: rgba(210, 210, 210, .8);
 }
 
+
 /* Pseudo-clase */
+
 div::-webkit-scrollbar-thumb:window-inactive {
   background-color: rgba(210, 210, 210, .5);
 }
@@ -1534,65 +1596,66 @@ div::-webkit-scrollbar-thumb:window-inactive {
 }
 
 .ubicacionesContainer .uIndicator {
-   position: absolute;
-   right: 0;
-   width: 100px;
-   top: 0;
-   margin: 0;
-   left: inherit;
-   padding: 0;
-   text-align: right;
-   bottom: 0;
+  position: absolute;
+  z-index: 1000;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: inherit;
+  width: 100px;
+  margin: 0;
+  padding: 0;
+  text-align: right;
 }
-.ubicacionesContainer .uIndicator li {
 
-}
+.ubicacionesContainer .uIndicator li {}
 
 .ubicacion {}
 
 .uMapa {
-  background-image: url("/img/mapa-test.jpg");
+  background-color: #333;
   background-size: cover;
   background-repeat: no-repeat;
-  height: 250px;
+  height: 263px;
   margin-bottom: 5px;
 }
+
 .uMapa#maptest1 {
-   background-position: center;
-   background-size: 250% auto;
+  background-position: center;
+  background-size: 250% auto;
 }
+
 .uMapa#maptest2 {
-   background-position: top;
-   background-size: 250% auto;
+  background-position: top;
+  background-size: 250% auto;
 }
+
 .uMapa#maptest3 {
-   background-position: bottom;
-   background-size: 100% auto;
+  background-position: bottom;
+  background-size: 100% auto;
 }
 
-.uDireccion {
+.uDireccion {}
 
+.uDireccion .iconLeft {
+  width: 48px;
+  height: 48px;
+  background-color: #009cde;
+  float: left;
+  margin-right: 5px;
 }
 
-.uDireccion .iconLeft{
-   width: 48px;
-   height: 48px;
-   background-color: #009cde;
-   float: left;
-   margin-right: 5px;
+.uDireccion .iconLeft .uBigIcon {
+  width: 100%;
+  height: 100%;
+  padding: 5px;
+  font-size: 33px;
+  color: #fff;
 }
 
-.uDireccion .iconLeft .uBigIcon{
-   width: 100%;
-   height: 100%;
-   padding: 5px;
-   font-size: 33px;
-   color: #fff;
-}
-
-.uDireccion .address address{
-   float: left;
-   font-size: 13px;
-   margin: 0;
-   line-height: 1.3;
+.uDireccion .address address {
+  float: left;
+  font-size: 13px;
+  margin: 0;
+  line-height: 1.3;
 }

@@ -5,7 +5,13 @@
         <div class="media block">
           <div class="media-left block">
             <div class="profilePic">
-              <img src="img/profile_01110915.jpg" />
+              {{#if usuario.id}}
+                <img src="{{usuario.urlFotoPerfil}}" />
+              {{else}}
+                <img src="{{valSession 'fotoPerfil'}}" id='fotoPerfil' />
+                <label for="imageFile">Cambiar Imagen</label>
+                <input type="file" id="imageFile" style="display:none">
+              {{/if}}
             </div>
             <div class="topDrBadge">Top Doctor</div>
           </div>
@@ -14,62 +20,91 @@
               <div class="profileGenerales">
                 <div class="vCard">
                   <div id="vCard" class="carousel slide" data-interval="false" data-ride="carousel">
-                    <div class="vCardMainInfo">
-                      <h4 class="media-heading vcNombre s20">
-                        Dr. Juan Carlos Medina Martínez
-                      </h4>
-                    </div>
-                    <div class="carousel-inner" role="listbox">
-                      <div class="item active">
-                        <div class="vCardMainInfo">
-                          <h4 class="media-heading vcUbicacion Flama-w200 s15">
-                            Zapopan, Jalisco. MX
-                          </h4>
-                        </div>
-                        <div class="vCardEspInfo">
-                          <ul class="list-unstyled list-inline espList Flama-bold s15">
-                            <li>
-                              Urgencias medicas
-                            </li>
-                          </ul>
-                          <ul class="list-unstyled list-inline subEspList Flama-Normal s15">
-                            <li>
-                              <small>Primeros Auxilios</small>
-                            </li>
-                            <li>
-                              <small>Rescate urbano</small>
-                            </li>
-                            <li>
-                              <small>RCP</small>
-                            </li>
-                          </ul>
-                        </div>
+                    {{#if usuario.id}}
+                      <input type="hidden" id="MedicoId" value="{{usuario.Medico.id}}" />
+                      <div class="vCardMainInfo">
+                        <h4 class="media-heading vcNombre s20">
+                          {{#if usuario.DatosGenerale}}
+                            Dr. {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
+                          {{/if}}
+                        </h4>
                       </div>
-                      <div class="item">
-                        <div class="vCardExtraInfo">
-                          <h4 class="media-heading Flama-w200 s15 pull-left">
-                            Teléfonos:&nbsp
-                          </h4>
-                          <div class="telList Flama-Normal s15 pull-left">
-                            (871) 2602226 | (123) 4567890
+                      <div class="carousel-inner" role="listbox">
+                        <div class="item active">
+                          <div class="vCardMainInfo">
+                            {{#if usuario.localidad}}
+                              <h4 class="media-heading vcUbicacion Flama-w200 s15">
+                                Zapopan, Jalisco. MX
+                              </h4>
+                            {{/if}}
                           </div>
-                          <div class="clearfix"></div>
-                          <h4 class="media-heading Flama-w200 s15 pull-left">
-                            Correos:&nbsp
-                          </h4>
-                          <div class="mailList Flama-Normal s15 pull-left">
-                            jcmedina@midrfavorito.com | jcmedina@newchannel.mx
+                          <div class="vCardEspInfo">
+                            <ul id="session_especialidades" class="list-unstyled list-inline espList Flama-bold s15">
+                              {{#each usuario.especialidades}}
+                                {{#unless subEsp}}
+                                  <li>{{Especialidad.especialidad}}</li>
+                                {{/unless}}
+                              {{/each}}
+                            </ul>
+                            <ul id="session_subEspecialidades" class="list-unstyled list-inline subEspList Flama-Normal s15">
+                              {{#each usuario.especialidades}}
+                                {{#if subEsp}}
+                                  <li>
+                                    <small>{{Especialidad.especialidad}}</small>
+                                  </li>
+                                {{/if}}
+                              {{/each}}
+                            </ul>
                           </div>
                         </div>
+                        <div class="item">
+                          <div class="vCardExtraInfo">
+                            <h4 class="media-heading Flama-w200 s15 pull-left">
+                              Teléfonos:&nbsp
+                            </h4>
+                            <div class="telList Flama-Normal s15 pull-left">
+                              (871) 2602226 | (123) 4567890
+                            </div>
+                            <div class="clearfix"></div>
+                            <h4 class="media-heading Flama-w200 s15 pull-left">
+                              Correos:&nbsp
+                            </h4>
+                            <div class="mailList Flama-Normal s15 pull-left">
+                              jcmedina@midrfavorito.com | jcmedina@newchannel.mx
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+
+                    {{else}}
+                      <div class="vCardMainInfo">
+                        <h4 class="media-heading vcNombre s20">
+                          {{#ifSession "name"}}
+                            Dr. {{valSession "name"}}
+                          {{else}}
+                            Aun no tenemos tu nombre registrado, continúa tu registro <a onclick="informacionRegistroMedico()">aquí</a>.
+                          {{/ifSession}}
+                        </h4>
+                        <h4 class="media-heading vcUbicacion Flama-w200 s15">
+                          {{#ifSession "ciudad"}}
+                            {{valSession "ciudad"}}, {{valSession "estado"}}
+                          {{/ifSession}}
+                        </h4>
+                      </div>
+                      <!-- Aqui irian las especialidades y los telefonos -->
+                    {{/if}}
                   </div>
                 </div>
+                {{#unless usuario.id}}
                 <ul class="media-right profileExtraNav list-inline">
                   <li data-target="#vCard" data-slide-to="0">Perfil</li>
                   <li data-target="#vCard" data-slide-to="1">Contacto</li>
                   <li><a href="#">Editar</a></li>
+                  {{#unlessSessionVal 'registroCompleto'}}
+                    <li id="registroIncompleto"><a onclick="informacionRegistroMedico()">Continuar registro</a></li>
+                  {{/unlessSessionVal}}
                 </ul>
+                {{/unless}}
               </div>
             </div>
           </div>
@@ -125,9 +160,34 @@
             <li role="presentation">
               <a href="#profileFotografias" role="tab" data-toggle="tab" aria-controls="profileFotografias">Fotografias</a>
             </li>
-            <li role="presentation">
-              <a id="addFavoriteContact" class="btn btn-primary btn-block">Agregar a favoritos</a>
-            </li>
+            {{#if usuario.id}}
+              {{#if usuario.medFavCol}}
+                {{#ifSession "id"}}
+                  {{#ifTipoMedico}}
+                    <li role="presentation" id="favoriteContact">
+                      <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(true)">Eliminar de colegas</a>
+                    </li>
+              {{else}}
+                <li role="presentation" id="favoriteContact">
+                  <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(true)">Eliminar de favoritos</a>
+                </li>
+                  {{/ifTipoMedico}}
+                {{/ifSession}}
+              {{else}}
+                {{#ifSession "id"}}
+                  {{#ifTipoMedico}}
+                    <li role="presentation" id="favoriteContact">
+                      <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(true)">Agregar a colegas</a>
+                    </li>
+              {{else}}
+                <li role="presentation" id="favoriteContact">
+                  <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(true)">Agregar de favoritos</a>
+                </li>
+                  {{/ifTipoMedico}}
+                {{/ifSession}}
+              {{/if}}
+              </li>
+            {{/if}}
           </ul>
         </div>
       </div>
