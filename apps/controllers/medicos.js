@@ -66,7 +66,6 @@ module.exports = {
   },
 
   // Método que registra médicos
-
   registrar: function(object, req, res) {
 
       // Inicia transacción de registro de médicos
@@ -440,7 +439,7 @@ module.exports = {
       }).catch(function(err) {
           res.status(500).json({error: err})
       });
-    },
+    }
 
 
 }

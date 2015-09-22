@@ -720,6 +720,159 @@ var iniciar = function()
 								var object = { id :  1}
 								intermed.callController('instituciones','borraAseguradora', object, req, res);
 				});
+
+				// Prueba de direccion ajustes localidades
+				app.get('/direccionloca', function(req, res) {
+					models.Direccion.findAll(
+						{
+							include : [{model: models.Localidad,
+									include :[{model: models.Ciudad},{model: models.Estado}]
+							}],
+						 where : {id : 1}
+					}).then(function(datos) {
+							res.send(datos);
+					});
+				});
+
+				// cita, agenda y calificación de médicos
+				app.get('/servicios', function(req, res) {
+						var object = {id: 1}
+						intermed.callController('agenda','obtieneServicios', object, req, res);
+				});
+
+				app.get('/serviciosLista', function(req, res) {
+						var object = {id: 1}
+						intermed.callController('agenda','obtieneServiciosLista', object, req, res);
+				});
+
+				app.get('/servicio', function(req, res) {
+						var object = {id: 2}
+						intermed.callController('agenda','obtieneServicio', object, req, res);
+				});
+
+				app.get('/agregaServicio', function(req, res) {
+					var object = {
+						concepto: 'concepto servicio',
+						descripcion: 'descripcion servicio',
+						precio: 200.50,
+						duracion: '1:30',
+						usuario_id : 1,
+					}
+					intermed.callController('agenda','agregaServicio', object, req, res);
+				});
+
+				app.get('/modificaServicio', function(req, res) {
+					var object = {
+						concepto: 'concepto servicio',
+						descripcion: 'descripcion servicio',
+						precio: 100.50,
+						duracion: '1:30',
+						usuario_id : 1,
+						id : 2
+					}
+					intermed.callController('agenda','modificaServicio', object, req, res);
+				});
+
+				app.get('/borraServicio', function(req, res) {
+					var object = {id: 3}
+					intermed.callController('agenda','borraServicio', object, req, res);
+				});
+
+				app.get('/agregaCita', function(req, res) {
+					var object = {
+						fechaHoraInicio: '01/01/2014 15:30',
+						estatus: 0,
+						nota: 'descripcion nota',
+						resumen: 'resumen',
+						direccion_id : 1,
+						usuario_id : 1,
+						paciente_id : 1,
+						servicio_id: 2
+					}
+					intermed.callController('agenda','agregaCita', object, req, res);
+				});
+
+				app.get('/modificaCita', function(req, res) {
+					var object = {
+						fechaHoraInicio: '01/01/2014 17:30',
+						estatus: 1,
+						nota: 'descripcion nota',
+						resumen: 'resumen actualizacion',
+						direccion_id : 1,
+						servicio_id: 2,
+						id: 2
+					}
+					intermed.callController('agenda','modificaCita', object, req, res);
+				});
+
+				app.get('/cancelaCita', function(req, res) {
+					var object = {
+						nota: 'descripcion cancelación cita',
+						id: 2
+					}
+					intermed.callController('agenda','cancelaCita', object, req, res);
+				});
+
+				app.get('/borraCita', function(req, res) {
+					var object = {id: 2	}
+					intermed.callController('agenda','borraCita', object, req, res);
+				});
+
+				app.get('/seleccionaCita', function(req, res) {
+					var object = { id: 3 }
+					intermed.callController('agenda','seleccionaCita', object, req, res);
+				});
+
+				app.get('/seleccionaCitas', function(req, res) {
+					var object = { id: 1 }
+					intermed.callController('agenda','seleccionaCitas', object, req, res);
+				});
+
+				app.get('/seleccionaAgenda', function(req, res) {
+					var object = {
+						id: 1
+					}
+					intermed.callController('agenda','seleccionaAgenda', object, req, res);
+				});
+
+				app.get('/calificaCita', function(req, res) {
+						var object = {
+							higieneLugar: 5,
+							puntualidad: 5,
+							instalaciones: 5,
+							tratoPersonal: 5,
+							satisfaccionGeneral: 3,
+							comentarios: 'comentarios cita',
+							agenda_id: 3,
+							medico_id: 1,
+							paciente_id:1
+						}
+					intermed.callController('agenda','calificaCita', object, req, res);
+				});
+
+				app.get('/seleccionaCalificacionCita', function(req, res) {
+					var object = {id: 2	}
+					intermed.callController('agenda','seleccionaCalificacionCita', object, req, res);
+				});
+
+				app.get('/calificaMedico', function(req, res) {
+						var object = {
+							efectividad: 5,
+							tratoPersonal: 5,
+							presentacion: 5,
+							higiene: 5,
+							medico_id: 1,
+							usuario_id:1
+						}
+					intermed.callController('agenda','calificaMedico', object, req, res);
+				});
+
+				app.get('/seleccionaCalificacionMedico', function(req, res) {
+					var object = {id: 1	}
+					intermed.callController('agenda','seleccionaCalificacionMedico', object, req, res);
+				});
+
+
 }
 serv.server(app, 3000);
 //se exporta para que otro js lo pueda utilizar
