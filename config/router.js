@@ -23,7 +23,9 @@ var envia = require('../apps/controllers/emailSender');
 var passport = require('passport'),
     bodyParser = require('body-parser'),
     cookieParser = require("cookie-parser"),
-    session = require('express-session');
+    session = require('express-session'),
+    bundle = require('socket.io-bundle'),
+    ioPassport = require('socket.io-passport');
 
 app.use(cookieParser('intermedSession'));
 
@@ -922,10 +924,16 @@ var iniciar = function() {
 }
 var io = serv.server(app, 3000);
 
+io.use(bundle.cookieParser());
+io.use(bundle.session({secret: 'my secret'}));
+io.use(ioPassport.initialize());
+io.use(ioPassport.session());
+
 io.on('connection', function(socket){
     console.log('_______________________');
     console.log('SOCKET: ' + socket.id);
-    console.log('SESSION: ' + JSON.stringify(socket.request.session));
+    socket.request.cookies.io = socket.id;
+    console.log('SESSION: ' + JSON.stringify(socket.request.cookies.intermed_sesion));
     console.log('_______________________');
 
     //var interval = setInterval(function(){ socket.emit('chat message', '<li class="other" style="font-size: 80%;color: red; text-align: center; width:100%;padding:0px">mensaje programado para socket ' +  socket.id + '</li>');      console.log('mensaje programado');}, 10000);
