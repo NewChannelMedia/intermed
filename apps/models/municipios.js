@@ -9,8 +9,9 @@ module.exports = function(sequelize, DataTypes) {
         classMethods: {
             associate: function(models) {
                 Municipio.belongsTo(models.Estado);
-                Municipio.hasMany(models.Ciudad);
-                Municipio.hasMany(models.Localidad);
+              //  Municipio.hasMany(models.Ciudad);
+              //  Municipio.hasMany(models.Localidad);
+                Municipio.hasMany(models.Direccion);
             }
         },
         timestamps: false,

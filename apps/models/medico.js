@@ -7,7 +7,8 @@ module.exports = function(sequelize, DataTypes) {
     curp: {type: DataTypes.STRING , unique:true},
     token: {type: DataTypes.STRING , unique:true},
     tokenMaestro: {type: DataTypes.STRING},
-    usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true}
+    usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true},
+    calificacion:  {type : DataTypes.DECIMAL}
   }, {
     classMethods: {
       associate: function(models) {
@@ -22,7 +23,6 @@ module.exports = function(sequelize, DataTypes) {
         Medico.hasMany(models.MedicoFormacion)
         Medico.hasMany(models.MedicoExperiencia)
         Medico.hasMany(models.Colegio)
-
         Medico.hasMany(models.MedicoFavorito)
 
         Medico.belongsTo(models.Usuario, {

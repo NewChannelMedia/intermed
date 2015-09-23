@@ -12,6 +12,10 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         CatalogoServicios.belongsTo(models.Usuario)
+        CatalogoServicios.hasMany(models.Agenda, {foreignKey:{
+          name: 'servicio_id',
+          field: 'servicio_id'
+        }})
       }
     },
     timestamps: false,
