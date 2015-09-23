@@ -138,6 +138,9 @@ function informacionRegistroMedico(){
         dataType: "json",
         cache: false,
         success: function(data) {
+            $("#step1").hide();
+            $("#step2").hide();
+            $("#step3").hide();
             var continuar = true;
             //PASO 1 de 3 (falta fecha de nacimiento)
             if (data.DatosGenerale) {
@@ -159,13 +162,16 @@ function informacionRegistroMedico(){
             if (continuar) {
                 goToNextStep(i++);
             }
-            /*
+
+            if (data.Medico.pago == 0){
+                continuar = false;
+            }
+
             //Pasar al paso 3 de 3 (Datos de facturación)
             if (continuar){
-                console.log('SIMULANDO PAGO CORRECTO');
                 goToNextStep(i++);
             }
-            */
+
             if (data.DatosFacturacion) {
                 document.getElementById('nomRSocialFact').value = data.DatosFacturacion.razonSocial;
                 document.getElementById('rfcFact').value = data.DatosFacturacion.RFC;
@@ -219,7 +225,20 @@ function saveStepOne() {
 }
 
 function saveStepTwo() {
-    goToNextStep(1);
+    $.ajax({
+        url: '/regMedPasoDos',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        success: function(data) {
+            if (data.result === "success") {
+                goToNextStep(1);
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: (registro 166) : ' + err);
+        }
+    });
 }
 
 function saveStepTree() {

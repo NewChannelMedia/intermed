@@ -238,6 +238,10 @@ var iniciar = function() {
         intermed.callController('medicos', 'regMedPasoUno', req.body, req, res);
     });
 
+    app.post('/regMedPasoDos', function(req, res) {
+        intermed.callController('medicos', 'regMedPasoDos', req.body, req, res);
+    });
+
     app.post('/regMedPasoTres', function(req, res) {
         intermed.callController('medicos', 'regMedPasoTres', req.body, req, res);
     });
@@ -903,7 +907,7 @@ var iniciar = function() {
         res.cookie('intermed_invitacion', {token: req.params.tokeninvitacion}, { expires: new Date(Date.now() + (900000*4*24)) });
         res.redirect('/');
     });
-	
+
 	// cita, agenda y calificación de médicos
 				app.get('/servicios', function(req, res) {
 						var object = {id: 1}

@@ -320,6 +320,21 @@ module.exports = {
         }
     },
 
+    regMedPasoDos: function(object, req, res) {
+        if (req.session.passport.user && req.session.passport.user.tipoUsuario === "M") {
+            var usuario_id = req.session.passport.user.id;
+            models.Medico.update({pago: 1},{
+                where: {usuario_id : usuario_id}
+            }).then(function(result) {
+                res.send({'result': 'success'});
+            })
+        } else {
+            res.send({
+                'result': 'error'
+            });
+        }
+    },
+
     regMedPasoTres: function (object, req, res){
         if (req.session.passport.user && req.session.passport.user.tipoUsuario === "M"){
             var usuario_id = req.session.passport.user.id;
