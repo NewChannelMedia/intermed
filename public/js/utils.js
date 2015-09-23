@@ -194,9 +194,6 @@ function informacionRegistroMedico(){
                 } else continuar = false;
             } else continuar = false;
 
-            $("#RegMedModal").on('hidden.bs.modal', function() {
-                    actualizarSesion();
-            });
             $("#RegMedModal").modal("show");
 
         },
@@ -215,6 +212,7 @@ function saveStepOne() {
         data: $('#regMedStepOne').serialize(),
         success: function(data) {
             if (data.result === "success") {
+                actualizarSesion();
                 goToNextStep(0);
             }
         },
@@ -232,6 +230,7 @@ function saveStepTwo() {
         cache: false,
         success: function(data) {
             if (data.result === "success") {
+                actualizarSesion();
                 goToNextStep(1);
             }
         },
@@ -250,6 +249,7 @@ function saveStepTree() {
         data: $('#regMedStepThree').serialize(),
         success: function(data) {
             if (data.result === "success") {
+                actualizarSesion();
                 $("#RegMedModal").modal("hide");
             }
         },
