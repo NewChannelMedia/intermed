@@ -2,13 +2,61 @@
  *   Archivo creado por Cinthia
  *
  */
-var regTotalDoc = 0;
-
+var regTotalDoc = 0, notificaciones = [];
 
 if (location.pathname === '/registro') {
     $(document).ready(getAllDoctors());
 } else {
     $(document).ready(function() {
+
+        //socket.emit('test', 'Hola');
+
+        //Manejar notificaciones
+        $.ajax({
+            url: '/notificaciones',
+            type: 'POST',
+            dataType: "json",
+            cache: false,
+            success: function(data) {
+                if (data){
+                    notificaciones.forEach(function(notificacion){
+                        clearInterval(notificacion.id);
+                    });
+                    notificaciones = [];
+
+
+                    if (Object.prototype.toString.call(data) === '[object Array]'){
+                        var socket = io();
+                        data.forEach(function(record) {
+                            if (record.interno || record.push || record.mail){
+                                console.log('[' + new Date().toLocaleString().substring(0,18) + '] Revisar: ' + record.tipo);
+
+                                var idInterval = setInterval(
+                                    function(){
+                                        try {
+                                            console.log('[' + new Date().toLocaleString().substring(0,18) + '] Revisar: ' + record.tipo);
+                                        }
+                                        catch(err) {
+                                            console.log('No se puede conectar con el servidor');
+                                        }
+                                }, (parseInt(record.intervalo) * 1000));
+                                notificaciones.push({
+                                    id : idInterval,
+                                    tipo: record.tipo,
+                                    interno: record.interno,
+                                    push: record.push,
+                                    mail: record.mail
+                                });
+                            }
+                        });
+                    }
+                }
+            },
+            error: function(jqXHR, textStatus, err) {
+                console.error('AJAX ERROR: ' + err);
+            }
+        });
+
         $('#frm_regP').on('submit', function(e) {
             e.preventDefault();
             var pass1 = $('#contraseñaReg').val();

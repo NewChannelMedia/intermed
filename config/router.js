@@ -899,7 +899,7 @@ var iniciar = function() {
     });
 
     //Home
-    app.get('/:tokeninvitacion', function(req, res) {
+    app.get('/invitacion/:tokeninvitacion', function(req, res) {
         res.cookie('intermed_invitacion', {token: req.params.tokeninvitacion}, { expires: new Date(Date.now() + (900000*4*24)) });
         res.redirect('/');
     });
@@ -907,7 +907,32 @@ var iniciar = function() {
     app.post('/aceptarInvitacion', function (req, res){
         intermed.callController('medicos','aceptarInvitacion',req.body, req, res);
     });
+
+    app.get('/testnotificaciones', function (req, res){
+        intermed.callController('notificaciones','prueba',req.body, req, res);
+    });
+
+    app.post('/notificaciones', function (req, res){
+        if (req.session.passport.user){
+            intermed.callController('notificaciones', 'obtenerTodas', req.body, req, res);
+        } else {
+            res.send({result: 'null'});
+        }
+    })
 }
-serv.server(app, 3000);
+var io = serv.server(app, 3000);
+
+io.on('connection', function(socket){
+    console.log('_______________________');
+    console.log('SOCKET: ' + socket.id);
+    console.log('SESSION: ' + JSON.stringify(socket.request.session));
+    console.log('_______________________');
+
+    //var interval = setInterval(function(){ socket.emit('chat message', '<li class="other" style="font-size: 80%;color: red; text-align: center; width:100%;padding:0px">mensaje programado para socket ' +  socket.id + '</li>');      console.log('mensaje programado');}, 10000);
+    socket.on('disconnect', function() {
+         console.log('Got disconnect!');
+      });
+});
+
 //se exporta para que otro js lo pueda utilizar
 exports.iniciar = iniciar;
