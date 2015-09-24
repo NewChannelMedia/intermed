@@ -73,7 +73,6 @@ module.exports = {
   },
 
   // Método que registra médicos
-
   registrar: function(object, req, res) {
 
       // Inicia transacción de registro de médicos
@@ -321,28 +320,52 @@ module.exports = {
         }
     },
 
+    regMedPasoDos: function(object, req, res) {
+        if (req.session.passport.user && req.session.passport.user.tipoUsuario === "M") {
+            var usuario_id = req.session.passport.user.id;
+            models.Medico.update({pago: 1},{
+                where: {usuario_id : usuario_id}
+            }).then(function(result) {
+                res.send({'result': 'success'});
+            })
+        } else {
+            res.send({
+                'result': 'error'
+            });
+        }
+    },
+
     regMedPasoTres: function (object, req, res){
         if (req.session.passport.user && req.session.passport.user.tipoUsuario === "M"){
             var usuario_id = req.session.passport.user.id;
-            models.Direccion.upsert({
-                calle: object['calleFact'],
-                numero: object['numeroFact'],
-                localidad_id: object['locFact'],
-                usuario_id: usuario_id
-              }).then(function(Direccion){
-                  models.Direccion.findOne({
-                      where: { usuario_id: usuario_id }
-                  }).then(function(Direccion){
-                      models.DatosFacturacion.upsert({
-                          RFC: object["rfcFact"],
-                          razonSocial: object["nomRSocialFact"],
-                          usuario_id: usuario_id,
-                          direccion_id: Direccion.id
-                      }).then(function(result){
-                          res.send({'result':'success'});
+            models.Localidad.findOne({
+                where: {id: object['locFact']}
+            }).then(function(localidad){
+                if (localidad){
+                    models.Direccion.upsert({
+                        calle: object['calleFact'],
+                        numero: object['numeroFact'],
+                        localidad_id: object['locFact'],
+                        municipio_id: localidad.municipio_id,
+                        usuario_id: usuario_id
+                      }).then(function(Direccion){
+                          models.Direccion.findOne({
+                              where: { usuario_id: usuario_id }
+                          }).then(function(Direccion){
+                              models.DatosFacturacion.upsert({
+                                  RFC: object["rfcFact"],
+                                  razonSocial: object["nomRSocialFact"],
+                                  usuario_id: usuario_id,
+                                  direccion_id: Direccion.id
+                              }).then(function(result){
+                                  res.send({'result':'success'});
+                              });
+                          })
                       });
-                  })
-              });
+                } else {
+                    res.send({'result':'error', error: 'no se encontro la localidad'});
+                }
+            })
         } else {
             res.send({'result':'error'});
         }

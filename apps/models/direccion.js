@@ -15,11 +15,15 @@ module.exports = function(sequelize, DataTypes) {
     dias: {type: DataTypes.STRING},
     usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true},
     institucion_id: {type: DataTypes.INTEGER},
-    localidad_id: {type: DataTypes.INTEGER}
+    localidad_id: {type: DataTypes.INTEGER},
+    municipio_id: {type: DataTypes.INTEGER, required: true},
+    //estado_id: {type: DataTypes.INTEGER, required: true}
   }, {
     classMethods: {
       associate: function(models) {
         Direccion.belongsTo(models.Usuario);
+        Direccion.belongsTo(models.Municipio)
+        //Direccion.belongsTo(models.Estado)
         Direccion.belongsTo(models.Localidad);
       }
     },

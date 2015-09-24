@@ -128,6 +128,25 @@ if (location.pathname === '/registro') {
         if (location.pathname.substring(0, 7) === '/perfil') {
             cargarFavCol($('#usuarioPerfil').val());
         }
+
+        /* validaciones al registro */
+        validateForm('input-nombre', 'nombreMed');
+        validateForm('input-apellido', 'ApellidoReg');
+        validateForm('input-nombre', 'nombreReg');
+        //validateForm('input-nombre','ApellidoReg');
+        validateForm('input-correo', 'correoReg');
+        validateForm('input-password', 'contraseñaReg');
+        validateForm('input-validPass', 'contraseña2Reg');
+        validateForm('input-dia', 'diaNacReg');
+        validateForm('input-mes', 'mesNacReg');
+        validateForm('input-año', 'añoNacReg');
+        validateForm('input-select', 'padecimiento');
+        validateForm('input-select', 'especialidad');
+        validateForm('input-select', 'slc_estado');
+        validateForm('input-select', 'slc_ciudad');
+        validateForm('input-checkbox', 'sexF');
+        validateForm('input-checkbox', 'sexM');
+
     });
 }
 
@@ -139,6 +158,9 @@ function informacionRegistroMedico(){
         dataType: "json",
         cache: false,
         success: function(data) {
+            $("#step1").hide();
+            $("#step2").hide();
+            $("#step3").hide();
             var continuar = true;
             //PASO 1 de 3 (falta fecha de nacimiento)
             if (data.DatosGenerale) {
@@ -160,13 +182,16 @@ function informacionRegistroMedico(){
             if (continuar) {
                 goToNextStep(i++);
             }
-            /*
+
+            if (data.Medico.pago == 0){
+                continuar = false;
+            }
+
             //Pasar al paso 3 de 3 (Datos de facturación)
             if (continuar){
-                console.log('SIMULANDO PAGO CORRECTO');
                 goToNextStep(i++);
             }
-            */
+
             if (data.DatosFacturacion) {
                 document.getElementById('nomRSocialFact').value = data.DatosFacturacion.razonSocial;
                 document.getElementById('rfcFact').value = data.DatosFacturacion.RFC;
@@ -189,9 +214,6 @@ function informacionRegistroMedico(){
                 } else continuar = false;
             } else continuar = false;
 
-            $("#RegMedModal").on('hidden.bs.modal', function() {
-                    actualizarSesion();
-            });
             $("#RegMedModal").modal("show");
 
         },
@@ -210,6 +232,7 @@ function saveStepOne() {
         data: $('#regMedStepOne').serialize(),
         success: function(data) {
             if (data.result === "success") {
+                actualizarSesion();
                 goToNextStep(0);
             }
         },
@@ -220,7 +243,21 @@ function saveStepOne() {
 }
 
 function saveStepTwo() {
-    goToNextStep(1);
+    $.ajax({
+        url: '/regMedPasoDos',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        success: function(data) {
+            if (data.result === "success") {
+                actualizarSesion();
+                goToNextStep(1);
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: (registro 166) : ' + err);
+        }
+    });
 }
 
 function saveStepTree() {
@@ -232,6 +269,7 @@ function saveStepTree() {
         data: $('#regMedStepThree').serialize(),
         success: function(data) {
             if (data.result === "success") {
+                actualizarSesion();
                 $("#RegMedModal").modal("hide");
             }
         },
@@ -1094,6 +1132,25 @@ $(function(){
 //Funcion que previene que un carousel gire
 $(function() {
    $('#vCard').carousel('pause');
+   $('#vCard').carousel({
+      interval: false
+   });
+});
+
+$(function(){
+  $('.uIndicators li').click(function(e){
+        e.stopPropagation();
+        var goTo = $(this).data('slide-to');
+        $('.carousel-inner .item').each(function(index){
+            if($(this).data('id') == goTo){
+                goTo = index;
+                return false;
+            }
+        });
+
+        $('#ubicacionesCarousel').carousel(goTo);
+    });
+});
 })
 
 function aceptarInvitacion(){

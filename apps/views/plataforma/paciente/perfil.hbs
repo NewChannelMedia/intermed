@@ -20,12 +20,12 @@
                                 <div class="vCard">
                                     {{#if usuario.id}}
                                         <div class="main">
-                                            <h4 class="media-heading profileNombre Flama-normal s20">
+                                            <h4 class="media-heading vcNombre Flama-normal s20">
                                                 {{#if usuario.DatosGenerale}}
                                                     {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
                                                 {{/if}}
                                             </h4>
-                                            <h4 class="media-heading profileUbicacion Flama-w200 s15">
+                                            <h4 class="media-heading vcUbicacion Flama-w200 s15">
                                                 {{#if usuario.Direccions}}
                                                     Guadalajara, Jalisco. MX
                                                 {{/if}}
@@ -33,10 +33,10 @@
                                         </div>
                                     {{else}}
                                         <div class="main">
-                                            <h4 class="media-heading profileNombre Flama-normal s20">
+                                            <h4 class="media-heading vcNombre Flama-normal s20">
                                                 {{valSession "name"}}
                                             </h4>
-                                            <h4 class="media-heading profileUbicacion Flama-w200 s15">
+                                            <h4 class="media-heading vcUbicacion Flama-w200 s15">
                                                 {{#ifSession "ciudad"}}
                                                     {{valSession "ciudad"}}, {{valSession "estado"}}
                                                 {{/ifSession}}
