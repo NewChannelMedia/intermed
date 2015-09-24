@@ -204,7 +204,7 @@ a:visited {
 }
 
 .navControl {
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .navControl .dropdown-menu {
@@ -230,8 +230,11 @@ a:visited {
   position: relative;
   width: 33px;
   height: 33px;
-  margin: 0 0 0 5px;
+  margin: 0;
   padding: 0;
+}
+.navControlIcons li.miniProfilePic{
+  margin-right: 10px;
 }
 
 .navControlIcons li a {
@@ -265,11 +268,11 @@ a:visited {
 }
 
 .navControlIcons .profileLink {
-  top: 5px;
+  top: 1px;
   left: 0;
   overflow: hidden;
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
   border: solid 2px #fff;
   border-radius: 50px;
 }
@@ -294,19 +297,19 @@ a:visited {
 
 .navControlIcons #officeIcon img {
   top: 6px;
-  width: 23px;
+  width: 20px;
 }
 
 .navControlIcons #agendaIcon img {
-  top: 3px;
-  width: 23px;
-  height: 26px;
+  top: 4px;
+  width: 20px;
+  height: 22px;
 }
 
 .navControlIcons #notificationIcon img {
   top: 6px;
-  width: 25px;
-  height: 27px;
+  width: 21px;
+  height: 23px;
 }
 
 .notificationDropdown {
@@ -1427,6 +1430,7 @@ footer a:visited {
 
 .cvBody .nav-tabs li {
   margin-bottom: 0px;
+  margin-right: 1px;
 }
 
 .cvBody .nav-tabs > li > a,
