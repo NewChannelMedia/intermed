@@ -378,38 +378,74 @@ exports.obtenerInformacionUsuario = function(object, req, res) {
                     ]
                   }]
               },
-              {model: models.Telefono, attributes:['id','numero','claveRegion','lada']},
+              {model: models.Telefono, attributes:['id','numero','claveRegion','lada','usuario_id']},
               {model: models.Biometrico, attributes:['id','peso','altura','tipoSangre','genero']},
               {model: models.Paciente, include:[
                     {model: models.ContactoEmergencia, attributes:[ 'id','nombre','tel']},
-                    {model: models.PacientePadecimiento, include:[{model:models.Padecimiento, attributes:['id','padecimiento']}]},
+                    {model: models.PacientePadecimiento,attributes:['id'], include:[{model:models.Padecimiento, attributes:['id','padecimiento']}]},
                     {model: models.PacienteAlergia, include:[ { model: models.Alergias, attributes:['id','alergia'] } ] }
                   ]
               }
             ]
         }).then(function(usuario) {
             usuario = JSON.parse(JSON.stringify(usuario));
-            console.log("USUARIOSSSS -------> " + JSON.stringify(usuario) );
+            //console.log("USUARIOSSSS -------> " + JSON.stringify(usuario) );
             res.send(usuario);
         });
     }
 };
 //<---------------------------------------------------->
-  exports.crearDatos = function( object, req, res){
+  exports.despachador = function( object, req, res){
     if( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
-      
-    }
-  };
-  exports.actualizarDatos = function( object, req, res){
-    if( req.session.passport.user && req.session.passport.user.id > 0 ){
-      var usuario_id = req.session.passport.user.id;
-    }
-  };
-  exports.deleteDatos = function( object, req, res){
-    if( req.session.passport.user && req.session.passport.user.id > 0 ){
-      var usuario_id = req.session.passport.user.id;
-    }
+      // en el caso de que se quiera insertar, se manejara en el mismo update,
+      // donde si no encuentra el valor que lo inserte, y si lo encuentra que solo lo actualice
+      // se crea el objecto que se manda para que se haga la insercion o actualización
+      var campo = req.body.campo;
+      var campo2 = req.body.prueba;
+      var tabla = object.tabla;
+      switch(object.accion){
+        case 'insertar':
+          req.body.prueba['usuario_id'] = usuario_id;
+          models[tabla].create(
+            req.body.prueba
+          ).then(function(insertado){
+            res.send(true);
+          });
+        break;
+        case 'actualizar':
+          // con la siguiente funcion se mandara a checar de que tabla se requiere realizar la accion
+          // y con sus respectivas condiciones
+          console.log("TACOSSSs");
+          var update = {};
+          if( object.numero === 'true' ){
+            update[campo] = parseFloat(req.body.valor);
+          }else{
+            update[campo] = req.body.valor;
+          }
+          var prueba = req.body.prueba;
+          models[tabla].update(
+            update,{
+            where:{usuario_id:usuario_id,id:prueba}
+          }).then(function(){
+            res.sendStatus(200);
+          });
+        break;
+        case 'delete':
+          var dosWhere = {};
+          dosWhere[campo] = campo2
+          dosWhere['id'] = req.body.valor2
+          models[tabla].destroy({
+            where:dosWhere
+          }).then(function(eliminado){ 
+            if( eliminado > 0 )
+              res.send(true);
+            else
+              res.send(false);
+          });
+        break;
+      }//fin switch
+    }//fin if nombre: "Fulano"
   };
 //<---------------------------------------------------->
 exports.activarCuenta = function(object, req, res) {

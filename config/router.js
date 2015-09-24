@@ -167,18 +167,8 @@ var iniciar = function()
 		intermed.callController('usuarios','obtenerInformacionUsuario', '', req, res);
 	});
 	//actualiza la informacion del paciente de los biometricos
-	app.post("/actualizarDatos", function(req, res){
-			intermed.callController('usuarios','actualizarDatos',req.body, req, res);
-	});
-	//Inserta
-	app.post("/crearDatos", function( req, res){
-		rutas.routeLife('plataforma','plataforma/paciente',hps);
-		intermed.callController('usuarios','crearDatos',req.body, req, res);
-	});
-	//ELIMNA DATOS
-	app.post("/deleteDatos", function( req, res ){
-		rutas.routeLife('plataforma','plataforma/paciente', hps);
-		intermed.callController('usuarios','deleteDatos',req.body, req, res);
+	app.post("/despachador", function(req, res){
+			intermed.callController('usuarios','despachador',req.body, req, res);
 	});
 	//-----------------------------------------------------
 	//-----------------------------------------------------

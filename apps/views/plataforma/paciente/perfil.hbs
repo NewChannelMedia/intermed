@@ -96,10 +96,10 @@
                           <div class = "row">
                             <div class = "col-md-12"><!-- COL-MD-12 uno inicio -->
                               <!-- |||||||||||||||||||||||||||||||||||||||||| -->
-                              <input type = "hidden" id = "idDatosGenerales" value = ""/>
                               <div class = "col-md-4">
                                 <div class = "col-lg-6">
                                   <div class = "input-group">
+                                    <div id = "idNombre"></div>
                                     <div id = "inputNombre"></div>
                                     <span class = "input-group-btn" id = "buttonName"></span>
                                   </div>
@@ -138,9 +138,6 @@
                 <div class = "col-md-12"><!-- col-md-12 inicio -->
                   <div class = "row"><!-- row inicio -->
                     <div class = "col-md-12">
-                      <input type = "hidden" id = "idTelefonos" value = ""/>
-                      <input type = "hidden" id = "idLocalidad" value = ""/>
-                      <input type = "hidden" id = "idMunicipio" value = ""/>
                       <div class = "col-md-4">
                         <div class = "col-lg-6">
                           <div class = "input-group">
@@ -155,6 +152,7 @@
                           <div class = "input-group">
                             <span class = "input-group-btn" id = "buttonAddLada"></span>
                             <div id = "addladaTelefono"></div>
+                            <div id = "idLada"></div>
                           </div>
                         </div>
                       </div>
@@ -181,6 +179,7 @@
                           <div class = "input-group">
                             <span class = "input-group-btn" id = "buttonCP"></span>
                             <div id = "direccionCp"></div>
+                            <div id = "idCp"></div>
                           </div>
                         </div>
                       </div>
@@ -214,6 +213,7 @@
                             <div class = "input-group">
                               <span class = "input-group-btn" id = "buttonMunicipio"></span>
                               <div id = "inputMunicipio"></div>
+                              <div id = "idMunicipio"></div>
                             </div>
                           </div>
                         </div>
@@ -224,38 +224,75 @@
                 </div><!-- col-md-12 fin -->
               </div>
             </div>
-              <hr>
             </div><!-- FIN shit -->
+            <hr>
             <div class = "container-fluid"><!-- CARGA DE BIOMETRICOS -->
               <div class = "row" >
                   <div class = "col-md-12">
                       <div class = "col-md-12"><label>Biometricos:</label></div>
-                      <div class = "col-md-6">
-                        <div class = "col-md-12">
-                            <input type = "hidden" id = "idBiometrico" value = ""/>
-                            <div class = "col-md-4" id = "inputBiometricoPeso"></div>
-                            <div class = "col-md-4" id = "inputBiometricoAltura"></div>
-                            <div class = "col-md-4" id = "inputBiometricoSangre"></div>
+                      <div id = "idBiometrico"></div>
+                      <div class = "col-md-3">
+                        <div class = "col-lg-6">
+                          <div class = "input-group">
+                            <span class = "input-group-btn" id = "modificaBP"></span>
+                            <div id = "inputBiometricoPeso"></div>
+                          </div>
                         </div>
                       </div>
-                      <div class = "col-md-6">
-                          <div class = "col-md-12">
-                            <div class = "col-md-4" id = "inputBiometricoGenero"></div>
-                            <div class = "col-md-4" id = "buttonBiometrico"></div>
+                      <div class = "col-md-3">
+                        <div class = "col-lg-6">
+                          <div class = "input-group">
+                            <span class = "input-group-btn" id = "modificaBA"></span>
+                            <div id = "inputBiometricoAltura"></div>
                           </div>
+                        </div>
+                      </div>
+                      <div class = "col-md-3">
+                        <div class = "col-lg-6">
+                          <div class = "input-group">
+                            <span class = "input-group-btn" id = "modificaBS"></span>
+                            <div  id = "inputBiometricoSangre"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class = "col-md-3">
+                        <div class = "col-lg-6">
+                          <div class = "input-group">
+                            <span class = "input-group-btn" id = "buttonBiometrico"></span>
+                            <div id = "inputBiometricoGenero">/div>
+                          </div>
+                        </div>
                       </div>
                   </div>
               </div>
               <hr>
             </div><!-- FIN DE BIOMETRICOS -->
+            <hr>
             <div class = "container-fluid"><!--CONTACTO EMERGENCIA -->
                 <div class = "row">
                     <div class = "col-md-12">
-                        <div class = "col-md-12"><label>Contacto/s de emergencia:</label></div>
-                        <input type = "hidden" id = "idContacto" value = ""/>
-                        <div class = "col-md-4" id = "contactoNombre"></div>
-                        <div class = "col-md-4" id = "contactoTel"></div>
-                        <div class = "col-md-4" id = "buttonContacto"></div>
+                        <div class = "col-md-4">
+                          <div class = "col-md-12"><label>Contacto/s de emergencia:</label></div>
+                          <div id = "idContacto"></div>
+                          <div class = "col-lg-6">
+                            <div class = "input-group">
+                              <span class = "input-group-btn" id = "buttonContactoNombre"></span>
+                              <div id = "nombreDContacto"></div>
+                              <div id = "contactoNombre"></div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class = "col-md-4">
+                          <div class = "col-md-12"><label></label></div>
+                          <div id = "idContacto"></div>
+                          <div class = "col-lg-6">
+                            <div class = "input-group">
+                              <div id = "numeroDContacto"></div>
+                              <div id = "contactoTel"></div>
+                              <span class = "input-group-btn" id = "buttonContacto"></span>
+                            </div>
+                          </div>
+                        </div>
                     </div>
                 </div>
                 <hr>
@@ -268,7 +305,6 @@
                     <div class = "row">
                       <div class = "col-md-12">
                         <div class = "input-group">
-                          <input type = "hidden" id = "idPadecimiento" value = ""/>
                           <select id = "menuPadecimiento" class = "form-control">
                             <option value = "0">--Eliga un padecimiento--</option>
                             {{#each padecimientos}}
@@ -289,6 +325,7 @@
                         <div class = "input-group">
                             <span class = "input-group-btn" id = "buttonPadecimiento"></span>
                             <div id = "inputPadecimiento"></div>
+                            <div id = "idPadecimiento"></div>
                         </div>
                       </div>
                     </div>
@@ -301,11 +338,10 @@
               <div class = "row">
                 <div class = "col-md-12"><label>Alergia/s:</label></div>
                 <div class = "col-lg-6">
-                  <div class = "col-md-12">
-                    <div class = "row">
-                      <div class = "col-md-12">
+                  <div class = "row">
+                    <div class = "col-md-12">
+                      <div class = "">
                         <div class = "input-group">
-                          <input type = "hidden" id = "idAlergia" value = ""/>
                           <select id = "menuAlergia" class = "form-control">
                             <option value = "0">--Eliga una alergia--</option>
                             {{#each alergias}}
@@ -325,6 +361,7 @@
                       <div class = "input-group">
                         <span class = "input-group-btn" id = "eliminarAlergia"></span>
                         <div id = "inputAlergia"></div>
+                        <div id = "idAlergia"></div>
                       </div>
                     </div>
                   </div>
