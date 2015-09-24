@@ -73,8 +73,17 @@ exports.prueba = function(object, req, res) {
 
 exports.solicitudAmistad = function (req){
     models.Notificacion.findAll({
-        where: { usuario_id: req.usuario_id, visto: 0 }, attributes: ['id','mensaje']
+        where: { usuario_id: req.usuario_id, visto: 0 }, attributes: ['id','mensaje','enlace','url']
     }).then(function(result){
         req.socket.emit('solicitudAmistad',result);
     })
+}
+
+exports.verNotificaciones = function (req){
+    console.log('VER NOTIFICACIONES');
+    models.Notificacion.update(
+        {visto: 1},{where: { usuario_id: req.usuario_id, visto: 0 }
+    }).then(function(result){
+        req.socket.emit('verNotificaciones',result);
+    });
 }

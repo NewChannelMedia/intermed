@@ -1163,6 +1163,7 @@ function aceptarInvitacion(){
         success: function(data) {
             if (data.result == 'success'){
                 $('#addFavoriteContact').html('Eliminar de contactos');
+                $("#addFavoriteContact").attr("onclick", "eliminarFavoritos()");
                 cargarFavCol($('#usuarioPerfil').val());
             }
         },
@@ -1225,13 +1226,28 @@ function socketNotificaciones(){
     });
 }
 
+
+
 function socketManejadores(){
     socket.on('solicitudAmistad', function(data){
         var count = 0;
         $('#totalNotificaciones').html('');
+        $('#totalNotificaciones').addClass('hidden invisible');
         data.forEach(function(record) {
+            $('#totalNotificaciones').removeClass('hidden invisible');
             $('#totalNotificaciones').html(++count);
             console.log('[respuesta][solicitudAmistad] ' + JSON.stringify(data));
+            $('#notificacinesList').html('');
+            if (record.enlace == 1){
+                $('#notificacinesList').append('<li class="media"><div class="media-left"><a href= "' + record.url+ '"><img class="media-object" src="img/logo-color.png" style="width: 50px;"></div><div class="media-body">'+ record.mensaje +'</a></div></li>');
+            } else {
+                $('#notificacinesList').append('<li class="media"><div class="media-left"><a><img class="media-object" src="img/logo-color.png" style="width: 50px;"></div><div class="media-body">'+ record.mensaje +'</a></div></li>');
+            }
         });
+    });
+
+    socket.on('verNotificaciones', function  (data){
+        $('#totalNotificaciones').html('');
+        $('#totalNotificaciones').addClass('hidden invisible');
     });
 }

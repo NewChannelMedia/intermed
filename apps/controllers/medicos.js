@@ -576,6 +576,15 @@ module.exports = {
                             paciente_id: req.session.passport.user.Paciente_id,
                             aprobado: 0
                         });
+
+                        models.Notificacion.create({
+                            usuario_id: usuario_id,
+                            tipoNotificacion_id: 1,
+                            mensaje: 'El usuario ' + req.session.passport.user.name + ' quiere ser tu amigo en intermed',
+                            url: '/perfil/' + req.session.passport.user.usuarioUrl,
+                            enlace: 1,
+                            inicio: '2015-09-10'
+                        });
                     });
                 }
 
@@ -672,12 +681,10 @@ module.exports = {
                     where: { usuario_id: object.usuario }
                 }).then(function(paciente){
                     if (paciente){
-                        console.log('ES UN PACIENTE!!!!!');
                         /*El perfil a mostrar es de un paciente*/
                         var resultado = {};
                         var total = 0;
                         result = JSON.parse(JSON.stringify(result));
-                        console.log('____LENGHT: ' + result.length);
 
                         if (result.length > 0){
                             for(var k in result) {
@@ -692,20 +699,17 @@ module.exports = {
                                             }
                                         }).then(function(response){
                                             if (response){
-                                                console.log('RESPONSE: ' + JSON.stringify(response));
                                                 resultado[total] = result[k];
                                             }
                                             if (k == (result.length - 1)){
                                                 resultado = JSON.parse(JSON.stringify(resultado));
-                                                console.log('resultado: ' + JSON.stringify(resultado));
                                                 res.send(resultado);
                                             }
                                         });
                                     })
                                 } else {
                                     resultado[total] = result[k];
-                                    if (k === (result.length - 1)){
-                                        console.log('RETUUUUURRRNNN');
+                                    if (k == (result.length - 1)){
                                         resultado = JSON.parse(JSON.stringify(resultado));
                                         res.send(resultado);
                                     }
@@ -731,14 +735,27 @@ module.exports = {
                     usuario_id: req.session.passport.user.id,
                     paciente_id: object.pacienteID
                 }
-
             models.MedicoFavorito.findOne({
                 where: condiciones
             }).then(function(result){
                 if (result){
                     result.update({aprobado: 1}
                     ).then(function(result){
-                        res.send({result:'success'});
+
+                        models.Usuario.findOne({
+                            attributes: ['id'],
+                            include: [{model: models.Paciente, where: { id: object.pacienteID},attributes: ['id']}]
+                        }).then(function(usuario){
+                            models.Notificacion.create({
+                                usuario_id: usuario.id,
+                                tipoNotificacion_id: 1,
+                                mensaje: 'El usuario ' + req.session.passport.user.name + ' aceptó tu solicitud de amistad en Intermed',
+                                url: '/perfil/' + req.session.passport.user.usuarioUrl,
+                                enlace: 1,
+                                inicio: '2015-09-10'
+                            });
+                            res.send({result:'success'});
+                        });
                     })
                 } else {
                     res.send({result:'error'});

@@ -52,6 +52,16 @@ var io = function(io, bundle, ioPassport)
             intermed.callController('notificaciones', 'solicitudAmistad', req);
         });
 
+        socket.on('verNotificaciones', function(){
+            console.log('socket_id: ' + socket.id + ' [Buscar: verNotificaciones]');
+            var req = {
+                socket: socket,
+                usuario_id: socket.request.cookies.intermed_sesion.id
+            };
+
+            intermed.callController('notificaciones', 'verNotificaciones', req);
+        });
+
 
 
     });
