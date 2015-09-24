@@ -7,7 +7,8 @@ var regTotalDoc = 0;
 
 if (location.pathname === '/registro') {
     $(document).ready(getAllDoctors());
-} else {
+}
+else {
     $(document).ready(function() {
         $('#frm_regP').on('submit', function(e) {
             e.preventDefault();
@@ -127,6 +128,25 @@ if (location.pathname === '/registro') {
         if (location.pathname.substring(0, 7) === '/perfil') {
             cargarFavCol($('#usuarioPerfil').val());
         }
+
+        /* validaciones al registro */
+        validateForm('input-nombre', 'nombreMed');
+        validateForm('input-apellido', 'ApellidoReg');
+        validateForm('input-nombre', 'nombreReg');
+        //validateForm('input-nombre','ApellidoReg');
+        validateForm('input-correo', 'correoReg');
+        validateForm('input-password', 'contraseñaReg');
+        validateForm('input-validPass', 'contraseña2Reg');
+        validateForm('input-dia', 'diaNacReg');
+        validateForm('input-mes', 'mesNacReg');
+        validateForm('input-año', 'añoNacReg');
+        validateForm('input-select', 'padecimiento');
+        validateForm('input-select', 'especialidad');
+        validateForm('input-select', 'slc_estado');
+        validateForm('input-select', 'slc_ciudad');
+        validateForm('input-checkbox', 'sexF');
+        validateForm('input-checkbox', 'sexM');
+
     });
 }
 
@@ -1106,6 +1126,6 @@ $(function(){
             }
         });
 
-        $('#ubicacionesCarousel').carousel(goTo); 
+        $('#ubicacionesCarousel').carousel(goTo);
     });
 });
