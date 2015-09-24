@@ -1151,7 +1151,6 @@ $(function(){
         $('#ubicacionesCarousel').carousel(goTo);
     });
 });
-})
 
 function aceptarInvitacion(){
     $.ajax({
