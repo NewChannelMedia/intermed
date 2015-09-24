@@ -1,7 +1,9 @@
 var models  = require('../models');
 
 exports.obtenerTodas = function(object, req, res){
-    models.TipoNotificacion.findAll().
+    models.TipoNotificacion.findAll({
+        where: {tipoUsuario: req.session.passport.user.tipoUsuario}
+    }).
     then(function(result){
         models.ConfNotUsu.findAll({
             where: {usuario_id: req.session.passport.user.id}
@@ -68,3 +70,11 @@ exports.prueba = function(object, req, res) {
         res.send('Necesita iniciar sesión');
     }
 };
+
+exports.solicitudAmistad = function (req){
+    models.Notificacion.findAll({
+        where: { usuario_id: req.usuario_id, visto: 0 }, attributes: ['id','mensaje']
+    }).then(function(result){
+        req.socket.emit('solicitudAmistad',result);
+    })
+}

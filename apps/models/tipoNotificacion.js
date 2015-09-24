@@ -5,6 +5,7 @@ module.exports = function(sequelize, DataTypes) {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
     intervalo: {type: DataTypes.INTEGER},
     tipo: {type: DataTypes.STRING},
+    tipoUsuario: {type: DataTypes.STRING},
     interno: {type: DataTypes.INTEGER},
     push: {type: DataTypes.INTEGER},
     mail: {type: DataTypes.INTEGER}

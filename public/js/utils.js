@@ -2,60 +2,13 @@
  *   Archivo creado por Cinthia
  *
  */
-var regTotalDoc = 0, notificaciones = [];
+var regTotalDoc = 0, notificaciones = [], socket;
 
 if (location.pathname === '/registro') {
     $(document).ready(getAllDoctors());
 } else {
     $(document).ready(function() {
-
-        //socket.emit('test', 'Hola');
-
-        //Manejar notificaciones
-        $.ajax({
-            url: '/notificaciones',
-            type: 'POST',
-            dataType: "json",
-            cache: false,
-            success: function(data) {
-                if (data){
-                    notificaciones.forEach(function(notificacion){
-                        clearInterval(notificacion.id);
-                    });
-                    notificaciones = [];
-
-
-                    if (Object.prototype.toString.call(data) === '[object Array]'){
-                        var socket = io();
-                        data.forEach(function(record) {
-                            if (record.interno || record.push || record.mail){
-                                console.log('[' + new Date().toLocaleString().substring(0,18) + '] Revisar: ' + record.tipo);
-
-                                var idInterval = setInterval(
-                                    function(){
-                                        try {
-                                            console.log('[' + new Date().toLocaleString().substring(0,18) + '] Revisar: ' + record.tipo);
-                                        }
-                                        catch(err) {
-                                            console.log('No se puede conectar con el servidor');
-                                        }
-                                }, (parseInt(record.intervalo) * 1000));
-                                notificaciones.push({
-                                    id : idInterval,
-                                    tipo: record.tipo,
-                                    interno: record.interno,
-                                    push: record.push,
-                                    mail: record.mail
-                                });
-                            }
-                        });
-                    }
-                }
-            },
-            error: function(jqXHR, textStatus, err) {
-                console.error('AJAX ERROR: ' + err);
-            }
-        });
+        socketNotificaciones();
 
         $('#frm_regP').on('submit', function(e) {
             e.preventDefault();
@@ -1160,5 +1113,69 @@ function aceptarInvitacion(){
         error: function(jqXHR, textStatus, err) {
             console.error('AJAX ERROR: ' + err);
         }
+    });
+}
+
+function socketNotificaciones(){
+    //Manejar notificaciones
+    $.ajax({
+        url: '/notificaciones',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        success: function(data) {
+            if (data){
+                notificaciones.forEach(function(notificacion){
+                    clearInterval(notificacion.id);
+                });
+                notificaciones = [];
+
+
+                if (Object.prototype.toString.call(data) === '[object Array]'){
+                    if (data) {
+                        socket = io();
+                        data.forEach(function(record) {
+                            if (record.interno || record.push || record.mail){
+                                socket.emit(record.tipo);
+                                console.log('[' + new Date().toLocaleString().substring(0,18) + '] Revisar: ' + record.tipo);
+
+                                var idInterval = setInterval(
+                                    function(){
+                                        try {
+                                            socket.emit(record.tipo);
+                                            console.log('[' + new Date().toLocaleString().substring(0,18) + '] Revisar: ' + record.tipo);
+                                        }
+                                        catch(err) {
+                                            console.log('No se puede conectar con el servidor');
+                                        }
+                                }, (parseInt(record.intervalo) * 1000));
+                                notificaciones.push({
+                                    id : idInterval,
+                                    tipo: record.tipo,
+                                    interno: record.interno,
+                                    push: record.push,
+                                    mail: record.mail
+                                });
+                            }
+                        });
+                        socketManejadores();
+                    }
+                }
+            }
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
+
+function socketManejadores(){
+    socket.on('solicitudAmistad', function(data){
+        var count = 0;
+        $('#totalNotificaciones').html('');
+        data.forEach(function(record) {
+            $('#totalNotificaciones').html(++count);
+            console.log('[respuesta][solicitudAmistad] ' + JSON.stringify(data));
+        });
     });
 }

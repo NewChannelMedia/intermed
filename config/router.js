@@ -18,6 +18,7 @@ var app = express();
 var url = require('url');
 //con esta linea se carga el servidor
 var serv = require('./server');
+var socket = require('./io');
 //envio de correo variable
 var envia = require('../apps/controllers/emailSender');
 var passport = require('passport'),
@@ -83,7 +84,9 @@ var intermed = require('../apps/controllers/Intermed');
 var iniciar = function() {
     app.all('*', function(req, res, next) {
         if (req.session.passport.user) hps.varSession(req.session.passport.user);
-        else hps.varSession(req.session.passport);
+        else {
+            hps.varSession(req.session.passport);
+        }
         rutas.routeLife('main', 'main', hps);
         next();
     });
@@ -922,25 +925,10 @@ var iniciar = function() {
         }
     })
 }
+
 var io = serv.server(app, 3000);
 
-io.use(bundle.cookieParser());
-io.use(bundle.session({secret: 'my secret'}));
-io.use(ioPassport.initialize());
-io.use(ioPassport.session());
-
-io.on('connection', function(socket){
-    console.log('_______________________');
-    console.log('SOCKET: ' + socket.id);
-    socket.request.cookies.io = socket.id;
-    console.log('SESSION: ' + JSON.stringify(socket.request.cookies.intermed_sesion));
-    console.log('_______________________');
-
-    //var interval = setInterval(function(){ socket.emit('chat message', '<li class="other" style="font-size: 80%;color: red; text-align: center; width:100%;padding:0px">mensaje programado para socket ' +  socket.id + '</li>');      console.log('mensaje programado');}, 10000);
-    socket.on('disconnect', function() {
-         console.log('Got disconnect!');
-      });
-});
+socket.io(io, bundle, ioPassport);
 
 //se exporta para que otro js lo pueda utilizar
 exports.iniciar = iniciar;
