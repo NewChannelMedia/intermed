@@ -1,377 +1,377 @@
 <section id="plataforma">
-    <div id="paciente" class="container-fluid profileHolder">
-        <div class="profileHeader">
-            <div class="container">
-                <div class="media block">
-                    <div class="media-left block">
-                        <div class="profilePic">
-                            {{#if usuario.id}}
-                                <img src="{{usuario.urlFotoPerfil}}" />
-                            {{else}}
-                                <img src="{{valSession 'fotoPerfil'}}" id='fotoPerfil' />
-                                <label for="imageFile">Cambiar Imagen</label>
-                                <input type="file" id="imageFile" style="display:none">
-                            {{/if}}
-                        </div>
-                    </div>
-                    <div class="media-body profileGeneralInfo">
-                        <div class="col-lg-12 col-md-12 col-sm-10 col-xs-10">
-                            <div class="profileGenerales">
-                                <div class="vCard">
-                                    {{#if usuario.id}}
-                                        <div class="main">
-                                            <h4 class="media-heading vcNombre Flama-normal s20">
-                                                {{#if usuario.DatosGenerale}}
-                                                    {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
-                                                {{/if}}
-                                            </h4>
-                                            <h4 class="media-heading vcUbicacion Flama-w200 s15">
-                                                {{#if usuario.Direccions}}
-                                                    Guadalajara, Jalisco. MX
-                                                {{/if}}
-                                            </h4>
-                                        </div>
-                                    {{else}}
-                                        <div class="main">
-                                            <h4 class="media-heading vcNombre Flama-normal s20">
-                                                {{valSession "name"}}
-                                            </h4>
-                                            <h4 class="media-heading vcUbicacion Flama-w200 s15">
-                                                {{#ifSession "ciudad"}}
-                                                    {{valSession "ciudad"}}, {{valSession "estado"}}
-                                                {{/ifSession}}
-                                            </h4>
-                                        </div>
-                                    {{/if}}
-                                </div>
-                                {{#unless usuario.id}}
-                                <ul class="media-right profileExtraNav list-inline">
-                                    <li class="active"><a href="#">Editar Perfil</a></li>
-                                </ul>
-                                {{/unless}}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="media-right profileMobileOptions">
-                        <ul class="options list-unstyled">
-                            <li>
-                                <span class="glyphicon glyphicon-plus"></span>
-                            </li>
-                            <li>
-                                <span class="glyphicon glyphicon-thumbs-up"></span>
-                            </li>
-                            <li>
-                                <span class="glyphicon glyphicon-ok"></span>
-                            </li>
-                            <li>
-                                <span class="glyphicon glyphicon-comment"></span>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="profileOptions">
-                        <ul class="options list-unstyled">
-                            <li>
-                                <span class="glyphicon glyphicon-plus"></span> Crear nueva entrada en bitácora
-                            </li>
-                            <hr>
-                            <li>
-                                <a>
-                                    <span class="glyphicon glyphicon-chevron-right"></span> Consulta en línea</a>
-                            </li>
-                            <li>
-                                <a>
-                                    <span class="glyphicon glyphicon-chevron-right"></span> Intermarket</a>
-                            </li>
-                            <li>
-                                <a>
-                                    <span class="glyphicon glyphicon-chevron-right"></span> Foros</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+  <div id="paciente" class="container-fluid profileHolder">
+    <div class="profileHeader">
+      <div class="container">
+        <div class="media block">
+          <div class="media-left block">
+            <div class="profilePic">
+              {{#if usuario.id}}
+                <img src="{{usuario.urlFotoPerfil}}" />
+              {{else}}
+                <img src="{{valSession 'fotoPerfil'}}" id='fotoPerfil' />
+                <label for="imageFile">Cambiar Imagen</label>
+                <input type="file" id="imageFile" style="display:none">
+              {{/if}}
             </div>
+          </div>
+          <div class="media-body profileGeneralInfo">
+            <div class="col-lg-12 col-md-12 col-sm-10 col-xs-10">
+              <div class="profileGenerales">
+                <div class="vCard">
+                  {{#if usuario.id}}
+                    <div class="main">
+                      <h4 class="media-heading vcNombre Flama-normal s20">
+                        {{#if usuario.DatosGenerale}}
+                          {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
+                        {{/if}}
+                      </h4>
+                      <h4 class="media-heading vcUbicacion Flama-w200 s15">
+                        {{#if usuario.Direccions}}
+                          Guadalajara, Jalisco. MX
+                        {{/if}}
+                      </h4>
+                    </div>
+                  {{else}}
+                    <div class="main">
+                      <h4 class="media-heading vcNombre Flama-normal s20">
+                        {{valSession "name"}}
+                      </h4>
+                      <h4 class="media-heading vcUbicacion Flama-w200 s15">
+                        {{#ifSession "ciudad"}}
+                          {{valSession "ciudad"}}, {{valSession "estado"}}
+                        {{/ifSession}}
+                      </h4>
+                    </div>
+                  {{/if}}
+                </div>
+                {{#unless usuario.id}}
+                  <ul class="media-right profileExtraNav list-inline">
+                    <li class="active"><a href="#">Editar Perfil</a></li>
+                  </ul>
+                {{/unless}}
+              </div>
+            </div>
+          </div>
+          <div class="media-right profileMobileOptions">
+            <ul class="options list-unstyled">
+              <li>
+                <span class="glyphicon glyphicon-plus"></span>
+              </li>
+              <li>
+                <span class="glyphicon glyphicon-thumbs-up"></span>
+              </li>
+              <li>
+                <span class="glyphicon glyphicon-ok"></span>
+              </li>
+              <li>
+                <span class="glyphicon glyphicon-comment"></span>
+              </li>
+            </ul>
+          </div>
+          <div class="profileOptions">
+            <ul class="options list-unstyled">
+              <li>
+                <span class="glyphicon glyphicon-plus"></span> Crear nueva entrada en bitácora
+              </li>
+              <hr>
+              <li>
+                <a>
+                  <span class="glyphicon glyphicon-chevron-right"></span> Consulta en línea</a>
+              </li>
+              <li>
+                <a>
+                  <span class="glyphicon glyphicon-chevron-right"></span> Intermarket</a>
+              </li>
+              <li>
+                <a>
+                  <span class="glyphicon glyphicon-chevron-right"></span> Foros</a>
+              </li>
+            </ul>
+          </div>
         </div>
+      </div>
     </div>
-    <div class="homeBody">
-        <div class="homeBodyNav">
-            <div class="container">
-                <ul class="nav nav-tabs nav-justified" role="tablist">
-                    <li class="active" role="presentation">
-                        <a href="#homeInicio" role="tab" data-toggle="tab" aria-controls="homeInicio">Inicio</a>
-                    </li>
-                    <li role="presentation">
-                        <a href="#homeBitacora" role="tab" data-toggle="tab" aria-controls="homeBitacora">Bitacora</a>
-                    </li>
-                    {{#if usuario.id}}
-                            <input type="hidden" id="PacienteId" value="{{usuario.Paciente.id}}" />
-                            {{#if usuario.medFavCol}}
-                                {{#ifSession "id"}}
-                                    {{#ifTipoPaciente}}
-                                    <li role="presentation" id="favoriteContact">
-                                        <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(false)">Eliminar de contactos</a>
-                                    </li>
-                                    {{/ifTipoPaciente}}
-                                {{/ifSession}}
-                            {{else}}
-                                {{#ifSession "id"}}
-                                    {{#ifTipoPaciente}}
-                                    <li role="presentation" id="favoriteContact">
-                                        <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(false)">Agregar a contactos</a>
-                                    </li>
-                                    {{/ifTipoPaciente}}
-                                {{/ifSession}}
-                            {{/if}}
-                        </li>
-                    {{/if}}
-                </ul>
-            </div>
-        </div>
-        <div class="tab-content homeBodyElements">
-            <div role="tabpanel" class="tab-pane fade in container active" id="homeInicio">
-                <div class="row">
-                    <div class="element col-lg-7 col-md-7 col-sm-12 col-xs-12">
-                        <div class="panel panel-primary newsFeedPanel" id="homeNewsFeed">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">
-                                    <span class="panelIcon glyphicon glyphicon-user"></span> News Feed</h3>
-                            </div>
-                            <div class="panel-body newsFeedBody">
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Proximas Citas</h3>
-                            </div>
-                            <div class="panel-body" style="height:250px;">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Calendario</h3>
-                            </div>
-                            <div class="panel-body" style="height:250px;">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Medicos Favoritos</h3>
-                            </div>
-                            <div class="panel-body" style="height:250px;" id="FavColPanel">
-                            </div>
-                        </div>
-                    </div>
-                    {{#if usuario.id}}
-                        <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
-                            <div class="panel panel-primary dropup">
-                              <div class="panel-heading">
-                                  <h4>Contactos</h4>
-                              </div>
-                              <div class="panel-body" id="ContColPanel">
-
-                              </div>
-                            </div>
-                        </div>
-                    {{else}}
-                        <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
-                            <div class="panel panel-primary dropup">
-                              <div class="panel-heading">
-                                  <h4>Contactos</h4>
-                              </div>
-                              <div class="panel-body" id="ContColPanel">
-
-                              </div>
-                              <div class="panel-footer">
-                                    <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
-                                      <span class="glyphicon glyphicon-plus"></span> Invitar
-                                    </button>
-                                    <div id="addFormaForm" class="dropdown-form dropdown-menu dropdown-menu-right" arialabelledby="addForma">
-                                      <div class="panel">
-                                        <div class="panel-body">
-                                          <form class="form-horizontal">
-                                            <div class="form-group">
-                                              <label class="col-md-3 control-label">Nombre</label>
-                                              <div class="col-md-9">
-                                                <input type="text" class="form-control" id="invitar_nombre">
-                                              </div>
-                                            </div>
-                                            <div class="form-group">
-                                              <label class="col-md-3 control-label">Correo</label>
-                                              <div class="col-md-9">
-                                                <input type="text" class="form-control" id="invitar_correo">
-                                              </div>
-                                            </div>
-                                            <div class="form-group">
-                                              <label class="col-md-3 control-label">Mensaje</label>
-                                              <div class="col-md-9">
-                                                <textarea class="form-control" id="invitar_mensaje">Te invito a unirte a Intermed</textarea>
-                                              </div>
-                                            </div>
-                                            <div class="col-md-4 col-md-offset-8">
-                                              <button type="button" class="btn btn-primary btn-block dropdown-form-guardar" onclick="procesarInvitacion()">Enviar</button>
-                                            </div>
-                                          </form>
-                                        </div>
-                                      </div>
-                                  </div>
-                              </div>
-                            </div>
-                        </div>
-                    {{/if}}
-                </div>
-            </div>
-            <!-- ... -->
-            <div role="tabpanel" class="tab-pane fade container" id="homeBitacora">
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-
-                            </div>
-                            <div class="panel-body">
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-
-                            </div>
-                            <div class="panel-body">
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-
-                            </div>
-                            <div class="panel-body">
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- ... -->
-            <div role="tabpanel" class="tab-pane fade container" id="profileFotografias">
-                <div class="row">
-                    <div class="col-md-2">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="panel panel-info">
-                            <div class="panel-heading">
-                            </div>
-                            <div class="panel-body">
-                            </div>
-                        </div>
-                    </div>
-
-
-                </div>
-            </div>
-        </div>
+  </div>
+  <div class="homeBody">
+    <div class="homeBodyNav">
+      <div class="container">
+        <ul class="nav nav-tabs nav-justified" role="tablist">
+          <li class="active" role="presentation">
+            <a href="#homeInicio" role="tab" data-toggle="tab" aria-controls="homeInicio">Inicio</a>
+          </li>
+          <li role="presentation">
+            <a href="#homeBitacora" role="tab" data-toggle="tab" aria-controls="homeBitacora">Bitacora</a>
+          </li>
+          {{#if usuario.id}}
+            <input type="hidden" id="PacienteId" value="{{usuario.Paciente.id}}" />
+            {{#if usuario.medFavCol}}
+              {{#ifSession "id"}}
+                {{#ifTipoPaciente}}
+                  <li role="presentation" id="favoriteContact">
+                    <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(false)">Eliminar de contactos</a>
+                  </li>
+                {{/ifTipoPaciente}}
+              {{/ifSession}}
+            {{else}}
+              {{#ifSession "id"}}
+                {{#ifTipoPaciente}}
+                  <li role="presentation" id="favoriteContact">
+                    <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(false)">Agregar a contactos</a>
+                  </li>
+                {{/ifTipoPaciente}}
+              {{/ifSession}}
+            {{/if}}
+            </li>
+          {{/if}}
+        </ul>
+      </div>
     </div>
+    <div class="tab-content homeBodyElements">
+      <div role="tabpanel" class="tab-pane fade in container active" id="homeInicio">
+        <div class="row">
+          <div class="element col-lg-7 col-md-7 col-sm-12 col-xs-12">
+            <div class="panel elementPanel panel-primary newsFeedPanel" id="homeNewsFeed">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  <span class="panelIcon glyphicon glyphicon-user"></span> News Feed</h3>
+              </div>
+              <div class="panel-body newsFeedBody">
+
+              </div>
+            </div>
+          </div>
+          <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
+            <div class="panel elementPanel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">Proximas Citas</h3>
+              </div>
+              <div class="panel-body" style="height:250px;">
+              </div>
+            </div>
+          </div>
+          <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
+            <div class="panel elementPanel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">Calendario</h3>
+              </div>
+              <div class="panel-body" style="height:250px;">
+              </div>
+            </div>
+          </div>
+          <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
+            <div class="panel elementPanel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">Medicos Favoritos</h3>
+              </div>
+              <div class="panel-body" style="height:250px;" id="FavColPanel">
+              </div>
+            </div>
+          </div>
+          {{#if usuario.id}}
+            <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
+              <div class="panel elementPanel panel-primary dropup">
+                <div class="panel-heading">
+                  <h4>Contactos</h4>
+                </div>
+                <div class="panel-body" id="ContColPanel">
+
+                </div>
+              </div>
+            </div>
+          {{else}}
+            <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-6">
+              <div class="panel elementPanel panel-primary drodown">
+                <div class="panel-heading">
+                  <h4>Contactos</h4>
+                </div>
+                <div class="panel-body" id="ContColPanel">
+
+                </div>
+                <div class="panel-footer">
+                  <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
+                    <span class="glyphicon glyphicon-plus"></span> Invitar
+                  </button>
+                  <div id="addFormaForm" class="dropdown-form dropdown-menu dropdown-menu-right" arialabelledby="addForma">
+                    <div class="panel">
+                      <div class="panel-body">
+                        <form class="form-horizontal">
+                          <div class="form-group">
+                            <label class="col-md-3 control-label">Nombre</label>
+                            <div class="col-md-9">
+                              <input type="text" class="form-control" id="invitar_nombre">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label class="col-md-3 control-label">Correo</label>
+                            <div class="col-md-9">
+                              <input type="text" class="form-control" id="invitar_correo">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label class="col-md-3 control-label">Mensaje</label>
+                            <div class="col-md-9">
+                              <textarea class="form-control" id="invitar_mensaje">Te invito a unirte a Intermed</textarea>
+                            </div>
+                          </div>
+                          <div class="col-md-4 col-md-offset-8">
+                            <button type="button" class="btn btn-primary btn-block dropdown-form-guardar" onclick="procesarInvitacion()">Enviar</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {{/if}}
+        </div>
+      </div>
+      <!-- ... -->
+      <div role="tabpanel" class="tab-pane fade container" id="homeBitacora">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+
+              </div>
+              <div class="panel-body">
+
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+
+              </div>
+              <div class="panel-body">
+
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+
+              </div>
+              <div class="panel-body">
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ... -->
+      <div role="tabpanel" class="tab-pane fade container" id="profileFotografias">
+        <div class="row">
+          <div class="col-md-2">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+              </div>
+              <div class="panel-body">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+              </div>
+              <div class="panel-body">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+              </div>
+              <div class="panel-body">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+              </div>
+              <div class="panel-body">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+              </div>
+              <div class="panel-body">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+              </div>
+              <div class="panel-body">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+              </div>
+              <div class="panel-body">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+              </div>
+              <div class="panel-body">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+              </div>
+              <div class="panel-body">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+              </div>
+              <div class="panel-body">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+              </div>
+              <div class="panel-body">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+              </div>
+              <div class="panel-body">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="panel panel-info">
+              <div class="panel-heading">
+              </div>
+              <div class="panel-body">
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
