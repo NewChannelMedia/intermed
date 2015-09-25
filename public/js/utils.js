@@ -1148,3 +1148,51 @@ $(function(){
         $('#ubicacionesCarousel').carousel(goTo);
     });
 });
+//<---------------------------------------------------------->
+  /**
+  * funcion para resetear los modals y los formualios, cada ves que se cierre
+  * un modal se limpiara los campos de los formuarios que tienen dentro
+  *
+  *
+  **/
+  $(function(){
+    $(".modal").on('hidden.bs.modal',function(e){
+      $('form').find('input').each(function(){
+        switch(this.type){
+          case 'password':
+          case 'email':
+          case 'text':
+            $(this).val('');
+            $("#aviso-error").remove();
+            $('div').removeClass('glyphicon-remove');
+            $('div').removeClass('has-error');
+            $('span').removeClass('glyphicon-ok');
+            $('span').removeClass('glyphicon-remove');
+            $('div').removeClass('has-success');
+            $('div').removeClass('has-feedback');
+          break;
+          case 'radio':$(this).checked = false; break;
+          case 'select':$(this).value = "0";break;
+        }
+      });
+    });
+    $('form').find('input').each(function(){
+      switch(this.type){
+        case 'password':
+        case 'email':
+        case 'text':
+          $(this).val('');
+          $("#aviso-error").remove();
+          $('div').removeClass('glyphicon-remove');
+          $('div').removeClass('has-error');
+          $('span').removeClass('glyphicon-ok');
+          $('span').removeClass('glyphicon-remove');
+          $('div').removeClass('has-success');
+          $('div').removeClass('has-feedback');
+        break;
+        case 'radio':$(this).checked = false; break;
+        case 'select':$(this).value = "0";break;
+      }
+    });
+  });
+//<---------------------------------------------------------->
