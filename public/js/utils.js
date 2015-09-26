@@ -1341,8 +1341,10 @@ function eliminarFavoritos(medico){
 }
 
 function cargarFavCol(usuario){
-    $('#FavColPanel').html('');
-    $('#ContColPanel').html('');
+    $('#FavColPanel .contList').html('');
+    $('#FavColPanel>.panel-body').addClass("hidden invisible");
+    $('#ContColPanel .contList').html('');
+    $('#ContColPanel>.panel-body').addClass("hidden invisible");
     $.ajax({
         async: false,
         url: '/cargarFavCol',
@@ -1352,11 +1354,42 @@ function cargarFavCol(usuario){
         cache: false,
         success: function(data) {
             if (data){
+              for(var t in data){
+                if(data[t].Medico)
+                  $('#FavColPanel .panel-body').removeClass("hidden invisible");
+                else
+                  $('#ContColPanel .panel-body').removeClass("hidden invisible");
+              }
                 for (var p in data) {
-                    if (data[p].medico_id)
-                    $('#FavColPanel').append('<li> <a href="http://'+ window.location.host +'/perfil/' + data[p].Medico.Usuario.usuarioUrl + '" > Dr. ' + data[p].Medico.Usuario.DatosGenerale.nombre + ' ' + data[p].Medico.Usuario.DatosGenerale.apellidoP + ' ' + data[p].Medico.Usuario.DatosGenerale.apellidoM + '</a></li>');
-                    else
-                    $('#ContColPanel').append('<li> <a href="http://'+ window.location.host +'/perfil/' + data[p].Paciente.Usuario.usuarioUrl + '" >' + data[p].Paciente.Usuario.DatosGenerale.nombre + ' ' + data[p].Paciente.Usuario.DatosGenerale.apellidoP + ' ' + data[p].Paciente.Usuario.DatosGenerale.apellidoM + '</a></li>');
+                    if (data[p].medico_id){
+                      $("#FavColPanel .contList").append(
+                        "<li class='media contList-profile'>" +
+                          "<div class='media-left contList-profilePic'>" +
+                            "<a class='contList-profileName' href='http://" + window.location.host + "/perfil/" + data[p].Medico.Usuario.usuarioUrl + "'><img class='media-object contList-profilePicImg' src='" + data[p].Medico.Usuario.urlFotoPerfil + "'></a>" +
+                          "</div>" +
+                          "<div class='media-body contList-profileBody'> " +
+                            "<a class='contList-profileName' href='http://" + window.location.host + "/perfil/" + data[p].Medico.Usuario.usuarioUrl + "'> Dr. " + data[p].Medico.Usuario.DatosGenerale.nombre + " " + data[p].Medico.Usuario.DatosGenerale.apellidoP + " " + data[p].Medico.Usuario.DatosGenerale.apellidoM + "</a><br>" +
+                            "<a class='contList-profileEsp' href='http://" + window.location.host + "/perfil/" + data[p].Medico.Usuario.usuarioUrl + "'> " + data[p].Medico.Usuario.Especialidad + "</a>" +
+                          "</div>" +
+                          "<div class='media-right contList-profileAction'>" +
+                            "<a class='contList-profileActionLink Flama-bold s15'>Recomendar</a>" +
+                          "</div>" +
+                        "</li>"
+                      );
+                    }else
+                      $('#ContColPanel .contList').append(
+                        "<li class='media contList-profile'>" +
+                          "<div class='media-left contList-profilePic'>" +
+                          "<a class='contList-profileName' href='http://" + window.location.host + "/perfil/" + data[p].Paciente.Usuario.usuarioUrl + "'><img class='media-object contList-profilePicImg' src='" + data[p].Paciente.Usuario.urlFotoPerfil + "'></a>" +
+                          "</div>" +
+                          "<div class='media-body contList-profileBody'> " +
+                            "<a class='contList-profileName' href='http://" + window.location.host + "/perfil/" + data[p].Paciente.Usuario.usuarioUrl + "'>" + data[p].Paciente.Usuario.DatosGenerale.nombre + " " + data[p].Paciente.Usuario.DatosGenerale.apellidoP + " " + data[p].Paciente.Usuario.DatosGenerale.apellidoM + "</a>"+
+                          "</div>" +
+                          "<div class='media-right contList-profileAction'>" +
+                            "<a class='contList-profileActionLink Flama-bold s15'>inbox</a>" +
+                          "</div>" +
+                        "</li>"
+                      );
                 }
                 //alert('Success');
             }
@@ -1426,7 +1459,11 @@ $(function(){
    });
 })
 
-//Funcion que previene que un carousel gire
+//funcion para abrir un dropdown desde varios botones
+
+
+
+//Funcion que previene que el carousel que contiene la informacion del medico gire
 $(function() {
    $('#vCard').carousel('pause');
    $('#vCard').carousel({

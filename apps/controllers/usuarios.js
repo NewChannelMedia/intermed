@@ -243,12 +243,12 @@ exports.correoDisponible = function(object, req, res) {
 
 
 function guardarImagenDePerfil(object, usuario) {
-    if (!fs.existsSync('./garage/profilepics/' + usuario.id)) {
-        fs.mkdirSync('./garage/profilepics/' + usuario.id, 0777);
+    if (!fs.existsSync('./public/garage/profilepics/' + usuario.id)) {
+        fs.mkdirSync('./public/garage/profilepics/' + usuario.id, 0777);
     };
-    var path = './garage/profilepics/' + usuario.id + '/' + usuario.id + '_' + getDateTime(false) + '.png';
+    var path = '/garage/profilepics/' + usuario.id + '/' + usuario.id + '_' + getDateTime(false) + '.png';
 
-    download(object.picture.data.url, path, function(){
+    download(object.picture.data.url, 'public/' + path, function(){
         usuario.update({
             urlFotoPerfil: path
         });
