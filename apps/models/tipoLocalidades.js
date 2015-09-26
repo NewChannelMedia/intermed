@@ -1,13 +1,19 @@
 "use strict";
 
-module.exports = function(sequelize, DataTypes) {
-  var TipoLocalidad = sequelize.define("TipoLocalidad", {
-    id: {type : DataTypes.INTEGER, primaryKey: true},
-    tipo: {type : DataTypes.STRING, allowNull:false},
+module.exports = function ( sequelize, DataTypes ) {
+  var TipoLocalidad = sequelize.define( "TipoLocalidad", {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true
+    },
+    tipo: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
   }, {
     classMethods: {
-      associate: function(models) {
-          TipoLocalidad.hasMany(models.Localidad);
+      associate: function ( models ) {
+        TipoLocalidad.hasMany( models.Localidad );
       }
     },
     timestamps: false,
@@ -15,7 +21,7 @@ module.exports = function(sequelize, DataTypes) {
     underscored: true,
     freezeTableName: true,
     tableName: 'tipoLocalidad'
-  });
+  } );
 
   return TipoLocalidad;
 };

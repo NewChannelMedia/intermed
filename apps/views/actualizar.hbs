@@ -1,75 +1,73 @@
-
-
 <form method="POST" name="frmActMed" id="frmActMed">
-        <input type="hidden" id="id" name="id" value="{{medico.id}}">
-        <div class="col-md-6">
-          <div class="row">
-            <div class="col-md-12">
-              <div class="form-group">
-                <input type="text" class="form-control" id="nombreMed" name="nombreMed" placeholder="Nombre" value="{{medico.DatosGenerale.nombre}}">
-              </div>
-              <div class="form-group">
-                <input type="text" class="form-control" id="apellidoMed" name="apellidoMed" placeholder="Apellido" value="{{medico.DatosGenerale.apellidoP}}">
-              </div>
-              <div class="form-group">
-                <input type="text" class="form-control" id="correoMed" name="correoMed" placeholder="Correo" value="{{medico.correo}}">
-              </div>
-              <div class="form-group">
-                <input type="text" class="form-control" id="telefonoMed" name="telefonoMed" placeholder="Teléfono" value="{{medico.Telefono.telefono}}">
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <div class="form-group">
-                <input type="text" class="form-control" id="especialidadMed" name="especialidadMed" placeholder="Especialidad"  value="15">
-              </div>
-            </div>
-          </div>
+  <input type="hidden" id="id" name="id" value="{{medico.id}}">
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <input type="text" class="form-control" id="nombreMed" name="nombreMed" placeholder="Nombre" value="{{medico.DatosGenerale.nombre}}">
         </div>
-        <div class="col-md-6">
-          <div class="row">
-            <div class="col-md-8">
-              <div class="form-group">
-                <input type="text" class="form-control" id="calleMed" name="calleMed" placeholder="Calle" value="{{medico.Direccion.calle}}">
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <input type="text" class="form-control" id="numeroMed" name="numeroMed" placeholder="Numero" value="{{medico.Direccion.numero}}">
-              </div>
-            </div>
-            <div class="col-md-8">
-              <div class="form-group">
-                <input type="text" class="form-control" id="coloniaMed" name="coloniaMed" placeholder="Colonia" value="{{medico.Direccion.colonia}}">
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <input type="text" class="form-control" id="cpMed" name="cpMed" placeholder="Codigo Postal" value="{{medico.Direccion.cp}}">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <input type="text" class="form-control" id="calle1Med" name="calle1Med" placeholder="Entre calle A" value="{{medico.Direccion.calle1}}">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <input type="text" class="form-control" id="calle2Med" name="calle2Med" placeholder="Y calle B" value="{{medico.Direccion.calle2}}">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <input type="text" class="form-control" id="ciudadMed" name="ciudadMed" placeholder="Ciudad" value="{{medico.Direccion.ciudad}}">
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <input type="text" class="form-control" id="estadoMed" name="estadoMed" placeholder="Estado" value="{{medico.Direccion.estado_id}}">
-              </div>
-            </div>
-          </div>
+        <div class="form-group">
+          <input type="text" class="form-control" id="apellidoMed" name="apellidoMed" placeholder="Apellido" value="{{medico.DatosGenerale.apellidoP}}">
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" id="correoMed" name="correoMed" placeholder="Correo" value="{{medico.correo}}">
+        </div>
+        <div class="form-group">
+          <input type="text" class="form-control" id="telefonoMed" name="telefonoMed" placeholder="Teléfono" value="{{medico.Telefono.telefono}}">
         </div>
       </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <input type="text" class="form-control" id="especialidadMed" name="especialidadMed" placeholder="Especialidad" value="15">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="form-group">
+          <input type="text" class="form-control" id="calleMed" name="calleMed" placeholder="Calle" value="{{medico.Direccion.calle}}">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <input type="text" class="form-control" id="numeroMed" name="numeroMed" placeholder="Numero" value="{{medico.Direccion.numero}}">
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="form-group">
+          <input type="text" class="form-control" id="coloniaMed" name="coloniaMed" placeholder="Colonia" value="{{medico.Direccion.colonia}}">
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <input type="text" class="form-control" id="cpMed" name="cpMed" placeholder="Codigo Postal" value="{{medico.Direccion.cp}}">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <input type="text" class="form-control" id="calle1Med" name="calle1Med" placeholder="Entre calle A" value="{{medico.Direccion.calle1}}">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <input type="text" class="form-control" id="calle2Med" name="calle2Med" placeholder="Y calle B" value="{{medico.Direccion.calle2}}">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <input type="text" class="form-control" id="ciudadMed" name="ciudadMed" placeholder="Ciudad" value="{{medico.Direccion.ciudad}}">
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <input type="text" class="form-control" id="estadoMed" name="estadoMed" placeholder="Estado" value="{{medico.Direccion.estado_id}}">
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
 </form>

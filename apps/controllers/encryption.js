@@ -9,18 +9,17 @@
  *
  **/
 // se cargan las librerias necesarias
-var criptosis = require('crypto');
+var criptosis = require( 'crypto' );
 /**
-* metodo para encriptar el token
-*
-* @param id
-* @param times
-* @return ecript token
-*/
-function doEncriptToken( id, times )
-{
-  var concatenando = id+times;
-  return String(criptosis.createHash('md5').update(concatenando).digest('hex'));
+ * metodo para encriptar el token
+ *
+ * @param id
+ * @param times
+ * @return ecript token
+ */
+function doEncriptToken( id, times ) {
+  var concatenando = id + times;
+  return String( criptosis.createHash( 'md5' ).update( concatenando ).digest( 'hex' ) );
 }
 // funciones que se podrán exportar
 exports.doEncriptToken = doEncriptToken;

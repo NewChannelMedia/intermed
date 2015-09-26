@@ -233,7 +233,8 @@ a:visited {
   margin: 0;
   padding: 0;
 }
-.navControlIcons li.miniProfilePic{
+
+.navControlIcons li.miniProfilePic {
   margin-right: 10px;
 }
 
@@ -1418,6 +1419,7 @@ footer a:visited {
   background-color: #377da8;
   color: #ffffff;
 }
+
 .element .elementPanel>.panel-body {
   padding: 5px;
   min-height: 327px;
@@ -1690,7 +1692,7 @@ div::-webkit-scrollbar-thumb:window-inactive {
   background-color: #50a7dd;
 }
 
-.contactosOrderButtons .btn  {
+.contactosOrderButtons .btn {
   color: #fff;
 }
 
@@ -1726,22 +1728,25 @@ div::-webkit-scrollbar-thumb:window-inactive {
   background-color: #333f4d;
   padding: 5px;
 }
-.contList-profilePic {
 
-}
+.contList-profilePic {}
+
 .contList-profilePicImg {
   width: 50px;
 }
+
 .contList-profileBody {
   vertical-align: middle;
 }
+
 .contList-profileName,
 .contList-profileEsp,
 .contList-profileName:hover,
-.contList-profileEsp:hover  {
+.contList-profileEsp:hover {
   color: #f2f2f2;
   text-transform: capitalize;
 }
+
 .contList-profileEsp {
   font-weight: bold;
 }

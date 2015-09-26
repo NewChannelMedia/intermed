@@ -13,11 +13,11 @@
  */
 
 // Librerias
-var nodemailer = require('nodemailer');
-var smtpTransport = require('nodemailer-smtp-transport');
-var hbs = require('nodemailer-express-handlebars');
+var nodemailer = require( 'nodemailer' );
+var smtpTransport = require( 'nodemailer-smtp-transport' );
+var hbs = require( 'nodemailer-express-handlebars' );
 //cryptomaniacs
-var cryptomaniacs = require('./encryption');
+var cryptomaniacs = require( './encryption' );
 /**
  *  funcion que se encargara de enviar un correo, con la
  *  plantilla correspondiente, desde los parametros se pedira
@@ -27,60 +27,60 @@ var cryptomaniacs = require('./encryption');
  *  @param file nombre del archivo hbs que se desea enviar por correo
  *
  */
-function mailer(object, file) {
-	// se configuran las plantillas para el envio de cadad una
-	var options = {
-		viewEngine: {
-			extname: '.hbs',
-			layoutsDir: 'apps/views/layouts/',
-			defaultLayout: 'mail.hbs'
-		},
-		viewPath: 'apps/views/mail/',
-		extName: '.hbs'
-	};
-	// se configuran los datos del host
-	var datos = {
-		host: 'server119.neubox.net',
-		secure: true,
-		port: 465,
-		connectionTimeout: 3000,
-		auth: {
-			user: 'hola@newchannel.mx',
-			pass: 'channel5766'
-		},
-		tls: {
-			rejectUnauthorized: false
-		}
-	};
-	// se configura un json con los valores que debe de traer el object
-	// este json se le pasara como parametro a la funcion para enviar el correo
-	var mailOptions = {
-		from: 'New Channel corps © <hola@newchannel.mx>',
-		to: object.to,
-		subject: object.subject,
-		template: file,
-		context: {
-			name: object.nombre,
-			correo: object.to,
-			enlace: 'localhost:3000/activar/'+ object.token
-		}
-	};
-	if (object.enlace) mailOptions.context.enlace = object.enlace;
-	if (object.nombreSesion) mailOptions.context.nombresesion = object.nombreSesion;
-	if (object.mensaje) mailOptions.context.mensaje = object.mensaje;
+function mailer( object, file ) {
+  // se configuran las plantillas para el envio de cadad una
+  var options = {
+    viewEngine: {
+      extname: '.hbs',
+      layoutsDir: 'apps/views/layouts/',
+      defaultLayout: 'mail.hbs'
+    },
+    viewPath: 'apps/views/mail/',
+    extName: '.hbs'
+  };
+  // se configuran los datos del host
+  var datos = {
+    host: 'server119.neubox.net',
+    secure: true,
+    port: 465,
+    connectionTimeout: 3000,
+    auth: {
+      user: 'hola@newchannel.mx',
+      pass: 'channel5766'
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+  };
+  // se configura un json con los valores que debe de traer el object
+  // este json se le pasara como parametro a la funcion para enviar el correo
+  var mailOptions = {
+    from: 'New Channel corps © <hola@newchannel.mx>',
+    to: object.to,
+    subject: object.subject,
+    template: file,
+    context: {
+      name: object.nombre,
+      correo: object.to,
+      enlace: 'localhost:3000/activar/' + object.token
+    }
+  };
+  if ( object.enlace ) mailOptions.context.enlace = object.enlace;
+  if ( object.nombreSesion ) mailOptions.context.nombresesion = object.nombreSesion;
+  if ( object.mensaje ) mailOptions.context.mensaje = object.mensaje;
 
-	var transporter = nodemailer.createTransport(smtpTransport(datos));
-	transporter.use('compile', hbs(options));
-	// se hace la funcion para el envio de el correo
-	transporter.sendMail(mailOptions, function(err, informacion) {
-		if (err){
-			console.log("1 :- " + err);
-			return false;
-		}
-		else{
-			console.log("Sending mail: " + informacion.response);
-			return true;
-		}
-	});
+  var transporter = nodemailer.createTransport( smtpTransport( datos ) );
+  transporter.use( 'compile', hbs( options ) );
+  // se hace la funcion para el envio de el correo
+  transporter.sendMail( mailOptions, function ( err, informacion ) {
+    if ( err ) {
+      console.log( "1 :- " + err );
+      return false;
+    }
+    else {
+      console.log( "Sending mail: " + informacion.response );
+      return true;
+    }
+  } );
 }
 exports.mailer = mailer;
