@@ -1172,9 +1172,10 @@ function aceptarInvitacion(paciente_id, notificacion_id){
                     $('#post'+notificacion_id).html('');
                     for (var x in solicitudAmistad){
                         if (solicitudAmistad[x].id == notificacion_id){
+                            $('#button'+notificacion_id).html('');
                             solicitudesAceptadas.unshift({
                                 id: solicitudAmistad[x].id,
-                                time: solicitudAmistad[x].inicio,
+                                time: solicitudAmistad[x].time,
                                 visto: solicitudAmistad[x].visto,
                                 content: $('#li'+notificacion_id).html()
                             });
@@ -1296,12 +1297,12 @@ function actualizarNotificaciones(){
         $('#totalNotificaciones').removeClass('hidden invisible');
         var total = 0;
         totalNotificaciones.forEach(function(notificacion) {
-            if (notificacion.content){
+            if (notificacion.toString() != "undefined"){
                 if (notificacion.visto == 1){
-                    $('#notificacinesList').append('<li class="media">' + notificacion.content + '</li>');
+                    $('#notificacinesList').append('<li class="media" id="li' + notificacion.id + '">' + notificacion.content + '</li>');
                 } else {
                     $('#totalNotificaciones').html(++total);
-                    $('#notificacinesList').append('<li class="media" style="background-color:#DDD" id="li' + id + '">' + notificacion.content + '</li>');
+                    $('#notificacinesList').append('<li class="media" style="background-color:#DDD" id="li' + notificacion.id + '">' + notificacion.content + '</li>');
                 }
             }
         });
@@ -1335,7 +1336,7 @@ function socketManejadores(){
                     id: record.id,
                     time: record.inicio,
                     visto: record.visto,
-                    content: '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="'+ record.paciente.Usuario.urlFotoPerfil +'" style="width: 50px;"></div><div class="media-body"><div id="pre'+ record.id +'"></div>'+ record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM +' <div id="post'+ record.id +'">quiere ser tu amigo en Intermed</div></a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > '+ date +'</span></div></div><div class="media-right"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion('+ record.paciente_id +','+ record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' +  record.paciente_id  + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button></div>'
+                    content: '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="'+ record.paciente.Usuario.urlFotoPerfil +'" style="width: 50px;"></div><div class="media-body"><span id="pre'+ record.id +'"></span>'+ record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM +' <span id="post'+ record.id +'">quiere ser tu amigo en Intermed</span></a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > '+ date +'</span></div></div><div class="media-right" id="button' + record.id +'"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion('+ record.paciente_id +','+ record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' +  record.paciente_id  + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button></div>'
                 });
             }
         });
