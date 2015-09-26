@@ -1046,7 +1046,10 @@ var iniciar = function() {
 					intermed.callController('agenda','seleccionaCalificacionMedico', object, req, res);
 				});
 
-
+        //actualiza la informacion del paciente de los biometricos
+        app.post("/despachador", function(req, res){
+        intermed.callController('usuarios','despachador',req.body, req, res);
+        });
 
 
 }

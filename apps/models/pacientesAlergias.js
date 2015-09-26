@@ -11,7 +11,7 @@
                     name: 'paciente_id',
                     field: 'paciente_id'
                   }});
-                  PacienteAlergia.belongsTo(models.Alergia);
+                  PacienteAlergia.belongsTo(models.Alergias);
               }
           },
           timestamps: false,

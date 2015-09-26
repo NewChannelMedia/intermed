@@ -1,6 +1,6 @@
   "use strict";
   module.exports = function( sequelize, DataTypes ){
-      var Alergia = sequelize.define('Alergia',{
+      var Alergias = sequelize.define('Alergias',{
           id:{ type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
           alergias:{ type: DataTypes.STRING, required: true}
       },{
@@ -15,5 +15,5 @@
           freezeTableName: true,
           tableName: 'alergias'
       });
-      return Alergia;
+      return Alergias;
   }
