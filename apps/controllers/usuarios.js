@@ -243,12 +243,12 @@ exports.correoDisponible = function(object, req, res) {
 
 
 function guardarImagenDePerfil(object, usuario) {
-    if (!fs.existsSync('./garage/profilepics/' + usuario.id)) {
-        fs.mkdirSync('./garage/profilepics/' + usuario.id, 0777);
+    if (!fs.existsSync('./public/garage/profilepics/' + usuario.id)) {
+        fs.mkdirSync('./public/garage/profilepics/' + usuario.id, 0777);
     };
-    var path = './garage/profilepics/' + usuario.id + '/' + usuario.id + '_' + getDateTime(false) + '.png';
+    var path = '/garage/profilepics/' + usuario.id + '/' + usuario.id + '_' + getDateTime(false) + '.png';
 
-    download(object.picture.data.url, path, function(){
+    download(object.picture.data.url, './public' + path, function(){
         usuario.update({
             urlFotoPerfil: path
         });
@@ -376,17 +376,8 @@ var generarSesion = function(req, res, usuario_id, redirect) {
                     if (!usuario.Biometrico || !usuario.Biometrico.genero) req.session.passport.user.registroCompleto = 0;
                     if (usuario.DatosGenerale) req.session.passport.user.name = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM;
                     else req.session.passport.user.name = '';
-                    if (usuario.urlFotoPerfil) {
-                        fs.readFile(usuario.urlFotoPerfil, function(err, data) {
-                            if (err) console.log('Error al leer la imagen de perfil: ' + err);
-                            if (data) {
-                                req.session.passport.user.fotoPerfil = 'data:image/jpeg;base64,' + (data).toString('base64');
-                            }
-                            cargarExtraInfo(usuario, redirect, req, res);
-                        });
-                    } else {
-                        cargarExtraInfo(usuario, redirect, req, res);
-                    }
+                    req.session.passport.user.fotoPerfil = usuario.urlFotoPerfil;
+                    cargarExtraInfo(usuario, redirect, req, res);
                 });
             } else {
                 if (redirect) {

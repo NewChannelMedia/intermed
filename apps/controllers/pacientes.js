@@ -33,13 +33,13 @@ exports.modificarPerfil = function(object, req, res) {
     if (req.body.base64file) {
         console.log('base64file: ' + req.body.base64file.length);
         var fs = require("fs");
-        if(!fs.existsSync('./garage/profilepics/'+ req.session.passport.user.id)){
-             fs.mkdirSync('./garage/profilepics/'+ req.session.passport.user.id, 0777);
+        if(!fs.existsSync('./public/garage/profilepics/'+ req.session.passport.user.id)){
+             fs.mkdirSync('./public/garage/profilepics/'+ req.session.passport.user.id, 0777);
          };
 
-        var newPath = './garage/profilepics/'+ req.session.passport.user.id +'/' + req.session.passport.user.id + '_' + getDateTime() + '.jpg';
+        var newPath = '/garage/profilepics/'+ req.session.passport.user.id +'/' + req.session.passport.user.id + '_' + getDateTime() + '.jpg';
         var base64Data = req.body.base64file.replace(/^data:image\/png;base64,/, "");
-        fs.writeFile(newPath, base64Data, 'base64', function(err, succes) {
+        fs.writeFile('./public' + newPath, base64Data, 'base64', function(err, succes) {
           if (err){ res.send({result: 'error', message : err });}
           else{
                console.log("archivo subido: " + newPath);
@@ -50,11 +50,8 @@ exports.modificarPerfil = function(object, req, res) {
                        id: req.session.passport.user.id
                    }
                }).then(function(result) {
-                   fs.readFile(newPath, function(err, data) {
-                      if (err) throw err;
-                      req.session.passport.user.fotoPerfil = 'data:image/jpeg;base64,' + (data).toString('base64');
-                      res.send({result: 'success'});
-                    });
+                   req.session.passport.user.fotoPerfil = newPath;
+                   res.send({result: 'success'});
                });
            }
         });

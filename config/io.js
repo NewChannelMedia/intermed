@@ -30,40 +30,62 @@ var io = function(io, bundle, ioPassport)
     }
 
     io.on('connection', function(socket){
-        console.log('[CONEXIÓN:' + socket.id + ']USUARIO:' + socket.request.cookies.intermed_sesion.usuario + '.');
-        conectados.push({
-            socket : socket.id,
-            id: socket.request.cookies.intermed_sesion.id,
-            usuario: socket.request.cookies.intermed_sesion.usuario
-        });
+        if (socket.request.cookies.intermed_sesion){
 
-        socket.on('disconnect', function() {
+            console.log('[CONEXIÓN:' + socket.id + ']USUARIO:' + socket.request.cookies.intermed_sesion.usuario + '.');
+            conectados.push({
+                socket : socket.id,
+                id: socket.request.cookies.intermed_sesion.id,
+                usuario: socket.request.cookies.intermed_sesion.usuario
+            });
+
+            socket.on('disconnect', function() {
                 desconectar(socket.id);
                 console.log('[DESCONEXIÓN:' + socket.id + ']USUARIO:' + socket.request.cookies.intermed_sesion.usuario + '.');
             });
 
-        socket.on('solicitudAmistad', function(){
-            console.log('socket_id: ' + socket.id + ' [Buscar: solicitudAmistad]');
-            var req = {
-                socket: socket,
-                usuario_id: socket.request.cookies.intermed_sesion.id
-            };
+            socket.on('solicitudAmistad', function(){
+                console.log('socket_id: ' + socket.id + ' [Buscar: solicitudAmistad]');
+                var req = {
+                    socket: socket,
+                    usuario_id: socket.request.cookies.intermed_sesion.id
+                };
 
-            intermed.callController('notificaciones', 'solicitudAmistad', req);
-        });
-
-        socket.on('verNotificaciones', function(){
-            console.log('socket_id: ' + socket.id + ' [Buscar: verNotificaciones]');
-            var req = {
-                socket: socket,
-                usuario_id: socket.request.cookies.intermed_sesion.id
-            };
-
-            intermed.callController('notificaciones', 'verNotificaciones', req);
-        });
+                intermed.callController('notificaciones', 'solicitudAmistad', req);
+            });
 
 
+            socket.on('solicitudAmistadAceptada', function(){
+                console.log('socket_id: ' + socket.id + ' [Buscar: solicitudAmistadAceptada]');
+                var req = {
+                    socket: socket,
+                    usuario_id: socket.request.cookies.intermed_sesion.id
+                };
 
+                intermed.callController('notificaciones', 'solicitudAmistadAceptada', req);
+            });
+
+            socket.on('solicitudesAceptadas', function (id){
+                console.log('socket_id: ' + socket.id + ' [Buscar: solicitudesAceptadas]');
+                var req = {
+                    socket: socket,
+                    usuario_id: socket.request.cookies.intermed_sesion.id,
+                    notificacion_id: id
+                };
+
+                intermed.callController('notificaciones', 'solicitudesAceptadas', req);
+            })
+
+            socket.on('verNotificaciones', function(){
+                console.log('socket_id: ' + socket.id + ' [Buscar: verNotificaciones]');
+                var req = {
+                    socket: socket,
+                    usuario_id: socket.request.cookies.intermed_sesion.id
+                };
+
+                intermed.callController('notificaciones', 'verNotificaciones', req);
+            });
+        }
     });
 };
 

@@ -73,11 +73,104 @@ exports.prueba = function(object, req, res) {
 
 exports.solicitudAmistad = function (req){
     models.Notificacion.findAll({
-        where: { usuario_id: req.usuario_id, visto: 0 }, attributes: ['id','mensaje','enlace','url']
+        where: { usuario_id: req.usuario_id, visto: 0, tipoNotificacion_id: 1 }, attributes: ['id','data','inicio','visto']
     }).then(function(result){
-        req.socket.emit('solicitudAmistad',result);
+        var restante = 8 - result.length;
+        if (restante < 0) restante = 0;
+        models.Notificacion.findAll({
+            where: { usuario_id: req.usuario_id, visto: 1, tipoNotificacion_id: 1 }, attributes: ['id','data','inicio','visto'], limit: restante
+        }).then(function(resultVisto){
+            result = JSON.parse(JSON.stringify(result));
+            result = result.concat(JSON.parse(JSON.stringify(resultVisto)));
+            var length = result.length;
+            result.forEach(function(record) {
+                var paciente_id = record.data;
+                record['paciente_id'] = paciente_id;
+                models.Paciente.findOne({
+                    where: {id: paciente_id},
+                    attributes: ['id'],
+                    include: [{model: models.Usuario,
+                        attributes: ['id','urlFotoPerfil','usuarioUrl'],
+                        include: [{model: models.DatosGenerales,
+                            attributes: ['nombre','apellidoP','apellidoM']
+                        }]
+                    }]
+                }).then(function(usuario){
+                    record['paciente'] = JSON.parse(JSON.stringify(usuario));
+                    if (record === result[result.length - 1]){
+                        req.socket.emit('solicitudAmistad',result);
+                    }
+                })
+            });
+        });
     })
-}
+};
+
+
+exports.solicitudAmistadAceptada = function (req){
+    models.Notificacion.findAll({
+        where: { usuario_id: req.usuario_id, visto: 0, tipoNotificacion_id: 2 }, attributes: ['id','data','inicio','visto']
+    }).then(function(result){
+        var restante = 8 - result.length;
+        if (restante < 0) restante = 0;
+        models.Notificacion.findAll({
+            where: { usuario_id: req.usuario_id, visto: 1, tipoNotificacion_id: 2 }, attributes: ['id','data','inicio','visto'], limit: restante
+        }).then(function(resultVisto){
+            result = JSON.parse(JSON.stringify(result));
+            result = result.concat(JSON.parse(JSON.stringify(resultVisto)));
+            var length = result.length;
+            result.forEach(function(record) {
+                var paciente_id = record.data;
+                record['paciente_id'] = paciente_id;
+                models.Paciente.findOne({
+                    where: {id: paciente_id},
+                    attributes: ['id'],
+                    include: [{model: models.Usuario,
+                        attributes: ['id','urlFotoPerfil','usuarioUrl'],
+                        include: [{model: models.DatosGenerales,
+                            attributes: ['nombre','apellidoP','apellidoM']
+                        }]
+                    }]
+                }).then(function(usuario){
+                    record['paciente'] = JSON.parse(JSON.stringify(usuario));
+                    if (record === result[result.length - 1]){
+                        req.socket.emit('solicitudAmistadAceptada',result);
+                    }
+                })
+            });
+        });
+    })
+};
+
+
+exports.solicitudesAceptadas = function (req){
+    models.Notificacion.findAll({
+        where: { usuario_id: req.usuario_id, visto: 1, tipoNotificacion_id: 3 }, attributes: ['id','data','inicio','visto']
+    }).then(function(result){
+        result = JSON.parse(JSON.stringify(result));
+        var length = result.length;
+        result.forEach(function(record) {
+            var paciente_id = record.data;
+            record['paciente_id'] = paciente_id;
+            models.Paciente.findOne({
+                where: {id: paciente_id},
+                attributes: ['id'],
+                include: [{model: models.Usuario,
+                    attributes: ['id','urlFotoPerfil','usuarioUrl'],
+                    include: [{model: models.DatosGenerales,
+                        attributes: ['nombre','apellidoP','apellidoM']
+                    }]
+                }]
+            }).then(function(usuario){
+                record['paciente'] = JSON.parse(JSON.stringify(usuario));
+                if (record === result[result.length - 1]){
+                    req.socket.emit('solicitudesAceptadas',result);
+                }
+            })
+        });
+    })
+};
+
 
 exports.verNotificaciones = function (req){
     console.log('VER NOTIFICACIONES');

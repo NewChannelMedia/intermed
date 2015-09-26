@@ -580,10 +580,7 @@ module.exports = {
                         models.Notificacion.create({
                             usuario_id: usuario_id,
                             tipoNotificacion_id: 1,
-                            mensaje: 'El usuario ' + req.session.passport.user.name + ' quiere ser tu amigo en intermed',
-                            url: '/perfil/' + req.session.passport.user.usuarioUrl,
-                            enlace: 1,
-                            inicio: '2015-09-10'
+                            data: req.session.passport.user.Paciente_id.toString()
                         });
                     });
                 }
@@ -748,11 +745,8 @@ module.exports = {
                         }).then(function(usuario){
                             models.Notificacion.create({
                                 usuario_id: usuario.id,
-                                tipoNotificacion_id: 1,
-                                mensaje: 'El usuario ' + req.session.passport.user.name + ' aceptó tu solicitud de amistad en Intermed',
-                                url: '/perfil/' + req.session.passport.user.usuarioUrl,
-                                enlace: 1,
-                                inicio: '2015-09-10'
+                                tipoNotificacion_id: 2,
+                                data: req.session.passport.user.Paciente_id.toString()
                             });
                             res.send({result:'success'});
                         });
@@ -761,6 +755,12 @@ module.exports = {
                     res.send({result:'error'});
                 }
             });
+            if (object.notificacion_id){
+                models.Notificacion.update(
+                    {tipoNotificacion_id: 3, visto: 1},{where: { id:  object.notificacion_id }
+                });
+            }
+
         } else {
             res.send({result:'error', error : 'Necesitas iniciar sesión'});
         }
