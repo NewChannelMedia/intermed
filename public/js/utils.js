@@ -1035,7 +1035,6 @@ function cargarFavCol(usuario){
         cache: false,
         success: function(data) {
             if (data){
-              console.log(JSON.stringify(data));
               for(var t in data){
                 if(data[t].Medico)
                   $('#FavColPanel .panel-body').removeClass("hidden invisible");
@@ -1141,7 +1140,11 @@ $(function(){
    });
 })
 
-//Funcion que previene que un carousel gire
+//funcion para abrir un dropdown desde varios botones
+
+
+
+//Funcion que previene que el carousel que contiene la informacion del medico gire
 $(function() {
    $('#vCard').carousel('pause');
    $('#vCard').carousel({
