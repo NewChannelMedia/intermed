@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/jquery.Jcrop.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="css/intermed.css">
     <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -77,75 +78,14 @@
               <li>
                 <a id="agendaIcon" class="navControlBtn" href="#">
                   <img src="img/icon-calendar.png">
-                  <span class="badge">3</span>
                 </a>
               </li>
               <li role="presentation" class="dropdown">
-                <a id="notificationIcon" class="navControlBtn dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+                <a id="notificationIcon" class="navControlBtn dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="socket.emit('verNotificaciones')">
                   <img src="img/icon-messages.png">
-                  <span class="badge">6</span>
+                  <span id="totalNotificaciones" class="badge hidden invisible">1</span>
                 </a>
-                <ul class="dropdown-menu notificationDropdown media-list">
-                  <li class="media">
-                    <div class="media-left">
-                      <a>
-                        <img class="media-object" src="img/logo-color.png" style="width:50px;">
-                      </a>
-                    </div>
-                    <div class="media-body">
-                      <a>Notificacion #1</a>
-                    </div>
-                  </li>
-                  <li class="media">
-                    <div class="media-left">
-                      <a>
-                        <img class="media-object" src="img/logo-color.png" style="width:50px;">
-                      </a>
-                    </div>
-                    <div class="media-body">
-                      <a>Notificacion #2</a>
-                    </div>
-                  </li>
-                  <li class="media">
-                    <div class="media-left">
-                      <a>
-                        <img class="media-object" src="img/logo-color.png" style="width:50px;">
-                      </a>
-                    </div>
-                    <div class="media-body">
-                      <a>Notificacion #3</a>
-                    </div>
-                  </li>
-                  <li class="media">
-                    <div class="media-left">
-                      <a>
-                        <img class="media-object" src="img/logo-color.png" style="width:50px;">
-                      </a>
-                    </div>
-                    <div class="media-body">
-                      <a>Notificacion #4</a>
-                    </div>
-                  </li>
-                  <li class="media">
-                    <div class="media-left">
-                      <a>
-                        <img class="media-object" src="img/logo-color.png" style="width:50px;">
-                      </a>
-                    </div>
-                    <div class="media-body">
-                      <a>Notificacion #5</a>
-                    </div>
-                  </li>
-                  <li class="media">
-                    <div class="media-left">
-                      <a>
-                        <img class="media-object" src="img/logo-color.png" style="width:50px;">
-                      </a>
-                    </div>
-                    <div class="media-body">
-                      <a>Notificacion #6</a>
-                    </div>
-                  </li>
+                <ul class="dropdown-menu notificationDropdown media-list" id="notificacinesList">
                 </ul>
               </li>
               <li class="navSeparator">
@@ -170,7 +110,7 @@
     <input type="hidden" id="inicio" value="{{valSession 'inicio'}}">
     <input type="hidden" id="registroCompleto" value="{{valSession 'registroCompleto'}}">
     <input type="hidden" id="tipoUsuario" value="{{valSession 'tipoUsuario'}}">
-    <input type="hidden" id="usuarioPerfil" value="{{usuario.id}}"> {{/unless}} {{{body}}}
+    <input type="hidden" id="usuarioPerfil" value="{{#if usuario.id}}{{usuario.id}}{{else}}{{valSession 'id'}}{{/if}}"> {{/unless}} {{{body}}}
     <footer>
       <div class="container">
         <p class="navbar-text">
@@ -593,6 +533,5 @@
 
   <script src="js/jquery.Jcrop.js"></script>
   <script src="js/jquery.SimpleCropper.js"></script>
-  <script src="js/utils.js"></script>
 
 </html>

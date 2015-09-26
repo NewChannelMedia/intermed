@@ -248,7 +248,7 @@ function guardarImagenDePerfil(object, usuario) {
     };
     var path = '/garage/profilepics/' + usuario.id + '/' + usuario.id + '_' + getDateTime(false) + '.png';
 
-    download(object.picture.data.url, 'public/' + path, function(){
+    download(object.picture.data.url, './public' + path, function(){
         usuario.update({
             urlFotoPerfil: path
         });
@@ -580,7 +580,7 @@ exports.invitar = function (object, req, res){
                         subject: 'Te invito a usar Intermed',
                         nombre: object.nombre,
                         nombreSesion: req.session.passport.user.name,
-                        enlace: 'localhost:3000/' + tokens,
+                        enlace: 'localhost:3000/invitacion/' + tokens,
                         mensaje: object.mensaje
                     };
                     var result = mail.mailer(datos, 'invitar'); //se envia el correo

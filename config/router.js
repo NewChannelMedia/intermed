@@ -18,12 +18,15 @@ var app = express();
 var url = require('url');
 //con esta linea se carga el servidor
 var serv = require('./server');
+var socket = require('./io');
 //envio de correo variable
 var envia = require('../apps/controllers/emailSender');
 var passport = require('passport'),
     bodyParser = require('body-parser'),
     cookieParser = require("cookie-parser"),
-    session = require('express-session');
+    session = require('express-session'),
+    bundle = require('socket.io-bundle'),
+    ioPassport = require('socket.io-passport');
 
 app.use(cookieParser('intermedSession'));
 
@@ -81,7 +84,9 @@ var intermed = require('../apps/controllers/Intermed');
 var iniciar = function() {
     app.all('*', function(req, res, next) {
         if (req.session.passport.user) hps.varSession(req.session.passport.user);
-        else hps.varSession(req.session.passport);
+        else {
+            hps.varSession(req.session.passport);
+        }
         rutas.routeLife('main', 'main', hps);
         next();
     });
@@ -903,7 +908,7 @@ var iniciar = function() {
     });
 
     //Home
-    app.get('/:tokeninvitacion', function(req, res) {
+    app.get('/invitacion/:tokeninvitacion', function(req, res) {
         res.cookie('intermed_invitacion', {token: req.params.tokeninvitacion}, { expires: new Date(Date.now() + (900000*4*24)) });
         res.redirect('/');
     });
@@ -1052,7 +1057,27 @@ var iniciar = function() {
         });
 
 
+
+    app.post('/aceptarInvitacion', function (req, res){
+        intermed.callController('medicos','aceptarInvitacion',req.body, req, res);
+    });
+
+    app.get('/testnotificaciones', function (req, res){
+        intermed.callController('notificaciones','prueba',req.body, req, res);
+    });
+
+    app.post('/notificaciones', function (req, res){
+        if (req.session.passport.user){
+            intermed.callController('notificaciones', 'obtenerTodas', req.body, req, res);
+        } else {
+            res.send({result: 'null'});
+        }
+    })
 }
-serv.server(app, 3000);
+
+var io = serv.server(app, 3000);
+
+socket.io(io, bundle, ioPassport);
+
 //se exporta para que otro js lo pueda utilizar
 exports.iniciar = iniciar;

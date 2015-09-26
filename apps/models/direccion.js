@@ -16,7 +16,7 @@ module.exports = function(sequelize, DataTypes) {
     usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true},
     institucion_id: {type: DataTypes.INTEGER},
     localidad_id: {type: DataTypes.INTEGER},
-    municipio_id: {type: DataTypes.INTEGER, required: true},
+    municipio_id: {type: DataTypes.INTEGER},
     //estado_id: {type: DataTypes.INTEGER, required: true}
   }, {
     classMethods: {

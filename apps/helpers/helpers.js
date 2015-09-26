@@ -52,6 +52,16 @@ function ifTipoPaciente (options){
     }
 }
 
+function ifPaciente (value, options){
+    if (value && session.tipoUsuario == 'P'){
+        console.log('ifPaciente-->' + value + ' -- Result: true');
+        return options.fn(true);
+    } else {
+        console.log('ifPaciente-->' + value + ' -- Result: false');
+        return options.inverse(true);
+    }
+}
+
 exports.varSession = varSession;
 exports.valSession = valSession;
 exports.ifSession = ifSession;
@@ -60,3 +70,4 @@ exports.unlessSessionVal = unlessSessionVal;
 exports.ifID = ifID;
 exports.ifTipoMedico = ifTipoMedico;
 exports.ifTipoPaciente = ifTipoPaciente;
+exports.ifPaciente = ifPaciente;
