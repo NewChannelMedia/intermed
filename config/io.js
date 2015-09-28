@@ -35,7 +35,7 @@ var io = function ( io, bundle, ioPassport ) {
   io.on( 'connection', function ( socket ) {
     if ( socket.request.cookies.intermed_sesion ) {
 
-      console.log( '[CONEXIÓN:' + socket.id + ']USUARIO:' + socket.request.cookies.intermed_sesion.usuario + '.' );
+      //console.log( '[CONEXIÓN:' + socket.id + ']USUARIO:' + socket.request.cookies.intermed_sesion.usuario + '.' );
       conectados.push( {
         socket: socket.id,
         id: socket.request.cookies.intermed_sesion.id,
@@ -44,11 +44,11 @@ var io = function ( io, bundle, ioPassport ) {
 
       socket.on( 'disconnect', function () {
         desconectar( socket.id );
-        console.log( '[DESCONEXIÓN:' + socket.id + ']USUARIO:' + socket.request.cookies.intermed_sesion.usuario + '.' );
+        //console.log( '[DESCONEXIÓN:' + socket.id + ']USUARIO:' + socket.request.cookies.intermed_sesion.usuario + '.' );
       } );
 
       socket.on( 'solicitudAmistad', function () {
-        console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudAmistad]' );
+        //console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudAmistad]' );
         var req = {
           socket: socket,
           usuario_id: socket.request.cookies.intermed_sesion.id
@@ -59,7 +59,7 @@ var io = function ( io, bundle, ioPassport ) {
 
 
       socket.on( 'solicitudAmistadAceptada', function () {
-        console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudAmistadAceptada]' );
+        //console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudAmistadAceptada]' );
         var req = {
           socket: socket,
           usuario_id: socket.request.cookies.intermed_sesion.id
@@ -69,7 +69,7 @@ var io = function ( io, bundle, ioPassport ) {
       } );
 
       socket.on( 'solicitudesAceptadas', function ( id ) {
-        console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudesAceptadas]' );
+        //console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudesAceptadas]' );
         var req = {
           socket: socket,
           usuario_id: socket.request.cookies.intermed_sesion.id,
@@ -80,7 +80,7 @@ var io = function ( io, bundle, ioPassport ) {
       } )
 
       socket.on( 'verNotificaciones', function () {
-        console.log( 'socket_id: ' + socket.id + ' [Buscar: verNotificaciones]' );
+        //console.log( 'socket_id: ' + socket.id + ' [Buscar: verNotificaciones]' );
         var req = {
           socket: socket,
           usuario_id: socket.request.cookies.intermed_sesion.id
