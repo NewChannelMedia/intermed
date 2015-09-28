@@ -19,6 +19,9 @@ module.exports = function ( sequelize, DataTypes ) {
     },
     aprobado: {
       type: DataTypes.INTEGER
+    },
+    mutuo: {
+      type: DataTypes.INTEGER
     }
   }, {
     classMethods: {

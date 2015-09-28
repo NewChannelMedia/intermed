@@ -381,6 +381,7 @@ var generarSesion = function ( req, res, usuario_id, redirect ) {
         res.cookie( 'intermed_sesion', {
           id: usuario.id,
           usuario: usuario.usuarioUrl,
+          tipoUsuario: usuario.tipoUsuario,
           tiempo: getDateTime( true )
         } );
         if ( actualizacion ) {
