@@ -560,6 +560,7 @@ exports.despachador = function ( object, req, res ) {
     switch ( object.accion ) {
       case 'insertar':
         req.body.prueba[ 'usuario_id' ] = usuario_id;
+        console.log("TODO---->"+JSON.stringify(req.body.prueba.peso));
         models[ tabla ].create(
           req.body.prueba
         ).then( function ( insertado ) {
@@ -569,7 +570,6 @@ exports.despachador = function ( object, req, res ) {
       case 'actualizar':
         // con la siguiente funcion se mandara a checar de que tabla se requiere realizar la accion
         // y con sus respectivas condiciones
-        console.log( "TACOSSSs" );
         var update = {};
         if ( object.numero === 'true' ) {
           update[ campo ] = parseFloat( req.body.valor );

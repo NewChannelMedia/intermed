@@ -644,6 +644,36 @@
               <div class="col-md-12">
                 <div class="col-md-12">
                   <label>Biometricos:</label>
+                  <div class = "col-md-12">
+                    <div class = "col-md-3">
+                      <div class = "col-lg-6">
+                        <div class = "input-group">
+                          <span class = "input-group-btn" id = "ingresaP"></span>
+                          <div id = "inputIngresaP"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class = "col-md-3">
+                      <div class = "col-lg-6">
+                        <div class = "input-group">
+                          <span class = "input-group-btn" id = "ingresaAl"></span>
+                          <div id = "inputIngresaAl"></div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class = "col-md-3">
+                      <div class = "col-lg-6">
+                        <span class = "input-group-btn" id = "ingresaS"></span>
+                        <div id = "ingresaIngresaS"></div>
+                      </div>
+                    </div>
+                    <div class = "col-md-3">
+                      <div class = "col-lg-6">
+                        <span class = "input-group-btn" id = "ingresaG"></span>
+                        <div id = "inputIngresaG"></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div id="idBiometrico"></div>
                 <div class="col-md-3">
@@ -674,7 +704,7 @@
                   <div class="col-lg-6">
                     <div class="input-group">
                       <span class="input-group-btn" id="buttonBiometrico"></span>
-                      <div id="inputBiometricoGenero">/div>
+                      <div id="inputBiometricoGenero"></div>
                       </div>
                     </div>
                   </div>
@@ -730,12 +760,7 @@
                     <div class="row">
                       <div class="col-md-12">
                         <div class="input-group">
-                          <select id="menuPadecimiento" class="form-control">
-                            <option value="0">--Eliga un padecimiento--</option>
-                            {{#each padecimientos}}
-                              <option value="{{id}}">{{padecimiento}}</option>
-                            {{/each}}
-                          </select>
+                          <div id="menuPadecimiento" class="form-group"></div>
                           <span class="input-group-btn" id="buttonAddPadecimiento"></span>
                         </div>
                       </div>
@@ -771,12 +796,7 @@
                     <div class="col-md-12">
                       <div class="">
                         <div class="input-group">
-                          <select id="menuAlergia" class="form-control">
-                            <option value="0">--Eliga una alergia--</option>
-                            {{#each alergias}}
-                              <option value="{{id}}">{{alergia}}</option>
-                            {{/each}}
-                          </select>
+                          <div id="menuAlergia" class="form-group"></div>
                           <span class="input-group-btn" id="addAlergia"></span>
                         </div>
                       </div>

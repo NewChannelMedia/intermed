@@ -551,32 +551,10 @@ function cargarInfoSesion() {
     dataType: "json",
     cache: false,
     success: function ( data ) {
+      //Limpieza de los campos para que no se repitan con .html('')
       $( "#buttonBiometrico" ).html( '' );
       $( "#ladaTelefono" ).html( '' );
       $( "#ladaTelefono" ).html( '' );
-      //DATOS GENERALES
-      if ( data.DatosGenerale ) {
-        $( "#idNombre" ).html( '<input type = "hidden" id = "idDatosGenerales" value = "' + data.DatosGenerale.id + '"/>' );
-        $( "#inputNombre" ).html( '<input type = "text" class = "form-control" id = "inName" name = "inName" value ="' + data.DatosGenerale.nombre + '" placeholder = "Nombre"/>' );
-        $( "#buttonName" ).html( '<button ocultoId = "' + data.DatosGenerale.id + '" determina = "n" otroCampo = "nombreD" inputId="inName" type = "button" id = "modificaName" class = "form-control btn btn-success"><span class="glyphicon glyphicon-pencil"></span></button>' );
-        $( "#inputApellidoP" ).html( '<input type = "text" class = "form-control" id = "inApellidoP" name = "inApellidoP" value = "' + data.DatosGenerale.apellidoP + '" placeholder="Apellido paterno"/>' );
-        $( "#buttonApellidoP" ).html( '<button ocultoId = "' + data.DatosGenerale.id + '" determina = "aP" otroCampo = "apellidoP" inputId="inApellidoP" type = "button" class = "form-control btn btn-success" id = "modificarApellidoP"><span class="glyphicon glyphicon-pencil"></span></button>' );
-        $( "#inputApellidoM" ).html( '<input type = "text" class = "form-control" id = "inApellidoM" name = "inApellidoM" value ="' + data.DatosGenerale.apellidoM + '" placeholder = "Apellido materno"/>' );
-        $( "#buttonApellidoM" ).html( '<button ocultoId = "' + data.DatosGenerale.id + '" determina = "aM" otroCampo = "apellidoM" inputId="inApellidoM" type = "button" class = "form-control btn btn-success" id = "modificarApellidoM" onclick = ""><span class="glyphicon glyphicon-pencil"></span></button>' );
-      } //FIN DATOS GENERALES
-      //BIOMETRICOS
-      if ( data.Biometrico ) {
-        $( "#idBiometrico" ).html( '<input type = "hidden" id = "idBiometrico" value = "' + data.Biometrico.id + '" />' );
-        $( "#inputBiometricoPeso" ).html( '<input selectivo = "peso" type = "text" class = "form-control" id = "biometricoPeso" name = "biometricoPeso" value = "' + data.Biometrico.peso + '" placeholder = "Peso"/>' );
-        $( "#modificaBP" ).html( '<button ocultoId = "' + data.Biometrico.id + '" class = "form-control btn btn-success" otroCampo = "biometric" inputType = "biometricoPeso" name = "modificaPB" type = "button" id = "modificaPB"><span class="glyphicon glyphicon-pencil"></span></button>' )
-        $( "#inputBiometricoAltura" ).html( '<input selectivo = "altura" type = "text" class = "form-control" id = "biometricoAltura" name = "biometricoAltura" value = "' + data.Biometrico.altura + '" placeholder = "Altura"/>' );
-        $( "#modificaBA" ).html( '<buttton ocultoId = "' + data.Biometrico.id + '" otroCampo = "biometric" inputType = "biometricoAltura" type = "button" class = "form-control btn btn-success" id = "modificarAl"><span class="glyphicon glyphicon-pencil"></span></button>' );
-        $( "#inputBiometricoSangre" ).html( '<input selectivo = "sangre" type = "text" class = "form-control" id = "biometricoSangre" name = "biometricoSangre" value = "' + data.Biometrico.tipoSangre + '" placeholder = "Tipo Sangre"/>' );
-        $( "#modificaBS" ).html( '<buttton ocultoId = "' + data.Biometrico.id + '" otroCampo = "biometric" inputTyepe = "biometricoSangre" type = "button" name ="modificaSB" id = "modificaSB" class = "form-control btn btn-success"><span class="glyphicon glyphicon-pencil"></span></button>' )
-        $( "#inputBiometricoGenero" ).html( '<input selectivo = "genero" type = "text" class = "form-control" id = "biometricoGenero" name = "biometricoGenero" value ="' + data.Biometrico.genero + '" placeholder = "Genero"/>' );
-        $( "#buttonBiometrico" ).html( '<button ocultoId = "' + data.Biometrico.id + '" otroCampo = "biometric" inputId="biometricoGenero" type = "button" class = "form-control btn btn-success" id = "modificarBiometrico"><span class="glyphicon glyphicon-pencil"></span></button>' );
-      } // FIN BIOMETRICOS
-      // MUNICIPIOS Y TELEFONOS
       $( "#ladaTelefono" ).html( '' );
       $( "#numeroTelefono" ).html( '' );
       $( "#buttonLada" ).html( '' );
@@ -584,61 +562,94 @@ function cargarInfoSesion() {
       $( "#contactoNombre" ).html( '' );
       $( "#contactoTel" ).html( '' );
       $( "#buttonContacto" ).html( '' );
+      $( "#buttonContactoNombre" ).html( '' );
+      $( "#inputPadecimiento" ).html( '' );
+      $( "#buttonPadecimiento" ).html( '' );
+      $( "#inputAlergia" ).html( '' );
+      $( "#eliminarAlergia" ).html( '' );
+      // fin de la limpieza de los formularios
+      //Botones que aparecen para poder agregar datos
       $( "#buttonAddLada" ).html( '<button ocultoId = "" otroCampo = "addLada" inputId="" type = "button" class = "form-control btn btn-primary" id = "agregaLada"><span class="glyphicon glyphicon-plus"></span></button>' );
       $( "#addladaTelefono" ).html( '<input type = "text" class = "form-control" id = "agregaAddLada" name = "agregaAddLada" placeholder = "LADA:"/>' );
       $( "#addnumeroTelefono" ).html( '<input type = "text" class ="form-control" id = "addFon" name = "addFon" placeholder="Telefono:"/>' );
       $( "#nombreDContacto" ).html( '<input type = "text" id = "agregaNContacto" name = "agregaNContacto" class = "form-control"placeholder = "Nombre:"/>' );
       $( "#numeroDContacto" ).html( '<input type = "text" id = "agregaNtel" name = "agregaNtel" class = "form-control" placeholder = "Telefono:"/>' );
       $( "#buttonContacto" ).html( '<button otroCampo = "addDatos" inputId="" type = "button" class = "form-control btn, btn-primary" id = "agregaDatosContacto" name = "agregaDatosContacto"><span class="glyphicon glyphicon-pencil"></span></button>' );
-      if ( data.Direccions.Localidad ) {
-        $( "#buttonMunicipio" ).html( '<button otroCampo = "municip" type = "button" class = "form-control btn btn-success" id = "moficaMunicipio" ><span class="glyphicon glyphicon-pencil"></span></button>' );
-        $( "#idMunicipio" ).html( '<input type = "hidden" id = "idMunicipio" value = "' + data.Direccions[ 0 ].Localidad.municipio_id + '" />' );
-        $( "#inputMunicipio" ).html( '<input type = "text" class ="form-control" id = "agregaMunicipio" name = "agregaMunicipio" placeholder = "Municipio"/>' );
-        $( "idCp" ).html( '<input type = "hidden" id = "idLocalidad" value = "' + data.Direccions[ 0 ].Localidad.id + '" />' );
-        $( "#direccionCp" ).html( '<input type = "text" class ="form-control" id = "direccionCP" name = "direccionCP" value ="' + data.Direccions[ 0 ].Localidad.CP + '" placeholder="CP"/>' );
-        $( "#buttonCP" ).html( '<button ocultoId = "' + data.Direccions[ 0 ].Localidad.id + '" otroCampo = "cpB" inputId="" type = "button" class ="form-control btn btn-success" id = "CpButton" onclick = ""><span class="glyphicon glyphicon-pencil"></span></button>' );
-      }
-      if ( data.Telefonos ) {
-        for ( var i in data.Telefonos ) {
-          $( "#idLada" ).append( '<input type = "hidden" id = "idTelefonos' + i + '" value = "' + data.Telefonos[ i ].id + '" />' );
-          $( "#ladaTelefono" ).append( '<input us = "' + data.Telefonos[ i ].usuario_id + '" maxlength = "5" type = "text" class = "form-control" id = "dLada' + i + '" name = "dLada' + i + '" value = "' + data.Telefonos[ i ].lada + '" placeholder = "LADA"/>' );
-          $( "#buttonLada" ).append( '<button inputUs = "dLada' + i + '" ocultoId = "' + data.Telefonos[ i ].id + '" otroCampo = "lad" inputId = "dLada' + i + '" valor = "type = "button" class = "form-control btn btn-success" id = "modificarLada' + i + '" onclick = ""><span class="glyphicon glyphicon-pencil"></span></button>' );
-          $( "#numeroTelefono" ).append( '<input us = "' + data.Telefonos[ i ].usuario_id + '" type = "text" class = "form-control" id = "numTel' + i + '" name = "numTel' + i + '" value = "' + data.Telefonos[ i ].numero + '" placeholder = "Numero telefonico"/>' );
-          $( "#buttonTel" ).append( '<button inputUs = "numTel' + i + '" ocultoId = "' + data.Telefonos[ i ].id + '" otroCampo = "ttel" inputId = "numTel' + i + '" type = "button" class = "form-control btn btn-success" id = "modificarTel' + i + '"><span class="glyphicon glyphicon-pencil"></span></button>' );
+      $( "#menuPadecimiento").html('<input type "text" id="ingresaPadecimiento" name = "ingresaPadecimiento" class = "form-control" placeholder = "Padecimiento:"/>');
+      $( "#buttonAddPadecimiento" ).html( '<button otroCampo = "addPad" inputId="" type = "button" class = "btn btn-primary" id = "addPadecimiento" ><span class="glyphicon glyphicon-plus"></span></button>' );
+      $( "#menuAlergia" ).html('<input type = "text" id = "ingresaAlergia" name = "ingresaAlergia" class = "form-control" placeholder = "Alergia/s:"/>');
+      $( "#addAlergia" ).html( '<button otroCampo = "addAle" inputId="" type = "button" class = "btn btn-primary" id = "addAlergia"><span class="glyphicon glyphicon-plus"></span></button>' );
+      $( "#ingresaP" ).html('<button type = "button" otroCampo = "ingresaPeso" inputId = "" class = "btn btn-primary" id = "ingresaPeso"><span class="glyphicon glyphicon-plus"></span></button>');
+      $( "#inputIngresaP").html('<input type = "text" id = "inputIngresaPe" name = "inputIngresaPe" class = "form-control" placeholder = "Peso:"/>');
+      $( "#ingresaAl" ).html('<button type = "button" otroCampo = "ingresoA" inputId = "" class = "btn btn-primary" id = "agregaAl"><span class="glyphicon glyphicon-plus"></span></button>');
+      $("#inputIngresaAl").html('<input type = "text" id = "ingresaAlt" name = "ingresaAlt" class = "form-control" placeholder = "Altura:"/>');
+      $("#ingresaS").html('<button type = "button" otroCampo = "ingresoS" inputId = "" class = "btn btn-primary" id = "ingresaSan"><span class="glyphicon glyphicon-plus"></span></button>');
+      $("#ingresaIngresaS").html('<input type = "text" id = "ingresaSa" name = "ingresaSa" class = "form-control" placeholder = "Tipo de sangre:"/>');
+      $("#ingresaG").html('<button type = "button" otroCampo = "ingresaGe" inputId = "" class = "btn btn-primary" id = "ingresaGe"><span class="glyphicon glyphicon-plus"></span></button>');
+      $("#inputIngresaG").html('<input type = "text" id = "ingresaGene" name = "ingresaGene" class = "form-control" placeholder = "Genero:"/>');
+      // fin de los botones para poder agregar
+      //<--------------------- DATOS GENERALES -------------------->
+        if( data.DatosGenerale ){
+          $( "#idNombre" ).html( '<input type = "hidden" id = "idDatosGenerales" value = "' + data.DatosGenerale.id + '"/>' );
+          $( "#inputNombre" ).html( '<input type = "text" class = "form-control" id = "inName" name = "inName" value ="' + data.DatosGenerale.nombre + '" placeholder = "Nombre"/>' );
+          $( "#buttonName" ).html( '<button ocultoId = "' + data.DatosGenerale.id + '" determina = "n" otroCampo = "nombreD" inputId="inName" type = "button" id = "modificaName" class = "form-control btn btn-success"><span class="glyphicon glyphicon-pencil"></span></button>' );
+          $( "#inputApellidoP" ).html( '<input type = "text" class = "form-control" id = "inApellidoP" name = "inApellidoP" value = "' + data.DatosGenerale.apellidoP + '" placeholder="Apellido paterno"/>' );
+          $( "#buttonApellidoP" ).html( '<button ocultoId = "' + data.DatosGenerale.id + '" determina = "aP" otroCampo = "apellidoP" inputId="inApellidoP" type = "button" class = "form-control btn btn-success" id = "modificarApellidoP"><span class="glyphicon glyphicon-pencil"></span></button>' );
+          $( "#inputApellidoM" ).html( '<input type = "text" class = "form-control" id = "inApellidoM" name = "inApellidoM" value ="' + data.DatosGenerale.apellidoM + '" placeholder = "Apellido materno"/>' );
+          $( "#buttonApellidoM" ).html( '<button ocultoId = "' + data.DatosGenerale.id + '" determina = "aM" otroCampo = "apellidoM" inputId="inApellidoM" type = "button" class = "form-control btn btn-success" id = "modificarApellidoM" onclick = ""><span class="glyphicon glyphicon-pencil"></span></button>' );
         }
-      }
-      // FIN MUNICIPIOS Y TELEFONOS
-      // CONTACTOif(data.Paciente)
-      if ( data.Paciente ) {
-        $( "#buttonContactoNombre" ).html( '' );
-        for ( var i in data.Paciente.ContactoEmergencia ) {
-          $( "#idContacto" ).append( '<input type = "hidden" id = "idContacto" value = "' + data.Paciente.ContactoEmergencia[ i ].id + '" />' );
-          $( "#contactoNombre" ).append( '<input type = "text" class = "form-control" id = "contactoNombre' + i + '" value ="' + data.Paciente.ContactoEmergencia[ i ].nombre + '" name = "contactoNombre' + i + '" placeholder="Nombre del contacto:" />' );
-          $( "#buttonContactoNombre" ).append( '<button ocultoId = "' + data.Paciente.ContactoEmergencia[ i ].id + '" otroCampo = "contChangeNombre" inputId = "contactoNombre' + i + '"  type = "button" class = "form-control btn btn-success" id = "modificaContactoNombre' + i + '"><span class = "glyphicon glyphicon-pencil"></span></button>' );
-          $( "#contactoTel" ).append( '<input type = "text" class = "form-control" id = "contactoTel' + i + '" value = "' + data.Paciente.ContactoEmergencia[ i ].tel + '" name = "contactoTel' + i + '" placeholder="Telefono del contacto:"/>' );
-          $( "#buttonContacto" ).append( '<button ocultoId = "' + data.Paciente.ContactoEmergencia[ i ].id + '" otroCampo = "contChange" inputId="contactoTel' + i + '" type = "button" class = "form-control btn btn-success" id = "modificarContacto' + i + '"><span class="glyphicon glyphicon-pencil"></span></button> ' );
+      //<--------------------- FIN DATOS GENERALES -------------------->
+      //<--------------------- BIOMETRICOS ---------------------------->
+        if( data.Biometrico ){
+          $( "#idBiometrico" ).html( '<input type = "hidden" id = "idBiometrico" value = "' + data.Biometrico.id + '" />' );
+          $( "#inputBiometricoPeso" ).html( '<input selectivo = "peso" type = "text" class = "form-control" id = "biometricoPeso" name = "biometricoPeso" value = "' + data.Biometrico.peso + '" placeholder = "Peso"/>' );
+          $( "#modificaBP" ).html( '<button ocultoId = "' + data.Biometrico.id + '" class = "form-control btn btn-success" otroCampo = "biometric" inputType = "biometricoPeso" name = "modificaPB" type = "button" id = "modificaPB"><span class="glyphicon glyphicon-pencil"></span></button>' )
+          $( "#inputBiometricoAltura" ).html( '<input selectivo = "altura" type = "text" class = "form-control" id = "biometricoAltura" name = "biometricoAltura" value = "' + data.Biometrico.altura + '" placeholder = "Altura"/>' );
+          $( "#modificaBA" ).html( '<buttton ocultoId = "' + data.Biometrico.id + '" otroCampo = "biometric" inputType = "biometricoAltura" type = "button" class = "form-control btn btn-success" id = "modificarAl"><span class="glyphicon glyphicon-pencil"></span></button>' );
+          $( "#inputBiometricoSangre" ).html( '<input selectivo = "sangre" type = "text" class = "form-control" id = "biometricoSangre" name = "biometricoSangre" value = "' + data.Biometrico.tipoSangre + '" placeholder = "Tipo Sangre"/>' );
+          $( "#modificaBS" ).html( '<buttton ocultoId = "' + data.Biometrico.id + '" otroCampo = "biometric" inputTyepe = "biometricoSangre" type = "button" name ="modificaSB" id = "modificaSB" class = "form-control btn btn-success"><span class="glyphicon glyphicon-pencil"></span></button>' )
+          $( "#inputBiometricoGenero" ).html( '<input selectivo = "genero" type = "text" class = "form-control" id = "biometricoGenero" name = "biometricoGenero" value ="' + data.Biometrico.genero + '" placeholder = "Genero"/>' );
+          $( "#buttonBiometrico" ).html( '<button ocultoId = "' + data.Biometrico.id + '" otroCampo = "biometric" inputId="biometricoGenero" type = "button" class = "form-control btn btn-success" id = "modificarBiometrico"><span class="glyphicon glyphicon-pencil"></span></button>' );
         }
-        // FIN CONTACTO
-        $( "#inputPadecimiento" ).html( '' );
-        $( "#buttonPadecimiento" ).html( '' );
-        //PACIENTE
-        for ( var i in data.Paciente.PacientePadecimientos ) {
-          $( "#idPadecimiento" ).append( '<input type = "hidden" id = "idPadecimiento' + i + '" value = "' + data.Paciente.PacientePadecimientos[ i ].Padecimiento.id + '" />' );
-          $( "#inputPadecimiento" ).append( '<input type = "text" class = "form-control" id = "padecimiento' + i + '" name = "padecimiento"' + i + ' value = "' + data.Paciente.PacientePadecimientos[ i ].Padecimiento.padecimiento + '" placeholder="Padecimiento" disabled/><br/>' );
-          $( "#buttonPadecimiento" ).append( '<button de ="' + data.Paciente.PacientePadecimientos[ i ].id + '" acc = "elimina" ocultoId = "' + data.Paciente.PacientePadecimientos[ i ].Padecimiento.id + '" otroCampo = "deletePade" inputId="padecimiento' + i + '" type = "button" class = "form-control btn btn-danger id = "eliminaPadecimiento' + i + '"><span class="glyphicon glyphicon-remove"></span></button>' );
+      //<--------------------- FIN BIOMETRICOS ---------------------------->
+      //<--------------------- TELEFONOS ---------------------------------->
+        if( data.Telefonos ){
+          for( var i in data.Telefonos ){
+            $( "#idLada" ).append( '<input type = "hidden" id = "idTelefonos' + i + '" value = "' + data.Telefonos[ i ].id + '" />' );
+            $( "#ladaTelefono" ).append( '<input us = "' + data.Telefonos[ i ].usuario_id + '" maxlength = "5" type = "text" class = "form-control" id = "dLada' + i + '" name = "dLada' + i + '" value = "' + data.Telefonos[ i ].lada + '" placeholder = "LADA"/>' );
+            $( "#buttonLada" ).append( '<button inputUs = "dLada' + i + '" ocultoId = "' + data.Telefonos[ i ].id + '" otroCampo = "lad" inputId = "dLada' + i + '" valor = "type = "button" class = "form-control btn btn-success" id = "modificarLada' + i + '" onclick = ""><span class="glyphicon glyphicon-pencil"></span></button>' );
+            $( "#numeroTelefono" ).append( '<input us = "' + data.Telefonos[ i ].usuario_id + '" type = "text" class = "form-control" id = "numTel' + i + '" name = "numTel' + i + '" value = "' + data.Telefonos[ i ].numero + '" placeholder = "Numero telefonico"/>' );
+            $( "#buttonTel" ).append( '<button inputUs = "numTel' + i + '" ocultoId = "' + data.Telefonos[ i ].id + '" otroCampo = "ttel" inputId = "numTel' + i + '" type = "button" class = "form-control btn btn-success" id = "modificarTel' + i + '"><span class="glyphicon glyphicon-pencil"></span></button>' );
+          }
         }
-        $( "#buttonAddPadecimiento" ).html( '<button otroCampo = "addPad" inputId="" type = "button" class = "btn btn-primary" id = "addPadecimiento" onclick = ""><span class="glyphicon glyphicon-plus"></span></button>' );
-        //FIN PACIENTE
-        $( "#inputAlergia" ).html( '' );
-        $( "#eliminarAlergia" ).html( '' );
-        // ALERGIA
-        for ( var i in data.Paciente.PacienteAlergia ) {
-          $( "#idAlergia" ).append( '<input type = "hidden" id = "idAlergia" value = "' + data.Paciente.PacienteAlergia[ i ].Alergia.id + '" />' );
-          $( "#inputAlergia" ).append( '<input type = "text" class = "form-control" id = "alergia' + i + '" name = "alergia"' + i + ' value ="' + data.Paciente.PacienteAlergia[ i ].Alergia.alergia + '" placeholder="alergia" disabled/> ' );
-          $( "#eliminarAlergia" ).append( '<button de ="' + data.Paciente.PacienteAlergia[ i ].id + '" acc = "elimina" ocultoId = "' + data.Paciente.PacienteAlergia[ i ].Alergia.id + '" otroCampo = "deleteAle" inputId= "alergia' + i + '" type = "button" class = "form-control btn btn-danger" id = "eliminarAlergia' + i + '"><span class="glyphicon glyphicon-remove"></span></button> ' );
+      //<--------------------- FIN TELEFONOS ------------------------------>
+      //<--------------------- PACIENTE ----------------------------------->
+        if( data.Paciente ){
+          //<--------------------- CONTACTO EMERGENCIA ---------------------->
+            for( var i in data.Paciente.ContactoEmergencia ){
+              $( "#idContacto" ).append( '<input type = "hidden" id = "idContacto" value = "' + data.Paciente.ContactoEmergencia[ i ].id + '" />' );
+              $( "#contactoNombre" ).append( '<input type = "text" class = "form-control" id = "contactoNombre' + i + '" value ="' + data.Paciente.ContactoEmergencia[ i ].nombre + '" name = "contactoNombre' + i + '" placeholder="Nombre del contacto:" />' );
+              $( "#buttonContactoNombre" ).append( '<button ocultoId = "' + data.Paciente.ContactoEmergencia[ i ].id + '" otroCampo = "contChangeNombre" inputId = "contactoNombre' + i + '"  type = "button" class = "form-control btn btn-success" id = "modificaContactoNombre' + i + '"><span class = "glyphicon glyphicon-pencil"></span></button>' );
+              $( "#contactoTel" ).append( '<input type = "text" class = "form-control" id = "contactoTel' + i + '" value = "' + data.Paciente.ContactoEmergencia[ i ].tel + '" name = "contactoTel' + i + '" placeholder="Telefono del contacto:"/>' );
+              $( "#buttonContacto" ).append( '<button ocultoId = "' + data.Paciente.ContactoEmergencia[ i ].id + '" otroCampo = "contChange" inputId="contactoTel' + i + '" type = "button" class = "form-control btn btn-success" id = "modificarContacto' + i + '"><span class="glyphicon glyphicon-pencil"></span></button> ' );
+            }
+          //<--------------------- FIN CONTACTO EMERGENCIA ---------------------->
+          //<--------------------- PADECIMIENTOS -------------------------------->
+            for(var i in data.Paciente.PacientePadecimientos ){
+              $( "#idPadecimiento" ).append( '<input type = "hidden" id = "idPadecimiento' + i + '" value = "' + data.Paciente.PacientePadecimientos[ i ].Padecimiento.id + '" />' );
+              $( "#inputPadecimiento" ).append( '<input type = "text" class = "form-control" id = "padecimiento' + i + '" name = "padecimiento"' + i + ' value = "' + data.Paciente.PacientePadecimientos[ i ].Padecimiento.padecimiento + '" placeholder="Padecimiento" disabled/><br/>' );
+              $( "#buttonPadecimiento" ).append( '<button de ="' + data.Paciente.PacientePadecimientos[ i ].id + '" acc = "elimina" ocultoId = "' + data.Paciente.PacientePadecimientos[ i ].Padecimiento.id + '" otroCampo = "deletePade" inputId="padecimiento' + i + '" type = "button" class = "form-control btn btn-danger id = "eliminaPadecimiento' + i + '"><span class="glyphicon glyphicon-remove"></span></button>' );
+            }
+          //<--------------------- FIN PADECIMIENTOS -------------------------------->
+          //<--------------------- ALERGIAS -------------------------------->
+            for( var i in data.Paciente.PacienteAlergia ){
+              $( "#idAlergia" ).append( '<input type = "hidden" id = "idAlergia" value = "' + data.Paciente.PacienteAlergia[ i ].Alergia.id + '" />' );
+              $( "#inputAlergia" ).append( '<input type = "text" class = "form-control" id = "alergia' + i + '" name = "alergia"' + i + ' value ="' + data.Paciente.PacienteAlergia[ i ].Alergia.alergia + '" placeholder="alergia" disabled/> ' );
+              $( "#eliminarAlergia" ).append( '<button de ="' + data.Paciente.PacienteAlergia[ i ].id + '" acc = "elimina" ocultoId = "' + data.Paciente.PacienteAlergia[ i ].Alergia.id + '" otroCampo = "deleteAle" inputId= "alergia' + i + '" type = "button" class = "form-control btn btn-danger" id = "eliminarAlergia' + i + '"><span class="glyphicon glyphicon-remove"></span></button> ' );
+            }
+          //<--------------------- FIN ALERGIAS -------------------------------->
         }
-        $( "#addAlergia" ).html( '<button otroCampo = "addAle" inputId="" type = "button" class = "btn btn-primary" id = "addAlergia" onclick = ""><span class="glyphicon glyphicon-plus"></span></button>' );
-      } //FIN ALERGIA
+      //<--------------------- FIN PACIENTE ------------------------------->
       var otroCampo = "";
       var segundoSwitch = "";
       var idBoton = $( "button" ).click( function () {
@@ -663,6 +674,54 @@ function cargarInfoSesion() {
         da = String( $( "#modificarBiometrico" ).attr( 'ocultoId' ) );
         despachador( 'Biometrico', 'actualizar', 'genero', '', '#biometricoGenero', '', '', '', da, '' );
       } );
+      $("#ingresaPeso").click(function(){
+        var insertar = {};console.log("PEso");
+        if( $("#inputIngresaP").val() != "" ){
+          insertar = {
+            peso: parseFloat( $("#inputIngresaP").val() ),
+            altura:0,
+            tipoSangre:'',
+            genero:''
+          };
+          despachador('Biometrico','insertar','','','','','',true,insertar,'');
+        }
+      });
+      $("#agregaAl").click(function(){
+        var insertar2 = {};console.log("Alturasss");
+        if( $("#ingresaAlt").val() != "" ){
+          insertar2 = {
+            peso: 0,
+            altura:parseFloat( $("#ingresaAlt").val() ),
+            tipoSangre:'',
+            genero:''
+          };
+          despachador('Biometrico','insertar','','','','','',true,insertar2,'');
+        }
+      });
+      $("#ingresaSan").click(function(){
+        var insertar3 = {};console.log("sangresss");
+        if( $("#ingresaSa").val() != "" ){
+          insertar3 = {
+            peso: 0,
+            altura:0,
+            tipoSangre:String($("#ingresaSa").val()),
+            genero:''
+          };
+          despachador('Biometrico','insertar','','','','','',insertar3,'');
+        }
+      });
+      $("#ingresaGe").click(function(){
+        var insertar4 = {};console.log("Generosss");
+        if( $("#ingresaGene").val() ){
+          insertar4 = {
+            peso: 0,
+            altura:0,
+            tipoSangre:'',
+            genero: String( $("#ingresaGene").val() )
+          };
+          despachador('Biometrico','insertar', '','','','','','',insertar4,'');
+        }
+      });
       var cambioAlergia;
       $( "#menuAlergia" ).change( function () {
         if ( $( this ).val() != "0" ) {
@@ -714,7 +773,7 @@ function cargarInfoSesion() {
                   lada: parseInt( $( "#agregaAddLada" ).val() ),
                   usuario_id: 1
                 };
-                despachador( 'Telefono', 'insertar', '', '', '', '', '', '', inser );
+                despachador( 'Telefono', 'insertar', '', '', '', '', '', '', inser,'' );
               }
               else {
                 alert( "Debes de llenar los dos campos" );
@@ -761,7 +820,7 @@ function cargarInfoSesion() {
                   paciente_id: 1,
                   padecimiento_id: cambioPadecimiento
                 };
-                despachador( 'PacientePadecimiento', 'insertar', '', '', '', '', '', '', padarray );
+                despachador( 'PacientePadecimiento', 'insertar', '', '', '', '', '', '', padarray,'' );
               }
               else {
                 alert( "Seleccione una opcion" );
@@ -778,7 +837,7 @@ function cargarInfoSesion() {
                   paciente_id: 1,
                   alergia_id: cambioAlergia
                 };
-                despachador( 'PacienteAlergia', 'insertar', '', '', '', '', '', '', alearray );
+                despachador( 'PacienteAlergia', 'insertar', '', '', '', '', '', '', alearray, '');
               }
               else {
                 alert( "Seleccione una opcion" );
