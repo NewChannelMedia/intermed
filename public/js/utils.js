@@ -1422,7 +1422,7 @@ function cargarFavCol( usuario ) {
     dataType: "json",
     cache: false,
     success: function ( data ) {
-      console.log( JSON.stringify( data ) );
+      //console.log( JSON.stringify( data ) );
       if ( data ) {
         /*for(var t in data){
           if(data[t].Medico)
@@ -1527,6 +1527,13 @@ $( function () {
     event.stopPropagation();
   } );
 } )
+
+$( function(){
+  //$(".btn-actualiza-dropdown").click(function(){
+    $(".btn-actualiza-dropdown").jqDropdown('hide', 'true');
+  //});
+})
+
 $( function () {
   $( ".notificationDropdown" ).click( function ( event ) {
     event.stopPropagation();
