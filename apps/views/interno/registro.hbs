@@ -12,8 +12,11 @@
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="nombreMed" name="nombreMed" placeholder="Nombre">
                                     </div>
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" id="apellidoMed" name="apellidoMed" placeholder="Apellido">
+                                    <div class="form-group col-md-6">
+                                        <input type="text" class="form-control" id="apellidoMed" name="apellidoMed" placeholder="Apellido Paterno">
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <input type="text" class="form-control" id="apellidoMMed" name="apellidoMMed" placeholder="Apellido Materno">
                                     </div>
                                     <div class="form-group">
                                         <input type="text" class="form-control" id="correoMed" name="correoMed" placeholder="Correo">
@@ -26,7 +29,13 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" id="especialidadMed" name="especialidadMed" placeholder="Especialidad">
+                                      <select class="form-control" name="especialidadMed" id="especialidadMed"  required="true">
+                                          <option value="0">Especialidad</option>
+                                          {{#each especialidades}}
+                                              <option value="{{id}}">{{especialidad}}</option>
+                                          {{/each}}
+                                      </select>
+
                                     </div>
                                 </div>
                             </div>
@@ -35,7 +44,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <select class="form-control" name="estadoMed" id="slc_estados" onchange="obtenerCiudades()" required="true">
+                                        <select class="form-control" name="estadoMed" id="slc_estados" onchange="obtenerCiudades(0)" required="true">
                                             <option value="">Estado</option>
                                             {{#each estados}}
                                                 <option value="{{id}}">{{estado}}</option>
@@ -45,13 +54,13 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <select class="form-control" name="ciudadMed" id="slc_ciudades" onchange="obtenerColonias()" required="true">
+                                        <select class="form-control" name="ciudadMed" id="slc_ciudades" onchange="obtenerColonias(0)" required="true">
                                             <option value="">Ciudad</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-control" name="coloniaMed" id="slc_colonias" onchange="obtenerCP()" required="true">
+                                    <select class="form-control" name="coloniaMed" id="slc_colonias" onchange="obtenerCP(0)" required="true">
                                         <option value="">Colonia</option>
                                     </select>
                                 </div>
@@ -112,13 +121,11 @@
                                     <th>Dirección</th>
                                     <th>Especialidad</th>
                                     <th>Editar
-                                        <a href="#" data-toggle="modal" data-target="#UpdateModal" onclick="muestraMedico(12);">
-                                            <span class="glyphicon glyphicon-pencil"></span>
-                                        </a>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody id='tbmedReg'>
+
                             </tbody>
                         </table>
                     </form>

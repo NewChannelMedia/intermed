@@ -63,6 +63,7 @@ var intermed = require('../apps/controllers/Intermed');
 */
 var iniciar = function()
 {
+
 	app.all('*', function( req, res, next){
 		if (req.session.passport.user) hps.varSession(req.session.passport.user);
 		else hps.varSession(req.session.passport);
@@ -71,8 +72,9 @@ var iniciar = function()
 	});
 
 	//LogIn
+
 	app.post('/*', function( req, res , next){
-		if (req.body.loginType === 'admin') intermed.callController('session', 'login',req.body,req, res);
+		if (req.body.loginType === 'admin') intermed.callController('registro', 'registro',req.body,req, res);
 		else next();
 	});
 
@@ -92,6 +94,23 @@ var iniciar = function()
 		rutas.routeLife('interno','interno', hps);
 		intermed.callController('Home', 'searching',busqueda, req,  res);
 	});
+
+	app.get('/todos', function( req, res ){
+			rutas.routeLife('interno','interno', hps);
+			intermed.callController('medicos', 'seleccionaRegistrados', null, req, res);
+	});
+
+	app.get('/edicionMedico/:id', function(req,res){
+			rutas.routeLife('interno','interno',hps);
+			intermed.callController('medicos', 'seleccionaMedico', {id:req.params.id}, req, res);
+	});
+
+	app.post('/actualizaMedico', function(req,res){
+			var object = JSON.parse( JSON.stringify(req.body));
+			rutas.routeLife('interno','interno',hps);
+			intermed.callController('medicos', 'actualizar', object, req, res);
+	});
+
 	//Registro
 	app.get('/registro', function( req, res ){
 		rutas.routeLife('interno','interno',hps);

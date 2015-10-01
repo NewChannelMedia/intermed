@@ -18,6 +18,23 @@ module.exports = {
     });
   },
 
+  seleccionaRegistrados: function(object, req, res) {
+          models.Usuario.findAll({
+            include: [{ model: models.DatosGenerales },
+              { model: models.Medico, include :[{model: models.Especialidad}]},
+              { model : models.Direccion,
+                include :[{ model : models.Localidad},
+                  { model : models.Municipio,
+                    include :[{ model : models.Estado}]}
+                ]},
+              { model: models.Telefono}
+            ]
+          }).then(function(medico) {
+              // enviando datos
+              res.send(medico);
+          });
+  },
+
   // Método que muesta la pantalla de registro
   selecciona: function(object, req, res) {
 		//Obteniendo estados
@@ -46,10 +63,14 @@ module.exports = {
   seleccionaEdicion: function(object, req, res) {
 		//Obteniendo usuarios para edicion por ajax
           models.Usuario.findOne({
-            where : { id : object["id"] },
+            where : { id : object.id },
             include: [{ model: models.DatosGenerales },
-              { model: models.Medico },
-              { model: models.Direccion},
+              { model: models.Medico, include :[{model: models.Especialidad}]},
+              { model : models.Direccion,
+                include :[{ model : models.Localidad},
+                  { model : models.Municipio,
+                    include :[{ model : models.Estado}]}
+                ]},
               { model: models.Telefono}
             ]
           }).then(function(medico) {
@@ -58,16 +79,9 @@ module.exports = {
           });
   },
 
-
-  registrar2: function(object, req, res) {
-    middle.insertaMedicos(object, function(datos) {
-      res.send(datos);
-    });
-  },
-
   // Método que registra médicos
   registrar: function(object, req, res) {
-
+      var id  = 0;
       // Inicia transacción de registro de médicos
       models.sequelize.transaction({
           isolationLevel: models.Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
@@ -85,15 +99,12 @@ module.exports = {
           .then(function(usuario) {
               // si fue exitoso, actualizamos  datos generales, direcciones, telefonos y médicos
               // tomamos el id que le toco al usuario
-              var id = usuario.id;
-
-            //  delete object["id"];
-              object["id"] = 1;
+              id = usuario.id;
 
               return models.DatosGenerales.create({
                 nombre: object['nombreMed'],
                 apellidoP: object['apellidoMed'],
-                apellidoM: object['apellidoMed'],
+                apellidoM: object['apellidoMMed'],
                 rfc: '',
                 usuario_id: id
             }, {transaction: t}).then(function (result){
@@ -102,7 +113,8 @@ module.exports = {
                 numero: object['numeroMed'],
                 calle1: object['calle1Med'],
                 calle2: object['calle2Med'],
-                localidad_id: 20024,
+                localidad_id: object.coloniaMed,
+                municipio_id: object.ciudadMed,
                 principal: 1,
                 usuario_id: id
                 }, {transaction: t}).then(function (result){
@@ -120,40 +132,46 @@ module.exports = {
                                     titulo: '',
                                     lugarEstudio: '',
                                     medico_id: medico.id,
-                                    especialidad_id: object['especialidadMed']   // Id de la especialidad
+                                    especialidad_id: object.especialidadMed   // Id de la especialidad
                                 }, {transaction: t})
                             })
                       });
                 });
             });
           });
-
         }).then(function(result) {
-              // transacción completa
-          //  res.status(200).json({ok: true});
-              res.send(object);
+            // transacción completa
+            models.Usuario.findOne({
+              where : { id : id },
+              include: [{ model: models.DatosGenerales },
+                { model: models.Medico, include :[{model: models.Especialidad}]},
+                { model : models.Direccion,
+                  include :[{ model : models.Localidad},
+                    { model : models.Municipio,
+                      include :[{ model : models.Estado}]}
+                  ]},
+                { model: models.Telefono}
+              ]
+            }).then(function(medico) {
+                // enviando datos
+                res.send(medico);
+            });
         }).catch(function(err) {
             console.log('ERROR: ' + err);
-              res.json(object);
+            res.status(200).json({error:err});
         });
     },
 
-
-    actualizar: function(object, req, res) {
+    actualizar2: function(object, req, res) {
       middle.guardaMedicos(object, function(datos) {
         res.send(datos);
       });
     },
 
     // Método para actualizar médicos
-    actualizar2: function(object, req, res) {
-        var id = object['id'];
+    actualizar: function(object, req, res) {
+        var id = object.id;
         var idMedico = 0;
-
-        // Obteniendo el id del médico a partir del id de usuario
-        models.Medico.findOne({ where: {usuario_id : id}} ).then(function(datos) {
-            idMedico = datos.id;
-        });
 
         models.sequelize.transaction({
             isolationLevel: models.Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
@@ -170,7 +188,7 @@ module.exports = {
               models.DatosGenerales.update({
                    nombre: object['nombreMed'],
                    apellidoP: object['apellidoMed'],
-                   apellidoM: object['apellidoMed']
+                   apellidoM: object['apellidoMMed']
                  }, {
                    where: { usuario_id : id }
               });
@@ -183,36 +201,106 @@ module.exports = {
                    calle2: object['calle2Med'],
                    colonia: object['coloniaMed'],
                    estado_id: object['estadoMed'],
-                   ciudad: object['ciudadMed'],
-                   cp: object['cpMed'],
+                   localidad_id: object['coloniaMed']
                  }, {
                    where: { usuario_id : id }
                });
 
               // actualizando telefono
                models.Telefono.update({
-                   telefono: object['telefonoMed']
+                   numero: object['telefonoMed']
                  }, {
                    where: { usuario_id : id }
                });
 
-               // actualizando especialidad del médico
-               models.MedicoEspecialidad.update({
-                   especialidad_id: object['especialidadMed']
-                 }, {
-                   where: { medico_id : idMedico }
+               models.Medico.findOne({
+                 where: {usuario_id : id}
+               }).then(function(datos) {
+                 models.MedicoEspecialidad.update({
+                     especialidad_id: object['especialidadMed']
+                   }, {
+                     where: { medico_id : datos.id }
+                 });
                });
           }).then(function(result) {
                 // transacción completa
                 res.json({ok: true});
           }).catch(function(err) {
-            res.json({error: err});
+              models.Usuario.findOne({
+                where : { id : id },
+                include: [{ model: models.DatosGenerales },
+                  { model: models.Medico, include :[{model: models.Especialidad}]},
+                  { model : models.Direccion,
+                    include :[{ model : models.Localidad},
+                      { model : models.Municipio,
+                        include :[{ model : models.Estado}]}
+                    ]},
+                  { model: models.Telefono}
+                ]
+              }).then(function(medico) {
+                  // enviando datos
+                  res.send(medico);
+              });
+              //  res.json({error: err});
           });
     },
     // obtiene id medico @alan
     seleccionaMedico: function(object, req, res) {
+      var idEstado= 0;
+      var idMunicipio= 0;
+      var idLocalidad=0;
+      var idEspecialidad=0;
+
+      models.Estado.findAll().then(function(estados) {
+        // Obteniendo especialidades
+        models.Especialidad.findAll().then(function(especialidades) {
+          // Obteniendo médicos
+            models.Usuario.findOne({
+              where : { id : object.id },
+              include: [{ model: models.DatosGenerales},
+                { model: models.Medico, include :[{model: models.Especialidad}]},
+                { model : models.Direccion,
+                  include :[{ model : models.Localidad},
+                    { model : models.Municipio,
+                      include :[{ model : models.Estado}]}
+                  ]},
+                { model: models.Telefono}
+              ]
+            }).then(function(medico) {
+              idEstado  = medico.Direccions[0].Municipio.estado_id;
+              idMunicipio  =  medico.Direccions[0].Municipio.id;
+              idLocalidad  = medico.Direccions[0].Localidad.id;
+              idEspecialidad  = medico.Medico.Especialidads[0].id;
+              //Rendereando index y pasando los registros a la vista
+                models.Municipio.findAll({
+                  where: {estado_id: idEstado},
+                  order: ['municipio'], attributes: ['id','municipio']
+                }).then(function(municipios) {
+                    models.Localidad.findAll({
+                      where: {municipio_id: idMunicipio},
+                      order: ['localidad'], attributes: ['id','localidad']
+                    }).then(function(localidades) {
+                      res.render('actualizar', {
+                        layout: null,
+                        estados: estados,
+                        especialidades : especialidades,
+                        medico: medico,
+                        municipios: municipios,
+                        localidades : localidades,
+                        idEstado: idEstado,
+                        idMunicipio: idMunicipio,
+                        idLocalidad: idLocalidad,
+                        idEspecialidad: idEspecialidad
+                      });
+                   });
+                });
+          });
+      });
+    });
+
+      /*
         models.Usuario.findOne({
-          where : { id : object["id"] },
+          where : { id : object.id },
           include: [{ model: models.DatosGenerales },
             { model: models.Medico },
             { model: models.Direccion},
@@ -224,7 +312,7 @@ module.exports = {
                   layout: null,
                   medico: medico
           			});
-            });
+            });*/
     },
     // obtiene id medico
     seleccionaTodosMedico: function(object, req, res) {
@@ -440,6 +528,4 @@ module.exports = {
           res.status(500).json({error: err})
       });
     }
-
-
 }
