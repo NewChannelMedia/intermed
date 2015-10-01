@@ -7,46 +7,60 @@
         <input type="hidden" id="idEspecialidad" value="{{idEspecialidad}}">
         <div class="col-md-6">
           <div class="row">
-            <div class="col-md-12">
-              <div class="form-group">
-                <input type="text" class="form-control" id="nombreMed" name="nombreMed" placeholder="Nombre" value="{{medico.DatosGenerale.nombre}}">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="nombreMed" name="nombreMed" placeholder="Nombre" value="{{medico.DatosGenerale.nombre}}">
+                </div>
               </div>
-              <div class="form-group col-md-6">
-                <input type="text" class="form-control" id="apellidoMed" name="apellidoMed" placeholder="Apellido Paterno" value="{{medico.DatosGenerale.apellidoP}}">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="apellidoMed" name="apellidoMed" placeholder="Apellido Paterno" value="{{medico.DatosGenerale.apellidoP}}">
+                </div>
               </div>
-              <div class="form-group col-md-6">
-                <input type="text" class="form-control" id="apellidoMMed" name="apellidoMMed" placeholder="Apellido Materno" value="{{medico.DatosGenerale.apellidoM}}">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="apellidoMMed" name="apellidoMMed" placeholder="Apellido Materno" value="{{medico.DatosGenerale.apellidoM}}">
+                </div>
               </div>
-              <div class="form-group">
-                <input type="text" class="form-control" id="correoMed" name="correoMed" placeholder="Correo" value="{{medico.correo}}">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="correoMed" name="correoMed" placeholder="Correo" value="{{medico.correo}}">
+                </div>
               </div>
-              <div class="form-group">
-                <input type="text" class="form-control" id="telefonoMed" name="telefonoMed" placeholder="Teléfono" value="{{medico.Telefonos.0.numero}}">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="telefonoMed" name="telefonoMed" placeholder="Teléfono" value="{{medico.Telefonos.0.numero}}">
+                </div>
               </div>
-            </div>
-          </div>
+              <div class="col-md-12">
+                  <div class="form-group">
+                    <select class="form-control" name="especialidadMed" id="especialidadMed"  required="true">
+                        {{#each especialidades}}
+                            <option value="{{id}}">{{especialidad}}</option>
+                        {{/each}}
+                    </select>
+                  </div>
+              </div>
+          </div>        
+        </div>
+        <div class="col-md-6">
           <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
               <div class="form-group">
-                <select class="form-control" name="especialidadMed" id="especialidadMed"  required="true">
-                    {{#each especialidades}}
-                        <option value="{{id}}">{{especialidad}}</option>
+                <select class="form-control" name="estadoMed" id="slc_estados" onchange="obtenerCiudades(1)" required="true">
+                    {{#each estados}}
+                          <option value="{{id}}">{{estado}}</option>
                     {{/each}}
                 </select>
               </div>
             </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-6">
               <div class="form-group">
-                <input type="text" class="form-control" id="calleMed" name="calleMed" placeholder="Calle" value="{{medico.Direccions.0.calle}}">
-              </div>
-            </div>
-            <div class="col-md-4">
-              <div class="form-group">
-                <input type="text" class="form-control" id="numeroMed" name="numeroMed" placeholder="Numero" value="{{medico.Direccions.0.numero}}">
+                <select class="form-control" name="ciudadMed" id="slc_ciudades" onchange="obtenerColonias(1)" required="true">
+                  {{#each municipios}}
+                      <option value="{{id}}">{{municipio}}</option>
+                  {{/each}}
+                </select>
               </div>
             </div>
             <div class="col-md-8">
@@ -64,6 +78,17 @@
                 <input type="text" class="form-control" id="nmb_cp" name="cpMed" placeholder="Codigo Postal" value="{{medico.Direccions.0.Localidad.CP}}" readonly>
               </div>
             </div>
+            <div class="col-md-8">
+              <div class="form-group">
+                <input type="text" class="form-control" id="calleMed" name="calleMed" placeholder="Calle" value="{{medico.Direccions.0.calle}}">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <input type="text" class="form-control" id="numeroMed" name="numeroMed" placeholder="Numero" value="{{medico.Direccions.0.numero}}">
+              </div>
+            </div>
+
             <div class="col-md-6">
               <div class="form-group">
                 <input type="text" class="form-control" id="calle1Med" name="calle1Med" placeholder="Entre calle A" value="{{medico.Direccions.0.calle1}}">
@@ -74,24 +99,7 @@
                 <input type="text" class="form-control" id="calle2Med" name="calle2Med" placeholder="Y calle B" value="{{medico.Direccions.0.calle2}}">
               </div>
             </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <select class="form-control" name="ciudadMed" id="slc_ciudades" onchange="obtenerColonias(1)" required="true">
-                  {{#each municipios}}
-                      <option value="{{id}}">{{municipio}}</option>
-                  {{/each}}
-                </select>
-              </div>
-            </div>
-            <div class="col-md-6">
-              <div class="form-group">
-                <select class="form-control" name="estadoMed" id="slc_estados" onchange="obtenerCiudades(1)" required="true">
-                    {{#each estados}}
-                          <option value="{{id}}">{{estado}}</option>
-                    {{/each}}
-                </select>
-              </div>
-            </div>
+
           </div>
         </div>
       </div>
