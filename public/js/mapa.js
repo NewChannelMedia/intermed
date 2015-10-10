@@ -94,7 +94,7 @@ var mapa = {
                 function (position) {
                     mapa.latitud = position.coords.latitude;
                     mapa.longitud = position.coords.longitude;
-
+                   
                     mapa.PosicionarMapa();
                     //Crear marcador en el centro del mapa()
                     mapa.Marcador();
@@ -110,29 +110,18 @@ var mapa = {
         if (mapa.marker != null) {
             mapa.marker.position = pos;
         } else {
-            var image = {
-                url: 'img/marker.png',
-                // This marker is 20 pixels wide by 32 pixels high.
-                size: new google.maps.Size(25, 32),
-                // The origin for this image is (0, 0).
-                origin: new google.maps.Point(0, 0),
-                // The anchor for this image is the base of the flagpole at (0, 32).
-                anchor: new google.maps.Point(0, 32)
-            };
-
             mapa.marker = new google.maps.Marker({
                 position: pos,
                 map: mapa.map,
                 draggable: true,
                 title: "Esto es un marcador",
-                animation: google.maps.Animation.DROP,
-                icon: image
+                animation: google.maps.Animation.DROP          
             });
 
             google.maps.event.addListener(mapa.marker, 'mouseup', mapa.funcionClick);
         };
         //personalizar el icono
-        //mapa.marker.setIcon('img/logo-color.png');
+        mapa.marker.setIcon('img/marker.png');
         
     },
 
