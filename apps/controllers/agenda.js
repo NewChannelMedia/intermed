@@ -257,7 +257,7 @@ exports.agregaServicio = function(object, req, res) {
     models.CatalogoServicios.create({
       concepto: object.concepto,
       descripcion: object.descripcion,
-      precio: object.precio,
+      precio: parseFloat(object.precio),
       duracion: object.duracion,
       usuario_id: object.usuario_id
     }).then(function(datos) {
@@ -266,6 +266,10 @@ exports.agregaServicio = function(object, req, res) {
         res.status(500).json({error: err});
     });
 };
+
+exports.registraServicio = function(object, req, res) {
+  res.render('servicios');
+}
 
 // modifica servicio otorgado por el médico
 exports.modificaServicio = function(object, req, res) {

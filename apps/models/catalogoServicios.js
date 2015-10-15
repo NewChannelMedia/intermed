@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
     precio: {type: DataTypes.DOUBLE},
     duracion: {type: DataTypes.TIME},
     usuario_id: {type : DataTypes.BIGINT, allowNull:false}
-  }, {
+  },{
     classMethods: {
       associate: function(models) {
         CatalogoServicios.belongsTo(models.Usuario)

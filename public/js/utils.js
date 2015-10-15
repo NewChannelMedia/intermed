@@ -375,6 +375,26 @@ function muestraMedico( id ) {
 	});
 }
 
+
+function regServicio()
+{
+	$.ajax( {
+		url: '/agregaServicio',
+		type: 'POST',
+		dataType: "json",
+		cache: false,
+		data: $( '#frmRegServicio' ).serialize(),
+		type: 'POST',
+		success: function( data ) {
+			alert('Se ha agregado el servicio !');
+
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+		}
+	} );
+}
+
 // script que muestra u oculta campos de la busqueda del home
 if ( location.pathname === '/' ) {
 	$( document ).ready( function() {

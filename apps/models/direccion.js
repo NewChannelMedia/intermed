@@ -17,6 +17,8 @@ module.exports = function(sequelize, DataTypes) {
     institucion_id: {type: DataTypes.INTEGER},
     localidad_id: {type: DataTypes.INTEGER},
     municipio_id: {type: DataTypes.INTEGER, required: true},
+    latitud: {type: DataTypes.STRING},
+    longitud: {type: DataTypes.STRING}
     //estado_id: {type: DataTypes.INTEGER, required: true}
   }, {
     classMethods: {

@@ -769,16 +769,6 @@ var iniciar = function()
 						intermed.callController('agenda','obtieneServicio', object, req, res);
 				});
 
-				app.get('/agregaServicio', function(req, res) {
-					var object = {
-						concepto: 'concepto servicio',
-						descripcion: 'descripcion servicio',
-						precio: 200.50,
-						duracion: '1:30',
-						usuario_id : 1,
-					}
-					intermed.callController('agenda','agregaServicio', object, req, res);
-				});
 
 				app.get('/modificaServicio', function(req, res) {
 					var object = {
@@ -891,7 +881,20 @@ var iniciar = function()
 					intermed.callController('agenda','seleccionaCalificacionMedico', object, req, res);
 				});
 
+				app.get('/registraDireccion', function(req, res) {
+					rutas.routeLife('main','main',hps);
+					intermed.callController('Home','aboutPacientes', JSON.parse( JSON.stringify(req.body)), req, res);
+				});
 
+				app.get('/registraServicio', function(req, res) {
+					rutas.routeLife('main','main',hps);
+					intermed.callController('agenda','registraServicio', JSON.parse( JSON.stringify(req.body)), req, res);
+				});
+
+				app.post('/agregaServicio', function(req, res) {
+					rutas.routeLife('main','main',hps);
+					intermed.callController('agenda','agregaServicio', JSON.parse( JSON.stringify(req.body)), req, res);
+				});
 }
 serv.server(app, 3000);
 //se exporta para que otro js lo pueda utilizar

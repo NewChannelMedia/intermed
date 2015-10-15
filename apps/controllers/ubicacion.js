@@ -50,3 +50,54 @@ exports.obtieneLocalidades = function(object, req, res) {
     res.send({'localidades' : localidades});
   });
 };
+
+exports.agregaDireccion = function(object, req, res) {
+    models.Direccion.create({
+      calle: object.calle,
+      nombre: object.nombre,
+      numero: object.numero,
+      calle1: object.calle1,
+      calle2: object.calle2,
+      localidad_id: object.colonia,
+      municipio_id: object.ciudad,
+      principal: 0,
+      longitud: object.longitud,
+      latitud: object.latitud,
+    usuario_id: id
+  }).then(function(medico) {
+        res.status(200).json({ok: true});
+  }).catch(function(err) {
+        res.status(500).json({error: err});
+  });
+}
+
+exports.actualizaDireccion = function(object, req, res) {
+    models.Direccion.update({
+      calle: object.calle,
+      numero: object.numero,
+      nombre: object.nombre,
+      calle1: object.calle1,
+      calle2: object.calle2,
+      localidad_id: object.colonia,
+      municipio_id: object.ciudad,
+      principal: object.principal,
+      longitud: object.longitud,
+      latitud: object.latitud,
+      usuario_id: id
+    },{ where : {id : object.id}
+  }).then(function(medico) {
+        res.status(200).json({ok: true});
+  }).catch(function(err) {
+        res.status(500).json({error: err});
+  });
+}
+
+exports.borraDireccion = function(object, req, res) {
+    models.Direccion.destroy({
+      where : {id : object.id}
+  }).then(function(medico) {
+        res.status(200).json({ok: true});
+  }).catch(function(err) {
+        res.status(500).json({error: err});
+  });
+}

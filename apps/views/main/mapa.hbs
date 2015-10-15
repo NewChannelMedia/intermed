@@ -1,0 +1,69 @@
+<section id="principal">
+  <div class="container">
+    <form method="POST" name="frmRegDireccion" id="frmRegDireccion">
+        <input type="hidden" id="id" name="id" value="">
+        <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <input type="text" class="form-control" minlength="10" maxlength="45" id="latitud" name="latitud" placeholder="Latitud" readonly>
+                  </div>
+              </div>
+              <div class="col-md-6">
+                  <div class="form-group">
+                      <input type="text" class="form-control" minlength="4" maxlength="45" id="longitud" name="longitud" placeholder="Longitud" readonly>
+                  </div>
+              </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="text" class="form-control" minlength="10" maxlength="45" id="estado" name="estado" placeholder="Estado">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="text" class="form-control" minlength="4" maxlength="45" id="ciudad" name="ciudad" placeholder="Ciudad">
+                    </div>
+                </div>
+                <div class="col-md-8">
+                        <input type="number" class="form-control" minlength="4" maxlength="5" id="colonia" name="colonia" placeholder="Colonia" >
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="number" class="form-control" minlength="4" maxlength="5" id="cp" name="cp" placeholder="Codigo Postal">
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="calle" name="calle" placeholder="Calle">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="numero" name="numero" placeholder="Numero">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="calle1" name="calle1" placeholder="Entre calle A">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="calle2" name="calle2" placeholder="Y calle B">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Teléfono">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="button" class="btn btn-info btn-md btn-block" id="btnRegDireccion" value="Guardar" onclick="regDireccion()">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+  </div>
+</section>
