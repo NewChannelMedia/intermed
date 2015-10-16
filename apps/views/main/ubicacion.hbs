@@ -1,0 +1,129 @@
+﻿<link href="css/mapa.css" rel="stylesheet" />
+<link href="css/fullcalendar.min.css" rel="stylesheet" />
+
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=drawing,places&components=country:‌​MX&sensor=true&key=AIzaSyCBOC0Cq0T10nAmZNLkVMVBzU6MLd3DfKs"></script>
+
+<script src="js/mapa.js"></script>
+<script src="js/moment.min.js"></script>
+<script src="js/fullcalendar.js"></script>
+<script src="js/calendar.js"></script>
+<script src="js/lang/es.js"></script>
+
+<section id="directorio">
+    <div class="container">
+        <div class="row">
+            <div class="panel">
+                <div class="panel-body">
+                    <h4>Registrar ubicaci&oacute;n</h4>
+                    <form method="POST" name="frmRegMed" id="frmRegMed">
+                        <ul class="nav nav-tabs" id="tabControl">
+                            <li class="active"><a data-toggle="tab" href="#ubicacion">Ubicaci&oacute;n</a></li>
+                            <li><a data-toggle="tab" href="#horarios">Horarios</a></li>                            
+                        </ul>
+                        <br />
+                        
+                        <div class="tab-content">
+                            <div id="ubicacion" class="tab-pane fade in active" >
+                                <input type="hidden" id="id" name="id" value="">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="form-group">
+                                                    <input type="text" class="form-control" id="nombreUbicacion" name="nombreUbicacion" placeholder="Nombre Ubicaci&oacute;n">
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <select class="form-control" name="estadoMed" id="slc_estados" onchange="obtenerCiudades()" required="true">
+                                                                <option value="">Estado</option>
+                                                                {{#each estados}}
+                                                                <option value="{{id}}">{{estado}}</option>
+                                                                {{/each}}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <select class="form-control" name="ciudadMed" id="slc_ciudades" onchange="obtenerColonias()" required="true">
+                                                                <option value="">Ciudad</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <select class="form-control" name="coloniaMed" id="slc_colonias" onchange="obtenerCP()" required="true">
+                                                            <option value="">Colonia</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <input type="number" class="form-control" minlength="4" maxlength="5" id="nmb_cp" name="cpMed" placeholder="Codigo Postal" readonly>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-8">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" id="calleMed" name="calleMed" placeholder="Calle">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" id="numeroMed" name="numeroMed" placeholder="Numero">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" id="calle1Med" name="calle1Med" placeholder="Entre calle A">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <input type="text" class="form-control" id="calle2Med" name="calle2Med" placeholder="Y calle B">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>                                           
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="col-md-12">
+                                                <input type="hidden" value="{{latitude}}" id="latitude" />
+                                                <input type="hidden" value="{{longitude}}" id="longitude" />
+                                                <div id="searchDiv">
+                                                    <input id="autocomplete_searchField" type="text" placeholder="Buscar Dirección">
+                                                </div>
+                                                <div id="direccion"></div>
+                                                <div id="mapDiv"></div>
+                                                <div class="row">
+                                                    <div class="col-md-6"></div>
+                                                    <div class="col-md-6"><input type="button" onclick="mapa.GeolicalizacionUsuario();" value="Reiniciar Posicion" class="btn btn-info btn-md btn-block" /></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="horarios" class="tab-pane fade">
+                                <div class="row">
+                                    <div class="col-md-12"><div id='calendar'></div></div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-8"></div>
+                                <div class="col-md-4 text-right">
+                                    <div class="form-group">
+                                        <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Guardar" onclick="regDoctor()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
