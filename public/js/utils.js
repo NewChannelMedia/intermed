@@ -898,12 +898,13 @@ if ( location.pathname === '/' ) {
 }
 
 // script para los intervalos del carousel
+/*
 $( document ).ready( function () {
   $( '.carousel' ).carousel( {
     interval: 5000
   } );
 } );
-
+*/
 // script para obtener el DateStamp
 $( document ).ready( function () {
   var str = "";
@@ -1629,13 +1630,13 @@ function socketNotificaciones() {
             data.forEach( function ( record ) {
               if ( record.interno || record.push || record.mail ) {
                 socket.emit( record.tipo );
-                console.log( '[' + new Date().toLocaleString().substring( 0, 18 ) + '] Revisar: ' + record.tipo );
+                //console.log( '[' + new Date().toLocaleString().substring( 0, 18 ) + '] Revisar: ' + record.tipo );
 
                 var idInterval = setInterval(
                   function () {
                     try {
                       socket.emit( record.tipo );
-                      console.log( '[' + new Date().toLocaleString().substring( 0, 18 ) + '] Revisar: ' + record.tipo );
+                      //console.log( '[' + new Date().toLocaleString().substring( 0, 18 ) + '] Revisar: ' + record.tipo );
                     }
                     catch ( err ) {
                       console.log( 'No se puede conectar con el servidor' );
@@ -1739,6 +1740,7 @@ var totalNotificaciones = [],
   solicitudAmistadAceptada = [],
   solicitudesAceptadas = [];
 
+
 function socketManejadores() {
 
   function borrarNotificaciones() {
@@ -1809,4 +1811,112 @@ function socketManejadores() {
     }, 3000 );
 
   } );
+
+
 }
+
+var autocompleteInicial = [];
+
+
+var accentMap = {
+"á": "a",
+"é": "e",
+"í": "i",
+"ó": "o",
+"ú": "u",
+".": "",
+",": ""
+};
+var normalize = function( term ) {
+  var ret = "";
+  for ( var i = 0; i < term.length; i++ ) {
+    ret += accentMap[ term.charAt(i) ] || term.charAt(i);
+  }
+  return ret;
+};
+
+var lugares = [
+{value:'Bitácora',category:'Lugares',url:'bitacora',image:'<span class="glyphicon glyphicon-calendar"></span> ',label:'Bitácora'},
+{value:'Perfil',category:'Lugares',url:'perfil',image:'<span class="glyphicon glyphicon-user"></span> ',label:'Perfil'},
+{value:'Inicio',category:'Lugares',url:'',image:'<span class="glyphicon glyphicon-home"></span> ',label:'Inicio'}
+];
+
+
+$.widget( "custom.catcomplete", $.ui.autocomplete, {
+_create: function() {
+  this._super();
+  this.widget().menu( "option", "items", "> :not(.ui-autocomplete-category)" );
+},
+_renderMenu: function( ul, items ) {
+  var that = this,
+    currentCategory = "";
+  $.each( items, function( index, item ) {
+    var li;
+    if ( item.category != currentCategory ) {
+      ul.append( "<li class='ui-autocomplete-category'> " + item.category + "</li>" );
+      currentCategory = item.category;
+    }
+    li = that._renderItemData( ul, item );
+    if ( item.category ) {
+      li.attr( "aria-label", item.category + " : " + item.label );
+    }
+  });
+}
+});
+
+
+$(document).ready(function(){
+
+  $( "#buscadorInterno" ).catcomplete({
+    delay: 0,
+    minLength: 0,
+    source: autocompleteInicial,
+    source: function( request, response ) {
+      $.ajax({
+        url: "/buscadorInterno",
+        dataType: "json",
+        method: 'POST',
+        data: {
+          busqueda: request.term
+        },
+        success: function( data ) {
+          var allUsers = [];
+          data.forEach(function(user){
+            var newUser = new Array();
+            newUser['name'] = user.DatosGenerale.nombre + ' ' + user.DatosGenerale.apellidoP + ' ' + user.DatosGenerale.apellidoM;
+            newUser['value'] = newUser['name'];
+            newUser['category'] = "Usuarios";
+            newUser['url']  = 'perfil/'+user.usuarioUrl;
+            newUser['image']  = "<img src="+user.urlFotoPerfil+" style='width:20px'></img> ";
+            if (user.Medico){
+              newUser['name']  = 'Dr. ' + newUser['name'] ;
+            }
+            newUser['label']  = newUser['name'];
+            user = newUser;
+            allUsers.push(newUser);
+          })
+          allUsers = allUsers.concat(lugares);
+          var matcher = new RegExp( $.ui.autocomplete.escapeRegex( request.term ), "i" );
+          response( $.grep( allUsers, function( value ) {
+                value = value.label || value.value || value;
+                return matcher.test( value ) || matcher.test( normalize( value ) );
+              })
+          );
+        }
+      });
+    },
+    focus: function( event, ui ) {
+      $( "#buscadorInterno" ).val( ui.item.label );
+      return false;
+    },
+    select: function( event, ui ) {
+      window.location.href = "http://localhost:3000/"+ui.item.url;
+      return false;
+    }
+  })
+  .catcomplete( "instance" )._renderItem = function( ul, item ) {
+    var li = $( "<li>" );
+    li.append( "<a>" + item.image + item.label +"</a>" );
+    return li.appendTo(ul);
+  };
+});

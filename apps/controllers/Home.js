@@ -144,7 +144,7 @@ module.exports = {
       } );
     }
     else {
-      res.redirect( '/' );
+      res.redirect( global.base_url);
     }
   },
   aboutPacientes: function ( object, req, res ) {
