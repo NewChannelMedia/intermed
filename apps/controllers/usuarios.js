@@ -444,7 +444,7 @@ function cargarExtraInfo( usuario, redirect, req, res ) {
         else {
           req.session.passport.user.registroCompleto = 0;
           if ( redirect ) {
-            res.redirect( '/perfil' );
+            res.redirect( '/perfil/' + req.session.passport.user.usuarioUrl );
           }
           else res.send( {
             'result': 'success',
@@ -468,7 +468,7 @@ function obtenerDatosLocalidad( localidad_id, redirect, req, res ) {
       req.session.passport.user.ciudad = localidad[ 0 ].ciudad;
       req.session.passport.user.estado = localidad[ 0 ].estado;
       if ( redirect ) {
-        res.redirect( '/perfil' );
+        res.redirect( '/perfil/'  + req.session.passport.user.usuarioUrl );
       }
       else res.send( {
         'result': 'success',
