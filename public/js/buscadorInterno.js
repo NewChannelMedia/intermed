@@ -77,12 +77,16 @@ $(document).ready(function(){
       minLength: 0,
       source: function( request, response ) {
         request.term = replaceChars(request.term);
+        var busqueda = request.term.split(" ");
+        busqueda = $.grep(busqueda, function(v, k){
+            return $.inArray(v ,busqueda) === k;
+        });
         $.ajax({
           url: "/buscadorInterno",
           dataType: "json",
           method: 'POST',
           data: {
-            busqueda: request.term
+            busqueda: busqueda
           },
           success: function( data ) {
             var allUsers = [];

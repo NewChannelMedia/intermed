@@ -10,8 +10,7 @@ var busquedaEspecial = {
 exports.buscar = function ( object, req, res ) {
     var where = new Array();
     var whereTipoUsuario = new Array();
-
-    var busqueda = object.busqueda.split(" ");
+    var busqueda = object.busqueda;
 
     if (busqueda.length > 0 && busqueda[0] != ''){
       busqueda.forEach(function(result){
