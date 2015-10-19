@@ -1,18 +1,31 @@
 var models = require( '../models' );
 
+var busquedaEspecial = {
+  'dr':'medico',
+  'dr.':'medico',
+  'doctor':'medico',
+  'doctora':'medico'
+}
+
 exports.buscar = function ( object, req, res ) {
-    var where = '';
+    var where = new Array();
+    var whereTipoUsuario = new Array();
 
     var busqueda = object.busqueda.split(" ");
 
-    var where = new Array();
     if (busqueda.length > 0 && busqueda[0] != ''){
       busqueda.forEach(function(result){
-        where.push(models.sequelize.or(
-              {nombre: {$like: '%'+ result +'%'}},
-              {apellidoP: {$like: '%'+ result +'%'}},
-              {apellidoM: {$like: '%'+ result +'%'}}
-          ));
+        if (!(result.toLowerCase() in busquedaEspecial)){
+          where.push(models.sequelize.or(
+                {nombre: {$like: '%'+ result +'%'}},
+                {apellidoP: {$like: '%'+ result +'%'}},
+                {apellidoM: {$like: '%'+ result +'%'}}
+            ));
+        } else {
+          if (busquedaEspecial[result] == "medico"){
+            whereTipoUsuario = {tipoUsuario: 'M'};
+          }
+        }
       });
     }
 
@@ -23,6 +36,7 @@ exports.buscar = function ( object, req, res ) {
               }, {
           model: models.Medico,attributes: ['id']
         }],
+        where: whereTipoUsuario,
         limit: 10
       } )
       .then( function ( datos ) {
