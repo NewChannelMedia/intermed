@@ -1864,12 +1864,23 @@ _renderMenu: function( ul, items ) {
 }
 });
 
+function customFilter(array, terms) {
+    arrayOfTerms = terms.split(" ");
+    var term = $.map(arrayOfTerms, function (tm) {
+         return $.ui.autocomplete.escapeRegex(tm);
+    }).join('|');
+   var matcher = new RegExp("\\b" + term, "i");
+    return $.grep(array, function (value) {
+       return matcher.test(value.label || value.value || normalize(value));
+    });
+};
+
 
 $(document).ready(function(){
 
   $( "#buscadorInterno" ).catcomplete({
     delay: 0,
-    minLength: 0,
+    minLength: 1,
     source: autocompleteInicial,
     source: function( request, response ) {
       $.ajax({
@@ -1896,12 +1907,7 @@ $(document).ready(function(){
             allUsers.push(newUser);
           })
           allUsers = allUsers.concat(lugares);
-          var matcher = new RegExp( $.ui.autocomplete.escapeRegex( request.term ), "i" );
-          response( $.grep( allUsers, function( value ) {
-                value = value.label || value.value || value;
-                return matcher.test( value ) || matcher.test( normalize( value ) );
-              })
-          );
+          response(customFilter(allUsers,request.term));
         }
       });
     },

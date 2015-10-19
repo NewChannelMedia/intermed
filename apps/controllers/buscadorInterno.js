@@ -5,7 +5,6 @@ exports.buscar = function ( object, req, res ) {
 
     var busqueda = object.busqueda.split(" ");
 
-console.log('busqueda: ' + JSON.stringify(busqueda));
     var where = new Array();
     if (busqueda.length > 0 && busqueda[0] != ''){
       busqueda.forEach(function(result){
@@ -23,7 +22,8 @@ console.log('busqueda: ' + JSON.stringify(busqueda));
           model: models.DatosGenerales, where: where,attributes: ['nombre','apellidoP','apellidoM']
               }, {
           model: models.Medico,attributes: ['id']
-              }]
+        }],
+        limit: 10
       } )
       .then( function ( datos ) {
         res.send(JSON.parse(JSON.stringify(datos)));
