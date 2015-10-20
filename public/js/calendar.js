@@ -1,6 +1,8 @@
-﻿$(document).ready(function () {
+﻿var objhorarios = [];
 
-    var horarios = [];
+$(document).ready(function () {
+
+   
     var valido = true;
 
     // page is now ready, initialize the calendar...
@@ -48,14 +50,12 @@
                 };
 
                 $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
-                var horario = [
-                    start.format('d'),
-                    start.format('HH:mm'),
-                    end.format('HH:mm')
-                ];
-                horarios.push(horario);
-                //console.log('inicia: ' + start.format('HH:mm') + ' termina:' + end.format('HH:mm'));
-                console.log(horarios);
+                var horario = {
+                    dia: start.format('d'),
+                    inicio: start.format('HH:mm'),
+                    fin: end.format('HH:mm')
+                };
+                objhorarios.push(horario);               
             }
             $('#calendar').fullCalendar('unselect');
 
@@ -68,5 +68,5 @@
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         $('#calendar').fullCalendar('render');
     });
-     $('#tabControl a:first').tab('show');
+    $('#tabControl a:first').tab('show');
 });

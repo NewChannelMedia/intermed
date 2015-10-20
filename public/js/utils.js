@@ -465,12 +465,16 @@ function regMedValid() {
 
 
 function obtenerCiudades() {
+    if ($('#slc_ciudades option').length == 1) {
+        $('#slc_ciudades option').remove();
+    };
+
     document.getElementById('slc_ciudades').innerHTML = '<option value="">Ciudad</option>';
     $.ajax({
         url: '/obtenerCiudades',
         type: 'POST',
         dataType: "json",
-        cache: false,        
+        cache: false,
         data: {
             'estado_id': document.getElementById('slc_estados').value
         },
@@ -478,7 +482,7 @@ function obtenerCiudades() {
             data.ciudades.forEach(function (record) {
                 document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.id + '">' + record.ciudad + '</option>';
             });
-            AsignarCiudad();            
+            AsignarCiudad();
         },
         error: function (jqXHR, textStatus, err) {
             console.error('AJAX ERROR: ' + err);
@@ -488,6 +492,10 @@ function obtenerCiudades() {
 }
 
 function obtenerColonias() {
+    if ($('#slc_colonias option').length != 1) {
+        $('#slc_colonias option').remove();
+    };
+
     document.getElementById('slc_colonias').innerHTML = '<option value="">Colonia</option>';
     $.ajax({
         url: '/obtenerLocalidades',
@@ -512,18 +520,18 @@ function obtenerColonias() {
 
 //Registrar Ubicacion
 function regUbicacion() {
-    if (regMedValid() == true) {
+    if (regUbiValid() == true) {
         $.ajax({
-            url: '/registro',
+            url: '/registrarubicacion',
             type: 'POST',
             dataType: "json",
             cache: false,
-            data: $('#frmRegUbi').serialize(),
+            data: { form: $('#frmRegUbi').serialize(), horarios: objhorarios },
             type: 'POST',
             success: function (data) {
                 document.getElementById("frmRegUbi").reset();
                 data.forEach(function (record) {
-                    addMedico(record);
+                    addUbicacion(record);
                 });
             },
             error: function (jqXHR, textStatus, err) {
@@ -531,21 +539,66 @@ function regUbicacion() {
             }
         });
     }
-    else {
-        alert("Faltan llenar unos datos.");
-    }
 }
 
 function regUbiValid() {
-    var inputs = ['nombreMed', 'apellidoMed', 'correoMed', 'telefonoMed', 'especialidadMed', 'calleMed', 'numeroMed', 'coloniaMed', 'cpMed', 'calle1Med', 'calle2Med', 'ciudadMed', 'estadoMed'];
-    var valid = true;
-    for (i = 0; i < inputs.length; i++) {
-        if (document.getElementById(inputs[i]).value.length <= 0) {
-            valid = false;
-            break;
-        }
-    }
-    return valid;
+    var blnValido = true;
+    if ($('#nombreUbi').val().length == 0) {
+        $('#nombreUbi').parent().addClass("has-error");
+        blnValido = false;
+    } else {
+        $('#nombreUbi').parent().removeClass("has-error");
+    };
+
+    if ($('#slc_estados option:selected').text() == 'Estado') {
+        $('#slc_estados').parent().addClass('has-error');
+        blnValido = false;
+    } else {
+        $('#slc_estados').parent().removeClass('has-error');
+    };
+
+    if ($('#slc_ciudades option:selected').text() == 'Ciudad') {
+        $('#slc_ciudades').parent().addClass('has-error');
+        blnValido = false;
+    } else {
+        $('#slc_ciudades').parent().removeClass('has-error');
+    };
+
+
+    if ($('#slc_colonias option:selected').text() == 'Colonia') {
+        $('#slc_colonias').parent().addClass('has-error');
+        blnValido = false;
+    } else {
+        $('#slc_colonias').parent().removeClass('has-error');
+    };
+
+    if ($('#cpUbi').val().length == 0) {
+        $('#cpUbi').parent().addClass('has-error');
+        blnValido = false;
+    } else {
+        $('#cpUbi').parent().removeClass('has-error');
+    };
+
+    if ($('#calleUbi').val().length == 0) {
+        $('#calleUbi').parent().addClass('has-error');
+        blnValido = false;
+    } else {
+        $('#calleUbi').parent().removeClass('has-error');
+    };
+
+    if ($('#numeroUbi').val().length == 0) {
+        $('#numeroUbi').parent().addClass('has-error');
+        blnValido = false;
+    } else {
+        $('#numeroUbi').parent().removeClass('has-error');
+    };
+
+
+    if (objhorarios.length == 0) {
+        blnValido = false;
+    };
+
+    return blnValido;
 }
 
 function addUbicacion(record) {

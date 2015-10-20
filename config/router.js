@@ -1115,6 +1115,18 @@ var iniciar = function () {
         //    });
         //}
     });
+
+    app.post('/registrarubicacion', function (req, res) {
+        //if (req.session.passport.user) {
+        console.log('ubicacion');
+        intermed.callController('ubicacion', 'registrarUbicacion', req.body, req, res);
+        //}
+        //else {
+        //    res.send({
+        //        result: 'null'
+        //    });
+        //}
+    });
 }
 
 var io = serv.server( app, 3000 );

@@ -85,9 +85,5 @@ exports.ubicacion = function (objects, req, res) {
 };
 
 exports.registrarUbicacion = function (objects, req, res) {
-    res.render('ubicacion', { title: 'Carlos' });
-};
-
-exports.guardarUbicacion = function (objects, req, res) {
-    res.render('ubicacion', { title: 'Carlos' });
+    console.log(objects.horarios);
 };

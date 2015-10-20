@@ -27,7 +27,7 @@
             <div class="panel">
                 <div class="panel-body">
                     <h4>Registrar ubicaci&oacute;n</h4>
-                    <form method="POST" name="frmRegUb" id="frmRegUb">
+                    <form method="POST" name="frmRegUb" id="frmRegUbi">
                         <ul class="nav nav-tabs" id="tabControl">
                             <li class="active"><a data-toggle="tab" href="#ubicacion">Ubicaci&oacute;n</a></li>
                             <li><a data-toggle="tab" href="#horarios">Horarios</a></li>
@@ -47,7 +47,7 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <select class="form-control" name="slc_estados" id="slc_estados" required="required">
+                                                            <select class="form-control" name="slc_estados" id="slc_estados" required="required" onchange="obtenerCiudades()">
                                                                 <option value="">Estado</option>
                                                                 {{#each estados}}
                                                                 <option value="{{id}}">{{estado}}</option>
@@ -57,7 +57,7 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <select class="form-control" name="slc_ciudades" id="slc_ciudades" required="required">
+                                                            <select class="form-control" name="slc_ciudades" id="slc_ciudades" required="required" onchange="obtenerColonias()">
                                                                 <option value="">Ciudad</option>
                                                             </select>
                                                         </div>
@@ -65,13 +65,15 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <select class="form-control" name="slc_colonias" id="slc_colonias" onchange="obtenerColonias()" required="required">
-                                                            <option value="">Colonia</option>
-                                                        </select>
+                                                        <div class="form-group">
+                                                            <select class="form-control" name="slc_colonias" id="slc_colonias" required="required">
+                                                                <option value="">Colonia</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <input type="number" class="form-control" minlength="4" maxlength="5" id="cpUbi" name="cpUbi" placeholder="Codigo Postal" readonly>
+                                                            <input type="number" class="form-control" minlength="4" maxlength="5" id="cpUbi" name="cpUbi" placeholder="Codigo Postal">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -128,7 +130,7 @@
                                 <div class="col-md-8"></div>
                                 <div class="col-md-4 text-right">
                                     <div class="form-group">
-                                        <input type="button" class="btn btn-info btn-md btn-block" id="btnRegUbi" value="Guardar" onclick="regDoctor()">
+                                        <input type="button" class="btn btn-info btn-md btn-block" id="btnRegUbi" value="Guardar" onclick="regUbicacion()">
                                     </div>
                                 </div>
                             </div>
