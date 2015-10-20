@@ -1,6 +1,5 @@
 ﻿<link href="css/mapa.css" rel="stylesheet" />
 <link href="css/fullcalendar.min.css" rel="stylesheet" />
-
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=drawing,places&components=country:‌​MX&sensor=true&key=AIzaSyCBOC0Cq0T10nAmZNLkVMVBzU6MLd3DfKs"></script>
 
 <script src="js/mapa.js"></script>
@@ -8,6 +7,19 @@
 <script src="js/fullcalendar.js"></script>
 <script src="js/calendar.js"></script>
 <script src="js/lang/es.js"></script>
+<script>
+    function AsignarCiudad() {
+        $("#slc_ciudades option:contains(" + mapa.ciudad + ")").attr("selected", true);
+        obtenerColonias();
+    }
+
+    function AsignarColonia() {
+        $("#slc_colonias option:contains(" + mapa.colonia + ")").attr("selected", true);
+        $('#numeroUbi').val(mapa.numero);
+        $('#calleUbi').val(mapa.calle);
+        $('#cpUbi').val(mapa.codigoPostal);
+    }
+</script>
 
 <section id="directorio">
     <div class="container">
@@ -15,27 +27,27 @@
             <div class="panel">
                 <div class="panel-body">
                     <h4>Registrar ubicaci&oacute;n</h4>
-                    <form method="POST" name="frmRegMed" id="frmRegMed">
+                    <form method="POST" name="frmRegUb" id="frmRegUb">
                         <ul class="nav nav-tabs" id="tabControl">
                             <li class="active"><a data-toggle="tab" href="#ubicacion">Ubicaci&oacute;n</a></li>
-                            <li><a data-toggle="tab" href="#horarios">Horarios</a></li>                            
+                            <li><a data-toggle="tab" href="#horarios">Horarios</a></li>
                         </ul>
                         <br />
-                        
+
                         <div class="tab-content">
-                            <div id="ubicacion" class="tab-pane fade in active" >
+                            <div id="ubicacion" class="tab-pane fade in active">
                                 <input type="hidden" id="id" name="id" value="">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="nombreUbicacion" name="nombreUbicacion" placeholder="Nombre Ubicaci&oacute;n">
+                                                    <input type="text" class="form-control" id="nombreUbi" name="nombreUbi" placeholder="Nombre Ubicaci&oacute;n">
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <select class="form-control" name="estadoMed" id="slc_estados" onchange="obtenerCiudades()" required="true">
+                                                            <select class="form-control" name="slc_estados" id="slc_estados" required="required">
                                                                 <option value="">Estado</option>
                                                                 {{#each estados}}
                                                                 <option value="{{id}}">{{estado}}</option>
@@ -45,7 +57,7 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <select class="form-control" name="ciudadMed" id="slc_ciudades" onchange="obtenerColonias()" required="true">
+                                                            <select class="form-control" name="slc_ciudades" id="slc_ciudades" required="required">
                                                                 <option value="">Ciudad</option>
                                                             </select>
                                                         </div>
@@ -53,41 +65,41 @@
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        <select class="form-control" name="coloniaMed" id="slc_colonias" onchange="obtenerCP()" required="true">
+                                                        <select class="form-control" name="slc_colonias" id="slc_colonias" onchange="obtenerColonias()" required="required">
                                                             <option value="">Colonia</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <input type="number" class="form-control" minlength="4" maxlength="5" id="nmb_cp" name="cpMed" placeholder="Codigo Postal" readonly>
+                                                            <input type="number" class="form-control" minlength="4" maxlength="5" id="cpUbi" name="cpUbi" placeholder="Codigo Postal" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-8">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" id="calleMed" name="calleMed" placeholder="Calle">
+                                                            <input type="text" class="form-control" id="calleUbi" name="calleUbi" placeholder="Calle">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" id="numeroMed" name="numeroMed" placeholder="Numero">
+                                                            <input type="text" class="form-control" id="numeroUbi" name="numeroUbi" placeholder="Numero">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" id="calle1Med" name="calle1Med" placeholder="Entre calle A">
+                                                            <input type="text" class="form-control" id="calle1Ubi" name="calle1Ubi" placeholder="Entre calle A">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" id="calle2Med" name="calle2Med" placeholder="Y calle B">
+                                                            <input type="text" class="form-control" id="calle2Ubi" name="calle2Ubi" placeholder="Y calle B">
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>                                           
+                                            </div>
                                         </div>
                                         <div class="col-md-6">
                                             <div class="col-md-12">
@@ -116,7 +128,7 @@
                                 <div class="col-md-8"></div>
                                 <div class="col-md-4 text-right">
                                     <div class="form-group">
-                                        <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Guardar" onclick="regDoctor()">
+                                        <input type="button" class="btn btn-info btn-md btn-block" id="btnRegUbi" value="Guardar" onclick="regDoctor()">
                                     </div>
                                 </div>
                             </div>

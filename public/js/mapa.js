@@ -24,6 +24,16 @@ var mapa = {
     markers: null,
     popup: null,
 
+    //Direccion
+    estado:null,
+    ciudad: null,
+    colonia: null,
+    calle: null,
+    numero: null,
+    codigoPostal: null,
+    errorDireccion: null,
+
+
 
     initMap: function () {
         //Activar cartografia y temas
@@ -77,7 +87,7 @@ var mapa = {
                 mapa.Marcador();
                 mapa.DireccionObtener();
             };
-            mapa.Marcador();           
+            mapa.Marcador();
 
         });
     },
@@ -94,7 +104,7 @@ var mapa = {
                 function (position) {
                     mapa.latitud = position.coords.latitude;
                     mapa.longitud = position.coords.longitude;
-                   
+
                     mapa.PosicionarMapa();
                     //Crear marcador en el centro del mapa()
                     mapa.Marcador();
@@ -115,14 +125,14 @@ var mapa = {
                 map: mapa.map,
                 draggable: true,
                 title: "Esto es un marcador",
-                animation: google.maps.Animation.DROP          
+                animation: google.maps.Animation.DROP
             });
 
             google.maps.event.addListener(mapa.marker, 'mouseup', mapa.funcionClick);
         };
         //personalizar el icono
         mapa.marker.setIcon('img/marker.png');
-        
+
     },
 
     //Acciones sobre el marcador
@@ -157,56 +167,49 @@ var mapa = {
         geocoder.geocode({ "latLng": latlng }, function (results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
                 if (results[0]) {
-                    var address = "", ciudad = "", stado = "", codigoPostal = "", pais = "", formattedAddress = "";
-                    var lat;
-                    var lng;
-                    //console.log( console.log(results[0].formatted_address));
-
                     for (var i = 0; i < results[0].address_components.length; i++) {
                         var addr = results[0].address_components[i];
 
-
                         if (addr.types[0] == 'street_number') {
-                            $('#numeroMed').val(addr.long_name);
+                            mapa.numero = addr.long_name;
                         };
 
                         if (addr.types[0] == 'route') {
-                            $('#calleMed').val(addr.long_name);
+                            mapa.calle = addr.long_name;
                         };
 
                         if (addr.types[0] == 'sublocality_level_1') {
-                            $('#slc_colonias').append('<option value="1" selected="selected" >' + addr.long_name + ' </option>');
+                            mapa.colonia = addr.long_name;
                         };
 
                         if (addr.types[0] == 'locality') {
-                            $('#slc_ciudades').append('<option value="1" selected="selected" >' + addr.long_name + ' </option>');
+                            mapa.ciudad = addr.long_name;                            
                         };
 
                         if (addr.types[0] == 'administrative_area_level_1') {
-                            $('#slc_estados').append('<option value="1" selected="selected" >' + addr.long_name + ' </option>');
-
+                            mapa.estado = addr.long_name;
+                            $("#slc_estados option:contains(" + mapa.estado + ")").attr("selected", true);                            
+                            obtenerCiudades();
                         };
 
                         if (addr.types[0] == 'postal_code') {
-                            $('#nmb_cp').val(addr.long_name);
+                            mapa.codigoPostal = addr.long_name;
                         };
 
                         //if (results[0].formatted_address != null) {
                         //    console.log(results[0].formatted_address);
                         //};
-
-
                     };
                 }
                 else {
-                    dir = "<p>No se ha podido obtener ninguna dirección en esas coordenadas.</p>";
+                    mapa.errorDireccion = "No se ha podido obtener ninguna dirección en esas coordenadas.";
                 }
             }
             else {
-                dir = "<p>No se puede obtener la dirección</p>";
+                mapa.errorDireccion = "No se puede obtener la dirección";
             }
 
-            //content.html("<p><strong>Latitud:</strong> " + mapa.latitud + "</p><p><strong>Longitud:</strong> " + mapa.longitud + "</p>" + dir + "<br/>" + dir2);
+            
             $('#' + mapa.nombreObjetoLatitud).val(mapa.latitud);
             $('#' + mapa.nombreObjetoLongitud).val(mapa.longitud);
         })

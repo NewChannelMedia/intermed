@@ -30,7 +30,7 @@
         selectable: true,
         selectHelper: true,
         select: function (start, end) {
-            var title = $('#nombreUbicacion').val();
+            var title = $('#nombreUbi').val();
             var eventData;
 
             if (start.format('DMYYYY') != end.format('DMYYYY')) {
@@ -68,5 +68,5 @@
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         $('#calendar').fullCalendar('render');
     });
-    $('#tabControl a:first').tab('show');
+     $('#tabControl a:first').tab('show');
 });
