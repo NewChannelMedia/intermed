@@ -319,3 +319,65 @@ $(document).ready(function(){
       actualizarNotificaciones();
     });
 })
+
+
+function verTodasNotificaciones(id){
+  div = document.getElementById( 'notifListTable' );
+  var hasVerticalScrollbar= !(document.body.scrollHeight>document.body.clientHeight);
+  console.log('hasVerticalScrollbar: ' + hasVerticalScrollbar);
+
+  $.ajax( {
+    url: '/notificaciones/cargar',
+    type: 'POST',
+    dataType: "json",
+    data: {'id': id, 'limit': 20},
+    success: function ( data ) {
+      if (data.result == "error"){
+        window.location="/";
+      } else {
+        data.forEach(function(record){
+          if (notificacionesScroll.indexOf(record.id) === -1){
+            notificacionesScroll.push(record.id);
+            var date = formattedDate( record.inicio );
+            var contenido = '';
+            switch(record.tipoNotificacion_id) {
+                case 1:
+                    contenido = '<a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10"><span id="pre' + record.id + '"></span>' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></a><br/><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + record.paciente_id + ',' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + record.paciente_id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button></div>';
+                    break;
+                case 2:
+                    contenido = '<a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10">' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' aceptó tu solicitud de amistad</a><div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
+                    break;
+                case 3:
+                    contenido = '<a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10">Aceptaste la solicitud de amistad de ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + '</div></a><div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
+                    break;
+                case 4:
+                    console.log('[ '+ record.id +' ] Solicitud amistad');
+                    break;
+                case 5:
+                    console.log('[ '+ record.id +' ] Solicitud de amistad aceptada');
+                    break;
+                case 6:
+                    console.log('[ '+ record.id +' ] Solicitud aceptada');
+                    break;
+                case 7:
+                    console.log('[ '+ record.id +' ] Agregado medico favorito');
+                    break;
+                case 8:
+                case 9:
+                    if (record.paciente){
+                      contenido = '<a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10">Rechazaste la solicitud de amistad de ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + '</div></a><div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
+                    } else if (record.medico){
+                      contenido = '<a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10"> Rechazaste la solicitud de amistad de ' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + '</div></a><<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
+                    }
+                    break;
+            }
+            $( '#notifListTable' ).append('<tr><td>' + contenido + '</td></tr>');
+          }
+        });
+      }
+    },
+    error: function (err){
+      console.log('ERROR: ' + JSON.stringify(err));
+    }
+  });
+}

@@ -1110,6 +1110,15 @@ var iniciar = function () {
     intermed.callController( 'buscadorInterno', 'buscar', req.body, req, res );
   });
 
+  app.get('/notificaciones', function (req, res){
+    rutas.routeLife( 'plataforma', 'plataforma', hps );
+    intermed.callController('notificaciones','index', req.body, req, res);
+  });
+
+  app.post('/notificaciones/cargar', function (req, res){
+    intermed.callController('notificaciones','cargarNotificaciones', req.body, req, res);
+  })
+
   app.post('/notificaciones/scroll', function (req, res){
     intermed.callController('notificaciones','scroll', req.body, req, res);
   });

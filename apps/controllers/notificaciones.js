@@ -1,5 +1,9 @@
 var models = require( '../models' );
 
+exports.index = function ( object, req, res ) {
+  res.render( 'notificaciones', object );
+}
+
 exports.obtenerTodas = function ( object, req, res ) {
   models.TipoNotificacion.findAll( {
     where: {
@@ -199,6 +203,54 @@ exports.scroll = function (object, req, res){
       id: {not: [object.id]}
     },
     limit: 4,
+    attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ]
+  } ).then( function ( result ) {
+      result = JSON.parse( JSON.stringify( result ) );
+      var length = result.length;
+      result.forEach( function ( record ) {
+        var paciente_id = record.data;
+        record[ 'paciente_id' ] = paciente_id;
+        models.Paciente.findOne( {
+          where: {
+            id: paciente_id
+          },
+          attributes: [ 'id' ],
+          include: [ {
+            model: models.Usuario,
+            attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+            include: [ {
+              model: models.DatosGenerales,
+              attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                        } ]
+                    } ]
+        } ).then( function ( usuario ) {
+          record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+          if ( record === result[ result.length - 1 ] ) {
+            res.send(result);
+          }
+        } )
+    } );
+  } )
+}
+
+
+exports.cargarNotificaciones = function ( object, req, res ) {
+  if (!req.session.passport.user) res.send(JSON.parse(JSON.stringify({'result':'error'})));
+  var whereid = new Array();
+  var limit = 0;
+  if (object.id) {
+    whereid = {id: {$lt: object.id}}
+  }
+  if (object.limit) {
+    limit = object.limit
+  }
+  var where = new Array(models.sequelize.and(
+    {usuario_id: req.session.passport.user.id},
+    whereid
+  ));
+  models.Notificacion.findAll( {
+    where: where,
+    limit: limit,
     attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ]
   } ).then( function ( result ) {
       result = JSON.parse( JSON.stringify( result ) );
