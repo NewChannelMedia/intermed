@@ -21,8 +21,9 @@
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
 
-
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+    <script src="js/jquery.iscroll.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/buscadorInterno.js"></script>
     <script src="js/notificaciones.js"></script>
@@ -94,14 +95,22 @@
                   <img src="img/icon-calendar.png">
                 </a>
               </li>
-              <li role="presentation" class="dropdown">
+              <li role="presentation" class="dropdown" id="notificaciones">
                 <a id="notificationIcon" class="navControlBtn dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="socket.emit('verNotificaciones')">
                   <img src="img/icon-messages.png">
                   <span id="totalNotificaciones" class="badge hidden invisible">1</span>
                 </a>
-                <ul class="dropdown-menu notificationDropdown media-list" id="notificacinesList">
+                <ul class="dropdown-menu notificationDropdown media-list">
+                  <div  id="notificacinesList">
+
+                  </div>
+                  <div style="padding:10px;background-color:#DDD;margin-bottom:-5px;margin-top:10px;">
+                    <a href="{{base_url}}notificaciones" class="text-center" style="text-align:center">Ver todas</a>
+                  </div>
                 </ul>
               </li>
+
+              </script>
               <li class="navSeparator">
                 <span class="navS "></span>
               </li>

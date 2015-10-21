@@ -1,4 +1,6 @@
-var socket = io();;
+var socket = io();
+var notificaciones = [];
+var notificacionesScroll = [];
 
 //Manejar notificaciones
 $.ajax( {
@@ -13,7 +15,6 @@ $.ajax( {
       } );
       notificaciones = [];
 
-
       if ( Object.prototype.toString.call( data ) === '[object Array]' ) {
         if ( data ) {
           data.forEach( function ( record ) {
@@ -23,13 +24,13 @@ $.ajax( {
 
               var idInterval = setInterval(
                 function () {
-                  try {
-                    socket.emit( record.tipo );
-                    //console.log( '[' + new Date().toLocaleString().substring( 0, 18 ) + '] Revisar: ' + record.tipo );
-                  }
-                  catch ( err ) {
-                    console.log( 'No se puede conectar con el servidor' );
-                  }
+                      try {
+                        socket.emit( record.tipo );
+                        //console.log( '[' + new Date().toLocaleString().substring( 0, 18 ) + '] Revisar: ' + record.tipo );
+                      }
+                      catch ( err ) {
+                        console.log( 'No se puede conectar con el servidor' );
+                      }
                 }, ( parseInt( record.intervalo ) * 1000 ) );
               notificaciones.push( {
                 id: idInterval,
@@ -92,28 +93,95 @@ function formattedDate( date ) {
 }
 
 function actualizarNotificaciones() {
-  $( '#notificacinesList' ).html( '' );
-  $( '#totalNotificaciones' ).html( '' );
-  $( '#totalNotificaciones' ).addClass( 'hidden invisible' );
-  totalNotificaciones = [];
-  totalNotificaciones = totalNotificaciones.concat( solicitudAmistad );
-  totalNotificaciones = totalNotificaciones.concat( solicitudAmistadAceptada );
-  totalNotificaciones = totalNotificaciones.concat( solicitudesAceptadas );
-  totalNotificaciones = totalNotificaciones.sort( ordenarPorFecha );
-  if ( totalNotificaciones.length > 0 ) {
-    $( '#totalNotificaciones' ).removeClass( 'hidden invisible' );
-    var total = 0;
-    totalNotificaciones.forEach( function ( notificacion ) {
-      if ( notificacion.toString() != "undefined" ) {
-        if ( notificacion.visto == 1 ) {
-          $( '#notificacinesList' ).append( '<li class="media" id="li' + notificacion.id + '">' + notificacion.content + '</li>' );
+  if ($('#notificationIcon').attr('aria-expanded') != true){
+    $( '#notificacinesList' ).html( '' );
+    $( '#totalNotificaciones' ).html( '' );
+    $( '#totalNotificaciones' ).addClass( 'hidden invisible' );
+    totalNotificaciones = [];
+    totalNotificaciones = totalNotificaciones.concat( solicitudAmistad );
+    totalNotificaciones = totalNotificaciones.concat( solicitudAmistadAceptada );
+    totalNotificaciones = totalNotificaciones.concat( solicitudesAceptadas );
+    totalNotificaciones = totalNotificaciones.sort( ordenarPorFecha );
+    if ( totalNotificaciones.length > 0 ) {
+      $( '#totalNotificaciones' ).removeClass( 'hidden invisible' );
+      var total = 0;
+      //notificacionesScroll = [];
+      totalNotificaciones.forEach( function ( notificacion ) {
+        if (notificacionesScroll.indexOf(notificacion.id) === -1){
+          notificacionesScroll.push(notificacion.id);
         }
-        else {
-          $( '#totalNotificaciones' ).html( ++total );
-          $( '#notificacinesList' ).append( '<li class="media" style="background-color:#DDD" id="li' + notificacion.id + '">' + notificacion.content + '</li>' );
+        if ( notificacion.toString() != "undefined" ) {
+          if ( notificacion.visto == 1 ) {
+            $( '#notificacinesList' ).append( '<li class="media" id="li' + notificacion.id + '">' + notificacion.content + '</li>' );
+          }
+          else {
+            $( '#totalNotificaciones' ).html( ++total );
+              $( '#notificacinesList' ).append( '<li class="media" style="background-color:#DDD" id="li' + notificacion.id + '">' + notificacion.content + '</li>' );
+          }
         }
-      }
-    } );
+      } );
+      $('#notificacinesList').append('<a class="_next" href="#"></a>');
+      var scroll = $('#notificacinesList').iscroll({
+        autoTrigger: true,
+        autoTriggerUntil: false,
+        onBeginRequest:function(request){
+          $( "#notificacinesList" ).find( "a._next" ).remove();
+          $.ajax( {
+            url: '/notificaciones/scroll',
+            type: 'POST',
+            dataType: "json",
+            cache: false,
+            data: {'id': notificacionesScroll},
+            success: function ( data ) {
+              if (data){
+                data.forEach(function(notificacion){
+                  if (notificacionesScroll.indexOf(notificacion.id) === -1){
+                    notificacionesScroll.push(notificacion.id);
+                    switch(notificacion.tipoNotificacion_id) {
+                        case 1:
+                            console.log('[ '+ notificacion.id +' ] Solicitud de amistad');
+                            break;
+                        case 2:
+                            console.log('[ '+ notificacion.id +' ] Solicitud de amistad aceptada');
+                            break;
+                        case 3:
+                            console.log('[ '+ notificacion.id +' ] Solicitud aceptada');
+                            break;
+                        case 4:
+                            console.log('[ '+ notificacion.id +' ] Solicitud amistad');
+                            break;
+                        case 5:
+                            console.log('[ '+ notificacion.id +' ] Solicitud de amistad aceptada');
+                            break;
+                        case 6:
+                            console.log('[ '+ notificacion.id +' ] Solicitud aceptada');
+                            break;
+                        case 7:
+                            console.log('[ '+ notificacion.id +' ] Agregado medico favorito');
+                            break;
+                        case 8:
+                            console.log('[ '+ notificacion.id +' ] Solicitud rechazada');
+                            break;
+                        case 9:
+                            console.log('[ '+ notificacion.id +' ] Solicitud rechazada');
+                            break;
+                    }
+                  }
+                });
+              }/*
+              $('#notificacinesList').append('<span class="_load">Cargando...</span>');
+              $( "#notificacinesList" ).find( "span._load" ).remove();
+              var contenido = '<li class="media" id="li9"><div class="media-left"><a href="/perfil/0000003"><img class="media-object" src="/garage/profilepics/dpp.png" style="width: 50px;"></a></div><div class="media-body"><a href="/perfil/0000003">Margarita Acosta  aceptó tu solicitud de amistad</a><br><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time"> Cargado con ajax</span></div></div></li><a class="_next" href="#"></a>';
+              $('#notificacinesList').append(contenido);*/
+            },
+            error: function (err){
+              $('#notificacinesList').append('<a class="_next" href="#"></a>');
+              console.log('Error: ' + JSON.stringify(err));
+            }
+          })
+        }
+      });
+    }
   }
 }
 
@@ -200,3 +268,11 @@ function socketManejadores() {
 
   } );
 }
+
+$(document).ready(function(){
+
+    $('#notificaciones').on('hidden.bs.dropdown', function(){
+      notificacionesScroll = [];
+      actualizarNotificaciones();
+    });
+})

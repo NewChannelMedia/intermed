@@ -2,8 +2,7 @@
  *   Archivo creado por Cinthia
  *
  */
-var regTotalDoc = 0,
-  notificaciones = [];
+var regTotalDoc = 0;
 
 if ( location.pathname === '/registro' ) {
   $( document ).ready( getAllDoctors() );
@@ -1420,7 +1419,6 @@ function cargarFavCol( usuario ) {
     dataType: "json",
     cache: false,
     success: function ( data ) {
-      console.log( JSON.stringify( data ) );
       if ( data ) {
         /*for(var t in data){
           if(data[t].Medico)

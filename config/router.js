@@ -1109,6 +1109,10 @@ var iniciar = function () {
   app.post( '/buscadorInterno', function (req, res){
     intermed.callController( 'buscadorInterno', 'buscar', req.body, req, res );
   });
+
+  app.post('/notificaciones/scroll', function (req, res){
+    intermed.callController('notificaciones','scroll', req.body, req, res);
+  });
 }
 
 var io = serv.server( app, 3000 );
