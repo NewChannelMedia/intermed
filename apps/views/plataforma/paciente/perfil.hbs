@@ -33,7 +33,7 @@
                     </div>
                   {{else}}
                     <div class="main">
-                      <h4 class="media-heading vcNombre Flama-normal s20">
+                      <h4 class="media-heading vcNombre Flama-normal s20" id="userName">
                         {{valSession "name"}}
                       </h4>
                       <h4 class="media-heading vcUbicacion Flama-w200 s15">
@@ -544,27 +544,35 @@
                     </div>
                   </div>
                   <!-- ||||||||||||||||||||||||||||||||||||||||||| -->
-                  <div class="col-md-4">
+                  <div  class="col-md-4">
                     <div class="col-md-12">
                       <label>LADA/S:</label>
                     </div>
                     <div class="col-lg-6">
                       <div class="input-group">
-                        <span class="input-group-btn" id="buttonAddLada"></span>
-                        <div id="addladaTelefono"></div>
+                        <span class="input-group-btn" id="buttonAddLada">
+                          <button otroCampo = "addLada" type = "button" class = "form-control btn btn-primary" id = "agregaLada">
+                            <span class="glyphicon glyphicon-plus"></span>
+                          </button>
+                        </span>
+                        <div id="addladaTelefono">
+                          <input type = "text" class = "form-control" id = "agregaAddLada" name = "agregaAddLada" placeholder = "LADA:"/>
+                        </div>
                         <div id="idLada"></div>
                       </div>
                     </div>
                   </div>
                   <!-- |||||||||||||||||||||||||||||||||||||||||||| -->
-                  <div class="col-md-4">
+                  <div class="col-md-4" id ="cargarDatosTelLada">
                     <div class="col-md-12">
                       <label>Telefono/s:</label>
                     </div>
                     <div class="col-lg-6">
                       <div class="input-group">
                         <span class="input-group-btn" id="buttonAddTel"></span>
-                        <div id="addnumeroTelefono"></div>
+                        <div id="addnumeroTelefono">
+                          <input type = "text" class ="form-control" id = "addFon" name = "addFon" placeholder="Telefono:"/>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -578,7 +586,7 @@
                   <div class="row">
                     <!-- row inicio -->
                     <div class="col-md-12">
-                      <div class="col-md-4">
+                      <div class="col-md-4" id ="cargarDatosTelLada">
                         <div class="col-md-12">
                           <label>Codigo postal:</label>
                         </div>
@@ -648,8 +656,14 @@
                     <div class = "col-md-3">
                       <div class = "col-lg-6">
                         <div class = "input-group">
-                          <span class = "input-group-btn" id = "ingresaP"></span>
-                          <div id = "inputIngresaP"></div>
+                          <span class = "input-group-btn" id = "ingresaP">
+                            <button type = "button" otroCampo = "ingresaPeso" inputId = "" class = "btn btn-primary" id = "ingresaPeso">
+                              <span class="glyphicon glyphicon-plus"></span>
+                            </button>
+                          </span>
+                          <div id = "inputIngresaP">
+                            <input type = "text" id = "inputIngresaPe" name = "inputIngresaPe" class = "form-control" placeholder = "Peso:"/>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -657,20 +671,26 @@
                       <div class = "col-lg-6">
                         <div class = "input-group">
                           <span class = "input-group-btn" id = "ingresaAl"></span>
-                          <div id = "inputIngresaAl"></div>
+                          <div id = "inputIngresaAl">
+                            <input type = "text" id = "ingresaAlt" name = "ingresaAlt" class = "form-control" placeholder = "Altura:"/>
+                          </div>
                         </div>
                       </div>
                     </div>
                     <div class = "col-md-3">
                       <div class = "col-lg-6">
                         <span class = "input-group-btn" id = "ingresaS"></span>
-                        <div id = "ingresaIngresaS"></div>
+                        <div id = "ingresaIngresaS">
+                          <input type = "text" id = "ingresaSa" name = "ingresaSa" class = "form-control" placeholder = "Tipo de sangre:"/>
+                        </div>
                       </div>
                     </div>
                     <div class = "col-md-3">
                       <div class = "col-lg-6">
                         <span class = "input-group-btn" id = "ingresaG"></span>
-                        <div id = "inputIngresaG"></div>
+                        <div id = "inputIngresaG">
+                          <input type = "text" id = "ingresaGene" name = "ingresaGene" class = "form-control" placeholder = "Genero:"/>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -726,7 +746,9 @@
                     <div class="col-lg-6">
                       <div class="input-group">
                         <span class="input-group-btn" id="buttonContactoNombre"></span>
-                        <div id="nombreDContacto"></div>
+                        <div id="nombreDContacto">
+                          <input type = "text" id = "agregaNContacto" name = "agregaNContacto" class = "form-control"placeholder = "Nombre:"/>
+                        </div>
                         <div id="contactoNombre"></div>
                       </div>
                     </div>
@@ -738,9 +760,15 @@
                     <div id="idContacto"></div>
                     <div class="col-lg-6">
                       <div class="input-group">
-                        <div id="numeroDContacto"></div>
+                        <div id="numeroDContacto">
+                          <input type = "text" id = "agregaNtel" name = "agregaNtel" class = "form-control" placeholder = "Telefono:"/>
+                        </div>
                         <div id="contactoTel"></div>
-                        <span class="input-group-btn" id="buttonContacto"></span>
+                        <span class="input-group-btn" id="buttonContacto">
+                          <button type = "button" class = "form-control btn, btn-primary" id = "agregaDatosContacto" name = "agregaDatosContacto">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                          </button>
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -760,8 +788,15 @@
                     <div class="row">
                       <div class="col-md-12">
                         <div class="input-group">
-                          <div id="menuPadecimiento" class="form-group"></div>
-                          <span class="input-group-btn" id="buttonAddPadecimiento"></span>
+                          <div id="menuPadecimiento" class="form-group">
+                            <input type "text" id="ingresaPadecimiento" name = "ingresaPadecimiento" class = "form-control" placeholder = "Padecimiento:"/>
+                            <div class = "hidden" id="capaInvisible">
+                              <input type = "hidden" id = "project-id" value = ""/>
+                            </div>
+                          </div>
+                          <span class="input-group-btn" id="buttonAddPadecimiento">
+                            <button otroCampo = "addPad" type = "button" class = "btn btn-primary" id = "addPadecimiento" ><span class="glyphicon glyphicon-plus"></span></button>
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -796,8 +831,15 @@
                     <div class="col-md-12">
                       <div class="">
                         <div class="input-group">
-                          <div id="menuAlergia" class="form-group"></div>
-                          <span class="input-group-btn" id="addAlergia"></span>
+                          <div id="menuAlergia" class="form-group">
+                            <input type = "text" id = "ingresaAlergia" name = "ingresaAlergia" class = "form-control" placeholder = "Alergia/s:"/>
+                            <div class = "hidden" id="capaInvisible">
+                              <input type = "hidden" id = "id-project" value = ""/>
+                            </div>
+                          </div>
+                          <span class="input-group-btn" id="addAlergia">
+                            <button otroCampo = "addAle" type = "button" class = "btn btn-primary" id = "addAlergia"><span class="glyphicon glyphicon-plus"></span></button>
+                          </span>
                         </div>
                       </div>
                     </div>
