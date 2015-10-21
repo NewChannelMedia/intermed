@@ -93,7 +93,8 @@ function formattedDate( date ) {
 }
 
 function actualizarNotificaciones() {
-  if ($('#notificationIcon').attr('aria-expanded') != true){
+  if (!$('#notificationIcon').attr('aria-expanded')) {
+    console.log('ENTRO');
     $( '#notificacinesList' ).html( '' );
     $( '#totalNotificaciones' ).html( '' );
     $( '#totalNotificaciones' ).addClass( 'hidden invisible' );
@@ -122,8 +123,6 @@ function actualizarNotificaciones() {
       } );
       $('#notificacinesList').append('<a class="_next" href="#"></a>');
       var scroll = $('#notificacinesList').iscroll({
-        autoTrigger: true,
-        autoTriggerUntil: false,
         onBeginRequest:function(request){
           $( "#notificacinesList" ).find( "a._next" ).remove();
           $.ajax( {
@@ -133,50 +132,49 @@ function actualizarNotificaciones() {
             cache: false,
             data: {'id': notificacionesScroll},
             success: function ( data ) {
+              $('#notificacinesList').find('.loader').remove();
               if (data){
-                data.forEach(function(notificacion){
-                  if (notificacionesScroll.indexOf(notificacion.id) === -1){
-                    notificacionesScroll.push(notificacion.id);
-                    switch(notificacion.tipoNotificacion_id) {
+                data.forEach(function(record){
+                  if (notificacionesScroll.indexOf(record.id) === -1){
+                    notificacionesScroll.push(record.id);
+                    var date = formattedDate( record.inicio );
+                    var contenido = '';
+                    switch(record.tipoNotificacion_id) {
                         case 1:
-                            console.log('[ '+ notificacion.id +' ] Solicitud de amistad');
+                            contenido = '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body"><span id="pre' + record.id + '"></span>' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + record.paciente_id + ',' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + record.paciente_id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button></div>';
                             break;
                         case 2:
-                            console.log('[ '+ notificacion.id +' ] Solicitud de amistad aceptada');
+                            contenido = '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' aceptó tu solicitud de amistad</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
                             break;
                         case 3:
-                            console.log('[ '+ notificacion.id +' ] Solicitud aceptada');
+                            contenido = '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Aceptaste la solicitud de amistad de ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
                             break;
                         case 4:
-                            console.log('[ '+ notificacion.id +' ] Solicitud amistad');
+                            console.log('[ '+ record.id +' ] Solicitud amistad');
                             break;
                         case 5:
-                            console.log('[ '+ notificacion.id +' ] Solicitud de amistad aceptada');
+                            console.log('[ '+ record.id +' ] Solicitud de amistad aceptada');
                             break;
                         case 6:
-                            console.log('[ '+ notificacion.id +' ] Solicitud aceptada');
+                            console.log('[ '+ record.id +' ] Solicitud aceptada');
                             break;
                         case 7:
-                            console.log('[ '+ notificacion.id +' ] Agregado medico favorito');
+                            console.log('[ '+ record.id +' ] Agregado medico favorito');
                             break;
                         case 8:
-                            console.log('[ '+ notificacion.id +' ] Solicitud rechazada');
-                            break;
                         case 9:
-                            console.log('[ '+ notificacion.id +' ] Solicitud rechazada');
+                            if (record.paciente){
+                              contenido = '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Rechazaste la solicitud de amistad de ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
+                            } else if (record.medico){
+                              contenido = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Rechazaste la solicitud de amistad de ' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
+                            }
                             break;
                     }
+                    $( '#notificacinesList' ).append( '<li class="media" id="li' + record.id + '">' + contenido + '</li>' );
                   }
                 });
-              }/*
-              $('#notificacinesList').append('<span class="_load">Cargando...</span>');
-              $( "#notificacinesList" ).find( "span._load" ).remove();
-              var contenido = '<li class="media" id="li9"><div class="media-left"><a href="/perfil/0000003"><img class="media-object" src="/garage/profilepics/dpp.png" style="width: 50px;"></a></div><div class="media-body"><a href="/perfil/0000003">Margarita Acosta  aceptó tu solicitud de amistad</a><br><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time"> Cargado con ajax</span></div></div></li><a class="_next" href="#"></a>';
-              $('#notificacinesList').append(contenido);*/
-            },
-            error: function (err){
-              $('#notificacinesList').append('<a class="_next" href="#"></a>');
-              console.log('Error: ' + JSON.stringify(err));
+                $('#notificacinesList').append('<a class="_next" href="#"></a>');
+              }
             }
           })
         }
@@ -241,37 +239,82 @@ function socketManejadores() {
   } );
 
   socket.on( 'solicitudesAceptadas', function ( data ) {
-    solicitudesAceptadas = [];
-    data.forEach( function ( record ) {
-      if ( record.paciente ) {
-        date = formattedDate( record.inicio );
-        solicitudesAceptadas.unshift( {
-          id: record.id,
-          time: record.inicio,
-          visto: record.visto,
-          content: '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Aceptaste la solicitud de amistad de ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>'
-        } );
-      }
-    } );
-    actualizarNotificaciones();
-  } );
+     solicitudesAceptadas = [];
+     data.forEach( function ( record ) {
+       date = formattedDate( record.inicio );
+       var content = '';
+       if (record.paciente){
+         content = '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Aceptaste la solicitud de amistad de ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
+       } else if (record.medico){
+         content = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Aceptaste la solicitud de amistad de ' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
+       }
+       if (content){
+         solicitudesAceptadas.unshift( {
+           id: record.id,
+           time: record.inicio,
+           visto: record.visto,
+           content: content
+         } );
+       }
+     } );
+     actualizarNotificaciones();
+   });
 
-  socket.on( 'verNotificaciones', function ( data ) {
-    $( '#totalNotificaciones' ).html( '' );
-    $( '#totalNotificaciones' ).addClass( 'hidden invisible' );
-    totalNotificaciones.forEach( function ( notificacion ) {
-      notificacion.visto = 1;
-    } );
-    setTimeout( function () {
-      actualizarNotificaciones();
-    }, 3000 );
+   socket.on( 'solicitudRechazada', function ( data ) {
+     solicitudesRechazadas = [];
+     data.forEach( function ( record ) {
+       date = formattedDate( record.inicio );
+       var content = '';
+       if (record.paciente){
+         content = '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Rechazaste la solicitud de amistad de ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
+       } else if (record.medico){
+         content = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Rechazaste la solicitud de amistad de ' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
+       }
+       if (content){
+         solicitudesRechazadas.unshift( {
+           id: record.id,
+           time: record.inicio,
+           visto: record.visto,
+           content: content
+         } );
+       }
+     } );
+     actualizarNotificaciones();
+   });
 
-  } );
+   socket.on('agregadoMedicoFavorito', function ( data ) {
+     agregadoMedicoFavorito = [];
+     data.forEach( function ( record ) {
+       if ( record.paciente ) {
+         date = formattedDate( record.inicio );
+         agregadoMedicoFavorito.unshift( {
+           id: record.id,
+           time: record.inicio,
+           visto: record.visto,
+           content: '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">El paciente ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' te agregó a sus médicos favoritos</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>'
+         } );
+       }
+     } );
+     actualizarNotificaciones();
+   });
+
+   socket.on( 'verNotificaciones', function ( data ) {
+     $( '#totalNotificaciones' ).html( '' );
+     $( '#totalNotificaciones' ).addClass( 'hidden invisible' );
+     totalNotificaciones.forEach( function ( notificacion ) {
+       notificacion.visto = 1;
+     } );
+     setTimeout( function () {
+       actualizarNotificaciones();
+     }, 3000 );
+
+   } );
 }
 
 $(document).ready(function(){
-
     $('#notificaciones').on('hidden.bs.dropdown', function(){
+      console.log('Modal cerrado');
+      $('#notificationIcon').attr('aria-expanded','');
       notificacionesScroll = [];
       actualizarNotificaciones();
     });

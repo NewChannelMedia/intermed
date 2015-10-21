@@ -24,58 +24,36 @@ function iscroll($e, options) {
     O.S = {
         Loadingoffset: 20,
         optionsData: {},
-        loadingHtml: '<small>Loading...</small>', // null
+        loadingHtml: '<div style="padding-top:5px" class="loader text-center"><div class="throbber-loader"></div></div>', // null
         sendReqonInit:false,
         autoTrigger: true, //must be true for autoTriggerUntil
         autoTriggerUntil: false,
-        next:'a:last',
+        next:'a._next',
         onBeginRequest: null,
         ondataArrival: null
     };
 
 
     O.RequestItems = function () {
-      if (stopReqs || isLoading) return;
+      if (isLoading) return;
       isLoading = true;
-      if (O.S.onBeginRequest != null) O.S.onBeginRequest();
-      ctr++;
-      O.setNext();
+      if (!reqUrl) O.setNext();
+      loader = $(O.S.loadingHtml);
+      $e.append(loader);
       setTimeout(function(){
+        if (reqUrl) {if (O.S.onBeginRequest != null) O.S.onBeginRequest();}
+        O.setNext();
         isLoading = false;
-      },1000);
-      /*
-        if (stopReqs || isLoading) return;
-        isLoading = true;
-
-        if(O.S.loadingHtml)
-            loader = $(O.S.loadingHtml);
-            $e.append(loader);
-
-        if (O.S.onBeginRequest != null) O.S.onBeginRequest();
-        ctr++;
-
-        $.get(reqUrl, O.S.optionsData, function (d) {
-
-                loader.remove();
-                if (O.S.ondataArrival != null) O.S.ondataArrival(d);
-
-                $e.append(d);
-
-                if(O.S.autoTriggerUntil && ctr >= O.S.autoTriggerUntil){
-                   O.S.autoTriggerUntil = O.S.autoTrigger = false;
-                   $scroll.off('scroll.sq');
-                }
-                O.setNext();
-
-                isLoading = false;
-            });*/
+      },500);
     };
 
     O.setNext = function(){
         var _n = $e.find(O.S.next);
         reqUrl = _n.attr('href');
-       if (!reqUrl)
-            stopReqs = true;
+       if (!reqUrl){
+           $e.find('.loader').remove();
+           $e.find(O.S.next).remove();
+       }
 
         if(O.S.autoTrigger) {
             _n.remove();

@@ -78,11 +78,11 @@
 
                     {{else}}
                       <div class="vCardMainInfo">
-                        <h4 class="media-heading vcNombre s20">
+                        <h4 class="media-heading vcNombre s20" id="userName">
                           {{#ifSession "name"}}
                             Dr. {{valSession "name"}}
-                    {{else}}
-                      Aun no tenemos tu nombre registrado, continúa tu registro <a onclick="informacionRegistroMedico()">aquí</a>.
+                            {{else}}
+                            Aun no tenemos tu nombre registrado, continúa tu registro <a onclick="informacionRegistroMedico()">aquí</a>.
                           {{/ifSession}}
                         </h4>
                         <h4 class="media-heading vcUbicacion Flama-w200 s15">
