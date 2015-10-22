@@ -26,83 +26,19 @@ exports.obtenerTodas = function ( object, req, res ) {
   } );
 }
 
-exports.prueba = function ( object, req, res ) {
-  var TipoNotificacion = 3;
-  object.visto = true;
-  var visto = object.visto;
-  if ( req.session.passport.user ) {
-    var usuarioId = req.session.passport.user.id;
-    models.TipoNotificacion.findOne( {
-      attributes: [ 'id', 'interno', 'push', 'mail' ],
-      where: {
-        id: TipoNotificacion
-      },
-      include: [
-        {
-          model: models.Notificacion,
-          where: {
-            usuario_id: usuarioId,
-            visto: 0
-          }
-        }
-              ]
-    } ).then( function ( datos ) {
-      if ( datos ) {
-        models.ConfNotUsu.findOne( {
-          where: {
-            usuario_id: usuarioId,
-            tipoNotificacion_id: TipoNotificacion
-          }
-        } ).
-        then( function ( result ) {
-          if ( result ) {
-            datos.interno = result.interno;
-            datos.push = result.push;
-            datos.mail = result.mail;
-          }
-          datos = JSON.parse( JSON.stringify( datos ) );
-          var count = 0;
-          var resultado = '';
-          for ( var key in datos.Notificacions ) {
-            if ( datos.Notificacions.hasOwnProperty( key ) ) {
-              count++;
-              resultado += '<li>' + JSON.stringify( datos.Notificacions[ key ] ) + '</li>'
-            }
-          }
-
-          res.send( 'Total: ' + count + '<br/><br/>interno: ' + datos.interno + '<br/>push: ' + datos.push + '<br/>mail: ' + datos.mail + '<br/><br/>Resultado:<br/>' + resultado );
-
-          if ( visto ) {
-            for ( var key in datos.Notificacions ) {
-              if ( datos.Notificacions[ key ].id ) {
-                models.Notificacion.update( {
-                  visto: 1
-                }, {
-                  where: {
-                    id: datos.Notificacions[ key ].id
-                  }
-                } );
-              }
-            }
-          }
-        } );
-      }
-      else {
-        res.send( 'No hay notificaciones' );
-      }
-    } );
-  }
-  else {
-    res.send( 'Necesita iniciar sesión' );
-  }
-};
-
 exports.solicitudAmistad = function ( req ) {
+  var numNot = 0;
+  if (req.tipoUsuario == "P"){
+    numNot = 1;
+  } else if (req.tipoUsuario == "M"){
+    numNot = 4;
+  }
+
   models.Notificacion.findAll( {
     where: {
       usuario_id: req.usuario_id,
       visto: 0,
-      tipoNotificacion_id: 1
+      tipoNotificacion_id: numNot
     },
     attributes: [ 'id', 'data', 'inicio', 'visto' ]
   } ).then( function ( result ) {
@@ -112,7 +48,7 @@ exports.solicitudAmistad = function ( req ) {
       where: {
         usuario_id: req.usuario_id,
         visto: 1,
-        tipoNotificacion_id: 1
+        tipoNotificacion_id: numNot
       },
       attributes: [ 'id', 'data', 'inicio', 'visto' ],
       limit: restante
@@ -121,27 +57,51 @@ exports.solicitudAmistad = function ( req ) {
       result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
       var length = result.length;
       result.forEach( function ( record ) {
-        var paciente_id = record.data;
-        record[ 'paciente_id' ] = paciente_id;
-        models.Paciente.findOne( {
-          where: {
-            id: paciente_id
-          },
-          attributes: [ 'id' ],
-          include: [ {
-            model: models.Usuario,
-            attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-            include: [ {
-              model: models.DatosGenerales,
-              attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+        if (req.tipoUsuario == "P"){
+            var paciente_id = record.data;
+            record[ 'paciente_id' ] = paciente_id;
+            models.Paciente.findOne( {
+              where: {
+                id: paciente_id
+              },
+              attributes: [ 'id' ],
+              include: [ {
+                model: models.Usuario,
+                attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+                include: [ {
+                  model: models.DatosGenerales,
+                  attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                            } ]
                         } ]
-                    } ]
-        } ).then( function ( usuario ) {
-          record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
-          if ( record === result[ result.length - 1 ] ) {
-            req.socket.emit( 'solicitudAmistad', result );
-          }
-        } )
+            } ).then( function ( usuario ) {
+              record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+              if ( record === result[ result.length - 1 ] ) {
+                req.socket.emit( 'solicitudAmistad', result );
+              }
+            } )
+        } else if (req.tipoUsuario == "M"){
+            var medico_id = record.data;
+            record[ 'medico_id' ] = medico_id;
+            models.Medico.findOne( {
+              where: {
+                id: medico_id
+              },
+              attributes: [ 'id' ],
+              include: [ {
+                model: models.Usuario,
+                attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+                include: [ {
+                  model: models.DatosGenerales,
+                  attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                            } ]
+                        } ]
+            } ).then( function ( usuario ) {
+              record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
+              if ( record === result[ result.length - 1 ] ) {
+                req.socket.emit( 'solicitudAmistad', result );
+              }
+            } )
+        }
       } );
     } );
   } )
@@ -149,11 +109,18 @@ exports.solicitudAmistad = function ( req ) {
 
 
 exports.solicitudAmistadAceptada = function ( req ) {
+  var numNot = 0;
+  if (req.tipoUsuario == "P"){
+    numNot = 2;
+  } else if (req.tipoUsuario == "M"){
+    numNot = 5;
+  }
+
   models.Notificacion.findAll( {
     where: {
       usuario_id: req.usuario_id,
       visto: 0,
-      tipoNotificacion_id: 2
+      tipoNotificacion_id: numNot
     },
     attributes: [ 'id', 'data', 'inicio', 'visto' ]
   } ).then( function ( result ) {
@@ -163,7 +130,7 @@ exports.solicitudAmistadAceptada = function ( req ) {
       where: {
         usuario_id: req.usuario_id,
         visto: 1,
-        tipoNotificacion_id: 2
+        tipoNotificacion_id: numNot
       },
       attributes: [ 'id', 'data', 'inicio', 'visto' ],
       limit: restante
@@ -172,6 +139,79 @@ exports.solicitudAmistadAceptada = function ( req ) {
       result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
       var length = result.length;
       result.forEach( function ( record ) {
+        var paciente_id = '', medico_id = '';
+        if (req.tipoUsuario == "P"){
+          paciente_id = record.data;
+          record[ 'paciente_id' ] = paciente_id;
+          models.Paciente.findOne( {
+            where: {
+              id: paciente_id
+            },
+            attributes: [ 'id' ],
+            include: [ {
+              model: models.Usuario,
+              attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+              include: [ {
+                model: models.DatosGenerales,
+                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                          } ]
+                      } ]
+          } ).then( function ( usuario ) {
+            record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+            if ( record === result[ result.length - 1 ] ) {
+              req.socket.emit( 'solicitudAmistadAceptada', result );
+            }
+          } )
+        } else if (req.tipoUsuario == "M"){
+          medico_id = record.data;
+          record[ 'medico_id' ] = paciente_id;
+
+          models.Medico.findOne( {
+            where: {
+              id: medico_id
+            },
+            attributes: [ 'id' ],
+            include: [ {
+              model: models.Usuario,
+              attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+              include: [ {
+                model: models.DatosGenerales,
+                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                          } ]
+                      } ]
+          } ).then( function ( usuario ) {
+            record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
+            if ( record === result[ result.length - 1 ] ) {
+              req.socket.emit( 'solicitudAmistadAceptada', result );
+            }
+          } )
+        }
+      } );
+    } );
+  } )
+};
+
+
+exports.solicitudesAceptadas = function ( req ) {
+  var numNot = 0;
+  if (req.tipoUsuario == "P"){
+    numNot = 3;
+  } else if (req.tipoUsuario == "M"){
+    numNot = 6;
+  }
+
+  models.Notificacion.findAll( {
+    where: {
+      usuario_id: req.usuario_id,
+      visto: 1,
+      tipoNotificacion_id: numNot
+    },
+    attributes: [ 'id', 'data', 'inicio', 'visto' ]
+  } ).then( function ( result ) {
+    result = JSON.parse( JSON.stringify( result ) );
+    var length = result.length;
+    result.forEach( function ( record ) {
+      if (req.tipoUsuario == "P"){
         var paciente_id = record.data;
         record[ 'paciente_id' ] = paciente_id;
         models.Paciente.findOne( {
@@ -185,26 +225,118 @@ exports.solicitudAmistadAceptada = function ( req ) {
             include: [ {
               model: models.DatosGenerales,
               attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                        } ]
-                    } ]
+                      } ]
+                  } ]
         } ).then( function ( usuario ) {
           record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
           if ( record === result[ result.length - 1 ] ) {
-            req.socket.emit( 'solicitudAmistadAceptada', result );
+            req.socket.emit( 'solicitudesAceptadas', result );
           }
-        } )
-      } );
+        } );
+      } else if (req.tipoUsuario){
+        var medico_id = record.data;
+        record[ 'medico_id' ] = medico_id;
+        models.Medico.findOne( {
+          where: {
+            id: medico_id
+          },
+          attributes: [ 'id' ],
+          include: [ {
+            model: models.Usuario,
+            attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+            include: [ {
+              model: models.DatosGenerales,
+              attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                      } ]
+                  } ]
+        } ).then( function ( usuario ) {
+          record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
+          if ( record === result[ result.length - 1 ] ) {
+            req.socket.emit( 'solicitudesAceptadas', result );
+          }
+        } );
+      }
     } );
   } )
 };
 
 
-exports.solicitudesAceptadas = function ( req ) {
+
+exports.solicitudRechazada = function ( req ) {
+  var numNot = 0;
+  if (req.tipoUsuario == "P"){
+    numNot = 8;
+  } else if (req.tipoUsuario == "M"){
+    numNot = 9;
+  }
+
   models.Notificacion.findAll( {
     where: {
       usuario_id: req.usuario_id,
       visto: 1,
-      tipoNotificacion_id: 3
+      tipoNotificacion_id: numNot
+    },
+    attributes: [ 'id', 'data', 'inicio', 'visto' ]
+  } ).then( function ( result ) {
+    result = JSON.parse( JSON.stringify( result ) );
+    var length = result.length;
+    result.forEach( function ( record ) {
+      if (req.tipoUsuario == "P"){
+        var paciente_id = record.data;
+        record[ 'paciente_id' ] = paciente_id;
+        models.Paciente.findOne( {
+          where: {
+            id: paciente_id
+          },
+          attributes: [ 'id' ],
+          include: [ {
+            model: models.Usuario,
+            attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+            include: [ {
+              model: models.DatosGenerales,
+              attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                      } ]
+                  } ]
+        } ).then( function ( usuario ) {
+          record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+          if ( record === result[ result.length - 1 ] ) {
+            req.socket.emit( 'solicitudRechazada', result );
+          }
+        } );
+      } else if (req.tipoUsuario){
+        var medico_id = record.data;
+        record[ 'medico_id' ] = medico_id;
+        models.Medico.findOne( {
+          where: {
+            id: medico_id
+          },
+          attributes: [ 'id' ],
+          include: [ {
+            model: models.Usuario,
+            attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+            include: [ {
+              model: models.DatosGenerales,
+              attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                      } ]
+                  } ]
+        } ).then( function ( usuario ) {
+          record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
+          if ( record === result[ result.length - 1 ] ) {
+            req.socket.emit( 'solicitudRechazada', result );
+          }
+        } );
+      }
+    } );
+  } )
+};
+
+
+exports.agregadoMedicoFavorito = function ( req ) {
+  models.Notificacion.findAll( {
+    where: {
+      usuario_id: req.usuario_id,
+      visto: 1,
+      tipoNotificacion_id: 7
     },
     attributes: [ 'id', 'data', 'inicio', 'visto' ]
   } ).then( function ( result ) {
@@ -229,7 +361,8 @@ exports.solicitudesAceptadas = function ( req ) {
       } ).then( function ( usuario ) {
         record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
         if ( record === result[ result.length - 1 ] ) {
-          req.socket.emit( 'solicitudesAceptadas', result );
+          console.log('----->agregadoMedicoFavorito');
+          req.socket.emit( 'agregadoMedicoFavorito', result );
         }
       } )
     } );
@@ -249,4 +382,22 @@ exports.verNotificaciones = function ( req ) {
   } ).then( function ( result ) {
     req.socket.emit( 'verNotificaciones', result );
   } );
+}
+
+
+
+function getDateTime() {
+  var date = new Date();
+  var hour = date.getHours();
+  hour = ( hour < 10 ? "0" : "" ) + hour;
+  var min = date.getMinutes();
+  min = ( min < 10 ? "0" : "" ) + min;
+  var sec = date.getSeconds();
+  sec = ( sec < 10 ? "0" : "" ) + sec;
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  month = ( month < 10 ? "0" : "" ) + month;
+  var day = date.getDate();
+  day = ( day < 10 ? "0" : "" ) + day;
+  return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
 }

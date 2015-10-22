@@ -180,7 +180,7 @@ function informacionRegistroMedico() {
         else if ( data.Biometrico.genero == "M" ) document.getElementById( "sexM" ).checked = true;
       }
       else continuar = false;
-      if ( data.Medico ) {
+      if ( data.Medico && data.Medico.curp) {
         document.getElementById( 'curpRegMed' ).value = data.Medico.curp;
         document.getElementById( 'cedulaRegMed' ).value = data.Medico.cedula;
       }
@@ -1351,7 +1351,11 @@ function agregarFavoritos( medico ) {
             $( '#addFavoriteContact' ).html( 'Invitación enviada' );
           }
         }
-        else if ( $( '#tipoUsuario' ).val() === "M" ) $( '#addFavoriteContact' ).html( 'Eliminar de colegas' );
+        else if ( $( '#tipoUsuario' ).val() === "M" ) {
+            if ( medicoID ) {
+              $( '#addFavoriteContact' ).html( 'Invitación enviada' );
+            }
+        }
         $( "#addFavoriteContact" ).attr( "onclick", "eliminarFavoritos()" );
 
         cargarFavCol( $( '#usuarioPerfil' ).val() );
@@ -1366,7 +1370,8 @@ function agregarFavoritos( medico ) {
   } );
 }
 
-function eliminarFavoritos( medico, paciente_id ) {
+function eliminarFavoritos( medico, paciente_id , notificacion_id) {
+  console.log('ENTRO');
   var ruta = '/eliminarMedFav';
   var medicoID = '',
     pacienteID = '';
@@ -1380,7 +1385,8 @@ function eliminarFavoritos( medico, paciente_id ) {
     dataType: "json",
     data: {
       medicoID: medicoID,
-      pacienteID: pacienteID
+      pacienteID: pacienteID,
+      notificacion_id: notificacion_id
     },
     cache: false,
     success: function ( data ) {
@@ -1396,6 +1402,23 @@ function eliminarFavoritos( medico, paciente_id ) {
         else if ( $( '#tipoUsuario' ).val() === "M" ) $( '#addFavoriteContact' ).html( 'Agregar a colegas' );
         $( "#addFavoriteContact" ).attr( "onclick", "agregarFavoritos()" );
         cargarFavCol( $( '#usuarioPerfil' ).val() );
+        if ( notificacion_id ) {
+          $( '#pre' + notificacion_id ).html( 'Rechazaste la solicitud de amistad de ' );
+          $( '#post' + notificacion_id ).html( '' );
+          for ( var x in solicitudAmistad ) {
+            if ( solicitudAmistad[ x ].id == notificacion_id ) {
+              $( '#button' + notificacion_id ).html( '' );
+              solicitudesRechazadas.unshift( {
+                id: solicitudAmistad[ x ].id,
+                time: solicitudAmistad[ x ].time,
+                visto: solicitudAmistad[ x ].visto,
+                content: $( '#li' + notificacion_id ).html()
+              } );
+              solicitudAmistad.splice( x, 1 );
+              actualizarNotificaciones();
+            }
+          }
+        }
       }
       else {
         alert( 'Error al guardar medico favorito' );
@@ -1422,7 +1445,6 @@ function cargarFavCol( usuario ) {
     dataType: "json",
     cache: false,
     success: function ( data ) {
-      console.log( JSON.stringify( data ) );
       if ( data ) {
         /*for(var t in data){
           if(data[t].Medico)
@@ -1566,14 +1588,16 @@ $( function () {
   } );
 } );
 
-function aceptarInvitacion( paciente_id, notificacion_id ) {
-  if ( !paciente_id ) paciente_id = $( '#PacienteId' ).val();
+function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
+  if ( !(paciente_id > 0) ) paciente_id = $( '#PacienteId' ).val();
+  if ( !(medico_id > 0 )) medico_id = $( '#MedicoId' ).val();
   $.ajax( {
     async: false,
     url: '/aceptarInvitacion',
     type: 'POST',
     dataType: "json",
     data: {
+      medicoID: medico_id,
       pacienteID: paciente_id,
       notificacion_id: notificacion_id
     },
@@ -1710,6 +1734,8 @@ function actualizarNotificaciones() {
   totalNotificaciones = totalNotificaciones.concat( solicitudAmistad );
   totalNotificaciones = totalNotificaciones.concat( solicitudAmistadAceptada );
   totalNotificaciones = totalNotificaciones.concat( solicitudesAceptadas );
+  totalNotificaciones = totalNotificaciones.concat( agregadoMedicoFavorito );
+  totalNotificaciones = totalNotificaciones.concat( solicitudesRechazadas );
   totalNotificaciones = totalNotificaciones.sort( ordenarPorFecha );
   if ( totalNotificaciones.length > 0 ) {
     $( '#totalNotificaciones' ).removeClass( 'hidden invisible' );
@@ -1737,7 +1763,9 @@ function ordenarPorFecha( a, b ) {
 var totalNotificaciones = [],
   solicitudAmistad = [],
   solicitudAmistadAceptada = [],
-  solicitudesAceptadas = [];
+  solicitudesAceptadas = [],
+  agregadoMedicoFavorito = [],
+  solicitudesRechazadas = [];
 
 function socketManejadores() {
 
@@ -1753,13 +1781,18 @@ function socketManejadores() {
   socket.on( 'solicitudAmistad', function ( data ) {
     solicitudAmistad = [];
     data.forEach( function ( record ) {
-      if ( record.paciente ) {
-        date = formattedDate( record.inicio );
+      date = formattedDate( record.inicio );
+      if (record.paciente){
+        content = '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body"><span id="pre' + record.id + '"></span>' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + record.paciente_id + ',0,' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + record.paciente_id + ',' + record.id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button></div>';
+      } else if (record.medico){
+        content = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body"><span id="pre' + record.id + '"></span>' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(0,' + record.medico_id + ',' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + record.paciente_id + ','+ record.id +')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button></div>';
+      }
+      if (content){
         solicitudAmistad.unshift( {
           id: record.id,
           time: record.inicio,
           visto: record.visto,
-          content: '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body"><span id="pre' + record.id + '"></span>' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + record.paciente_id + ',' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + record.paciente_id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button></div>'
+          content: content
         } );
       }
     } );
@@ -1769,15 +1802,22 @@ function socketManejadores() {
   socket.on( 'solicitudAmistadAceptada', function ( data ) {
     solicitudAmistadAceptada = [];
     data.forEach( function ( record ) {
-      if ( record.paciente ) {
-        date = formattedDate( record.inicio );
-        solicitudAmistadAceptada.unshift( {
-          id: record.id,
-          time: record.inicio,
-          visto: record.visto,
-          content: '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' aceptó tu solicitud de amistad</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>'
-        } );
-      }
+    date = formattedDate( record.inicio );
+    var content = '';
+    if (record.paciente){
+      content = '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' aceptó tu solicitud de amistad</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
+    } else if (record.medico){
+      console.log('solicitudAmistadAceptada: ' + JSON.stringify(data));
+      content = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + ' aceptó tu solicitud de amistad</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
+    }
+    if (content){
+      solicitudAmistadAceptada.unshift( {
+        id: record.id,
+        time: record.inicio,
+        visto: record.visto,
+        content: content
+      } );
+    }
     } );
     actualizarNotificaciones();
   } );
@@ -1785,18 +1825,62 @@ function socketManejadores() {
   socket.on( 'solicitudesAceptadas', function ( data ) {
     solicitudesAceptadas = [];
     data.forEach( function ( record ) {
-      if ( record.paciente ) {
-        date = formattedDate( record.inicio );
+      date = formattedDate( record.inicio );
+      var content = '';
+      if (record.paciente){
+        content = '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Aceptaste la solicitud de amistad de ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
+      } else if (record.medico){
+        content = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Aceptaste la solicitud de amistad de ' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
+      }
+      if (content){
         solicitudesAceptadas.unshift( {
           id: record.id,
           time: record.inicio,
           visto: record.visto,
-          content: '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Aceptaste la solicitud de amistad de ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>'
+          content: content
         } );
       }
     } );
     actualizarNotificaciones();
-  } );
+  });
+
+  socket.on( 'solicitudRechazada', function ( data ) {
+    solicitudesRechazadas = [];
+    data.forEach( function ( record ) {
+      date = formattedDate( record.inicio );
+      var content = '';
+      if (record.paciente){
+        content = '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Rechazaste la solicitud de amistad de ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
+      } else if (record.medico){
+        content = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Rechazaste la solicitud de amistad de ' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
+      }
+      if (content){
+        solicitudesRechazadas.unshift( {
+          id: record.id,
+          time: record.inicio,
+          visto: record.visto,
+          content: content
+        } );
+      }
+    } );
+    actualizarNotificaciones();
+  });
+
+  socket.on('agregadoMedicoFavorito', function ( data ) {
+    agregadoMedicoFavorito = [];
+    data.forEach( function ( record ) {
+      if ( record.paciente ) {
+        date = formattedDate( record.inicio );
+        agregadoMedicoFavorito.unshift( {
+          id: record.id,
+          time: record.inicio,
+          visto: record.visto,
+          content: '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">El paciente ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' te agregó a sus médicos favoritos</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>'
+        } );
+      }
+    } );
+    actualizarNotificaciones();
+  });
 
   socket.on( 'verNotificaciones', function ( data ) {
     $( '#totalNotificaciones' ).html( '' );
