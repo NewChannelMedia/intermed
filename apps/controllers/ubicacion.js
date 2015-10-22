@@ -84,6 +84,54 @@ exports.ubicacion = function (objects, req, res) {
     });
 };
 
-exports.registrarUbicacion = function (objects, req, res) {
-    console.log(objects.horarios);
+exports.registrarUbicacion = function (objects, req, res) {    
+    
+    console.log(req.query.usuario_id);
+    
+    
+    
+
+
+    //models.Direccion.create({
+    //    ubicacionGM: 'object.ubicacionGM',
+    //    calle: objects.calle,
+    //    numero: objects.numero,
+    //    calle1: objects.calle1,
+    //    calle2: objects.calle2,
+    //    principal: 'object.principal',
+    //    nombre: objects.nombre,
+    //    horarioInicio: 'object.horarioInicio',
+    //    horarioFin: 'object.horarioFin',
+    //    dias: 'objects.dias',
+    //    usuario_id: objects.usuario_id,
+    //    institucion_id: '0',
+    //    localidad_id: objects.localidad_id,
+    //    municipio_id: objects.municipio_id,
+    //    latitud: objects.latitud,
+    //    longitud: objects.longitud
+    //}).then(function (datos) {
+    //    res.status(200).json({
+    //        ok: true
+    //    });
+    //    //objects.horarios.foreach(function (horario) {
+    //    //    model.Horarios.create({
+    //    //        idDireccion: direccion.id,
+    //    //        dia: horarios.dia,
+    //    //        horaInicio: horarios.horaInicio,
+    //    //        horaFin: horarios.horaFin
+    //    //    }).then(function () {
+    //    //        res.status(200).json({
+    //    //            ok: true
+    //    //        });
+    //    //    }).catch(function (err) {
+    //    //        res.status(500).json({
+    //    //            error: err
+    //    //        });
+    //    //    });
+    //    //});
+    //}).catch(function (err) {
+    //    res.status(500).json({
+    //        error: err
+    //    });
+    //});
 };

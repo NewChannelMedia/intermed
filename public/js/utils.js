@@ -535,7 +535,7 @@ function regUbicacion() {
                 });
             },
             error: function (jqXHR, textStatus, err) {
-                console.error('AJAX ERROR: (registro 166) : ' + err);
+                console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
             }
         });
     }

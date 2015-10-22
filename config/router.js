@@ -1117,8 +1117,7 @@ var iniciar = function () {
     });
 
     app.post('/registrarubicacion', function (req, res) {
-        //if (req.session.passport.user) {
-        console.log('ubicacion');
+        //if (req.session.passport.user) {                
         intermed.callController('ubicacion', 'registrarUbicacion', req.body, req, res);
         //}
         //else {
