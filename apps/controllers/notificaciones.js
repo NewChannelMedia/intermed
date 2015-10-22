@@ -37,7 +37,8 @@ exports.solicitudAmistad = function ( req ) {
       visto: 0,
       tipoNotificacion_id: 1
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ]
+    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    order: 'inicio DESC',
   } ).then( function ( result ) {
     var restante = 8 - result.length;
     if ( restante < 0 ) restante = 0;
@@ -48,7 +49,8 @@ exports.solicitudAmistad = function ( req ) {
         tipoNotificacion_id: 1
       },
       attributes: [ 'id', 'data', 'inicio', 'visto' ],
-      limit: restante
+      limit: restante,
+      order: 'inicio DESC'
     } ).then( function ( resultVisto ) {
       result = JSON.parse( JSON.stringify( result ) );
       result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
@@ -88,7 +90,8 @@ exports.solicitudAmistadAceptada = function ( req ) {
       visto: 0,
       tipoNotificacion_id: 2
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ]
+    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
   } ).then( function ( result ) {
     var restante = 8 - result.length;
     if ( restante < 0 ) restante = 0;
@@ -99,7 +102,8 @@ exports.solicitudAmistadAceptada = function ( req ) {
         tipoNotificacion_id: 2
       },
       attributes: [ 'id', 'data', 'inicio', 'visto' ],
-      limit: restante
+      limit: restante,
+      order: 'inicio DESC'
     } ).then( function ( resultVisto ) {
       result = JSON.parse( JSON.stringify( result ) );
       result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
@@ -139,7 +143,8 @@ exports.solicitudesAceptadas = function ( req ) {
       visto: 0,
       tipoNotificacion_id: 3
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ]
+    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
   } ).then( function ( result ) {
     var restante = 8 - result.length;
     if ( restante < 0 ) restante = 0;
@@ -150,7 +155,8 @@ exports.solicitudesAceptadas = function ( req ) {
         tipoNotificacion_id: 3
       },
       attributes: [ 'id', 'data', 'inicio', 'visto' ],
-      limit: restante
+      limit: restante,
+      order: 'inicio DESC'
     } ).then( function ( resultVisto ) {
       result = JSON.parse( JSON.stringify( result ) );
       result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
@@ -200,10 +206,12 @@ exports.scroll = function (object, req, res){
   models.Notificacion.findAll( {
     where: {
       usuario_id: req.session.passport.user.id,
+      tipoNotificacion_id: {$notIn: [9, 10]},//Inbox
       id: {not: [object.id]}
     },
     limit: 4,
-    attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ]
+    attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
   } ).then( function ( result ) {
       result = JSON.parse( JSON.stringify( result ) );
       var length = result.length;
@@ -238,22 +246,22 @@ exports.cargarNotificaciones = function ( object, req, res ) {
   if (!req.session.passport.user) res.send(JSON.parse(JSON.stringify({'result':'error'})));
   var whereid = new Array();
   var limit = 0;
-  if (object.id && object.id!= "") {
-    whereid = {id: {$lt: object.id}}
+  if (object.id && object.id!= "" && object.id != null) {
+    whereid = {id: {not: [object.id]}}
   }
   if (object.limit) {
     limit = object.limit
   }
   var where = new Array(models.sequelize.and(
     {usuario_id: req.session.passport.user.id},
+    {tipoNotificacion_id: {$notIn: [9, 10]}},//Inbox,,
     whereid
   ));
   models.Notificacion.findAll( {
     where: where,
     limit: limit,
     attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ],
-    order: 'inicio DESC',
-    order: 'id DESC'
+    order: 'inicio DESC'
   } ).then( function ( result ) {
       result = JSON.parse( JSON.stringify( result ) );
       var length = result.length;
