@@ -85,34 +85,18 @@ module.exports = {
           usuario = JSON.parse( JSON.stringify( usuario ) );
 
           if ( req.session.passport.user && ( usuario.Medico || usuario.Paciente ) ) {
-            var condiciones;
-            if ( usuario.Medico ) {
-              condiciones = {
+            if (usuario.Medico){
+              var condiciones = {
                 usuario_id: req.session.passport.user.id,
-                medico_id: usuario.Medico.id,
-                aprobado: 1
+                medico_id: usuario.Medico.id
               };
-              cargarInfoPerfil( usuario, condiciones, true, req, res );
+            } else {
+              var condiciones = {
+                usuario_id: req.session.passport.user.id,
+                paciente_id: usuario.Paciente.id
+              };
             }
-            else {
-              /*Verificar relación mutua*/
-              models.MedicoFavorito.findOne( {
-                where: {
-                  usuario_id: usuario.id,
-                  paciente_id: req.session.passport.user.Paciente_id,
-                  aprobado: 1
-                }
-              } ).then( function ( result ) {
-                var relacionMutua = false;
-                if ( result ) relacionMutua = true;
-                condiciones = {
-                  usuario_id: req.session.passport.user.id,
-                  paciente_id: usuario.Paciente.id
-                };
-                cargarInfoPerfil( usuario, condiciones, relacionMutua, req, res );
-              } )
-
-            }
+            cargarInfoPerfil( usuario, condiciones, req, res );
           }
           else {
             models.Direccion.findOne( {
@@ -298,7 +282,6 @@ function armarPerfil( usuario, req, res ) {
   if ( usuario.tipoUsuario == "M" && usuario.Medico.MedicoEspecialidads ) {
     usuario.especialidades = JSON.parse( JSON.stringify( usuario.Medico.MedicoEspecialidads ) );
   }
-  console.log( '________________MÉDICO FAVORITO: ' + JSON.stringify( usuario.medFavCol ) );
 
   var tipoUsuario = 'Paciente';
   if ( usuario.tipoUsuario == 'M' ) tipoUsuario = 'Medico';
@@ -314,29 +297,22 @@ function armarPerfil( usuario, req, res ) {
   } )
 }
 
-function cargarInfoPerfil( usuario, condiciones, relacionMutua, req, res ) {
+function cargarInfoPerfil( usuario, condiciones, req, res ) {
   models.MedicoFavorito.findOne( {
     where: condiciones
   } ).then( function ( result ) {
     if ( result ) {
-      if ( usuario.Paciente && req.session.passport.user.Paciente_id ) {
-        if ( result.aprobado == 1 && relacionMutua ) {
-          usuario.medFavCol = result.id;
-        }
-        else if ( result.aprobado == 1 && !relacionMutua ) {
-          usuario.invitacionEnviada = "1";
-        }
-        else if ( result.aprobado == 0 && relacionMutua ) {
-          usuario.invitacionEspera = "1";
-        }
-        else {
-          usuario.noAmigos = "1";
-          console.log( '----->NO HAY INVITACIONES PENDIENTES' );
-        }
+      if ( result.aprobado == 1 && result.mutuo == 1 ) {
+        usuario.medFavCol = result.id;
+      }
+      else if ( result.aprobado == 1 && result.mutuo == 0 ) {
+        usuario.invitacionEnviada = "1";
       }
       else {
-        if ( result.aprobado == 1 ) usuario.medFavCol = result.id;
+        usuario.invitacionEspera = "1";
       }
+    } else {
+      usuario.noAmigos = "1";
     }
 
     models.Direccion.findOne( {

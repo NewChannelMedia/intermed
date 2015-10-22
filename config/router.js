@@ -897,15 +897,15 @@ var iniciar = function () {
   } );
 
   app.post( '/agregarMedFav', function ( req, res ) {
-    intermed.callController( 'medicos', 'agregarFav', req.body, req, res );
+    intermed.callController( 'contactos', 'agregarFav', req.body, req, res );
   } );
 
   app.post( '/eliminarMedFav', function ( req, res ) {
-    intermed.callController( 'medicos', 'eliminarFav', req.body, req, res );
+    intermed.callController( 'contactos', 'eliminarFav', req.body, req, res );
   } );
 
   app.post( '/cargarFavCol', function ( req, res ) {
-    intermed.callController( 'medicos', 'cargarFavCol', {
+    intermed.callController( 'contactos', 'cargarFavCol', {
       usuario: req.body.usuario
     }, req, res );
   } );
@@ -1088,7 +1088,7 @@ var iniciar = function () {
 
 
   app.post( '/aceptarInvitacion', function ( req, res ) {
-    intermed.callController( 'medicos', 'aceptarInvitacion', req.body, req, res );
+    intermed.callController( 'contactos', 'aceptarInvitacion', req.body, req, res );
   } );
 
   app.get( '/testnotificaciones', function ( req, res ) {

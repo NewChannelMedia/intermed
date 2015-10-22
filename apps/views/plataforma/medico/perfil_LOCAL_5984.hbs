@@ -34,7 +34,7 @@
                           <div class="vCardMainInfo">
                             {{#if usuario.localidad}}
                               <h4 class="media-heading vcUbicacion Flama-w200 s15">
-                                Zapopan, Jalisco. MX
+                                {{usuario.localidad.ciudad}}, {{usuario.localidad.estado}}
                               </h4>
                             {{/if}}
                           </div>
@@ -78,14 +78,12 @@
 
                     {{else}}
                       <div class="vCardMainInfo">
-                        <h4 class="media-heading vcNombre s20">
-                          <div id="session_nombreUsuario">
-                            {{#ifSession "name"}}
-                              Dr. {{valSession "name"}}
+                        <h4 class="media-heading vcNombre s20" id="userName">
+                          {{#ifSession "name"}}
+                            Dr. {{valSession "name"}}
                             {{else}}
-                              Aun no tenemos tu nombre registrado, continúa tu registro <a onclick="informacionRegistroMedico()">aquí</a>.
-                            {{/ifSession}}
-                          </div>
+                            Aun no tenemos tu nombre registrado, continúa tu registro <a onclick="informacionRegistroMedico()">aquí</a>.
+                          {{/ifSession}}
                         </h4>
                         <h4 class="media-heading vcUbicacion Flama-w200 s15">
                           {{#ifSession "ciudad"}}
@@ -162,50 +160,34 @@
             <li role="presentation">
               <a href="#profileFotografias" role="tab" data-toggle="tab" aria-controls="profileFotografias">Fotografias</a>
             </li>
-
             {{#if usuario.id}}
-              <input type="hidden" id="PacienteId" value="{{usuario.Paciente.id}}" />
               {{#if usuario.medFavCol}}
-                {{#ifTipoPaciente}}
-                  <li role="presentation" id="favoriteContact">
-                    <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(true)">Eliminar de contactos</a>
-                  </li>
-                {{/ifTipoPaciente}}
-                {{#ifTipoMedico}}
-                  <li role="presentation" id="favoriteContact">
-                    <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(true)">Eliminar de colegas</a>
-                  </li>
-                {{/ifTipoMedico}}
-              {{else}}
-                {{#if usuario.invitacionEnviada}}
+                {{#ifSession "id"}}
                   {{#ifTipoMedico}}
                     <li role="presentation" id="favoriteContact">
-                      <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(true)">Invitación enviada</a>
+                      <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(true)">Eliminar de colegas</a>
                     </li>
+              {{else}}
+                <li role="presentation" id="favoriteContact">
+                  <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(true)">Eliminar de favoritos</a>
+                </li>
                   {{/ifTipoMedico}}
-                {{else}}
-                  {{#if usuario.invitacionEspera}}
-                    {{#ifTipoMedico}}
-                      <li role="presentation" id="favoriteContact">
-                        <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="aceptarInvitacion()">Aceptar invitación</a>
-                      </li>
-                    {{/ifTipoMedico}}
-                  {{else}}
-                    {{#ifTipoPaciente}}
-                      <li role="presentation" id="favoriteContact">
-                        <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(true)">Agregar a favoritos</a>
-                      </li>
-                    {{/ifTipoPaciente}}
-                    {{#ifTipoMedico}}
-                      <li role="presentation" id="favoriteContact">
-                        <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(true)">Agregar a colegas</a>
-                      </li>
-                    {{/ifTipoMedico}}
-                  {{/if}}
-                {{/if}}
+                {{/ifSession}}
+              {{else}}
+                {{#ifSession "id"}}
+                  {{#ifTipoMedico}}
+                    <li role="presentation" id="favoriteContact">
+                      <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(true)">Agregar a colegas</a>
+                    </li>
+              {{else}}
+                <li role="presentation" id="favoriteContact">
+                  <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(true)">Agregar de favoritos</a>
+                </li>
+                  {{/ifTipoMedico}}
+                {{/ifSession}}
               {{/if}}
+              </li>
             {{/if}}
-
           </ul>
         </div>
       </div>
@@ -651,7 +633,6 @@
                   </div>
                 </div>
                 <div class="panel-footer elementPanel">
-                  {{#unless usuario.id}}
                   <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
                     <span class="glyphicon glyphicon-plus"></span> Invitar
                   </button>
@@ -684,9 +665,44 @@
                       </div>
                     </div>
                   </div>
-                  {{/unless}}
                 </div>
 
+                {{#unless usuario.id}}
+                  <div class="panel-footer">
+                    <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
+                      <span class="glyphicon glyphicon-plus"></span> Invitar
+                    </button>
+                    <div id="addFormaForm" class="dropdown-form dropdown-menu dropdown-menu-right" arialabelledby="addForma">
+                      <div class="panel">
+                        <div class="panel-body">
+                          <form class="form-horizontal">
+                            <div class="form-group">
+                              <label class="col-md-3 control-label">Nombre</label>
+                              <div class="col-md-9">
+                                <input type="text" class="form-control" id="invitar_nombre">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-md-3 control-label">Correo</label>
+                              <div class="col-md-9">
+                                <input type="text" class="form-control" id="invitar_correo">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-md-3 control-label">Mensaje</label>
+                              <div class="col-md-9">
+                                <textarea class="form-control" id="invitar_mensaje">Te invito a unirte a Intermed</textarea>
+                              </div>
+                            </div>
+                            <div class="col-md-4 col-md-offset-8">
+                              <button type="button" class="btn btn-primary btn-block dropdown-form-guardar" onclick="procesarInvitacion()">Enviar</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {{/unless}}
               </div>
             </div>
             <div class="element col-lg-7 col-md-7 col-sm-12 col-xs-12">

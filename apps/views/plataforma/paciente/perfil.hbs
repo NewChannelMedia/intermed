@@ -105,23 +105,34 @@
           {{#if usuario.id}}
             <input type="hidden" id="PacienteId" value="{{usuario.Paciente.id}}" />
             {{#if usuario.medFavCol}}
-              {{#ifSession "id"}}
-                {{#ifTipoPaciente}}
-                  <li role="presentation" id="favoriteContact">
-                    <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(false)">Eliminar de contactos</a>
-                  </li>
-                {{/ifTipoPaciente}}
-              {{/ifSession}}
+              {{#ifTipoPaciente}}
+                <li role="presentation" id="favoriteContact">
+                  <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(false)">Eliminar de contactos</a>
+                </li>
+              {{/ifTipoPaciente}}
             {{else}}
-              {{#ifSession "id"}}
+              {{#if usuario.invitacionEnviada}}
                 {{#ifTipoPaciente}}
                   <li role="presentation" id="favoriteContact">
-                    <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(false)">Agregar a contactos</a>
+                    <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(false)">Invitación enviada</a>
                   </li>
                 {{/ifTipoPaciente}}
-              {{/ifSession}}
+              {{else}}
+                {{#if usuario.invitacionEspera}}
+                  {{#ifTipoPaciente}}
+                    <li role="presentation" id="favoriteContact">
+                      <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="aceptarInvitacion()">Aceptar invitación</a>
+                    </li>
+                  {{/ifTipoPaciente}}
+                {{else}}
+                  {{#ifTipoPaciente}}
+                    <li role="presentation" id="favoriteContact">
+                      <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(false)">Agregar a contactos</a>
+                    </li>
+                  {{/ifTipoPaciente}}
+                {{/if}}
+              {{/if}}
             {{/if}}
-            </li>
           {{/if}}
         </ul>
       </div>
@@ -161,6 +172,7 @@
                 </div>
               </div>
               <div class="panel-footer elementPanel">
+                {{#unless usuario.id}}
                 <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
                   <span class="glyphicon glyphicon-plus"></span> Invitar
                 </button>
@@ -193,6 +205,7 @@
                     </div>
                   </div>
                 </div>
+                {{/unless}}
               </div>
             </div>
           </div>
@@ -211,6 +224,7 @@
                   </div>
                 </div>
                 <div class="panel-footer elementPanel">
+                  {{#unless usuario.id}}
                   <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
                     <span class="glyphicon glyphicon-plus"></span> Invitar
                   </button>
@@ -243,6 +257,7 @@
                       </div>
                     </div>
                   </div>
+                  {{/unless}}
                 </div>
               </div>
             </div>

@@ -34,7 +34,7 @@
                           <div class="vCardMainInfo">
                             {{#if usuario.localidad}}
                               <h4 class="media-heading vcUbicacion Flama-w200 s15">
-                                Zapopan, Jalisco. MX
+                                {{usuario.localidad.ciudad}}, {{usuario.localidad.estado}}
                               </h4>
                             {{/if}}
                           </div>
@@ -78,6 +78,14 @@
 
                     {{else}}
                       <div class="vCardMainInfo">
+<<<<<<< HEAD
+                        <h4 class="media-heading vcNombre s20" id="userName">
+                          {{#ifSession "name"}}
+                            Dr. {{valSession "name"}}
+                            {{else}}
+                            Aun no tenemos tu nombre registrado, continúa tu registro <a onclick="informacionRegistroMedico()">aquí</a>.
+                          {{/ifSession}}
+=======
                         <h4 class="media-heading vcNombre s20">
                           <div id="session_nombreUsuario">
                             {{#ifSession "name"}}
@@ -86,6 +94,7 @@
                               Aun no tenemos tu nombre registrado, continúa tu registro <a onclick="informacionRegistroMedico()">aquí</a>.
                             {{/ifSession}}
                           </div>
+>>>>>>> development
                         </h4>
                         <h4 class="media-heading vcUbicacion Flama-w200 s15">
                           {{#ifSession "ciudad"}}
