@@ -35,10 +35,12 @@
     });
 
     function cargarNotificacionesCondicional(){
-        verTodasNotificaciones();
+        var result = verTodasNotificaciones();
         setTimeout(function(){
           if (document.getElementById('notifListTable').offsetHeight<$(window).height()){
+            if (result === true){
               cargarNotificacionesCondicional();
+            }
           }
         },200);
     }
