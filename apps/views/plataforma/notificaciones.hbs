@@ -8,6 +8,7 @@
               <h3>Tus notificaciones</h3>
             </div>
             <div class="col-lg-12 col-md-12" id="notifList" >
+              <input type="hidden" value="" id="maxId">
               <table class="table" id="notifListTable">
 
               </table>
@@ -20,18 +21,27 @@
 </section>
 
 <script type="text/javascript">
-    $(document).ready(function(){
-      /*while (document.body.scrollHeight>document.body.clientHeight){
-        console.log('No tiene scroll');
-        verTodasNotificaciones();
-      }*/
 
-      verTodasNotificaciones();
-      $('#notifList').append('<a class="_next" href="#">Cargar MÁs</a>');
+
+    $(document).ready(function(){
+      $('#maxId').val('');
+
+      cargarNotificacionesCondicional();
+
+      $('#notifList').append('<a class="_next" href="#"></a>');
       var scroll = $('#notifList').iscroll({
         onBeginRequest:function(request){
           verTodasNotificaciones();
         }
       });
     });
+
+    function cargarNotificacionesCondicional(){
+        verTodasNotificaciones();
+        setTimeout(function(){
+          if (document.getElementById('notifListTable').offsetHeight<$(window).height()){
+              cargarNotificacionesCondicional();
+          }
+        },200);
+    }
 </script>

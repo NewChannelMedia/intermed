@@ -238,7 +238,7 @@ exports.cargarNotificaciones = function ( object, req, res ) {
   if (!req.session.passport.user) res.send(JSON.parse(JSON.stringify({'result':'error'})));
   var whereid = new Array();
   var limit = 0;
-  if (object.id) {
+  if (object.id && object.id!= "") {
     whereid = {id: {$lt: object.id}}
   }
   if (object.limit) {
@@ -251,7 +251,9 @@ exports.cargarNotificaciones = function ( object, req, res ) {
   models.Notificacion.findAll( {
     where: where,
     limit: limit,
-    attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ]
+    attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ],
+    order: 'inicio DESC',
+    order: 'id DESC'
   } ).then( function ( result ) {
       result = JSON.parse( JSON.stringify( result ) );
       var length = result.length;

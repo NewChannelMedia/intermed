@@ -38,10 +38,16 @@ function iscroll($e, options) {
       if (isLoading) return;
       isLoading = true;
       if (!reqUrl) O.setNext();
-      loader = $(O.S.loadingHtml);
-      $e.append(loader);
+      if (reqUrl){
+        loader = $(O.S.loadingHtml);
+        $e.append(loader);
+      }
       setTimeout(function(){
-        if (reqUrl) {if (O.S.onBeginRequest != null) O.S.onBeginRequest();}
+        if (reqUrl) {
+          if (O.S.onBeginRequest != null) {
+            O.S.onBeginRequest();
+          }
+        }
         O.setNext();
         isLoading = false;
       },500);

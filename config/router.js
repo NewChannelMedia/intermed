@@ -1111,8 +1111,12 @@ var iniciar = function () {
   });
 
   app.get('/notificaciones', function (req, res){
-    rutas.routeLife( 'plataforma', 'plataforma', hps );
-    intermed.callController('notificaciones','index', req.body, req, res);
+    if (!req.session.passport.user){
+      res.redirect( '/' );
+    }else {
+      rutas.routeLife( 'plataforma', 'plataforma', hps );
+      intermed.callController('notificaciones','index', req.body, req, res);
+    }
   });
 
   app.post('/notificaciones/cargar', function (req, res){
