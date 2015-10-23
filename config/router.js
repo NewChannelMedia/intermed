@@ -1103,7 +1103,14 @@ var iniciar = function () {
         result: 'null'
       } );
     }
-  } )
+  } );
+  // recomendaciones url
+  app.post('/contactosRecomendados',function(req, res){
+    intermed.callController('Contactos_oscar','contactosRecomendados',req,res);
+  });
+  app.post('/medicosContacto', function(req, res){
+    intermed.callController('Contactos_oscar','medicosContacto',req,res);
+  });
 }
 
 var io = serv.server( app, 3000 );

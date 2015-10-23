@@ -1766,3 +1766,20 @@ div::-webkit-scrollbar-thumb:window-inactive {
   text-transform: uppercase;
   color: #969ba2;
 }
+#contactosArecomendar{
+  min-height: 100px;
+  max-height: 300px;
+  overflow: auto;
+}
+#contactosArecomendar img.img-thumbnail {
+    height: 30px;
+}
+.check{
+  background-color: #eee;
+}
+#contactosArecomendar tr{
+  cursor: pointer;
+}
+#enviarRecomendaciones li{
+  cursor: pointer;
+}
