@@ -37,14 +37,15 @@ exports.solicitudAmistad = function ( req ) {
   } else if (req.tipoUsuario == "M"){
     numNot = 4;
   }
-
+  
   models.Notificacion.findAll( {
     where: {
       usuario_id: req.usuario_id,
       visto: 0,
       tipoNotificacion_id: numNot
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ]
+    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
   } ).then( function ( result ) {
     var restante = 8 - result.length;
     if ( restante < 0 ) restante = 0;
@@ -55,7 +56,8 @@ exports.solicitudAmistad = function ( req ) {
         tipoNotificacion_id: numNot
       },
       attributes: [ 'id', 'data', 'inicio', 'visto' ],
-      limit: restante
+      limit: restante,
+      order: 'inicio DESC'
     } ).then( function ( resultVisto ) {
       result = JSON.parse( JSON.stringify( result ) );
       result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
@@ -126,7 +128,8 @@ exports.solicitudAmistadAceptada = function ( req ) {
       visto: 0,
       tipoNotificacion_id: numNot
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ]
+    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
   } ).then( function ( result ) {
     var restante = 8 - result.length;
     if ( restante < 0 ) restante = 0;
@@ -137,7 +140,8 @@ exports.solicitudAmistadAceptada = function ( req ) {
         tipoNotificacion_id: numNot
       },
       attributes: [ 'id', 'data', 'inicio', 'visto' ],
-      limit: restante
+      limit: restante,
+      order: 'inicio DESC'
     } ).then( function ( resultVisto ) {
       result = JSON.parse( JSON.stringify( result ) );
       result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
@@ -210,7 +214,8 @@ exports.solicitudesAceptadas = function ( req ) {
       visto: 0,
       tipoNotificacion_id: numNot
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ]
+    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
   } ).then( function ( result ) {
     var restante = 8 - result.length;
     if ( restante < 0 ) restante = 0;
@@ -221,7 +226,8 @@ exports.solicitudesAceptadas = function ( req ) {
         tipoNotificacion_id: numNot
       },
       attributes: [ 'id', 'data', 'inicio', 'visto' ],
-      limit: restante
+      limit: restante,
+      order: 'inicio DESC'
     } ).then( function ( resultVisto ) {
       result = JSON.parse( JSON.stringify( result ) );
       result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
@@ -247,7 +253,7 @@ exports.solicitudesAceptadas = function ( req ) {
           } ).then( function ( usuario ) {
             record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
             if ( record === result[ result.length - 1 ] ) {
-              req.socket.emit( 'solicitudAmistadAceptada', result );
+              req.socket.emit( 'solicitudesAceptadas', result );
             }
           } )
         } else if (req.tipoUsuario == "M"){
@@ -270,7 +276,7 @@ exports.solicitudesAceptadas = function ( req ) {
           } ).then( function ( usuario ) {
             record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
             if ( record === result[ result.length - 1 ] ) {
-              req.socket.emit( 'solicitudAmistadAceptada', result );
+              req.socket.emit( 'solicitudesAceptadas', result );
             }
           } )
         }
@@ -289,15 +295,14 @@ exports.solicitudRechazada = function ( req ) {
     numNot = 9;
   }
 
-
-
   models.Notificacion.findAll( {
     where: {
       usuario_id: req.usuario_id,
       visto: 0,
       tipoNotificacion_id: numNot
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ]
+    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
   } ).then( function ( result ) {
     var restante = 8 - result.length;
     if ( restante < 0 ) restante = 0;
@@ -308,7 +313,8 @@ exports.solicitudRechazada = function ( req ) {
         tipoNotificacion_id: numNot
       },
       attributes: [ 'id', 'data', 'inicio', 'visto' ],
-      limit: restante
+      limit: restante,
+      order: 'inicio DESC'
     } ).then( function ( resultVisto ) {
       result = JSON.parse( JSON.stringify( result ) );
       result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
@@ -368,41 +374,56 @@ exports.solicitudRechazada = function ( req ) {
 
 
 exports.agregadoMedicoFavorito = function ( req ) {
-  models.Notificacion.findAll( {
-    where: {
-      usuario_id: req.usuario_id,
-      visto: 1,
-      tipoNotificacion_id: 7
-    },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ]
-  } ).then( function ( result ) {
-    result = JSON.parse( JSON.stringify( result ) );
-    var length = result.length;
-    result.forEach( function ( record ) {
-      var paciente_id = record.data;
-      record[ 'paciente_id' ] = paciente_id;
-      models.Paciente.findOne( {
+
+    models.Notificacion.findAll( {
+      where: {
+        usuario_id: req.usuario_id,
+        visto: 0,
+        tipoNotificacion_id: 7
+      },
+      attributes: [ 'id', 'data', 'inicio', 'visto' ],
+      order: 'inicio DESC'
+    } ).then( function ( result ) {
+      var restante = 8 - result.length;
+      if ( restante < 0 ) restante = 0;
+      models.Notificacion.findAll( {
         where: {
-          id: paciente_id
+          usuario_id: req.usuario_id,
+          visto: 1,
+          tipoNotificacion_id: 7
         },
-        attributes: [ 'id' ],
-        include: [ {
-          model: models.Usuario,
-          attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-          include: [ {
-            model: models.DatosGenerales,
-            attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                    } ]
-                } ]
-      } ).then( function ( usuario ) {
-        record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
-        if ( record === result[ result.length - 1 ] ) {
-          console.log('----->agregadoMedicoFavorito');
-          req.socket.emit( 'agregadoMedicoFavorito', result );
-        }
-      } )
-    } );
-  } )
+        attributes: [ 'id', 'data', 'inicio', 'visto' ],
+        limit: restante,
+        order: 'inicio DESC'
+      } ).then( function ( resultVisto ) {
+        result = JSON.parse( JSON.stringify( result ) );
+        result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
+        var length = result.length;
+        result.forEach( function ( record ) {
+            paciente_id = record.data;
+            record[ 'paciente_id' ] = paciente_id;
+            models.Paciente.findOne( {
+              where: {
+                id: paciente_id
+              },
+              attributes: [ 'id' ],
+              include: [ {
+                model: models.Usuario,
+                attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+                include: [ {
+                  model: models.DatosGenerales,
+                  attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                            } ]
+                        } ]
+            } ).then( function ( usuario ) {
+              record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+              if ( record === result[ result.length - 1 ] ) {
+                req.socket.emit( 'agregadoMedicoFavorito', result );
+              }
+            } )
+        } );
+      } );
+    } )
 };
 
 
@@ -423,14 +444,14 @@ exports.scroll = function (object, req, res){
   models.Notificacion.findAll( {
     where: {
       usuario_id: req.session.passport.user.id,
-      tipoNotificacion_id: {$notIn: [9, 10]},//Inbox
+      tipoNotificacion_id: {$notIn: [10, 11]},//Inbox
       id: {not: [object.id]}
     },
     limit: 4,
     attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ],
     order: 'inicio DESC'
   } ).then( function ( result ) {
-    if (result){
+    if (result.length > 0){
       result = JSON.parse( JSON.stringify( result ) );
       var length = result.length;
       result.forEach( function ( record ) {
@@ -540,7 +561,7 @@ exports.cargarNotificaciones = function ( object, req, res ) {
     attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ],
     order: 'inicio DESC'
   } ).then( function ( result ) {
-    if (result){
+    if (result.length > 0){
       result = JSON.parse( JSON.stringify( result ) );
       var length = result.length;
       result.forEach( function ( record ) {

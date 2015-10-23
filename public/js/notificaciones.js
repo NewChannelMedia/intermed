@@ -114,12 +114,12 @@ function actualizarNotificaciones() {
           notificacionesScroll.push(notificacion.id);
         }
         if ( notificacion.toString() != "undefined" ) {
-          if ( notificacion.visto == 1 ) {
+          if ( notificacion.visto === 1 ) {
             $( '#notificacinesList' ).append( '<li class="media" id="li' + notificacion.id + '">' + notificacion.content + '</li>' );
           }
           else {
             $( '#totalNotificaciones' ).html( ++total );
-              $( '#notificacinesList' ).append( '<li class="media" style="background-color:#DDD" id="li' + notificacion.id + '">' + notificacion.content + '</li>' );
+            $( '#notificacinesList' ).append( '<li class="media" style="background-color:#DDD" id="li' + notificacion.id + '">' + notificacion.content + '</li>' );
           }
         }
       } );
@@ -135,7 +135,7 @@ function actualizarNotificaciones() {
             data: {'id': notificacionesScroll},
             success: function ( data ) {
               $('#notificacinesList').find('.loader').remove();
-              if (data){
+              if (data.length>0){
                 data.forEach(function(record){
                   if (notificacionesScroll.indexOf(record.id) === -1){
                     notificacionesScroll.push(record.id);
@@ -219,7 +219,7 @@ function socketManejadores() {
         if (record.paciente){
           content = '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body"><span id="pre' + record.id + '"></span>' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + record.paciente_id + ',0,' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + record.paciente_id + ',' + record.id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button></div>';
         } else if (record.medico){
-          content = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body"><span id="pre' + record.id + '"></span>' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(0,' + record.medico_id + ',' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + record.paciente_id + ','+ record.id +')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button></div>';
+          content = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body"><span id="pre' + record.id + '"></span>' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + ' <span id="post' + record.id + '">quiere ser tu colega en Intermed</span></a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(0,' + record.medico_id + ',' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + record.paciente_id + ','+ record.id +')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button></div>';
         }
         if (content){
           solicitudAmistad.unshift( {
@@ -241,7 +241,7 @@ function socketManejadores() {
       if (record.paciente){
         content = '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' aceptó tu solicitud de amistad</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
       } else if (record.medico){
-        content = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + ' aceptó tu solicitud de amistad</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
+        content = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + ' ahora es tu colega en Intermed</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
       }
       if (content){
         solicitudAmistadAceptada.unshift( {
@@ -330,7 +330,6 @@ function socketManejadores() {
 
 $(document).ready(function(){
     $('#notificaciones').on('hidden.bs.dropdown', function(){
-      console.log('Modal cerrado');
       $('#notificationIcon').attr('aria-expanded','');
       notificacionesScroll = [];
       actualizarNotificaciones();
@@ -351,16 +350,16 @@ function verTodasNotificaciones(){
       if (data.result == "error"){
         window.location="/";
       } else {
-        if (data){
+        if (data.length > 0){
           data.forEach(function(record){
-            if (notificacionesTotal.indexOf(record.id) === -1){
-              notificacionesTotal.push(record.id);
-            }
+              if (notificacionesTotal.indexOf(record.id) === -1){
+                notificacionesTotal.push(record.id);
+              }
               var date = formattedDate( record.inicio );
               var contenido = '';
               switch(record.tipoNotificacion_id) {
                   case 1:
-                      if (record.paciente) contenido = '<a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10"><span id="pre' + record.id + '"></span>' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></a><br/><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + record.paciente_id + ',' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + record.paciente_id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button></div>';
+                      if (record.paciente) contenido = '<a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10">' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></div></a><div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
                       break;
                   case 2:
                       if (record.paciente) contenido = '<a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10">' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' aceptó tu solicitud de amistad</a></div><div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
@@ -369,7 +368,7 @@ function verTodasNotificaciones(){
                       if (record.paciente) contenido = '<a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10">Aceptaste la solicitud de amistad de ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + '</div></a><div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
                       break;
                   case 4:
-                      if (record.medico) contenido = '<a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10"><span id="pre' + record.id + '"></span>' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + ' <span id="post' + record.id + '">quiere ser tu colega en Intermed</span></a><br/><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + record.paciente_id + ',' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + record.paciente_id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button></div>';
+                      if (record.medico) contenido = '<a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10">' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + ' quiere ser tu colega en Intermed</span></div></a><div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
                       break;
                   case 5:
                       if (record.medico) contenido = '<a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10">' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + ' aceptó tu solicitud de amistad</div></a><div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
@@ -378,7 +377,7 @@ function verTodasNotificaciones(){
                       if (record.medico) contenido = '<a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10">Aceptaste la solicitud de amistad de ' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + '</div></a><div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
                       break;
                   case 7:
-                      if (record.paciente) contenido = '<a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10">' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' Te ha agregado a sus médicos favoritos</a></div><div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
+                      if (record.paciente) contenido = '<a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10">' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + ' Te agregó a sus médicos favoritos</a></div><div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
                       break;
                   case 8:
                   case 9:
@@ -394,9 +393,9 @@ function verTodasNotificaciones(){
               }
           });
           respuesta=  true;
+          $('#notifList').append('<a class="_next" href="#"></a>');
         }
       }
-      $('#notifList').append('<a class="_next" href="#"></a>');
     },
     error: function (err){
       console.log('ERROR: ' + JSON.stringify(err));

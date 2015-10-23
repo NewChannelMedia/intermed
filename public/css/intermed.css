@@ -1610,7 +1610,7 @@ div::-webkit-scrollbar-thumb:window-inactive {
 
 .ubicacionesContainer .uIndicator {
   position: absolute;
-  z-index: 1000;
+  z-index: 500;
   top: 0;
   right: 0;
   bottom: 0;
