@@ -6,6 +6,7 @@
  *	@version 0
  *	@date Tuesday, August 4,  2015
  */
+global.base_url = 'http://localhost:3000/';
 
 var models = require( '../apps/models' );
 
@@ -1104,6 +1105,27 @@ var iniciar = function () {
       } );
     }
   } )
+
+  app.post( '/buscadorInterno', function (req, res){
+    intermed.callController( 'buscadorInterno', 'buscar', req.body, req, res );
+  });
+
+  app.get('/notificaciones', function (req, res){
+    if (!req.session.passport.user){
+      res.redirect( '/' );
+    }else {
+      rutas.routeLife( 'plataforma', 'plataforma', hps );
+      intermed.callController('notificaciones','index', req.body, req, res);
+    }
+  });
+
+  app.post('/notificaciones/cargar', function (req, res){
+    intermed.callController('notificaciones','cargarNotificaciones', req.body, req, res);
+  })
+
+  app.post('/notificaciones/scroll', function (req, res){
+    intermed.callController('notificaciones','scroll', req.body, req, res);
+  });
 }
 
 var io = serv.server( app, 3000 );

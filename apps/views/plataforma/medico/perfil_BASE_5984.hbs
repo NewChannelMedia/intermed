@@ -1,0 +1,871 @@
+<section id="plataforma">
+  <div id="medico" class="container-fluid profileHolder">
+    <div class="profileHeader">
+      <div class="container">
+        <div class="media block">
+          <div class="media-left block">
+            <div class="profilePic">
+              {{#if usuario.id}}
+                <img src="{{usuario.urlFotoPerfil}}" />
+              {{else}}
+                <img src="{{valSession 'fotoPerfil'}}" id='fotoPerfil' />
+                <label for="imageFile">Cambiar Imagen</label>
+                <input type="file" id="imageFile" style="display:none">
+              {{/if}}
+            </div>
+            <div class="topDrBadge">Top Doctor</div>
+          </div>
+          <div class="media-body profileGeneralInfo">
+            <div class="col-lg-12 col-md-12 col-sm-10 col-xs-10">
+              <div class="profileGenerales">
+                <div class="vCard">
+                  <div id="vCard" class="carousel slide" data-interval="false" data-ride="carousel">
+                    {{#if usuario.id}}
+                      <input type="hidden" id="MedicoId" value="{{usuario.Medico.id}}" />
+                      <div class="vCardMainInfo">
+                        <h4 class="media-heading vcNombre s20">
+                          {{#if usuario.DatosGenerale}}
+                            Dr. {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
+                          {{/if}}
+                        </h4>
+                      </div>
+                      <div class="carousel-inner" role="listbox">
+                        <div class="item active">
+                          <div class="vCardMainInfo">
+                            {{#if usuario.localidad}}
+                              <h4 class="media-heading vcUbicacion Flama-w200 s15">
+                                Zapopan, Jalisco. MX
+                              </h4>
+                            {{/if}}
+                          </div>
+                          <div class="vCardEspInfo">
+                            <ul id="session_especialidades" class="list-unstyled list-inline espList Flama-bold s15">
+                              {{#each usuario.especialidades}}
+                                {{#unless subEsp}}
+                                  <li>{{Especialidad.especialidad}}</li>
+                                {{/unless}}
+                              {{/each}}
+                            </ul>
+                            <ul id="session_subEspecialidades" class="list-unstyled list-inline subEspList Flama-Normal s15">
+                              {{#each usuario.especialidades}}
+                                {{#if subEsp}}
+                                  <li>
+                                    <small>{{Especialidad.especialidad}}</small>
+                                  </li>
+                                {{/if}}
+                              {{/each}}
+                            </ul>
+                          </div>
+                        </div>
+                        <div class="item">
+                          <div class="vCardExtraInfo">
+                            <h4 class="media-heading Flama-w200 s15 pull-left">
+                              Teléfonos:&nbsp
+                            </h4>
+                            <div class="telList Flama-Normal s15 pull-left">
+                              (871) 2602226 | (123) 4567890
+                            </div>
+                            <div class="clearfix"></div>
+                            <h4 class="media-heading Flama-w200 s15 pull-left">
+                              Correos:&nbsp
+                            </h4>
+                            <div class="mailList Flama-Normal s15 pull-left">
+                              jcmedina@midrfavorito.com | jcmedina@newchannel.mx
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    {{else}}
+                      <div class="vCardMainInfo">
+                        <h4 class="media-heading vcNombre s20">
+                          {{#ifSession "name"}}
+                            Dr. {{valSession "name"}}
+                    {{else}}
+                      Aun no tenemos tu nombre registrado, continúa tu registro <a onclick="informacionRegistroMedico()">aquí</a>.
+                          {{/ifSession}}
+                        </h4>
+                        <h4 class="media-heading vcUbicacion Flama-w200 s15">
+                          {{#ifSession "ciudad"}}
+                            {{valSession "ciudad"}}, {{valSession "estado"}}
+                          {{/ifSession}}
+                        </h4>
+                      </div>
+                      <!-- Aqui irian las especialidades y los telefonos -->
+                    {{/if}}
+                  </div>
+                </div>
+                {{#unless usuario.id}}
+                  <ul class="media-right profileExtraNav list-inline">
+                    <li data-target="#vCard" data-slide-to="0">Perfil</li>
+                    <li data-target="#vCard" data-slide-to="1">Contacto</li>
+                    <li><a href="#">Editar</a></li>
+                    {{#unlessSessionVal 'registroCompleto'}}
+                      <li id="registroIncompleto"><a onclick="informacionRegistroMedico()">Continuar registro</a></li>
+                    {{/unlessSessionVal}}
+                  </ul>
+                {{/unless}}
+              </div>
+            </div>
+          </div>
+          <div class="media-right profileMobileOptions">
+            <ul class="options list-unstyled">
+              <li>
+                <span class="glyphicon glyphicon-plus"></span>
+              </li>
+              <li>
+                <span class="glyphicon glyphicon-thumbs-up"></span>
+              </li>
+              <li>
+                <span class="glyphicon glyphicon-ok"></span>
+              </li>
+              <li>
+                <span class="glyphicon glyphicon-comment"></span>
+              </li>
+            </ul>
+          </div>
+          <div class="profileOptions">
+            <ul class="options list-unstyled">
+              <li>
+                <span class="glyphicon glyphicon-plus"></span> Agenda una cita
+              </li>
+              <hr>
+              <li>
+                <a>
+                  <span class="glyphicon glyphicon-chevron-right"></span> Recomienda a un amigo</a>
+              </li>
+              <li>
+                <a>
+                  <span class="glyphicon glyphicon-chevron-right"></span> Califica su servicio</a>
+              </li>
+              <li>
+                <a>
+                  <span class="glyphicon glyphicon-chevron-right"></span> Envía un mensaje</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="profileBody">
+      <div class="profileBodyNav">
+        <div class="container">
+          <ul class="nav nav-tabs nav-justified" role="tablist">
+            <li class="active" role="presentation">
+              <a href="#profileElements" role="tab" data-toggle="tab" aria-controls="profileElements">Perfil</a>
+            </li>
+            <li role="presentation">
+              <a href="#profilePublicaciones" role="tab" data-toggle="tab" aria-controls="profilePublicaciones">Publicaciones</a>
+            </li>
+            <li role="presentation">
+              <a href="#profileFotografias" role="tab" data-toggle="tab" aria-controls="profileFotografias">Fotografias</a>
+            </li>
+            {{#if usuario.id}}
+              {{#if usuario.medFavCol}}
+                {{#ifSession "id"}}
+                  {{#ifTipoMedico}}
+                    <li role="presentation" id="favoriteContact">
+                      <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(true)">Eliminar de colegas</a>
+                    </li>
+              {{else}}
+                <li role="presentation" id="favoriteContact">
+                  <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="eliminarFavoritos(true)">Eliminar de favoritos</a>
+                </li>
+                  {{/ifTipoMedico}}
+                {{/ifSession}}
+              {{else}}
+                {{#ifSession "id"}}
+                  {{#ifTipoMedico}}
+                    <li role="presentation" id="favoriteContact">
+                      <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(true)">Agregar a colegas</a>
+                    </li>
+              {{else}}
+                <li role="presentation" id="favoriteContact">
+                  <a id="addFavoriteContact" class="btn btn-primary btn-block" onclick="agregarFavoritos(true)">Agregar de favoritos</a>
+                </li>
+                  {{/ifTipoMedico}}
+                {{/ifSession}}
+              {{/if}}
+              </li>
+            {{/if}}
+          </ul>
+        </div>
+      </div>
+      <div class="tab-content profileBodyElements">
+        <div role="tabpanel" class="tab-pane fade in container active" id="profileElements">
+          <div class="row">
+            <div class="element col-lg-7 col-md-7 col-sm-12 col-xs-12">
+              <div class="panel elementPanel panel-primary cvPanel" id="profileCV">
+                <div class="panel-heading">
+                  <h3 class="panel-title">
+                    <span class="panelIcon glyphicon glyphicon-user"></span> Currículum</h3>
+                </div>
+                <div class="panel-body cvBody">
+
+                  <!-- Nav tabs -->
+                  <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#formacion" class="Flama-w200" aria-controls="formacion" role="tab" data-toggle="tab">Formación Académica</a></li>
+                    <li role="presentation"><a href="#experiencia" class="Flama-w200" aria-controls="experiencia" role="tab" data-toggle="tab">Experiencia Laboral</a></li>
+                    <li role="presentation"><a href="#colegiosAsociaciones" class="Flama-w200" aria-controls="colegiosAsociaciones" role="tab" data-toggle="tab">Colegios y Asociaciones</a></li>
+                  </ul>
+
+                  <!-- Tab panes -->
+                  <div class="tab-content cvContent">
+                    <div role="tabpanel" class="tab-pane active" id="formacion">
+                      <div id="formacionSection" class="cvSection dropdown ddForm">
+                        <div class="cvSectionHead">
+                          <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                              <h4>Formación académica</h4>
+                            </div>
+                            <div class="pull-right">
+                              <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
+                                <span class="glyphicon glyphicon-plus"></span> Añadir formación
+                              </button>
+                              <div id="FormacionForm" class="dropdown-form dropdown-menu dropdown-menu-right" arialabelledby="addForma">
+                                <div class="panel">
+                                  <div class="panel-body">
+                                    <form class="form-horizontal">
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Nivel</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Institución</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Programa</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Especialidad</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <button type="button" id="guardarFormacion" class="btn btn-primary btn-block dropdown-form-guardar" data-target="#FormacionForm">Guardar</button>
+                                        </div>
+                                      </div>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="cvSectionBody">
+                          <ul class="cvElements list-unstyled">
+                            <li class="cvElement">
+                              <div class="elementEditButtons pull-right">
+                                <button class="dropdown-toggle btn btn-default btn-sm editOpenDropdown" type="button" id="updateForma" data-toggle="dropdown" aria-expanded="false">
+                                  <span class="glyphicon glyphicon-pencil"></span>
+                                </button>
+                                <div id="ActualizaFormacionForm" class="dropdown-form dropdown-menu dropdown-menu-right" arialabelledby="updateForma">
+                                  <div class="panel">
+                                    <div class="panel-body">
+                                      <form class="form-horizontal">
+                                        <div class="form-group">
+                                          <label class="col-md-3 control-label">Nivel</label>
+                                          <div class="col-md-9">
+                                            <input type="text" class="form-control">
+                                          </div>
+                                        </div>
+                                        <div class="form-group">
+                                          <label class="col-md-3 control-label">Institución</label>
+                                          <div class="col-md-9">
+                                            <input type="text" class="form-control">
+                                          </div>
+                                        </div>
+                                        <div class="form-group">
+                                          <label class="col-md-3 control-label">Programa</label>
+                                          <div class="col-md-9">
+                                            <input type="text" class="form-control">
+                                          </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                          <label class="col-md-3 control-label">Especialidad</label>
+                                          <div class="col-md-9">
+                                            <input type="text" class="form-control">
+                                          </div>
+                                        </div>
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                            <button type="button" id="guardarFormacion" class="btn btn-primary btn-block dropdown-form-guardar" data-target="#FormacionForm">Guardar</button>
+                                          </div>
+                                        </div>
+                                      </form>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <h4>Licenciatura</h4>
+                              Institución: Universidad Regiomontana
+                              <br> Nombre del Programa: Contador Público y Auditor
+                              <br> Especialidad: Finanzas
+                              <br> Periodo: 1967 - 1972
+                              <br> Fecha de obtención del grado: Julio de 1972
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="experiencia">
+                      <div id="experienciaSection" class="cvSection dropdown ddForm">
+                        <div class="cvSectionHead ">
+                          <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                              <h4>Experiencia</h4>
+                            </div>
+                            <div class="pull-right">
+                              <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addExp" data-toggle="dropdown" aria-expanded="false">
+                                <span class="glyphicon glyphicon-plus"></span> Añadir experiencia
+                              </button>
+                              <div id="ExpForm" class="dropdown-form dropdown-menu dropdown-menu-right" arialabelledby="addExp">
+                                <div class="panel">
+                                  <div class="panel-body">
+                                    <form class="form-horizontal">
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Programa</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Periodo</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Obtencion de Grado</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <button type="button" id="guardarExperiencia" class="btn btn-primary btn-block dropdown-form-guardar">Guardar</button>
+                                        </div>
+                                      </div>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="cvSectionBody">
+                          <div class="cvElement">
+                            <br> Nombre del Programa: Contador Público y Auditor
+                            <br> Periodo: 1967 - 1972
+                            <br> Fecha de obtención del grado: Julio de 1972
+                          </div>
+                          <div class="cvElement">
+                            <br> Nombre del Programa: Contador Público y Auditor
+                            <br> Periodo: 1967 - 1972
+                            <br> Fecha de obtención del grado: Julio de 1972
+                          </div>
+                          <div class="cvElement">
+                            <br> Nombre del Programa: Contador Público y Auditor
+                            <br> Periodo: 1967 - 1972
+                            <br> Fecha de obtención del grado: Julio de 1972
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="colegiosAsociaciones">
+                      <div id="colegiosAsociacionesSection" class="cvSection dropdown ddForm">
+                        <div class="cvSectionHead ">
+                          <div class="row">
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                              <h4>Colegios y Asociaciones</h4>
+                            </div>
+                            <div class="pull-right">
+                              <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addExp" data-toggle="dropdown" aria-expanded="false">
+                                <span class="glyphicon glyphicon-plus"></span> Añadir Institución
+                              </button>
+                              <div id="ExpForm" class="dropdown-form dropdown-menu dropdown-menu-right" arialabelledby="addExp">
+                                <div class="panel">
+                                  <div class="panel-body">
+                                    <form class="form-horizontal">
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Programa</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Periodo</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="form-group">
+                                        <label class="col-md-3 control-label">Obtencion de Grado</label>
+                                        <div class="col-md-9">
+                                          <input type="text" class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <button type="button" id="guardarExperiencia" class="btn btn-primary btn-block dropdown-form-guardar">Guardar</button>
+                                        </div>
+                                      </div>
+                                    </form>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="cvSectionBody">
+                          <div class="cvElement">
+                            <br> Nombre del Programa: Contador Público y Auditor
+                            <br> Periodo: 1967 - 1972
+                            <br> Fecha de obtención del grado: Julio de 1972
+                          </div>
+                          <div class="cvElement">
+                            <br> Nombre del Programa: Contador Público y Auditor
+                            <br> Periodo: 1967 - 1972
+                            <br> Fecha de obtención del grado: Julio de 1972
+                          </div>
+                          <div class="cvElement">
+                            <br> Nombre del Programa: Contador Público y Auditor
+                            <br> Periodo: 1967 - 1972
+                            <br> Fecha de obtención del grado: Julio de 1972
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="element carousel slide col-lg-5 col-md-5 col-sm-6 col-xs-12" data-ride="carousel">
+              <div class="panel elementPanel panel-primary profilePanel ubicacionesContainer">
+                <div class="panel-heading">
+                  <h3 class="panel-title">
+                    <span class="panelIcon glyphicon glyphicon-map-marker"></span> Ubicaciones</h3>
+                  <ol class="carousel-indicators uIndicator">
+                    <li data-target="#ubicacionesCarousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#ubicacionesCarousel" data-slide-to="1" </li>
+                      <li data-target="#ubicacionesCarousel" data-slide-to="2" </li>
+                        <li data-target="#ubicacionesCarousel" data-slide-to="3" </li>
+                  </ol>
+                </div>
+                <div class="panel-body profilePanelBody">
+                  <div id="ubicacionesCarousel" class="">
+                    <div class="carousel-inner" role="listbox">
+                      <div data-slide-no="0" class="item active">
+                        <div class="ubicacion">
+                          <div class="uMapa" id="maptest0">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3733.0682045355084!2d-103.43775099999999!3d20.666803999999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428aea5a489a451%3A0x82f88c47c4f2abbd!2sNew+Channel+Media+S.A.!5e0!3m2!1ses!2smx!4v1442961199329"
+                            width="448" height="263" frameborder="0" style="border:0" allowfullscreen></iframe>
+                          </div>
+                          <div class="uDireccion">
+                            <div class="iconLeft">
+                              <div class="uBigIcon">
+                                <span class="glyphicon glyphicon-map-marker"></span>
+                              </div>
+                            </div>
+                            <div class="address">
+                              <address>
+                                <strong>New Channel Media S.A. de C.V.</strong>
+                                <br> Santo Tomas de Aquino #5766, Arcos de Guadalupe
+                                <br> Zapopan, Jalisco. México
+                              </address>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div data-slide-no="1" class="item">
+                        <div class="ubicacion">
+                          <div class="uMapa" id="maptest1">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3733.0682045355084!2d-103.43775099999999!3d20.666803999999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428aea5a489a451%3A0x82f88c47c4f2abbd!2sNew+Channel+Media+S.A.!5e0!3m2!1ses!2smx!4v1442961199329"
+                            width="448" height="263" frameborder="0" style="border:0" allowfullscreen></iframe>
+                          </div>
+                          <div class="uDireccion">
+                            <div class="iconLeft">
+                              <div class="uBigIcon">
+                                <span class="glyphicon glyphicon-map-marker"></span>
+                              </div>
+                            </div>
+                            <div class="address">
+                              <address>
+                                <strong>New Channel Media S.A. de C.V.</strong>
+                                <br> Santo Tomas de Aquino #5766, Arcos de Guadalupe
+                                <br> Zapopan, Jalisco. México
+                              </address>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div data-slide-no="2" class="item">
+                        <div class="ubicacion">
+                          <div class="uMapa" id="maptest2">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3733.0682045355084!2d-103.43775099999999!3d20.666803999999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428aea5a489a451%3A0x82f88c47c4f2abbd!2sNew+Channel+Media+S.A.!5e0!3m2!1ses!2smx!4v1442961199329"
+                            width="448" height="263" frameborder="0" style="border:0" allowfullscreen></iframe>
+                          </div>
+                          <div class="uDireccion">
+                            <div class="iconLeft">
+                              <div class="uBigIcon">
+                                <span class="glyphicon glyphicon-map-marker"></span>
+                              </div>
+                            </div>
+                            <div class="address">
+                              <address>
+                                <strong>New Channel Media S.A. de C.V.</strong>
+                                <br> Santo Tomas de Aquino #5766, Arcos de Guadalupe
+                                <br> Zapopan, Jalisco. México
+                              </address>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div data-slide-no="3" class="item">
+                        <div class="ubicacion">
+                          <div class="uMapa" id="maptest3">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3733.0682045355084!2d-103.43775099999999!3d20.666803999999996!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8428aea5a489a451%3A0x82f88c47c4f2abbd!2sNew+Channel+Media+S.A.!5e0!3m2!1ses!2smx!4v1442961199329"
+                            width="448" height="263" frameborder="0" style="border:0" allowfullscreen></iframe>
+                          </div>
+                          <div class="uDireccion">
+                            <div class="iconLeft">
+                              <div class="uBigIcon">
+                                <span class="glyphicon glyphicon-map-marker"></span>
+                              </div>
+                            </div>
+                            <div class="address">
+                              <address>
+                                <strong>New Channel Media S.A. de C.V.</strong>
+                                <br> Santo Tomas de Aquino #5766, Arcos de Guadalupe
+                                <br> Zapopan, Jalisco. México
+                              </address>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-12">
+              <div class="panel elementPanel panel-primary">
+                <div class="panel-heading">
+                  <h3 class="panel-title">
+                    <span class="panelIcon glyphicon glyphicon-star"></span> Experto en:</h3>
+                </div>
+                <div class="panel-body" style="height:250px;">
+                  <ul class="list-unstyled">
+                    <li>
+                      padecimiento 1
+                    </li>
+                    <li>
+                      padecimiento 2
+                    </li>
+                    <li>
+                      padecimiento 3
+                    </li>
+                    <li>
+                      padecimiento 4
+                    </li>
+                    <li>
+                      padecimiento 5
+                    </li>
+                    <li>
+                      padecimiento 6
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-12 hidden invisible">
+              <div class="panel elementPanel panel-primary">
+                <div class="panel-heading">
+                  <h3 class="panel-title">
+                    <span class="panelIcon glyphicon glyphicon-th"></span> Galería</h3>
+                </div>
+                <div class="panel-body" style="height:250px;">
+                </div>
+              </div>
+            </div>
+            <div class="element col-lg-7 col-md-7 col-sm-6 col-xs-12">
+              <div class="panel elementPanel panel-primary" id="profileHospAseg">
+                <div class="panel-heading">
+                  <h3 class="panel-title">
+                    <span class="panelIcon glyphicon glyphicon-info-sign"></span> Hospitales y Clínicas / Aseguradoras</h3>
+                </div>
+                <div class="panel-body" style="height:250px;">
+
+                </div>
+              </div>
+            </div>
+            <div class="element col-lg-5 col-md-5 col-sm-6 col-xs-12">
+              <div class="panel elementPanel dropdown" id="FavColPanel">
+                <div class="panel-heading">
+                  <h3 class="panel-title">
+                    <span class="panelIcon glyphicon glyphicon-bookmark"></span> Colegas</h3>
+                </div>
+                <div class="panel-body contactosBody">
+                  <div class="contactosContent">
+                    <div class="contactosOrderButtons">
+                      <div class="btn-group btn-group-justified" role="group" aria-label="Justified button group">
+                        <a class="btn btn-order" role="button">Alfabeticamente</a>
+                        <a class="btn btn-order" role="button">Especialidades</a>
+                      </div>
+                    </div>
+                    <div class="contactosListContainer">
+                      <ul class="contList">
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="panel-footer elementPanel">
+                  <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
+                    <span class="glyphicon glyphicon-plus"></span> Invitar
+                  </button>
+                  <div id="addFormaForm" class="dropdown-form dropdown-menu dropdown-menu-right" arialabelledby="addForma">
+                    <div class="panel">
+                      <div class="panel-body">
+                        <form class="form-horizontal">
+                          <div class="form-group">
+                            <label class="col-md-3 control-label">Nombre</label>
+                            <div class="col-md-9">
+                              <input type="text" class="form-control" id="invitar_nombre">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label class="col-md-3 control-label">Correo</label>
+                            <div class="col-md-9">
+                              <input type="text" class="form-control" id="invitar_correo">
+                            </div>
+                          </div>
+                          <div class="form-group">
+                            <label class="col-md-3 control-label">Mensaje</label>
+                            <div class="col-md-9">
+                              <textarea class="form-control" id="invitar_mensaje">Te invito a unirte a Intermed</textarea>
+                            </div>
+                          </div>
+                          <div class="col-md-4 col-md-offset-8">
+                            <button type="button" class="btn btn-primary btn-block dropdown-form-guardar" onclick="procesarInvitacion()">Enviar</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {{#unless usuario.id}}
+                  <div class="panel-footer">
+                    <button class="dropdown-toggle btn btn-primary Flama-bold s15" type="button" id="addForma" data-toggle="dropdown" aria-expanded="false">
+                      <span class="glyphicon glyphicon-plus"></span> Invitar
+                    </button>
+                    <div id="addFormaForm" class="dropdown-form dropdown-menu dropdown-menu-right" arialabelledby="addForma">
+                      <div class="panel">
+                        <div class="panel-body">
+                          <form class="form-horizontal">
+                            <div class="form-group">
+                              <label class="col-md-3 control-label">Nombre</label>
+                              <div class="col-md-9">
+                                <input type="text" class="form-control" id="invitar_nombre">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-md-3 control-label">Correo</label>
+                              <div class="col-md-9">
+                                <input type="text" class="form-control" id="invitar_correo">
+                              </div>
+                            </div>
+                            <div class="form-group">
+                              <label class="col-md-3 control-label">Mensaje</label>
+                              <div class="col-md-9">
+                                <textarea class="form-control" id="invitar_mensaje">Te invito a unirte a Intermed</textarea>
+                              </div>
+                            </div>
+                            <div class="col-md-4 col-md-offset-8">
+                              <button type="button" class="btn btn-primary btn-block dropdown-form-guardar" onclick="procesarInvitacion()">Enviar</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                {{/unless}}
+              </div>
+            </div>
+            <div class="element col-lg-7 col-md-7 col-sm-12 col-xs-12">
+              <div class="panel elementPanel panel-primary" id="profileComments">
+                <div class="panel-heading">
+                  <h3 class="panel-title">
+                    <span class="panelIcon glyphicon glyphicon-comment"></span> Comentarios</h3>
+                </div>
+                <div class="panel-body" style="height:250px;">
+
+                </div>
+              </div>
+            </div>
+
+
+
+          </div>
+        </div>
+        <!-- ... -->
+        <div role="tabpanel" class="tab-pane fade container" id="profilePublicaciones">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+
+                </div>
+                <div class="panel-body">
+
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+
+                </div>
+                <div class="panel-body">
+
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+
+                </div>
+                <div class="panel-body">
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ... -->
+        <div role="tabpanel" class="tab-pane fade container" id="profileFotografias">
+          <div class="row">
+            <div class="col-md-2">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                </div>
+              </div>
+            </div>
+            <div class="col-md-2">
+              <div class="panel panel-info">
+                <div class="panel-heading">
+                </div>
+                <div class="panel-body">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

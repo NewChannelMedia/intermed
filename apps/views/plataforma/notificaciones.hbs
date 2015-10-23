@@ -1,0 +1,47 @@
+<section id="plataforma">
+  <div id="medico" class="container-fluid profileHolder">
+    <div class="profileBody">
+      <div class="profileBodyNav">
+        <div class="container">
+          <div class="row" style="margin-top:40px;">
+            <div class="col-lg-12 col-md-12">
+              <h3>Tus notificaciones</h3>
+            </div>
+            <div class="col-lg-12 col-md-12" id="notifList" >
+              <input type="hidden" value="" id="maxId">
+              <table class="table" id="notifListTable">
+
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+
+      cargarNotificacionesCondicional();
+
+      $('#notifList').append('<a class="_next" href="#"></a>');
+      var scroll = $('#notifList').iscroll({
+        onBeginRequest:function(request){
+          verTodasNotificaciones();
+        }
+      });
+    });
+
+    function cargarNotificacionesCondicional(){
+        var result = verTodasNotificaciones();
+        setTimeout(function(){
+          if (document.getElementById('notifListTable').offsetHeight<$(window).height()){
+            if (result === true){
+              cargarNotificacionesCondicional();
+            }
+          }
+        },200);
+    }
+</script>

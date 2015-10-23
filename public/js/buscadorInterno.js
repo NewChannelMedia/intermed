@@ -1,0 +1,127 @@
+$(document).ready(function(){
+  if ($( "#buscadorInterno" ).length > 0){
+
+    var autocompleteInicial = [];
+
+    var oficina = [
+    {value:'Bitácora',category:'Oficina',url:'bitacora',image:'<span class="glyphicon glyphicon-calendar"></span> ',label:'Bitácora'},
+    {value:'Perfil',category:'Oficina',url:'perfil',image:'<span class="glyphicon glyphicon-user"></span> ',label:'Perfil'},
+    {value:'Inicio',category:'Oficina',url:'',image:'<span class="glyphicon glyphicon-home"></span> ',label:'Inicio'}
+    ];
+    //Caracteres especiales
+    var accentMap = {
+    "á": "a",
+    "é": "e",
+    "í": "i",
+    "ó": "o",
+    "ú": "u",
+    '´': ''
+    };
+
+    $.widget( "custom.catcomplete", $.ui.autocomplete, {
+    _create: function() {
+      this._super();
+      this.widget().menu( "option", "items", "> :not(.ui-autocomplete-category)" );
+    },
+    _renderMenu: function( ul, items ) {
+      var that = this,
+      currentCategory = "";
+      $.each( items, function( index, item ) {
+        var li;
+        if ( item.category != currentCategory ) {
+          ul.append( "<li class='ui-autocomplete-category'> " + item.category + "</li>" );
+          currentCategory = item.category;
+        }
+        li = that._renderItemData( ul, item );
+        if ( item.category ) {
+          li.attr( "aria-label", item.category + " : " + item.label );
+        }
+      });
+    }
+    });
+    var normalize = function( term ) {
+      var ret = "";
+      for ( var i = 0; i < term.length; i++ ) {
+        ret += accentMap[ term.charAt(i) ] || term.charAt(i);
+      }
+      return ret;
+    };
+    function customFilter(array, terms) {
+        arrayOfTerms = terms.split(" ");
+        var result  = [];
+        for (var k in arrayOfTerms){
+          arrayOfTerms[k] = arrayOfTerms[k].replace(/ /g,'');
+        }
+        var result =  $.grep(array, function (value) {
+          var coincide = true;
+          for (var k in arrayOfTerms){
+            if (coincide){
+              var matcher = new RegExp("\\b" + arrayOfTerms[k], "i");
+              coincide = matcher.test(normalize(value.label));
+            }
+          }
+          return coincide;
+        });
+        return result;
+    };
+
+    function replaceChars(cadena){
+        for ( var key in accentMap) {
+          cadena = cadena.replace(key,accentMap[key]);
+        }
+        return cadena;
+    }
+
+    $( "#buscadorInterno" ).catcomplete({
+      delay: 0,
+      minLength: 0,
+      source: function( request, response ) {
+        request.term = replaceChars(request.term);
+        var busqueda = request.term.split(" ");
+        busqueda = $.grep(busqueda, function(v, k){
+            return $.inArray(v ,busqueda) === k;
+        });
+        $.ajax({
+          url: "/buscadorInterno",
+          dataType: "json",
+          method: 'POST',
+          data: {
+            busqueda: busqueda
+          },
+          success: function( data ) {
+            var allUsers = [];
+            data.forEach(function(user){
+              var newUser = new Array();
+              newUser['name'] = user.DatosGenerale.nombre + ' ' + user.DatosGenerale.apellidoP + ' ' + user.DatosGenerale.apellidoM;
+              newUser['value'] = newUser['name'];
+              newUser['category'] = "Usuarios";
+              newUser['url']  = 'perfil/'+user.usuarioUrl;
+              newUser['image']  = "<img src="+user.urlFotoPerfil+" style='width:20px'></img> ";
+              if (user.Medico){
+                newUser['name']  = 'Dr. ' + newUser['name'] ;
+              }
+              newUser['label']  = newUser['name'];
+              user = newUser;
+              allUsers.push(newUser);
+            })
+            allUsers = oficina.concat(allUsers);
+            response(customFilter(allUsers,request.term));
+          }
+        });
+      },
+      focus: function( event, ui ) {
+        $( "#buscadorInterno" ).val( ui.item.label );
+        return false;
+      },
+      select: function( event, ui ) {
+        window.location.href = "http://localhost:3000/"+ui.item.url;
+        return false;
+      }
+    })
+    .catcomplete( "instance" )._renderItem = function( ul, item ) {
+      var li = $( "<li>" );
+      li.append( "<a>" + item.image + item.label +"</a>" );
+      return li.appendTo(ul);
+    };
+  }
+});

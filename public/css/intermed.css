@@ -316,10 +316,6 @@ a:visited {
 .notificationDropdown {
   right: -59px!important;
   width: 350px;
-  min-height: 52px;
-  max-height: 600px;
-  overflow-y: scroll;
-  overflow: auto;
 }
 
 .notificationDropdown li {
@@ -327,6 +323,12 @@ a:visited {
   min-height: 50px;
   height: auto;
   padding: 3px;
+}
+
+#notificacinesList{
+  overflow-y: scroll;
+  overflow: auto;
+  max-height: 300px;
 }
 
 #plataforma {}
@@ -1608,7 +1610,7 @@ div::-webkit-scrollbar-thumb:window-inactive {
 
 .ubicacionesContainer .uIndicator {
   position: absolute;
-  z-index: 1000;
+  z-index: 500;
   top: 0;
   right: 0;
   bottom: 0;
@@ -1765,4 +1767,24 @@ div::-webkit-scrollbar-thumb:window-inactive {
   text-decoration: none;
   text-transform: uppercase;
   color: #969ba2;
+}
+
+.ui-autocomplete-category{
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-weight: bold;
+  background-color: #EEE;
+  padding-left: 10px;
+}
+
+hr {
+  -moz-border-bottom-colors: none;
+  -moz-border-image: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  border: 0;
+  height: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }

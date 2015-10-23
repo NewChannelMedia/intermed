@@ -1,5 +1,9 @@
 var models = require( '../models' );
 
+exports.index = function ( object, req, res ) {
+  res.render( 'notificaciones', object );
+}
+
 exports.obtenerTodas = function ( object, req, res ) {
   models.TipoNotificacion.findAll( {
     where: {
@@ -33,14 +37,15 @@ exports.solicitudAmistad = function ( req ) {
   } else if (req.tipoUsuario == "M"){
     numNot = 4;
   }
-
+  
   models.Notificacion.findAll( {
     where: {
       usuario_id: req.usuario_id,
       visto: 0,
       tipoNotificacion_id: numNot
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ]
+    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
   } ).then( function ( result ) {
     var restante = 8 - result.length;
     if ( restante < 0 ) restante = 0;
@@ -51,7 +56,8 @@ exports.solicitudAmistad = function ( req ) {
         tipoNotificacion_id: numNot
       },
       attributes: [ 'id', 'data', 'inicio', 'visto' ],
-      limit: restante
+      limit: restante,
+      order: 'inicio DESC'
     } ).then( function ( resultVisto ) {
       result = JSON.parse( JSON.stringify( result ) );
       result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
@@ -122,7 +128,8 @@ exports.solicitudAmistadAceptada = function ( req ) {
       visto: 0,
       tipoNotificacion_id: numNot
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ]
+    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
   } ).then( function ( result ) {
     var restante = 8 - result.length;
     if ( restante < 0 ) restante = 0;
@@ -133,7 +140,8 @@ exports.solicitudAmistadAceptada = function ( req ) {
         tipoNotificacion_id: numNot
       },
       attributes: [ 'id', 'data', 'inicio', 'visto' ],
-      limit: restante
+      limit: restante,
+      order: 'inicio DESC'
     } ).then( function ( resultVisto ) {
       result = JSON.parse( JSON.stringify( result ) );
       result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
@@ -203,59 +211,76 @@ exports.solicitudesAceptadas = function ( req ) {
   models.Notificacion.findAll( {
     where: {
       usuario_id: req.usuario_id,
-      visto: 1,
+      visto: 0,
       tipoNotificacion_id: numNot
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ]
+    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
   } ).then( function ( result ) {
-    result = JSON.parse( JSON.stringify( result ) );
-    var length = result.length;
-    result.forEach( function ( record ) {
-      if (req.tipoUsuario == "P"){
-        var paciente_id = record.data;
-        record[ 'paciente_id' ] = paciente_id;
-        models.Paciente.findOne( {
-          where: {
-            id: paciente_id
-          },
-          attributes: [ 'id' ],
-          include: [ {
-            model: models.Usuario,
-            attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+    var restante = 8 - result.length;
+    if ( restante < 0 ) restante = 0;
+    models.Notificacion.findAll( {
+      where: {
+        usuario_id: req.usuario_id,
+        visto: 1,
+        tipoNotificacion_id: numNot
+      },
+      attributes: [ 'id', 'data', 'inicio', 'visto' ],
+      limit: restante,
+      order: 'inicio DESC'
+    } ).then( function ( resultVisto ) {
+      result = JSON.parse( JSON.stringify( result ) );
+      result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
+      var length = result.length;
+      result.forEach( function ( record ) {
+        var paciente_id = '', medico_id = '';
+        if (req.tipoUsuario == "P"){
+          paciente_id = record.data;
+          record[ 'paciente_id' ] = paciente_id;
+          models.Paciente.findOne( {
+            where: {
+              id: paciente_id
+            },
+            attributes: [ 'id' ],
             include: [ {
-              model: models.DatosGenerales,
-              attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+              model: models.Usuario,
+              attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+              include: [ {
+                model: models.DatosGenerales,
+                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                          } ]
                       } ]
-                  } ]
-        } ).then( function ( usuario ) {
-          record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
-          if ( record === result[ result.length - 1 ] ) {
-            req.socket.emit( 'solicitudesAceptadas', result );
-          }
-        } );
-      } else if (req.tipoUsuario){
-        var medico_id = record.data;
-        record[ 'medico_id' ] = medico_id;
-        models.Medico.findOne( {
-          where: {
-            id: medico_id
-          },
-          attributes: [ 'id' ],
-          include: [ {
-            model: models.Usuario,
-            attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+          } ).then( function ( usuario ) {
+            record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+            if ( record === result[ result.length - 1 ] ) {
+              req.socket.emit( 'solicitudesAceptadas', result );
+            }
+          } )
+        } else if (req.tipoUsuario == "M"){
+          medico_id = record.data;
+          record[ 'medico_id' ] = paciente_id;
+
+          models.Medico.findOne( {
+            where: {
+              id: medico_id
+            },
+            attributes: [ 'id' ],
             include: [ {
-              model: models.DatosGenerales,
-              attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+              model: models.Usuario,
+              attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+              include: [ {
+                model: models.DatosGenerales,
+                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                          } ]
                       } ]
-                  } ]
-        } ).then( function ( usuario ) {
-          record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
-          if ( record === result[ result.length - 1 ] ) {
-            req.socket.emit( 'solicitudesAceptadas', result );
-          }
-        } );
-      }
+          } ).then( function ( usuario ) {
+            record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
+            if ( record === result[ result.length - 1 ] ) {
+              req.socket.emit( 'solicitudesAceptadas', result );
+            }
+          } )
+        }
+      } );
     } );
   } )
 };
@@ -273,105 +298,136 @@ exports.solicitudRechazada = function ( req ) {
   models.Notificacion.findAll( {
     where: {
       usuario_id: req.usuario_id,
-      visto: 1,
+      visto: 0,
       tipoNotificacion_id: numNot
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ]
+    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
   } ).then( function ( result ) {
-    result = JSON.parse( JSON.stringify( result ) );
-    var length = result.length;
-    result.forEach( function ( record ) {
-      if (req.tipoUsuario == "P"){
-        var paciente_id = record.data;
-        record[ 'paciente_id' ] = paciente_id;
-        models.Paciente.findOne( {
-          where: {
-            id: paciente_id
-          },
-          attributes: [ 'id' ],
-          include: [ {
-            model: models.Usuario,
-            attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+    var restante = 8 - result.length;
+    if ( restante < 0 ) restante = 0;
+    models.Notificacion.findAll( {
+      where: {
+        usuario_id: req.usuario_id,
+        visto: 1,
+        tipoNotificacion_id: numNot
+      },
+      attributes: [ 'id', 'data', 'inicio', 'visto' ],
+      limit: restante,
+      order: 'inicio DESC'
+    } ).then( function ( resultVisto ) {
+      result = JSON.parse( JSON.stringify( result ) );
+      result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
+      var length = result.length;
+      result.forEach( function ( record ) {
+        var paciente_id = '', medico_id = '';
+        if (req.tipoUsuario == "P"){
+          paciente_id = record.data;
+          record[ 'paciente_id' ] = paciente_id;
+          models.Paciente.findOne( {
+            where: {
+              id: paciente_id
+            },
+            attributes: [ 'id' ],
             include: [ {
-              model: models.DatosGenerales,
-              attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+              model: models.Usuario,
+              attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+              include: [ {
+                model: models.DatosGenerales,
+                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                          } ]
                       } ]
-                  } ]
-        } ).then( function ( usuario ) {
-          record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
-          if ( record === result[ result.length - 1 ] ) {
-            req.socket.emit( 'solicitudRechazada', result );
-          }
-        } );
-      } else if (req.tipoUsuario){
-        var medico_id = record.data;
-        record[ 'medico_id' ] = medico_id;
-        models.Medico.findOne( {
-          where: {
-            id: medico_id
-          },
-          attributes: [ 'id' ],
-          include: [ {
-            model: models.Usuario,
-            attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+          } ).then( function ( usuario ) {
+            record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+            if ( record === result[ result.length - 1 ] ) {
+              req.socket.emit( 'solicitudAmistadAceptada', result );
+            }
+          } )
+        } else if (req.tipoUsuario == "M"){
+          medico_id = record.data;
+          record[ 'medico_id' ] = paciente_id;
+
+          models.Medico.findOne( {
+            where: {
+              id: medico_id
+            },
+            attributes: [ 'id' ],
             include: [ {
-              model: models.DatosGenerales,
-              attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+              model: models.Usuario,
+              attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+              include: [ {
+                model: models.DatosGenerales,
+                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                          } ]
                       } ]
-                  } ]
-        } ).then( function ( usuario ) {
-          record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
-          if ( record === result[ result.length - 1 ] ) {
-            req.socket.emit( 'solicitudRechazada', result );
-          }
-        } );
-      }
+          } ).then( function ( usuario ) {
+            record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
+            if ( record === result[ result.length - 1 ] ) {
+              req.socket.emit( 'solicitudAmistadAceptada', result );
+            }
+          } )
+        }
+      } );
     } );
   } )
 };
 
 
 exports.agregadoMedicoFavorito = function ( req ) {
-  models.Notificacion.findAll( {
-    where: {
-      usuario_id: req.usuario_id,
-      visto: 1,
-      tipoNotificacion_id: 7
-    },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ]
-  } ).then( function ( result ) {
-    result = JSON.parse( JSON.stringify( result ) );
-    var length = result.length;
-    result.forEach( function ( record ) {
-      var paciente_id = record.data;
-      record[ 'paciente_id' ] = paciente_id;
-      models.Paciente.findOne( {
+
+    models.Notificacion.findAll( {
+      where: {
+        usuario_id: req.usuario_id,
+        visto: 0,
+        tipoNotificacion_id: 7
+      },
+      attributes: [ 'id', 'data', 'inicio', 'visto' ],
+      order: 'inicio DESC'
+    } ).then( function ( result ) {
+      var restante = 8 - result.length;
+      if ( restante < 0 ) restante = 0;
+      models.Notificacion.findAll( {
         where: {
-          id: paciente_id
+          usuario_id: req.usuario_id,
+          visto: 1,
+          tipoNotificacion_id: 7
         },
-        attributes: [ 'id' ],
-        include: [ {
-          model: models.Usuario,
-          attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-          include: [ {
-            model: models.DatosGenerales,
-            attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                    } ]
-                } ]
-      } ).then( function ( usuario ) {
-        record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
-        if ( record === result[ result.length - 1 ] ) {
-          console.log('----->agregadoMedicoFavorito');
-          req.socket.emit( 'agregadoMedicoFavorito', result );
-        }
-      } )
-    } );
-  } )
+        attributes: [ 'id', 'data', 'inicio', 'visto' ],
+        limit: restante,
+        order: 'inicio DESC'
+      } ).then( function ( resultVisto ) {
+        result = JSON.parse( JSON.stringify( result ) );
+        result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
+        var length = result.length;
+        result.forEach( function ( record ) {
+            paciente_id = record.data;
+            record[ 'paciente_id' ] = paciente_id;
+            models.Paciente.findOne( {
+              where: {
+                id: paciente_id
+              },
+              attributes: [ 'id' ],
+              include: [ {
+                model: models.Usuario,
+                attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+                include: [ {
+                  model: models.DatosGenerales,
+                  attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                            } ]
+                        } ]
+            } ).then( function ( usuario ) {
+              record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+              if ( record === result[ result.length - 1 ] ) {
+                req.socket.emit( 'agregadoMedicoFavorito', result );
+              }
+            } )
+        } );
+      } );
+    } )
 };
 
 
 exports.verNotificaciones = function ( req ) {
-  console.log( 'VER NOTIFICACIONES' );
   models.Notificacion.update( {
     visto: 1
   }, {
@@ -384,7 +440,214 @@ exports.verNotificaciones = function ( req ) {
   } );
 }
 
+exports.scroll = function (object, req, res){
+  models.Notificacion.findAll( {
+    where: {
+      usuario_id: req.session.passport.user.id,
+      tipoNotificacion_id: {$notIn: [10, 11]},//Inbox
+      id: {not: [object.id]}
+    },
+    limit: 4,
+    attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
+  } ).then( function ( result ) {
+    if (result.length > 0){
+      result = JSON.parse( JSON.stringify( result ) );
+      var length = result.length;
+      result.forEach( function ( record ) {
+        var tipoUsuario = '';
+        switch(record.tipoNotificacion_id) {
+            case 1:
+              tipoUsuario = "P";
+              break;
+            case 2:
+              tipoUsuario = "P";
+              break;
+            case 3:
+              tipoUsuario = "P";
+              break;
+            case 4:
+              tipoUsuario = "M";
+              break;
+            case 5:
+              tipoUsuario = "M";
+              break;
+            case 6:
+              tipoUsuario = "M";
+              break;
+            case 7:
+              tipoUsuario = "P";
+              break;
+            case 8:
+            tipoUsuario = "P";
+                break;
+            case 9:
+              tipoUsuario = "M";
+              break;
+        }
+        var paciente_id = '', medico_id = '';
+        if (tipoUsuario == "P"){
+          paciente_id = record.data;
+          record[ 'paciente_id' ] = paciente_id;
+          models.Paciente.findOne( {
+            where: {
+              id: paciente_id
+            },
+            attributes: [ 'id' ],
+            include: [ {
+              model: models.Usuario,
+              attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+              include: [ {
+                model: models.DatosGenerales,
+                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                          } ]
+                      } ]
+          } ).then( function ( usuario ) {
+            record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+            if ( record === result[ result.length - 1 ] ) {
+              res.send(result);
+            }
+          } )
+        } else if (tipoUsuario == "M"){
+          medico_id = record.data;
+          record[ 'medico_id' ] = medico_id;
 
+          models.Medico.findOne( {
+            where: {
+              id: medico_id
+            },
+            attributes: [ 'id' ],
+            include: [ {
+              model: models.Usuario,
+              attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+              include: [ {
+                model: models.DatosGenerales,
+                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                          } ]
+                      } ]
+          } ).then( function ( usuario ) {
+            record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
+            if ( record === result[ result.length - 1 ] ) {
+              res.send(result);
+            }
+          } )
+        }
+      } );
+    } else {
+      res.send(JSON.parse(JSON.stringify([])));
+    }
+  } )
+}
+
+
+exports.cargarNotificaciones = function ( object, req, res ) {
+  if (!req.session.passport.user) res.send(JSON.parse(JSON.stringify({'result':'error'})));
+  var whereid = new Array();
+  var limit = 0;
+  if (object.id && object.id!= "" && object.id != null) {
+    whereid = {id: {not: [object.id]}}
+  }
+  if (object.limit) {
+    limit = object.limit
+  }
+  var where = new Array(models.sequelize.and(
+    {usuario_id: req.session.passport.user.id},
+    {tipoNotificacion_id: {$notIn: [10, 11]}},//Inbox,,
+    whereid
+  ));
+  models.Notificacion.findAll( {
+    where: where,
+    limit: limit,
+    attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
+  } ).then( function ( result ) {
+    if (result.length > 0){
+      result = JSON.parse( JSON.stringify( result ) );
+      var length = result.length;
+      result.forEach( function ( record ) {
+        var tipoUsuario = '';
+        switch(record.tipoNotificacion_id) {
+            case 1:
+              tipoUsuario = "P";
+              break;
+            case 2:
+              tipoUsuario = "P";
+              break;
+            case 3:
+              tipoUsuario = "P";
+              break;
+            case 4:
+              tipoUsuario = "M";
+              break;
+            case 5:
+              tipoUsuario = "M";
+              break;
+            case 6:
+              tipoUsuario = "M";
+              break;
+            case 7:
+              tipoUsuario = "P";
+              break;
+            case 8:
+            tipoUsuario = "P";
+                break;
+            case 9:
+              tipoUsuario = "M";
+              break;
+        }
+        var paciente_id = '', medico_id = '';
+        if (tipoUsuario == "P"){
+          paciente_id = record.data;
+          record[ 'paciente_id' ] = paciente_id;
+          models.Paciente.findOne( {
+            where: {
+              id: paciente_id
+            },
+            attributes: [ 'id' ],
+            include: [ {
+              model: models.Usuario,
+              attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+              include: [ {
+                model: models.DatosGenerales,
+                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                          } ]
+                      } ]
+          } ).then( function ( usuario ) {
+            record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+            if ( record === result[ result.length - 1 ] ) {
+              res.send(result);
+            }
+          } )
+        } else if (tipoUsuario == "M"){
+          medico_id = record.data;
+          record[ 'medico_id' ] = medico_id;
+
+          models.Medico.findOne( {
+            where: {
+              id: medico_id
+            },
+            attributes: [ 'id' ],
+            include: [ {
+              model: models.Usuario,
+              attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+              include: [ {
+                model: models.DatosGenerales,
+                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                          } ]
+                      } ]
+          } ).then( function ( usuario ) {
+            record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
+            if ( record === result[ result.length - 1 ] ) {
+              res.send(result);
+            }
+          } )
+        }
+      } );
+    } else {
+      res.send(JSON.parse(JSON.stringify([])));
+    }
+  } )
+}
 
 function getDateTime() {
   var date = new Date();
