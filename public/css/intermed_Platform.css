@@ -251,41 +251,95 @@ a:visited {
 
 
 .header-section {
+  display: block;
+  height: 360px;
   background-image: url('../img/profileBG.png');
   background-repeat: no-repeat;
   background-position: bottom center;
   background-size: cover;
-  display: block;
-  height: 360px;
 }
 .header-container {
-  display: table;
+  display: block;
+  height: 100%;
+}
+.header-row {
+  height: 100%;
+  padding: 0;
 }
 
-.header-profile{
-  display: table-row;
-  height: 240px;
+.header-profile {
+  display: table;
+  height: 100%;
 }
 .header-profile-container {
   display: table-cell;
+  height: 240px;
   vertical-align: middle;
 }
 .header-profile-photo-container {
   display: table-cell;
+  height: 240px;
   vertical-align: middle;
 }
 .header-profile-photo-link {
+  display: block;
+  overflow: hidden;
+  width: 200px;
+  height: 100%;
+  text-align: center;
+  border: solid 4px #fff;
+  border-radius: 5px;
+  background-color: #7dc9f7;
 }
 .header-profile-photo-img {
-  height: 240px;
+  height: 100%;
+  width: auto;
 }
 
 .header-profile-body-container {
+  display: table-cell;
+  vertical-align: middle;
+  height: 240px;
 }
 .header-profile-body-content {
+  display: table-cell;
+  vertical-align: middle;
+  height: 240px;
 }
 
 .header-options{
+  height: 100%;
+  background-color: rgba(10,10,10,.5);
 }
 .header-options-container{
+}
+@media (max-width: 768px) {
+  .header-section{
+    height: 440px;
+  }
+  .header-container,
+  .header-row,
+  .header-profile{
+    height: auto;
+  }
+  .header-profile-container {
+    padding: 20px 0 15px 0;
+  }
+  .header-profile-photo-container {
+    height: 200px;
+  }
+
+  .header-profile-body-container{
+    height: 125px;
+    padding: 10px 0 0 0;
+  }
+
+  .header-profile-body-content{
+    display: block;
+    text-align: center;
+  }
+  .header-options{
+    height: 80px;
+  }
+
 }
