@@ -6,6 +6,7 @@
  *	@version 0
  *	@date Tuesday, August 4,  2015
  */
+global.base_url = 'http://localhost:3000/';
 
 var models = require( '../apps/models' );
 
@@ -896,15 +897,15 @@ var iniciar = function () {
   } );
 
   app.post( '/agregarMedFav', function ( req, res ) {
-    intermed.callController( 'medicos', 'agregarFav', req.body, req, res );
+    intermed.callController( 'contactos', 'agregarFav', req.body, req, res );
   } );
 
   app.post( '/eliminarMedFav', function ( req, res ) {
-    intermed.callController( 'medicos', 'eliminarFav', req.body, req, res );
+    intermed.callController( 'contactos', 'eliminarFav', req.body, req, res );
   } );
 
   app.post( '/cargarFavCol', function ( req, res ) {
-    intermed.callController( 'medicos', 'cargarFavCol', {
+    intermed.callController( 'contactos', 'cargarFavCol', {
       usuario: req.body.usuario
     }, req, res );
   } );
@@ -1087,7 +1088,7 @@ var iniciar = function () {
 
 
   app.post( '/aceptarInvitacion', function ( req, res ) {
-    intermed.callController( 'medicos', 'aceptarInvitacion', req.body, req, res );
+    intermed.callController( 'contactos', 'aceptarInvitacion', req.body, req, res );
   } );
 
   app.get( '/testnotificaciones', function ( req, res ) {
@@ -1110,6 +1111,27 @@ var iniciar = function () {
   });
   app.post('/medicosContacto', function(req, res){
     intermed.callController('Contactos_oscar','medicosContacto',req,res);
+  });
+
+  app.post( '/buscadorInterno', function (req, res){
+    intermed.callController( 'buscadorInterno', 'buscar', req.body, req, res );
+  });
+
+  app.get('/notificaciones', function (req, res){
+    if (!req.session.passport.user){
+      res.redirect( '/' );
+    }else {
+      rutas.routeLife( 'plataforma', 'plataforma', hps );
+      intermed.callController('notificaciones','index', req.body, req, res);
+    }
+  });
+
+  app.post('/notificaciones/cargar', function (req, res){
+    intermed.callController('notificaciones','cargarNotificaciones', req.body, req, res);
+  })
+
+  app.post('/notificaciones/scroll', function (req, res){
+    intermed.callController('notificaciones','scroll', req.body, req, res);
   });
 }
 

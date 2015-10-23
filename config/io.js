@@ -39,7 +39,8 @@ var io = function ( io, bundle, ioPassport ) {
       conectados.push( {
         socket: socket.id,
         id: socket.request.cookies.intermed_sesion.id,
-        usuario: socket.request.cookies.intermed_sesion.usuario
+        usuario: socket.request.cookies.intermed_sesion.usuario,
+        tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
       } );
 
       socket.on( 'disconnect', function () {
@@ -51,7 +52,8 @@ var io = function ( io, bundle, ioPassport ) {
         //console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudAmistad]' );
         var req = {
           socket: socket,
-          usuario_id: socket.request.cookies.intermed_sesion.id
+          usuario_id: socket.request.cookies.intermed_sesion.id,
+          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
         };
 
         intermed.callController( 'notificaciones', 'solicitudAmistad', req );
@@ -60,9 +62,11 @@ var io = function ( io, bundle, ioPassport ) {
 
       socket.on( 'solicitudAmistadAceptada', function () {
         //console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudAmistadAceptada]' );
+        console.log('_________SESION: ' + JSON.stringify( socket.request.cookies.intermed_sesion));
         var req = {
           socket: socket,
-          usuario_id: socket.request.cookies.intermed_sesion.id
+          usuario_id: socket.request.cookies.intermed_sesion.id,
+          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
         };
 
         intermed.callController( 'notificaciones', 'solicitudAmistadAceptada', req );
@@ -73,17 +77,44 @@ var io = function ( io, bundle, ioPassport ) {
         var req = {
           socket: socket,
           usuario_id: socket.request.cookies.intermed_sesion.id,
+          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario,
           notificacion_id: id
         };
 
         intermed.callController( 'notificaciones', 'solicitudesAceptadas', req );
-      } )
+      } );
+
+      socket.on( 'agregadoMedicoFavorito', function ( id ) {
+        //console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudesAceptadas]' );
+        var req = {
+          socket: socket,
+          usuario_id: socket.request.cookies.intermed_sesion.id,
+          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario,
+          notificacion_id: id
+        };
+
+        intermed.callController( 'notificaciones', 'agregadoMedicoFavorito', req );
+      } );
+
+      socket.on( 'solicitudRechazada', function ( id ) {
+        //console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudesAceptadas]' );
+        var req = {
+          socket: socket,
+          usuario_id: socket.request.cookies.intermed_sesion.id,
+          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario,
+          notificacion_id: id
+        };
+
+        intermed.callController( 'notificaciones', 'solicitudRechazada', req );
+      } );
+
 
       socket.on( 'verNotificaciones', function () {
         //console.log( 'socket_id: ' + socket.id + ' [Buscar: verNotificaciones]' );
         var req = {
           socket: socket,
-          usuario_id: socket.request.cookies.intermed_sesion.id
+          usuario_id: socket.request.cookies.intermed_sesion.id,
+          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
         };
 
         intermed.callController( 'notificaciones', 'verNotificaciones', req );

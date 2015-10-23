@@ -65,6 +65,10 @@ function ifPaciente( value, options ) {
   }
 }
 
+function base_url() {
+  return global.base_url;
+}
+
 exports.varSession = varSession;
 exports.valSession = valSession;
 exports.ifSession = ifSession;
@@ -74,3 +78,4 @@ exports.ifID = ifID;
 exports.ifTipoMedico = ifTipoMedico;
 exports.ifTipoPaciente = ifTipoPaciente;
 exports.ifPaciente = ifPaciente;
+exports.base_url = base_url;
