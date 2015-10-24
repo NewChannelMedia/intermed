@@ -64,9 +64,9 @@ module.exports = function ( sequelize, DataTypes ) {
     classMethods: {
       associate: function ( models ) {
         Direccion.belongsTo( models.Usuario );
-        Direccion.belongsTo(models.Municipio);        
-          //Direccion.belongsTo(models.Estado)
-        Direccion.belongsTo( models.Localidad );
+        Direccion.belongsTo(models.Municipio);                
+        Direccion.belongsTo(models.Localidad);
+        Direccion.hasMany(models.Horarios)
       }
     },
     timestamps: false,
