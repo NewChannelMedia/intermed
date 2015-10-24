@@ -1107,12 +1107,21 @@ var iniciar = function () {
   } );
   // recomendaciones url
   app.post('/contactosRecomendados',function(req, res){
-    intermed.callController('Contactos_oscar','contactosRecomendados',req,res);
+    intermed.callController('contactos','contactosRecomendados',req,res);
   });
   app.post('/medicosContacto', function(req, res){
-    intermed.callController('Contactos_oscar','medicosContacto',req,res);
+    intermed.callController('contactos','medicosContacto',req,res);
   });
-
+  app.post('/enviaCorreoRecomendados', function( req, res ){
+    var object ={
+      nombre:'correo de recomendacion',
+      subject:'Recomendaciones',
+      to:req.body.toMail,
+      enlace:req.body.enlace
+    };
+    console.log("OBJECTO DEL CORREO "+JSON.stringify(object));
+  });
+  // fin recomendaciones url
   app.post( '/buscadorInterno', function (req, res){
     intermed.callController( 'buscadorInterno', 'buscar', req.body, req, res );
   });

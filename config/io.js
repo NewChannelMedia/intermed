@@ -58,8 +58,16 @@ var io = function ( io, bundle, ioPassport ) {
 
         intermed.callController( 'notificaciones', 'solicitudAmistad', req );
       } );
-
-
+      //OSCAR
+      /*sockect.on('medicoRecomendado', function(){
+        var req = {
+          socket: socket,
+          usuario_id: socket.request.cookies.intermed_sesion.id,
+          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
+        };
+        intermed.callController('notificaciones', 'medicoRecomendado',req);
+      });*/
+      //FIN OSCAR
       socket.on( 'solicitudAmistadAceptada', function () {
         //console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudAmistadAceptada]' );
         console.log('_________SESION: ' + JSON.stringify( socket.request.cookies.intermed_sesion));

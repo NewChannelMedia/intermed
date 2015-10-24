@@ -1499,13 +1499,12 @@ function cargarFavCol( usuario ) {
     var id = "";
     $( '.recomendar.contList-profileActionLink' ).click(function(){
       id += $( this ).attr('id');
-      console.log("ID: "+id);
+      //console.log("ID: "+id);
       $.post('/medicosContacto',{idMedico:id},function(data){
-        console.log("masDatos: "+JSON.stringify(data));
-        for( var i in data ){console.log("otro i: "+i);
-          if( data[ i ].Usuario ){console.log("iiiii: "+i);
+        //console.log("masDatos: "+JSON.stringify(data));
+        for( var i in data ){
+          if( data[ i ].Usuario ){
             var nombreCompleto = data[ i ].Usuario.DatosGenerale.nombre+' '+data[ i ].Usuario.DatosGenerale.apellidoP+' '+data[ i ].Usuario.DatosGenerale.apellidoM;
-            console.log(nombreCompleto);
             $("#doctorSpan").text(nombreCompleto);
           }
         }
@@ -1519,23 +1518,30 @@ function cargarFavCol( usuario ) {
         $( '#enviarRecomendaciones ul').html('');
         $( '#doc' ).html('');
         for( var i in data ){
-          if( data[ i ].Paciente ){
-            var tr = "tr"+data[ i ].Paciente.id;
-            html +='<tr class="" id="'+tr+'" onclick="seleccionarUsuario(\''+i+'\',\''+tr+'\')">';
-            html +='<td>';
-            html +='<img src="'+data[ i ].Paciente.Usuario.urlFotoPerfil+'" alt="" class="img-thumbnail">';
-            html +='</td>';
-            html +='<td id="paciente'+data[ i ].Paciente.id+'">';
-            html +='<p>'+data[ i ].Paciente.Usuario.DatosGenerale.nombre+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoP+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoM+'</p>';
-            html +='</td>';
-            html +='</tr>';
-            $( "#recomendarA tbody" ).append(html);
-          }
+          var nombreTodo = data[ i ].Paciente.Usuario.DatosGenerale.nombre+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoP+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoM;
+          var tr = "tr"+data[ i ].Paciente.id;
+          html +='<tr class="" id="'+tr+'" onclick="seleccionarUsuario(\''+i+'\',\''+tr+'\',\''+nombreTodo+'\')">';
+          html +='<td>';
+          html +='<img src="'+data[ i ].Paciente.Usuario.urlFotoPerfil+'" alt="" class="img-thumbnail">';
+          html +='</td>';
+          html +='<td id="paciente'+data[ i ].Paciente.id+'">';
+          html +='<p>'+nombreTodo+'</p>';
+          html +='</td>';
+          html +='</tr>';
         }
+        $( "#recomendarA tbody" ).append(html);
       });
     });
+    $( "#enviarAtodos" ).click(function(){
+      if( $( "#correoEnviarRecomendado" ).val() != ""){
+        var to = $( "#correoEnviarRecomendado" ).val();
+        var enlace = "0000001";
+        $.post('/enviaCorreoRecomendados',{toMail:to,enlace:enlace},function(){});
+      }
+      //$.post('/enviaNotificacionesRecomendados',{},function(){});
+    });
   });
-function seleccionarUsuario(i, tr){
+function seleccionarUsuario(i, tr, nombre){
   var nombreCompleto = "";
   var html2 ="";
   var otroId = 'li'+i;
@@ -1544,7 +1550,7 @@ function seleccionarUsuario(i, tr){
     html2 +="<p>";
       html2 += "<div class='label label-primary'><span class='glyphicon glyphicon-remove'>&nbsp;"
         html2 +="<small>";
-          html2 +=nombreCompleto;
+          html2 +=nombre;
         html2 +="</small>";
       html2 += "</span></div>";
     html2 +="</p>";

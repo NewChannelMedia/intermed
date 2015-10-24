@@ -83,4 +83,57 @@ function mailer( object, file ) {
     }
   } );
 }
+function enviaCorreoRecomendados(){
+  // se configuran las plantillas para el envio de cadad una
+  var options = {
+    viewEngine: {
+      extname: '.hbs',
+      layoutsDir: 'apps/views/layouts/',
+      defaultLayout: 'mail.hbs'
+    },
+    viewPath: 'apps/views/mail/',
+    extName: '.hbs'
+  };
+  // se configuran los datos del host
+  var datos = {
+    host: 'server119.neubox.net',
+    secure: true,
+    port: 465,
+    connectionTimeout: 3000,
+    auth: {
+      user: 'hola@newchannel.mx',
+      pass: 'channel5766'
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+  };
+  // se configura un json con los valores que debe de traer el object
+  // este json se le pasara como parametro a la funcion para enviar el correo
+  var mailOptions = {
+    from: 'New Channel recomienda © <recomienda@newchannel.mx>',
+    to: object.to,
+    subject: object.subject,
+    template: file,
+    context: {
+      name: object.nombre,
+      correo: object.to,
+      enlace: 'localhost:3000/perfil/' + object.perfil
+    }
+  };
+  var transporter = nodemailer.createTransport( smtpTransport( datos ) );
+  transporter.use( 'compile', hbs( options ) );
+  // se hace la funcion para el envio de el correo
+  transporter.sendMail( mailOptions, function ( err, informacion ) {
+    if ( err ) {
+      console.log( "1 :- " + err );
+      return false;
+    }
+    else {
+      console.log( "Sending mail: " + informacion.response );
+      return true;
+    }
+  } );
+}
+exports.enviaCorreoRecomendados = enviaCorreoRecomendados;
 exports.mailer = mailer;
