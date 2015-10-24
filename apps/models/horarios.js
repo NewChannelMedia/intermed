@@ -7,7 +7,7 @@ module.exports = function (sequelize, DataTypes) {
             autoIncrement: true,
             primaryKey: true
         },
-        idDireccion: {
+        direccion_id: {
             type: DataTypes.BIGINT
         },
         dia: {

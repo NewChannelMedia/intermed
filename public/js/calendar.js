@@ -106,7 +106,7 @@ function obtenerHorarios() {
         fin.minute(evento.end._d.getUTCMinutes());
                 
         var horario = {
-            idDireccion: $('#idDireccion').val(),
+            direccion_id: $('#idDireccion').val(),
             dia: evento.start._d.getDay(),
             horaInicio: inicio.format('HH:mm'),
             horaFin: fin.format('HH:mm')
