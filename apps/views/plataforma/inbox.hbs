@@ -8,15 +8,14 @@
 
 .chat li
 {
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px dotted #B3A9A9;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .chat li:last-child
 {
-    margin-bottom: 10px;
-    padding-bottom: 5px;
     border-bottom: none;
 }
 
@@ -113,6 +112,24 @@ textarea::-webkit-scrollbar {
 width: 4px;
 }
 
+.datetime{
+  font-size: 80%;
+  padding: 3px!important;
+  color: #AAA;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.datetime>span{
+  position: relative;
+  z-index: 3000;
+}
+
+li.error{
+  color: #a94442;
+  font-size: 80%;
+}
+
 </style>
 <section id="mensajes">
   <div id="medico" class="container">
@@ -134,19 +151,24 @@ width: 4px;
                       <tr>
                         <td onclick="cargarInbox('July Dooley')">
                           <img src="http://i.imgur.com/hsf4S3T.jpg" class="img-circle mini" width="50" height="50" />
-                          <span class="hidden-xs">July Dooley</span>
+                          <span class="hidden-xs">July DooleyDooley</span><br/>
+                          <small class="pull-right text-right" style="font-size:70%;color:#888">Hace 3 horas <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small>
                         </td>
                       </tr>
                       <tr>
                         <td onclick="cargarInbox('July Dooley')">
                           <img src="http://i.imgur.com/hsf4S3T.jpg" class="img-circle mini" width="50" height="50" />
-                          <span class="hidden-xs">July Dooley</span>
+                          <span class="hidden-xs">July Dooley</span><br/>
+                          <small class="pull-right text-right" style="font-size:70%;color:#888">Hace 6 dias <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small>
+
                         </td>
                       </tr>
                       <tr>
                         <td onclick="cargarInbox('July Dooley')">
                           <img src="http://i.imgur.com/hsf4S3T.jpg" class="img-circle mini" width="50" height="50" />
-                          <span class="hidden-xs">July Dooley</span>
+                          <span class="hidden-xs">July Dooley Dooley Dooley</span><br/>
+                          <small class="pull-right text-right" style="font-size:70%;color:#888">El 23 de septiembre de 2015 <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small>
+
                         </td>
                       </tr>
                     </tbody>
@@ -161,10 +183,20 @@ width: 4px;
                 <div class="panel-heading">
                   <h3 class="panel-title" id="InboxContact">Panel title</h3>
                 </div>
-                <div class="panel-body" id="InboxMsg">
-                  <ul class="chat">
+                <div class="panel-body" id="InboxMsg" style="padding:0px;">
+                  <ul class="chat" id="chat">
 
-                        <li class="right clearfix">
+                        <li class="clearfix text-center" style="padding:0px;">
+                          <button class="btn btn-warning btn-block">Cargar anteriores</button>
+                        </li>
+
+                        <li class="clearfix text-center datetime">
+                          <span>
+                            9 de octubre de 2015
+                          </span>
+                        </li>
+
+                        <li class="right clearfix msg">
                           <span class="chat-img pull-right">
                             <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                           </span>
@@ -179,7 +211,7 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="left clearfix"><span class="chat-img pull-left">
+                        <li class="left clearfix msg"><span class="chat-img pull-left">
                             <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -193,7 +225,7 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="right clearfix"><span class="chat-img pull-right">
+                        <li class="right clearfix msg"><span class="chat-img pull-right">
                             <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -207,7 +239,7 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="left clearfix"><span class="chat-img pull-left">
+                        <li class="left clearfix msg"><span class="chat-img pull-left">
                             <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -221,7 +253,7 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="right clearfix"><span class="chat-img pull-right">
+                        <li class="right clearfix msg"><span class="chat-img pull-right">
                             <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -235,7 +267,13 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="left clearfix"><span class="chat-img pull-left">
+                        <li class="clearfix text-center datetime">
+                          <span>
+                            10 de octubre de 2015
+                          </span>
+                        </li>
+
+                        <li class="left clearfix msg"><span class="chat-img pull-left">
                             <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -249,7 +287,7 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="right clearfix"><span class="chat-img pull-right">
+                        <li class="right clearfix msg"><span class="chat-img pull-right">
                             <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -263,7 +301,7 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="left clearfix"><span class="chat-img pull-left">
+                        <li class="left clearfix msg"><span class="chat-img pull-left">
                             <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -277,7 +315,7 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="right clearfix"><span class="chat-img pull-right">
+                        <li class="right clearfix msg"><span class="chat-img pull-right">
                             <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -291,9 +329,16 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="left clearfix"><span class="chat-img pull-left">
+                        <li class="clearfix text-center datetime">
+                          <span>
+                            14 de octubre de 2015
+                          </span>
+                        </li>
+
+                        <li class="left clearfix msg">
+                          <span class="chat-img pull-left">
                             <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
+                          </span>
                             <div class="chat-body clearfix">
                                 <div class="header">
                                     <strong class="primary-font">Jen Darby</strong>
@@ -305,7 +350,7 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="right clearfix"><span class="chat-img pull-right">
+                        <li class="right clearfix msg"><span class="chat-img pull-right">
                             <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -319,7 +364,7 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="left clearfix"><span class="chat-img pull-left">
+                        <li class="left clearfix msg"><span class="chat-img pull-left">
                             <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -333,7 +378,13 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="right clearfix"><span class="chat-img pull-right">
+                        <li class="clearfix text-center datetime">
+                          <span>
+                            16 de octubre de 2015
+                          </span>
+                        </li>
+
+                        <li class="right clearfix msg"><span class="chat-img pull-right">
                             <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -347,7 +398,7 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="left clearfix"><span class="chat-img pull-left">
+                        <li class="left clearfix msg"><span class="chat-img pull-left">
                             <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -361,7 +412,7 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="right clearfix"><span class="chat-img pull-right">
+                        <li class="right clearfix msg"><span class="chat-img pull-right">
                             <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -375,7 +426,13 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="left clearfix"><span class="chat-img pull-left">
+                        <li class="clearfix text-center datetime">
+                          <span>
+                            21 de octubre de 2015
+                          </span>
+                        </li>
+
+                        <li class="left clearfix msg"><span class="chat-img pull-left">
                             <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -389,7 +446,59 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="right clearfix"><span class="chat-img pull-right">
+                        <li class="right clearfix msg"><span class="chat-img pull-right">
+                            <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
+                        </span>
+                            <div class="chat-body clearfix">
+                                <div class="header">
+                                    <small class=" text-muted"> </small>
+                                    <strong class="pull-right primary-font">You</strong>
+                                </div>
+                                <p class="pull-right text-right">
+                                    Okay, so here's what's been happening...
+                                        Okay, so here's what's been happening...
+                                            Okay, so here's what's been happening...
+                                                Okay, so here's what's been happening...
+                                                    Okay, so here's what's been happening...
+                                                        Okay, so here's what's been happening...
+                                                            Okay, so here's what's been happening...
+                                                                Okay, so here's what's been happening...
+                                                                    Okay, so here's what's been happening...
+                                                                        Okay, so here's what's been happening...
+                                                                            Okay, so here's what's been happening...
+                                                                                Okay, so here's what's been happening...
+                                                                                    Okay, so here's what's been happening...<br/><br/>
+                                                                                        Okay, so here's what's been happening...
+                                                                                            Okay, so here's what's been happening...
+                                                                                                Okay, so here's what's been happening...<br/>
+                                                                                                    Okay, so here's what's been happening...<br/>
+                                                                                                        Okay, so here's what's been happening...
+                                </p>
+                            </div>
+                        </li>
+
+
+                        <li class="clearfix text-center datetime">
+                          <span>
+                            Ayer
+                          </span>
+                        </li>
+
+                        <li class="left clearfix msg"><span class="chat-img pull-left">
+                            <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
+                        </span>
+                            <div class="chat-body clearfix">
+                                <div class="header">
+                                    <strong class="primary-font">Jen Darby</strong>
+                                    <small class="pull-right text-muted"> </small>
+                                </div>
+                                <p class="pull-left text-left">
+                                    No problem, Tim! Let's look at <a href="">Laura's profile</a> together and come up with a plan.
+                                </p>
+                            </div>
+                        </li>
+
+                        <li class="right clearfix msg"><span class="chat-img pull-right">
                             <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -403,7 +512,14 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="left clearfix"><span class="chat-img pull-left">
+                        <li class="clearfix text-center datetime">
+                          <div ></div>
+                          <span>
+                            Hoy
+                          </span>
+                        </li>
+
+                        <li class="left clearfix msg"><span class="chat-img pull-left">
                             <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                         </span>
                             <div class="chat-body clearfix">
@@ -417,35 +533,7 @@ width: 4px;
                             </div>
                         </li>
 
-                        <li class="right clearfix"><span class="chat-img pull-right">
-                            <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <small class=" text-muted"> </small>
-                                    <strong class="pull-right primary-font">You</strong>
-                                </div>
-                                <p class="pull-right text-right">
-                                    Okay, so here's what's been happening...
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="left clearfix"><span class="chat-img pull-left">
-                            <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">Jen Darby</strong>
-                                    <small class="pull-right text-muted"> </small>
-                                </div>
-                                <p class="pull-left text-left">
-                                    No problem, Tim! Let's look at <a href="">Laura's profile</a> together and come up with a plan.
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="right clearfix" id="ultimo">
+                        <li class="right clearfix msg" id="ultimo">
                           <span class="chat-img pull-right">
                             <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
                           </span>
@@ -459,7 +547,6 @@ width: 4px;
                                 </p>
                             </div>
                         </li>
-
                     </ul>
                 </div>
 
@@ -481,7 +568,7 @@ width: 4px;
 <script type="text/javascript">
     function auto_grow(element) {
       element.style.height = "5px";
-      element.style.height = (element.scrollHeight)+"px";
+      element.style.height = (element.scrollHeight + 2)+"px";
       $('#inboxBtnEnviar').css('height',element.style.height);
     }
 
@@ -498,8 +585,36 @@ width: 4px;
       }
     });
 
+    $('#inboxBtnEnviar').click(function(){
+        if ($('#inboxInputText').val() != ''){
+          $('#chat').append('  <li class="clearfix text-center error"><span><span class="glyphicon glyphicon-info-sign" style="font-size:80%"></span>imposible enviar el mensaje, por favor revisa tu conexion</span></li>');
+          focusUltimo();
+          setTimeout(function(){
+            eliminarError();
+          },3000);
+          /*if (enviarMensaje($('#InboxContact').html(), $('#inboxInputText').val())){
+            $('#inboxInputText').val('');
+          }*/
+        }
+    });
+
+    function eliminarError(){
+      $('.error').fadeOut(300, function() { $(this).remove(); });
+    }
+
+    function focusUltimo(){
+      var ultimoMsg = $( "#chat li" ).last();
+      ultimoMsg[0].scrollIntoView();
+    }
+
     function enviarMensaje(para, mensaje){
-      console.log('Mensaje para: ' + para + ' - ' + mensaje);
+      eliminarError();
+      var ultimoMsg = $( "#chat .msg" ).last();
+      if (ultimoMsg.hasClass('right'))
+        ultimoMsg.find('p').append('<br/>' + mensaje);
+      else
+        $('#chat').append('<li class="right clearfix msg" id="ultimo"><span class="chat-img pull-right"><img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" /></span><div class="chat-body clearfix"><div class="header"><small class=" text-muted"> </small><strong class="pull-right primary-font">You</strong></div><p class="pull-right text-right msg">'+ mensaje +'</p></div> </li>');
+      focusUltimo();
       return true;
     }
 
@@ -509,7 +624,12 @@ width: 4px;
       $('#contactList').css('height',$('#InboxMsg').css('height'));
       $('#contactList').css('overflow','auto');
 
-      $('#ultimo')[0].scrollIntoView();
+      focusUltimo();
+      /*
+      ultimoMsg.css('background-color','#EEE');
+      setTimeout(function(){
+        ultimoMsg.css('background-color','#FFF');
+      },2000);*/
       /*
       cargarNotificacionesCondicional();
 
