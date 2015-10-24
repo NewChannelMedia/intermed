@@ -183,7 +183,8 @@ var mapa = {
                         };
 
                         if (addr.types[0] == 'locality') {
-                            mapa.ciudad = addr.long_name;                            
+                            mapa.ciudad = addr.long_name;
+                            console.log(mapa.ciudad);
                         };
 
                         if (addr.types[0] == 'administrative_area_level_1') {

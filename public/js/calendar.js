@@ -32,7 +32,8 @@
         displayEventTime: false,
         select: function (start, end) {
             var eventData;
-
+            console.log(start.format('DMYYYY'));
+            console.log(end.format('DMYYYY'));
             if (start.format('DMYYYY') != end.format('DMYYYY')) {
                 alert('fechas distintas');
                 valido = false;
@@ -59,10 +60,10 @@
             $('#calendar').fullCalendar('removeEvents', event._id);
 
         },
-        eventMouseover: function (event, jsEvent, view) {
-            $(this).append('<span id=\"' + event._id + '\">Clic para eliminar</span>');
+        //eventMouseover: function (event, jsEvent, view) {
+        //    $(this).append('<span id=\"' + event._id + '\">Clic para eliminar</span>');
 
-        },
+        //},
         //eventMouseout: function (event, jsEvent, view) {
         //    $('#' + event._id).remove();
         //},
@@ -70,13 +71,13 @@
         //    console.log(jsEvent.target.id);
         //}
 
-        //eventMouseover: function (event, jsEvent, view) {
-        //    $(this).append('<img src="img/eliminar.png" id=\"' + event.id  + '\"/>');
+        eventMouseover: function (event, jsEvent, view) {
+            $(this).append('<img src="img/eliminar.png" id=\"' + event.id  + '\"/>');
 
-        //},
-        //eventMouseout: function (event, jsEvent, view) {
-        //    $('#' + event.id).remove();
-        //}
+        },
+        eventMouseout: function (event, jsEvent, view) {
+            $('#' + event.id).remove();
+        }
     })
 
     //al cambiar de tab mostrar el calendario la usar bootstrap
