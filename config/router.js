@@ -1117,8 +1117,32 @@ var iniciar = function () {
     });
 
     app.post('/registrarubicacion', function (req, res) {
-        //if (req.session.passport.user) {                
+        //if (req.session.passport.user) {   
+        
+        
         intermed.callController('ubicacion', 'registrarUbicacion', req.body, req, res);
+        //}
+        //else {
+        //    res.send({
+        //        result: 'null'
+        //    });
+        //}
+    });
+
+    app.get('/registrarhorarios', function (req, res) {
+        //if (req.session.passport.user) {
+        intermed.callController('ubicacion', 'horarios', req.body, req, res);
+        //}
+        //else {
+        //    res.send({
+        //        result: 'null'
+        //    });
+        //}
+    });
+
+    app.post('/registrarhorarios', function (req, res) {
+        //if (req.session.passport.user) {   
+        intermed.callController('ubicacion', 'registrarHorarios', req.body, req, res);
         //}
         //else {
         //    res.send({

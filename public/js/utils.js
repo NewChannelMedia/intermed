@@ -520,19 +520,22 @@ function obtenerColonias() {
 
 //Registrar Ubicacion
 function regUbicacion() {
-    if (regUbiValid() == true) {
+    if (regUbiValid() == true) {             
         $.ajax({
             url: '/registrarubicacion',
             type: 'POST',
             dataType: "json",
             cache: false,
-            data: { form: $('#frmRegUbi').serialize(), horarios: objhorarios },
+            data: $('#frmRegUbi').serialize(),
             type: 'POST',
             success: function (data) {
                 document.getElementById("frmRegUbi").reset();
-                data.forEach(function (record) {
-                    addUbicacion(record);
-                });
+                alert('registro guradado');
+                //data.forEach(function (record) {
+                //    addUbicacion(record);
+                //});
+                //Reiniciar mapa
+                mapa.GeolicalizacionUsuario();
             },
             error: function (jqXHR, textStatus, err) {
                 console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
@@ -541,62 +544,92 @@ function regUbicacion() {
     }
 }
 
+
+//Registrar Ubicacion
+function regHorarios() {
+    if (regHorariosValid() == true) {
+        //agregar horarios al control 
+        $('#horariosUbi').val(JSON.stringify(obtenerHorarios()));
+        
+        $.ajax({
+            url: '/registrarhorarios',
+            type: 'POST',
+            dataType: "json",
+            cache: false,
+            data: $('#frmRegHorarios').serialize(),
+            type: 'POST',
+            success: function (data) {
+                document.getElementById("frmRegHorarios").reset();
+                alert('registro guradado');                
+            },
+            error: function (jqXHR, textStatus, err) {
+                console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
+            }
+        });
+    }
+}
+
+
+
+function regHorariosValid() {
+    return true;
+}
 function regUbiValid() {
     var blnValido = true;
-    if ($('#nombreUbi').val().length == 0) {
-        $('#nombreUbi').parent().addClass("has-error");
-        blnValido = false;
-    } else {
-        $('#nombreUbi').parent().removeClass("has-error");
-    };
+    //if ($('#nombreUbi').val().length == 0) {
+    //    $('#nombreUbi').parent().addClass("has-error");
+    //    blnValido = false;
+    //} else {
+    //    $('#nombreUbi').parent().removeClass("has-error");
+    //};
 
-    if ($('#slc_estados option:selected').text() == 'Estado') {
-        $('#slc_estados').parent().addClass('has-error');
-        blnValido = false;
-    } else {
-        $('#slc_estados').parent().removeClass('has-error');
-    };
+    //if ($('#slc_estados option:selected').text() == 'Estado') {
+    //    $('#slc_estados').parent().addClass('has-error');
+    //    blnValido = false;
+    //} else {
+    //    $('#slc_estados').parent().removeClass('has-error');
+    //};
 
-    if ($('#slc_ciudades option:selected').text() == 'Ciudad') {
-        $('#slc_ciudades').parent().addClass('has-error');
-        blnValido = false;
-    } else {
-        $('#slc_ciudades').parent().removeClass('has-error');
-    };
-
-
-    if ($('#slc_colonias option:selected').text() == 'Colonia') {
-        $('#slc_colonias').parent().addClass('has-error');
-        blnValido = false;
-    } else {
-        $('#slc_colonias').parent().removeClass('has-error');
-    };
-
-    if ($('#cpUbi').val().length == 0) {
-        $('#cpUbi').parent().addClass('has-error');
-        blnValido = false;
-    } else {
-        $('#cpUbi').parent().removeClass('has-error');
-    };
-
-    if ($('#calleUbi').val().length == 0) {
-        $('#calleUbi').parent().addClass('has-error');
-        blnValido = false;
-    } else {
-        $('#calleUbi').parent().removeClass('has-error');
-    };
-
-    if ($('#numeroUbi').val().length == 0) {
-        $('#numeroUbi').parent().addClass('has-error');
-        blnValido = false;
-    } else {
-        $('#numeroUbi').parent().removeClass('has-error');
-    };
+    //if ($('#slc_ciudades option:selected').text() == 'Ciudad') {
+    //    $('#slc_ciudades').parent().addClass('has-error');
+    //    blnValido = false;
+    //} else {
+    //    $('#slc_ciudades').parent().removeClass('has-error');
+    //};
 
 
-    if (objhorarios.length == 0) {
-        blnValido = false;
-    };
+    //if ($('#slc_colonias option:selected').text() == 'Colonia') {
+    //    $('#slc_colonias').parent().addClass('has-error');
+    //    blnValido = false;
+    //} else {
+    //    $('#slc_colonias').parent().removeClass('has-error');
+    //};
+
+    //if ($('#cpUbi').val().length == 0) {
+    //    $('#cpUbi').parent().addClass('has-error');
+    //    blnValido = false;
+    //} else {
+    //    $('#cpUbi').parent().removeClass('has-error');
+    //};
+
+    //if ($('#calleUbi').val().length == 0) {
+    //    $('#calleUbi').parent().addClass('has-error');
+    //    blnValido = false;
+    //} else {
+    //    $('#calleUbi').parent().removeClass('has-error');
+    //};
+
+    //if ($('#numeroUbi').val().length == 0) {
+    //    $('#numeroUbi').parent().addClass('has-error');
+    //    blnValido = false;
+    //} else {
+    //    $('#numeroUbi').parent().removeClass('has-error');
+    //};
+
+
+    //if (objhorarios.length == 0) {
+    //    blnValido = false;
+    //};
 
     return blnValido;
 }

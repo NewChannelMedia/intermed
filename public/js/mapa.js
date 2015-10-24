@@ -221,8 +221,8 @@ var mapa = {
 mapa.nombreObjetoMostrarMapa = 'mapDiv';
 
 //objetos que reciben los valores al cambiar posicion
-mapa.nombreObjetoLatitud = 'latitude';
-mapa.nombreObjetoLongitud = 'longitude';
+mapa.nombreObjetoLatitud = 'latitud';
+mapa.nombreObjetoLongitud = 'longitud';
 
 //Objeto que recibe a direccion
 mapa.nombreObjetoDireccion = 'direccion';

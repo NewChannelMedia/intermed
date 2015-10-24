@@ -20,24 +20,23 @@
         $('#cpUbi').val(mapa.codigoPostal);
     }
 </script>
-
 <section id="directorio">
     <div class="container">
         <div class="row">
             <div class="panel">
                 <div class="panel-body">
-                    <h4>Registrar ubicaci&oacute;n</h4>
-                    <form method="POST" name="frmRegUb" id="frmRegUbi">
-                        <ul class="nav nav-tabs" id="tabControl">
-                            <li class="active"><a data-toggle="tab" href="#ubicacion">Ubicaci&oacute;n</a></li>
-                            <li><a data-toggle="tab" href="#horarios">Horarios</a></li>
-                        </ul>
-                        <br />
+                    <h4>{{title}}</h4>
+                    <ul class="nav nav-tabs" id="tabControl">
+                        <li class="active"><a data-toggle="tab" href="#ubicacion">Ubicaci&oacute;n</a></li>
+                        <li><a data-toggle="tab" href="#horarios">Horarios</a></li>
+                    </ul>
+                    <br />
 
-                        <div class="tab-content">
-                            <div id="ubicacion" class="tab-pane fade in active">
-                                <input type="hidden" id="id" name="id" value="1">
-                                <input type="hidden" id="usuario_id" name="usuario_id" value="1">
+                    <div class="tab-content">
+                        <div id="ubicacion" class="tab-pane fade in active">
+                            <form method="POST" name="frmRegUb" id="frmRegUbi">
+                                <input type="hidden" id="id" name="id" value="">
+                                <input type="hidden" id="usuario_id" name="usuario_id" value="{{usuario_id}}">
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="col-md-6">
@@ -106,8 +105,8 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="col-md-12">
-                                                <input type="hidden" value="{{latitude}}" id="latitud" />
-                                                <input type="hidden" value="{{longitude}}" id="longitud" />
+                                                <input type="text" value="{{latitude}}" id="latitud" name="latitud" />
+                                                <input type="text" value="{{longitude}}" id="longitud" name="longitud" />
                                                 <div id="searchDiv">
                                                     <input id="autocomplete_searchField" type="text" placeholder="Buscar Dirección">
                                                 </div>
@@ -115,28 +114,33 @@
                                                 <div id="mapDiv"></div>
                                                 <div class="row">
                                                     <div class="col-md-6"></div>
-                                                    <div class="col-md-6"><input type="button" onclick="mapa.GeolicalizacionUsuario();" value="Reiniciar Posicion" class="btn btn-info btn-md btn-block" /></div>
+                                                    <div class="col-md-6">
+                                                        <input type="button" onclick="mapa.GeolicalizacionUsuario();" value="Reiniciar Posicion" class="btn btn-info btn-md btn-block" /><br>
+                                                        <input type="button" class="btn btn-info btn-md btn-block" id="btnRegUbi" value="Guardar" onclick="regUbicacion()">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div id="horarios" class="tab-pane fade">
+                            </form>
+                        </div>
+                        <div id="horarios" class="tab-pane fade">
+                            <form method="POST" name="frmRegHorarios" id="frmRegHorarios">
+                                <input type="hidden" id="idDireccion" name="idDireccion" value="{{idDireccion}}" />
+                                <input type="hidden" id="horariosUbi" name="horariosUbi" />
                                 <div class="row">
                                     <div class="col-md-12"><div id='calendar'></div></div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-8"></div>
-                                <div class="col-md-4 text-right">
-                                    <div class="form-group">
-                                        <input type="button" class="btn btn-info btn-md btn-block" id="btnRegUbi" value="Guardar" onclick="regUbicacion()">
+                                    <div class="col-md-6">
+                                        <div id="calendarTrash">
+                                            <img src="img/eliminar.png" />
+                                        </div>
                                     </div>
+                                    <div class="col-md-6"><input type="button" class="btn btn-info btn-md btn-block" id="btnRegHorarios" value="Guardar Horarios" onclick="regHorarios()"></div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

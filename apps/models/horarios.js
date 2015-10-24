@@ -14,14 +14,14 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             required: true
         },
-        horaIncio: {
+        horaInicio: {
             type: DataTypes.STRING,
             required: true
         },
         horaFin: {
             type: DataTypes.STRING,
             required: true
-        }        
+        }
     }, {
         classMethods: {
             associate: function (models) {
