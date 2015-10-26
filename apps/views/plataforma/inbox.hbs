@@ -141,7 +141,7 @@ li.error{
               <div class="panel panel-default">
                 <div class="panel-heading" style="padding:0px">
                   <div class="form-group has-feedback" style="margin-bottom: 0px;">
-                    <input type="text" class="form-control" placeholder="Buscar contacto...">
+                    <input type="text" class="form-control" placeholder="Buscar contacto..." id="autocompleteContactos">
                     <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
                   </div>
                 </div>
@@ -604,6 +604,8 @@ li.error{
     }
 
     $(document).ready(function(){
+      inputAutocompleteContact($('#autocompleteContactos'),true, true);
+
       $('#InboxMsg').css('height',($(window).height() - document.getElementById('inboxInput').offsetHeight - document.getElementById('navPlatform').offsetHeight - 130));
       $('#InboxMsg').css('overflow','auto');
       $('#contactList').css('height',$('#InboxMsg').css('height'));

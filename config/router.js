@@ -1110,6 +1110,10 @@ var iniciar = function () {
     intermed.callController( 'buscadorInterno', 'buscar', req.body, req, res );
   });
 
+  app.post( '/buscadorContactos', function (req, res){
+    intermed.callController( 'buscadorInterno', 'buscadorContactos', req.body, req, res );
+  });
+
   app.get('/notificaciones', function (req, res){
     if (!req.session.passport.user){
       res.redirect( '/' );
