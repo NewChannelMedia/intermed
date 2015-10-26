@@ -316,6 +316,10 @@ a:visited {
 .notificationDropdown {
   right: -59px!important;
   width: 350px;
+  min-height: 52px;
+  max-height: 600px;
+  overflow-y: scroll;
+  overflow: auto;
 }
 
 .notificationDropdown li {
@@ -1787,4 +1791,11 @@ hr {
   height: 0;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+.ui-widget-content{
+  position:absolute;
+  z-index:10000!important;
+  max-height: 200px;
+  overflow: hidden;
+  overflow-y: auto;
 }

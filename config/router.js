@@ -1084,7 +1084,31 @@ var iniciar = function () {
   app.post( "/despachador", function ( req, res ) {
     intermed.callController( 'usuarios', 'despachador', req.body, req, res );
   } );
-
+  //eventos click para insertar nueva informacion en biometricos
+  app.post('/contactoEmergengia', function( req, res ){
+    intermed.callController('usuarios','contactoEmergencia',req,res);
+  });
+  app.post('/biometricFull',function( req, res ){
+    intermed.callController('usuarios','biometricFull',req, res);
+  });
+  app.post('/insertarLT', function( req, res ){
+    intermed.callController('usuarios','insertarLT',req, res);
+  });
+  //<--------------- AUTOCOMPLETADOR ----------------------->
+  app.post('/autocompletar',function( req, res ){
+    intermed.callController( 'usuarios', 'autocompletar',req, res);
+  });
+  app.post('/autocompletarA',function( req, res ){
+    intermed.callController( 'usuarios', 'autocompletarA',req, res);
+  });
+  //se insertan los valores cuando se selecccionan con el autocompletador
+  app.post('/insertarPad',function( req, res ){
+    intermed.callController('usuarios','insertarPad', req, res);
+  });
+  app.post('/insertAler',function(req, res){
+    intermed.callController('usuarios','insertAler',req,res);
+  });
+  //<--------------- FIN AUTOCOMPLETADOR ------------------->
 
 
   app.post( '/aceptarInvitacion', function ( req, res ) {

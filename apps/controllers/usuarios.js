@@ -570,7 +570,6 @@ exports.despachador = function ( object, req, res ) {
       case 'actualizar':
         // con la siguiente funcion se mandara a checar de que tabla se requiere realizar la accion
         // y con sus respectivas condiciones
-        console.log( "TACOSSSs" );
         var update = {};
         if ( object.numero === 'true' ) {
           update[ campo ] = parseFloat( req.body.valor );
@@ -673,6 +672,153 @@ exports.invitar = function ( object, req, res ) {
     } );
   }
 };
+//<---- click con eventos independientes de la vista perfil biometricos --->
+  exports.contactoEmergencia = function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ) {
+      var usuario_id = req.session.passport.user.id;
+      models.ContactoEmergencia.create({
+        nombre:req.body.nombre,
+        tel:req.body.tel,
+        medico:0,
+        usuario_id:usuario_id,
+        paciente_id:usuario_id
+      }).then(function(creado){
+        if(creado){
+          res.send('ok');
+        }
+      });
+    }
+  };
+  exports.biometricFull = function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ) {
+      var usuario_id = req.session.passport.user.id;
+      models.Biometrico.create({
+        peso:parseFloat(req.body.peso),
+        altura:parseFloat(req.body.altura),
+        tipoSangre:req.body.tipoS,
+        genero:req.body.genero,
+        usuario_id:usuario_id
+      }).then(function(creado){
+        res.send('ok');
+      });
+    }
+  };
+  exports.insertarLT = function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ) {
+      var usuario_id = req.session.passport.user.id;
+      models.Telefono.findOrCreate({
+        where:{
+          tipo:'P',
+          numero:req.body.numero,
+          claveRegion:"01",
+          lada:req.body.lada,
+          usuario_id:usuario_id
+        }
+      }).spread(function(user, created){
+        if( created == false ){
+          res.send('noOk');
+        }else{console.log("USER: "+JSON.stringify(user));
+          res.send('algo');
+        }
+      });
+    }
+  };
+//<---- fin click --------------------------------------------------------->
+//<--------------- AUTOCOMPLETADOR ------------------------>
+  /**
+  * Creacion de la funcion para manejar el autocompletado
+  * en los campos o inputs que lo requiera
+  *
+  *
+  *
+  */
+  exports.autocompletar = function (  req, res){
+    // busqueda
+    models.Padecimiento.findAll({
+      where:{padecimiento:{$like: "%"+req.body.valor+"%"}},
+      attributes:['id','padecimiento']
+    }).then(function(padecimientos){
+        res.send( JSON.parse( JSON.stringify( padecimientos ) ) );
+    });
+  };
+  exports.autocompletarA = function( req, res ){
+    models.Alergias.findAll({
+      where:{ alergia:{ $like: "%"+req.body.valor+"%" } },
+      attributes:['id','alergia']
+    }).then(function(alergias){
+      res.send( JSON.parse( JSON.stringify(alergias)));
+    });
+  };
+  //se insertan los valores cuando se selecccionan con el autocompletador
+  exports.insertarPad = function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ) {
+      var usuario_id = req.session.passport.user.id;
+      return models.Padecimiento.findOne({
+        where:{padecimiento: req.body.valorCampo, id:req.body.valor}
+      }).then(function(encontrado){
+        if(encontrado != null ){
+          models.PacientePadecimiento.findOrCreate({
+            where:{paciente_id:usuario_id,padecimiento_id:req.body.valor}
+          }).spread(function(user,created){
+            if( created == false ){
+              res.send('NOok');
+            }else{
+              res.send('ok');
+            }
+          });
+        }else{
+          models.Padecimiento.create({
+            padecimiento:req.body.valorCampo
+          }).then(function(insertado){
+            models.PacientePadecimiento.create({
+              paciente_id:usuario_id,
+              padecimiento_id:insertado.id
+            }).then(function(result){
+              res.send("ok");
+            });
+          });
+        }
+      });
+    }
+  };
+  //inserta alergias
+  exports.insertAler = function( req, res ){
+    if( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      console.log("Valor campo "+req.body.valorCampo);
+      models.Alergias.findOne({
+        where:{alergia:req.body.valorCampo}
+      }).then(function(encontrado){
+        if(encontrado != null){
+          models.PacienteAlergia.findOrCreate({
+            where:{paciente_id:usuario_id,alergia_id:req.body.id_campo}
+          }).spread(function(user,created){
+            console.log("USER: "+JSON.stringify(user));
+            console.log("CREATED: "+JSON.stringify(created));
+            if( created == false ){
+              res.send('Nook');
+            }else{
+              res.send('ok');
+            }
+          });
+        }else{
+          models.Alergias.create({
+            alergia:req.body.valorCampo
+          }).then(function(insertadoA){
+            console.log("InsertaA: "+JSON.stringify(insertadoA));
+            models.PacienteAlergia.create({
+              paciente_id:usuario_id,
+              alergia_id:parseInt(insertadoA.id)
+            }).then(function(result){
+              res.send('ok');
+            });
+          });
+        }
+      });
+    }
+  };
+//<--------------- FIN AUTOCOMPLETADOR -------------------->
+
 
 var crearDatosGeneralesFB = function ( usuario, object, req, res, t ) {
   var usuario_id = usuario.id;
