@@ -1,5 +1,5 @@
 var models = require( '../models' );
-
+var mail = require( './emailSender' );
 /**
 Controlador de para contactos
 *	@author Cinthia Bermúdez
@@ -393,5 +393,16 @@ module.exports = {
         res.send(encontrado);
       });
     }
+  },
+  enviaCorreoRecomendados: function( req, res){
+    var object ={
+      nombre:'correo de recomendacion',
+      subject:'Recomendaciones',
+      to:req.body.toMail,
+      enlace:req.body.enlace,
+      mensaje:req.body.mensaje,
+      usuario:req.body.usuario
+    };
+    mail.mailer(object,'recomendar');
   }
 }

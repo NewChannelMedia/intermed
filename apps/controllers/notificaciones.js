@@ -37,7 +37,7 @@ exports.solicitudAmistad = function ( req ) {
   } else if (req.tipoUsuario == "M"){
     numNot = 4;
   }
-  
+
   models.Notificacion.findAll( {
     where: {
       usuario_id: req.usuario_id,
@@ -664,3 +664,6 @@ function getDateTime() {
   day = ( day < 10 ? "0" : "" ) + day;
   return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
 }
+exports.medicoRecomendado = function(req){
+
+};

@@ -1113,13 +1113,7 @@ var iniciar = function () {
     intermed.callController('contactos','medicosContacto',req,res);
   });
   app.post('/enviaCorreoRecomendados', function( req, res ){
-    var object ={
-      nombre:'correo de recomendacion',
-      subject:'Recomendaciones',
-      to:req.body.toMail,
-      enlace:req.body.enlace
-    };
-    console.log("OBJECTO DEL CORREO "+JSON.stringify(object));
+    intermed.callController('contactos','enviaCorreoRecomendados',req,res);
   });
   // fin recomendaciones url
   app.post( '/buscadorInterno', function (req, res){

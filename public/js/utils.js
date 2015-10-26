@@ -1497,13 +1497,16 @@ function cargarFavCol( usuario ) {
 //<----------- RECOMENDACIONES -------------------->
   $(document).ready(function(){
     var id = "";
+    var usuarioRL="";
+    var extraDato ="";
     $( '.recomendar.contList-profileActionLink' ).click(function(){
       id += $( this ).attr('id');
       //console.log("ID: "+id);
       $.post('/medicosContacto',{idMedico:id},function(data){
-        //console.log("masDatos: "+JSON.stringify(data));
+        console.log("masDatos: "+JSON.stringify(data));
         for( var i in data ){
           if( data[ i ].Usuario ){
+            usuarioRL += data[ i ].Usuario.usuarioUrl;
             var nombreCompleto = data[ i ].Usuario.DatosGenerale.nombre+' '+data[ i ].Usuario.DatosGenerale.apellidoP+' '+data[ i ].Usuario.DatosGenerale.apellidoM;
             $("#doctorSpan").text(nombreCompleto);
           }
@@ -1528,6 +1531,7 @@ function cargarFavCol( usuario ) {
           html +='<p>'+nombreTodo+'</p>';
           html +='</td>';
           html +='</tr>';
+          extraDato = nombreTodo;
         }
         $( "#recomendarA tbody" ).append(html);
       });
@@ -1535,8 +1539,17 @@ function cargarFavCol( usuario ) {
     $( "#enviarAtodos" ).click(function(){
       if( $( "#correoEnviarRecomendado" ).val() != ""){
         var to = $( "#correoEnviarRecomendado" ).val();
-        var enlace = "0000001";
-        $.post('/enviaCorreoRecomendados',{toMail:to,enlace:enlace},function(){});
+        var enlace = usuarioRL;
+        var mensaje =$("#mensajeRecomendar").text();
+        $.post('/enviaCorreoRecomendados',{toMail:to,enlace:enlace,usuario:extraDato,mensaje:mensaje},function(data){
+          if(data){
+            $('.modal').modal('hide');
+            $('.modal').on('hidden.bs.modal',function(e){
+              $("#mensajeRecomendar").text('');
+              $( "#correoEnviarRecomendado" ).val('');
+            });
+          }
+        });
       }
       //$.post('/enviaNotificacionesRecomendados',{},function(){});
     });
