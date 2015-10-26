@@ -193,12 +193,12 @@ function requestContactos(busqueda, medicos, pacientes){
   return allUsers;
 }
 
-function inputAutocompleteContact(input ,medicos, pacientes){
+function inputAutocompleteContact(input){
     input.autocomplete({
       delay: 0,
       minLength: 0,
       source: function( request, response ) {
-        response(customFilter(requestContactos(request.term, medicos, pacientes),request.term));
+        response(customFilter(requestContactos(request.term, true, true),request.term));
       },
       select: function( event, ui ) {
         //Evento al seleccionar un item
