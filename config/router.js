@@ -1126,6 +1126,10 @@ var iniciar = function () {
     intermed.callController( 'buscadorInterno', 'buscar', req.body, req, res );
   });
 
+  app.post( '/buscadorContactos', function (req, res){
+    intermed.callController( 'buscadorInterno', 'buscadorContactos', req.body, req, res );
+  });
+
   app.get('/notificaciones', function (req, res){
     if (!req.session.passport.user){
       res.redirect( '/' );
@@ -1137,10 +1141,19 @@ var iniciar = function () {
 
   app.post('/notificaciones/cargar', function (req, res){
     intermed.callController('notificaciones','cargarNotificaciones', req.body, req, res);
-  })
+  });
 
   app.post('/notificaciones/scroll', function (req, res){
     intermed.callController('notificaciones','scroll', req.body, req, res);
+  });
+
+  app.get('/inbox', function (req, res){
+    if (!req.session.passport.user){
+      res.redirect( '/' );
+    }else {
+      rutas.routeLife( 'plataforma', 'plataforma', hps );
+      intermed.callController('inbox','index', req.body, req, res);
+    }
   });
 }
 

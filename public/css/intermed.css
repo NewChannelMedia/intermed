@@ -1800,3 +1800,7 @@ hr {
 #enviarRecomendaciones ul li{
   cursor: pointer;
 }
+
+#mensajes{
+  height: 100%!important;
+}

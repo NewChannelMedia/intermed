@@ -1,3 +1,45 @@
+//Caracteres especiales
+var accentMap = {
+"á": "a",
+"é": "e",
+"í": "i",
+"ó": "o",
+"ú": "u",
+'´': ''
+};
+var normalize = function( term ) {
+  var ret = "";
+  for ( var i = 0; i < term.length; i++ ) {
+    ret += accentMap[ term.charAt(i) ] || term.charAt(i);
+  }
+  return ret;
+};
+function customFilter(array, terms) {
+    arrayOfTerms = terms.split(" ");
+    var result  = [];
+    for (var k in arrayOfTerms){
+      arrayOfTerms[k] = arrayOfTerms[k].replace(/ /g,'');
+    }
+    var result =  $.grep(array, function (value) {
+      var coincide = true;
+      for (var k in arrayOfTerms){
+        if (coincide){
+          var matcher = new RegExp("\\b" + arrayOfTerms[k], "i");
+          coincide = matcher.test(normalize(value.label));
+        }
+      }
+      return coincide;
+    });
+    return result;
+};
+
+function replaceChars(cadena){
+    for ( var key in accentMap) {
+      cadena = cadena.replace(key,accentMap[key]);
+    }
+    return cadena;
+}
+
 $(document).ready(function(){
   if ($( "#buscadorInterno" ).length > 0){
 
@@ -8,15 +50,6 @@ $(document).ready(function(){
     {value:'Perfil',category:'Oficina',url:'perfil',image:'<span class="glyphicon glyphicon-user"></span> ',label:'Perfil'},
     {value:'Inicio',category:'Oficina',url:'',image:'<span class="glyphicon glyphicon-home"></span> ',label:'Inicio'}
     ];
-    //Caracteres especiales
-    var accentMap = {
-    "á": "a",
-    "é": "e",
-    "í": "i",
-    "ó": "o",
-    "ú": "u",
-    '´': ''
-    };
 
     $.widget( "custom.catcomplete", $.ui.autocomplete, {
     _create: function() {
@@ -39,38 +72,7 @@ $(document).ready(function(){
       });
     }
     });
-    var normalize = function( term ) {
-      var ret = "";
-      for ( var i = 0; i < term.length; i++ ) {
-        ret += accentMap[ term.charAt(i) ] || term.charAt(i);
-      }
-      return ret;
-    };
-    function customFilter(array, terms) {
-        arrayOfTerms = terms.split(" ");
-        var result  = [];
-        for (var k in arrayOfTerms){
-          arrayOfTerms[k] = arrayOfTerms[k].replace(/ /g,'');
-        }
-        var result =  $.grep(array, function (value) {
-          var coincide = true;
-          for (var k in arrayOfTerms){
-            if (coincide){
-              var matcher = new RegExp("\\b" + arrayOfTerms[k], "i");
-              coincide = matcher.test(normalize(value.label));
-            }
-          }
-          return coincide;
-        });
-        return result;
-    };
 
-    function replaceChars(cadena){
-        for ( var key in accentMap) {
-          cadena = cadena.replace(key,accentMap[key]);
-        }
-        return cadena;
-    }
 
     $( "#buscadorInterno" ).catcomplete({
       delay: 0,
@@ -125,3 +127,87 @@ $(document).ready(function(){
     };
   }
 });
+
+function requestContactos(busqueda, medicos, pacientes){
+  busqueda = replaceChars(busqueda);
+  busqueda = busqueda.split(" ");
+  busqueda = $.grep(busqueda, function(v, k){
+      return $.inArray(v ,busqueda) === k;
+  });
+
+  var allUsers = [];
+  if (medicos){
+    $.ajax({
+      url: "/buscadorContactos",
+      dataType: "json",
+      method: 'POST',
+      data: {
+        busqueda: busqueda, medicos: medicos
+      },
+      async: false,
+      success: function( data ) {
+          data.forEach(function(dat){
+            if (dat.Medico){
+              var newUser = new Array();
+              var tipo = '';
+              newUser['name'] = 'Dr. ' + dat.Medico.Usuario.DatosGenerale.nombre + ' ' + dat.Medico.Usuario.DatosGenerale.apellidoP + ' ' + dat.Medico.Usuario.DatosGenerale.apellidoM;
+              newUser['value'] = newUser['name'];
+              newUser['url']  = 'perfil/'+dat.Medico.Usuario.usuarioUrl;
+              newUser['image']  = "<img src="+dat.Medico.Usuario.urlFotoPerfil+" style='width:20px'></img> ";
+              newUser['label']  = newUser['name'];
+              user = newUser;
+              allUsers.push(newUser);
+            }
+          })
+      }
+    });
+  }
+
+  if (pacientes){
+      $.ajax({
+        url: "/buscadorContactos",
+        dataType: "json",
+        method: 'POST',
+        data: {
+          busqueda: busqueda, pacientes: pacientes
+        },
+        async: false,
+        success: function( data ) {
+            data.forEach(function(dat){
+              if (dat.Paciente){
+                var newUser = new Array();
+                var tipo = '';
+                newUser['name'] = dat.Paciente.Usuario.DatosGenerale.nombre + ' ' + dat.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + dat.Paciente.Usuario.DatosGenerale.apellidoM;
+                newUser['value'] = newUser['name'];
+                newUser['url']  = 'perfil/'+dat.Paciente.Usuario.usuarioUrl;
+                newUser['image']  = "<img src="+dat.Paciente.Usuario.urlFotoPerfil+" style='width:20px'></img> ";
+                newUser['label']  = newUser['name'];
+                user = newUser;
+                allUsers.push(newUser);
+              }
+            })
+        }
+      });
+  }
+
+  return allUsers;
+}
+
+function inputAutocompleteContact(input){
+    input.autocomplete({
+      delay: 0,
+      minLength: 0,
+      source: function( request, response ) {
+        response(customFilter(requestContactos(request.term, true, true),request.term));
+      },
+      select: function( event, ui ) {
+        //Evento al seleccionar un item
+        return false;
+      }
+    })
+    .autocomplete( "instance" )._renderItem = function( ul, item ) {
+      var li = $( "<li>" );
+      li.append( "<div>" + item.image + item.label +"</div>" );
+      return li.appendTo(ul);
+    };
+}
