@@ -5,8 +5,6 @@ var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,
 table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,
 details,embed,figure,figcaption,footer,header,hgroup,menu,nav,
 output,ruby,section,summary,time,mark,audio,video {
-  font: inherit;
-  font-size: 100%;
   line-height: 1;
   margin: 0;
   padding: 0;
@@ -24,8 +22,8 @@ article,aside,details,figcaption,figure,
 footer,header,hgroup,menu,nav,section {
   display: block;
 }
-
 /* font styling */
+
 .whiteF {
   color: #fff;
 }
@@ -125,21 +123,25 @@ footer,header,hgroup,menu,nav,section {
 .lowercase {
   text-transform: lowercase;
 }
+
 .shadow {
-  text-shadow: 0 0 10px rgba(10,10,10,.5);
-}
-.noTransform {
-  text-transform: none;
-  text-decoration: none;
+  text-shadow: 0 0 10px rgba(10, 10, 10, .5);
 }
 
+.noTransform {
+  text-decoration: none;
+  text-transform: none;
+}
+
+
 /* Helvetica 75 Bold */
+
 @font-face {
   font-family: 'Helvetica Neue Bold';
-  src: url('/HelveticaNeue/hinted-HelveticaNeue-Bold.eot');
-  src: local('Helvetica 75 Bold'), local('HelveticaNeue-Bold'), url('/HelveticaNeue/hinted-HelveticaNeue-Bold.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-Bold.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-Bold.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-Bold.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-Bold.svg#HelveticaNeue-Bold') format('svg');
   font-weight: bold;
   font-style: normal;
+  src: url('/HelveticaNeue/hinted-HelveticaNeue-Bold.eot');
+  src: local('Helvetica 75 Bold'), local('HelveticaNeue-Bold'), url('/HelveticaNeue/hinted-HelveticaNeue-Bold.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-Bold.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-Bold.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-Bold.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-Bold.svg#HelveticaNeue-Bold') format('svg');
 }
 
 .h75-bold {
@@ -148,13 +150,15 @@ footer,header,hgroup,menu,nav,section {
   font-style: normal;
 }
 
+
 /* Helvetica 57 Condensed */
+
 @font-face {
   font-family: 'Helvetica Neue Condensed';
-  src: url('/HelveticaNeue/hinted-HelveticaNeue-Condensed.eot');
-  src: local('Helvetica 57 Condensed'), local('HelveticaNeue-Condensed'), url('/HelveticaNeue/hinted-HelveticaNeue-Condensed.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-Condensed.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-Condensed.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-Condensed.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-Condensed.svg#HelveticaNeue-Condensed') format('svg');
   font-weight: normal;
   font-style: normal;
+  src: url('/HelveticaNeue/hinted-HelveticaNeue-Condensed.eot');
+  src: local('Helvetica 57 Condensed'), local('HelveticaNeue-Condensed'), url('/HelveticaNeue/hinted-HelveticaNeue-Condensed.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-Condensed.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-Condensed.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-Condensed.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-Condensed.svg#HelveticaNeue-Condensed') format('svg');
 }
 
 .h57-cond {
@@ -163,13 +167,15 @@ footer,header,hgroup,menu,nav,section {
   font-style: normal;
 }
 
+
 /* Helvetica 85 Heavy */
+
 @font-face {
   font-family: 'Helvetica Neue Heavy';
-  src: url('/HelveticaNeue/hinted-HelveticaNeue-Heavy.eot');
-  src: local('Helvetica 85 Heavy'), local('HelveticaNeue-Heavy'), url('/HelveticaNeue/hinted-HelveticaNeue-Heavy.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-Heavy.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-Heavy.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-Heavy.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-Heavy.svg#HelveticaNeue-Heavy') format('svg');
   font-weight: 900;
   font-style: normal;
+  src: url('/HelveticaNeue/hinted-HelveticaNeue-Heavy.eot');
+  src: local('Helvetica 85 Heavy'), local('HelveticaNeue-Heavy'), url('/HelveticaNeue/hinted-HelveticaNeue-Heavy.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-Heavy.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-Heavy.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-Heavy.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-Heavy.svg#HelveticaNeue-Heavy') format('svg');
 }
 
 .h85-heavy {
@@ -178,13 +184,15 @@ footer,header,hgroup,menu,nav,section {
   font-style: normal;
 }
 
+
 /* Helvetica 77 Condensed */
+
 @font-face {
   font-family: 'Helvetica Neue Bold Condensed';
-  src: url('/HelveticaNeue/hinted-HelveticaNeue-BoldCond.eot');
-  src: local('Helvetica 77 Bold Condensed'), local('HelveticaNeue-BoldCond'), url('/HelveticaNeue/hinted-HelveticaNeue-BoldCond.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-BoldCond.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-BoldCond.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-BoldCond.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-BoldCond.svg#HelveticaNeue-BoldCond') format('svg');
   font-weight: bold;
   font-style: normal;
+  src: url('/HelveticaNeue/hinted-HelveticaNeue-BoldCond.eot');
+  src: local('Helvetica 77 Bold Condensed'), local('HelveticaNeue-BoldCond'), url('/HelveticaNeue/hinted-HelveticaNeue-BoldCond.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-BoldCond.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-BoldCond.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-BoldCond.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-BoldCond.svg#HelveticaNeue-BoldCond') format('svg');
 }
 
 .h77-boldcond {
@@ -193,13 +201,15 @@ footer,header,hgroup,menu,nav,section {
   font-style: normal;
 }
 
+
 /* Helvetica 65 Medium */
+
 @font-face {
   font-family: 'Helvetica Neue Medium';
-  src: url('/HelveticaNeue/hinted-HelveticaNeue-Medium.eot');
-  src: local('Helvetica 65 Medium'), local('HelveticaNeue-Medium'), url('/HelveticaNeue/hinted-HelveticaNeue-Medium.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-Medium.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-Medium.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-Medium.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-Medium.svg#HelveticaNeue-Medium') format('svg');
   font-weight: 500;
   font-style: normal;
+  src: url('/HelveticaNeue/hinted-HelveticaNeue-Medium.eot');
+  src: local('Helvetica 65 Medium'), local('HelveticaNeue-Medium'), url('/HelveticaNeue/hinted-HelveticaNeue-Medium.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-Medium.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-Medium.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-Medium.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-Medium.svg#HelveticaNeue-Medium') format('svg');
 }
 
 .h65-medium {
@@ -208,13 +218,15 @@ footer,header,hgroup,menu,nav,section {
   font-style: normal;
 }
 
+
 /* Helvetica 45 Light */
+
 @font-face {
   font-family: 'Helvetica Neue Light';
-  src: url('/HelveticaNeue/hinted-HelveticaNeue-Light.eot');
-  src: local('Helvetica 45 Light'), local('HelveticaNeue-Light'), url('/HelveticaNeue/hinted-HelveticaNeue-Light.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-Light.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-Light.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-Light.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-Light.svg#HelveticaNeue-Light') format('svg');
   font-weight: 300;
   font-style: normal;
+  src: url('/HelveticaNeue/hinted-HelveticaNeue-Light.eot');
+  src: local('Helvetica 45 Light'), local('HelveticaNeue-Light'), url('/HelveticaNeue/hinted-HelveticaNeue-Light.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-Light.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-Light.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-Light.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-Light.svg#HelveticaNeue-Light') format('svg');
 }
 
 .h45-light {
@@ -223,13 +235,15 @@ footer,header,hgroup,menu,nav,section {
   font-style: normal;
 }
 
+
 /* Helvetica 67 Medium Condensed */
+
 @font-face {
   font-family: 'Helvetica Neue Medium Condensed';
-  src: url('/HelveticaNeue/hinted-HelveticaNeue-MediumCond.eot');
-  src: local('Helvetica 67 Medium Condensed'), local('HelveticaNeue-MediumCond'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCond.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCond.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCond.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCond.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCond.svg#HelveticaNeue-MediumCond') format('svg');
   font-weight: 500;
   font-style: normal;
+  src: url('/HelveticaNeue/hinted-HelveticaNeue-MediumCond.eot');
+  src: local('Helvetica 67 Medium Condensed'), local('HelveticaNeue-MediumCond'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCond.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCond.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCond.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCond.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCond.svg#HelveticaNeue-MediumCond') format('svg');
 }
 
 .h67-medcond {
@@ -238,13 +252,15 @@ footer,header,hgroup,menu,nav,section {
   font-style: normal;
 }
 
+
 /* Helvetica 67 Medium Condensed Oblique */
+
 @font-face {
   font-family: 'Helvetica Neue Medium Condensed Oblique';
-  src: url('/HelveticaNeue/hinted-HelveticaNeue-MediumCondObl.eot');
-  src: local('Helvetica 67 Medium Condensed Oblique'), local('HelveticaNeue-MediumCondObl'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCondObl.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCondObl.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCondObl.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCondObl.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCondObl.svg#HelveticaNeue-MediumCondObl') format('svg');
   font-weight: 500;
   font-style: italic;
+  src: url('/HelveticaNeue/hinted-HelveticaNeue-MediumCondObl.eot');
+  src: local('Helvetica 67 Medium Condensed Oblique'), local('HelveticaNeue-MediumCondObl'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCondObl.eot?#iefix') format('embedded-opentype'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCondObl.woff2') format('woff2'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCondObl.woff') format('woff'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCondObl.ttf') format('truetype'), url('/HelveticaNeue/hinted-HelveticaNeue-MediumCondObl.svg#HelveticaNeue-MediumCondObl') format('svg');
 }
 
 .h67-medcondobl {
@@ -255,6 +271,7 @@ footer,header,hgroup,menu,nav,section {
 
 
 /* Flama */
+
 @font-face {
   font-family: 'Flama';
   font-weight: 900;

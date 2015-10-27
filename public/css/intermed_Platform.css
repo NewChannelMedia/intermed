@@ -48,6 +48,11 @@ a:visited {
 .navigator-dropdown.open > a:hover,
 .navigator-dropdown.open > a:active {
   background-color: #7dc9f7;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 13.1%;
+  z-index: 1000;
 }
 @media (max-width: 991px) and (min-width: 768px) {
   .visible-sm.navigator-dropdown {
@@ -56,13 +61,19 @@ a:visited {
 }
 
 .navigator-dropdown-panel {
-  width: 647px;
-  position: absolute;
+  width: auto;
+  position: fixed;
   margin-top: -1px;
-  right: 0;
+  right: 13.1%;
   border-radius: 0;
   background-color: #375467;
   border: 0;
+  left: 0!important;
+  top: 0px!important;
+  height: 100px;
+  padding: 13px 0;
+  margin: 0;
+  z-index: 1000;
 }
 
 .nav-logo {
@@ -96,8 +107,8 @@ a:visited {
   padding-bottom: 0;
 }
 #search-section{
-  padding-top: 33px;
-  padding-bottom: 33px;
+  padding-top: 27px;
+  padding-bottom: 27px;
 }
 #menu-section{
   padding: 0;
@@ -159,7 +170,8 @@ a:visited {
   background-color: #7dc9f7;
 }
 
-#addFavMed {
+#addFavMed_up,
+#addFavMed_down {
   padding: 0;
 }
 
@@ -192,8 +204,8 @@ a:visited {
 }
 
 .nav-menu-inner-section li a {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  padding-top: 18px;
+  padding-bottom: 17px;
   vertical-align: middle;
   text-transform: uppercase;
   border-radius: 0;
@@ -241,14 +253,13 @@ a:visited {
   background-color: #ffb400;
 }
 
-#sticky {}
-#sticky.stick {
+.sticky {}
+.sticky.stick {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 10000;
+  z-index: 500;
 }
-
 
 .header-section {
   display: block;
@@ -258,10 +269,12 @@ a:visited {
   background-position: bottom center;
   background-size: cover;
 }
+
 .header-container {
   display: block;
   height: 100%;
 }
+
 .header-row {
   height: 100%;
   padding: 0;
@@ -271,16 +284,19 @@ a:visited {
   display: table;
   height: 100%;
 }
+
 .header-profile-container {
   display: table-cell;
   height: 240px;
   vertical-align: middle;
 }
+
 .header-profile-photo-container {
   display: table-cell;
   height: 240px;
   vertical-align: middle;
 }
+
 .header-profile-photo-link {
   display: block;
   overflow: hidden;
@@ -291,6 +307,7 @@ a:visited {
   border-radius: 5px;
   background-color: #7dc9f7;
 }
+
 .header-profile-photo-img {
   height: 100%;
   width: auto;
@@ -307,23 +324,131 @@ a:visited {
   height: 240px;
 }
 
-.header-options{
-  height: 100%;
-  background-color: rgba(10,10,10,.5);
-}
 .header-options-container{
+  height: 100%;
+  background-color: rgba(0,0,0,.6);
 }
-@media (max-width: 768px) {
-  .header-section{
-    height: 440px;
+
+.header-options-row {
+  padding: 0;
+}
+
+.header-options-content{
+}
+
+.option {
+  display: flex;
+  margin: 0 auto;
+  padding: 10px 15%;
+}
+
+@media (min-width: 768px) {
+  .first-option.option {
+    height: 135px;
+    display: table;
+    vertical-align: middle;
+    width: 100%;
+    background-color: rgba(0,0,0,.2);
+    padding: 35px 0;
+    margin-bottom: 20px;
   }
+
+  .first-option .optn-lbl {
+    font-size: 35px;
+  }
+
+  .first-option .optn-sb {
+    font-size: 15px;
+  }
+  .first-option .option-label {
+    height: 90px;
+    vertical-align: middle;
+    display: table-cell;
+  }
+  .first-option .option-icon {
+
+  }
+}
+
+
+.option,
+.option:hover,
+.option:focus,
+.option:active {
+  color: white;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+.option:hover {
+  background-color: rgba(200,200,200,.1);
+}
+
+
+.option-label {
+
+}
+
+@media (min-width:992px){
+  .option-icon {
+    margin-right: 10px;
+  }
+}
+@media (max-width:992px){
+  .option-icon {
+    margin-left: 15px;
+    margin-right: 10px;
+  }
+}
+
+.optn-lbl {
+  display: block;
+  font-size: 17px;
+}
+
+.optn-sb {
+  display: block;
+  font-size: 17px;
+  color: #00c0ff;
+  text-transform: capitalize;
+}
+
+@media (max-width: 767px) {
+  .header-options-content {
+    display: table;
+    width: 100%;
+    text-align: center;
+  }
+  .option {
+    height: 80px;
+    display: table-cell;
+    vertical-align: middle;
+    padding: 0;
+  }
+  .optn-lbl {
+    font-size: 20px;
+  }
+}
+
+
+
+@media (max-width: 767px) {
+  .header-section{
+    height: 505px;
+  }
+
   .header-container,
   .header-row,
   .header-profile{
-    height: auto;
+    height: 425px;
+    display: table-cell;
+    vertical-align: middle;
+    padding: 0;
   }
+
   .header-profile-container {
     padding: 20px 0 15px 0;
+    height: 425px;
+    display: block;
   }
   .header-profile-photo-container {
     height: 200px;
@@ -338,8 +463,36 @@ a:visited {
     display: block;
     text-align: center;
   }
-  .header-options{
+
+  .header-options-container{
     height: 80px;
   }
 
+  .header-options-row {
+    padding: 0;
+  }
+
+}
+
+.profile-name {
+  font-size: 26px;
+  margin-bottom: 7px;
+}
+
+.profile-location {
+  font-family: 'FlamaBook';
+  font-size: 17px;
+  margin-bottom: 20px;
+}
+
+.profile-esp {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 15px;
+}
+
+.profile-subesp {
+  font-weight: normal;
+  text-transform: uppercase;
+  font-size: 13px;
 }
