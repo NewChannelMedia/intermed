@@ -180,11 +180,11 @@ var mapa = {
 
                         if (addr.types[0] == 'sublocality_level_1') {
                             mapa.colonia = addr.long_name;
+                            console.log(mapa.colonia);
                         };
 
                         if (addr.types[0] == 'locality') {
-                            mapa.ciudad = addr.long_name;
-                            console.log(mapa.ciudad);
+                            mapa.ciudad = addr.long_name;                            
                         };
 
                         if (addr.types[0] == 'administrative_area_level_1') {
@@ -230,3 +230,43 @@ mapa.nombreObjetoDireccion = 'direccion';
 
 //cargar mapa
 google.maps.event.addDomListener(window, 'load', mapa.initMap);
+
+
+function AsignarCiudad() {
+    SeleccionarValor('slc_ciudades', mapa.ciudad);    
+    obtenerColonias();
+}
+
+function AsignarColonia() {
+    SeleccionarValor('slc_colonias', mapa.colonia);    
+    $('#numeroUbi').val(mapa.numero);
+    $('#calleUbi').val(mapa.calle);
+    $('#cpUbi').val(mapa.codigoPostal);
+}
+
+function SeleccionarValor(control, valor) {
+    $("#" + control + ' option' ).each(function () {
+        if (ReemplezarAcentos($(this).text()) == ReemplezarAcentos(valor)) {
+            $(this).attr("selected", true);
+        }
+        
+    });
+}
+
+function ReemplezarAcentos(valor) {
+    var resultado = valor;
+    resultado = resultado.replace('Á', 'A');
+    resultado = resultado.replace('É', 'E');
+    resultado = resultado.replace('Í', 'I');
+    resultado = resultado.replace('Ó', 'O');
+    resultado = resultado.replace('Ú', 'U');
+
+    resultado = resultado.replace('á', 'a');
+    resultado = resultado.replace('é', 'e');
+    resultado = resultado.replace('í', 'i');
+    resultado = resultado.replace('ó', 'o');
+    resultado = resultado.replace('ó', 'u');
+
+    return resultado;
+}
+

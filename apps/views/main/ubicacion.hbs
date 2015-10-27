@@ -7,19 +7,6 @@
 <script src="js/fullcalendar.js"></script>
 <script src="js/calendar.js"></script>
 <script src="js/lang/es.js"></script>
-<script>
-    function AsignarCiudad() {
-        $("#slc_ciudades option:contains(" + mapa.ciudad + ")").attr("selected", true);
-        obtenerColonias();
-    }
-
-    function AsignarColonia() {
-        $("#slc_colonias option:contains(" + mapa.colonia + ")").attr("selected", true);
-        $('#numeroUbi').val(mapa.numero);
-        $('#calleUbi').val(mapa.calle);
-        $('#cpUbi').val(mapa.codigoPostal);
-    }
-</script>
 <section id="directorio">
     <div class="container">
         <div class="row">
