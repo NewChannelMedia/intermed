@@ -37,7 +37,7 @@ exports.solicitudAmistad = function ( req ) {
   } else if (req.tipoUsuario == "M"){
     numNot = 4;
   }
-  
+
   models.Notificacion.findAll( {
     where: {
       usuario_id: req.usuario_id,
@@ -427,13 +427,54 @@ exports.agregadoMedicoFavorito = function ( req ) {
 };
 
 
+exports.inbox = function ( req ) {
+  var numNot = 0;
+  if (req.tipoUsuario == "P"){
+    numNot = 101;
+  } else if (req.tipoUsuario == "M"){
+    numNot = 102;
+  }
+
+  models.Notificacion.findAll( {
+    where: {
+      usuario_id: req.usuario_id,
+      visto: 0,
+      tipoNotificacion_id: numNot
+    },
+    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
+  } ).then( function ( result ) {
+      result = JSON.parse( JSON.stringify( result ) );
+      var length = result.length;
+      result.forEach( function ( record ) {
+          models.Usuario.findOne( {
+            where: {
+              id: record.data
+            },
+            attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+            include: [ {
+                model: models.DatosGenerales,
+                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                } ]
+          } ).then( function ( usuario ) {
+            record[ 'usuario' ] = JSON.parse( JSON.stringify( usuario ) );
+            if ( record === result[ result.length - 1 ] ) {
+              req.socket.emit( 'inbox', result );
+            }
+          } )
+      })
+    })
+}
+
+
 exports.verNotificaciones = function ( req ) {
   models.Notificacion.update( {
     visto: 1
   }, {
     where: {
       usuario_id: req.usuario_id,
-      visto: 0
+      visto: 0,
+      tipoNotificacion_id: {$notBetween: [100, 200]}
     }
   } ).then( function ( result ) {
     req.socket.emit( 'verNotificaciones', result );

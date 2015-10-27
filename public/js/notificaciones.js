@@ -326,6 +326,20 @@ function socketManejadores() {
       }, 3000 );
 
     } );
+
+    socket.on( 'inbox', function ( data ) {
+      if (window.location.href.indexOf("/inbox") > 0){
+        console.log('Cargar mensajes');
+      } else {
+        var total = data.length;
+        if (total>0){
+          $('#totalInbox').html(total);
+        } else {
+          $('#totalInbox').html('');
+        }
+      }
+
+    } );
 }
 
 $(document).ready(function(){
@@ -334,7 +348,7 @@ $(document).ready(function(){
       notificacionesScroll = [];
       actualizarNotificaciones();
     });
-})
+});
 
 
 function verTodasNotificaciones(){

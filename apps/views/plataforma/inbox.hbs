@@ -130,6 +130,18 @@ li.error{
   font-size: 80%;
 }
 
+.nombreContacto.seleccionado{
+  background-color: #FFBF00;
+}
+
+.marcoImagen {
+  padding:8px;
+  background-color: #f5f5f5;
+  width: 200px;
+  border-bottom: 1px solid #999999;
+  border-right: 1px solid #999999;
+}
+
 </style>
 <section id="mensajes">
   <div id="medico" class="container">
@@ -147,29 +159,29 @@ li.error{
                 </div>
                 <div class="panel-body" style="padding:0px" id="contactList">
                   <table class="table table-hover table-bordered" style="margin:0px">
-                    <tbody>
+                    <tbody id="InboxListaContactos">
                       <tr>
-                        <td onclick="cargarInbox('July Dooley')">
-                          <img src="http://i.imgur.com/hsf4S3T.jpg" class="img-circle mini" width="50" height="50" />
-                          <span class="hidden-xs">July DooleyDooley</span><br/>
-                          <small class="pull-right text-right" style="font-size:70%;color:#888">Hace 3 horas <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small>
+                        <td class="nombreContacto" onclick="cargarInbox(this)">
+                              <img src="http://cdns2.freepik.com/foto-gratis/hombre-usuario-icono-de-clip-art_421787.jpg" class="img-circle mini" width="50" height="50" />
+                              <span class="hidden-xs name" style="overflow:hidden">Cinthia Bermúdez Acosta</span>
+
+                              <small class="pull-right text-right" style="font-size:70%;color:#888">Ahora <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small>
                         </td>
                       </tr>
                       <tr>
-                        <td onclick="cargarInbox('July Dooley')">
-                          <img src="http://i.imgur.com/hsf4S3T.jpg" class="img-circle mini" width="50" height="50" />
-                          <span class="hidden-xs">July Dooley</span><br/>
-                          <small class="pull-right text-right" style="font-size:70%;color:#888">Hace 6 dias <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small>
+                          <td class="nombreContacto" onclick="cargarInbox(this)">
+                                <span class="badge pull-right">69</span>
+                                <img src="http://cdns2.freepik.com/foto-gratis/hombre-usuario-icono-de-clip-art_421787.jpg" class="img-circle mini" width="50" height="50" />
+                                <span class="hidden-xs name" style="overflow:hidden">Cinthia Bermúdez Acosta</span>
+                          </td>
+                        </tr>
+                        <tr>
+                            <td class="nombreContacto" onclick="cargarInbox(this)">
+                                  <img src="http://cdns2.freepik.com/foto-gratis/hombre-usuario-icono-de-clip-art_421787.jpg" class="img-circle mini" width="50" height="50" />
+                                  <span class="hidden-xs name" style="overflow:hidden">Cinthia Bermúdez Acosta</span>
 
-                        </td>
-                      </tr>
-                      <tr>
-                        <td onclick="cargarInbox('July Dooley')">
-                          <img src="http://i.imgur.com/hsf4S3T.jpg" class="img-circle mini" width="50" height="50" />
-                          <span class="hidden-xs">July Dooley Dooley Dooley</span><br/>
-                          <small class="pull-right text-right" style="font-size:70%;color:#888">El 23 de septiembre de 2015 <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small>
-
-                        </td>
+                                  <small class="pull-right text-right" style="font-size:70%;color:#888">Ahora <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small>
+                            </td>
                       </tr>
                     </tbody>
                   </table>
@@ -181,358 +193,13 @@ li.error{
               <div class="row">
               <div class="panel panel-default">
                 <div class="panel-heading">
-                  <h3 class="panel-title" id="InboxContact">Panel title</h3>
+                  <h3 class="panel-title" id="InboxContact">&nbsp;
+                  </h3>
                 </div>
                 <div class="panel-body" id="InboxMsg" style="padding:0px;">
                   <ul class="chat" id="chat">
 
-                        <li class="clearfix text-center" style="padding:0px;">
-                          <button class="btn btn-warning btn-block">Cargar anteriores</button>
-                        </li>
-
-                        <li class="clearfix text-center datetime">
-                          <span>
-                            9 de octubre de 2015
-                          </span>
-                        </li>
-
-                        <li class="right clearfix msg">
-                          <span class="chat-img pull-right">
-                            <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                          </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <small class=" text-muted"> </small>
-                                    <strong class="pull-right primary-font">You</strong>
-                                </div>
-                                <p class="pull-right text-right">
-                                    Hi Jen! Laura has been missing deadlines for a few weeks and I'm having trouble motivating her to move faster.
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="left clearfix msg"><span class="chat-img pull-left">
-                            <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">Jen Darby</strong>
-                                    <small class="pull-right text-muted"> </small>
-                                </div>
-                                <p class="pull-left text-left">
-                                    No problem, Tim! Let's look at <a href="">Laura's profile</a> together and come up with a plan.
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="right clearfix msg"><span class="chat-img pull-right">
-                            <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <small class=" text-muted"> </small>
-                                    <strong class="pull-right primary-font">You</strong>
-                                </div>
-                                <p class="pull-right text-right">
-                                    Okay, so here's what's been happening...
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="left clearfix msg"><span class="chat-img pull-left">
-                            <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">Jen Darby</strong>
-                                    <small class="pull-right text-muted"> </small>
-                                </div>
-                                <p class="pull-left text-left">
-                                    No problem, Tim! Let's look at <a href="">Laura's profile</a> together and come up with a plan.
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="right clearfix msg"><span class="chat-img pull-right">
-                            <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <small class=" text-muted"> </small>
-                                    <strong class="pull-right primary-font">You</strong>
-                                </div>
-                                <p class="pull-right text-right">
-                                    Okay, so here's what's been happening...
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="clearfix text-center datetime">
-                          <span>
-                            10 de octubre de 2015
-                          </span>
-                        </li>
-
-                        <li class="left clearfix msg"><span class="chat-img pull-left">
-                            <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">Jen Darby</strong>
-                                    <small class="pull-right text-muted"> </small>
-                                </div>
-                                <p class="pull-left text-left">
-                                    No problem, Tim! Let's look at <a href="">Laura's profile</a> together and come up with a plan.
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="right clearfix msg"><span class="chat-img pull-right">
-                            <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <small class=" text-muted"> </small>
-                                    <strong class="pull-right primary-font">You</strong>
-                                </div>
-                                <p class="pull-right text-right">
-                                    Okay, so here's what's been happening...
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="left clearfix msg"><span class="chat-img pull-left">
-                            <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">Jen Darby</strong>
-                                    <small class="pull-right text-muted"> </small>
-                                </div>
-                                <p class="pull-left text-left">
-                                    No problem, Tim! Let's look at <a href="">Laura's profile</a> together and come up with a plan.
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="right clearfix msg"><span class="chat-img pull-right">
-                            <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <small class=" text-muted"> </small>
-                                    <strong class="pull-right primary-font">You</strong>
-                                </div>
-                                <p class="pull-right text-right">
-                                    Okay, so here's what's been happening...
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="clearfix text-center datetime">
-                          <span>
-                            14 de octubre de 2015
-                          </span>
-                        </li>
-
-                        <li class="left clearfix msg">
-                          <span class="chat-img pull-left">
-                            <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                          </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">Jen Darby</strong>
-                                    <small class="pull-right text-muted"> </small>
-                                </div>
-                                <p class="pull-left text-left">
-                                    No problem, Tim! Let's look at <a href="">Laura's profile</a> together and come up with a plan.
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="right clearfix msg"><span class="chat-img pull-right">
-                            <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <small class=" text-muted"> </small>
-                                    <strong class="pull-right primary-font">You</strong>
-                                </div>
-                                <p class="pull-right text-right">
-                                    Okay, so here's what's been happening...
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="left clearfix msg"><span class="chat-img pull-left">
-                            <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">Jen Darby</strong>
-                                    <small class="pull-right text-muted"> </small>
-                                </div>
-                                <p class="pull-left text-left">
-                                    No problem, Tim! Let's look at <a href="">Laura's profile</a> together and come up with a plan.
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="clearfix text-center datetime">
-                          <span>
-                            16 de octubre de 2015
-                          </span>
-                        </li>
-
-                        <li class="right clearfix msg"><span class="chat-img pull-right">
-                            <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <small class=" text-muted"> </small>
-                                    <strong class="pull-right primary-font">You</strong>
-                                </div>
-                                <p class="pull-right text-right">
-                                    Okay, so here's what's been happening...
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="left clearfix msg"><span class="chat-img pull-left">
-                            <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">Jen Darby</strong>
-                                    <small class="pull-right text-muted"> </small>
-                                </div>
-                                <p class="pull-left text-left">
-                                    No problem, Tim! Let's look at <a href="">Laura's profile</a> together and come up with a plan.
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="right clearfix msg"><span class="chat-img pull-right">
-                            <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <small class=" text-muted"> </small>
-                                    <strong class="pull-right primary-font">You</strong>
-                                </div>
-                                <p class="pull-right text-right">
-                                    Okay, so here's what's been happening...
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="clearfix text-center datetime">
-                          <span>
-                            21 de octubre de 2015
-                          </span>
-                        </li>
-
-                        <li class="left clearfix msg"><span class="chat-img pull-left">
-                            <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">Jen Darby</strong>
-                                    <small class="pull-right text-muted"> </small>
-                                </div>
-                                <p class="pull-left text-left">
-                                    No problem, Tim! Let's look at <a href="">Laura's profile</a> together and come up with a plan.
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="right clearfix msg"><span class="chat-img pull-right">
-                            <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <small class=" text-muted"> </small>
-                                    <strong class="pull-right primary-font">You</strong>
-                                </div>
-                                <p class="pull-right text-right">
-                                    Okay, so here's what's been happening...
-                                        Okay, so here's what's been happening...
-                                            Okay, so here's what's been happening...
-                                                Okay, so here's what's been happening...
-                                                    Okay, so here's what's been happening...
-                                                        Okay, so here's what's been happening...
-                                                            Okay, so here's what's been happening...
-                                                                Okay, so here's what's been happening...
-                                                                    Okay, so here's what's been happening...
-                                                                        Okay, so here's what's been happening...
-                                                                            Okay, so here's what's been happening...
-                                                                                Okay, so here's what's been happening...
-                                                                                    Okay, so here's what's been happening...<br/><br/>
-                                                                                        Okay, so here's what's been happening...
-                                                                                            Okay, so here's what's been happening...
-                                                                                                Okay, so here's what's been happening...<br/>
-                                                                                                    Okay, so here's what's been happening...<br/>
-                                                                                                        Okay, so here's what's been happening...
-                                </p>
-                            </div>
-                        </li>
-
-
-                        <li class="clearfix text-center datetime">
-                          <span>
-                            Ayer
-                          </span>
-                        </li>
-
-                        <li class="left clearfix msg"><span class="chat-img pull-left">
-                            <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">Jen Darby</strong>
-                                    <small class="pull-right text-muted"> </small>
-                                </div>
-                                <p class="pull-left text-left">
-                                    No problem, Tim! Let's look at <a href="">Laura's profile</a> together and come up with a plan.
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="right clearfix msg"><span class="chat-img pull-right">
-                            <img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <small class=" text-muted"> </small>
-                                    <strong class="pull-right primary-font">You</strong>
-                                </div>
-                                <p class="pull-right text-right">
-                                    Okay, so here's what's been happening...
-                                </p>
-                            </div>
-                        </li>
-
-                        <li class="clearfix text-center datetime">
-                          <div ></div>
-                          <span>
-                            Hoy
-                          </span>
-                        </li>
-
-                        <li class="left clearfix msg"><span class="chat-img pull-left">
-                            <img src="http://i.imgur.com/GYWbwhq.jpg" alt="User Avatar" class="img-circle" width="50" height="50" />
-                        </span>
-                            <div class="chat-body clearfix">
-                                <div class="header">
-                                    <strong class="primary-font">Jen Darby</strong>
-                                    <small class="pull-right text-muted"> </small>
-                                </div>
-                                <p class="pull-left text-left">
-                                    No problem, Tim! Let's look at <a href="">Laura's profile</a> together and come up with a plan.
-                                </p>
-                            </div>
-                        </li>
-                    </ul>
+                  </ul>
                 </div>
 
                 <div class="panel-footer" id="inboxInput">
@@ -572,14 +239,9 @@ li.error{
 
     $('#inboxBtnEnviar').click(function(){
         if ($('#inboxInputText').val() != ''){
-          $('#chat').append('  <li class="clearfix text-center error"><span><span class="glyphicon glyphicon-info-sign" style="font-size:80%"></span>imposible enviar el mensaje, por favor revisa tu conexion</span></li>');
-          focusUltimo();
-          setTimeout(function(){
-            eliminarError();
-          },3000);
-          /*if (enviarMensaje($('#InboxContact').html(), $('#inboxInputText').val())){
+          if (enviarMensaje($('#InboxContact').html(), $('#inboxInputText').val())){
             $('#inboxInputText').val('');
-          }*/
+          }
         }
     });
 
@@ -589,22 +251,54 @@ li.error{
 
     function focusUltimo(){
       var ultimoMsg = $( "#chat li" ).last();
-      ultimoMsg[0].scrollIntoView();
+      if (ultimoMsg[0])
+        ultimoMsg[0].scrollIntoView();
     }
 
     function enviarMensaje(para, mensaje){
       eliminarError();
-      var ultimoMsg = $( "#chat .msg" ).last();
-      if (ultimoMsg.hasClass('right'))
-        ultimoMsg.find('p').append('<br/>' + mensaje);
-      else
-        $('#chat').append('<li class="right clearfix msg" id="ultimo"><span class="chat-img pull-right"><img src="http://i.imgur.com/hsf4S3T.jpg" alt="User Avatar" class="img-circle" width="50" height="50" /></span><div class="chat-body clearfix"><div class="header"><small class=" text-muted"> </small><strong class="pull-right primary-font">You</strong></div><p class="pull-right text-right">'+ mensaje +'</p></div> </li>');
+      enviado = false;
+      var para_id = $('.seleccionado').parent().prop('id');
+
+      $.ajax({
+        url: "/inbox/enviar",
+        dataType: "json",
+        method: 'POST',
+        data: {
+          para: para_id, mensaje: mensaje
+        },
+        async: false,
+        success: function( data ) {
+          console.log('data: ' + JSON.stringify(data));
+          if (data.success){
+            enviado = true;
+          }
+        }
+      });
+
+      if (enviado){
+        var ultimoMsg = $( "#chat .msg" ).last();
+        mensaje = renderHTML(mensaje);
+        if (ultimoMsg.hasClass('right'))
+          ultimoMsg.find('p').append('<br/>' + mensaje);
+        else
+          $('#chat').append(mensajeDerecha(mensaje));
+      } else {
+        $('#chat').append('<li class="clearfix text-center error"><span><span class="glyphicon glyphicon-info-sign" style="font-size:80%"></span>imposible enviar el mensaje, por favor revisa tu conexion</span></li>');
+        focusUltimo();
+        setTimeout(function(){
+          eliminarError();
+        },3000);
+      }
       focusUltimo();
-      return true;
+      return enviado;
     }
 
     $(document).ready(function(){
+      $('#InboxMsg').css('background-color','#EEE');
       inputAutocompleteContact($('#autocompleteContactos'));
+      $('#inboxInputText').prop('disabled',true);
+      $('#inboxBtnEnviar').prop('disabled',true);
 
       $('#InboxMsg').css('height',($(window).height() - document.getElementById('inboxInput').offsetHeight - document.getElementById('navPlatform').offsetHeight - 130));
       $('#InboxMsg').css('overflow','auto');
@@ -612,35 +306,43 @@ li.error{
       $('#contactList').css('overflow','auto');
 
       focusUltimo();
-      /*
-      ultimoMsg.css('background-color','#EEE');
-      setTimeout(function(){
-        ultimoMsg.css('background-color','#FFF');
-      },2000);*/
-      /*
-      cargarNotificacionesCondicional();
-
-      $('#notifList').append('<a class="_next" href="#"></a>');
-      var scroll = $('#notifList').iscroll({
-        onBeginRequest:function(request){
-          verTodasNotificaciones();
-        }
-      });*/
     });
-    /*
 
-    function cargarNotificacionesCondicional(){
-        var result = verTodasNotificaciones();
-        setTimeout(function(){
-          if (document.getElementById('notifListTable').offsetHeight<$(window).height()){
-            if (result === true){
-              cargarNotificacionesCondicional();
-            }
+    function cargarInbox(element){
+      $('.nombreContacto').removeClass('seleccionado');
+      $('#chat').html('');
+      $(element).addClass('seleccionado');
+      $('#InboxContact').html($(element).find('span.name').html());
+      cargarMensajes($(element).parent().prop('id'));
+    }
+
+    function nuevoInbox(ui){
+      $('#InboxListaContactos').prepend('<tr id="'+ ui.item.id +'" ><td class="nombreContacto seleccionado" onclick="cargarInbox(this)"><img src="'+ ui.item.imageSrc +'" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> '+ ui.item.name +'</span><br/><small class="pull-right text-right" style="font-size:70%;color:#888">Ahora <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>');
+      $('#chat').html('');
+    }
+
+    function cargarMensajes(id){
+      console.log('cargar mensajes de usuario_id:' + id);
+    }
+
+    function mensajeIzquierda(img, msg){
+      return '<li class="left clearfix msg"><span class="chat-img pull-left"><img src="'+ img +'" class="img-circle" width="50" height="50" /></span><div class="chat-body clearfix"><div class="header"><strong class="primary-font">Jen Darby</strong><small class="pull-right text-muted"> </small></div><p class="pull-left text-left">msg</p></div></li>';
+    }
+
+    function mensajeDerecha(msg){
+      return '<li class="right clearfix msg"><span class="chat-img pull-right"><img src="'+ $('#fotoPerfilMini').prop('src') +'" class="img-circle" width="50" height="50" /></span><div class="chat-body clearfix"><div class="header"><small class=" text-muted"> </small><strong class="pull-right primary-font">You</strong></div><p class="pull-right text-right">'+ msg +'</p></div></li>';
+    }
+
+    function renderHTML(text) {
+      var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+      text = text.replace(urlRegex, function(url) {
+          if ( ( url.indexOf(".jpg") > 0 ) || ( url.indexOf(".png") > 0 ) || ( url.indexOf(".gif") > 0 ) ) {
+              return '<a href="' + url + '" target="_blanck"><img src="' + url + '" style="max-width:60%" class="img-thumbnail"></a>' + '<br/>'
+          } else {
+              return '<a href="' + url + '" target="_blanck">' + url + '</a>'
           }
-        },200);
+      });
+      return text;
     }
-    */
-    function cargarInbox(name){
-      $('#InboxContact').html(name);
-    }
+
 </script>
