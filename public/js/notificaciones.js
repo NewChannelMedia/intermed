@@ -329,17 +329,64 @@ function socketManejadores() {
 
     socket.on( 'inbox', function ( data ) {
       if (window.location.href.indexOf("/inbox") > 0){
-        console.log('Cargar mensajes');
-      } else {
-        var total = data.length;
-        if (total>0){
-          $('#totalInbox').html(total);
-        } else {
+        setTimeout(function(){
+          socket.emit( 'verNotificacionesInbox' );
           $('#totalInbox').html('');
+        },3000);
+
+        var mensajesNoLeidos = new Array();
+        data.forEach(function(msg){
+          var usuario_id = msg.usuario.id;
+          var nombre = msg.usuario.DatosGenerale.nombre + ' ' + msg.usuario.DatosGenerale.apellidoP + ' ' + msg.usuario.DatosGenerale.apellidoM;
+          var urlFotoPerfil = msg.usuario.urlFotoPerfil;
+            if (mensajesNoLeidos[usuario_id]){
+                mensajesNoLeidos[usuario_id]['total'] = mensajesNoLeidos[usuario_id]['total'] +1;
+            } else {
+                mensajesNoLeidos[usuario_id] = {'foto':urlFotoPerfil,'nombre':nombre,'total':1};
+            }
+        });
+        for (x in mensajesNoLeidos) {
+          if ($('tr#' + x).html()){
+            //Ya existe, poner como no leido
+            if (!$('tr#' + x).find('td').hasClass('seleccionado')){
+              $('tr#' + x).find('td').addClass('noleido');
+            }
+          } else {
+            $('#InboxListaContactos').prepend('<tr id="'+ x +'" ><td class="nombreContacto noleido" onclick="cargarInbox(this)"><img src="'+ mensajesNoLeidos[x].foto +'" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> '+  mensajesNoLeidos[x].nombre  +'</span><br/><small class="pull-right text-right" style="font-size:70%;color:#888">Ahora <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>');
+          }
         }
+        cargarMensajes($('td.seleccionado').parent().prop('id'));
+      }
+
+
+
+      var total = data.length;
+      if (total>0){
+        $('#totalInbox').html(total);
+      } else {
+        $('#totalInbox').html('');
       }
 
     } );
+
+    socket.on('inboxEnviado', function(result){
+      if (result.success){
+        var ultimoMsg = $( "#chat .msg" ).last();
+        mensaje = $('#inboxInputText').val();
+        mensaje = renderHTML(mensaje);
+        $('#inboxInputText').val('');
+        if (ultimoMsg.hasClass('right'))
+          ultimoMsg.find('p').append('<br/>' + mensaje);
+        else
+          $('#chat').append(mensajeDerecha(mensaje));
+      } else {
+        $('#chat').append('<li class="clearfix text-center error"><span><span class="glyphicon glyphicon-info-sign" style="font-size:80%"></span>imposible enviar el mensaje, por favor revisa tu conexion</span></li>');
+        setTimeout(function(){
+          eliminarError();
+        },3000);
+      }
+      focusUltimo();
+    });
 }
 
 $(document).ready(function(){
@@ -348,6 +395,10 @@ $(document).ready(function(){
       notificacionesScroll = [];
       actualizarNotificaciones();
     });
+
+    if (window.location.href.indexOf("/inbox") > 0){
+      socket.emit('conectarSocket');
+    }
 });
 
 

@@ -208,6 +208,7 @@ function inputAutocompleteContact(input){
         $('.nombreContacto').removeClass('seleccionado');
         var inbox = $('tr#'+ui.item.id);
         if (inbox.length>0){
+          inbox.find('td').removeClass('noleido');
           inbox.find('td').addClass('seleccionado');
           cargarMensajes(ui.item.id);
         } else {
@@ -219,6 +220,8 @@ function inputAutocompleteContact(input){
         $('#inboxBtnEnviar').prop('disabled',false);
         $('#InboxMsg').css('background-color','#FFF');
         $('#InboxContact').html(ui.item.name);
+        $('#chat').html('');
+        cargarMensajes();
         return false;
       }
     })

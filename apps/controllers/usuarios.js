@@ -368,7 +368,6 @@ var generarSesion = function ( req, res, usuario_id, redirect ) {
     } )
     .then( function ( usuario ) {
       if ( usuario ) {
-        console.log( 'Generando variables de sesión...' );
         req.session.passport.user = JSON.parse( JSON.stringify( {
           'id': usuario.id,
           'usuario': usuario.usuario,

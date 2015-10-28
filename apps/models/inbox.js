@@ -16,7 +16,7 @@ module.exports = function ( sequelize, DataTypes ) {
     mensaje: {
       type: DataTypes.STRING
     },
-    fecba: {
+    fecha: {
       type: DataTypes.DATE
     },
     visto: {

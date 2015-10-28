@@ -166,7 +166,6 @@ var iniciar = function () {
       failureRedirect: '/'
     } ),
     function ( req, res ) {
-      console.log( '______TIPO USUARIO: ' + req.session.tipo );
       req.session.passport.user[ 'tipoRegistro' ] = 'F';
       req.session.passport.user[ 'tipoUsuario' ] = req.session.tipo;
       intermed.callController( 'usuarios', 'registrarUsuario', req.session.passport.user, req, res );
@@ -1145,6 +1144,22 @@ var iniciar = function () {
         res.send({'success':false});
       }else {
         intermed.callController('inbox','enviar', req.body, req, res);
+      }
+  });
+
+  app.post('/inbox/cargartodos', function (req, res){
+      if (!req.session.passport.user){
+        res.send({'success':false});
+      }else {
+        intermed.callController('inbox','cargartodos', req.body, req, res);
+      }
+  });
+
+  app.post('/inbox/cargarMensajesPorUsuario', function (req, res){
+      if (!req.session.passport.user){
+        res.send({'success':false});
+      }else {
+        intermed.callController('inbox','cargarMensajesPorUsuario', req.body, req, res);
       }
   });
 }

@@ -481,6 +481,19 @@ exports.verNotificaciones = function ( req ) {
   } );
 }
 
+
+exports.verNotificacionesInbox = function ( req ) {
+  models.Notificacion.update( {
+    visto: 1
+  }, {
+    where: {
+      usuario_id: req.usuario_id,
+      visto: 0,
+      tipoNotificacion_id: {$between: [100, 200]}
+    }
+  });
+}
+
 exports.scroll = function (object, req, res){
   models.Notificacion.findAll( {
     where: {
