@@ -787,7 +787,7 @@ var iniciar = function()
 					intermed.callController('agenda','borraServicio', object, req, res);
 				});
 
-				app.get('/agregaCita', function(req, res) {
+				app.get('/agregaCita2', function(req, res) {
 					var object = {
 						fechaHoraInicio: '01/01/2014 15:30',
 						estatus: 0,
@@ -883,7 +883,8 @@ var iniciar = function()
 
 				app.get('/registraDireccion', function(req, res) {
 					rutas.routeLife('main','main',hps);
-					intermed.callController('Home','aboutPacientes', JSON.parse( JSON.stringify(req.body)), req, res);
+					res.render('mapa')
+					//intermed.callController('Home','aboutPacientes', JSON.parse( JSON.stringify(req.body)), req, res);
 				});
 
 				app.get('/registraServicio', function(req, res) {
@@ -894,6 +895,43 @@ var iniciar = function()
 				app.post('/agregaServicio', function(req, res) {
 					rutas.routeLife('main','main',hps);
 					intermed.callController('agenda','agregaServicio', JSON.parse( JSON.stringify(req.body)), req, res);
+				});
+
+				//Obtiene las direcciones para los marcadores
+				app.get('/seleccionaDirecciones', function(req, res) {
+					intermed.callController('ubicacion','obtieneDirecciones', {id: 1}, req, res);
+				});
+
+				//Obtiene Horarios por direccion
+				app.get('/seleccionaHorarios', function(req, res) {
+					intermed.callController('agenda','seleccionaHorarios', {id: 1}, req, res);
+				});
+
+				//Obtiene Horarios por usaurio
+				app.get('/seleccionaHorariosMedico', function(req, res) {
+					intermed.callController('agenda','seleccionaHorariosMedico', {id: 1}, req, res);
+				});
+
+				//Genera Cita
+				app.get('/generarCita', function(req, res) {
+					var datos =  { id : 1}
+					rutas.routeLife('main','main',hps);
+					intermed.callController('agenda','generarCita', datos, req, res);
+				});
+
+				app.get('/agregaCita', function(req, res) {
+					var object = {
+						fechaHoraInicio: '01/01/2014 15:30',
+						estatus: 0,
+						nota: 'descripcion nota',
+						resumen: 'resumen',
+						direccion_id : 1,
+						usuario_id : 1,
+						paciente_id : 1,
+						servicio_id: 2
+					}
+					rutas.routeLife('main','main',hps);
+					intermed.callController('agenda','agregaCita', JSON.parse(JSON.stringify(req.body)), req, res);
 				});
 }
 serv.server(app, 3000);

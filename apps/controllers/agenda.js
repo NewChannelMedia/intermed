@@ -1,5 +1,23 @@
 var models  = require('../models');
 
+
+exports.generarCita = function(object, req, res) {
+  models.CatalogoServicios.findAll({
+      where :  { usuario_id: object.id },
+      attributes : ['id', 'concepto']
+  }).then(function(servicios) {
+      models.Direccion.findAll({
+          where : {usuario_id : object.id},
+          attributes : ['id', 'nombre']
+      }).then(function(datos) {
+        res.render('cita', {
+          servicios: servicios,
+          ubicaciones : datos
+        });
+      });
+  });
+};
+
 exports.agregaCita = function(object, req, res) {
   models.Agenda.create({
       fechaHoraInicio: object.fechaHoraInicio,
@@ -7,9 +25,8 @@ exports.agregaCita = function(object, req, res) {
       nota: object.nota,
       resumen: object.resumen,
       direccion_id: object.direccion_id,
-      usuario_id: object.usuario_id,
-      paciente_id : object.paciente_id,
-      servicio_id : object.servicio_id
+      paciente_id : object.idUsuario,
+      servicio_id : object.idServicio
   }).then(function(datos) {
       res.status(200).json({ok: true});
   }).catch(function(err) {
@@ -292,6 +309,30 @@ exports.borraServicio = function(object, req, res) {
       where :  { id: object.id }
   }).then(function(datos) {
       res.status(200).json({ok: true});
+  }).catch(function(err) {
+      res.status(500).json({error: err})
+  });
+};
+
+// Obtiene horarios por direccion
+exports.seleccionaHorarios = function(object, req, res) {
+  models.Horarios.findAll({
+     where :  { idDireccion: object.id }
+  }).then(function(datos) {
+      res.send(datos);
+  }).catch(function(err) {
+      res.status(500).json({error: err})
+  });
+};
+
+
+// Obtiene horarios por usuario
+exports.seleccionaHorariosMedico = function(object, req, res) {
+  models.Direccion.findAll({
+    where : { usuario_id: object.id },
+    include:[ {model: Horarios }]
+  }).then(function(datos) {
+      res.send(datos);
   }).catch(function(err) {
       res.status(500).json({error: err})
   });

@@ -1,0 +1,45 @@
+<section id="principal">
+  <div class="container">
+
+    <form method="POST" name="frmRegCita" id="frmRegCita">
+      <input type="hidden" id="id" name="id">
+      <input type="hidden" id="paciente_id" name="paciente_id" value="12">
+      <input type="hidden" id="medico_id" name="medico_id" value="1">
+      <input type="hidden" id="estatus" name="estatus" value="1">
+
+      <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+              <select class="form-control" name="idServicio" id="idServicio" required="true">
+                  <option value="0">Servicio</option>
+                  {{#each servicios}}
+                      <option value="{{id}}">{{concepto}}</option>
+                  {{/each}}
+              </select>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group">
+              <select class="form-control" name="idUbicacion" id="idUbicacion" required="true">
+                  <option value="0">Ubicaciones</option>
+                  {{#each ubicaciones}}
+                      <option value="{{id}}">{{nombre}}</option>
+                  {{/each}}
+              </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Guardar" onclick="registrarCita()">
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </form>
+
+  </div>
+</section>

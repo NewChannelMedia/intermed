@@ -219,6 +219,29 @@ function addMedico( record, tipo ) {
 		}
 }
 
+function registrarCita() {
+	$.ajax({
+		url: '/agregaCita',
+		type: 'POST',
+		dataType: "json",
+		cache: false,
+		data: $('#frmRegCita').serialize(),
+		type: 'POST',
+		success: function( data ) {
+			if ( data.error == null ) {
+				addMedico( data,1 );
+			}
+			else {
+				alert(data.error.message);
+			}
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+		}
+	});
+}
+
+
 function regMedValid() {
 /*
 	var inputs = [ 'nombreMed', 'apellidoMed',  'correoMed', 'telefonoMed', 'especialidadMed', 'calleMed', 'numeroMed', 'coloniaMed', 'cpMed', 'calle1Med', 'calle2Med', 'ciudadMed', 'estadoMed' ];

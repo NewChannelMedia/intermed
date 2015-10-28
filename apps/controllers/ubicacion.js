@@ -21,15 +21,17 @@ exports.ObtieneTelefonos = function(req, res) {
   });
 };
 
-exports.ObtieneDirecciones = function(req, res) {
-  models.Direccion.findAll().then(function(datos) {
-    res.send(datos);
+exports.obtieneDirecciones = function(object, req, res) {
+  models.Direccion.findAll({
+      where : {usuario_id : object.id}
+  }).then(function(datos) {
+        res.send(datos);
   });
-};
+}
 
 exports.obtieneEstados = function(req, res) {
   models.Estado.findAll().then(function(datos) {
-    res.sender(datos);
+    res.sende(datos);
   });
 };
 
@@ -97,6 +99,16 @@ exports.borraDireccion = function(object, req, res) {
       where : {id : object.id}
   }).then(function(medico) {
         res.status(200).json({ok: true});
+  }).catch(function(err) {
+        res.status(500).json({error: err});
+  });
+}
+
+exports.obtieneUbicacion = function(object, req, res) {
+  models.Direccion.findOne({
+      where : {id : object.id}
+  }).then(function(datos) {
+        res.send(datos);
   }).catch(function(err) {
         res.status(500).json({error: err});
   });
