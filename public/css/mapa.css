@@ -1,0 +1,9 @@
+﻿/*Estilos para Mapas*/
+#mapDiv {
+    width: 100%;
+    height: 300px;
+}
+
+#autocomplete_searchField {
+    width:300px;
+}

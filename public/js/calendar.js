@@ -1,63 +1,4 @@
-<link href="css/mapa.css" rel="stylesheet" />
-<link href="css/fullcalendar.min.css" rel="stylesheet" />
-
-<script src="js/moment.min.js"></script>
-<script src="js/fullcalendar.js"></script>
-<script src="js/lang/es.js"></script>
-
-<section id="principal">
-  <div class="container">
-
-    <form method="POST" name="frmRegCita" id="frmRegCita">
-      <input type="hidden" id="id" name="id">
-      <input type="hidden" id="paciente_id" name="paciente_id" value="12">
-      <input type="hidden" id="medico_id" name="medico_id" value="1">
-      <input type="hidden" id="estatus" name="estatus" value="1">
-
-      <div class="row">
-        <div class="col-md-12">
-            <div class="form-group">
-              <select class="form-control" name="idServicio" id="idServicio" required="true">
-                  <option value="0">Servicio</option>
-                  {{#each servicios}}
-                      <option value="{{id}}">{{concepto}}</option>
-                  {{/each}}
-              </select>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-            <div class="form-group">
-              <select class="form-control" name="idUbicacion" id="idUbicacion" required="true">
-                  <option value="0">Ubicaciones</option>
-                  {{#each ubicaciones}}
-                      <option value="{{id}}">{{nombre}}</option>
-                  {{/each}}
-              </select>
-            </div>
-        </div>
-
-        <div class="col-md-12">
-          <div id='calendar'></div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Guardar" onclick="registrarCita()">
-                </div>
-            </div>
-        </div>
-
-    </div>
-    </form>
-
-  </div>
-</section>
-
-
-<script>
-$(document).ready(function () {
+﻿$(document).ready(function () {
 
 
     var valido = true;
@@ -77,15 +18,14 @@ $(document).ready(function () {
             right: false,
             left: false
         },
-        /*
-        businessHours: {
-            start: '6:00',
-            end: '19:00',
-            dow: [0, 1, 2, 3, 4, 5, 6]
-        },*/
+        //businessHours: {
+        //    start: '6:00',
+        //    end: '19:00',
+        //    dow: [0, 1, 2, 3, 4, 5, 6]
+        //},
         minTime: '8:00',
         maxTime: '19:00',
-        defaultDate: '2015-02-12',
+        //defaultDate: '2015-02-12',
         lang: 'es',
         selectable: true,
         selectHelper: true,
@@ -94,7 +34,7 @@ $(document).ready(function () {
             var eventData;
 
             if (start.format('DMYYYY') != end.format('DMYYYY')) {
-            //    alert('fechas distintas');
+                alert('fechas distintas');
                 valido = false;
             } else {
                 valido = true;
@@ -110,20 +50,40 @@ $(document).ready(function () {
                 $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
             }
             $('#calendar').fullCalendar('unselect');
+
         },
         editable: true,
         eventLimit: true,
+
         eventClick: function (event, jsEvent, view) {
             $('#calendar').fullCalendar('removeEvents', event._id);
+
         },
         eventMouseover: function (event, jsEvent, view) {
             $(this).append('<span id=\"' + event._id + '\">Clic para eliminar</span>');
+
         },
-        eventMouseout: function (event, jsEvent, view) {
-            $('#' + event._id).remove();
-        },
+        //eventMouseout: function (event, jsEvent, view) {
+        //    $('#' + event._id).remove();
+        //},
+        //eventDrop: function (event, delta, revertFunc, jsEvent, ui, view) {
+        //    console.log(jsEvent.target.id);
+        //}
+
+        //eventMouseover: function (event, jsEvent, view) {
+        //    $(this).append('<img src="img/eliminar.png" id=\"' + event.id  + '\"/>');
+
+        //},
+        //eventMouseout: function (event, jsEvent, view) {
+        //    $('#' + event.id).remove();
+        //}
     })
 
+    //al cambiar de tab mostrar el calendario la usar bootstrap
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        $('#calendar').fullCalendar('render');
+    });
+    $('#tabControl a:first').tab('show');
 });
 
 function obtenerHorarios() {
@@ -155,5 +115,3 @@ function obtenerHorarios() {
     };
     return objhorarios;
 };
-
-</script>
