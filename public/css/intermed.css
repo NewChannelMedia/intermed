@@ -1828,7 +1828,7 @@ hr {
 .chat li .chat-body p
 {
     margin: 0;
-    color: #777777;
+    color: #555;
 }
 
 .panel .slidedown .glyphicon, .chat .glyphicon
@@ -1911,12 +1911,13 @@ width: 4px;
   font-size: 80%;
   padding: 3px!important;
   color: #AAA;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  /*border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);*/
 }
 
 .datetime>span{
   position: relative;
+  font-weight: bold;
   z-index: 3000;
 }
 
@@ -1926,7 +1927,11 @@ li.error{
 }
 
 .nombreContacto.seleccionado{
-  background-color: #FFBF00;
+  background-color: #0489B1;
+}
+
+.nombreContacto.seleccionado small{
+  color: #FFF;
 }
 
 .marcoImagen {
@@ -1942,7 +1947,27 @@ li.error{
     word-wrap: break-word;
 }
 
+.chat-body .contenidoMsg{
+    width: 100%;
+    word-wrap: break-word;
+}
+
 .nombreContacto.noleido{
-  background-color: #EEE;
+  background-color: #CEECF5;
+}
+
+.chat p.pull-right{
+  float: none!important;
+}
+
+.chat p.pull-left{
+  float: none!important;
+}
+
+.chat span.horaMsg{
+  margin-top: 10px;
+  font-size: 70%;
+  color: #CCC;
+  font-weight: bold;
 }
 /*Fin Inbox*/

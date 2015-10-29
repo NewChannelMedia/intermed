@@ -328,38 +328,8 @@ function socketManejadores() {
     } );
 
     socket.on( 'inbox', function ( data ) {
-      if (window.location.href.indexOf("/inbox") > 0){
-        setTimeout(function(){
-          socket.emit( 'verNotificacionesInbox' );
-          $('#totalInbox').html('');
-        },3000);
-
-        var mensajesNoLeidos = new Array();
-        data.forEach(function(msg){
-          var usuario_id = msg.usuario.id;
-          var nombre = msg.usuario.DatosGenerale.nombre + ' ' + msg.usuario.DatosGenerale.apellidoP + ' ' + msg.usuario.DatosGenerale.apellidoM;
-          var urlFotoPerfil = msg.usuario.urlFotoPerfil;
-            if (mensajesNoLeidos[usuario_id]){
-                mensajesNoLeidos[usuario_id]['total'] = mensajesNoLeidos[usuario_id]['total'] +1;
-            } else {
-                mensajesNoLeidos[usuario_id] = {'foto':urlFotoPerfil,'nombre':nombre,'total':1};
-            }
-        });
-        for (x in mensajesNoLeidos) {
-          if ($('tr#' + x).html()){
-            //Ya existe, poner como no leido
-            if (!$('tr#' + x).find('td').hasClass('seleccionado')){
-              $('tr#' + x).find('td').addClass('noleido');
-            }
-          } else {
-            $('#InboxListaContactos').prepend('<tr id="'+ x +'" ><td class="nombreContacto noleido" onclick="cargarInbox(this)"><img src="'+ mensajesNoLeidos[x].foto +'" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> '+  mensajesNoLeidos[x].nombre  +'</span><br/><small class="pull-right text-right" style="font-size:70%;color:#888">Ahora <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>');
-          }
-        }
-        cargarMensajes($('td.seleccionado').parent().prop('id'));
-      }
-
-
-
+      //socket.emit( 'verNotificacionesInbox' );
+      //$('#totalInbox').html('');
       var total = data.length;
       if (total>0){
         $('#totalInbox').html(total);
@@ -369,16 +339,75 @@ function socketManejadores() {
 
     } );
 
+    socket.on('nuevoInbox', function(result){
+      if ($('tr#'+result.de).length>0){
+
+        //Actualizar fecha de mensaje
+        var tr = $('tr#'+result.de);
+        var fecha = getDateTime(true);
+        tr.find('input.time').prop('value',fecha);
+        var nuevafecha = formattedDate(fecha);
+        tr.find('span.timeFormated').html(nuevafecha + ' ');
+        //
+
+        tr.prependTo('#InboxListaContactos');
+        var td = tr.find('td');
+        if (!td.hasClass('seleccionado')){
+          td.addClass('noleido');
+        }
+      } else {
+        socket.emit('crearConversacion',result.de);
+      }
+      if ($('td.seleccionado').parent().prop('id') == result.de){
+        ultimaFecha = $( "#chat .datetime>span" ).last();
+        if (ultimaFecha.html() != formatfecha(new Date().toLocaleString())){
+          $('#chat').append('<li class="clearfix text-center datetime"><span>'+formatfecha(new Date().toLocaleString())+'</span></li>');
+        }
+        var hora = formathora(new Date().toLocaleString());
+        var ultimoMsg = $( "#chat li" ).last();
+        if (!ultimoMsg.hasClass('left')){
+          $('#chat').append(mensajeIzquierda());
+          ultimoMsg = $( "#chat li" ).last()
+        }
+        ultimoMsg.find('.contenidoMsg').append('<p class="pull-left text-left">' +  renderHTML(result.mensaje) + '</p>');
+        ultimoMsg.find('.horaMsg').html(hora);
+        //socket.emit('conversacionLeida', result.de);
+        focusUltimo();
+      }
+    });
+
+    socket.on('crearConversacion', function(usuario){
+      var fecha = getDateTime(true);
+      $('#InboxListaContactos').prepend('<tr id="'+ usuario.id +'" ><td class="nombreContacto noleido" onclick="cargarInbox(this)"><img src="'+ usuario.urlFotoPerfil +'" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> '+ usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM +'</span><br/><input type="hidden" class="time" value="' + fecha + '"><small class="pull-right text-right" style="font-size:70%"><span class="timeFormated">' + formattedDate(fecha)  + ' </span><span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>');
+    });
+
     socket.on('inboxEnviado', function(result){
       if (result.success){
-        var ultimoMsg = $( "#chat .msg" ).last();
+        var td = $('td.seleccionado');
+        //Actualizar fecha de mensaje
+        var fecha = getDateTime(true);
+        td.find('input.time').prop('value',fecha);
+        var nuevafecha = formattedDate(fecha);
+        td.find('span.timeFormated').html(nuevafecha + ' ');
+        //
+        var ultimoMsg = $( "#chat li" ).last()
         mensaje = $('#inboxInputText').val();
         mensaje = renderHTML(mensaje);
         $('#inboxInputText').val('');
-        if (ultimoMsg.hasClass('right'))
-          ultimoMsg.find('p').append('<br/>' + mensaje);
-        else
-          $('#chat').append(mensajeDerecha(mensaje));
+        //Barra con fecha (dia-mes-año)
+        ultimaFecha = $( "#chat .datetime>span" ).last();
+        if (ultimaFecha.html() != formatfecha(new Date().toLocaleString())){
+          $('#chat').append('<li class="clearfix text-center datetime"><span>'+formatfecha(new Date().toLocaleString())+'</span></li>');
+        }
+        //
+        var hora = formathora(new Date().toLocaleString());
+        if (!ultimoMsg.hasClass('right')){
+          console.log('Mensaje derecha');
+          $('#chat').append(mensajeDerecha());
+          ultimoMsg = $( "#chat li" ).last();
+        }
+        ultimoMsg.find('.contenidoMsg').append('<p class="pull-right text-right">' +  mensaje + '</p>');
+        ultimoMsg.find('.horaMsg').html(hora);
       } else {
         $('#chat').append('<li class="clearfix text-center error"><span><span class="glyphicon glyphicon-info-sign" style="font-size:80%"></span>imposible enviar el mensaje, por favor revisa tu conexion</span></li>');
         setTimeout(function(){
@@ -468,4 +497,27 @@ function verTodasNotificaciones(){
   });
   $('#notifList').find('div.loader').remove();
   return respuesta;
+}
+
+
+
+function getDateTime( format ) {
+  var date = new Date();
+  var hour = date.getHours();
+  hour = ( hour < 10 ? "0" : "" ) + hour;
+  var min = date.getMinutes();
+  min = ( min < 10 ? "0" : "" ) + min;
+  var sec = date.getSeconds();
+  sec = ( sec < 10 ? "0" : "" ) + sec;
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  month = ( month < 10 ? "0" : "" ) + month;
+  var day = date.getDate();
+  day = ( day < 10 ? "0" : "" ) + day;
+  if ( format ) {
+    return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
+  }
+  else {
+    return year + month + day + hour + min + sec;
+  }
 }

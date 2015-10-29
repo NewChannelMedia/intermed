@@ -221,7 +221,6 @@ function inputAutocompleteContact(input){
         $('#InboxMsg').css('background-color','#FFF');
         $('#InboxContact').html(ui.item.name);
         $('#chat').html('');
-        cargarMensajes();
         return false;
       }
     })

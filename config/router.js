@@ -1162,6 +1162,14 @@ var iniciar = function () {
         intermed.callController('inbox','cargarMensajesPorUsuario', req.body, req, res);
       }
   });
+
+  app.post('/inbox/cargarMensajesPorUsuarioAnteriores', function(req, res){
+      if (!req.session.passport.user){
+        res.send({'success':false});
+      }else {
+        intermed.callController('inbox','cargarMensajesPorUsuarioAnteriores', req.body, req, res);
+      }
+  });
 }
 
 var io = serv.server( app, 3000 );

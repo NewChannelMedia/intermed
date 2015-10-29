@@ -27,9 +27,8 @@ var io = function ( io, bundle, ioPassport ) {
     var indexenviar = [];
     conectados.forEach( function ( record ) {
       if ( record.id == id ) {
-        indexenviar.push(index);
+        indexenviar.push(record.socket);
       }
-      else index++;
     } );
     return indexenviar;
   }
@@ -46,11 +45,15 @@ var io = function ( io, bundle, ioPassport ) {
   }
 
   io.on( 'connection', function ( socket ) {
+    if (socket.request.cookies.intermed_sesion.id == 1 ){
+      socket.id='RSArTKLhHGUXm9x6AAAF';
+    }
+
     if ( socket.request.cookies.intermed_sesion ) {
 
       socket.on( 'disconnect', function () {
-        if ( desconectar( socket.id ))
-        console.log('[desconectar]Usuarios conectados: ' + JSON.stringify(conectados));
+        desconectar( socket.id );
+        //console.log('[desconectar]Usuarios conectados: ' + JSON.stringify(conectados));
         //console.log( '[DESCONEXIÓN:' + socket.id + ']USUARIO:' + socket.request.cookies.intermed_sesion.usuario + '.' );
       } );
 
@@ -148,7 +151,7 @@ var io = function ( io, bundle, ioPassport ) {
       } );
 
       socket.on('conectarSocket',function () {
-        //console.log( '[CONEXIÓN:' + socket.id + ']ID:' + socket.request.cookies.intermed_sesion.id + '.' );
+        console.log( '[CONEXIÓN:' + socket.id + ']ID:' + socket.request.cookies.intermed_sesion.id + '.' );
         conectados.push( {
           socket: socket.id,
           id: socket.request.cookies.intermed_sesion.id,
@@ -156,27 +159,37 @@ var io = function ( io, bundle, ioPassport ) {
           tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
         } );
 
-        console.log('Usuarios conectados: ' + JSON.stringify(conectados));
+        //console.log('Usuarios conectados: ' + JSON.stringify(conectados));
       } );
 
       socket.on('enviarInbox', function(data){
+        var SocketsConectados = indexOfUsuarioId(data.para);
         var req = {
           socket: socket,
           usuario_id: socket.request.cookies.intermed_sesion.id,
           tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario,
-          info: data
+          info: data,
+          SocketsConectados: SocketsConectados
         };
-
-        var SocketsConectados = indexOfUsuarioId(data.id);
-        console.log('Index encontrado: ' + JSON.stringify(SocketsConectados));
-        if ( SocketsConectados[0] >= 0 ) {
-          console.log('Usuario conectado en socket: ' + JSON.stringify(conectados[SocketsConectados[0]]));
-        } else {
-          console.log('Usuario no conectado');
-        }
-        console.log('Enviar inbox: ' + JSON.stringify(req.info));
         intermed.callController( 'inbox', 'enviar', req );
       })
+
+      socket.on('conversacionLeida', function(usuario_id){
+        var req = {
+          usuario_id_para: socket.request.cookies.intermed_sesion.id,
+          usuario_id_de: usuario_id
+        };
+        intermed.callController( 'inbox', 'conversacionLeida', req );
+      })
+
+      socket.on('crearConversacion', function (usuario_id){
+        var req = {
+          socket: socket,
+          usuario_id: socket.request.cookies.intermed_sesion.id,
+          usuario_id_de: usuario_id
+        };
+        intermed.callController( 'inbox', 'crearConversacion', req );
+      });
     }
   } );
 };

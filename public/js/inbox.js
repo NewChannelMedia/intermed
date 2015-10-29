@@ -26,7 +26,7 @@ function eliminarError(){
 }
 
 function focusUltimo(){
-  var ultimoMsg = $( "#chat li" ).last();
+  var ultimoMsg = $( "#chat li .horaMsg" ).last();
   if (ultimoMsg[0]){
     ultimoMsg[0].scrollIntoView();
   }
@@ -52,12 +52,16 @@ $(document).ready(function(){
   $('#contactList').css('height',$('#InboxMsg').css('height'));
   $('#contactList').css('overflow','auto');
 
-  setTimeout(function(){
+  setInterval(function(){
+    $('td.nombreContacto').each(function() {
+      var nuevafecha = formattedDate($(this).find('input.time').prop('value'));
+      $(this).find('span.timeFormated').html(nuevafecha + ' ');
+    });
     /*$('tr>td>input').each(function(inp){
       $(inp).val('Test');
       console.log('VAL: ' + $(inp).val());
     });*/
-  },3000);
+  },300000);
 
   cargarListaMensajes();
 });
@@ -76,9 +80,12 @@ function cargarInbox(element){
 }
 
 function nuevoInbox(ui){
-  $('#InboxListaContactos').prepend('<tr id="'+ ui.item.id +'" ><td class="nombreContacto seleccionado" onclick="cargarInbox(this)"><img src="'+ ui.item.imageSrc +'" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> '+ ui.item.name +'</span><br/><small class="pull-right text-right" style="font-size:70%;color:#888">Ahora <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>');
+  var fecha = getDateTime(true);
+  $('#InboxListaContactos').prepend('<tr id="'+ ui.item.id +'" ><td class="nombreContacto seleccionado" onclick="cargarInbox(this)"><img src="'+ ui.item.imageSrc +'" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> '+ ui.item.name +'</span><br/><input type="hidden" class="time" value="' + fecha + '"><small class="pull-right text-right" style="font-size:70%"><span class="timeFormated">' + formattedDate(fecha)  + ' </span><span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>');
   $('#chat').html('');
 }
+
+var liload = '<li class="clearfix text-center load" style="padding:0px;"><button onclick="cargarAnteriores()" class="btn btn-warning btn-block">Cargar anteriores</button></li>';
 
 function cargarMensajes(id){
   $.ajax({
@@ -88,45 +95,246 @@ function cargarMensajes(id){
     data: {usuario_id: id},
     success: function( data ) {
       if (data){
-        resultado = data.resultado;
-        data[2].forEach(function(record){
-          if (data[1] == record.usuario_id_de){
-            var ultimoMsg = $( "#chat .msg" ).last();
-            if (ultimoMsg.hasClass('right')){
-              ultimoMsg.find('p').append('<br/>' + renderHTML(record.mensaje));
+
+        if (data[2].length>0){
+          if (data[2].length==10) $('#chat').html(liload);
+          resultado = data.resultado;
+          var fecha = '';
+          data[2].reverse();
+          data[2].forEach(function(record){
+            if ( fecha != formatfecha(record.fecha))
+            {
+              fecha = formatfecha(record.fecha);
+              $('#chat').append('<li class="clearfix text-center datetime"><span>'+fecha+'</span></li>');
             }
-            else{
-              $('#chat').append(mensajeDerecha(record.mensaje));
+            if (data[1] == record.usuario_id_de){
+              var ultimoMsg = $( "#chat li" ).last()
+              var hora = formathora(record.fecha);
+              if (!ultimoMsg.hasClass('right')){
+                $('#chat').append(mensajeDerecha());
+                ultimoMsg = $( "#chat li" ).last();
+              }
+              ultimoMsg.find('.contenidoMsg').append('<p id ="'+ record.id +'" class="pull-right text-right">' +  renderHTML(record.mensaje) + '</p>');
+              ultimoMsg.find('.horaMsg').html(hora);
+            } else {
+              var ultimoMsg = $( "#chat li" ).last();
+              var hora = formathora(record.fecha);
+              if (!ultimoMsg.hasClass('left')){
+                $('#chat').append(mensajeIzquierda());
+                ultimoMsg = $( "#chat li" ).last();
+              }
+              ultimoMsg.find('.contenidoMsg').append('<p id ="'+ record.id +'" class="pull-left text-left">' +  renderHTML(record.mensaje) + '</p>');
+              ultimoMsg.find('.horaMsg').html(hora);
             }
-          } else {
-            var ultimoMsg = $( "#chat .msg" ).last();
-            if (ultimoMsg.hasClass('left')){
-              ultimoMsg.find('p').append('<br/>' + renderHTML(record.mensaje));
-            }
-            else{
-              $('#chat').append(mensajeIzquierda(record.mensaje));
-            }
+          });
+          socket.emit('conversacionLeida', data[0]);
+
+
+          //Mientras el chat no tenga scroll, cargar mensajes anteriores
+          /*
+          var mensaje_id = $('.contenidoMsg p').first().prop('id');
+          var usuario_id = $('td.seleccionado').parent().prop('id');
+          if (mensaje_id != '' && usuario_id != ''){
+            cargarMensajesAnteriores(usuario_id,mensaje_id);
           }
-        });
-        focusUltimo();
+          */
+
+                    console.log('Has scroll: '+ $('#InboxMsg').height() > $(window).height());
+          //while(!$('#InboxMsg').has_scrollbar()) {
+              var mensaje_id = $('.contenidoMsg p').first().prop('id');
+              var usuario_id = $('td.seleccionado').parent().prop('id');
+              if (mensaje_id != '' && usuario_id != ''){
+                cargarMas(usuario_id,mensaje_id);
+              }
+          //}
+
+                              console.log('Has scroll: '+ $('#InboxMsg').height() > $(window).height());
+          //while(!$('#InboxMsg').has_scrollbar()) {
+              var mensaje_id = $('.contenidoMsg p').first().prop('id');
+              var usuario_id = $('td.seleccionado').parent().prop('id');
+              if (mensaje_id != '' && usuario_id != ''){
+                cargarMas(usuario_id,mensaje_id);
+              }
+          //}
+          console.log('Has scroll: '+ $('#InboxMsg').height() > $(window).height());
+
+          focusUltimo();
+        }
       }
     }
     });
 }
 
-function mensajeIzquierda(msg){
-  var img = $('td.seleccionado').find('img').prop('src');
-  msg = renderHTML(msg);
-  return '<li class="left clearfix msg"><span class="chat-img pull-left"><img src="'+ img +'" class="img-circle" width="50" height="50" /></span><div class="chat-body clearfix"><div class="header"><strong class="primary-font">'+ $('#InboxContact').html() +'</strong><small class="pull-right text-muted"> </small></div><p class="pull-left text-left">'+msg+'</p></div></li>';
+function hasScrollBar(divid){
+  if ($('#divid').height() > $(window).height()) {
+    // scrollbar
+    return true;
+  } else return false;
 }
 
-function mensajeDerecha(msg){
-  msg = renderHTML(msg);
-  return '<li class="right clearfix msg"><span class="chat-img pull-right"><img src="'+ $('#fotoPerfilMini').prop('src') +'" class="img-circle" width="50" height="50" /></span><div class="chat-body clearfix"><div class="header"><small class=" text-muted"> </small><strong class="pull-right primary-font">Cinthia Bermúdez Acosta</strong></div><p class="pull-right text-right">'+ msg +'</p></div></li>';
+(function($) {
+    $.fn.hasScrollBar = function() {
+        var e = this.get(0);
+        return {
+            vertical: e.scrollHeight > e.clientHeight,
+            horizontal: e.scrollWidth > e.clientWidth
+        };
+    }
+})(jQuery);
+
+function cargarMas(usuario_id, mensaje_id){
+  $.ajax({
+    url: "/inbox/cargarMensajesPorUsuarioAnteriores",
+    dataType: "json",
+    method: 'POST',
+    data: {usuario_id: usuario_id, mensaje_id: mensaje_id},
+    success: function( data ) {
+      if (data[2].length>0){
+        $('li.load').remove();
+        data[2].forEach(function(record){
+          var fechaagregada = false;
+          if ( $( "#chat .datetime > span" ).first().html() != formatfecha(record.fecha))
+          {
+            fechaagregada = true;
+            //Si la fecha no es la primera que aparece, se agrega una nueva fecha, los mensajes se agregaran despues de este
+            $('#chat').prepend('<li class="clearfix text-center datetime"><span>'+formatfecha(record.fecha)+'</span></li>');
+          }
+          if (fechaagregada){
+            if (data[1] == record.usuario_id_de){
+              var hora = formathora(record.fecha);
+              $( "#chat .datetime" ).first().after(mensajeDerecha());
+              var primerMensaje = $( "#chat li.msg" ).first();
+              primerMensaje.find('.contenidoMsg').prepend('<p id ="'+ record.id +'" class="pull-right text-right">' +  renderHTML(record.mensaje) + '</p>');
+              if (primerMensaje.find('.horaMsg').html() == ""){
+                primerMensaje.find('.horaMsg').html(hora);
+              }
+            } else {
+                var hora = formathora(record.fecha);
+                $( "#chat .datetime" ).first().after(mensajeIzquierda());
+                var primerMensaje = $( "#chat li.msg" ).first();
+                primerMensaje.find('.contenidoMsg').prepend('<p id ="'+ record.id +'" class="pull-left text-left">' +  renderHTML(record.mensaje) + '</p>');
+                if (primerMensaje.find('.horaMsg').html() == ""){
+                  primerMensaje.find('.horaMsg').html(hora);
+                }
+            }
+          } else {
+            if (data[1] == record.usuario_id_de){
+              var primerMensaje = $( "#chat li.msg" ).first()
+              var hora = formathora(record.fecha);
+              if (!primerMensaje.hasClass('right')){
+                $( "#chat .datetime" ).first().after(mensajeDerecha());
+                primerMensaje = $( "#chat li.msg" ).first();
+              }
+              primerMensaje.find('.contenidoMsg').prepend('<p id ="'+ record.id +'" class="pull-right text-right">' +  renderHTML(record.mensaje) + '</p>');
+              if (primerMensaje.find('.horaMsg').html() == ""){
+                primerMensaje.find('.horaMsg').html(hora);
+              }
+            } else {
+                var primerMensaje = $( "#chat li.msg" ).first()
+                var hora = formathora(record.fecha);
+                if (!primerMensaje.hasClass('left')){
+                  $( "#chat .datetime" ).first().after(mensajeIzquierda());
+                  primerMensaje = $( "#chat li.msg" ).first();
+                }
+                primerMensaje.find('.contenidoMsg').prepend('<p id ="'+ record.id +'" class="pull-left text-left">' +  renderHTML(record.mensaje) + '</p>');
+                if (primerMensaje.find('.horaMsg').html() == ""){
+                  primerMensaje.find('.horaMsg').html(hora);
+                }
+            }
+          }
+        });
+        if (data[2].length==20) {
+          $('#chat').prepend(liload);
+        }
+        load = true;
+      }
+
+    }
+    });
+}
+
+function cargarMensajesAnteriores(usuario_id, mensaje_id){
+  $.ajax({
+    url: "/inbox/cargarMensajesPorUsuarioAnteriores",
+    dataType: "json",
+    method: 'POST',
+    data: {usuario_id: usuario_id, mensaje_id: mensaje_id},
+    success: function( data ) {
+      if (data[2].length>0){
+        data[2].forEach(function(record){
+          var fechaagregada = false;
+          if ( $( "#chat .datetime > span" ).first().html() != formatfecha(record.fecha))
+          {
+            fechaagregada = true;
+            //Si la fecha no es la primera que aparece, se agrega una nueva fecha, los mensajes se agregaran despues de este
+            $('#chat').prepend('<li class="clearfix text-center datetime"><span>'+formatfecha(record.fecha)+'</span></li>');
+          }
+          if (fechaagregada){
+            if (data[1] == record.usuario_id_de){
+              var hora = formathora(record.fecha);
+              $( "#chat .datetime" ).first().after(mensajeDerecha());
+              var primerMensaje = $( "#chat li.msg" ).first();
+              primerMensaje.find('.contenidoMsg').prepend('<p id ="'+ record.id +'" class="pull-right text-right">' +  renderHTML(record.mensaje) + '</p>');
+              if (primerMensaje.find('.horaMsg').html() == ""){
+                primerMensaje.find('.horaMsg').html(hora);
+              }
+            } else {
+                var hora = formathora(record.fecha);
+                $( "#chat .datetime" ).first().after(mensajeIzquierda());
+                var primerMensaje = $( "#chat li.msg" ).first();
+                primerMensaje.find('.contenidoMsg').prepend('<p id ="'+ record.id +'" class="pull-left text-left">' +  renderHTML(record.mensaje) + '</p>');
+                if (primerMensaje.find('.horaMsg').html() == ""){
+                  primerMensaje.find('.horaMsg').html(hora);
+                }
+            }
+          } else {
+            if (data[1] == record.usuario_id_de){
+              var primerMensaje = $( "#chat li.msg" ).first()
+              var hora = formathora(record.fecha);
+              if (!primerMensaje.hasClass('right')){
+                $( "#chat .datetime" ).first().after(mensajeDerecha());
+                primerMensaje = $( "#chat li.msg" ).first();
+              }
+              primerMensaje.find('.contenidoMsg').prepend('<p id ="'+ record.id +'" class="pull-right text-right">' +  renderHTML(record.mensaje) + '</p>');
+              if (primerMensaje.find('.horaMsg').html() == ""){
+                primerMensaje.find('.horaMsg').html(hora);
+              }
+            } else {
+                var primerMensaje = $( "#chat li.msg" ).first()
+                var hora = formathora(record.fecha);
+                if (!primerMensaje.hasClass('left')){
+                  $( "#chat .datetime" ).first().after(mensajeIzquierda());
+                  primerMensaje = $( "#chat li.msg" ).first();
+                }
+                primerMensaje.find('.contenidoMsg').prepend('<p id ="'+ record.id +'" class="pull-left text-left">' +  renderHTML(record.mensaje) + '</p>');
+                if (primerMensaje.find('.horaMsg').html() == ""){
+                  primerMensaje.find('.horaMsg').html(hora);
+                }
+            }
+          }
+        });
+        if (data[2].length==20) {
+          $('#chat').prepend(liload);
+          $("#InboxMsg").scrollTop(40);
+        }
+        load = true;
+      }
+
+    }
+    });
+}
+
+function mensajeIzquierda(){
+  var img = $('td.seleccionado').find('img').prop('src');
+  return '<li class="left clearfix msg"><span class="chat-img pull-left"><img src="'+ img +'" class="img-circle" width="50" height="50" /></span><div class="chat-body clearfix"><div class="header"><strong class="primary-font">'+ $('#InboxContact').html() +'</strong><small class="pull-right text-muted"> </small></div><span class="contenidoMsg"></span><span class="horaMsg pull-left text-left"></span></div></li>';
+}
+
+function mensajeDerecha(){
+  return '<li class="right clearfix msg"><span class="chat-img pull-right"><img src="'+ $('#fotoPerfilMini').prop('src') +'" class="img-circle" width="50" height="50" /></span><div class="chat-body clearfix"><div class="header"><small class=" text-muted"> </small><strong class="pull-right primary-font">Cinthia Bermúdez Acosta</strong></div><span class="contenidoMsg"></span><span class="horaMsg pull-right text-right"></span></div></li>';
 }
 
 function renderHTML(text) {
-  var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+  var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?()=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
   text = text.replace(urlRegex, function(url) {
       //if ( ( url.indexOf(".jpg") > 0 ) || ( url.indexOf(".png") > 0 ) || ( url.indexOf(".gif") > 0 ) ) {
       //    return '<a href="' + url + '" target="_blanck"><img src="' + url + '" style="max-width:60%" class="img-thumbnail"></a>' + '<br/>'
@@ -153,7 +361,6 @@ function cargarListaMensajes(){
       }
 
       orden = orden.sort(ordenarPorFecha);
-      console.log('orden: ' + JSON.stringify(orden));
 
       orden.forEach(function(ord){
         var x = ord.x;
@@ -161,7 +368,7 @@ function cargarListaMensajes(){
         if (data[x].visto === 0){
           visto = ' noleido '
         }
-        $('#InboxListaContactos').append('<tr id="'+ data[x].usuario.id +'" ><td class="nombreContacto'+ visto +'" onclick="cargarInbox(this)"><img src="'+ data[x].usuario.urlFotoPerfil +'" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> '+ data[x].usuario.DatosGenerale.nombre + ' '+ data[x].usuario.DatosGenerale.apellidoP + data[x].usuario.DatosGenerale.apellidoM  +'</span><br/><input type="hidden" val="'+data[x].fecha+'"><small class="pull-right text-right" style="font-size:70%;color:#888">' + formattedDate(data[x].fecha) +' <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>');
+        $('#InboxListaContactos').append('<tr id="'+ data[x].usuario.id +'" ><td class="nombreContacto'+ visto +'" onclick="cargarInbox(this)"><img src="'+ data[x].usuario.urlFotoPerfil +'" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> '+ data[x].usuario.DatosGenerale.nombre + ' '+ data[x].usuario.DatosGenerale.apellidoP + data[x].usuario.DatosGenerale.apellidoM  +'</span><br/><input class="time" type="hidden" value="'+data[x].fecha+'"><small class="pull-right text-right" style="font-size:70%"><span class="timeFormated">' + formattedDate(data[x].fecha) +'</span> <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>');
 
       });
     }
@@ -203,10 +410,15 @@ function formattedDate( date ) {
   var Horas = Math.floor( dif / ( 1000 * 60 * 60 ) );
   if ( Horas == 0 ) {
     var minutos = Math.floor( dif / ( 1000 * 60 ) );
-    if ( minutos > 1 )
-      return 'hace ' + minutos + ' minutos';
+    if ( minutos >= 1 ){
+      if (minutos == 1){
+        return 'hace ' + minutos + ' minuto';
+      } else {
+        return 'hace ' + minutos + ' minutos';
+      }
+    }
     else
-      return 'hace 1 minuto';
+      return 'hace unos segundos';
   }
   else if ( Horas < 24 ) {
     return 'hace ' + Horas + ' horas';
@@ -215,3 +427,62 @@ function formattedDate( date ) {
     return day1 + ' de ' + months[ month1 ] + ' a las ' + hour1 + ':' + minutes1;
   }
 }
+
+
+
+function formatfecha( date ) {
+  date = new Date( date );
+  date = date.toString();
+  var months = [ 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre' ];
+
+  var d = new Date(date || Date.now()),
+    month = d.getMonth();
+    day = '' + d.getDate(),
+    year = d.getFullYear();
+
+  return day + ' de ' + months[ month ] + ' de ' + year;
+}
+
+
+function formathora( date ) {
+  date = new Date( date );
+  date = date.toString();
+  var months = [ 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre' ];
+
+  var d = new Date(date || Date.now()),
+    hour = '' + d.getHours(),
+    minutes = '' + d.getMinutes();
+
+  return hour + ':' + minutes;
+}
+
+var load = true;
+
+function cargarAnteriores(){
+  if ($('#chat').position().top > 30 && $('li.load').length>0 && load){
+    load = false;
+    $('li.load button').html('<div class="throbber-loader">Cargando</div>');
+    setTimeout(function(){
+      $('li.load').remove();
+      var mensaje_id = $('.contenidoMsg p').first().prop('id');
+      var usuario_id = $('td.seleccionado').parent().prop('id');
+      if (mensaje_id != '' && usuario_id != ''){
+        cargarMensajesAnteriores(usuario_id,mensaje_id);
+      }
+    },1000);
+  }
+}
+
+$(document).ready(function(){
+  $('[data-toggle="tooltip"]').tooltip();
+
+  var chat = document.getElementById("chat");
+  if (chat.addEventListener) {
+  	// IE9, Chrome, Safari, Opera
+  	chat.addEventListener("mousewheel", cargarAnteriores, false);
+  	// Firefox
+  	chat.addEventListener("DOMMouseScroll", cargarAnteriores, false);
+  }
+  // IE 6/7/8
+  else chat.attachEvent("onmousewheel", cargarAnteriores);
+});

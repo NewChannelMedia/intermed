@@ -34,7 +34,10 @@ exports.enviar = function( req ){
               });
           }
         }
-      })
+      });
+      req.SocketsConectados.forEach(function(socket){
+        req.socket.broadcast.to(socket).emit('nuevoInbox',{de: req.usuario_id, mensaje: req.info.mensaje});
+      });
       req.socket.emit('inboxEnviado',{success:true});
     } else {
       req.socket.emit('inboxEnviado',{success:false});
@@ -48,11 +51,10 @@ exports.cargartodos  = function( object, req, res ){
       {usuario_id_de: req.session.passport.user.id},
       {usuario_id_para: req.session.passport.user.id}
     ),
-    attributes: ['usuario_id_de','usuario_id_para',[models.Sequelize.fn('max', models.Sequelize.col('fecha')),'fecha'], 'visto'],
-    group: ['usuario_id_de','usuario_id_para'],
-    order:  '`fecha` DESC',
+    attributes: ['usuario_id_de','usuario_id_para',[models.Sequelize.fn('max', models.Sequelize.col('fecha')),'fecha'], [models.Sequelize.fn('min', models.Sequelize.col('visto')),'visto']],
+    group: ['usuario_id_de','usuario_id_para']
   }).then(function(result){
-    if (result){
+    if (result.length > 0){
       var resultado = [];
       result.forEach( function ( record ) {
         usuario_id = '';
@@ -81,6 +83,9 @@ exports.cargartodos  = function( object, req, res ){
               if (record.usuario_id_para === req.session.passport.user.id){
                 resultado[usuario.id]['visto'] = record.visto;
               }
+              if (record.fecha > resultado[usuario.id]['fecha']){
+                resultado[usuario.id]['fecha'] = record.fecha;
+              }
             }
             if ( record === result[ result.length - 1 ] ) {
                 res.send(resultado);
@@ -88,7 +93,7 @@ exports.cargartodos  = function( object, req, res ){
         } )
       });
     } else {
-        res.send(result);
+        res.send({});
     }
   });
 }
@@ -107,8 +112,9 @@ exports.cargarMensajesPorUsuario  = function( object, req, res ){
         {usuario_id_para: object.usuario_id}
       )
     ),
-    attributes: ['usuario_id_de','usuario_id_para','mensaje','fecha', 'visto'],
-    order:  '`fecha` ASC',
+    attributes: ['id','usuario_id_de','usuario_id_para','mensaje','fecha', 'visto'],
+    order:  '`fecha` DESC',
+    limit: 10
   }).then(function(result){
       var resultado = [];
 
@@ -116,6 +122,76 @@ exports.cargarMensajesPorUsuario  = function( object, req, res ){
       resultado.push(req.session.passport.user.id);
       resultado.push(JSON.parse(JSON.stringify(result)));
       res.send(resultado);
+  });
+}
+
+
+exports.cargarMensajesPorUsuarioAnteriores  = function( object, req, res ){
+  models.Inbox.findAll({
+    where: models.sequelize.and(
+      {id:{$lt: object.mensaje_id}},
+      models.sequelize.or(
+        models.sequelize.and(
+          {usuario_id_de: object.usuario_id},
+          {usuario_id_para: req.session.passport.user.id}
+        ),
+        models.sequelize.and(
+          {usuario_id_de: req.session.passport.user.id},
+          {usuario_id_para: object.usuario_id}
+        )
+      )
+    ),
+    attributes: ['id','usuario_id_de','usuario_id_para','mensaje','fecha', 'visto'],
+    order:  '`fecha` DESC',
+    limit: 20
+  }).then(function(result){
+      var resultado = [];
+
+      resultado.push(object.usuario_id);
+      resultado.push(req.session.passport.user.id);
+      resultado.push(JSON.parse(JSON.stringify(result)));
+      res.send(resultado);
+  });
+}
+
+exports.conversacionLeida = function(req){
+  models.Inbox.update(
+    {visto: 1},
+    {
+      where:{
+        usuario_id_de: req.usuario_id_de,
+        usuario_id_para: req.usuario_id_para,
+        visto: 0
+      }
+    }
+  ).then(function(result){
+    if (result){
+      models.Notificacion.update( {
+        visto: 1
+      }, {
+        where: {
+          usuario_id: req.usuario_id_para,
+          visto: 0,
+          data: req.usuario_id_de.toString(),
+          tipoNotificacion_id: {$between: [100, 200]}
+        }
+      });
+    }
+  });
+}
+
+exports.crearConversacion = function(req){
+  models.Usuario.findOne({
+    where: {
+      id: req.usuario_id_de
+    },
+    attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+    include: [ {
+      model: models.DatosGenerales,
+      attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+      } ]
+  }).then( function ( usuario ) {
+    req.socket.emit('crearConversacion',usuario);
   });
 }
 
