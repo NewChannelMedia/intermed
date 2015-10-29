@@ -55,7 +55,7 @@ function mailer( object, file ) {
   // se configura un json con los valores que debe de traer el object
   // este json se le pasara como parametro a la funcion para enviar el correo
   var mailOptions = {
-    from: 'New Channel corps © <hola@newchannel.mx>',
+    from: 'Tu cuenta Intermed ®<hola@newchannel.mx>',
     to: object.to,
     subject: object.subject,
     template: file,
@@ -84,7 +84,7 @@ function mailer( object, file ) {
   } );
 }
 
-function recomendacion( object, file ) {
+function recomendacion( object ,res, file ) {
   // se configuran las plantillas para el envio de cadad una
   var options = {
     viewEngine: {
@@ -112,19 +112,21 @@ function recomendacion( object, file ) {
   // se configura un json con los valores que debe de traer el object
   // este json se le pasara como parametro a la funcion para enviar el correo
   var mailOptions = {
-    from: 'New Channel recomienda © <hola@newchannel.mx>',
+    from: 'Recomendaciones Intermed ®<hola@newchannel.mx>',
     to: object.to,
     subject: object.subject,
     template: file,
     context: {
       name: object.nombre,
       correo: object.to,
-      enlace: 'localhost:3000/perfil/' + object.enlace,
+      enlace:  object.enlace,
+      usuario:object.usuario,
+      mensaje: object.mensaje,
     }
   };
-  if ( object.enlace ) mailOptions.context.enlace = object.enlace;
+  /*if ( object.enlace ) mailOptions.context.enlace = object.enlace;
   if ( object.nombreSesion ) mailOptions.context.nombresesion = object.nombreSesion;
-  if ( object.mensaje ) mailOptions.context.mensaje = object.mensaje;
+  if ( object.mensaje ) mailOptions.context.mensaje = object.mensaje;*/
 
   var transporter = nodemailer.createTransport( smtpTransport( datos ) );
   transporter.use( 'compile', hbs( options ) );
@@ -140,4 +142,5 @@ function recomendacion( object, file ) {
     }
   } );
 }
+exports.recomendacion = recomendacion;
 exports.mailer = mailer;

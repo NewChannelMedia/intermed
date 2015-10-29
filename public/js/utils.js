@@ -1499,12 +1499,19 @@ function cargarFavCol( usuario ) {
     var id = "";
     var usuarioRL="";
     var extraDato ="";
+    var usuario = "";
+    var uId ="";
+    // inpyt type text
     $( '.recomendar.contList-profileActionLink' ).click(function(){
       id += $( this ).attr('id');
+      $("#pacienteIdOculto").text(id);
+      var medico_id="";
+      var di = "";
       //console.log("ID: "+id);
       $.post('/medicosContacto',{idMedico:id},function(data){
-        console.log("masDatos: "+JSON.stringify(data));
         for( var i in data ){
+          medico_id = data[ i ].id;
+          di = data[ i ].Usuario.id;
           if( data[ i ].Usuario ){
             usuarioRL += data[ i ].Usuario.usuarioUrl;
             var nombreCompleto = data[ i ].Usuario.DatosGenerale.nombre+' '+data[ i ].Usuario.DatosGenerale.apellidoP+' '+data[ i ].Usuario.DatosGenerale.apellidoM;
@@ -1515,15 +1522,17 @@ function cargarFavCol( usuario ) {
       // con ajax se hace la peticion a la url la cual me mostrara la informacion en una tabla con
       // la lista de mis contactos
       $.post('/contactosRecomendados',function(data){
-        console.log("INFO CONTACTOS: "+JSON.stringify(data));
         var html = "";
+        var nombreTodo="";
         $( "#recomendarA tbody" ).html('');
         $( '#enviarRecomendaciones ul').html('');
         $( '#doc' ).html('');
         for( var i in data ){
-          var nombreTodo = data[ i ].Paciente.Usuario.DatosGenerale.nombre+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoP+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoM;
+          nombreTodo = data[ i ].Paciente.Usuario.DatosGenerale.nombre+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoP+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoM;
           var tr = "tr"+data[ i ].Paciente.id;
-          html +='<tr class="" id="'+tr+'" onclick="seleccionarUsuario(\''+i+'\',\''+tr+'\',\''+nombreTodo+'\')">';
+          var mas = medico_id;
+          var otroMas = data[ i ].Paciente.usuario_id;
+          html +='<tr class="" id="'+tr+'" onclick="seleccionarUsuario(\''+i+'\',\''+tr+'\',\''+nombreTodo+'\',\''+mas+'\',\''+otroMas+'\',\''+di+'\')">';
           html +='<td>';
           html +='<img src="'+data[ i ].Paciente.Usuario.urlFotoPerfil+'" alt="" class="img-thumbnail">';
           html +='</td>';
@@ -1533,6 +1542,10 @@ function cargarFavCol( usuario ) {
           html +='</tr>';
           extraDato = nombreTodo;
         }
+        $.post('/usuarioPrincipal',function(data){
+          uId = data.id;
+          $("#nombreOcultoPerfil").text(data.Usuario.DatosGenerale.nombre+' '+data.Usuario.DatosGenerale.apellidoP+' '+data.Usuario.DatosGenerale.apellidoM);
+        });
         $( "#recomendarA tbody" ).append(html);
       });
     });
@@ -1540,30 +1553,56 @@ function cargarFavCol( usuario ) {
       if( $( "#correoEnviarRecomendado" ).val() != ""){
         var to = $( "#correoEnviarRecomendado" ).val();
         var enlace = usuarioRL;
-        var mensaje =$("#mensajeRecomendar").text();
-        $.post('/enviaCorreoRecomendados',{toMail:to,enlace:enlace,usuario:extraDato,mensaje:mensaje},function(data){
-          if(data){
+        var mensaje =$("#mensajeRecomendar").val();
+        usuario=$("#nombreOcultoPerfil").text();
+        $("#cargador").removeClass('hidden');
+        $('#enviarAtodos').prop('disabled',true);
+        $.post('/enviaCorreoRecomendados',{toMail:to,enlace:enlace,usuario:usuario,mensaje:mensaje},function(data,status){
+          if(status == "success"){
+            $('#enviarAtodos').prop('disabled',false);
+            $("#cargador").addClass('hidden');
             $('.modal').modal('hide');
             $('.modal').on('hidden.bs.modal',function(e){
-              $("#mensajeRecomendar").text('');
+              $("#mensajeRecomendar").val('');
               $( "#correoEnviarRecomendado" ).val('');
             });
           }
         });
       }
-      //$.post('/enviaNotificacionesRecomendados',{},function(){});
+      var obj = new Array();
+      var objId = new Array();
+      var medico;
+      var paciente;
+      $.each($("li div.label.label-primary small span.hidden"),function(count, valor){
+        obj.push($( this ).text());
+        medico = parseInt( $(this).attr('di'));
+        objId.push( $( this ).attr('da') );
+        paciente = parseInt( $(this).attr('da'));
+      });
+      $.post('/medicoRecomendado',{objeto:obj, objectoId:objId},function(data){
+        $.post('/doctorRecomendado',{medicoId:medico, paciente:paciente},function(dat){});
+        if(data){
+          $('.modal').modal('hide');
+          $('.modal').on('hidden.bs.modal',function(e){
+            $("#mensajeRecomendar").text('');
+            $( "#correoEnviarRecomendado" ).val('');
+            $("#buscadorRecomendados").val('');
+          });
+        }
+      });
     });
   });
-function seleccionarUsuario(i, tr, nombre){
-  var nombreCompleto = "";
+function seleccionarUsuario(i, tr, nombre, mas, otroMas, di){
   var html2 ="";
   var otroId = 'li'+i;
-  nombreCompleto += $( '#recomendarA tbody td p' ).text();
   html2 += '<li id="'+otroId+'" onclick="removerUsuario(\''+otroId+'\',\''+tr+'\')" >';
     html2 +="<p>";
       html2 += "<div class='label label-primary'><span class='glyphicon glyphicon-remove'>&nbsp;"
         html2 +="<small>";
           html2 +=nombre;
+          html2 += "<span class='hidden' da='"+otroMas+"' di ='"+di+"' >";
+            html2 += mas;
+          html2 += "</span>";
         html2 +="</small>";
       html2 += "</span></div>";
     html2 +="</p>";

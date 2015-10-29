@@ -383,7 +383,7 @@ module.exports = {
         where:{id:req.body.idMedico},
         include:[{
           model:models.Usuario,
-          attributes:['usuarioUrl','urlFotoPerfil'],
+          attributes:['id','usuarioUrl','urlFotoPerfil'],
           include:[{
             model:models.DatosGenerales,
             attributes:['nombre','apellidoP','apellidoM']
@@ -403,6 +403,96 @@ module.exports = {
       mensaje:req.body.mensaje,
       usuario:req.body.usuario
     };
-    mail.mailer(object,'recomendar');
+    mail.recomendacion(object,res,'recomendar');
+  },
+  medicoRecomendado: function( req, res ){
+    var d = new Date();
+    var strDate = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds();
+    console.log("Fecha y Hora: "+strDate);
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      for( var i in req.body.objeto ){
+        models.Notificacion.create({
+            usuario_id:req.body.objectoId[ i ],
+            tipoNotificacion_id:12,
+            data:req.session.passport.user.Paciente_id+"|"+req.body.objeto[ i ],
+            inicio:strDate,
+            fin:null,
+            visto:0,
+            recordatorio:null
+        }).then(function(creado){
+          res.send(true);
+        });
+      }
+    }
+  },
+  doctorRecomendado: function( req, res ){
+    var d = new Date();
+    var strDate = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds();
+    console.log("Fecha y Hora: "+strDate);
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Notificacion.create({
+        usuario_id: req.body.medicoId,
+        tipoNotificacion_id:13,
+        data:String(usuario_id),
+        inicio:strDate,
+        fin:null,
+        visto:0,
+        recordatorio:null
+      }).then(function(creado){
+        res.send('ok');
+      });
+    }
+  },
+  pacienteIDOculto: function( req, res ){
+    var cortado = req.body.dato;
+    var elem = cortado.split(" ");
+
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.MedFavColegas.findAll({
+        where:{usuario_id:usuario_id},
+        include:[{
+          model:models.Paciente,
+          include:[{
+            model:models.Usuario,
+            attributes:['id','urlFotoPerfil'],
+            include:[{
+              model:models.DatosGenerales,
+              where:{
+                nombre:{
+                  $like:"%"+elem[0]+"%"
+                },
+                apellidoP:{
+                  $like:"%"+elem[1]+"%"
+                }
+              }
+            }]
+          }]
+        }]
+      }).then(function(datos){
+        res.send(datos);
+      });
+    }
+  },
+  usuarioPrincipal: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Paciente.findOne({
+        where:{usuario_id:usuario_id},
+        attributes:['id'],
+        include:[{
+          model:models.Usuario,
+          attributes:['id'],
+          include:[{
+            model:models.DatosGenerales,
+            attributes:['nombre','apellidoP','apellidoM']
+          }]
+        }]
+      }).then(function(paciente){
+        res.send(paciente);
+      });
+    }
   }
 }

@@ -1115,11 +1115,22 @@ var iniciar = function () {
   app.post('/enviaCorreoRecomendados', function( req, res ){
     intermed.callController('contactos','enviaCorreoRecomendados',req,res);
   });
+  app.post('/medicoRecomendado', function( req, res ){
+    intermed.callController('contactos','medicoRecomendado',req,res);
+  });
+  app.post('/pacienteIDOculto', function(req, res){
+    intermed.callController('contactos','pacienteIDOculto', req, res);
+  });
+  app.post('/usuarioPrincipal', function( req, res ){
+    intermed.callController('contactos','usuarioPrincipal',req, res);
+  });
+  app.post('/doctorRecomendado', function( req, res ){
+    intermed.callController('contactos','doctorRecomendado',req, res);
+  });
   // fin recomendaciones url
   app.post( '/buscadorInterno', function (req, res){
     intermed.callController( 'buscadorInterno', 'buscar', req.body, req, res );
   });
-
   app.post( '/buscadorContactos', function (req, res){
     intermed.callController( 'buscadorInterno', 'buscadorContactos', req.body, req, res );
   });

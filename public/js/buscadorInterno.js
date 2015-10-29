@@ -211,3 +211,54 @@ function inputAutocompleteContact(input){
       return li.appendTo(ul);
     };
 }
+var i = 0;
+function recomiendaAuto( input ){
+  input.autocomplete({
+    delay: 0,
+    minLength: 0,
+    source:function(request, response){
+      response(customFilter(requestContactos(request.term,false,true),request.term));
+    },
+    select: function( event, ui){
+      var html2 ="";
+      var otro = "li"+i;
+      var dato = $('#buscadorRecomendados').val();
+      var medico_id;
+      var id = $("#pacienteIdOculto").text();
+      $.post('/medicosContacto',{idMedico:id},function(data){
+        for(var i in data){
+          medico_id = data[ i ].id;
+        }
+      });
+      $.post('/pacienteIDOculto',{dato:dato},function(data){
+        for(var i in data ){
+          html2 += '<li id="'+otro+'">';
+          html2 +="<p>";
+            html2 += "<div class='label label-primary'><span class='close-label glyphicon glyphicon-remove'>&nbsp;"
+              html2 +="<small>";
+                html2 +=$('#buscadorRecomendados').val();
+                html2 += "<span class='hidden' da='"+data[ i ].Paciente.usuario_id+"'>";
+                  html2 += medico_id;
+                html2 += "</span>";
+              html2 +="</small>";
+            html2 += "</span></div>";
+          html2 +="</p>";
+          html2 +="</li>";
+          $( '#enviarRecomendaciones ul' ).append(html2);
+        }
+      }).fail(function(err){
+        console.error("Error: "+JSON.stringify(err));
+      });
+      return false;
+    },
+    change: function(event, ui){
+      $('.close-label').click(function(){
+        $(this).parent('div').remove()
+      });
+    }
+  }).autocomplete('instance')._renderItem = function( ul, item){
+    var li = $( "<li>" );
+    li.append( "<div>" + item.image + item.label +"</div>" );
+    return li.appendTo(ul);
+  };
+}
