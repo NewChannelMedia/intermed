@@ -1,4 +1,27 @@
 ﻿//Api Google Maps
+var styles = [
+  {
+      stylers: [
+        { hue: "#00ffe6" },
+        { saturation: -20 }
+      ]
+  }, {
+      featureType: "road",
+      elementType: "geometry",
+      stylers: [
+        { lightness: 100 },
+        { visibility: "simplified" }
+      ]
+  }, {
+      featureType: "road",
+      elementType: "labels",
+      stylers: [
+        { visibility: "off" }
+      ]
+  }
+];
+
+
 var mapa = {
     map: null,
 
@@ -55,6 +78,11 @@ var mapa = {
 
         //Crear objeto mapa
         mapa.map = new google.maps.Map(mapElement, mapOptions);
+        
+        var styledMap = new google.maps.StyledMapType(styles, { name: "Styled Map" });
+        mapa.map.mapTypes.set('map_style', styledMap);
+        mapa.map.setMapTypeId('map_style');
+
 
         //Posicionar el mapa en la ubicacion del usuario
         mapa.GeolicalizacionUsuario();
@@ -90,6 +118,7 @@ var mapa = {
             mapa.Marcador();
 
         });
+
     },
     PosicionarMapa: function () {
         var devCenter = new google.maps.LatLng(mapa.latitud, mapa.longitud);
