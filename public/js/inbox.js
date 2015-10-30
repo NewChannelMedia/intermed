@@ -63,7 +63,7 @@ $(document).ready(function(){
     });*/
   },300000);
 
-  cargarListaMensajes();
+  cargarContactosCondicional();
 });
 
 function cargarInbox(element){
@@ -128,66 +128,47 @@ function cargarMensajes(id){
             }
           });
           socket.emit('conversacionLeida', data[0]);
-
-
-          //Mientras el chat no tenga scroll, cargar mensajes anteriores
-          /*
-          var mensaje_id = $('.contenidoMsg p').first().prop('id');
-          var usuario_id = $('td.seleccionado').parent().prop('id');
-          if (mensaje_id != '' && usuario_id != ''){
-            cargarMensajesAnteriores(usuario_id,mensaje_id);
-          }
-          */
-
-                    console.log('Has scroll: '+ $('#InboxMsg').height() > $(window).height());
-          //while(!$('#InboxMsg').has_scrollbar()) {
-              var mensaje_id = $('.contenidoMsg p').first().prop('id');
-              var usuario_id = $('td.seleccionado').parent().prop('id');
-              if (mensaje_id != '' && usuario_id != ''){
-                cargarMas(usuario_id,mensaje_id);
-              }
-          //}
-
-                              console.log('Has scroll: '+ $('#InboxMsg').height() > $(window).height());
-          //while(!$('#InboxMsg').has_scrollbar()) {
-              var mensaje_id = $('.contenidoMsg p').first().prop('id');
-              var usuario_id = $('td.seleccionado').parent().prop('id');
-              if (mensaje_id != '' && usuario_id != ''){
-                cargarMas(usuario_id,mensaje_id);
-              }
-          //}
-          console.log('Has scroll: '+ $('#InboxMsg').height() > $(window).height());
-
-          focusUltimo();
+          cargarInboxCondicional();
         }
       }
     }
     });
 }
 
-function hasScrollBar(divid){
-  if ($('#divid').height() > $(window).height()) {
-    // scrollbar
-    return true;
-  } else return false;
+
+function cargarInboxCondicional(){
+      var mensaje_id = $('.contenidoMsg p').first().prop('id');
+      var usuario_id = $('td.seleccionado').parent().prop('id');
+      var result =cargarMas(usuario_id,mensaje_id);
+      if (parseInt(document.getElementById('chat').offsetHeight) < parseInt(document.getElementById('InboxMsg').offsetHeight)){
+        if (result){
+          cargarInboxCondicional();
+        } else {
+          focusUltimo();
+        }
+      } else {
+        focusUltimo();
+      }
 }
 
-(function($) {
-    $.fn.hasScrollBar = function() {
-        var e = this.get(0);
-        return {
-            vertical: e.scrollHeight > e.clientHeight,
-            horizontal: e.scrollWidth > e.clientWidth
-        };
-    }
-})(jQuery);
+
+function cargarContactosCondicional(){
+      var result =cargarListaMensajes();
+      if (parseInt(document.getElementById('InboxListaContactos').offsetHeight) < parseInt(document.getElementById('contactList').offsetHeight)){
+        if (result){
+          cargarContactosCondicional();
+        }
+      }
+}
 
 function cargarMas(usuario_id, mensaje_id){
+  var respuesta = false;
   $.ajax({
     url: "/inbox/cargarMensajesPorUsuarioAnteriores",
     dataType: "json",
     method: 'POST',
     data: {usuario_id: usuario_id, mensaje_id: mensaje_id},
+    async: false,
     success: function( data ) {
       if (data[2].length>0){
         $('li.load').remove();
@@ -247,10 +228,11 @@ function cargarMas(usuario_id, mensaje_id){
           $('#chat').prepend(liload);
         }
         load = true;
+        respuesta = true;
       }
-
     }
     });
+    return respuesta;
 }
 
 function cargarMensajesAnteriores(usuario_id, mensaje_id){
@@ -345,34 +327,45 @@ function renderHTML(text) {
   return text;
 }
 
+var notIn = [];
+
 function cargarListaMensajes(){
+  var resultado = false;
   $.ajax({
     url: "/inbox/cargartodos",
     dataType: "json",
+    data: {notIn: notIn},
     method: 'POST',
     async: false,
     success: function( data ) {
-      var orden = [];
-      for (x in data){
-        if (data[x]){
-          fecha = data[x].fecha;
-          orden.push({x,fecha});
+    $('#InboxListaContactos').find('tr.tr_next').remove();
+      if (data.length>0){
+        resultado = true;
+        var orden = [];
+        for (x in data){
+          if (data[x]){
+            fecha = data[x].fecha;
+            orden.push({x,fecha});
+          }
         }
+        orden = orden.sort(ordenarPorFecha);
+
+        orden.forEach(function(ord){
+          var x = ord.x;
+          var visto = '';
+          if (data[x].visto === 0){
+            visto = ' noleido '
+          }
+          notIn.push(data[x].usuario.id);
+          $('#InboxListaContactos').append('<tr id="'+ data[x].usuario.id +'" ><td class="nombreContacto'+ visto +'" onclick="cargarInbox(this)"><img src="'+ data[x].usuario.urlFotoPerfil +'" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> '+ data[x].usuario.DatosGenerale.nombre + ' '+ data[x].usuario.DatosGenerale.apellidoP + data[x].usuario.DatosGenerale.apellidoM  +'</span><br/><input class="time" type="hidden" value="'+data[x].fecha+'"><small class="pull-right text-right" style="font-size:70%"><span class="timeFormated">' + formattedDate(data[x].fecha) +'</span> <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>');
+
+        });
+        $('#InboxListaContactos').append('<tr class="tr_next"><td class="text-center active"><a onclick="cargarListaMensajes">Ver más</a></td></tr>');
       }
-
-      orden = orden.sort(ordenarPorFecha);
-
-      orden.forEach(function(ord){
-        var x = ord.x;
-        var visto = '';
-        if (data[x].visto === 0){
-          visto = ' noleido '
-        }
-        $('#InboxListaContactos').append('<tr id="'+ data[x].usuario.id +'" ><td class="nombreContacto'+ visto +'" onclick="cargarInbox(this)"><img src="'+ data[x].usuario.urlFotoPerfil +'" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> '+ data[x].usuario.DatosGenerale.nombre + ' '+ data[x].usuario.DatosGenerale.apellidoP + data[x].usuario.DatosGenerale.apellidoM  +'</span><br/><input class="time" type="hidden" value="'+data[x].fecha+'"><small class="pull-right text-right" style="font-size:70%"><span class="timeFormated">' + formattedDate(data[x].fecha) +'</span> <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>');
-
-      });
+      loadContactos = true;
     }
   });
+  return resultado;
 }
 
 
@@ -472,10 +465,20 @@ function cargarAnteriores(){
     },1000);
   }
 }
+var loadContactos = true;
+
+function cargarContactos(){
+  var scrollBottom = $('#InboxListaContactos').height() - $('#contactList').height() - $('#contactList').scrollTop();
+  if (scrollBottom <5 && $('.tr_next').length>0 && loadContactos){
+    $('.tr_next').find('a').html('<div class="throbber-loader">Cargando…</div>');
+    loadContactos = false;
+    setTimeout(function(){
+      cargarListaMensajes();
+      },1000);
+    }
+}
 
 $(document).ready(function(){
-  $('[data-toggle="tooltip"]').tooltip();
-
   var chat = document.getElementById("chat");
   if (chat.addEventListener) {
   	// IE9, Chrome, Safari, Opera
@@ -485,4 +488,15 @@ $(document).ready(function(){
   }
   // IE 6/7/8
   else chat.attachEvent("onmousewheel", cargarAnteriores);
+
+
+  var InboxListaContactos = document.getElementById("InboxListaContactos");
+  if (InboxListaContactos.addEventListener) {
+  	// IE9, Chrome, Safari, Opera
+  	InboxListaContactos.addEventListener("mousewheel", cargarContactos, false);
+  	// Firefox
+  	InboxListaContactos.addEventListener("DOMMouseScroll", cargarContactos, false);
+  }
+  // IE 6/7/8
+  else InboxListaContactos.attachEvent("onmousewheel", cargarContactos);
 });

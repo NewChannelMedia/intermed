@@ -606,7 +606,7 @@ exports.cargarNotificaciones = function ( object, req, res ) {
   }
   var where = new Array(models.sequelize.and(
     {usuario_id: req.session.passport.user.id},
-    {tipoNotificacion_id: {$notIn: [10, 11]}},//Inbox,,
+    {tipoNotificacion_id: {$notBetween: [100, 200]}},//Inbox,,
     whereid
   ));
   models.Notificacion.findAll( {
@@ -698,7 +698,7 @@ exports.cargarNotificaciones = function ( object, req, res ) {
         }
       } );
     } else {
-      res.send(JSON.parse(JSON.stringify([])));
+      res.send({});
     }
   } )
 }

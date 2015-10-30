@@ -46,13 +46,25 @@ exports.enviar = function( req ){
 }
 
 exports.cargartodos  = function( object, req, res ){
+    var condicion = [];
+    if (object.notIn && object.notIn.length > 0){
+      condicion.push({
+        usuario_id_de: { $notIn: object.notIn},
+        usuario_id_para: { $notIn: object.notIn}
+      })
+    }
   models.Inbox.findAll({
-    where: models.sequelize.or(
-      {usuario_id_de: req.session.passport.user.id},
-      {usuario_id_para: req.session.passport.user.id}
+    where: models.sequelize.and(
+      condicion,
+      models.sequelize.or(
+        {usuario_id_de: req.session.passport.user.id},
+        {usuario_id_para: req.session.passport.user.id}
+      )
     ),
     attributes: ['usuario_id_de','usuario_id_para',[models.Sequelize.fn('max', models.Sequelize.col('fecha')),'fecha'], [models.Sequelize.fn('min', models.Sequelize.col('visto')),'visto']],
-    group: ['usuario_id_de','usuario_id_para']
+    group: ['usuario_id_de','usuario_id_para'],
+    order: 'fecha DESC',
+    limit: 10
   }).then(function(result){
     if (result.length > 0){
       var resultado = [];
