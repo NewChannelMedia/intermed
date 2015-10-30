@@ -225,9 +225,11 @@ function recomiendaAuto( input ){
       var dato = $('#buscadorRecomendados').val();
       var medico_id;
       var id = $("#pacienteIdOculto").text();
+      var di;
       $.post('/medicosContacto',{idMedico:id},function(data){
         for(var i in data){
           medico_id = data[ i ].id;
+          di = data[ i ].Usuario.id;
         }
       });
       $.post('/pacienteIDOculto',{dato:dato},function(data){
@@ -237,7 +239,7 @@ function recomiendaAuto( input ){
             html2 += "<div class='label label-primary'><span class='close-label glyphicon glyphicon-remove'>&nbsp;"
               html2 +="<small>";
                 html2 +=$('#buscadorRecomendados').val();
-                html2 += "<span class='hidden' da='"+data[ i ].Paciente.usuario_id+"'>";
+                html2 += "<span class='hidden' da='"+data[ i ].Paciente.usuario_id+"' di ='"+di+"'>";
                   html2 += medico_id;
                 html2 += "</span>";
               html2 +="</small>";
