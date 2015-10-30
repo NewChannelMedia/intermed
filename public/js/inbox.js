@@ -85,7 +85,7 @@ function nuevoInbox(ui){
   $('#chat').html('');
 }
 
-var liload = '<li class="clearfix text-center load" style="padding:0px;"><button onclick="cargarAnteriores()" class="btn btn-warning btn-block">Cargar anteriores</button></li>';
+var liload = '<li class="clearfix text-center load" style="padding:0px;"><a onclick="cargarAnteriores()" class="btn-block btn-xs">Cargar anteriores</a></li>';
 
 function cargarMensajes(id){
   $.ajax({
@@ -454,7 +454,7 @@ var load = true;
 function cargarAnteriores(){
   if ($('#chat').position().top > 30 && $('li.load').length>0 && load){
     load = false;
-    $('li.load button').html('<div class="throbber-loader">Cargando</div>');
+    $('li.load a').html('<div class="throbber-loader">Cargando</div>');
     setTimeout(function(){
       $('li.load').remove();
       var mensaje_id = $('.contenidoMsg p').first().prop('id');
