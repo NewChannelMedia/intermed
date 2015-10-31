@@ -1128,35 +1128,10 @@ var iniciar = function () {
         result: 'null'
       } );
     }
-  } );
-  // recomendaciones url
-  app.post('/contactosRecomendados',function(req, res){
-    intermed.callController('contactos','contactosRecomendados',req,res);
-  });
-  app.post('/medicosContacto', function(req, res){
-    intermed.callController('contactos','medicosContacto',req,res);
-  });
-  app.post('/enviaCorreoRecomendados', function( req, res ){
-    intermed.callController('contactos','enviaCorreoRecomendados',req,res);
-  });
-  app.post('/medicoRecomendado', function( req, res ){
-    intermed.callController('contactos','medicoRecomendado',req,res);
-  });
-  app.post('/pacienteIDOculto', function(req, res){
-    intermed.callController('contactos','pacienteIDOculto', req, res);
-  });
-  app.post('/usuarioPrincipal', function( req, res ){
-    intermed.callController('contactos','usuarioPrincipal',req, res);
-  });
-  app.post('/doctorRecomendado', function( req, res ){
-    intermed.callController('contactos','doctorRecomendado',req, res);
-  });
-  // fin recomendaciones url
+  } )
+
   app.post( '/buscadorInterno', function (req, res){
     intermed.callController( 'buscadorInterno', 'buscar', req.body, req, res );
-  });
-  app.post( '/buscadorContactos', function (req, res){
-    intermed.callController( 'buscadorInterno', 'buscadorContactos', req.body, req, res );
   });
 
   app.get('/notificaciones', function (req, res){
@@ -1170,19 +1145,10 @@ var iniciar = function () {
 
   app.post('/notificaciones/cargar', function (req, res){
     intermed.callController('notificaciones','cargarNotificaciones', req.body, req, res);
-  });
+  })
 
   app.post('/notificaciones/scroll', function (req, res){
     intermed.callController('notificaciones','scroll', req.body, req, res);
-  });
-
-  app.get('/inbox', function (req, res){
-    if (!req.session.passport.user){
-      res.redirect( '/' );
-    }else {
-      rutas.routeLife( 'plataforma', 'plataforma', hps );
-      intermed.callController('inbox','index', req.body, req, res);
-    }
   });
 }
 

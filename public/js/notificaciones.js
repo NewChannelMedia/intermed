@@ -2,7 +2,6 @@ var socket = io();
 var notificaciones = [];
 var notificacionesScroll = [];
 var notificacionesTotal = [];
-var doctorRecomendado = [];
 
 //Manejar notificaciones
 $.ajax( {
@@ -105,8 +104,6 @@ function actualizarNotificaciones() {
     totalNotificaciones = totalNotificaciones.concat( solicitudesAceptadas );
     totalNotificaciones = totalNotificaciones.concat( agregadoMedicoFavorito );
     totalNotificaciones = totalNotificaciones.concat( solicitudesRechazadas );
-    totalNotificaciones = totalNotificaciones.concat( medicoRecomendado );
-    totalNotificaciones = totalNotificaciones.concat( doctorRecomendado );
     totalNotificaciones = totalNotificaciones.sort( ordenarPorFecha );
     if ( totalNotificaciones.length > 0 ) {
       $( '#totalNotificaciones' ).removeClass( 'hidden invisible' );
@@ -174,20 +171,6 @@ function actualizarNotificaciones() {
                               contenido = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Rechazaste la solicitud de amistad de ' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
                             }
                             break;
-                        case 12:
-                                if (record.paciente){
-                                  contenido = '<div class="media-left"><a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Rechazaste la solicitud de amistad de ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
-                                } else if (record.medico){
-                                  contenido = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Rechazaste la solicitud de amistad de ' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
-                                }
-                                break;
-                          case 13:
-                                  if (record.paciente){
-                                    contenido = '<div class="media-left"><a href="/perfil/'+record.paciente.Usuario.usuarioUrl+'"><img class="media-object" src="'+record.paciente.Usuario.urlFotoPerfil+'" style="width: 50px;"></div><div class="media-body">'+record.paciente.Usuario.DatosGenerale.nombre + ' ' +record.paciente.Usuario.DatosGenerale.apellidoP + ' ' +record.paciente.Usuario.DatosGenerale.apellidoM +' Te ha recomendado a otro paciente</a><br /><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span></div></div>';
-                                  } else if (record.medico){
-                                    contenido = '<div class="media-left"><a href="/perfil/'+record.paciente.Usuario.usuarioUrl+'"><img class="media-object" src="'+record.paciente.Usuario.urlFotoPerfil+'" style="width: 50px;"></div><div class="media-body">'+record.paciente.Usuario.DatosGenerale.nombre + ' ' +record.paciente.Usuario.DatosGenerale.apellidoP + ' ' +record.paciente.Usuario.DatosGenerale.apellidoM +' Te ha recomendado a otro paciente</a><br /><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span></div></div>';
-                                  }
-                                  break;
                     }
                     if (contenido != '')
                       $( '#notificacinesList' ).append( '<li class="media" id="li' + record.id + '">' + contenido + '</li>' );
@@ -214,8 +197,7 @@ var totalNotificaciones = [],
   solicitudAmistadAceptada = [],
   solicitudesAceptadas = [],
   agregadoMedicoFavorito = [],
-  solicitudesRechazadas = [],
-  medicoRecomendado = [];
+  solicitudesRechazadas = [];
 
 
 function socketManejadores() {
@@ -344,72 +326,6 @@ function socketManejadores() {
       }, 3000 );
 
     } );
-    socket.on( 'medicoRecomendado', function ( data ) {
-      medicoRecomendado = [];
-      data.forEach( function ( record ) {
-        date = formattedDate( record.inicio );
-        var content = '';
-        if( record.medico && record.paciente ){
-          var medicoUrl = record.medico.Usuario.usuarioUrl;
-          var fotoPaciente = record.paciente.Usuario.urlFotoPerfil;
-          var nombreCompleto = record.paciente.Usuario.DatosGenerale.nombre + ' ' +record.paciente.Usuario.DatosGenerale.apellidoP + ' ' +record.paciente.Usuario.DatosGenerale.apellidoM ;
-          var nombreDoctor = record.medico.Usuario.DatosGenerale.nombre+' '+record.medico.Usuario.DatosGenerale.apellidoP+' '+record.medico.Usuario.DatosGenerale.ApellidoM;
-          content += '<div class="media-left">';
-            content += '<a href="/perfil/'+medicoUrl+'">';
-              content += '<img class="media-object" src="'+fotoPaciente+'" style="width: 50px;">';
-              content += '</div>';
-              content += '<div class="media-body">'+nombreCompleto+' Te ha recomendado al siguiente Dr.'+nombreDoctor;
-            content += '</a>';
-            content += '<br />';
-            content += '<div class="text-left" style="margin-top:-25px;">';
-              content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>';
-            content += '</div>';
-          content += '</div>';
-        }
-        if (content){
-          medicoRecomendado.unshift( {
-            id: record.id,
-            time: record.inicio,
-            visto: record.visto,
-            content: content
-          } );
-        }
-      } );
-      actualizarNotificaciones();
-    });
-    socket.on( 'doctorRecomendado', function( data ){
-      doctorRecomendado = [];
-      data.forEach( function ( record ) {
-        date = formattedDate( record.inicio );
-        var content = '';
-        if( record.paciente && record.medico ){
-          var pacienteUrl = record.paciente.Usuario.usuarioUrl;
-          var fotoPaciente = record.paciente.Usuario.urlFotoPerfil;
-          var nombreCompleto = record.paciente.Usuario.DatosGenerale.nombre + ' ' +record.paciente.Usuario.DatosGenerale.apellidoP + ' ' +record.paciente.Usuario.DatosGenerale.apellidoM ;
-          var nombreDoctor = record.medico.Usuario.DatosGenerale.nombre+' '+record.medico.Usuario.DatosGenerale.apellidoP+' '+record.medico.Usuario.DatosGenerale.ApellidoM;
-          content += '<div class="media-left">';
-            content += '<a href="/perfil/'+pacienteUrl+'">';
-              content += '<img class="media-object" src="'+fotoPaciente+'" style="width: 50px;">';
-              content += '</div>';
-              content += '<div class="media-body">'+nombreCompleto+' Recomendo tu perfil a otro paciente';
-            content += '</a>';
-            content += '<br />';
-            content += '<div class="text-left" style="margin-top:-25px;">';
-              content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>';
-            content += '</div>';
-          content += '</div>';
-        }
-        if (content){
-          doctorRecomendado.unshift( {
-            id: record.id,
-            time: record.inicio,
-            visto: record.visto,
-            content: content
-          } );
-        }
-      } );
-      actualizarNotificaciones();
-    });
 }
 
 $(document).ready(function(){
@@ -469,46 +385,6 @@ function verTodasNotificaciones(){
                         contenido = '<a href= "/perfil/' + record.paciente.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.paciente.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10">Rechazaste la solicitud de amistad de ' + record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM + '</div></a><div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
                       } else if (record.medico){
                         contenido = '<a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10"> Rechazaste la solicitud de amistad de ' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + '</div></a><div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
-                      }
-                      break;
-                  case 12:
-                      if (record.paciente){
-                        contenido = '<a href="/perfil/'+
-                          record.medico.Usuario.usuarioUrl+
-                          '"><img class="media-object" src="'+
-                          record.paciente.Usuario.urlFotoPerfil+
-                          '" style="width: 50px;"></div><div class="media-body">'+
-                          record.paciente.Usuario.DatosGenerale.nombre+' '+
-                          record.paciente.Usuario.DatosGenerale.apellidoP+' '+
-                          record.paciente.Usuario.DatosGenerale.apellidoM+
-                          ' Te ha recomendado al siguiente Dr.'+
-                          record.medico.Usuario.DatosGenerale.nombre+' '+
-                          record.medico.Usuario.DatosGenerale.apellidoP+' '+
-                          record.medico.Usuario.DatosGenerale.ApellidoM+
-                          '</a><br /><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" >'+
-                          date+'</span></div>';
-                      } else if (record.medico){
-                        contenido = '<a href="/perfil/'+
-                          record.medico.Usuario.usuarioUrl+
-                          '"><img class="media-object" src="'+
-                          record.paciente.Usuario.urlFotoPerfil+
-                          '" style="width: 50px;"></div><div class="media-body">'+
-                          record.paciente.Usuario.DatosGenerale.nombre+' '+
-                          record.paciente.Usuario.DatosGenerale.apellidoP+' '+
-                          record.paciente.Usuario.DatosGenerale.apellidoM+
-                          ' Te ha recomendado al siguiente Dr.'+
-                          record.medico.Usuario.DatosGenerale.nombre+' '+
-                          record.medico.Usuario.DatosGenerale.apellidoP+' '+
-                          record.medico.Usuario.DatosGenerale.ApellidoM+
-                          '</a><br /><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" >'+
-                          date+'</span></div>';
-                      }
-                      break;
-                  case 13:
-                      if (record.paciente){
-                        contenido = '<a href="/perfil/'+record.paciente.Usuario.usuarioUrl+'"><img class="media-object" src="'+record.paciente.Usuario.urlFotoPerfil+'" style="width: 50px;"></div><div class="media-body">'+record.paciente.Usuario.DatosGenerale.nombre + ' ' +record.paciente.Usuario.DatosGenerale.apellidoP + ' ' +record.paciente.Usuario.DatosGenerale.apellidoM +' Te ha recomendado a otro paciente</a><br /><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span></div>';
-                      } else if (record.medico){
-                        contenido = '<a href="/perfil/'+record.paciente.Usuario.usuarioUrl+'"><img class="media-object" src="'+record.paciente.Usuario.urlFotoPerfil+'" style="width: 50px;"></div><div class="media-body">'+record.paciente.Usuario.DatosGenerale.nombre + ' ' +record.paciente.Usuario.DatosGenerale.apellidoP + ' ' +record.paciente.Usuario.DatosGenerale.apellidoM +' Te ha recomendado a otro paciente</a><br /><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span></div>';
                       }
                       break;
               }

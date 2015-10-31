@@ -1498,7 +1498,7 @@ function cargarFavCol( usuario ) {
               "<a class='contList-profileEsp' href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'> " + data[ p ].Medico.Usuario.Especialidad + "</a>" +
               "</div>" +
               "<div class='media-right contList-profileAction'>" +
-              "<a id ='"+data[ p ].Medico.id+"' href ='#' data-target='#recomendar' data-toggle='modal' class='recomendar contList-profileActionLink Flama-bold s15'>Recomendar</a>" +
+              "<a class='contList-profileActionLink Flama-bold s15'>Recomendar</a>" +
               "</div>" +
               "</li>"
             );
@@ -1526,137 +1526,7 @@ function cargarFavCol( usuario ) {
     }
   } );
 }
-/**
-* document ready cuando se cargue el perfil y aparesca los medicos favoritos
-* cuando se le de un click al enlace se mostrara un un modal donde podra ver
-* todos sus contactos y se les podra enviar la recomendacion en este caso el
-* medico al cual le dio click al click de recomendar
-*/
-//<----------- RECOMENDACIONES -------------------->
-  $(document).ready(function(){
-    var id = "";
-    var usuarioRL="";
-    var extraDato ="";
-    var usuario = "";
-    var uId ="";
-    // inpyt type text
-    $( '.recomendar.contList-profileActionLink' ).click(function(){
-      id += $( this ).attr('id');
-      $("#pacienteIdOculto").text(id);
-      var medico_id="";
-      var di = "";
-      //console.log("ID: "+id);
-      $.post('/medicosContacto',{idMedico:id},function(data){
-        for( var i in data ){
-          medico_id = data[ i ].id;
-          di = data[ i ].Usuario.id;
-          if( data[ i ].Usuario ){
-            usuarioRL += data[ i ].Usuario.usuarioUrl;
-            var nombreCompleto = data[ i ].Usuario.DatosGenerale.nombre+' '+data[ i ].Usuario.DatosGenerale.apellidoP+' '+data[ i ].Usuario.DatosGenerale.apellidoM;
-            $("#doctorSpan").text(nombreCompleto);
-          }
-        }
-      });
-      // con ajax se hace la peticion a la url la cual me mostrara la informacion en una tabla con
-      // la lista de mis contactos
-      $.post('/contactosRecomendados',function(data){
-        var html = "";
-        var nombreTodo="";
-        $( "#recomendarA tbody" ).html('');
-        $( '#enviarRecomendaciones ul').html('');
-        $( '#doc' ).html('');
-        for( var i in data ){
-          nombreTodo = data[ i ].Paciente.Usuario.DatosGenerale.nombre+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoP+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoM;
-          var tr = "tr"+data[ i ].Paciente.id;
-          var mas = medico_id;
-          var otroMas = data[ i ].Paciente.usuario_id;
-          html +='<tr class="" id="'+tr+'" onclick="seleccionarUsuario(\''+i+'\',\''+tr+'\',\''+nombreTodo+'\',\''+mas+'\',\''+otroMas+'\',\''+di+'\')">';
-          html +='<td>';
-          html +='<img src="'+data[ i ].Paciente.Usuario.urlFotoPerfil+'" alt="" class="img-thumbnail">';
-          html +='</td>';
-          html +='<td id="paciente'+data[ i ].Paciente.id+'">';
-          html +='<p>'+nombreTodo+'</p>';
-          html +='</td>';
-          html +='</tr>';
-          extraDato = nombreTodo;
-        }
-        $.post('/usuarioPrincipal',function(data){
-          uId = data.id;
-          $("#nombreOcultoPerfil").text(data.Usuario.DatosGenerale.nombre+' '+data.Usuario.DatosGenerale.apellidoP+' '+data.Usuario.DatosGenerale.apellidoM);
-        });
-        $( "#recomendarA tbody" ).append(html);
-      });
-    });
-    $( "#enviarAtodos" ).click(function(){
-      if( $( "#correoEnviarRecomendado" ).val() != ""){
-        var to = $( "#correoEnviarRecomendado" ).val();
-        var enlace = usuarioRL;
-        var mensaje =$("#mensajeRecomendar").val();
-        usuario=$("#nombreOcultoPerfil").text();
-        $("#cargador").removeClass('hidden');
-        $('#enviarAtodos').prop('disabled',true);
-        $.post('/enviaCorreoRecomendados',{toMail:to,enlace:enlace,usuario:usuario,mensaje:mensaje},function(data,status){
-          if(status == "success"){
-            $('#enviarAtodos').prop('disabled',false);
-            $("#cargador").addClass('hidden');
-            $('.modal').modal('hide');
-            $('.modal').on('hidden.bs.modal',function(e){
-              $("#mensajeRecomendar").val('');
-              $( "#correoEnviarRecomendado" ).val('');
-            });
-          }
-        });
-      }
-      var obj = new Array();
-      var objId = new Array();
-      var medico;
-      var paciente;
-      $.each($("li div.label.label-primary small span.hidden"),function(count, valor){
-        obj.push($( this ).text());
-        medico = parseInt( $(this).attr('di'));
-        objId.push( $( this ).attr('da') );
-        paciente = parseInt( $(this).attr('da'));
-      });
-      $.post('/medicoRecomendado',{objeto:obj, objectoId:objId},function(data){
-        $.post('/doctorRecomendado',{medicoId:medico, paciente:paciente},function(dat){});
-        if(data){
-          $('.modal').modal('hide');
-          $('.modal').on('hidden.bs.modal',function(e){
-            $("#mensajeRecomendar").text('');
-            $( "#correoEnviarRecomendado" ).val('');
-            $("#buscadorRecomendados").val('');
-          });
-        }
-      });
-    });
-  });
-function seleccionarUsuario(i, tr, nombre, mas, otroMas, di){
-  var html2 ="";
-  var otroId = 'li'+i;
-  html2 += '<li id="'+otroId+'" onclick="removerUsuario(\''+otroId+'\',\''+tr+'\')" >';
-    html2 +="<p>";
-      html2 += "<div class='label label-primary'><span class='glyphicon glyphicon-remove'>&nbsp;"
-        html2 +="<small>";
-          html2 +=nombre;
-          html2 += "<span class='hidden' da='"+otroMas+"' di ='"+di+"' >";
-            html2 += mas;
-          html2 += "</span>";
-        html2 +="</small>";
-      html2 += "</span></div>";
-    html2 +="</p>";
-  html2 +="</li>";
-  prueba = i;
-  otro = otroId;
-  if( $("#"+tr).attr('class') == '' ){
-    $("#"+tr).addClass('check');
-    $( '#enviarRecomendaciones ul' ).append(html2);
-  }
-}
-function removerUsuario(id, tr){
-  $( "#"+id ).remove();
-  $("#"+tr).removeClass('check');
-}
-//<----------- FIN RECOMENDACIONES ---------------->
+
 function procesarInvitacion() {
   var nombre = $( '#invitar_nombre' ).val(),
     correo = $( '#invitar_correo' ).val(),

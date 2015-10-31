@@ -1792,40 +1792,10 @@ hr {
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
-#recomendarA tr td img{
-  height: 30px;
-}
-.check{
-  background-color: #eee;
-}
-#recomendarA tbody tr td{
-  cursor:pointer;
-}
-#enviarRecomendaciones ul li{
-  cursor: pointer;
-}
-
-#mensajes{
-  height: 100%!important;
-}
- .ui-widget-content{
+.ui-widget-content{
   position:absolute;
   z-index:10000!important;
   max-height: 200px;
   overflow: hidden;
   overflow-y: auto;
-}
-.modal-dialog {
-  position: relative;
-}
-#cargador {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  left: 0;
-  display: table-cell;
-  vertical-align: middle;
-  text-align: center;
-  margin: 0 auto;
-  z-index: 1000;
 }
