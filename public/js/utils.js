@@ -3,6 +3,7 @@
  *
  */
 var regTotalDoc = 0;
+var base_url = 'http://localhost:3000/';
 
 if ( location.pathname === '/registro' ) {
   $( document ).ready( getAllDoctors() );

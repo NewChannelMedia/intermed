@@ -150,10 +150,12 @@ function requestContactos(busqueda, medicos, pacientes){
             if (dat.Medico){
               var newUser = new Array();
               var tipo = '';
+              newUser['id'] = dat.Medico.Usuario.id;
               newUser['name'] = 'Dr. ' + dat.Medico.Usuario.DatosGenerale.nombre + ' ' + dat.Medico.Usuario.DatosGenerale.apellidoP + ' ' + dat.Medico.Usuario.DatosGenerale.apellidoM;
               newUser['value'] = newUser['name'];
               newUser['url']  = 'perfil/'+dat.Medico.Usuario.usuarioUrl;
               newUser['image']  = "<img src="+dat.Medico.Usuario.urlFotoPerfil+" style='width:20px'></img> ";
+              newUser['imageSrc']  = dat.Medico.Usuario.urlFotoPerfil;
               newUser['label']  = newUser['name'];
               user = newUser;
               allUsers.push(newUser);
@@ -177,10 +179,12 @@ function requestContactos(busqueda, medicos, pacientes){
               if (dat.Paciente){
                 var newUser = new Array();
                 var tipo = '';
+                newUser['id'] = dat.Paciente.Usuario.id;
                 newUser['name'] = dat.Paciente.Usuario.DatosGenerale.nombre + ' ' + dat.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + dat.Paciente.Usuario.DatosGenerale.apellidoM;
                 newUser['value'] = newUser['name'];
                 newUser['url']  = 'perfil/'+dat.Paciente.Usuario.usuarioUrl;
                 newUser['image']  = "<img src="+dat.Paciente.Usuario.urlFotoPerfil+" style='width:20px'></img> ";
+                newUser['imageSrc']  = dat.Paciente.Usuario.urlFotoPerfil;
                 newUser['label']  = newUser['name'];
                 user = newUser;
                 allUsers.push(newUser);
@@ -201,7 +205,22 @@ function inputAutocompleteContact(input){
         response(customFilter(requestContactos(request.term, true, true),request.term));
       },
       select: function( event, ui ) {
-        //Evento al seleccionar un item
+        $('.nombreContacto').removeClass('seleccionado');
+        var inbox = $('tr#'+ui.item.id);
+        if (inbox.length>0){
+          inbox.find('td').removeClass('noleido');
+          inbox.find('td').addClass('seleccionado');
+          cargarMensajes(ui.item.id);
+        } else {
+          nuevoInbox(ui);
+          cargarMensajes(ui.item.id);
+        }
+        input.val('');
+        $('#inboxInputText').prop('disabled',false);
+        $('#inboxBtnEnviar').prop('disabled',false);
+        $('#InboxMsg').css('background-color','#FFF');
+        $('#InboxContact').html(ui.item.name);
+        $('#chat').html('');
         return false;
       }
     })

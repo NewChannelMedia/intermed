@@ -217,6 +217,8 @@ var totalNotificaciones = [],
   solicitudesRechazadas = [],
   medicoRecomendado = [];
 
+var InboxListLoaded = [];
+
 
 function socketManejadores() {
 
@@ -410,6 +412,127 @@ function socketManejadores() {
       } );
       actualizarNotificaciones();
     });
+
+    socket.on( 'inbox', function ( data ) {
+      //socket.emit( 'verNotificacionesInbox' );
+      //$('#totalInbox').html('');
+      var total = data.length;
+      if (total>0){
+        console.log('Notificacion: ' + JSON.stringify(data));
+        $('#totalInbox').html(total);
+      } else {
+        $('#totalInbox').html('');
+      }
+
+    } );
+
+    socket.on('cargarInboxVistaPrevia', function (data){
+      $('li.loadInboxList').remove();
+      data.forEach(function(record){
+        InboxListLoaded.push(record.usuario.id);
+        $('#notificacionesInboxList').append('<li class="media"><div class="media-left"><a href="' + base_url + 'inbox/'+ record.usuario.usuarioUrl +'"><img class="media-object" src="'+record.usuario.urlFotoPerfil+'" style="width: 50px;"></a></div><div class="media-body"><a href="' + base_url + 'inbox/'+ record.usuario.usuarioUrl +'">'+ record.usuario.DatosGenerale.nombre + ' ' + record.usuario.DatosGenerale.apellidoP + ' ' + record.usuario.DatosGenerale.apellidoM +'</a><br><div class="text-left" style="margin-top:-25px;">'+ record.mensaje +'</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" > '+ formattedDate(record.fecha) +' <span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>');
+      });
+      if (data.length > 0){
+        loadInboxList = true;
+        $('#notificacionesInboxList').append('<li class="loadInboxList" style="min-height:0px; margin:0px;padding:0px;" class="btn btn-block text-center"></li>');
+      }
+    });
+
+    socket.on('nuevoInbox', function(result){
+      if ($('tr#'+result.de).length>0){
+
+        //Actualizar fecha de mensaje
+        var tr = $('tr#'+result.de);
+        console.log('Actualizar fecha de tr_id: ' + result.de);
+        var fecha = getDateTime(true);
+        tr.find('input.time').prop('value',fecha);
+        var nuevafecha = formattedDate(fecha);
+        tr.find('span.timeFormated').html(nuevafecha + ' ');
+        //
+
+        tr.prependTo('#InboxListaContactos');
+        var td = tr.find('td');
+        if (!td.hasClass('seleccionado')){
+          td.addClass('noleido');
+        }
+      } else {
+        socket.emit('crearConversacion',result.de);
+      }
+      if ($('td.seleccionado').parent().prop('id') == result.de){
+        ultimaFecha = $( "#chat .datetime>span" ).last();
+        if (ultimaFecha.html() != formatfecha(new Date().toLocaleString())){
+          $('#chat').append('<li class="clearfix text-center datetime"><span>'+formatfecha(new Date().toLocaleString())+'</span></li>');
+        }
+        var hora = formathora(new Date().toLocaleString());
+        var ultimoMsg = $( "#chat li" ).last();
+        if (!ultimoMsg.hasClass('left')){
+          $('#chat').append(mensajeIzquierda());
+          ultimoMsg = $( "#chat li" ).last()
+        }
+        ultimoMsg.find('.contenidoMsg').append('<p class="pull-left text-left">' +  renderHTML(result.mensaje) + '</p>');
+        ultimoMsg.find('.horaMsg').html(hora);
+        //socket.emit('conversacionLeida', result.de);
+        focusUltimo();
+      }
+    });
+
+    socket.on('crearConversacion', function(usuario){
+      var fecha = getDateTime(true);
+      $('#InboxListaContactos').prepend('<tr id="'+ usuario.id +'" ><td class="nombreContacto noleido" onclick="cargarInbox(this)"><img src="'+ usuario.urlFotoPerfil +'" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> '+ usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM +'</span><br/><input type="hidden" class="time" value="' + fecha + '"><small class="pull-right text-right" style="font-size:70%"><span class="timeFormated">' + formattedDate(fecha)  + ' </span><span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>');
+    });
+
+    socket.on('obtenerUsuarioId', function (id){
+      if ($('#InboxListaContactos').find('tr#'+id).length > 0){
+        $('.nombreContacto').removeClass('seleccionado');
+        $('#chat').html('');
+        $('#InboxContact').html($('#InboxListaContactos').find('tr#'+id).find('span.name').html());
+        $('#InboxListaContactos').find('tr#'+id).find('td').removeClass('noleido');
+        $('#InboxListaContactos').find('tr#'+id).find('td').addClass('seleccionado');
+        $('#InboxMsg').css('background-color','#FFF');
+        $('#inboxInputText').prop('disabled',false);
+        $('#inboxBtnEnviar').prop('disabled',false);
+        cargarMensajes(id);
+      }
+    });
+
+    socket.on('inboxEnviado', function(result){
+      if (result.success){
+        var td = $('td.seleccionado');
+        td.parent().prependTo('#InboxListaContactos');
+
+        //Actualizar fecha de mensaje
+        var fecha = getDateTime(true);
+        td.find('input.time').prop('value',fecha);
+        var nuevafecha = formattedDate(fecha);
+        td.find('span.timeFormated').html(nuevafecha + ' ');
+        //
+        var ultimoMsg = $( "#chat li" ).last()
+        mensaje = $('#inboxInputText').val();
+        mensaje = renderHTML(mensaje);
+        $('#inboxInputText').val('');
+        //Barra con fecha (dia-mes-año)
+        ultimaFecha = $( "#chat .datetime>span" ).last();
+        if (ultimaFecha.html() != formatfecha(new Date().toLocaleString())){
+          $('#chat').append('<li class="clearfix text-center datetime"><span>'+formatfecha(new Date().toLocaleString())+'</span></li>');
+        }
+        //
+        var hora = formathora(new Date().toLocaleString());
+        if (!ultimoMsg.hasClass('right')){
+          console.log('Mensaje derecha');
+          $('#chat').append(mensajeDerecha());
+          ultimoMsg = $( "#chat li" ).last();
+        }
+        ultimoMsg.find('.contenidoMsg').append('<p class="pull-right text-right">' +  mensaje + '</p>');
+        ultimoMsg.find('.horaMsg').html(hora);
+      } else {
+        $('#chat').append('<li class="clearfix text-center error"><span><span class="glyphicon glyphicon-info-sign" style="font-size:80%"></span>imposible enviar el mensaje, por favor revisa tu conexion</span></li>');
+        setTimeout(function(){
+          eliminarError();
+        },3000);
+      }
+      focusUltimo();
+    });
+
 }
 
 $(document).ready(function(){
@@ -418,7 +541,11 @@ $(document).ready(function(){
       notificacionesScroll = [];
       actualizarNotificaciones();
     });
-})
+
+    if (window.location.href.indexOf("/inbox") > 0){
+      socket.emit('conectarSocket');
+    }
+});
 
 
 function verTodasNotificaciones(){
@@ -528,3 +655,57 @@ function verTodasNotificaciones(){
   $('#notifList').find('div.loader').remove();
   return respuesta;
 }
+
+function cargarListaInbox(){
+  $('#notificacionesInboxList').html('');
+  InboxListLoaded = [];
+  socket.emit('cargarInboxVistaPrevia');
+}
+
+var loadInboxList = true;
+function cargarInboxListCondicional(){
+  var scrollBottom = $('#notificacionesInboxList').height() - $('#notificacionesInboxList').parent().height() - $('#notificacionesInboxList').scrollTop();
+  if (scrollBottom <5 && $('li.loadInboxList').length>0 && loadInboxList){
+    $('li.loadInboxList').html('Cargando...');
+    loadInboxList = false;
+    setTimeout(function(){
+      $('li.loadInboxList').html('');
+        socket.emit('cargarInboxVistaPrevia',{notIn: InboxListLoaded});
+      },2000);
+    }
+}
+
+function getDateTime( format ) {
+  var date = new Date();
+  var hour = date.getHours();
+  hour = ( hour < 10 ? "0" : "" ) + hour;
+  var min = date.getMinutes();
+  min = ( min < 10 ? "0" : "" ) + min;
+  var sec = date.getSeconds();
+  sec = ( sec < 10 ? "0" : "" ) + sec;
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  month = ( month < 10 ? "0" : "" ) + month;
+  var day = date.getDate();
+  day = ( day < 10 ? "0" : "" ) + day;
+  if ( format ) {
+    return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
+  }
+  else {
+    return year + month + day + hour + min + sec;
+  }
+}
+
+
+
+$(document).ready(function(){
+  var chat = document.getElementById("notificacionesInboxList");
+  if (chat.addEventListener) {
+  	// IE9, Chrome, Safari, Opera
+  	chat.addEventListener("mousewheel", cargarInboxListCondicional, false);
+  	// Firefox
+  	chat.addEventListener("DOMMouseScroll", cargarInboxListCondicional, false);
+  }
+  // IE 6/7/8
+  else chat.attachEvent("onmousewheel", cargarInboxListCondicional);
+});

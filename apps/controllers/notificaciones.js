@@ -427,17 +427,71 @@ exports.agregadoMedicoFavorito = function ( req ) {
 };
 
 
+exports.inbox = function ( req ) {
+  var numNot = 0;
+  if (req.tipoUsuario == "P"){
+    numNot = 101;
+  } else if (req.tipoUsuario == "M"){
+    numNot = 102;
+  }
+
+  models.Notificacion.findAll( {
+    where: {
+      usuario_id: req.usuario_id,
+      visto: 0,
+      tipoNotificacion_id: numNot
+    },
+    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    order: 'inicio DESC'
+  } ).then( function ( result ) {
+      result = JSON.parse( JSON.stringify( result ) );
+      var length = result.length;
+      result.forEach( function ( record ) {
+          models.Usuario.findOne( {
+            where: {
+              id: record.data
+            },
+            attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+            include: [ {
+                model: models.DatosGenerales,
+                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                } ]
+          } ).then( function ( usuario ) {
+            record[ 'usuario' ] = JSON.parse( JSON.stringify( usuario ) );
+            if ( record === result[ result.length - 1 ] ) {
+              req.socket.emit( 'inbox', result );
+            }
+          } )
+      })
+    })
+}
+
+
 exports.verNotificaciones = function ( req ) {
   models.Notificacion.update( {
     visto: 1
   }, {
     where: {
       usuario_id: req.usuario_id,
-      visto: 0
+      visto: 0,
+      tipoNotificacion_id: {$notBetween: [100, 200]}
     }
   } ).then( function ( result ) {
     req.socket.emit( 'verNotificaciones', result );
   } );
+}
+
+
+exports.verNotificacionesInbox = function ( req ) {
+  models.Notificacion.update( {
+    visto: 1
+  }, {
+    where: {
+      usuario_id: req.usuario_id,
+      visto: 0,
+      tipoNotificacion_id: {$between: [100, 200]}
+    }
+  });
 }
 
 exports.scroll = function (object, req, res){
@@ -552,7 +606,7 @@ exports.cargarNotificaciones = function ( object, req, res ) {
   }
   var where = new Array(models.sequelize.and(
     {usuario_id: req.session.passport.user.id},
-    {tipoNotificacion_id: {$notIn: [10, 11]}},//Inbox,,
+    {tipoNotificacion_id: {$notBetween: [100, 200]}},//Inbox,,
     whereid
   ));
   models.Notificacion.findAll( {
@@ -644,7 +698,7 @@ exports.cargarNotificaciones = function ( object, req, res ) {
         }
       } );
     } else {
-      res.send(JSON.parse(JSON.stringify([])));
+      res.send({});
     }
   } )
 }

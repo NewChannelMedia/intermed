@@ -50,6 +50,7 @@ app.use( bodyParser.urlencoded( {
 app.set( 'view engine', 'hbs' );
 app.use( '/', express.static( __dirname + '/../public' ) );
 app.use( '/perfil', express.static( __dirname + '/../public' ) );
+app.use( '/inbox', express.static( __dirname + '/../public' ) );
 
 //<----------------------------------------------------------------------------->
 /**
@@ -166,7 +167,6 @@ var iniciar = function () {
       failureRedirect: '/'
     } ),
     function ( req, res ) {
-      console.log( '______TIPO USUARIO: ' + req.session.tipo );
       req.session.passport.user[ 'tipoRegistro' ] = 'F';
       req.session.passport.user[ 'tipoUsuario' ] = req.session.tipo;
       intermed.callController( 'usuarios', 'registrarUsuario', req.session.passport.user, req, res );
@@ -1159,6 +1159,47 @@ var iniciar = function () {
       rutas.routeLife( 'plataforma', 'plataforma', hps );
       intermed.callController('inbox','index', req.body, req, res);
     }
+  });
+
+  app.get( '/inbox/:usuario_id', function ( req, res, next ) {
+    if (!req.session.passport.user){
+      res.redirect( '/' );
+    }else {
+      rutas.routeLife( 'plataforma', 'plataforma', hps );
+      intermed.callController('inbox','index', req.body, req, res);
+    }
+  });
+
+  app.post('/inbox/enviar', function (req, res){
+      if (!req.session.passport.user){
+        res.send({'success':false});
+      }else {
+        intermed.callController('inbox','enviar', req.body, req, res);
+      }
+  });
+
+  app.post('/inbox/cargartodos', function (req, res){
+      if (!req.session.passport.user){
+        res.send({'success':false});
+      }else {
+        intermed.callController('inbox','cargartodos', req.body, req, res);
+      }
+  });
+
+  app.post('/inbox/cargarMensajesPorUsuario', function (req, res){
+      if (!req.session.passport.user){
+        res.send({'success':false});
+      }else {
+        intermed.callController('inbox','cargarMensajesPorUsuario', req.body, req, res);
+      }
+  });
+
+  app.post('/inbox/cargarMensajesPorUsuarioAnteriores', function(req, res){
+      if (!req.session.passport.user){
+        res.send({'success':false});
+      }else {
+        intermed.callController('inbox','cargarMensajesPorUsuarioAnteriores', req.body, req, res);
+      }
   });
 }
 

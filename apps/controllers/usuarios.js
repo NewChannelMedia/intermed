@@ -368,7 +368,6 @@ var generarSesion = function ( req, res, usuario_id, redirect ) {
     } )
     .then( function ( usuario ) {
       if ( usuario ) {
-        console.log( 'Generando variables de sesión...' );
         req.session.passport.user = JSON.parse( JSON.stringify( {
           'id': usuario.id,
           'usuario': usuario.usuario,
@@ -861,4 +860,19 @@ var borrarInvitaciones = function ( correo ) {
   } ).then( function ( result ) {
     console.log( 'Invitaciones eliminadas: ' + JSON.stringify( result ) );
   } )
+}
+
+
+exports.obtenerUsuarioId = function(object){
+  console.log('UsuarioUrl: ' + object.UsuarioUrl);
+  models.Usuario.findOne( {
+    where: {
+      UsuarioUrl: object.UsuarioUrl
+    },
+    attributes: ['id']
+  }).then(function(usuario){
+    if (usuario){
+      object.socket.emit('obtenerUsuarioId',usuario.id);
+    }
+  });
 }

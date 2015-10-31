@@ -13,7 +13,8 @@ var sequelize = new Sequelize( 'intermed', 'root', '', {
     max: 5,
     min: 0,
     idle: 10000
-  }
+  },
+  logging: null
 } );
 
 
