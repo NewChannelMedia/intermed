@@ -2003,4 +2003,18 @@ li.error{
   color: #CCC;
   font-weight: bold;
 }
+
+.notificationDropdown{
+  z-index: 6000;
+}
+
+#notificacionesInboxList {
+  padding: 0px;
+}
+
+
+#notificacionesInboxList li{
+  margin: 0px;
+}
+
 /*Fin Inbox*/

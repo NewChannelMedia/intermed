@@ -78,7 +78,6 @@ exports.cargartodos  = function( object, req, res ){
     attributes: [['IF(`usuario_id_de` = '+req.session.passport.user.id+',`usuario_id_para`,`usuario_id_de`)','usuario_id'],['max(`fecha`)','fecha'],'visto'],
     group: ['usuario_id'],
     order:  '`fecha` DESC',
-    logging: console.log
   }).then(function(result){
     if (result.length > 0){
       var total = 0;
@@ -141,7 +140,7 @@ exports.cargarInboxVistaPrevia = function (object){
     ),
     attributes: [['IF(`usuario_id_de` = '+object.usuario_id+',`usuario_id_para`,`usuario_id_de`)','usuario_id'],'mensaje',['max(`fecha`)','fecha'],'visto'],
     group: ['usuario_id'],
-    order:  '`fecha` DESC',
+    order:  'max(`fecha`) DESC',
     limit: 5
   }).then(function(result){
     if (result.length > 0){
@@ -167,16 +166,32 @@ exports.cargarInboxVistaPrevia = function (object){
               attributes: [[models.Sequelize.fn('min',models.Sequelize.col('visto')),'visto']],
               limit: 1
             }).then(function(visto){
-              if (visto){
-                visto = visto.visto;
-              } else {
-                visto = 1;
-              }
-              resultado[result.indexOf(record)] = {'fecha': record.fecha, 'usuario': usuario, 'visto':visto, 'mensaje': record.mensaje};
-              total++;
-              if ( total == result.length ) {
-                  object.socket.emit('cargarInboxVistaPrevia',resultado);
-              }
+              models.Inbox.findOne({
+                where:
+                      models.sequelize.or(
+                        {
+                          usuario_id_para: record.usuario_id,
+                          usuario_id_de: object.usuario_id
+                       },
+                       {
+                          usuario_id_para: object.usuario_id,
+                          usuario_id_de: record.usuario_id
+                        }),
+                attributes: ['mensaje','fecha'],
+                order:  '`fecha` DESC',
+                limit: 1
+              }).then(function(msg){
+                if (visto){
+                  visto = visto.visto;
+                } else {
+                  visto = 1;
+                }
+                resultado[result.indexOf(record)] = {'fecha': record.fecha, 'usuario': usuario, 'visto':visto, 'mensaje': msg.mensaje};
+                total++;
+                if ( total == result.length ) {
+                    object.socket.emit('cargarInboxVistaPrevia',resultado);
+                }
+              });
             });
         } )
       });

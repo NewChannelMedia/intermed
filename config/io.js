@@ -212,7 +212,6 @@ var io = function ( io, bundle, ioPassport ) {
         if (object) {
           req.notIn = object.notIn
         }
-        console.log(req.notIn);
         intermed.callController( 'inbox', 'cargarInboxVistaPrevia', req );
       });
 
@@ -222,7 +221,6 @@ var io = function ( io, bundle, ioPassport ) {
             usuario_id: socket.request.cookies.intermed_sesion.id,
             UsuarioUrl: object
           };
-          console.log(req.notIn);
           intermed.callController( 'usuarios', 'obtenerUsuarioId', req );
       });
     }
