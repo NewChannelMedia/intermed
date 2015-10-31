@@ -53,14 +53,20 @@ module.exports = function ( sequelize, DataTypes ) {
     municipio_id: {
       type: DataTypes.INTEGER
     },
+    latitud: {
+        type:DataTypes.STRING
+    },
+    longitud: {
+        type:DataTypes.STRING
+    }
     //estado_id: {type: DataTypes.INTEGER, required: true}
   }, {
     classMethods: {
       associate: function ( models ) {
         Direccion.belongsTo( models.Usuario );
-        Direccion.belongsTo( models.Municipio )
-          //Direccion.belongsTo(models.Estado)
-        Direccion.belongsTo( models.Localidad );
+        Direccion.belongsTo(models.Municipio);                
+        Direccion.belongsTo(models.Localidad);
+        Direccion.hasMany(models.Horarios)
       }
     },
     timestamps: false,

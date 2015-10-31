@@ -1759,3 +1759,192 @@ function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
     }
   } );
 }
+
+function obtenerCiudades() {
+    if ($('#slc_ciudades option').length == 1) {
+        $('#slc_ciudades option').remove();
+    };
+
+    document.getElementById('slc_ciudades').innerHTML = '<option value="">Ciudad</option>';
+    $.ajax({
+        url: '/obtenerCiudades',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: {
+            'estado_id': document.getElementById('slc_estados').value
+        },
+        success: function (data) {
+            data.municipio.forEach(function (record) {
+                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.municipio_id + '">' + record.municipio + '</option>';
+            });
+            AsignarCiudad();
+        },
+        error: function (jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+            ciudadesCargando = false;
+        }
+    });
+}
+
+function obtenerColonias() {
+    if ($('#slc_colonias option').length != 1) {
+        $('#slc_colonias option').remove();
+    };
+    
+    document.getElementById('slc_colonias').innerHTML = '<option value="">Colonia</option>';
+    $.ajax({
+        url: '/obtenerLocalidades',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: {
+            'estado_id': document.getElementById('slc_estados').value,
+            'municipio_id': document.getElementById('slc_ciudades').value
+        },
+        success: function (data) {
+            data.municipios.forEach(function (record) {
+                document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
+            });
+            AsignarColonia();
+        },
+        error: function (jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
+
+//Registrar Ubicacion
+function regUbicacion() {
+    if (regUbiValid() == true) {             
+        $.ajax({
+            url: '/registrarubicacion',
+            type: 'POST',
+            dataType: "json",
+            cache: false,
+            data: $('#frmRegUbi').serialize(),
+            type: 'POST',
+            success: function (data) {
+                document.getElementById("frmRegUbi").reset();
+                alert('registro guradado');
+                //data.forEach(function (record) {
+                //    addUbicacion(record);
+                //});
+                //Reiniciar mapa
+                mapa.GeolicalizacionUsuario();
+            },
+            error: function (jqXHR, textStatus, err) {
+                console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
+            }
+        });
+    }
+}
+
+
+//Registrar Ubicacion
+function regHorarios() {
+    if (regHorariosValid() == true) {
+        //agregar horarios al control 
+        $('#horariosUbi').val(JSON.stringify(obtenerHorarios()));
+        
+        $.ajax({
+            url: '/registrarhorarios',
+            type: 'POST',
+            dataType: "json",
+            cache: false,
+            data: $('#frmRegHorarios').serialize(),
+            type: 'POST',
+            success: function (data) {
+                document.getElementById("frmRegHorarios").reset();
+                alert('registro guradado');                
+            },
+            error: function (jqXHR, textStatus, err) {
+                console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
+            }
+        });
+    }
+}
+
+
+
+function regHorariosValid() {
+    return true;
+}
+function regUbiValid() {
+    var blnValido = true;
+    //if ($('#nombreUbi').val().length == 0) {
+    //    $('#nombreUbi').parent().addClass("has-error");
+    //    blnValido = false;
+    //} else {
+    //    $('#nombreUbi').parent().removeClass("has-error");
+    //};
+
+    //if ($('#slc_estados option:selected').text() == 'Estado') {
+    //    $('#slc_estados').parent().addClass('has-error');
+    //    blnValido = false;
+    //} else {
+    //    $('#slc_estados').parent().removeClass('has-error');
+    //};
+
+    //if ($('#slc_ciudades option:selected').text() == 'Ciudad') {
+    //    $('#slc_ciudades').parent().addClass('has-error');
+    //    blnValido = false;
+    //} else {
+    //    $('#slc_ciudades').parent().removeClass('has-error');
+    //};
+
+
+    //if ($('#slc_colonias option:selected').text() == 'Colonia') {
+    //    $('#slc_colonias').parent().addClass('has-error');
+    //    blnValido = false;
+    //} else {
+    //    $('#slc_colonias').parent().removeClass('has-error');
+    //};
+
+    //if ($('#cpUbi').val().length == 0) {
+    //    $('#cpUbi').parent().addClass('has-error');
+    //    blnValido = false;
+    //} else {
+    //    $('#cpUbi').parent().removeClass('has-error');
+    //};
+
+    //if ($('#calleUbi').val().length == 0) {
+    //    $('#calleUbi').parent().addClass('has-error');
+    //    blnValido = false;
+    //} else {
+    //    $('#calleUbi').parent().removeClass('has-error');
+    //};
+
+    //if ($('#numeroUbi').val().length == 0) {
+    //    $('#numeroUbi').parent().addClass('has-error');
+    //    blnValido = false;
+    //} else {
+    //    $('#numeroUbi').parent().removeClass('has-error');
+    //};
+
+
+    //if (objhorarios.length == 0) {
+    //    blnValido = false;
+    //};
+
+    return blnValido;
+}
+
+function addUbicacion(record) {
+    var entreCalles = '',
+      medicosRegistrados = '';
+    if (record.calle1Med && record.calle2Med) {
+        var conjucion = 'y';
+        if (record.calle2Med.length > 0 && record.calle2Med.toLowerCase().substring(0, 1) === 'i') conjucion = 'e';
+        entreCalles = 'Entre ' + record.calle1Med + ' ' + conjucion + ' ' + record.calle2Med;
+    }
+    try {
+        // muestra los médicos con la funcionalidad de actualizar médico
+        medicosRegistrados += '<tr><th scope="row">' + (++regTotalDoc) + '</th><td>' + record.nombreMed + ' ' + record.apellidoMed + '</td><td>' + record.correoMed + '</td><td>' + record.telefonoMed + '</td><td><address><strong>' + record.calleMed + ' #' + record.numeroMed + '</strong><br>' + entreCalles + ' <br>' + record.coloniaMed + ', CP:' + record.cpMed + '<br>' + record.ciudadMed + ', ' + record.estadoMed + '<br></address></td><td>' + record.especialidadMed + '</td><td><button class="btn btn-info" onclick="muestraMedico(' + record.id + '); return false;"><span class="glyphicon glyphicon-pencil"></span></button></td></tr>';
+        //medicosRegistrados += '<tr><th scope="row">' + (++regTotalDoc) + '</th><td>' + record.nombreMed + ' ' + record.apellidoMed + '</td><td>' + record.correoMed + '</td><td>' + record.telefonoMed + '</td><td><address><strong>' + record.calleMed + ' #' + record.numeroMed + '</strong><br>' + entreCalles + ' <br>' + record.coloniaMed + ', CP:' + record.cpMed + '<br>' + record.ciudadMed + ', ' + record.estadoMed + '<br></address></td><td>' + record.especialidadMed + '</td><td><button class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span></button></td></tr>';
+    }
+    catch (ex) {
+        console.error('PARSE ERROR (Registro 190) : ' + ex);
+    }
+    document.getElementById('tbmedReg').innerHTML += medicosRegistrados;
+}

@@ -28,14 +28,14 @@ module.exports = function ( sequelize, DataTypes ) {
       allowNull: false
     },
     tipo_localidad_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.BIGINT,
       allowNull: false
     }
   }, {
     classMethods: {
       associate: function ( models ) {
-        Localidad.belongsTo( models.Ciudad );
-        // Localidad.belongsTo(models.Municipio);
+        //Localidad.belongsTo( models.Ciudad );
+         Localidad.belongsTo(models.Municipio);
         Localidad.belongsTo( models.Estado );
         Localidad.hasMany( models.Direccion );
         Localidad.belongsTo( models.TipoLocalidad );
