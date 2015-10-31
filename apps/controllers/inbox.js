@@ -61,24 +61,19 @@ exports.cargartodos  = function( object, req, res ){
         {usuario_id_para: req.session.passport.user.id}
       )
     ),
-    attributes: ['usuario_id_de','usuario_id_para',[models.Sequelize.fn('max', models.Sequelize.col('fecha')),'fecha'], [models.Sequelize.fn('min', models.Sequelize.col('visto')),'visto']],
-    group: ['usuario_id_de','usuario_id_para'],
-    order: 'fecha DESC',
-    limit: 10
+    attributes: [['IF(`usuario_id_de` = '+req.session.passport.user.id+',`usuario_id_para`,`usuario_id_de`)','usuario_id'],['max(`fecha`)','fecha'],'visto'],
+    group: ['usuario_id'],
+    order:  '`fecha` DESC',
+    logging: console.log
   }).then(function(result){
     if (result.length > 0){
+      var total = 0;
+      result = JSON.parse(JSON.stringify(result));
       var resultado = [];
       result.forEach( function ( record ) {
-        usuario_id = '';
-        if (record.usuario_id_de == req.session.passport.user.id){
-          usuario_id = record.usuario_id_para;
-        } else {
-          usuario_id = record.usuario_id_de;
-        }
-
         models.Usuario.findOne( {
           where: {
-            id: usuario_id
+            id: record.usuario_id
           },
           attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
           include: [ {
@@ -86,22 +81,25 @@ exports.cargartodos  = function( object, req, res ){
             attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
             } ]
           }).then( function ( usuario ) {
-            if (!resultado[usuario.id]){
-              resultado[usuario.id] = {'fecha': record.fecha, 'usuario': usuario };
-              if (record.usuario_id_para === req.session.passport.user.id){
-                resultado[usuario.id]['visto'] = record.visto;
+            //consultar si visto
+            models.Inbox.findOne({
+              where: { usuario_id_para: req.session.passport.user.id,
+                       usuario_id_de: record.usuario_id
+                     },
+              attributes: [[models.Sequelize.fn('min',models.Sequelize.col('visto')),'visto']],
+              limit: 1
+            }).then(function(visto){
+              if (visto){
+                visto = visto.visto;
+              } else {
+                visto = 1;
               }
-            } else {
-              if (record.usuario_id_para === req.session.passport.user.id){
-                resultado[usuario.id]['visto'] = record.visto;
+              resultado[result.indexOf(record)] = {'fecha': record.fecha, 'usuario': usuario, 'visto':visto};
+              total++;
+              if ( total == result.length ) {
+                  res.send(resultado);
               }
-              if (record.fecha > resultado[usuario.id]['fecha']){
-                resultado[usuario.id]['fecha'] = record.fecha;
-              }
-            }
-            if ( record === result[ result.length - 1 ] ) {
-                res.send(resultado);
-            }
+            });
         } )
       });
     } else {
@@ -110,6 +108,69 @@ exports.cargartodos  = function( object, req, res ){
   });
 }
 
+
+exports.cargarInboxVistaPrevia = function (object){
+    var condicion = [];
+    if (object.notIn && object.notIn.length > 0){
+      condicion.push({
+        usuario_id_de: { $notIn: object.notIn},
+        usuario_id_para: { $notIn: object.notIn}
+      })
+    }
+  models.Inbox.findAll({
+    where: models.sequelize.and(
+      condicion,
+      models.sequelize.or(
+        {usuario_id_de: object.usuario_id},
+        {usuario_id_para: object.usuario_id}
+      )
+    ),
+    attributes: [['IF(`usuario_id_de` = '+object.usuario_id+',`usuario_id_para`,`usuario_id_de`)','usuario_id'],'mensaje',['max(`fecha`)','fecha'],'visto'],
+    group: ['usuario_id'],
+    order:  '`fecha` DESC',
+    limit: 10
+  }).then(function(result){
+    if (result.length > 0){
+      var total = 0;
+      result = JSON.parse(JSON.stringify(result));
+      var resultado = [];
+      result.forEach( function ( record ) {
+        models.Usuario.findOne( {
+          where: {
+            id: record.usuario_id
+          },
+          attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+          include: [ {
+            model: models.DatosGenerales,
+            attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+            } ]
+          }).then( function ( usuario ) {
+            //consultar si visto
+            models.Inbox.findOne({
+              where: { usuario_id_para: object.usuario_id,
+                       usuario_id_de: record.usuario_id
+                     },
+              attributes: [[models.Sequelize.fn('min',models.Sequelize.col('visto')),'visto']],
+              limit: 1
+            }).then(function(visto){
+              if (visto){
+                visto = visto.visto;
+              } else {
+                visto = 1;
+              }
+              resultado[result.indexOf(record)] = {'fecha': record.fecha, 'usuario': usuario, 'visto':visto, 'mensaje': record.mensaje};
+              total++;
+              if ( total == result.length ) {
+                  object.socket.emit('cargarInboxVistaPrevia',resultado);
+              }
+            });
+        } )
+      });
+    } else {
+        res.send({});
+    }
+  });
+}
 
 
 exports.cargarMensajesPorUsuario  = function( object, req, res ){

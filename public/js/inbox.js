@@ -94,8 +94,7 @@ function cargarMensajes(id){
     method: 'POST',
     data: {usuario_id: id},
     success: function( data ) {
-      if (data){
-
+      if (data[2]){
         if (data[2].length>0){
           if (data[2].length==10) $('#chat').html(liload);
           resultado = data.resultado;
@@ -312,7 +311,8 @@ function mensajeIzquierda(){
 }
 
 function mensajeDerecha(){
-  return '<li class="right clearfix msg"><span class="chat-img pull-right"><img src="'+ $('#fotoPerfilMini').prop('src') +'" class="img-circle" width="50" height="50" /></span><div class="chat-body clearfix"><div class="header"><small class=" text-muted"> </small><strong class="pull-right primary-font">Cinthia Bermúdez Acosta</strong></div><span class="contenidoMsg"></span><span class="horaMsg pull-right text-right"></span></div></li>';
+  var nombreUsuario = 'Yo';
+  return '<li class="right clearfix msg"><span class="chat-img pull-right"><img src="'+ $('#fotoPerfilMini').prop('src') +'" class="img-circle" width="50" height="50" /></span><div class="chat-body clearfix"><div class="header"><small class=" text-muted"> </small><strong class="pull-right primary-font">'+ nombreUsuario +'</strong></div><span class="contenidoMsg"></span><span class="horaMsg pull-right text-right"></span></div></li>';
 }
 
 function renderHTML(text) {
@@ -338,28 +338,20 @@ function cargarListaMensajes(){
     method: 'POST',
     async: false,
     success: function( data ) {
-    $('#InboxListaContactos').find('tr.tr_next').remove();
+      $('#InboxListaContactos').find('tr.tr_next').remove();
       if (data.length>0){
         resultado = true;
         var orden = [];
         for (x in data){
           if (data[x]){
-            fecha = data[x].fecha;
-            orden.push({x,fecha});
+            notIn.push(data[x].usuario.id);
+            var visto = '';
+            if (data[x].visto === 0){
+              visto = 'noleido';
+            }
+            $('#InboxListaContactos').append('<tr id="'+ data[x].usuario.id +'" ><td class="nombreContacto '+ visto +'" onclick="cargarInbox(this)"><img src="'+ data[x].usuario.urlFotoPerfil +'" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> '+ data[x].usuario.DatosGenerale.nombre + ' '+ data[x].usuario.DatosGenerale.apellidoP + data[x].usuario.DatosGenerale.apellidoM  +'</span><br/><input class="time" type="hidden" value="'+data[x].fecha+'"><small class="pull-right text-right" style="font-size:70%"><span class="timeFormated">' + formattedDate(data[x].fecha) +'</span> <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>');
           }
         }
-        orden = orden.sort(ordenarPorFecha);
-
-        orden.forEach(function(ord){
-          var x = ord.x;
-          var visto = '';
-          if (data[x].visto === 0){
-            visto = ' noleido '
-          }
-          notIn.push(data[x].usuario.id);
-          $('#InboxListaContactos').append('<tr id="'+ data[x].usuario.id +'" ><td class="nombreContacto'+ visto +'" onclick="cargarInbox(this)"><img src="'+ data[x].usuario.urlFotoPerfil +'" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> '+ data[x].usuario.DatosGenerale.nombre + ' '+ data[x].usuario.DatosGenerale.apellidoP + data[x].usuario.DatosGenerale.apellidoM  +'</span><br/><input class="time" type="hidden" value="'+data[x].fecha+'"><small class="pull-right text-right" style="font-size:70%"><span class="timeFormated">' + formattedDate(data[x].fecha) +'</span> <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>');
-
-        });
         $('#InboxListaContactos').append('<tr class="tr_next"><td class="text-center active"><a onclick="cargarListaMensajes">Ver más</a></td></tr>');
       }
       loadContactos = true;

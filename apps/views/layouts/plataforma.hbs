@@ -87,19 +87,29 @@
               </li>
               <li>
                 <a id="officeIcon" class="navControlBtn" href="#">
-                  <img src="img/icon-office.png">
+                  <img src="img/icon-calendar.png">
                   <!-- <span class="navControlIcon glyphicon glyphicon-list-alt"></span> -->
                 </a>
               </li>
-              <li>
-                <a id="agendaIcon" class="navControlBtn" href="{{base_url}}inbox">
-                  <img src="img/icon-calendar.png">
+              <li role="presentation" class="dropdown">
+                <a id="notificationIcon" class="navControlBtn dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="$('#notificacionesInboxList').html('');socket.emit('cargarInboxVistaPrevia');socket.emit('cargarInboxVistaPrevia');socket.emit('cargarInboxVistaPrevia')">
+                <!--<a id="agendaIcon" class="navControlBtn" href="{{base_url}}inbox">-->
+                  <img src="img/icon-messages.png">
                   <span id="totalInbox" class="badge"></span>
                 </a>
+
+                <ul class="dropdown-menu notificationDropdown media-list">
+                  <div  id="notificacionesInboxList" style="max-height:300px;overflow:scroll;">
+
+                  </div>
+                  <div style="padding:10px;background-color:#DDD;margin-bottom:-5px;margin-top:10px;">
+                    <a href="{{base_url}}inbox" class="text-center" style="text-align:center">Ver más</a>
+                  </div>
+                </ul>
               </li>
               <li role="presentation" class="dropdown" id="notificaciones">
                 <a id="notificationIcon" class="navControlBtn dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="socket.emit('verNotificaciones')">
-                  <img src="img/icon-messages.png">
+                  <img src="img/icon-office.png">
                   <span id="totalNotificaciones" class="badge hidden invisible">1</span>
                 </a>
                 <ul class="dropdown-menu notificationDropdown media-list">
@@ -112,7 +122,6 @@
                 </ul>
               </li>
 
-              </script>
               <li class="navSeparator">
                 <span class="navS "></span>
               </li>

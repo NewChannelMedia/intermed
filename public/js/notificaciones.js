@@ -332,6 +332,7 @@ function socketManejadores() {
       //$('#totalInbox').html('');
       var total = data.length;
       if (total>0){
+        console.log('Notificacion: ' + JSON.stringify(data));
         $('#totalInbox').html(total);
       } else {
         $('#totalInbox').html('');
@@ -339,11 +340,19 @@ function socketManejadores() {
 
     } );
 
+    socket.on('cargarInboxVistaPrevia', function (data){
+      data.forEach(function(record){
+        console.log('VISTA PREVIA: ' + JSON.stringify(record));
+        $('#notificacionesInboxList').append('<li class="media"><div class="media-left"><a href="'+ record.usuario.usuarioUrl +'"><img class="media-object" src="'+record.usuario.urlFotoPerfil+'" style="width: 50px;"></a></div><div class="media-body"><a href="'+ record.usuario.usuarioUrl +'">'+ record.usuario.DatosGenerale.nombre + ' ' + record.usuario.DatosGenerale.apellidoP + ' ' + record.usuario.DatosGenerale.apellidoM +'</a><br><div class="text-left" style="margin-top:-25px;">'+ record.mensaje +'</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" > '+ formattedDate(record.fecha) +' <span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>');
+      });
+    });
+
     socket.on('nuevoInbox', function(result){
       if ($('tr#'+result.de).length>0){
 
         //Actualizar fecha de mensaje
         var tr = $('tr#'+result.de);
+        console.log('Actualizar fecha de tr_id: ' + result.de);
         var fecha = getDateTime(true);
         tr.find('input.time').prop('value',fecha);
         var nuevafecha = formattedDate(fecha);
@@ -384,6 +393,8 @@ function socketManejadores() {
     socket.on('inboxEnviado', function(result){
       if (result.success){
         var td = $('td.seleccionado');
+        td.parent().prependTo('#InboxListaContactos');
+
         //Actualizar fecha de mensaje
         var fecha = getDateTime(true);
         td.find('input.time').prop('value',fecha);

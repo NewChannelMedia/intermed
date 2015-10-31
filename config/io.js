@@ -190,6 +190,14 @@ var io = function ( io, bundle, ioPassport ) {
         };
         intermed.callController( 'inbox', 'crearConversacion', req );
       });
+
+      socket.on('cargarInboxVistaPrevia', function(){
+        var req = {
+          socket: socket,
+          usuario_id: socket.request.cookies.intermed_sesion.id
+        };
+        intermed.callController( 'inbox', 'cargarInboxVistaPrevia', req );
+      });
     }
   } );
 };
