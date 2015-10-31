@@ -2,12 +2,12 @@
 
 module.exports = function (sequelize, DataTypes) {
     var Horarios = sequelize.define("Horarios", {
-        idHorario: {
+        id: {
             type: DataTypes.BIGINT,
             autoIncrement: true,
             primaryKey: true
         },
-        idDireccion: {
+        direccion_id: {
             type: DataTypes.BIGINT,
             required: true
         },

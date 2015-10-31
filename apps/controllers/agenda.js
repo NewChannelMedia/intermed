@@ -19,6 +19,11 @@ exports.generarCita = function(object, req, res) {
 };
 
 exports.agregaCita = function(object, req, res) {
+
+  console.log(JSON.parse(object.horario))
+  console.log(object.horario[0].idDireccion);
+  console.log(object.horario[0].idServicio);
+  /*
   models.Agenda.create({
       fechaHoraInicio: object.fechaHoraInicio,
       status: object.estatus,
@@ -31,7 +36,7 @@ exports.agregaCita = function(object, req, res) {
       res.status(200).json({ok: true});
   }).catch(function(err) {
       res.status(500).json({error: err});
-  });
+  });*/
 };
 
 exports.modificaCita = function(object, req, res) {
@@ -284,6 +289,7 @@ exports.agregaServicio = function(object, req, res) {
     });
 };
 
+// Muestra la pantalla para registrar servicios
 exports.registraServicio = function(object, req, res) {
   res.render('servicios');
 }
@@ -317,7 +323,7 @@ exports.borraServicio = function(object, req, res) {
 // Obtiene horarios por direccion
 exports.seleccionaHorarios = function(object, req, res) {
   models.Horarios.findAll({
-     where :  { idDireccion: object.id }
+     where :  { direccion_id: object.id }
   }).then(function(datos) {
       res.send(datos);
   }).catch(function(err) {

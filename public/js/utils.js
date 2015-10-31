@@ -220,16 +220,25 @@ function addMedico( record, tipo ) {
 }
 
 function registrarCita() {
+
+	var horarios = obtenerHorarios();
+
+	$("#dia").val(horarios[0].dia);
+	$("#hora").val(horarios[0].hora);
+
+	console.log($('#frmRegCita').serialize());
+
 	$.ajax({
 		url: '/agregaCita',
 		type: 'POST',
 		dataType: "json",
 		cache: false,
 		data: $('#frmRegCita').serialize(),
+		//data: JSON.stringify(obtenerHorarios()),
 		type: 'POST',
 		success: function( data ) {
 			if ( data.error == null ) {
-				addMedico( data,1 );
+
 			}
 			else {
 				alert(data.error.message);
@@ -269,9 +278,7 @@ function obtenerCiudades(tipo) {
 			ciudades = $('#UpdateModal #slc_ciudades');
 			idEstado = $('#UpdateModal #slc_estados').val();
 		}
-
 		ciudades.empty();
-
     $.ajax({
         url: '/obtenerCiudades',
         type: 'POST',
@@ -417,6 +424,29 @@ function regServicio()
 		}
 	} );
 }
+
+// Obtiene ubicaciones para el servicio seleccionado
+function obtieneUbicaciones(id )
+{
+	var ubicaciones = $('#lstUbicaciones');
+	$.ajax( {
+		url: '/seleccionaUbicacion',
+		type: 'POST',
+		dataType: "json",
+		cache: false,
+		data: { id: id},
+		success: function( data ) {
+				data.forEach(function(record) {
+						ubicaciones.append('<option value="' + record.id + '">' +  record.nombre + '</option>');
+				});
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+		}
+	} );
+}
+
+
 
 // script que muestra u oculta campos de la busqueda del home
 if ( location.pathname === '/' ) {
