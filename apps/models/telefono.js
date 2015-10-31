@@ -16,10 +16,10 @@ module.exports = function ( sequelize, DataTypes ) {
       required: true
     },
     claveRegion: {
-      type: DataTypes.STRING
+      type: DataTypes.INTEGER
     },
     lada: {
-      type: DataTypes.STRING
+      type: DataTypes.INTEGER
     },
     usuario_id: {
       type: DataTypes.BIGINT,
