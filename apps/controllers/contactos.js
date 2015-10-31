@@ -383,5 +383,23 @@ module.exports = {
         res.send(medico);
       });
     }
+  },
+  pedirRecomendacionMedico: function( req, res ){
+    var d = new Date();
+    var strDate = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds();
+    console.log("Fecha y Hora: "+strDate);
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Notificacion.create({
+        usuario_id:req.body.idMedico,
+        tipoNotificacion_id:14,
+        data:req.session.passport.user.Paciente_id+"|"+req.body.idEspecilidad,
+        inicio:strDate,
+        visto:0,
+        recordatorio:null
+      }).then(function(creado){
+        res.send(true);
+      });
+    }
   }
 }

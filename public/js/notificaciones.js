@@ -2,6 +2,7 @@ var socket = io();
 var notificaciones = [];
 var notificacionesScroll = [];
 var notificacionesTotal = [];
+var pedirRecomendacion = [];
 
 //Manejar notificaciones
 $.ajax( {
@@ -104,6 +105,7 @@ function actualizarNotificaciones() {
     totalNotificaciones = totalNotificaciones.concat( solicitudesAceptadas );
     totalNotificaciones = totalNotificaciones.concat( agregadoMedicoFavorito );
     totalNotificaciones = totalNotificaciones.concat( solicitudesRechazadas );
+    totalNotificaciones = totalNotificaciones.concat( pedirRecomendacion );
     totalNotificaciones = totalNotificaciones.sort( ordenarPorFecha );
     if ( totalNotificaciones.length > 0 ) {
       $( '#totalNotificaciones' ).removeClass( 'hidden invisible' );
@@ -326,6 +328,33 @@ function socketManejadores() {
       }, 3000 );
 
     } );
+    socket.on('pedirRecomendacion',function(data){
+      pedirRecomendacion = [];
+      data.forEach( function ( record ) {
+        date = formattedDate( record.inicio );
+        var content = '';
+        content += '<div class="media-left">';
+          content += '<a href="/perfil/existeno">';
+            content += '<img class="media-object" src="existe" style="width: 50px;">';
+            content += '</div>';
+            content += '<div class="media-body">existeNo Recomendo tu perfil a otro paciente';
+          content += '</a>';
+          content += '<br />';
+          content += '<div class="text-left" style="margin-top:-25px;">';
+            content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>';
+          content += '</div>';
+        content += '</div>';
+        if (content){
+          doctorRecomendado.unshift( {
+            id: record.id,
+            time: record.inicio,
+            visto: record.visto,
+            content: content
+          });
+        }
+      });
+      actualizarNotificaciones();
+    });
 }
 
 $(document).ready(function(){

@@ -1158,6 +1158,11 @@ var iniciar = function () {
       intermed.callController('contactos','medicoDatos',req,res);
     });
   // <---------------- FIN OSCAR ESPECIALIDADES ------------------>
+  // <---------------- PEDIR RECOMENDACION MEDICO ---------------->
+    app.post('/pedirRecomendacionMedico', function( req, res){
+      intermed.callController('contactos','pedirRecomendacionMedico',req, res);
+    });
+  // <---------------- FIN RECOMENDACION MEDICO ------------------>
 }
 
 var io = serv.server( app, 3000 );

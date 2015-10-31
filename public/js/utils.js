@@ -1715,7 +1715,25 @@ function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
     });
     //<--------------- CORREO --------------------->
       $("#mandarPeticion").click(function(){
-        console.log("Tacuaches");
+        if( $("#especialidadesMedic option:selected").text() != "Especialidades" ){
+          var id = $("#idMedico").text();
+          var idEspecilidad = $( "#especialidadesMedic" ).val();
+          var recomendacion = $("#especialidadesMedic option:selected").text();
+          $.post('/pedirRecomendacionMedico',{
+              idMedico:id,
+              idEspecilidad: idEspecilidad,
+              recomendacion:recomendacion
+          },function(data){
+            if(data){
+              $('.modal').modal('hide');
+              $('.modal').on('hidden.bs.modal',function(e){
+              $(".label.label-success").remove().parent('div');
+            });
+            }
+          });
+        }else{
+          alert("Seleccione una opcion");
+        }
       });
     //<--------------- fin correo ----------------->
   });
