@@ -24,6 +24,7 @@
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <link rel="stylesheet" href="http://css-spinners.com/css/spinner/throbber.css" type="text/css">
+    <link rel="stylesheet" href="http://css-spinners.com/css/spinners.css" type="text/css">
 
     <script src="js/jquery.iscroll.js"></script>
     <script src="js/utils.js"></script>
@@ -553,7 +554,45 @@
         </form>
       </div>
     </div>
-
+    <!-- Recomendaciones -->
+    <div id ="recomendar"class="modal fade">
+      <div class="modal-dialog">
+        <div class="hidden" id="cargador"><span class="three-quarters-loader">Enviando...</span></div>
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close"data-dismiss="modal" aria-labe="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title"><span id="nombreOcultoPerfil" class="hidden"></span>Recomendar Dr.<span id="doctorSpan"></span> A:</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group has-feedback" id="buscador">
+              <label class="control-label"for="buscadorRecomendados">Busca entre tus contactos para que les recomiendes al Dr.<span class="hidden"id="pacienteIdOculto"></span></label>
+              <input type="text" class="form-control" id="buscadorRecomendados" placeholder="Buscar contacto...">
+              <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
+            </div>
+            <div class="" id="contactosArecomendar">
+              <table class="table table-condensed" id="recomendarA">
+                <tbody></tbody>
+              </table>
+            </div>
+            <div class="" id="enviarRecomendaciones">
+              <ul class="list-inline"></ul>
+            </div>
+            <div class="form-group" id="correoRecomendados">
+              <label class="control-label" for="correoEnviarRecomendado">Recomendar via correo:</label>
+              <input type="mail" class="form-control" id="correoEnviarRecomendado" placeholder="Correo:"/>
+            </div>
+            <div class="" id="mensajeParaRecomendados">
+              <textarea id="mensajeRecomendar" class="form-control" rows="3" placeholder="mensaje para los recomendados"></textarea>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+            <button type="button" id="enviarAtodos" class="btn btn-primary">Recomendar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Fin Recomendaciones -->
   </body>
 
   <style>
@@ -573,9 +612,11 @@ padding: 0;
 }
 </style>
 <script>
-
+  $(document).ready(function(){
+    recomiendaAuto( $("#buscadorRecomendados") );
+  });
 </script>
   <script src="js/jquery.Jcrop.js"></script>
   <script src="js/jquery.SimpleCropper.js"></script>
-
+  <script src="js/buscadorInterno.js"></script>
 </html>
