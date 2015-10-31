@@ -430,12 +430,22 @@ function socketManejadores() {
       $('li.loadInboxList').remove();
       data.forEach(function(record){
         InboxListLoaded.push(record.usuario.id);
-        $('#notificacionesInboxList').append('<li class="media"><div class="media-left"><a href="' + base_url + 'inbox/'+ record.usuario.usuarioUrl +'"><img class="media-object" src="'+record.usuario.urlFotoPerfil+'" style="width: 50px;"></a></div><div class="media-body"><a href="' + base_url + 'inbox/'+ record.usuario.usuarioUrl +'">'+ record.usuario.DatosGenerale.nombre + ' ' + record.usuario.DatosGenerale.apellidoP + ' ' + record.usuario.DatosGenerale.apellidoM +'</a><br><div class="text-left" style="margin-top:-25px;">'+ record.mensaje +'</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" > '+ formattedDate(record.fecha) +' <span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>');
+        var visto = '';
+        if (record.visto === 0){
+          visto = ' style="background-color:#EEEEEE" ';
+        }
+        $('#notificacionesInboxList').append('<li class="media" '+ visto +'><div class="media-left"><a href="' + base_url + 'inbox/'+ record.usuario.usuarioUrl +'"><img class="media-object" src="'+record.usuario.urlFotoPerfil+'" style="width: 50px;"></a></div><div class="media-body"><a href="' + base_url + 'inbox/'+ record.usuario.usuarioUrl +'">'+ record.usuario.DatosGenerale.nombre + ' ' + record.usuario.DatosGenerale.apellidoP + ' ' + record.usuario.DatosGenerale.apellidoM +'</a><br><div class="text-left" style="margin-top:-25px;">'+ record.mensaje +'</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" > '+ formattedDate(record.fecha) +' <span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>');
       });
       if (data.length > 0){
         loadInboxList = true;
         $('#notificacionesInboxList').append('<li class="loadInboxList" style="min-height:0px; margin:0px;padding:0px;" class="btn btn-block text-center"></li>');
       }
+      setTimeout(function(){
+        socket.emit('verNotificacionesInbox');
+        setTimeout(function(){
+          socket.emit('inbox');
+        },200);
+      },1000);
     });
 
     socket.on('nuevoInbox', function(result){
@@ -531,6 +541,12 @@ function socketManejadores() {
         },3000);
       }
       focusUltimo();
+    });
+
+    socket.on('conversacionLeida',function(){
+        setTimeout(function(){
+          socket.emit('inbox');
+        },1000);
     });
 
 }

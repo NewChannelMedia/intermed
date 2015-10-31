@@ -864,7 +864,6 @@ var borrarInvitaciones = function ( correo ) {
 
 
 exports.obtenerUsuarioId = function(object){
-  console.log('UsuarioUrl: ' + object.UsuarioUrl);
   models.Usuario.findOne( {
     where: {
       UsuarioUrl: object.UsuarioUrl

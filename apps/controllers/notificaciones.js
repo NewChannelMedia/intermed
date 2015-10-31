@@ -444,6 +444,7 @@ exports.inbox = function ( req ) {
     attributes: [ 'id', 'data', 'inicio', 'visto' ],
     order: 'inicio DESC'
   } ).then( function ( result ) {
+    if (result.length > 0){
       result = JSON.parse( JSON.stringify( result ) );
       var length = result.length;
       result.forEach( function ( record ) {
@@ -463,7 +464,10 @@ exports.inbox = function ( req ) {
             }
           } )
       })
-    })
+    } else {
+      req.socket.emit( 'inbox', [] );
+    }
+  })
 }
 
 
