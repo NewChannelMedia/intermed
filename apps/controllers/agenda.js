@@ -20,23 +20,19 @@ exports.generarCita = function(object, req, res) {
 
 exports.agregaCita = function(object, req, res) {
 
-  console.log(JSON.parse(object.horario))
-  console.log(object.horario[0].idDireccion);
-  console.log(object.horario[0].idServicio);
-  /*
   models.Agenda.create({
-      fechaHoraInicio: object.fechaHoraInicio,
+      fechaHoraInicio: object.fecha,
       status: object.estatus,
-      nota: object.nota,
-      resumen: object.resumen,
-      direccion_id: object.direccion_id,
-      paciente_id : object.idUsuario,
-      servicio_id : object.idServicio
+      direccion_id: object.lstUbicacion,
+      paciente_id : object.paciente_id,
+      servicio_id : object.lstServicio,
+      usuario_id : object.medico_id,
+      status : true
   }).then(function(datos) {
       res.status(200).json({ok: true});
   }).catch(function(err) {
       res.status(500).json({error: err});
-  });*/
+  });
 };
 
 exports.modificaCita = function(object, req, res) {

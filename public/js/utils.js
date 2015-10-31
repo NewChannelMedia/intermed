@@ -220,20 +220,16 @@ function addMedico( record, tipo ) {
 }
 
 function registrarCita() {
-
 	var horarios = obtenerHorarios();
-
-	$("#dia").val(horarios[0].dia);
-	$("#hora").val(horarios[0].hora);
+	$("#fecha").val(horarios[0].inicio);
 
 	console.log($('#frmRegCita').serialize());
-
 	$.ajax({
 		url: '/agregaCita',
 		type: 'POST',
 		dataType: "json",
-		cache: false,
 		data: $('#frmRegCita').serialize(),
+		cache: false,
 		//data: JSON.stringify(obtenerHorarios()),
 		type: 'POST',
 		success: function( data ) {

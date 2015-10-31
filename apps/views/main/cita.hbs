@@ -10,12 +10,9 @@
 
     <form method="POST" name="frmRegCita" id="frmRegCita">
       <input type="hidden" id="id" name="id">
-      <input type="hidden" id="paciente_id" name="paciente_id" value="12">
+      <input type="hidden" id="paciente_id" name="paciente_id" value="1">
       <input type="hidden" id="medico_id" name="medico_id" value="1">
-      <input type="hidden" id="estatus" name="estatus" value="1">
-      <input type="hidden" id="horario" name="horario" />
-      <input type="hidden" id="dia" name="dia" />
-      <input type="hidden" id="hora" name="hora" />
+      <input type="hidden" id="fecha" name="fecha" />
 
       <div class="row">
         <div class="col-md-12">
@@ -83,6 +80,13 @@ $(document).ready(function () {
               duracionServicio  =  data.duracion;
               $('#precioServicio').html("<b>Costo del servicio : </b>" + data.precio);
               $('#duracionServicio').html("<b>Duración : </b>" + data.duracion);
+
+              //slotLabelInterval
+              $('#calendar').fullCalendar({
+                slotLabelInterval :duracionServicio
+              });
+
+              $('#calendar').fullCalendar('refetchEvents');
           },
           error: function(jqXHR, textStatus, err) {
               console.error('AJAX ERROR: ' + err);
@@ -208,12 +212,13 @@ function obtenerHorarios() {
         fin.hours(evento.end._d.getUTCHours());
         fin.minute(evento.end._d.getUTCMinutes());
 
+        //console.log(evento.start._d.substring(1,10))
         var horario = {
-            idDireccion: $('#lstUbicacion').val(),
-            dia: evento.start._d.getDay(),
-            horaInicio: inicio.format('HH:mm'),
-            horaFin: fin.format('HH:mm'),
-            idServicio :  $('#lstServicio').val()
+            inicio: inicio
+            //idDireccion: $('#lstUbicacion').val(),
+            //horaInicio: inicio.format('HH:mm'),
+            //horaFin: fin.format('HH:mm'),
+            //idServicio :  $('#lstServicio').val()
         };
 
         objhorarios.push(horario);
