@@ -188,6 +188,7 @@ var io = function ( io, bundle, ioPassport ) {
 
       socket.on('conversacionLeida', function(usuario_id){
         var req = {
+          socket: socket,
           usuario_id_para: socket.request.cookies.intermed_sesion.id,
           usuario_id_de: usuario_id
         };

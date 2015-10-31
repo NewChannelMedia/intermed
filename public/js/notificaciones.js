@@ -427,6 +427,7 @@ function socketManejadores() {
     } );
 
     socket.on('cargarInboxVistaPrevia', function (data){
+      socket.emit('verNotificacionesInbox');
       $('li.loadInboxList').remove();
       data.forEach(function(record){
         InboxListLoaded.push(record.usuario.id);
@@ -436,6 +437,9 @@ function socketManejadores() {
         loadInboxList = true;
         $('#notificacionesInboxList').append('<li class="loadInboxList" style="min-height:0px; margin:0px;padding:0px;" class="btn btn-block text-center"></li>');
       }
+      setTimeout(function(){
+        socket.emit('inbox');
+      },1000);
     });
 
     socket.on('nuevoInbox', function(result){
@@ -531,6 +535,12 @@ function socketManejadores() {
         },3000);
       }
       focusUltimo();
+    });
+
+    socket.on('conversacionLeida',function(){
+        setTimeout(function(){
+          socket.emit('inbox');
+        },1000);
     });
 
 }

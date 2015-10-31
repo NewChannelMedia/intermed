@@ -27,6 +27,20 @@ exports.enviar = function( req ){
             tipoNotId = 102;
           }
           if (tipoNotId > 0){
+              models.Notificacion.update( {
+                visto: 1
+              }, {
+                where: {
+                  usuario_id:  req.usuario_id.toString(),
+                  visto: 0,
+                  data: req.info.para,
+                  tipoNotificacion_id: {$between: [100, 200]}
+                }
+              }).then(function(result){
+                if (result){
+                  req.socket.emit('conversacionLeida');
+                }
+              });
               models.Notificacion.create( {
                 usuario_id: req.info.para,
                 tipoNotificacion_id: tipoNotId,
@@ -247,6 +261,10 @@ exports.conversacionLeida = function(req){
           visto: 0,
           data: req.usuario_id_de.toString(),
           tipoNotificacion_id: {$between: [100, 200]}
+        }
+      }).then(function(result){
+        if (result){
+          req.socket.emit('conversacionLeida');
         }
       });
     }
