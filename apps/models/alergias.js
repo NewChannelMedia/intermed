@@ -2,11 +2,11 @@
   module.exports = function ( sequelize, DataTypes ) {
     var Alergias = sequelize.define( 'Alergias', {
       id: {
-        type: DataTypes.BIGINT,
+        type: DataTypes.INTEGER,
         autoIncrement: true,
         primaryKey: true
       },
-      alergia: {
+      alergias: {
         type: DataTypes.STRING,
         required: true
       }
