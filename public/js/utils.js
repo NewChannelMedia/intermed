@@ -1522,6 +1522,7 @@ function cargarFavCol( usuario ) {
       // con ajax se hace la peticion a la url la cual me mostrara la informacion en una tabla con
       // la lista de mis contactos
       $.post('/contactosRecomendados',function(data){
+        //Si nos dejan solitos nos amamos
         var html = "";
         var nombreTodo="";
         $( "#recomendarA tbody" ).html('');
