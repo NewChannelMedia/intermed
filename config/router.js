@@ -1150,6 +1150,14 @@ var iniciar = function () {
   app.post('/notificaciones/scroll', function (req, res){
     intermed.callController('notificaciones','scroll', req.body, req, res);
   });
+  // <---------------- OSCAR ESPECIALIDADES ---------------------->
+    app.post('/especialidadesMedico',function(req, res){
+      intermed.callController('contactos','especialidadesMedico',req,res);
+    });
+    app.post('/medicoDatos', function(req, res){
+      intermed.callController('contactos','medicoDatos',req,res);
+    });
+  // <---------------- FIN OSCAR ESPECIALIDADES ------------------>
 }
 
 var io = serv.server( app, 3000 );

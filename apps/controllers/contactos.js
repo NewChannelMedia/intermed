@@ -354,6 +354,34 @@ module.exports = {
         error: 'Necesitas iniciar sesión'
       } );
     }
+  },
+  especialidadesMedico: function( req, res ){
+    if( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Especialidad.findAll({
+        attributes:['id','especialidad']
+      }).then(function(especialidades){
+        res.send(especialidades);
+      });
+    }
+  },
+  medicoDatos: function( req, res ){
+    if( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Medico.findOne({
+        where:{id:usuario_id},
+        attributes:['id'],
+        include:[{
+          model:models.Usuario,
+          attributes:['id'],
+          include:[{
+            model:models.DatosGenerales,
+            attributes:['nombre','apellidoP','apellidoM']
+          }]
+        }]
+      }).then(function(medico){
+        res.send(medico);
+      });
+    }
   }
-
 }

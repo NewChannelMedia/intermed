@@ -553,7 +553,50 @@
         </form>
       </div>
     </div>
-
+    <!-- PERDIR RECOMENDACION A MEDICOS -->
+      <div id="pedir" class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <!-- Inicio HEADER -->
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title">
+                <span id="nombreOcultoPerfil" class="hidden"></span>
+                Pedir una Recomendación al Dr.<span id="nombreDoctor"></span><span class="hidden" id="idMedico"></span>
+              </h4>
+            </div>
+            <!-- FIN HEADER -->
+            <!-- INICIO BODY -->
+              <div class="modal-body">
+                <p>En esta ventana podrá elegir una especialidad para poder pedirle una recomendacion a su medico</p>
+                <div class="form-group">
+                  <label for="especialidadesMedic" class="col-sm-2 control-label">Especialidad</label>
+                  <select id="especialidadesMedic" class="form-control">
+                  </select>
+                </div>
+                <div class="" id="tipoRecomendacionPedir">
+                  <ul class="list-inline"></ul>
+                </div>
+                <div class="form-group">
+                  <label for="email-recomendacion">Correo</label>
+                  <input type="email" class="form-control" id="email-recomendacion" placeholder="Envia la recomendacion por correo"/>
+                  <label for="textInfo">Escribe el contenido del correo</label>
+                  <textarea class="form-control" rows="3"></textarea>
+                </div>
+              </div>
+            <!-- FIN BODY -->
+            <!-- INICIO FOOTER -->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" class="btn btn-primary">Pedir</button>
+              </div>
+            <!-- FIN FOOTER -->
+          </div>
+        </div>
+      </div>
+    <!-- FIN PEDIR RECOMENDACION A MEDICOS -->
   </body>
 
   <style>

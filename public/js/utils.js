@@ -1498,7 +1498,8 @@ function cargarFavCol( usuario ) {
               "<a class='contList-profileEsp' href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'> " + data[ p ].Medico.Usuario.Especialidad + "</a>" +
               "</div>" +
               "<div class='media-right contList-profileAction'>" +
-              "<a class='contList-profileActionLink Flama-bold s15'>Recomendar</a>" +
+              "<a class='contList-profileActionLink Flama-bold s15'>Recomendar|</a>" +
+              "<a id='"+data[ p ].Medico.id+"' href='#' data-target='#pedir' data-toggle='modal' class='Pedir contList-profileActionLink Flama-bold s15'><smal>Pedir Recomendacion</smal></a>"+
               "</div>" +
               "</li>"
             );
@@ -1665,3 +1666,52 @@ function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
     }
   } );
 }
+/**
+* Pedir recomendacion a un medico, la siguiente parte del script
+* es para poder pedirle a cualquier medico una recomenacion
+* de sus contactos de algun especialista.
+* le llegara a el una notificacion donde se le avisara que usuario
+* pidio una recomendacion, donde el podra elegir desde sus contactos
+* una recomendacion y mandar, ya sea por correo o por el mismo sistema
+* al cual al usuario le podra llegar una notificacion que al darle click
+* lo mande al perfil del medico donde podra agregarlo a sus favoritos.
+**/
+//<------------------- OSCAR -------------------------->
+  $(document).ready(function(){
+    $(".Pedir.contList-profileActionLink").click(function(){
+      $.post('/especialidadesMedico',function(data){
+        var option ="";
+        $("#especialidadesMedic").html('');
+        option +='<option value="0">Especialidades</option>'
+        for(var i in data ){
+            option += '<option value="'+data[ i ].id+'">'+data[ i ].especialidad+'</option>';
+        }
+        $("#especialidadesMedic").append(option);
+      });
+      // carga nombre e id del medico
+      $.post('/medicoDatos',function(data){
+        var nombreCompleto = data.Usuario.DatosGenerale.nombre+' '+data.Usuario.DatosGenerale.apellidoP+' '+data.Usuario.DatosGenerale.apellidoM;
+        $("#nombreDoctor").text(nombreCompleto);
+        $("#idMedico").text(data.id);
+      });
+    });
+    $("#especialidadesMedic").change(function(){
+      var id = $(this).val();
+      var valor = $("#especialidadesMedic option:selected").text();
+      var html2 ="";
+       html2 += '<li>';
+         html2 +="<p>";
+           html2 += "<div class='label label-success'><span class='glyphicon glyphicon-remove'>&nbsp;"
+             html2 +="<small>";
+               html2 +=valor;
+               html2 += "<span class='hidden'>";
+                 html2 += id;
+               html2 += "</span>";
+             html2 +="</small>";
+           html2 += "</span></div>";
+         html2 +="</p>";
+       html2 +="</li>";
+       $( '#tipoRecomendacionPedir ul' ).append(html2);
+    });
+  });
+//<------------------- FIN OSCAR ---------------------->
