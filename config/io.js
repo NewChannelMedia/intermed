@@ -45,10 +45,6 @@ var io = function ( io, bundle, ioPassport ) {
   }
 
   io.on( 'connection', function ( socket ) {
-    if (socket.request.cookies.intermed_sesion.id == 1 ){
-      socket.id='RSArTKLhHGUXm9x6AAAF';
-    }
-
     if ( socket.request.cookies.intermed_sesion ) {
 
       socket.on( 'disconnect', function () {
@@ -191,11 +187,15 @@ var io = function ( io, bundle, ioPassport ) {
         intermed.callController( 'inbox', 'crearConversacion', req );
       });
 
-      socket.on('cargarInboxVistaPrevia', function(){
+      socket.on('cargarInboxVistaPrevia', function(object){
         var req = {
           socket: socket,
           usuario_id: socket.request.cookies.intermed_sesion.id
         };
+        if (object) {
+          req.notIn = object.notIn
+        }
+        console.log(req.notIn);
         intermed.callController( 'inbox', 'cargarInboxVistaPrevia', req );
       });
     }

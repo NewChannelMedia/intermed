@@ -92,14 +92,14 @@
                 </a>
               </li>
               <li role="presentation" class="dropdown">
-                <a id="notificationIcon" class="navControlBtn dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="$('#notificacionesInboxList').html('');socket.emit('cargarInboxVistaPrevia');socket.emit('cargarInboxVistaPrevia');socket.emit('cargarInboxVistaPrevia')">
+                <a id="notificationIcon" class="navControlBtn dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="cargarListaInbox()">
                 <!--<a id="agendaIcon" class="navControlBtn" href="{{base_url}}inbox">-->
                   <img src="img/icon-messages.png">
                   <span id="totalInbox" class="badge"></span>
                 </a>
 
                 <ul class="dropdown-menu notificationDropdown media-list">
-                  <div  id="notificacionesInboxList" style="max-height:300px;overflow:scroll;">
+                  <div  id="notificacionesInboxList" style="max-height:300px;overflow-y: scroll;">
 
                   </div>
                   <div style="padding:10px;background-color:#DDD;margin-bottom:-5px;margin-top:10px;">

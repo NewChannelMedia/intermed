@@ -128,7 +128,7 @@ exports.cargarInboxVistaPrevia = function (object){
     attributes: [['IF(`usuario_id_de` = '+object.usuario_id+',`usuario_id_para`,`usuario_id_de`)','usuario_id'],'mensaje',['max(`fecha`)','fecha'],'visto'],
     group: ['usuario_id'],
     order:  '`fecha` DESC',
-    limit: 10
+    limit: 5
   }).then(function(result){
     if (result.length > 0){
       var total = 0;

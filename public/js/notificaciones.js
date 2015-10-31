@@ -199,6 +199,8 @@ var totalNotificaciones = [],
   agregadoMedicoFavorito = [],
   solicitudesRechazadas = [];
 
+var InboxListLoaded = [];
+
 
 function socketManejadores() {
 
@@ -341,10 +343,15 @@ function socketManejadores() {
     } );
 
     socket.on('cargarInboxVistaPrevia', function (data){
+      $('li.loadInboxList').remove();
       data.forEach(function(record){
-        console.log('VISTA PREVIA: ' + JSON.stringify(record));
-        $('#notificacionesInboxList').append('<li class="media"><div class="media-left"><a href="'+ record.usuario.usuarioUrl +'"><img class="media-object" src="'+record.usuario.urlFotoPerfil+'" style="width: 50px;"></a></div><div class="media-body"><a href="'+ record.usuario.usuarioUrl +'">'+ record.usuario.DatosGenerale.nombre + ' ' + record.usuario.DatosGenerale.apellidoP + ' ' + record.usuario.DatosGenerale.apellidoM +'</a><br><div class="text-left" style="margin-top:-25px;">'+ record.mensaje +'</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" > '+ formattedDate(record.fecha) +' <span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>');
+        InboxListLoaded.push(record.usuario.id);
+        $('#notificacionesInboxList').append('<li class="media"><div class="media-left"><a href="' + base_url + 'inbox/'+ record.usuario.usuarioUrl +'"><img class="media-object" src="'+record.usuario.urlFotoPerfil+'" style="width: 50px;"></a></div><div class="media-body"><a href="' + base_url + 'inbox/'+ record.usuario.usuarioUrl +'">'+ record.usuario.DatosGenerale.nombre + ' ' + record.usuario.DatosGenerale.apellidoP + ' ' + record.usuario.DatosGenerale.apellidoM +'</a><br><div class="text-left" style="margin-top:-25px;">'+ record.mensaje +'</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" > '+ formattedDate(record.fecha) +' <span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>');
       });
+      if (data.length > 0){
+        loadInboxList = true;
+        $('#notificacionesInboxList').append('<li class="loadInboxList" style="min-height:0px; margin:0px;padding:0px;" class="btn btn-block text-center"></li>');
+      }
     });
 
     socket.on('nuevoInbox', function(result){
@@ -510,7 +517,24 @@ function verTodasNotificaciones(){
   return respuesta;
 }
 
+function cargarListaInbox(){
+  $('#notificacionesInboxList').html('');
+  InboxListLoaded = [];
+  socket.emit('cargarInboxVistaPrevia');
+}
 
+var loadInboxList = true;
+function cargarInboxListCondicional(){
+  var scrollBottom = $('#notificacionesInboxList').height() - $('#notificacionesInboxList').parent().height() - $('#notificacionesInboxList').scrollTop();
+  if (scrollBottom <5 && $('li.loadInboxList').length>0 && loadInboxList){
+    $('li.loadInboxList').html('Cargando...');
+    loadInboxList = false;
+    setTimeout(function(){
+      $('li.loadInboxList').html('');
+        socket.emit('cargarInboxVistaPrevia',{notIn: InboxListLoaded});
+      },2000);
+    }
+}
 
 function getDateTime( format ) {
   var date = new Date();
@@ -532,3 +556,17 @@ function getDateTime( format ) {
     return year + month + day + hour + min + sec;
   }
 }
+
+
+
+$(document).ready(function(){
+  var chat = document.getElementById("notificacionesInboxList");
+  if (chat.addEventListener) {
+  	// IE9, Chrome, Safari, Opera
+  	chat.addEventListener("mousewheel", cargarInboxListCondicional, false);
+  	// Firefox
+  	chat.addEventListener("DOMMouseScroll", cargarInboxListCondicional, false);
+  }
+  // IE 6/7/8
+  else chat.attachEvent("onmousewheel", cargarInboxListCondicional);
+});
