@@ -34,15 +34,15 @@ exports.obtieneEstados = function (req, res) {
 };
 
 exports.obtieneCiudades = function (object, req, res) {
-    models.Ciudad.findAll({
+    models.Municipio.findAll({
         where: {
             estado_id: object.estado_id
         },
-        order: ['ciudad'],
-        attributes: ['id', 'ciudad']
+        order: ['municipio'],
+        attributes: ['municipio_id', 'municipio']
     }).then(function (ciudades) {
         res.send({
-            'ciudades': ciudades
+            'municipio': ciudades
         });
     });
 };
@@ -64,13 +64,13 @@ exports.obtieneLocalidades = function (object, req, res) {
     models.Localidad.findAll({
         where: {
             estado_id: object.estado_id,
-            ciudad_id: object.ciudad_id
+            municipio_id: object.municipio_id
         },
         order: ['localidad'],
         attributes: ['id', 'localidad']
-    }).then(function (localidades) {
+    }).then(function (municipios) {
         res.send({
-            'localidades': localidades
+            'municipios': municipios
         });
     });
 };
@@ -86,6 +86,8 @@ exports.ubicacion = function (objects, req, res) {
 };
 
 exports.registrarUbicacion = function (objects, req, res) {
+    console.log(objects.slc_colonias);
+    console.log(objects.slc_ciudades);
     models.Direccion.create({
         ubicacionGM: 'object.ubicacionGM',
         calle: objects.calleUbi,
@@ -125,7 +127,7 @@ exports.horarios = function (objects, req, res) {
 exports.registrarHorarios = function (objects, req, res) {
     //eliminar registros anteriores
     var continuarRegistro = true;
-    var mensajeError;    
+    var mensajeError;
     models.Horarios.destroy({
         where: {
             idDireccion: objects.idDireccion
@@ -158,4 +160,29 @@ exports.registrarHorarios = function (objects, req, res) {
             error: err
         });
     };
+};
+
+exports.ubicacionObtener = function (objects, req, res) {
+    models.Direccion.findAll({
+        where: {
+            usuario_id: 1
+        },
+        include: [
+          {
+              model: models.Municipio,
+              include: [{
+                  model: models.Estado
+              }]
+          }]
+    }).then(function (datos) {        
+        res.render('ubicacionobtener', {
+            title: 'Direcciones',
+            usuario_id:1,
+            direccion: datos
+        });
+    }).catch(function (err) {
+        res.status(500).json({
+            error: err
+        })
+    });
 };

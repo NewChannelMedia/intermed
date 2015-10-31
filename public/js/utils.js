@@ -479,8 +479,8 @@ function obtenerCiudades() {
             'estado_id': document.getElementById('slc_estados').value
         },
         success: function (data) {
-            data.ciudades.forEach(function (record) {
-                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.id + '">' + record.ciudad + '</option>';
+            data.municipio.forEach(function (record) {
+                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.municipio_id + '">' + record.municipio + '</option>';
             });
             AsignarCiudad();
         },
@@ -495,7 +495,7 @@ function obtenerColonias() {
     if ($('#slc_colonias option').length != 1) {
         $('#slc_colonias option').remove();
     };
-
+    
     document.getElementById('slc_colonias').innerHTML = '<option value="">Colonia</option>';
     $.ajax({
         url: '/obtenerLocalidades',
@@ -504,10 +504,10 @@ function obtenerColonias() {
         cache: false,
         data: {
             'estado_id': document.getElementById('slc_estados').value,
-            'ciudad_id': document.getElementById('slc_ciudades').value
+            'municipio_id': document.getElementById('slc_ciudades').value
         },
         success: function (data) {
-            data.localidades.forEach(function (record) {
+            data.municipios.forEach(function (record) {
                 document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
             });
             AsignarColonia();

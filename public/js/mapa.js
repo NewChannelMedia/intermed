@@ -159,9 +159,6 @@ var mapa = {
                 animation: google.maps.Animation.DROP
             });
 
-            if (mapa.soloCargar == true) {
-                mapa.marker.draggable = false;
-            };
             google.maps.event.addListener(mapa.marker, 'mouseup', mapa.funcionClick);
         };
         //personalizar el icono
@@ -268,15 +265,7 @@ $(function () {
         mapa.soloCargar = false;
     };
 
-    var handler;
-    handler = Gmaps.build("Google");
-    return handler.buildMap({
-        internal: {
-            id: "map"
-        }
-    }, function () {
-        handler.fitMapToBounds();
-    });
+
 })
 
 function AgregarMarcadores() {
@@ -292,7 +281,7 @@ function AgregarMarcadores() {
         var marker = new google.maps.Marker({
             position: pos,
             map: mapa.map,
-            draggable: true,
+            draggable: false,
             title: titulo,
             animation: google.maps.Animation.DROP
         });
@@ -306,7 +295,10 @@ function AgregarMarcadores() {
 }
 
 
+//Inicializa mapa
 google.maps.event.addDomListener(window, 'load', mapa.initMap);
+
+//Cargar marcadores cuando el mapa esta inicializado
 google.maps.event.addDomListener(window, 'load', AgregarMarcadores);
 
 
