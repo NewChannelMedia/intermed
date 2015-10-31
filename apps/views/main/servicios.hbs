@@ -1,0 +1,37 @@
+<section id="principal">
+  <div class="container">
+    <form method="POST" name="frmRegServicio" id="frmRegServicio">
+        <input type="hidden" id="usuario_id" name="usuario_id" value="12">
+        <input type="hidden" id="id" name="id" value="">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                      <input type="text" class="form-control" minlength="10" maxlength="45" id="concepto" name="concepto" placeholder="Concepto">
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                      <textarea class="form-control" minlength="4" maxlength="45" id="descripcion" name="descripcion" placeholder="Descripcion"></textarea>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="number" class="form-control" minlength="2" maxlength="7" id="precio" name="precio" placeholder="Precio">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="duracion" name="duracion" placeholder="Duracion">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <input type="button" class="btn btn-info btn-md btn-block" id="btnRegServicio" value="Guardar" onclick="regServicio();">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+  </div>
+</section>

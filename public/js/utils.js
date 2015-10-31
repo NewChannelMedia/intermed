@@ -383,81 +383,140 @@ function correoValido( correo ) {
 }
 
 function regDoctor() {
-  if ( regMedValid() == true ) {
-    $.ajax( {
-      url: '/registro',
-      type: 'POST',
-      dataType: "json",
-      cache: false,
-      data: $( '#frmRegMed' ).serialize(),
-      type: 'POST',
-      success: function ( data ) {
-        document.getElementById( "frmRegMed" ).reset();
-        data.forEach( function ( record ) {
-          addMedico( record );
-        } );
-      },
-      error: function ( jqXHR, textStatus, err ) {
-        console.error( 'AJAX ERROR: (registro 166) : ' + err );
-      }
-    } );
-  }
-  else {
-    alert( "Faltan llenar unos datos." );
-  }
+	if ( regMedValid() == true ) {
+		$.ajax( {
+			url: '/registro',
+			type: 'POST',
+			dataType: "json",
+			cache: false,
+			data: $( '#frmRegMed' ).serialize(),
+			type: 'POST',
+			success: function( data ) {
+				if ( data.error == null )
+				{
+					$( '#frmRegMed')[0].reset();
+					addMedico( data,1 );
+				}
+				else {
+					alert(data.error.message);
+				}
+			},
+			error: function( jqXHR, textStatus, err ) {
+				console.error( 'AJAX ERROR: (registro 166) : ' + err );
+			}
+		});
+	}
+	else {
+		alert( "Faltan llenar unos datos." );
+	}
 }
 
 function getAllDoctors() {
-  regTotalDoc = 0;
-  $.ajax( {
-    url: '/registro',
-    type: 'POST',
-    dataType: "json",
-    cache: false,
-    data: {
-      getAll: '1'
-    },
-    type: 'POST',
-    success: function ( data ) {
-      data.forEach( function ( record ) {
-        addMedico( record );
-      } );
-    },
-    error: function ( jqXHR, textStatus, err ) {
-      console.error( 'AJAX ERROR: (registro 196) : ' + err );
-    }
-  } );
+	regTotalDoc = 0;
+	$.ajax( {
+		url: '/todos',
+		type: 'GET',
+		dataType: "json",
+		cache: false,
+		data: {
+			getAll: '1'
+		},
+//		type: 'POST',
+		success: function( data ) {
+			data.forEach( function( record ) {
+				addMedico( record,1 );
+			} );
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 196) : ' + err );
+		}
+	} );
 }
 
-function addMedico( record ) {
-  var entreCalles = '',
-    medicosRegistrados = '';
-  if ( record.calle1Med && record.calle2Med ) {
-    var conjucion = 'y';
-    if ( record.calle2Med.length > 0 && record.calle2Med.toLowerCase().substring( 0, 1 ) === 'i' ) conjucion = 'e';
-    entreCalles = 'Entre ' + record.calle1Med + ' ' + conjucion + ' ' + record.calle2Med;
-  }
-  try {
-    // muestra los médicos con la funcionalidad de actualizar médico
-    medicosRegistrados += '<tr><th scope="row">' + ( ++regTotalDoc ) + '</th><td>' + record.nombreMed + ' ' + record.apellidoMed + '</td><td>' + record.correoMed + '</td><td>' + record.telefonoMed + '</td><td><address><strong>' + record.calleMed + ' #' + record.numeroMed + '</strong><br>' + entreCalles + ' <br>' + record.coloniaMed + ', CP:' + record.cpMed + '<br>' + record.ciudadMed + ', ' + record.estadoMed + '<br></address></td><td>' + record.especialidadMed + '</td><td><button class="btn btn-info" onclick="muestraMedico(' + record.id + '); return false;"><span class="glyphicon glyphicon-pencil"></span></button></td></tr>';
-    //medicosRegistrados += '<tr><th scope="row">' + (++regTotalDoc) + '</th><td>' + record.nombreMed + ' ' + record.apellidoMed + '</td><td>' + record.correoMed + '</td><td>' + record.telefonoMed + '</td><td><address><strong>' + record.calleMed + ' #' + record.numeroMed + '</strong><br>' + entreCalles + ' <br>' + record.coloniaMed + ', CP:' + record.cpMed + '<br>' + record.ciudadMed + ', ' + record.estadoMed + '<br></address></td><td>' + record.especialidadMed + '</td><td><button class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span></button></td></tr>';
-  }
-  catch ( ex ) {
-    console.error( 'PARSE ERROR (Registro 190) : ' + ex );
-  }
-  document.getElementById( 'tbmedReg' ).innerHTML += medicosRegistrados;
+function addMedico( record, tipo ) {
+		var entreCalles = '',
+		medicosRegistrados = '';
+		especialidad = '';
+		telefono = '';
+
+		if ( record.Direccions[0].calle && record.Direccions[0].calle2 ) {
+			var conjucion = 'y';
+			if ( record.Direccions[0].calle2.length > 0 && record.Direccions[0].calle2.toLowerCase().substring( 0, 1 ) === 'i' ) conjucion = 'e';
+			entreCalles = 'Entre ' + record.Direccions[0].calle + ' ' + conjucion + ' ' + record.Direccions[0].calle2;
+		}
+
+		if  ( record.Medico.Especialidads.length > 0 )
+		{
+			especialidad = record.Medico.Especialidads[0].especialidad;
+		}
+
+		if  ( record.Telefonos.length > 0 )
+		{
+			telefono = record.Telefonos[0].numero;
+		}
+
+		if  ( tipo == 1){
+			++regTotalDoc;
+		}
+
+		try {
+			medicosRegistrados += '<tr id="med_' + record.id  +'"><th scope="row">' + ( regTotalDoc ) + '</th><td>' + record.DatosGenerale.nombre + ' ' + record.DatosGenerale.apellidoP + ' ' + record.DatosGenerale.apellidoM +
+			'</td><td>' + record.correo + '</td><td>' + telefono+ '</td><td><address><strong>' + record.Direccions[0].calle + ' #' + record.Direccions[0].numero + '</strong><br>' + entreCalles + '<br>'	+
+			record.Direccions[0].Localidad.localidad  + ', CP:' + record.Direccions[0].Localidad.CP + '<br>' + record.Direccions[0].Municipio.municipio + ', ' + record.Direccions[0].Municipio.Estado.estado + '<br></address></td><td>' + especialidad +
+			'</td><td><button class="btn btn-info" onclick="muestraMedico(' + record.id + '); return false;"><span class="glyphicon glyphicon-pencil"></span></button></td></tr>';
+		}
+		catch ( ex ) {
+			console.error( 'PARSE ERROR (Registro 190) : ' + ex );
+		}
+
+		if  ( tipo == 1){
+			document.getElementById( 'tbmedReg' ).innerHTML = medicosRegistrados +  document.getElementById( 'tbmedReg' ).innerHTML;
+		} else {
+			$("tr#med_" +  record.id).replaceWith(medicosRegistrados);
+		}
 }
+
+function registrarCita() {
+	var horarios = obtenerHorarios();
+	$("#fecha").val(horarios[0].inicio);
+
+	console.log($('#frmRegCita').serialize());
+	$.ajax({
+		url: '/agregaCita',
+		type: 'POST',
+		dataType: "json",
+		data: $('#frmRegCita').serialize(),
+		cache: false,
+		//data: JSON.stringify(obtenerHorarios()),
+		type: 'POST',
+		success: function( data ) {
+			if ( data.error == null ) {
+
+			}
+			else {
+				alert(data.error.message);
+			}
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+		}
+	});
+}
+
 
 function regMedValid() {
-  var inputs = [ 'nombreMed', 'apellidoMed', 'correoMed', 'telefonoMed', 'especialidadMed', 'calleMed', 'numeroMed', 'coloniaMed', 'cpMed', 'calle1Med', 'calle2Med', 'ciudadMed', 'estadoMed' ];
-  var valid = true;
-  for ( i = 0; i < inputs.length; i++ ) {
-    if ( document.getElementById( inputs[ i ] ).value.length <= 0 ) {
-      valid = false;
-      break;
-    }
-  }
-  return valid;
+/*
+	var inputs = [ 'nombreMed', 'apellidoMed',  'correoMed', 'telefonoMed', 'especialidadMed', 'calleMed', 'numeroMed', 'coloniaMed', 'cpMed', 'calle1Med', 'calle2Med', 'ciudadMed', 'estadoMed' ];
+	var valid = true;
+	for ( i = 0; i < inputs.length; i++ ) {
+		if ( document.getElementById( inputs[ i ] ).value.length <= 0 ) {
+			valid = false;
+			break;
+		}
+	}
+	return valid;
+	*/
+	return true;
 }
 
 function obtenerCiudades() {
@@ -1865,7 +1924,25 @@ function regHorarios() {
     }
 }
 
-
+// función que actualiza médico.
+function actDoctor() {
+	$.ajax( {
+		url: '/actualizaMedico',
+		type: 'POST',
+		dataType: "json",
+		cache: false,
+		data: $( '#frmActMed' ).serialize(),
+		type: 'POST',
+		success: function( data ) {
+			// al guardar cambios oculta la forma
+			$( "#UpdateModal" ).modal( "hide" );
+			addMedico( data,0 );
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+		}
+	} );
+}
 
 function regHorariosValid() {
     return true;
@@ -1929,22 +2006,81 @@ function regUbiValid() {
 
     return blnValido;
 }
+// muestra la ventana para editar al médico
+function muestraMedico( id ) {
+	$( "#UpdateModal .modal-body").load("edicionMedico/" + id, function() {
+		$("#UpdateModal" ).modal( "show" );
+			$('#UpdateModal #slc_estados').val($('#UpdateModal #idEstado').val());
+			$('#UpdateModal #slc_ciudades').val($('#UpdateModal #idMunicipio').val());
+			$('#UpdateModal #slc_colonias').val($('#UpdateModal #idLocalidad').val());
+			$('#UpdateModal #especialidadMed').val($('#UpdateModal #idEspecialidad').val());
+	});
+}
 
-function addUbicacion(record) {
-    var entreCalles = '',
-      medicosRegistrados = '';
-    if (record.calle1Med && record.calle2Med) {
-        var conjucion = 'y';
-        if (record.calle2Med.length > 0 && record.calle2Med.toLowerCase().substring(0, 1) === 'i') conjucion = 'e';
-        entreCalles = 'Entre ' + record.calle1Med + ' ' + conjucion + ' ' + record.calle2Med;
-    }
-    try {
-        // muestra los médicos con la funcionalidad de actualizar médico
-        medicosRegistrados += '<tr><th scope="row">' + (++regTotalDoc) + '</th><td>' + record.nombreMed + ' ' + record.apellidoMed + '</td><td>' + record.correoMed + '</td><td>' + record.telefonoMed + '</td><td><address><strong>' + record.calleMed + ' #' + record.numeroMed + '</strong><br>' + entreCalles + ' <br>' + record.coloniaMed + ', CP:' + record.cpMed + '<br>' + record.ciudadMed + ', ' + record.estadoMed + '<br></address></td><td>' + record.especialidadMed + '</td><td><button class="btn btn-info" onclick="muestraMedico(' + record.id + '); return false;"><span class="glyphicon glyphicon-pencil"></span></button></td></tr>';
-        //medicosRegistrados += '<tr><th scope="row">' + (++regTotalDoc) + '</th><td>' + record.nombreMed + ' ' + record.apellidoMed + '</td><td>' + record.correoMed + '</td><td>' + record.telefonoMed + '</td><td><address><strong>' + record.calleMed + ' #' + record.numeroMed + '</strong><br>' + entreCalles + ' <br>' + record.coloniaMed + ', CP:' + record.cpMed + '<br>' + record.ciudadMed + ', ' + record.estadoMed + '<br></address></td><td>' + record.especialidadMed + '</td><td><button class="btn btn-info"><span class="glyphicon glyphicon-pencil"></span></button></td></tr>';
-    }
-    catch (ex) {
-        console.error('PARSE ERROR (Registro 190) : ' + ex);
-    }
-    document.getElementById('tbmedReg').innerHTML += medicosRegistrados;
+
+function regServicio()
+{
+	$.ajax( {
+		url: '/agregaServicio',
+		type: 'POST',
+		dataType: "json",
+		cache: false,
+		data: $( '#frmRegServicio' ).serialize(),
+		type: 'POST',
+		success: function( data ) {
+			alert('Se ha agregado el servicio !');
+
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+		}
+	} );
+}
+
+// Obtiene ubicaciones para el servicio seleccionado
+function obtieneUbicaciones(id )
+{
+	var ubicaciones = $('#lstUbicaciones');
+	$.ajax( {
+		url: '/seleccionaUbicacion',
+		type: 'POST',
+		dataType: "json",
+		cache: false,
+		data: { id: id},
+		success: function( data ) {
+				data.forEach(function(record) {
+						ubicaciones.append('<option value="' + record.id + '">' +  record.nombre + '</option>');
+				});
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+		}
+	} );
+}
+
+
+
+// script que muestra u oculta campos de la busqueda del home
+if ( location.pathname === '/' ) {
+	$( document ).ready( function() {
+		$( "#sel-busqueda" ).change( function() {
+			$( this ).find( "option:selected" ).each( function() {
+				if ( $( this ).attr( "value" ) == "especialidad" ) {
+					$( ".box" ).not( ".esp" ).hide();
+					$( ".esp" ).show();
+				}
+				else if ( $( this ).attr( "value" ) == "medico" ) {
+					$( ".box" ).not( ".med" ).hide();
+					$( ".med" ).show();
+				}
+				else if ( $( this ).attr( "value" ) == "padecimiento" ) {
+					$( ".box" ).not( ".pad" ).hide();
+					$( ".pad" ).show();
+				}
+				else {
+					$( ".box" ).hide();
+				}
+			} );
+		} ).change();
+	} );
 }

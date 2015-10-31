@@ -1,0 +1,229 @@
+<link href="css/mapa.css" rel="stylesheet" />
+<link href="css/fullcalendar.min.css" rel="stylesheet" />
+
+<script src="js/moment.min.js"></script>
+<script src="js/fullcalendar.js"></script>
+<script src="js/lang/es.js"></script>
+
+<section id="principal">
+  <div class="container">
+
+    <form method="POST" name="frmRegCita" id="frmRegCita">
+      <input type="hidden" id="id" name="id">
+      <input type="hidden" id="paciente_id" name="paciente_id" value="1">
+      <input type="hidden" id="medico_id" name="medico_id" value="1">
+      <input type="hidden" id="fecha" name="fecha" />
+
+      <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+              <select class="form-control" name="lstServicio" id="lstServicio" required="true">
+                  <option value="0">Servicio</option>
+                  {{#each servicios}}
+                      <option value="{{id}}">{{concepto}}</option>
+                  {{/each}}
+              </select>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group">
+              <select class="form-control" name="lstUbicacion" id="lstUbicacion" required="true">
+                  <option value="0">Ubicaciones</option>
+                  {{#each ubicaciones}}
+                      <option value="{{id}}">{{nombre}}</option>
+                  {{/each}}
+              </select>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+          <div id='precioServicio'></div>
+          <div id='duracionServicio'></div>
+        </div>
+
+        <div class="col-md-12">
+          <div id='calendar'></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Guardar" onclick="registrarCita()">
+                </div>
+            </div>
+        </div>
+
+    </div>
+    </form>
+
+  </div>
+</section>
+
+
+<script>
+
+  var valido = true;
+  var duracionServicio = '01:00';
+  var precioServicio = 0;
+  var horariosDireccion = 0;
+  var horariosMedico = 0;
+
+$(document).ready(function () {
+
+    $('#lstServicio').change(function(){
+      $.ajax({
+          url: '/servicio/' +  $('#lstServicio').val(),
+          dataType: "json",
+          cache: false,
+          success: function(data) {
+              duracionServicio  =  data.duracion;
+              $('#precioServicio').html("<b>Costo del servicio : </b>" + data.precio);
+              $('#duracionServicio').html("<b>Duración : </b>" + data.duracion);
+
+              //slotLabelInterval
+              $('#calendar').fullCalendar({
+                slotLabelInterval :duracionServicio
+              });
+
+              $('#calendar').fullCalendar('refetchEvents');
+          },
+          error: function(jqXHR, textStatus, err) {
+              console.error('AJAX ERROR: ' + err);
+          }
+      });
+    });
+
+    $('#lstUbicacion').change(function(){
+      $.ajax({
+          url: '/seleccionaHorarios/' +  $('#lstUbicacion').val(),
+          dataType: "json",
+          cache: false,
+          success: function(data) {
+              horariosDireccion  = data;
+          },
+          error: function(jqXHR, textStatus, err) {
+              console.error('AJAX ERROR: ' + err);
+          }
+      });
+      /*
+      $.ajax({
+          url: '/seleccionaHorariosMedico/' +  $('#medico_id').val(),
+          dataType: "json",
+          cache: false,
+          success: function(data) {
+              horariosMedico  = data;
+          },
+          error: function(jqXHR, textStatus, err) {
+              console.error('AJAX ERROR: ' + err);
+          }
+      });*/
+    });
+
+    // page is now ready, initialize the calendar...
+
+    $('#calendar').fullCalendar({
+        // put your options and callbacks here
+        firstDay:1,
+        defaultView: 'agendaWeek',
+        height: 350,
+        allDaySlot: false,
+        slotLabelFormat: 'h:mm a',
+        slotLabelInterval: 120,
+        slotDuration: duracionServicio,
+        //slotDuration: '01:00',
+        columnFormat: 'dddd',
+        header: {
+            center: false,
+            right: false,
+            left: false
+        },
+        /*
+        businessHours: {
+            start: '6:00',
+            end: '19:00',
+            dow: [0, 1, 2, 3, 4, 5, 6]
+        },*/
+        minTime: '8:00',
+        maxTime: '19:00',
+        defaultDate: new Date(),
+        lang: 'es',
+        selectable: true,
+        selectHelper: true,
+        displayEventTime: false,
+        select: function (start, end) {
+            var eventData;
+
+            if (start.format('DMYYYY') != end.format('DMYYYY')) {
+                valido = false;
+            } else {
+                  // validar rango
+                  if  ( end._d.getHours()  - start._d.getHours() >  duracionServicio)
+                  {
+                      valido = false;
+                  } else {
+                      valido = true;
+                  }
+
+                  //console.log(end._d.getHours()  - start._d.getHours())
+            };
+
+            if (valido == true) {
+                eventData = {
+                    title:   $('#lstServicio option:selected').text(),
+                    start: start,
+                    end: end
+                };
+
+                $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+            }
+            $('#calendar').fullCalendar('unselect');
+        },
+        editable: true,
+        eventLimit: true,
+        eventClick: function (event, jsEvent, view) {
+            $('#calendar').fullCalendar('removeEvents', event._id);
+        },
+        eventMouseover: function (event, jsEvent, view) {
+            $(this).append('<span id=\"' + event._id + '\">Clic para eliminar</span>');
+        },
+        eventMouseout: function (event, jsEvent, view) {
+            $('#' + event._id).remove();
+        },
+    })
+
+});
+
+function obtenerHorarios() {
+    var objhorarios = [];
+    var h = $('#calendar').fullCalendar('clientEvents');
+    var evento;
+    var i;
+    var inicio = new moment();
+    var fin = new moment();
+
+    objhorarios = [];
+    for (i = 0; i <= h.length-1; i++) {
+        evento = h[i];
+
+        inicio.hours(evento.start._d.getUTCHours());
+        inicio.minute(evento.start._d.getUTCMinutes());
+
+        fin.hours(evento.end._d.getUTCHours());
+        fin.minute(evento.end._d.getUTCMinutes());
+
+        //console.log(evento.start._d.substring(1,10))
+        var horario = {
+            inicio: inicio
+            //idDireccion: $('#lstUbicacion').val(),
+            //horaInicio: inicio.format('HH:mm'),
+            //horaFin: fin.format('HH:mm'),
+            //idServicio :  $('#lstServicio').val()
+        };
+
+        objhorarios.push(horario);
+    };
+    return objhorarios;
+};
+
+</script>

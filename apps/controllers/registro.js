@@ -10,24 +10,30 @@ var models = require( '../models' );
  */
 //librerias que se utilizaran en este archivo
 module.exports = {
-  index: function ( object, req, res ) {
-    if ( req.session.passport.user.tipoUsuario != 'A' ) {
-      res.redirect( '/' )
-    }
-    else {
-      models.Estado.findAll().then( function ( estados ) {
-        res.render( 'registro', {
-          logged: req.session.passport.logged,
-          estados: estados
-        } );
-      } )
-    }
-  },
-  registrar: function ( object, req, res ) {
-    object = [ object ];
-    res.send( object );
-  },
-  getAll: function ( object, req, res ) {
+	index: function(object, req, res) {
+		/*
+		models.Estado.findAll().then(function (estados){
+			res.render('registro', {logged: req.session.passport.logged, estados: estados});
+		})*/
+
+		models.Estado.findAll().then(function(estados) {
+			// Obteniendo especialidades
+			models.Especialidad.findAll().then(function(especialidades) {
+
+						//Rendereando index y pasando los registros a la vista
+						res.render('registro', {
+							estados: estados,
+							especialidades : especialidades,
+							logged: req.session.passport.logged
+						});
+				});
+		});
+	},
+	registrar: function(object, req, res) {
+		object = [object];
+		res.send(object);
+	},
+	getAll: function(object, req, res){
 
     var allDoctors = [ //Eliminar al conectar con el modelo, solo se agrego con finalidades de simulación
       {

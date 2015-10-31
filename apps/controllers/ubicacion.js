@@ -21,16 +21,18 @@ exports.ObtieneTelefonos = function (req, res) {
     });
 };
 
-exports.ObtieneDirecciones = function (req, res) {
-    models.Direccion.findAll().then(function (datos) {
+exports.obtieneDirecciones = function(object, req, res) {
+  models.Direccion.findAll({
+      where : {usuario_id : object.id}
+  }).then(function(datos) {
         res.send(datos);
-    });
-};
+  });
+}
 
-exports.obtieneEstados = function (req, res) {
-    models.Estado.findAll().then(function (datos) {
-        res.sender(datos);
-    });
+exports.obtieneEstados = function(req, res) {
+  models.Estado.findAll().then(function(datos) {
+    res.sende(datos);
+  });
 };
 
 exports.obtieneCiudades = function (object, req, res) {
@@ -186,3 +188,64 @@ exports.ubicacionObtener = function (objects, req, res) {
         })
     });
 };
+
+exports.agregaDireccion = function(object, req, res) {
+    models.Direccion.create({
+      calle: object.calle,
+      nombre: object.nombre,
+      numero: object.numero,
+      calle1: object.calle1,
+      calle2: object.calle2,
+      localidad_id: object.colonia,
+      municipio_id: object.ciudad,
+      principal: 0,
+      longitud: object.longitud,
+      latitud: object.latitud,
+    usuario_id: id
+  }).then(function(medico) {
+        res.status(200).json({ok: true});
+  }).catch(function(err) {
+        res.status(500).json({error: err});
+  });
+}
+
+exports.actualizaDireccion = function(object, req, res) {
+    models.Direccion.update({
+      calle: object.calle,
+      numero: object.numero,
+      nombre: object.nombre,
+      calle1: object.calle1,
+      calle2: object.calle2,
+      localidad_id: object.colonia,
+      municipio_id: object.ciudad,
+      principal: object.principal,
+      longitud: object.longitud,
+      latitud: object.latitud,
+      usuario_id: id
+    },{ where : {id : object.id}
+  }).then(function(medico) {
+        res.status(200).json({ok: true});
+  }).catch(function(err) {
+        res.status(500).json({error: err});
+  });
+}
+
+exports.borraDireccion = function(object, req, res) {
+    models.Direccion.destroy({
+      where : {id : object.id}
+  }).then(function(medico) {
+        res.status(200).json({ok: true});
+  }).catch(function(err) {
+        res.status(500).json({error: err});
+  });
+}
+
+exports.obtieneUbicacion = function(object, req, res) {
+  models.Direccion.findOne({
+      where : {id : object.id}
+  }).then(function(datos) {
+        res.send(datos);
+  }).catch(function(err) {
+        res.status(500).json({error: err});
+  });
+}

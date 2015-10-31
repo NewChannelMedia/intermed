@@ -6,7 +6,7 @@ var medicosController = require('../apps/controllers/medicos');
 describe('homepage', function(){
   it('should respond to GET',function(){
     agent.get('http://127.0.0.1:3000/').end(function(err, response){
-      assert.equal(response.status, 500)
+      assert.equal(response.status, 200)
     })
   });
 });

@@ -1,14 +1,15 @@
-﻿"use strict";
+"use strict";
 
 module.exports = function (sequelize, DataTypes) {
     var Horarios = sequelize.define("Horarios", {
-        idHorario: {
+        id: {
             type: DataTypes.BIGINT,
             autoIncrement: true,
             primaryKey: true
         },
         direccion_id: {
-            type: DataTypes.BIGINT
+            type: DataTypes.BIGINT,
+            required: true
         },
         dia: {
             type: DataTypes.INTEGER,
