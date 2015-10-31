@@ -1,4 +1,4 @@
-﻿//Api Google Maps
+﻿//Estilos
 var styles = [
   {
       stylers: [
@@ -48,13 +48,14 @@ var mapa = {
     popup: null,
 
     //Direccion
-    estado:null,
+    estado: null,
     ciudad: null,
     colonia: null,
     calle: null,
     numero: null,
     codigoPostal: null,
     errorDireccion: null,
+    soloCargar: false,
 
 
 
@@ -78,47 +79,48 @@ var mapa = {
 
         //Crear objeto mapa
         mapa.map = new google.maps.Map(mapElement, mapOptions);
-        
+
         var styledMap = new google.maps.StyledMapType(styles, { name: "Styled Map" });
         mapa.map.mapTypes.set('map_style', styledMap);
         mapa.map.setMapTypeId('map_style');
 
 
         //Posicionar el mapa en la ubicacion del usuario
-        mapa.GeolicalizacionUsuario();
+        if (mapa.soloCargar == false) {
+            mapa.GeolicalizacionUsuario();
 
-        //Buscar Direcciones
-        var searchDiv = document.getElementById('searchDiv');
-        var searchField = document.getElementById('autocomplete_searchField');
-        mapa.map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchDiv);
+            //Buscar Direcciones
+            var searchDiv = document.getElementById('searchDiv');
+            var searchField = document.getElementById('autocomplete_searchField');
+            mapa.map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchDiv);
 
 
-        var searchOptions = {
-            bounds: new google.maps.LatLngBounds(
-                new google.maps.LatLng(mapa.latitud, mapa.longitud)
-            ),
-            types: new Array()
-        };
-
-        var autocompleteSearch = new google.maps.places.Autocomplete(searchField, searchOptions);
-
-        google.maps.event.addListener(autocompleteSearch, 'place_changed', function () {
-            while (mapa.markers[0]) {
-                mapa.markers.pop().setMap(null);
-            }
-            var place = autocompleteSearch.getPlace();
-
-            if (place.geometry) {
-                mapa.latitud = place.geometry.location.lat();
-                mapa.longitud = place.geometry.location.lng();
-                mapa.PosicionarMapa();
-                mapa.Marcador();
-                mapa.DireccionObtener();
+            var searchOptions = {
+                bounds: new google.maps.LatLngBounds(
+                    new google.maps.LatLng(mapa.latitud, mapa.longitud)
+                ),
+                types: new Array()
             };
-            mapa.Marcador();
 
-        });
+            var autocompleteSearch = new google.maps.places.Autocomplete(searchField, searchOptions);
 
+            google.maps.event.addListener(autocompleteSearch, 'place_changed', function () {
+                while (mapa.markers[0]) {
+                    mapa.markers.pop().setMap(null);
+                }
+                var place = autocompleteSearch.getPlace();
+
+                if (place.geometry) {
+                    mapa.latitud = place.geometry.location.lat();
+                    mapa.longitud = place.geometry.location.lng();
+                    mapa.PosicionarMapa();
+                    mapa.Marcador();
+                    mapa.DireccionObtener();
+                };
+                mapa.Marcador();
+
+            });
+        }
     },
     PosicionarMapa: function () {
         var devCenter = new google.maps.LatLng(mapa.latitud, mapa.longitud);
@@ -157,6 +159,9 @@ var mapa = {
                 animation: google.maps.Animation.DROP
             });
 
+            if (mapa.soloCargar == true) {
+                mapa.marker.draggable = false;
+            };
             google.maps.event.addListener(mapa.marker, 'mouseup', mapa.funcionClick);
         };
         //personalizar el icono
@@ -208,17 +213,16 @@ var mapa = {
                         };
 
                         if (addr.types[0] == 'sublocality_level_1') {
-                            mapa.colonia = addr.long_name;
-                            console.log(mapa.colonia);
+                            mapa.colonia = addr.long_name;                            
                         };
 
                         if (addr.types[0] == 'locality') {
-                            mapa.ciudad = addr.long_name;                            
+                            mapa.ciudad = addr.long_name;
                         };
 
                         if (addr.types[0] == 'administrative_area_level_1') {
                             mapa.estado = addr.long_name;
-                            $("#slc_estados option:contains(" + mapa.estado + ")").attr("selected", true);                            
+                            $("#slc_estados option:contains(" + mapa.estado + ")").attr("selected", true);
                             obtenerCiudades();
                         };
 
@@ -239,7 +243,7 @@ var mapa = {
                 mapa.errorDireccion = "No se puede obtener la dirección";
             }
 
-            
+
             $('#' + mapa.nombreObjetoLatitud).val(mapa.latitud);
             $('#' + mapa.nombreObjetoLongitud).val(mapa.longitud);
         })
@@ -256,29 +260,74 @@ mapa.nombreObjetoLongitud = 'longitud';
 
 //Objeto que recibe a direccion
 mapa.nombreObjetoDireccion = 'direccion';
+$(function () {
+    //cargar mapa
+    if ($('#idUsuario').length) {
+        mapa.soloCargar = true;
+    } else {
+        mapa.soloCargar = false;
+    };
 
-//cargar mapa
+    var handler;
+    handler = Gmaps.build("Google");
+    return handler.buildMap({
+        internal: {
+            id: "map"
+        }
+    }, function () {
+        handler.fitMapToBounds();
+    });
+})
+
+function AgregarMarcadores() {
+    var id, titulo, lat, lon;
+    $('[id^=direccion]').each(function (obj, val) {
+        id = ($(val).attr('id')).replace('direccion', '');
+        titulo = $('#titulo' + id).html();
+        lat = $('#latitud' + id).val();
+        lon = $('#longitud' + id).val();
+
+        var pos = new google.maps.LatLng(lat, lon);
+
+        var marker = new google.maps.Marker({
+            position: pos,
+            map: mapa.map,
+            draggable: true,
+            title: titulo,
+            animation: google.maps.Animation.DROP
+        });
+        marker.setIcon('img/marker.png');
+
+    });
+    mapa.latitud = lat;
+    mapa.longitud = lon;
+    mapa.zoom = 14;
+    mapa.PosicionarMapa();
+}
+
+
 google.maps.event.addDomListener(window, 'load', mapa.initMap);
+google.maps.event.addDomListener(window, 'load', AgregarMarcadores);
 
 
 function AsignarCiudad() {
-    SeleccionarValor('slc_ciudades', mapa.ciudad);    
+    SeleccionarValor('slc_ciudades', mapa.ciudad);
     obtenerColonias();
 }
 
 function AsignarColonia() {
-    SeleccionarValor('slc_colonias', mapa.colonia);    
+    SeleccionarValor('slc_colonias', mapa.colonia);
     $('#numeroUbi').val(mapa.numero);
     $('#calleUbi').val(mapa.calle);
     $('#cpUbi').val(mapa.codigoPostal);
 }
 
 function SeleccionarValor(control, valor) {
-    $("#" + control + ' option' ).each(function () {
+    $("#" + control + ' option').each(function () {
         if (ReemplezarAcentos($(this).text()) == ReemplezarAcentos(valor)) {
             $(this).attr("selected", true);
         }
-        
+
     });
 }
 

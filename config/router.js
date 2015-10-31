@@ -1150,6 +1150,17 @@ var iniciar = function () {
         //    });
         //}
     });
+
+    app.get('/ubicacionobtener', function (req, res) {
+        //if (req.session.passport.user) {   
+        intermed.callController('ubicacion', 'ubicacionObtener', req.body, req, res);
+        //}
+        //else {
+        //    res.send({
+        //        result: 'null'
+        //    });
+        //}
+    });
 }
 
 var io = serv.server( app, 3000 );
