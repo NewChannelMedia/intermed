@@ -198,6 +198,16 @@ var io = function ( io, bundle, ioPassport ) {
         console.log(req.notIn);
         intermed.callController( 'inbox', 'cargarInboxVistaPrevia', req );
       });
+
+      socket.on('obtenerUsuarioId', function(object){
+          var req = {
+            socket: socket,
+            usuario_id: socket.request.cookies.intermed_sesion.id,
+            UsuarioUrl: object
+          };
+          console.log(req.notIn);
+          intermed.callController( 'usuarios', 'obtenerUsuarioId', req );
+      });
     }
   } );
 };

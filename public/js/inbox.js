@@ -42,6 +42,12 @@ function enviarMensaje(para, mensaje){
 }
 
 $(document).ready(function(){
+  var location = window.location.href;
+  location = location.split("/");
+  if (parseInt(location[location.length-1]) > 0){
+    if (socket.emit('obtenerUsuarioId',location[location.length-1]));
+  }
+
   $('#InboxMsg').css('background-color','#EEE');
   inputAutocompleteContact($('#autocompleteContactos'));
   $('#inboxInputText').prop('disabled',true);

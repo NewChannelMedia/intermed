@@ -861,3 +861,18 @@ var borrarInvitaciones = function ( correo ) {
     console.log( 'Invitaciones eliminadas: ' + JSON.stringify( result ) );
   } )
 }
+
+
+exports.obtenerUsuarioId = function(object){
+  console.log('UsuarioUrl: ' + object.UsuarioUrl);
+  models.Usuario.findOne( {
+    where: {
+      UsuarioUrl: object.UsuarioUrl
+    },
+    attributes: ['id']
+  }).then(function(usuario){
+    if (usuario){
+      object.socket.emit('obtenerUsuarioId',usuario.id);
+    }
+  });
+}
