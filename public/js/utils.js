@@ -1713,5 +1713,10 @@ function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
        html2 +="</li>";
        $( '#tipoRecomendacionPedir ul' ).append(html2);
     });
+    //<--------------- CORREO --------------------->
+      $("#mandarPeticion").click(function(){
+        console.log("Tacuaches");
+      });
+    //<--------------- fin correo ----------------->
   });
 //<------------------- FIN OSCAR ---------------------->
