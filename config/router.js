@@ -1172,7 +1172,7 @@ var iniciar = function () {
 
   app.post('/inbox/enviar', function (req, res){
       if (!req.session.passport.user){
-        res.send({'success':false});
+        res.send({'success':false,'error':0});
       }else {
         intermed.callController('inbox','enviar', req.body, req, res);
       }
@@ -1180,7 +1180,7 @@ var iniciar = function () {
 
   app.post('/inbox/cargartodos', function (req, res){
       if (!req.session.passport.user){
-        res.send({'success':false});
+        res.send({'success':false,'error':0});
       }else {
         intermed.callController('inbox','cargartodos', req.body, req, res);
       }
@@ -1188,7 +1188,7 @@ var iniciar = function () {
 
   app.post('/inbox/cargarMensajesPorUsuario', function (req, res){
       if (!req.session.passport.user){
-        res.send({'success':false});
+        res.send({'success':false,'error':0});
       }else {
         intermed.callController('inbox','cargarMensajesPorUsuario', req.body, req, res);
       }
@@ -1196,7 +1196,7 @@ var iniciar = function () {
 
   app.post('/inbox/cargarMensajesPorUsuarioAnteriores', function(req, res){
       if (!req.session.passport.user){
-        res.send({'success':false});
+        res.send({'success':false,'error':0});
       }else {
         intermed.callController('inbox','cargarMensajesPorUsuarioAnteriores', req.body, req, res);
       }
@@ -1214,9 +1214,9 @@ var iniciar = function () {
     });
 
     app.post('/registrarubicacion', function (req, res) {
-        //if (req.session.passport.user) {   
-        
-        
+        //if (req.session.passport.user) {
+
+
         intermed.callController('ubicacion', 'registrarUbicacion', req.body, req, res);
         //}
         //else {
@@ -1238,7 +1238,7 @@ var iniciar = function () {
     });
 
     app.post('/registrarhorarios', function (req, res) {
-        //if (req.session.passport.user) {   
+        //if (req.session.passport.user) {
         intermed.callController('ubicacion', 'registrarHorarios', req.body, req, res);
         //}
         //else {
@@ -1249,7 +1249,7 @@ var iniciar = function () {
     });
 
     app.get('/ubicacionobtener', function (req, res) {
-        //if (req.session.passport.user) {   
+        //if (req.session.passport.user) {
         intermed.callController('ubicacion', 'ubicacionObtener', req.body, req, res);
         //}
         //else {

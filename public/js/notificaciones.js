@@ -418,7 +418,6 @@ function socketManejadores() {
       //$('#totalInbox').html('');
       var total = data.length;
       if (total>0){
-        console.log('Notificacion: ' + JSON.stringify(data));
         $('#totalInbox').html(total);
       } else {
         $('#totalInbox').html('');
@@ -453,7 +452,6 @@ function socketManejadores() {
 
         //Actualizar fecha de mensaje
         var tr = $('tr#'+result.de);
-        console.log('Actualizar fecha de tr_id: ' + result.de);
         var fecha = getDateTime(true);
         tr.find('input.time').prop('value',fecha);
         var nuevafecha = formattedDate(fecha);
@@ -481,9 +479,14 @@ function socketManejadores() {
         }
         ultimoMsg.find('.contenidoMsg').append('<p class="pull-left text-left">' +  renderHTML(result.mensaje) + '</p>');
         ultimoMsg.find('.horaMsg').html(hora);
-        //socket.emit('conversacionLeida', result.de);
+
+        if (document.hasFocus()){
+          socket.emit('conversacionLeida', result.de);
+        }
+
         focusUltimo();
       }
+      socket.emit('inbox');
     });
 
     socket.on('crearConversacion', function(usuario){
@@ -528,7 +531,6 @@ function socketManejadores() {
         //
         var hora = formathora(new Date().toLocaleString());
         if (!ultimoMsg.hasClass('right')){
-          console.log('Mensaje derecha');
           $('#chat').append(mensajeDerecha());
           ultimoMsg = $( "#chat li" ).last();
         }

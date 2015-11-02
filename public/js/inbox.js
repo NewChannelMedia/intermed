@@ -135,6 +135,10 @@ function cargarMensajes(id){
           socket.emit('conversacionLeida', data[0]);
           cargarInboxCondicional();
         }
+      } else{
+        if (data['error'] != null){
+          manejadorDeErrores(data['error']);
+        }
       }
     }
     });
@@ -497,4 +501,19 @@ $(document).ready(function(){
   }
   // IE 6/7/8
   else InboxListaContactos.attachEvent("onmousewheel", cargarContactos);
+});
+
+function manejadorDeErrores(error){
+  if (error === 0){
+    console.log('Sesión cerrada');
+  }
+}
+
+$(function() {
+  $(window).focus(function() {
+      var usuario_id = $('td.seleccionado').parent().prop('id');
+      if (usuario_id){
+        socket.emit('conversacionLeida', usuario_id);
+      }
+  });
 });
