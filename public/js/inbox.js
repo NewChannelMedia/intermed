@@ -498,3 +498,13 @@ $(document).ready(function(){
   // IE 6/7/8
   else InboxListaContactos.attachEvent("onmousewheel", cargarContactos);
 });
+
+
+$(function() {
+  $(window).focus(function() {
+      var usuario_id = $('td.seleccionado').parent().prop('id');
+      if (usuario_id){
+        socket.emit('conversacionLeida', usuario_id);
+      }
+  });
+});

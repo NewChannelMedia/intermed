@@ -442,6 +442,7 @@ exports.inbox = function ( req ) {
       tipoNotificacion_id: numNot
     },
     attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    group: ['data'],
     order: 'inicio DESC'
   } ).then( function ( result ) {
     if (result.length > 0){
