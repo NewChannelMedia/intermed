@@ -135,6 +135,10 @@ function cargarMensajes(id){
           socket.emit('conversacionLeida', data[0]);
           cargarInboxCondicional();
         }
+      } else{
+        if (data['error'] != null){
+          manejadorDeErrores(data['error']);
+        }
       }
     }
     });
@@ -499,6 +503,11 @@ $(document).ready(function(){
   else InboxListaContactos.attachEvent("onmousewheel", cargarContactos);
 });
 
+function manejadorDeErrores(error){
+  if (error === 0){
+    console.log('Sesión cerrada');
+  }
+}
 
 $(function() {
   $(window).focus(function() {
