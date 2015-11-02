@@ -122,7 +122,6 @@ else {
     } );
 
     if ( $( '#registroCompleto' ) && $( '#registroCompleto' ).val() === "0" && $( '#inicio' ).val() === "1" ) {
-      actualizarSesion();
       if ( $( '#tipoUsuario' ).val() === "M" ) {
         informacionRegistroMedico();
       }
@@ -223,6 +222,7 @@ function informacionRegistroMedico() {
       }
       else continuar = false;
 
+      actualizarSesion();
       $( "#RegMedModal" ).modal( "show" );
 
     },
@@ -300,6 +300,10 @@ function actualizarSesion() {
         if ( data.session.registroCompleto === 1 ) {
           $( '#registroIncompleto' ).css( 'display', 'none' );
         }
+
+        console.log('INICIO: ' + data.session.inicio);
+        $('#inicio').val(data.session.inicio);
+
         if ( data.session.fotoPerfil ) fotoPerfil = data.session.fotoPerfil;
         $( '#fotoPerfilMini' ).attr( "src", fotoPerfil );
         $( '#fotoPerfil' ).attr( "src", fotoPerfil );
@@ -1850,7 +1854,7 @@ function obtenerColonias() {
     if ($('#slc_colonias option').length != 1) {
         $('#slc_colonias option').remove();
     };
-    
+
     document.getElementById('slc_colonias').innerHTML = '<option value="">Colonia</option>';
     $.ajax({
         url: '/obtenerLocalidades',
@@ -1875,7 +1879,7 @@ function obtenerColonias() {
 
 //Registrar Ubicacion
 function regUbicacion() {
-    if (regUbiValid() == true) {             
+    if (regUbiValid() == true) {
         $.ajax({
             url: '/registrarubicacion',
             type: 'POST',
@@ -1903,9 +1907,9 @@ function regUbicacion() {
 //Registrar Ubicacion
 function regHorarios() {
     if (regHorariosValid() == true) {
-        //agregar horarios al control 
+        //agregar horarios al control
         $('#horariosUbi').val(JSON.stringify(obtenerHorarios()));
-        
+
         $.ajax({
             url: '/registrarhorarios',
             type: 'POST',
@@ -1915,7 +1919,7 @@ function regHorarios() {
             type: 'POST',
             success: function (data) {
                 document.getElementById("frmRegHorarios").reset();
-                alert('registro guradado');                
+                alert('registro guradado');
             },
             error: function (jqXHR, textStatus, err) {
                 console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
