@@ -266,7 +266,6 @@ function guardarImagenDePerfil( object, usuario ) {
     usuario.update( {
       urlFotoPerfil: path
     } );
-    console.log( 'IMAGEN GUARDADA' );
   } );
 }
 
@@ -847,9 +846,6 @@ function generarRelacionInversa( usuario, tipoUsuario, medicopaciente_id, req, r
 
 var download = function ( uri, filename, callback ) {
   request.head( uri, function ( err, res, body ) {
-    console.log( 'content-type:', res.headers[ 'content-type' ] );
-    console.log( 'content-length:', res.headers[ 'content-length' ] );
-
     request( uri ).pipe( fs.createWriteStream( filename ) ).on( 'close', callback );
   } );
 };
@@ -859,9 +855,7 @@ var borrarInvitaciones = function ( correo ) {
     where: {
       correo: correo
     }
-  } ).then( function ( result ) {
-    console.log( 'Invitaciones eliminadas: ' + JSON.stringify( result ) );
-  } )
+  } );
 }
 
 

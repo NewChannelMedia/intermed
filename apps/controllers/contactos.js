@@ -18,7 +18,6 @@ module.exports = {
             attributes: ['id'],
             include: [{model: models.Usuario, attributes: ['id']}]
           }).then(function(medico){
-            console.log('______MEDICO: ' + JSON.stringify(medico));
             models.Notificacion.create( {
               usuario_id: medico.Usuario.id,
               tipoNotificacion_id: 7,
@@ -33,8 +32,6 @@ module.exports = {
             }
           } ).then( function ( medico ) {
             var usuario_id = medico.usuario_id;
-            console.log('___________USUARIO_ID: ' + usuario_id);
-            console.log('___________USUARIO_ID: ' + medico.usuario_id);
             models.MedicoFavorito.create( {
               usuario_id: usuario_id,
               medico_id: req.session.passport.user.Medico_id,
@@ -61,7 +58,6 @@ module.exports = {
               id: object.pacienteID
             }
           } ).then( function ( paciente ) {
-            console.log( 'PACIENTE: ' + JSON.stringify( paciente ) );
             var usuario_id = paciente.usuario_id;
             models.MedicoFavorito.create( {
               usuario_id: usuario_id,
@@ -119,7 +115,6 @@ module.exports = {
   eliminarFav: function ( object, req, res ) {
     if ( req.session.passport.user ) {
       var condiciones = '';
-      console.log('__________OBJECT: '+ JSON.stringify(object));
 
       if ( object.medicoID ) {
         if (req.session.passport.user.tipoUsuario == "M"){
@@ -256,7 +251,6 @@ module.exports = {
           medico_id: object.medicoID
         }
       }
-      console.log('_____CONDICIONES: ' + JSON.stringify(condiciones));
       models.MedicoFavorito.findOne( {
         where: condiciones
       } ).then( function ( result ) {
