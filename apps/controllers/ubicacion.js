@@ -63,6 +63,7 @@ exports.encontrarPorCP = function (object, req, res) {
 };
 
 exports.obtieneLocalidades = function (object, req, res) {
+
     models.Localidad.findAll({
         where: {
             estado_id: object.estado_id,
@@ -70,9 +71,9 @@ exports.obtieneLocalidades = function (object, req, res) {
         },
         order: ['localidad'],
         attributes: ['id', 'localidad']
-    }).then(function (municipios) {
+    }).then(function (localidades) {
         res.send({
-            'municipios': municipios
+            'localidades': localidades
         });
     });
 };

@@ -939,12 +939,11 @@ var iniciar = function () {
     intermed.callController( 'agenda', 'obtieneServiciosLista', object, req, res );
   } );
 
-  app.get( '/servicio', function ( req, res ) {
-    var object = {
-      id: 2
-    }
-    intermed.callController( 'agenda', 'obtieneServicio', object, req, res );
-  } );
+  // Obtiene el detalle de un servicio
+  app.get('/servicio/:id', function(req, res) {
+      intermed.callController('agenda','obtieneServicio', {id: req.params.id}, req, res);
+  });
+
 
   app.get( '/agregaServicio', function ( req, res ) {
     var object = {
@@ -976,19 +975,17 @@ var iniciar = function () {
     intermed.callController( 'agenda', 'borraServicio', object, req, res );
   } );
 
-  app.get( '/agregaCita', function ( req, res ) {
-    var object = {
-      fechaHoraInicio: '01/01/2014 15:30',
-      estatus: 0,
-      nota: 'descripcion nota',
-      resumen: 'resumen',
-      direccion_id: 1,
-      usuario_id: 1,
-      paciente_id: 1,
-      servicio_id: 2
-    }
-    intermed.callController( 'agenda', 'agregaCita', object, req, res );
-  } );
+  //Muestra la pantalla para generar una cita
+  app.get('/generarCita', function(req, res) {
+    var datos =  { id : 1}
+    rutas.routeLife('main','main',hps);
+    intermed.callController('agenda','generarCita', datos, req, res);
+  });
+
+  // Inserta la cita
+  app.post('/agregaCita', function(req, res) {
+    intermed.callController('agenda','agregaCita', req.body, req, res);
+  });
 
   app.get( '/modificaCita', function ( req, res ) {
     var object = {
@@ -1257,6 +1254,42 @@ var iniciar = function () {
         //        result: 'null'
         //    });
         //}
+    });
+
+    //Obtiene Horarios por direccion
+    app.get('/seleccionaHorarios/:id', function(req, res) {
+      intermed.callController('agenda','seleccionaHorarios', {id: req.params.id}, req, res);
+    });
+
+    //Obtiene Horarios por usuario
+    app.get('/seleccionaHorariosMedico/:id', function(req, res) {
+      intermed.callController('agenda','seleccionaHorariosMedico', {id: req.params.id}, req, res);
+    });
+
+    app.get('/registraServicio', function(req, res) {
+      rutas.routeLife('main','main',hps);
+      intermed.callController('agenda','registraServicio', JSON.parse( JSON.stringify(req.body)), req, res);
+    });
+
+    app.post('/agregaServicio', function(req, res) {
+      rutas.routeLife('main','main',hps);
+      intermed.callController('agenda','agregaServicio', JSON.parse( JSON.stringify(req.body)), req, res);
+    });
+
+    app.get('/todos', function( req, res ){
+        rutas.routeLife('interno','interno', hps);
+        intermed.callController('medicos', 'seleccionaRegistrados', null, req, res);
+    });
+
+    app.get('/edicionMedico/:id', function(req,res){
+        rutas.routeLife('interno','interno',hps);
+        intermed.callController('medicos', 'seleccionaMedico', {id:req.params.id}, req, res);
+    });
+
+    app.post('/actualizaMedico', function(req,res){
+        var object = JSON.parse( JSON.stringify(req.body));
+        rutas.routeLife('interno','interno',hps);
+        intermed.callController('medicos', 'actualizar', object, req, res);
     });
 }
 
