@@ -5,8 +5,20 @@ var path = require( "path" );
 var Sequelize = require( "sequelize" );
 var env = process.env.NODE_ENV || "development";
 var db = {};
+
 //var config    = require(__dirname + '/../config/config.json')[env];
-var sequelize = new Sequelize( 'Intermed', 'root', '', {
+var main = new Sequelize( 'Intermed', 'root', '', {
+  host: 'localhost',
+  dialect: 'mysql',
+  pool: {
+    max: 5,
+    min: 0,
+    idle: 10000
+  },
+  logging: null
+} );
+
+var inbox = new Sequelize( 'Intermed-Inbox', 'root', '', {
   host: 'localhost',
   dialect: 'mysql',
   pool: {
@@ -24,7 +36,7 @@ fs
     return ( file.indexOf( "." ) !== 0 ) && ( file !== "index.js" );
   } )
   .forEach( function ( file ) {
-    var model = sequelize.import( path.join( __dirname, file ) );
+    var model = (file == 'inbox.js') ? inbox.import( path.join( __dirname, file ) ) : main.import( path.join( __dirname, file ) );
     db[ model.name ] = model;
   } );
 
@@ -34,7 +46,7 @@ Object.keys( db ).forEach( function ( modelName ) {
   }
 } );
 
-db.sequelize = sequelize;
+db.sequelize = main;
 db.Sequelize = Sequelize;
 
 
