@@ -20,7 +20,7 @@ $.ajax( {
       if ( Object.prototype.toString.call( data ) === '[object Array]' ) {
         if ( data ) {
           data.forEach( function ( record ) {
-            if ( record.interno || record.push || record.mail ) {
+            if ( record.interno) {
               socket.emit( record.tipo );
               //console.log( '[' + new Date().toLocaleString().substring( 0, 18 ) + '] Revisar: ' + record.tipo );
 
@@ -36,6 +36,7 @@ $.ajax( {
                 }, ( parseInt( record.intervalo ) * 1000 ) );
               notificaciones.push( {
                 id: idInterval,
+                tipoNotificacion_id: record.id,
                 tipo: record.tipo,
                 interno: record.interno,
                 push: record.push,

@@ -195,8 +195,6 @@ exports.cargarInboxVistaPrevia = function (object){
             });
         } )
       });
-    } else {
-        res.send({});
     }
   });
 }

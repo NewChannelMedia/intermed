@@ -4,6 +4,10 @@ exports.index = function ( object, req, res ) {
   res.render( 'notificaciones', object );
 }
 
+exports.configuracion = function ( object, req, res ) {
+  res.render( 'notificaciones_configuracion', object );
+}
+
 exports.obtenerTodas = function ( object, req, res ) {
   models.TipoNotificacion.findAll( {
     where: {
@@ -18,10 +22,12 @@ exports.obtenerTodas = function ( object, req, res ) {
     } ).then( function ( confPersonal ) {
       for ( var key in confPersonal ) {
         for ( var key2 in result ) {
-          if ( result[ key2 ].id === confPersonal[ key ].id ) {
-            result[ key2 ].interno = confPersonal[ key ].interno;
-            result[ key2 ].push = confPersonal[ key ].push;
-            result[ key2 ].mail = confPersonal[ key ].mail;
+          if (result[ key2 ].configurable === 1){
+            if ( result[ key2 ].id === confPersonal[ key ].tipoNotificacion_id) {
+              result[ key2 ].interno = confPersonal[ key ].interno;
+              result[ key2 ].push = confPersonal[ key ].push;
+              result[ key2 ].mail = confPersonal[ key ].mail;
+            }
           }
         }
       }
@@ -786,6 +792,7 @@ exports.medicoRecomendado = function(req){
     } );
   } )
 };
+
 exports.doctorRecomendado = function( req ){
   models.Notificacion.findAll({
     where: {
@@ -843,5 +850,50 @@ exports.doctorRecomendado = function( req ){
         });
       });
     });
+  });
+};
+
+exports.configurarNotificacion = function (object, req, res){
+  var usuario_id = req.session.passport.user.id;
+  var tipoNotificacion_id = object.tipoNotificacion_id;
+  var interno = object.interno;
+  var push = object.push;
+  var mail = object.mail;
+
+  models.ConfNotUsu.findOne({
+    where: {
+        usuario_id: usuario_id,
+        tipoNotificacion_id: tipoNotificacion_id
+      }
+  }).then(function(confNotificacion){
+    if (confNotificacion){
+        confNotificacion.update({
+          interno: interno,
+          push: push,
+          mail: mail
+        }).then(function(result){
+          if (result){
+            res.send({'success':true});
+          } else {
+            //Error
+            res.send({'success':false});
+          }
+        });
+    } else {
+      models.ConfNotUsu.create({
+        usuario_id: usuario_id,
+        tipoNotificacion_id: tipoNotificacion_id,
+        interno: interno,
+        push: push,
+        mail: mail
+      }).then(function(result){
+        if (result){
+          res.send({'success':true});
+        } else {
+          //Error
+          res.send({'success':false});
+        }
+      })
+    }
   });
 };
