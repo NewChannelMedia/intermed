@@ -1162,6 +1162,9 @@ var iniciar = function () {
     app.post('/pedirRecomendacionMedico', function( req, res){
       intermed.callController('contactos','pedirRecomendacionMedico',req, res);
     });
+    app.post('/traerDatos', function( req, res ){
+      intermed.callController('contactos','traerDatos', req, res);
+    });
   // <---------------- FIN RECOMENDACION MEDICO ------------------>
 }
 

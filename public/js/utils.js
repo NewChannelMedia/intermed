@@ -1677,6 +1677,8 @@ function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
 * lo mande al perfil del medico donde podra agregarlo a sus favoritos.
 **/
 //<------------------- OSCAR -------------------------->
+var xEspecialidad;
+var idEspecialidad = '';
   $(document).ready(function(){
     $(".Pedir.contList-profileActionLink").click(function(){
       $.post('/especialidadesMedico',function(data){
@@ -1692,7 +1694,7 @@ function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
       $.post('/medicoDatos',function(data){
         var nombreCompleto = data.Usuario.DatosGenerale.nombre+' '+data.Usuario.DatosGenerale.apellidoP+' '+data.Usuario.DatosGenerale.apellidoM;
         $("#nombreDoctor").text(nombreCompleto);
-        $("#idMedico").text(data.id);
+        $("#idMedico").text(data.Usuario.id);
       });
     });
     $("#especialidadesMedic").change(function(){
@@ -1713,16 +1715,17 @@ function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
        html2 +="</li>";
        $( '#tipoRecomendacionPedir ul' ).append(html2);
     });
-    //<--------------- CORREO --------------------->
+    //<--------------- Peticion --------------------->
       $("#mandarPeticion").click(function(){
         if( $("#especialidadesMedic option:selected").text() != "Especialidades" ){
           var id = $("#idMedico").text();
-          var idEspecilidad = $( "#especialidadesMedic" ).val();
           var recomendacion = $("#especialidadesMedic option:selected").text();
+          $.each($("li div.label.label-success small span.hidden"),function(index, data){
+            idEspecialidad += "|"+$( this ).text();
+          });
           $.post('/pedirRecomendacionMedico',{
               idMedico:id,
-              idEspecilidad: idEspecilidad,
-              recomendacion:recomendacion
+              idEspecialidad: idEspecialidad,
           },function(data){
             if(data){
               $('.modal').modal('hide');
@@ -1735,6 +1738,25 @@ function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
           alert("Seleccione una opcion");
         }
       });
-    //<--------------- fin correo ----------------->
+    //<--------------- fin Peticion ----------------->
   });
+  function presionando(hola){
+    $(hola).modal('toggle');
+    var html = "";
+    $.post('/traerDatos',function(dat){
+      console.log("PAL POZOLE: "+JSON.stringify(dat));
+      for( var i in dat ){console.log("Posicion de i: "+i);
+          console.log("Arreglo :"+dat[ i ].data.split("|"));
+      }
+      /*for( var i in data ){
+        html += '<li>';
+        html += '<span class="label label-warning">';
+        html += data[ i ].especialidad;
+        html += '</span>';
+        html+='</li>';
+      }
+      $( "#contenidoRequerido ul" ).html(html);*/
+    });
+    console.log('HTML: ' + html);
+  }
 //<------------------- FIN OSCAR ---------------------->

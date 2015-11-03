@@ -650,58 +650,45 @@ exports.cargarNotificaciones = function ( object, req, res ) {
 };
 exports.pedirRecomendacion = function( req ){
   models.Notificacion.findAll({
-    where: {
+    where:{
       usuario_id: req.usuario_id,
       visto: 0,
-      tipoNotificacion_id: 13
+      tipoNotificacion_id: 14
     },
-    attributes: [ 'id','usuario_id', 'data', 'inicio', 'visto' ],
+    attributes:['id','usuario_id','data','inicio','visto'],
     order: 'inicio DESC'
-  }).then( function(result){
-    var restante = 8 - result.length;
-    if ( restante < 0 ) restante = 0;
+  }).then(function( result ){
+    var restante = 8 -result.length;
+    if( restante < 0 ) restante = 0;
     models.Notificacion.findAll({
-      where: {
+      where:{
         usuario_id: req.usuario_id,
         visto: 1,
-        tipoNotificacion_id: 13
+        tipoNotificacion_id: 14
       },
-      attributes: [ 'id','usuario_id', 'data', 'inicio', 'visto' ],
+      attributes:['id','usuario_id','data','inicio','visto'],
       limit: restante,
       order: 'inicio DESC'
-    }).then(function(resultVisto){
+    }).then(function( resultVisto ){
       result = JSON.parse( JSON.stringify( result ) );
-      result = result.concat( JSON.parse( JSON.stringify( resultVisto ) ) );
+      result = result.concat( JSON.parse( JSON.stringify( resultVisto )));
       var length = result.length;
       result.forEach( function( record ){
-        models.Medico.findOne({
-          where:{usuario_id:record.usuario_id},
-          include:[{
-            model:models.Usuario,
-            attributes:['usuarioUrl'],
-            include:[{
-              model:models.DatosGenerales,
-              attributes:['nombre','apellidoP','apellidoM']
-            }]
-          }]
-        }).then(function(medico){
           models.Paciente.findOne({
-            where:{usuario_id:record.data},
+            where:{id: record.data.split("|")[0]},
             include:[{
-              model:models.Usuario,
-              attributes:['usuarioUrl','urlFotoPerfil'],
+              model: models.Usuario,
+              attributes:['id','usuarioUrl','urlFotoPerfil'],
               include:[{
-                model:models.DatosGenerales,
+                model: models.DatosGenerales,
                 attributes:['nombre','apellidoP','apellidoM']
               }]
             }]
           }).then(function(paciente){
             record[ 'paciente' ] = JSON.parse( JSON.stringify( paciente ) );
-            record[ 'medico' ] = JSON.parse( JSON.stringify( medico ) );
-            if ( record === result[ result.length - 1 ] ) {
-              req.socket.emit( 'doctorRecomendado', result );
+            if( record === result[ result.length - 1 ] ){
+              req.socket.emit('pedirRecomendacion', result);
             }
-          });
         });
       });
     });

@@ -390,15 +390,31 @@ module.exports = {
     console.log("Fecha y Hora: "+strDate);
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
-      models.Notificacion.create({
-        usuario_id:req.body.idMedico,
-        tipoNotificacion_id:14,
-        data:req.session.passport.user.Paciente_id+"|"+req.body.idEspecilidad,
-        inicio:strDate,
-        visto:0,
-        recordatorio:null
-      }).then(function(creado){
-        res.send(true);
+      //for( var i in req.body.idEspecialidad ){
+        models.Notificacion.create({
+          usuario_id:req.body.idMedico,
+          tipoNotificacion_id:14,
+          data:req.session.passport.user.Paciente_id+req.body.idEspecialidad,
+          inicio:strDate,
+          visto:0,
+          recordatorio:null
+        }).then(function(creado){
+          res.send(true);
+        });
+      //}
+    }
+  },
+  traerDatos: function( req, res ){
+    console.log("<--------->IDES<--------------->: "+req.body.ides);
+    if( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Notificacion.findAll({
+        where:{
+          tipoNotificacion_id:14,
+          usuario_id: usuario_id
+        }
+      }).then( function( encontrado){
+        res.send( encontrado );
       });
     }
   }

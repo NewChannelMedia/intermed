@@ -173,6 +173,8 @@ function actualizarNotificaciones() {
                               contenido = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Rechazaste la solicitud de amistad de ' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
                             }
                             break;
+                        case 14:'<div class="media-left">'+'<a href="#" data-toggle="modal" data-target="#recomendandoAndo" class="recomendando">'+'<img class="media-object" src="existe" style="width: 50px;">'+'</div>'+'<div class="media-body">existeNo Recomendo tu perfil a otro paciente'+ '</a>'+'<br />'+'<div class="text-left" style="margin-top:-25px;">'+'<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>'+'</div>'+'</div>';
+                          break;
                     }
                     if (contenido != '')
                       $( '#notificacinesList' ).append( '<li class="media" id="li' + record.id + '">' + contenido + '</li>' );
@@ -333,19 +335,25 @@ function socketManejadores() {
       data.forEach( function ( record ) {
         date = formattedDate( record.inicio );
         var content = '';
-        content += '<div class="media-left">';
-          content += '<a href="/perfil/existeno">';
-            content += '<img class="media-object" src="existe" style="width: 50px;">';
+        var html = "";
+        if( record.paciente ){
+          var imagen = record.paciente.Usuario.urlFotoPerfil;
+          var nombre = record.paciente.Usuario.DatosGenerale.nombre+' '+record.paciente.Usuario.DatosGenerale.apellidoP+' '+record.paciente.Usuario.DatosGenerale.apellidoM;
+          content += '<div class="media-left">';
+            content += '<a href="#" onclick="presionando(\'#recomendandoAndo\');" class="recomendando">';
+              content += '<img class="media-object" src="'+imagen+'" style="width: 50px;">';
+              content += '</div>';
+              content += '<div class="media-body">'+nombre+' te ha pedido las siguientes recomendaciones';
+            content += '</a>';
+            content += '<br />';
+            content += '<div class="text-left" style="margin-top:-25px;">';
+              content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>';
             content += '</div>';
-            content += '<div class="media-body">existeNo Recomendo tu perfil a otro paciente';
-          content += '</a>';
-          content += '<br />';
-          content += '<div class="text-left" style="margin-top:-25px;">';
-            content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>';
           content += '</div>';
-        content += '</div>';
+        }
+        //console.log("Record "+JSON.stringify(record));
         if (content){
-          doctorRecomendado.unshift( {
+          pedirRecomendacion.unshift( {
             id: record.id,
             time: record.inicio,
             visto: record.visto,
@@ -416,6 +424,9 @@ function verTodasNotificaciones(){
                         contenido = '<a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><div class="col-lg-1 col-md-1 col-sm-2 col-xs-2"><img src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="col-lg-8 col-md-8 col-sm-10 col-xs-10"> Rechazaste la solicitud de amistad de ' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + '</div></a><div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 text-right"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div>';
                       }
                       break;
+                  case 14:
+                    '<div class="media-left">'+'<a href="#" data-toggle="modal" data-target="#recomendandoAndo" class="recomendando">'+'<img class="media-object" src="existe" style="width: 50px;">'+'</div>'+'<div class="media-body">existeNo Recomendo tu perfil a otro paciente'+ '</a>'+'<br />'+'<div class="text-left" style="margin-top:-25px;">'+'<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>'+'</div>'+'</div>';
+                    break;
               }
               if (contenido != ""){
                 $( '#notifListTable' ).append('<tr><td>' + contenido + '</td></tr>');
