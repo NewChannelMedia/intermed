@@ -1799,3 +1799,6 @@ hr {
   overflow: hidden;
   overflow-y: auto;
 }
+#agregandoContacto tr td img{
+  height: 30px;
+}

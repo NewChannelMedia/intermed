@@ -405,7 +405,6 @@ module.exports = {
     }
   },
   traerDatos: function( req, res ){
-    console.log("<--------->IDES<--------------->: "+req.body.ides);
     if( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
       models.Notificacion.findAll({
@@ -415,6 +414,48 @@ module.exports = {
         }
       }).then( function( encontrado){
         res.send( encontrado );
+      });
+    }
+  },
+  especial: function( req, res ){
+    if( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      var resultado = [];
+      var total = 0;
+      for( var i in req.body.ides ){
+        models.Especialidad.findAll({
+          where:{id:req.body.ides[ i ]},
+          attributes:['id','especialidad']
+        }).then(function(especial){
+          total++;
+          resultado.push(JSON.parse(JSON.stringify(especial)));
+          if (total === req.body.ides.length){
+            res.send(resultado);
+          }
+        });
+      }
+    }
+  },
+  cargarContactosMedico: function( req, res ){
+    if( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.MedFavColegas.findAll({
+        where:{medico_id:usuario_id},
+        attributes:['id'],
+        include:[{
+          model: models.Medico,
+          attributes:['id'],
+          include:[{
+            model: models.Usuario,
+            attributes:['urlFotoPerfil'],
+            include:[{
+              model: models.DatosGenerales,
+              attributes:['nombre','apellidoP','apellidoM']
+            }]
+          }]
+        }]
+      }).then(function( result ){
+        res.send( result );
       });
     }
   }

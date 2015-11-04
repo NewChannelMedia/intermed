@@ -1743,19 +1743,46 @@ var idEspecialidad = '';
   function presionando(hola){
     $(hola).modal('toggle');
     var html = "";
+    var html2 = "";
     $.post('/traerDatos',function(dat){
-      console.log("PAL POZOLE: "+JSON.stringify(dat));
-      for( var i in dat ){console.log("Posicion de i: "+i);
-          console.log("Arreglo :"+dat[ i ].data.split("|"));
+      var arreglo = new Array();
+      for( var i in dat ){
+          arreglo=dat[ i ].data.split("|");
       }
-      /*for( var i in data ){
-        html += '<li>';
-        html += '<span class="label label-warning">';
-        html += data[ i ].especialidad;
-        html += '</span>';
-        html+='</li>';
-      }
-      $( "#contenidoRequerido ul" ).html(html);*/
+      arreglo.shift();
+      $.post('/especial',{ides:arreglo},function(datas){
+        for( var i in datas ){
+          for(var j in i)
+          html += '<li>';
+          html += '<span class="label label-warning">';
+          html += datas[ i ][j].especialidad;
+          html += '</span>';
+          html+='</li>';
+        }
+        $( "#contenidoRequerido ul" ).html(html);
+        $.post('/cargarContactosMedico',function(medicosContactos){
+          console.log("Contactos del medico: "+JSON.stringify(medicosContactos));
+          for( var i in medicosContactos ){
+            if( medicosContactos[ i ].Medico.Usuario ){
+              var name = medicosContactos[ i ].Medico.Usuario.DatosGenerale.nombre+' '+medicosContactos[ i ].Medico.Usuario.DatosGenerale.apellidoP+' '+medicosContactos[ i ].Medico.Usuario.DatosGenerale.apellidoM;
+              html2 += '<tr>';
+                html2 += '<td>';
+                  html2 += '<img src="'+medicosContactos[i].Medico.Usuario.urlFotoPerfil+'" alt="" class="img-circle"/>';
+                html2 += '</td>';
+                html2 += '<td>';
+                  html2 += name;
+                html2 += '</td>';
+                html2 += '<td>';
+                  html2 += '<small><i>';
+                    html2 += "Succionador";
+                  html2 += '</i></small>';
+                html2 += '</td>';
+              html2 += '</tr>';
+            }
+          }
+          $( "#tabla table.table-hover.table-condensed #agregandoContacto").html(html2);
+        });
+      });
     });
     console.log('HTML: ' + html);
   }
