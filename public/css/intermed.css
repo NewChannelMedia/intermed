@@ -1802,3 +1802,12 @@ hr {
 #agregandoContacto tr td img{
   height: 30px;
 }
+#sendFor ul li small span.glyphicon.glyphicon-remove{
+  cursor:pointer;
+}
+#tabla table tbody tr td{
+  cursor: pointer;
+}
+.cambiando{
+  background-color: #eee;
+}

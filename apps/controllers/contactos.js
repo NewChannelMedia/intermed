@@ -440,7 +440,7 @@ module.exports = {
     if( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
       models.MedFavColegas.findAll({
-        where:{medico_id:usuario_id},
+        where:{usuario_id:usuario_id,mutuo:1},
         attributes:['id'],
         include:[{
           model: models.Medico,
@@ -452,11 +452,57 @@ module.exports = {
               model: models.DatosGenerales,
               attributes:['nombre','apellidoP','apellidoM']
             }]
+          },{
+            model: models.MedicoEspecialidad,
+            attributes:['especialidad_id','titulo','lugarEstudio','fecha','subEsp'],
+            include:[{
+              model:models.Especialidad,
+              attributes:['id','especialidad']
+            }]
           }]
         }]
-      }).then(function( result ){
+      }).then(function(result){
         res.send( result );
       });
     }
+  },
+  medicEspecial: function( req, res ){
+    if( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.MedicoEspecialidad.findAll({
+        where:{medico_id: req.body.id},
+        attributes:['especialidad_id','titulo','lugarEstudio','fecha'],
+        include:[{
+          model: models.Especialidad,
+          attributes:['id','especialidad']
+        }],
+        include:[{
+          model:models.Medico,
+          attributes:['id'],
+          include:[{
+            model: models.Usuario,
+            attributes:['id','urlFotoPerfil','usuarioUrl'],
+            include:[{
+              model: models.DatosGenerales,
+              attributes:['nombre','apellidoP','apellidoM']
+            }]
+          }]
+        }]
+      }).then( function( medicoEspecialidad ){
+        res.send( medicoEspecialidad );
+      });
+    }
+  },
+  subs:function( req, res ){
+    models.medicoEspecialidad.findAll({
+      where:{ subEsp:1 },
+      attributes:['especialidad_id'],
+      include:[{
+        model: models.Especialidad,
+        attributes:[ 'id', 'especialidad']
+      }]
+    }).then( function( resultados) {
+      res.send( resultados );
+    });
   }
 }

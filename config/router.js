@@ -1171,6 +1171,12 @@ var iniciar = function () {
     app.post('/cargarContactosMedico', function( req, res ){
       intermed.callController('contactos','cargarContactosMedico', req, res);
     });
+    app.post('/medicEspecial', function( req, res ){
+      intermed.callController('contactos','medicEspecial',req,res);
+    });
+    app.post('/subs', function( req, res ){
+      intermed.callController('contactos','subs',req, res);
+    });
   // <---------------- FIN RECOMENDACION MEDICO ------------------>
 }
 
