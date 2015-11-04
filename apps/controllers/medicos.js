@@ -212,7 +212,7 @@ module.exports = {
       models.DatosGenerales.update( {
         nombre: object[ 'nombreMed' ],
         apellidoP: object[ 'apellidoMed' ],
-        apellidoM: object[ 'apellidoMed' ]
+        apellidoM: object[ 'apellidoMMed' ]
       }, {
         where: {
           usuario_id: id

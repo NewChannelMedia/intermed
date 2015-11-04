@@ -52,7 +52,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <select class="form-control" name="estadoMed" id="slc_estados" onchange="obtenerCiudades(0)" required="true">
+                                        <select class="form-control" name="estadoMed" id="slc_estados" onchange="obtenerCiudadesModal(0)" required="true">
                                             <option value="">Estado</option>
                                             {{#each estados}}
                                                 <option value="{{id}}">{{estado}}</option>
@@ -62,13 +62,13 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <select class="form-control" name="ciudadMed" id="slc_ciudades" onchange="obtenerColonias(0)" required="true">
+                                        <select class="form-control" name="ciudadMed" id="slc_ciudades" onchange="obtenerColoniasModal(0)" required="true">
                                             <option value="">Ciudad</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                    <select class="form-control" name="coloniaMed" id="slc_colonias" onchange="obtenerCP(0)" required="true">
+                                    <select class="form-control" name="coloniaMed" id="slc_colonias" onchange="obtenerCPModal(0)" required="true">
                                         <option value="">Colonia</option>
                                     </select>
                                 </div>
@@ -162,7 +162,7 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="form-group">
-                                <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Guardar" onclick="actDoctor()">
+                                <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Guardar" onclick="actualizarDoctor()">
                             </div>
                         </div>
                     </div>

@@ -480,18 +480,16 @@ function registrarCita() {
 	var horarios = obtenerHorarios();
 	$("#fecha").val(horarios[0].inicio);
 
-	console.log($('#frmRegCita').serialize());
 	$.ajax({
 		url: '/agregaCita',
 		type: 'POST',
 		dataType: "json",
 		data: $('#frmRegCita').serialize(),
 		cache: false,
-		//data: JSON.stringify(obtenerHorarios()),
 		type: 'POST',
 		success: function( data ) {
 			if ( data.error == null ) {
-
+	         alert("Se ha guardado su cita !");
 			}
 			else {
 				alert(data.error.message);
@@ -921,6 +919,26 @@ function actDoctor() {
   } );
 }
 
+
+// función que actualiza médico interno
+function actualizarDoctor() {
+	$.ajax( {
+		url: '/actualizaMedico',
+		type: 'POST',
+		dataType: "json",
+		cache: false,
+		data: $( '#frmActMed' ).serialize(),
+		type: 'POST',
+		success: function( data ) {
+			// al guardar cambios oculta la forma
+			$( "#UpdateModal" ).modal( "hide" );
+			addMedico( data,0 );
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+		}
+	} );
+}
 // muestra la ventana para editar al médico
 function muestraMedico( id ) {
   $( "#UpdateModal .modal-body" ).load( "edicionMedico/" + id, function () {
@@ -1819,6 +1837,7 @@ function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
   } );
 }
 
+
 function obtenerCiudades() {
     if ($('#slc_ciudades option').length == 1) {
         $('#slc_ciudades option').remove();
@@ -1850,7 +1869,7 @@ function obtenerColonias() {
     if ($('#slc_colonias option').length != 1) {
         $('#slc_colonias option').remove();
     };
-    
+
     document.getElementById('slc_colonias').innerHTML = '<option value="">Colonia</option>';
     $.ajax({
         url: '/obtenerLocalidades',
@@ -1873,9 +1892,10 @@ function obtenerColonias() {
     });
 }
 
+
 //Registrar Ubicacion
 function regUbicacion() {
-    if (regUbiValid() == true) {             
+    if (regUbiValid() == true) {
         $.ajax({
             url: '/registrarubicacion',
             type: 'POST',
@@ -1903,9 +1923,9 @@ function regUbicacion() {
 //Registrar Ubicacion
 function regHorarios() {
     if (regHorariosValid() == true) {
-        //agregar horarios al control 
+        //agregar horarios al control
         $('#horariosUbi').val(JSON.stringify(obtenerHorarios()));
-        
+
         $.ajax({
             url: '/registrarhorarios',
             type: 'POST',
@@ -1915,7 +1935,7 @@ function regHorarios() {
             type: 'POST',
             success: function (data) {
                 document.getElementById("frmRegHorarios").reset();
-                alert('registro guradado');                
+                alert('registro guradado');
             },
             error: function (jqXHR, textStatus, err) {
                 console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
@@ -2056,6 +2076,117 @@ function obtieneUbicaciones(id )
 			console.error( 'AJAX ERROR: (registro 166) : ' + err );
 		}
 	} );
+}
+
+// Obtiene ciudades para una pantalla (0) o un modal  (1)
+function obtenerCiudadesModal(tipo) {
+		var ciudades;
+		var idEstado = 0;
+
+		if ( tipo == 0) {
+			ciudades =  $('#slc_ciudades');
+			idEstado = $('#slc_estados').val();
+		}
+		else {
+			ciudades = $('#UpdateModal #slc_ciudades');
+			idEstado = $('#UpdateModal #slc_estados').val();
+		}
+		ciudades.empty();
+    $.ajax({
+        url: '/obtenerCiudades',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: {
+            'estado_id': idEstado
+        },
+        success: function(data) {
+					ciudades.append('<option value="">Ciudad</option>');
+            data.municipio.forEach(function(record) {
+                //ciudades.innerHTML += '<option value="' + record.id + '">' +  record.municipio + '</option>';
+								ciudades.append('<option value="' + record.municipio_id + '">' +  record.municipio + '</option>');
+            });
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
+
+// Obtiene colonias para una pantalla (0) o un modal  (1)
+function obtenerColoniasModal(tipo) {
+		var colonias = null;
+	  var idCiudad = 0;
+		var idEstado = 0;
+
+		if ( tipo == 0) {
+			colonias =  $('#slc_colonias');
+			idCiudad = $('#slc_ciudades').val();
+			idEstado = $('#slc_estados').val();
+		}
+		else {
+			colonias = $('#UpdateModal #slc_colonias');
+			idCiudad = $('#UpdateModal #slc_ciudades').val();
+			idEstado = $('#UpdateModal #slc_estados').val();
+		}
+
+		colonias.empty();
+		colonias.append('<option value="">Colonia</option>');
+    //document.getElementById('slc_colonias').innerHTML = '<option value="">Colonia</option>';
+    $.ajax({
+        url: '/obtenerLocalidades',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: {
+            'estado_id': idEstado, //document.getElementById('slc_estados').value,
+            'municipio_id': idCiudad //document.getElementById('slc_ciudades').value
+        },
+        success: function(data) {
+            data.localidades.forEach(function(record) {
+							colonias.append('<option value="' + record.id + '">' +  record.localidad + '</option>');
+                //document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' +  record.localidad + '</option>';
+            });
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
+
+// Obtiene el cp para una pantalla (0) o un modal  (1)
+function obtenerCPModal(tipo) {
+		var idColonia = 0;
+		var cp = null;
+
+		if ( tipo == 0) {
+			idColonia =  $('#slc_colonias').val();
+			cp = $('#nmb_cp');
+		}
+		else {
+			idColonia =  $('#UpdateModal #slc_colonias').val();
+			cp = $('#UpdateModal #nmb_cp');
+		}
+
+		cp.val('');
+
+    //document.getElementById('nmb_cp').value = '';
+    $.ajax({
+        url: '/buscarCP',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: {
+            'localidad_id': idColonia //document.getElementById('slc_colonias').value
+        },
+        success: function(data) {
+            //document.getElementById('nmb_cp').value = data.cp;
+						cp.val(data.cp);
+        },
+        error: function(jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
 }
 
 
