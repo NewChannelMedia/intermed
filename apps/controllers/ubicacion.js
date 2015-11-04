@@ -83,7 +83,7 @@ exports.ubicacion = function (objects, req, res) {
         res.render('ubicacion', {
             title: 'Ubicaciones',
             estados: datos,
-            usuario_id: 6
+            usuario_id: 12
         });
     });
 };

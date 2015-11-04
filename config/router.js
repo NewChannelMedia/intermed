@@ -977,7 +977,7 @@ var iniciar = function () {
 
   //Muestra la pantalla para generar una cita
   app.get('/generarCita', function(req, res) {
-    var datos =  { id : 1}
+    var datos =  { id : 12}
     rutas.routeLife('main','main',hps);
     intermed.callController('agenda','generarCita', datos, req, res);
   });
