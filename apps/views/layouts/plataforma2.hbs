@@ -20,6 +20,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/jcarousel.js"></script>
     <script src="js/utils.js"></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -49,9 +50,9 @@
           <div class="collapse navbar-collapse" id="collapse-menu">
             <div id="search-section" class="navigator-inner-section col-lg-5 col-md-4 col-sm-1 col-xs-12 hidden-sm">
               <div class="input-group navbar-search navigator-inner-section-cell col-md-10 col-md-offset-1 h65-medium">
-                <input type="text" class="form-control input-lg" id="" name="" placeholder="Search for people, places or things" required="">
+                <input type="text" class="form-control" id="" name="" placeholder="Search for people, places or things" required="">
                 <span class="input-group-btn">
-                  <button class="btn btn-default btn-lg" type="button">
+                  <button class="btn btn-default" type="button">
                     <span class="glyphicon glyphicon-search"></span>
                   </button>
                 </span>
@@ -79,7 +80,7 @@
                     </a>
                     <div class="dropdown-menu dropdown-form panel navigator-dropdown-panel">
                       <div class="panel-body input-group navbar-search navigator-inner-section-cell h65-medium">
-                          <input type="text" class="form-control input-lg" id="" name="" placeholder="Search for people, places or things">
+                        <input type="text" class="form-control input-lg" id="" name="" placeholder="Search for people, places or things">
                         <span class="input-group-btn">
                           <button class="btn btn-default btn-lg" type="button">
                             <span class="glyphicon glyphicon-search"></span>
@@ -159,7 +160,9 @@
             <div class="nav-menu-inner-section">
               <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
                 <li>
-                  <a href="#"><span class="glyphicon h67-medcond s30">+</span> Agrega a <span class="hidden-xs">tus médicos </span>favoritos</a>
+                  <a href="#">
+                    <span class="glyphicon h67-medcond s30">+</span> Agrega a
+                    <span class="hidden-xs">tus médicos </span>favoritos</a>
                 </li>
               </ul>
             </div>
@@ -178,7 +181,7 @@
                 </a>
               </div>
               <div class="header-profile-body-container col-lg-8 col-md-7 col-sm-7 col-xs-12">
-                <div class="header-profile-body-content whiteF Flama-normal">
+                <div class="header-profile-body-content whiteF flama">
                   <h2 class="profile-name">Dr. Juan Carlos Medina Mtz.</h2>
                   <h4 class="profile-location">Zapopan, Jalisco. MX</h4>
                   <ul class="list-inline profile-esp">
@@ -207,7 +210,9 @@
                   <div class="nav-menu-inner-section">
                     <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
                       <li>
-                        <a href="#"><span class="glyphicon h67-medcond s30">+</span> Agrega a <span class="hidden-xs">tus médicos </span>favoritos</a>
+                        <a href="#">
+                          <span class="glyphicon h67-medcond s30">+</span> Agrega a
+                          <span class="hidden-xs">tus médicos </span>favoritos</a>
                       </li>
                     </ul>
                   </div>
@@ -274,24 +279,93 @@
         </div>
       </div>
     </header>
+
     <section id="ubicaciones">
       <div class="container-fluid ubicaciones-container">
         <div class="row ubicaciones-row">
           <div class="ubicaciones-inner-section col-lg-5 col-md-5 col-sm-12 col-xs-12">
-            <div class="ubicaciones-direcciones">
+            <div class="ubicaciones-direcciones ">
               <span class="direcciones-arrow"></span>
+              <h2 class="h67-medium s25 uppercase whiteF">Ubicaciones y contacto</h2>
+              <div class="direcciones-section wrapper">
+                <div class="jcarousel-wrapper">
+                  <p class="jcarousel-pagination h67-medium s25"></p>
+                  <div class="jcarousel row">
+                    <ul>
+                      <li class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                          <div class="direcciones-numero">
+                            <h1 class="h67-medium s90 whiteF">1</h1>
+                          </div>
+                        </div>
+                        <div class="direcciones-content flama col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                          <address>
+                            <strong>Twitter, Inc.</strong>
+                            <br> 1355 Market Street, Suite 900
+                            <br> San Francisco, CA 94103
+                            <br>
+                            <abbr title="Phone">P:</abbr> (123) 456-7890
+                            <abbr title="Phone">P:</abbr> (123) 456-7890
+                            <abbr title="Phone">P:</abbr> (123) 456-7890
+                          </address>
+                        </div>
+                      </li>
+                      <li class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                          <div class="direcciones-numero">
+                            <h1 class="h67-medium s90 whiteF">1</h1>
+                          </div>
+                        </div>
+                        <div class="direcciones-content flama col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                          <address>
+                            <strong>Twitter, Inc.</strong>
+                            <br> 1355 Market Street, Suite 900
+                            <br> San Francisco, CA 94103
+                            <br>
+                            <abbr title="Phone">P:</abbr> (123) 456-7890
+                            <abbr title="Phone">P:</abbr> (123) 456-7890
+                            <abbr title="Phone">P:</abbr> (123) 456-7890
+                          </address>
+                        </div>
+                      </li>
+                      <li class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                          <div class="direcciones-numero">
+                            <h1 class="h67-medium s90 whiteF">1</h1>
+                          </div>
+                        </div>
+                        <div class="direcciones-content flama col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                          <address>
+                            <strong>Twitter, Inc.</strong>
+                            <br> 1355 Market Street, Suite 900
+                            <br> San Francisco, CA 94103
+                            <br>
+                            <abbr title="Phone">P:</abbr> (123) 456-7890
+                            <abbr title="Phone">P:</abbr> (123) 456-7890
+                            <abbr title="Phone">P:</abbr> (123) 456-7890
+                          </address>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
 
+                  <a href="#" class="jcarousel-control-prev">&lsaquo;</a>
+                  <a href="#" class="jcarousel-control-next">&rsaquo;</a>
+
+                </div>
+              </div>
             </div>
           </div>
           <div class="ubicaciones-inner-section col-lg-7 col-md-7 col-sm-12 col-xs-12">
             <div class="ubicaciones-mapa">
-              <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d7466.123943725772!2d-103.43773729999997!3d20.667057600000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2smx!4v1445909348743" width="100%" height="100%" frameborder="0" style="border:0" allowfullscreen></iframe>
+              <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d7466.123943725772!2d-103.43773729999997!3d20.667057600000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2smx!4v1445909348743" width="100%" height="100%" frameborder="0" style="border:0"
+              allowfullscreen></iframe>
             </div>
           </div>
         </div>
       </div>
-
     </section>
+
     <section id="info">
       <div class="info-container container-fluid">
         <div class="info-row row">
@@ -313,7 +387,30 @@
         </div>
       </div>
     </section>
-    {{{body}}}
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
+    <hr>
   </body>
 
   <script src="js/jquery.Jcrop.js"></script>

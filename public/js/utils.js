@@ -897,12 +897,16 @@ if ( location.pathname === '/' ) {
   } );
 }
 
-// script para los intervalos del carousel
+/* script para los intervalos del carousel
 $( document ).ready( function () {
   $( '.carousel' ).carousel( {
     interval: 5000
   } );
+  $(function () {
+    $('#direcciones-carousel').carousel();
+  });
 } );
+*/
 
 // script para obtener el DateStamp
 $( document ).ready( function () {
@@ -1543,15 +1547,15 @@ $( function () {
   } );
 } )
 
-//Funcion que previene que un carousel gire
+/*Funcion que previene que un carousel gire
 $( function () {
   $( '#vCard' ).carousel( 'pause' );
   $( '#vCard' ).carousel( {
     interval: false
   } );
-} );
+} );*/
 
-$( function () {
+/*$( function () {
   $( '.uIndicators li' ).click( function ( e ) {
     e.stopPropagation();
     var goTo = $( this ).data( 'slide-to' );
@@ -1564,7 +1568,7 @@ $( function () {
 
     $( '#ubicacionesCarousel' ).carousel( goTo );
   } );
-} );
+} );*/
 
 function aceptarInvitacion( paciente_id, notificacion_id ) {
   if ( !paciente_id ) paciente_id = $( '#PacienteId' ).val();
@@ -1825,3 +1829,41 @@ $(function () {
     $(window).scroll(sticky_relocate);
     sticky_relocate();
 });
+
+
+(function($) {
+    $(function() {
+        $('.jcarousel').jcarousel();
+
+        $('.jcarousel-control-prev')
+            .on('jcarouselcontrol:active', function() {
+                $(this).removeClass('inactive');
+            })
+            .on('jcarouselcontrol:inactive', function() {
+                $(this).addClass('inactive');
+            })
+            .jcarouselControl({
+                target: '-=1'
+            });
+
+        $('.jcarousel-control-next')
+            .on('jcarouselcontrol:active', function() {
+                $(this).removeClass('inactive');
+            })
+            .on('jcarouselcontrol:inactive', function() {
+                $(this).addClass('inactive');
+            })
+            .jcarouselControl({
+                target: '+=1'
+            });
+
+        $('.jcarousel-pagination')
+            .on('jcarouselpagination:active', 'a', function() {
+                $(this).addClass('active');
+            })
+            .on('jcarouselpagination:inactive', 'a', function() {
+                $(this).removeClass('active');
+            })
+            .jcarouselPagination();
+    });
+})(jQuery);

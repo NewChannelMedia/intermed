@@ -107,8 +107,8 @@ a:visited {
   padding-bottom: 0;
 }
 #search-section{
-  padding-top: 27px;
-  padding-bottom: 27px;
+  padding-top: 33px;
+  padding-bottom: 33px;
 }
 #menu-section{
   padding: 0;
@@ -476,25 +476,31 @@ a:visited {
 
 .profile-name {
   font-size: 26px;
+  font-weight: normal;
+  margin-top: 0;
   margin-bottom: 7px;
 }
 
 .profile-location {
   font-family: 'FlamaBook';
   font-size: 17px;
+  margin-top: 0;
   margin-bottom: 20px;
+  color: #c5cace;
 }
 
 .profile-esp {
   font-weight: bold;
   text-transform: uppercase;
   font-size: 15px;
+  margin-bottom: 6px;
 }
 
 .profile-subesp {
   font-weight: normal;
   text-transform: uppercase;
   font-size: 13px;
+  margin-bottom: 6px;
 }
 
 
@@ -595,4 +601,96 @@ a:visited {
   display: block;
   height: 100%;
   background-color: rgba(22,56,93,.6);
+}
+
+.wrapper {
+    max-width: 620px;
+    padding: 0 20px 40px 20px;
+    margin: auto;
+}
+
+.jcarousel-wrapper {
+  margin: 0 auto;
+  position: relative;
+  width: 100%;
+  height: 300px;
+}
+
+.jcarousel {
+  position: relative;
+  overflow: hidden;
+}
+
+.jcarousel ul {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 2000em;
+  height: 100%;
+}
+
+.jcarousel li {
+  float: left;
+}
+
+
+.jcarousel-control-prev,
+.jcarousel-control-next {
+  position: absolute;
+  bottom: 0px;
+  width: 30px;
+  height: 30px;
+  text-align: center;
+  background: #4E443C;
+  color: #fff;
+  text-decoration: none;
+  text-shadow: 0 0 1px #000;
+  font: 24px/27px Arial, sans-serif;
+  -webkit-border-radius: 30px;
+     -moz-border-radius: 30px;
+          border-radius: 30px;
+  -webkit-box-shadow: 0 0 2px #999;
+     -moz-box-shadow: 0 0 2px #999;
+          box-shadow: 0 0 2px #999;
+}
+
+.jcarousel-control-prev {
+  left: 0px;
+}
+
+.jcarousel-control-next {
+  right: 0px;
+}
+
+.jcarousel-control-prev:hover span,
+.jcarousel-control-next:hover span {
+  display: block;
+}
+
+.jcarousel-control-prev.inactive,
+.jcarousel-control-next.inactive {
+  opacity: .5;
+  cursor: default;
+}
+
+
+.jcarousel-pagination {
+  position: relative;
+  margin: 0;
+}
+
+.jcarousel-pagination a {
+  text-decoration: none;
+  display: inline-block;
+  color: #1e6485;
+  padding: 3px;
+  text-align: center;
+  margin-right: 2px;
+  opacity: .75;
+}
+
+.jcarousel-pagination a.active {
+  color: #ffffff;
+  opacity: 1;
 }
