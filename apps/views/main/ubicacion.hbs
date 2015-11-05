@@ -22,14 +22,14 @@
                     <div class="tab-content">
                         <div id="ubicacion" class="tab-pane fade in active">
                             <form method="POST" name="frmRegUb" id="frmRegUbi">
-                                <input type="hidden" id="id" name="id" value="">
-                                <input type="hidden" id="usuario_id" name="usuario_id" value="{{usuario_id}}">
+                                <input type="hidden" id="idDireccion" name="idDireccion" value="{{direccion.id}}">
+                                <input type="hidden" id="usuario_id" name="usuario_id" value="{{usuario_id}}">                                
                                 <div class="row">
                                     <div class="col-md-12">
                                         <div class="col-md-6">
                                             <div class="row">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control" id="nombreUbi" name="nombreUbi" placeholder="Nombre Ubicaci&oacute;n">
+                                                    <input type="text" class="form-control" id="nombreUbi" name="nombreUbi" placeholder="Nombre Ubicaci&oacute;n" value="{{direccion.nombre}}">
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -45,7 +45,9 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <select class="form-control" name="slc_ciudades" id="slc_ciudades" required="required" onchange="obtenerColonias()">
-                                                                <option value="">Ciudad</option>
+                                                                
+                                                                <option value="{{direccion.ciudad}}">Ciudad</option>
+                                                                
                                                             </select>
                                                         </div>
                                                     </div>
@@ -54,37 +56,37 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <select class="form-control" name="slc_colonias" id="slc_colonias" required="required">
-                                                                <option value="">Colonia</option>
+                                                                <option value="{{direccion.colonia}}">Colonia</option>
                                                             </select>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <input type="number" class="form-control" minlength="4" maxlength="5" id="cpUbi" name="cpUbi" placeholder="Codigo Postal">
+                                                            <input type="number" class="form-control" minlength="4" maxlength="5" id="cpUbi" name="cpUbi" placeholder="Codigo Postal" value="{{direccion.cp}}">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-8">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" id="calleUbi" name="calleUbi" placeholder="Calle">
+                                                            <input type="text" class="form-control" id="calleUbi" name="calleUbi" placeholder="Calle" value="{{direccion.calle}}">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" id="numeroUbi" name="numeroUbi" placeholder="Numero">
+                                                            <input type="text" class="form-control" id="numeroUbi" name="numeroUbi" placeholder="Numero" value="{{direccion.numero}}">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" id="calle1Ubi" name="calle1Ubi" placeholder="Entre calle A">
+                                                            <input type="text" class="form-control" id="calle1Ubi" name="calle1Ubi" placeholder="Entre calle A" value="{{direccion.calle1}}">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            <input type="text" class="form-control" id="calle2Ubi" name="calle2Ubi" placeholder="Y calle B">
+                                                            <input type="text" class="form-control" id="calle2Ubi" name="calle2Ubi" placeholder="Y calle B" value="{{direccion.calle2}}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -92,8 +94,8 @@
                                         </div>
                                         <div class="col-md-6">
                                             <div class="col-md-12">
-                                                <input type="text" value="{{latitude}}" id="latitud" name="latitud" />
-                                                <input type="text" value="{{longitude}}" id="longitud" name="longitud" />
+                                                <input type="text" value="{{direccion.latitud}}" id="latitud" name="latitud" />
+                                                <input type="text" value="{{direccion.longitud}}" id="longitud" name="longitud" />
                                                 <div id="searchDiv">
                                                     <input id="autocomplete_searchField" type="text" placeholder="Buscar Dirección">
                                                 </div>
@@ -114,7 +116,7 @@
                         </div>
                         <div id="horarios" class="tab-pane fade">
                             <form method="POST" name="frmRegHorarios" id="frmRegHorarios">
-                                <input type="hidden" id="idDireccion" name="idDireccion" value="{{idDireccion}}" />
+                                <input type="hidden" id="direccion_id" name="direccion_id" value="{{idDireccion}}" />
                                 <input type="hidden" id="horariosUbi" name="horariosUbi" />
                                 <div class="row">
                                     <div class="col-md-12"><div id='calendar'></div></div>

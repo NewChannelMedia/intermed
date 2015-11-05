@@ -31,9 +31,7 @@
         selectHelper: true,
         displayEventTime: false,
         select: function (start, end) {
-            var eventData;
-            console.log(start.format('DMYYYY'));
-            console.log(end.format('DMYYYY'));
+            var eventData;            
             if (start.format('DMYYYY') != end.format('DMYYYY')) {
                 alert('fechas distintas');
                 valido = false;
@@ -104,9 +102,11 @@ function obtenerHorarios() {
 
         fin.hours(evento.end._d.getUTCHours());
         fin.minute(evento.end._d.getUTCMinutes());
-                
+
+        console.log($('#direccion_id').val());
+
         var horario = {
-            direccion_id: $('#idDireccion').val(),
+            direccion_id: $('#direccion_id').val(),
             dia: evento.start._d.getDay(),
             horaInicio: inicio.format('HH:mm'),
             horaFin: fin.format('HH:mm')

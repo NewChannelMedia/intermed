@@ -210,7 +210,7 @@ var mapa = {
                         };
 
                         if (addr.types[0] == 'sublocality_level_1') {
-                            mapa.colonia = addr.long_name;                            
+                            mapa.colonia = addr.long_name;
                         };
 
                         if (addr.types[0] == 'locality') {
@@ -259,13 +259,17 @@ mapa.nombreObjetoLongitud = 'longitud';
 mapa.nombreObjetoDireccion = 'direccion';
 $(function () {
     //cargar mapa
-    if ($('#idUsuario').length) {
+    if (isNaN($('#idDireccion').val())) {
         mapa.soloCargar = true;
     } else {
-        mapa.soloCargar = false;
+        if ($('#idDireccion').val() > 0) {
+            mapa.latitud = $('#latitud').val();
+            mapa.longitud = $('#longitud').val();            
+            mapa.soloCargar = true;
+        } else {
+            mapa.soloCargar = false;
+        }        
     };
-
-
 })
 
 function AgregarMarcadores() {

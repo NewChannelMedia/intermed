@@ -76,13 +76,33 @@ exports.obtieneLocalidades = function (object, req, res) {
 };
 
 exports.ubicacion = function (objects, req, res) {
+    var estados;
+   
     models.Estado.findAll().then(function (datos) {
+        estados = datos;       
+    });  
+
+    models.Direccion.findOne({
+        where: {
+            id: req.query.idDireccion
+        },
+        include: [
+         {
+             model: models.Municipio,
+             include: [{
+                 model: models.Estado
+             }]
+         }]
+    }).then(function (datos) {
         res.render('ubicacion', {
-            title: 'Ubicaciones',
-            estados: datos,
-            usuario_id: 1
-        });
+            title: 'Editar Ubicacion',
+            estados: estados,
+            direccion: datos,
+            usuario_id: 1            
+        })
     });
+
+
 };
 
 exports.registrarUbicacion = function (objects, req, res) {
@@ -120,7 +140,7 @@ exports.registrarUbicacion = function (objects, req, res) {
 exports.horarios = function (objects, req, res) {
     res.render('ubicacion', {
         title: 'Horarios',
-        idDireccion: 39
+        idDireccion: 43
     });
 };
 
@@ -128,9 +148,10 @@ exports.registrarHorarios = function (objects, req, res) {
     //eliminar registros anteriores
     var continuarRegistro = true;
     var mensajeError;
+
     models.Horarios.destroy({
         where: {
-            idDireccion: objects.idDireccion
+            idDireccion: objects.direccion_id
         }
     }).then(function () {
         continuarRegistro = true;
@@ -139,16 +160,13 @@ exports.registrarHorarios = function (objects, req, res) {
         mensajeError = err;
     });
 
-    if (continuarRegistro) {
-        console.log(objects);
-
+    if (continuarRegistro) {       
         models.Horarios.bulkCreate(JSON.parse(objects.horariosUbi)).then(function () {
             continuarRegistro = true;
         }).catch(function (err) {
             continuarRegistro = false;
             mensajeError = err;
         });
-
         //
         if (continuarRegistro) {
             res.status(200).json({
@@ -167,17 +185,48 @@ exports.ubicacionObtener = function (objects, req, res) {
         where: {
             usuario_id: 1
         },
+        attributes: ['id', 'nombre', 'latitud', 'longitud', 'calle', 'numero'],
         include: [
           {
               model: models.Municipio,
+              attributes: ['municipio'],
               include: [{
-                  model: models.Estado
-              }]
+                  model: models.Estado,
+                  attributes: ['estado'],
+              }],
           }]
-    }).then(function (datos) {        
+    }).then(function (datos) {
         res.render('ubicacionobtener', {
             title: 'Direcciones',
-            usuario_id:1,
+            usuario_id: 1,
+            direccion: datos            
+        });
+    }).catch(function (err) {
+        res.status(500).json({
+            error: err
+        })
+    });
+};
+
+exports.horariosObtener = function (objects, req, res) {
+    models.Horarios.findOne({
+        where: {
+            usuario_id: 1
+        },
+        attributes: ['id', 'nombre', 'latitud', 'longitud', 'calle', 'numero'],
+        include: [
+          {
+              model: models.Municipio,
+              attributes: ['municipio'],
+              include: [{
+                  model: models.Estado,
+                  attributes: ['estado'],
+              }],
+          }]
+    }).then(function (datos) {
+        res.render('ubicacionobtener', {
+            title: 'Direcciones',
+            usuario_id: 1,
             direccion: datos
         });
     }).catch(function (err) {

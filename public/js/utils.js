@@ -544,13 +544,12 @@ function regUbicacion() {
     }
 }
 
-
 //Registrar Ubicacion
 function regHorarios() {
     if (regHorariosValid() == true) {
-        //agregar horarios al control 
+        //agregar horarios al control         
         $('#horariosUbi').val(JSON.stringify(obtenerHorarios()));
-        
+
         $.ajax({
             url: '/registrarhorarios',
             type: 'POST',
@@ -568,8 +567,6 @@ function regHorarios() {
         });
     }
 }
-
-
 
 function regHorariosValid() {
     return true;
