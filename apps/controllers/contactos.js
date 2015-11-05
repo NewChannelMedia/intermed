@@ -466,43 +466,24 @@ module.exports = {
       });
     }
   },
-  medicEspecial: function( req, res ){
-    if( req.session.passport.user && req.session.passport.user.id > 0 ){
+  enviarMedAPacientes: function( req, res ){
+    var d = new Date();
+    var strDate = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds();
+    console.log("Fecha y Hora: "+strDate);
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
-      models.MedicoEspecialidad.findAll({
-        where:{medico_id: req.body.id},
-        attributes:['especialidad_id','titulo','lugarEstudio','fecha'],
-        include:[{
-          model: models.Especialidad,
-          attributes:['id','especialidad']
-        }],
-        include:[{
-          model:models.Medico,
-          attributes:['id'],
-          include:[{
-            model: models.Usuario,
-            attributes:['id','urlFotoPerfil','usuarioUrl'],
-            include:[{
-              model: models.DatosGenerales,
-              attributes:['nombre','apellidoP','apellidoM']
-            }]
-          }]
-        }]
-      }).then( function( medicoEspecialidad ){
-        res.send( medicoEspecialidad );
+      models.Notificacion.create({
+        usuario_id: req.body.idMed,
+        tipoNotificacion_id: 15,
+        data: usuario_id+req.body.data,
+        inicio:strDate,
+        fin: null,
+        visto: 0,
+        leido: 0,
+        recordatorio: null
+      }).then( function( creado ){
+        res.send(true);
       });
     }
-  },
-  subs:function( req, res ){
-    models.medicoEspecialidad.findAll({
-      where:{ subEsp:1 },
-      attributes:['especialidad_id'],
-      include:[{
-        model: models.Especialidad,
-        attributes:[ 'id', 'especialidad']
-      }]
-    }).then( function( resultados) {
-      res.send( resultados );
-    });
   }
 }

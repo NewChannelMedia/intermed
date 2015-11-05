@@ -3,6 +3,7 @@ var notificaciones = [];
 var notificacionesScroll = [];
 var notificacionesTotal = [];
 var pedirRecomendacion = [];
+var tuRecomendacion = [];
 
 //Manejar notificaciones
 $.ajax( {
@@ -173,7 +174,11 @@ function actualizarNotificaciones() {
                               contenido = '<div class="media-left"><a href= "/perfil/' + record.medico.Usuario.usuarioUrl + '"><img class="media-object" src="' + record.medico.Usuario.urlFotoPerfil + '" style="width: 50px;"></div><div class="media-body">Rechazaste la solicitud de amistad de ' + record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.apellidoM + '</a><br/><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + date + '</span></div></div>';
                             }
                             break;
-                        case 14:'<div class="media-left">'+'<a href="#" data-toggle="modal" data-target="#recomendandoAndo" class="recomendando">'+'<img class="media-object" src="existe" style="width: 50px;">'+'</div>'+'<div class="media-body">existeNo Recomendo tu perfil a otro paciente'+ '</a>'+'<br />'+'<div class="text-left" style="margin-top:-25px;">'+'<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>'+'</div>'+'</div>';
+                        case 14:
+                          '<div class="media-left">'+'<a href="#" data-toggle="modal" data-target="#recomendandoAndo" class="recomendando">'+'<img class="media-object" src="existe" style="width: 50px;">'+'</div>'+'<div class="media-body">existeNo Recomendo tu perfil a otro paciente'+ '</a>'+'<br />'+'<div class="text-left" style="margin-top:-25px;">'+'<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>'+'</div>'+'</div>';
+                          break;
+                        case 15:
+                          '<div class="media-left">'+'<a href="#" onclick="" class="recomendando">'+'<img class="media-object" src="" style="width: 50px;">'+'</div>'+'<div class="media-body">Estas son tus recomendaciones enviadas por "X" doctor'+'</a>'+'<br />'+'<div class="text-left" style="margin-top:-25px;">'+'<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>'+'</div>'+'</div>';
                           break;
                     }
                     if (contenido != '')
@@ -335,7 +340,6 @@ function socketManejadores() {
       data.forEach( function ( record ) {
         date = formattedDate( record.inicio );
         var content = '';
-        var html = "";
         if( record.paciente ){
           var imagen = record.paciente.Usuario.urlFotoPerfil;
           var nombre = record.paciente.Usuario.DatosGenerale.nombre+' '+record.paciente.Usuario.DatosGenerale.apellidoP+' '+record.paciente.Usuario.DatosGenerale.apellidoM;
@@ -351,7 +355,6 @@ function socketManejadores() {
             content += '</div>';
           content += '</div>';
         }
-        //console.log("Record "+JSON.stringify(record));
         if (content){
           pedirRecomendacion.unshift( {
             id: record.id,
@@ -362,6 +365,24 @@ function socketManejadores() {
         }
       });
       actualizarNotificaciones();
+    });
+    socket.on('tuRecomendacion',function(data){
+      tuRecomendacion = [];
+      date = formattedDate( record.inicio );
+      var content = '';
+      data.forEach( function ( record ){
+        content += '<div class="media-left">';
+          content += '<a href="#" onclick="presionando(\'#recomendandoAndo\');" class="recomendando">';
+            content += '<img class="media-object" src="" style="width: 50px;">';
+            content += '</div>';
+            content += '<div class="media-body">Estas son tus recomendaciones enviadas por "X" doctor';
+          content += '</a>';
+          content += '<br />';
+          content += '<div class="text-left" style="margin-top:-25px;">';
+            content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>';
+          content += '</div>';
+        content += '</div>';
+      });
     });
 }
 
@@ -426,6 +447,9 @@ function verTodasNotificaciones(){
                       break;
                   case 14:
                     '<div class="media-left">'+'<a href="#" data-toggle="modal" data-target="#recomendandoAndo" class="recomendando">'+'<img class="media-object" src="existe" style="width: 50px;">'+'</div>'+'<div class="media-body">existeNo Recomendo tu perfil a otro paciente'+ '</a>'+'<br />'+'<div class="text-left" style="margin-top:-25px;">'+'<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>'+'</div>'+'</div>';
+                    break;
+                  case 15:
+                    '<div class="media-left">'+'<a href="#" onclick="" class="recomendando">'+'<img class="media-object" src="" style="width: 50px;">'+'</div>'+'<div class="media-body">Estas son tus recomendaciones enviadas por "X" doctor'+'</a>'+'<br />'+'<div class="text-left" style="margin-top:-25px;">'+'<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>'+'</div>'+'</div>';
                     break;
               }
               if (contenido != ""){

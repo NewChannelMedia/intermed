@@ -598,6 +598,7 @@
                 <div class="modal-header">
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                   <h4 class="modal-title">Recomienda las siguientes especialidades</h4>
+                  <span class="hidden" id="idOculto"></span>
                   <div id="contenidoRequerido">
                     <ul class="list-inline"></ul>
                   </div>
@@ -606,7 +607,7 @@
               <!-- Body -->
                 <div class="modal-body">
                   <div class="" id="tabla">
-                    <table class="table-hover table-condensed">
+                    <table class="table table-hover table-condensed">
                       <tbody id="agregandoContacto">
                       </tbody>
                     </table>
@@ -619,7 +620,7 @@
               <!-- Footer -->
                 <div class="modal-footer">
                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Recomendar</button>
+                  <button type="button" id="buscarRecomendar" class="btn btn-primary">Recomendar</button>
                 </div>
               <!-- Fin footer -->
             </div>

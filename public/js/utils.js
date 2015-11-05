@@ -1746,8 +1746,10 @@ var idEspecialidad = '';
     var html2 = "";
     $.post('/traerDatos',function(dat){
       var arreglo = new Array();
+      var spanOculto ="";
       for( var i in dat ){
           arreglo=dat[ i ].data.split("|");
+          spanOculto=arreglo[0];
       }
       arreglo.shift();
       $.post('/especial',{ides:arreglo},function(datas){
@@ -1760,6 +1762,7 @@ var idEspecialidad = '';
           html+='</li>';
         }
         $( "#contenidoRequerido ul" ).html(html);
+        $( "#idOculto" ).html(spanOculto);
         var titulo;
         var lugarEstudio;
         var especialidad;
@@ -1767,7 +1770,7 @@ var idEspecialidad = '';
         var imgUrl;
         var idMedico;
         $.post('/cargarContactosMedico',function(medicosContactos){
-          console.log("Contactos del medico: "+JSON.stringify(medicosContactos));
+          //console.log("MEDICOS CONTACTOS: "+JSON.stringify(medicosContactos));
           for( var i in medicosContactos ){
             if( medicosContactos[ i ].Medico.Usuario ){
               idMedico = medicosContactos[i ].Medico.id;
@@ -1780,15 +1783,18 @@ var idEspecialidad = '';
                 html2 += '</td>';
                 html2 += '<td>';
                   html2 += '<h4>'+name+'</h4>';
-                  html2 += '<small><i>';
+                  html2 += '<span class="s15">';
                   for( var j in medicosContactos[ i ].Medico.MedicoEspecialidads){
-                    if( medicosContactos[ i ].Medico.MedicoEspecialidads[ j ].subEsp != 1){
-                      html2 +="Especialidad: "+medicosContactos[ i ].Medico.MedicoEspecialidads[ j ].Especialidad.especialidad+'<br />';
-                    }else{
-                      html2 +='Sub especialidad:'+medicosContactos[ i ].Medico.MedicoEspecialidads[ j ].Especialidad.especialidad+' <br />';
+                    if( medicosContactos[ i ].Medico.MedicoEspecialidads[ j ].subEsp == 0){
+                      html2 +="<strong>"+medicosContactos[ i ].Medico.MedicoEspecialidads[ j ].Especialidad.especialidad+'</strong>';
                     }
                   }
-                  html2 += '</i></small>';
+                  for( var p in medicosContactos[ i ].Medico.MedicoEspecialidads ){
+                    if(medicosContactos[ i ].Medico.MedicoEspecialidads[ p ].subEsp == 1){
+                      html2 +='<small>&nbsp;'+medicosContactos[ i ].Medico.MedicoEspecialidads[ p ].Especialidad.especialidad+'</small>';
+                    }
+                  }
+                  html2 += '</span>';
                 html2 += '</td>';
                 html2 += '<td>';
                 html2 += '</td>';
@@ -1799,7 +1805,6 @@ var idEspecialidad = '';
         });
       });
     });
-    console.log('HTML: ' + html);
   }
   function labelTag( name, idMedico, tdID ){
     var axxios = "";
@@ -1810,6 +1815,7 @@ var idEspecialidad = '';
           axxios += '<span class="glyphicon glyphicon-remove">&nbsp;</span>';
           axxios += name;
         axxios += '</small>';
+        axxios += '<span class="hidden">'+idMedico+'</span>';
       axxios += '</div>';
     axxios += '</li>';
     if( $("#"+tdID).attr('class') == '' ){
@@ -1821,4 +1827,23 @@ var idEspecialidad = '';
     $("#"+liID).remove();
     $("#"+tdID).removeClass('cambiando');
   }
+  //EVENTO DEL CLICK
+  $(document).ready(function(){
+    $( "#buscarRecomendar" ).click( function(){
+      var spanOculto = $( "#idOculto" ).text();
+      var datos="";
+      $.each($('#sendFor li div.label.label-danger span.hidden'), function(index, value){
+        datos += "|"+$( this ).text();
+      });
+      $.post('/enviarMedAPacientes',{idMed:spanOculto,data:datos},function(send){
+        if(send){
+          $('.modal').modal('hide');
+            $('.modal').on('hidden.bs.modal',function(e){
+              $("#mensajeRecomendar").val('');
+              $( "#correoEnviarRecomendado" ).val('');
+            });
+        }
+      });
+    });
+  });
 //<------------------- FIN OSCAR ---------------------->

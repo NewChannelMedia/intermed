@@ -694,6 +694,69 @@ exports.pedirRecomendacion = function( req ){
     });
   });
 };
+exports.tuRecomendacion = function( req ){
+  models.Notificacion.findAll({
+    where:{
+     usuario_id: req.usuario_id,
+     visto: 0,
+     tipoNotificacion_id: 14
+   },
+   attributes:['id','usuario_id','data','inicio','visto'],
+   order: 'inicio DESC'
+  }).then(function( result ){
+    var restante = 8 -result.length;
+    if( restante < 0 ) restante = 0;
+    models.Notificacion.findAll({
+      where:{
+        usuario_id: req.usuario_id,
+        visto: 1,
+        tipoNotificacion_id: 14
+      },
+      attributes:['id','usuario_id','data','inicio','visto'],
+      limit: restante,
+      order: 'inicio DESC'
+    }).then(function( resultVisto ){
+      esult = JSON.parse( JSON.stringify( result ) );
+      result = result.concat( JSON.parse( JSON.stringify( resultVisto )));
+      var length = result.length;
+      result.forEach( function( record ){
+        models.Medico.findOne({
+          where:{id:record.usuario_id},
+          attributes:['id'],
+          include:[{
+            model: models.Usuario,
+            attributes:['urlFotoPerfil'],
+            include:[{
+              model: models.DatosGenerales,
+              attributes:['nombre','apeliidoP','apellidoM']
+            }]
+          }]
+        }).then(function(medico){
+          for( var i in record.data ){
+            models.Medico.findAll({
+              where:{ id: record.data.split("|")[ i ]},
+              attributes:['id'],
+              include:[{
+                model: models.Usuario,
+                attributes:['urlFotoPerfil','usuarioUrl'],
+                include:[{
+                  model: models.DatosGenerales,
+                  attributes:['nombre','apellidoP','apellidoM']
+                }]
+              }]
+            }).then(function(medicos){
+              record['medico'] = JSON.parse(JSON.stringify( medico ));
+              record['medicos'] = JSON.parse( JSON.stringify( medicos ));
+              if( record === result[ result.length - 1] ){
+                req.socket.emit('tuRecomendacion', result);
+              }
+            });
+          }
+        });//fin findOne medico
+      });//fin del each
+    });//segundo find de notificacion
+  });//primer find de notificacion
+};
 function getDateTime() {
   var date = new Date();
   var hour = date.getHours();
