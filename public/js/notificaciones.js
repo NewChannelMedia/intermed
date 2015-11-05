@@ -107,6 +107,7 @@ function actualizarNotificaciones() {
     totalNotificaciones = totalNotificaciones.concat( agregadoMedicoFavorito );
     totalNotificaciones = totalNotificaciones.concat( solicitudesRechazadas );
     totalNotificaciones = totalNotificaciones.concat( pedirRecomendacion );
+    totalNotificaciones = totalNotificaciones.concat( tuRecomendacion );
     totalNotificaciones = totalNotificaciones.sort( ordenarPorFecha );
     if ( totalNotificaciones.length > 0 ) {
       $( '#totalNotificaciones' ).removeClass( 'hidden invisible' );
@@ -368,11 +369,13 @@ function socketManejadores() {
     });
     socket.on('tuRecomendacion',function(data){
       tuRecomendacion = [];
-      date = formattedDate( record.inicio );
-      var content = '';
       data.forEach( function ( record ){
+        date = formattedDate( record.inicio );
+        var arreglo = record;
+
+        var content = '';
         content += '<div class="media-left">';
-          content += '<a href="#" onclick="presionando(\'#recomendandoAndo\');" class="recomendando">';
+          content += '<a href="#" onclick="miRecomendacion(\'#meRecomendaron\','+record.toString()+');" class="recomendando">';
             content += '<img class="media-object" src="" style="width: 50px;">';
             content += '</div>';
             content += '<div class="media-body">Estas son tus recomendaciones enviadas por "X" doctor';
@@ -382,7 +385,17 @@ function socketManejadores() {
             content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>';
           content += '</div>';
         content += '</div>';
+        //console.log("RECORD MED: "+JSON.stringify(record));
+        if (content){
+          tuRecomendacion.unshift( {
+            id: record.id,
+            time: record.inicio,
+            visto: record.visto,
+            content: content
+          });
+        }
       });
+      actualizarNotificaciones();
     });
 }
 

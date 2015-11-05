@@ -475,7 +475,7 @@ module.exports = {
       models.Notificacion.create({
         usuario_id: req.body.idMed,
         tipoNotificacion_id: 15,
-        data: usuario_id+req.body.data,
+        data: req.body.data,
         inicio:strDate,
         fin: null,
         visto: 0,

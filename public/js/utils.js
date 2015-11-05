@@ -1827,14 +1827,22 @@ var idEspecialidad = '';
     $("#"+liID).remove();
     $("#"+tdID).removeClass('cambiando');
   }
+  function miRecomendacion( id, arreglo ){
+    $(id).modal('toggle');//abre el modal
+    for(var i in arreglo ){
+      console.log("Arreglo: "+arreglo[ i ]);
+    }
+  }
   //EVENTO DEL CLICK
   $(document).ready(function(){
     $( "#buscarRecomendar" ).click( function(){
       var spanOculto = $( "#idOculto" ).text();
       var datos="";
       $.each($('#sendFor li div.label.label-danger span.hidden'), function(index, value){
-        datos += "|"+$( this ).text();
+        if(datos != "") datos += "|"+$( this ).text();
+        else datos = $( this ).text();
       });
+      console.log("DATOS: "+JSON.stringify(datos));
       $.post('/enviarMedAPacientes',{idMed:spanOculto,data:datos},function(send){
         if(send){
           $('.modal').modal('hide');
