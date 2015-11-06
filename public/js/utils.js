@@ -1827,11 +1827,8 @@ var idEspecialidad = '';
     $("#"+liID).remove();
     $("#"+tdID).removeClass('cambiando');
   }
-  function miRecomendacion( id, arreglo ){
+  function miRecomendacion( id){
     $(id).modal('toggle');//abre el modal
-    for(var i in arreglo ){
-      console.log("Arreglo: "+arreglo[ i ]);
-    }
   }
   //EVENTO DEL CLICK
   $(document).ready(function(){
