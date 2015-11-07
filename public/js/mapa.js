@@ -87,7 +87,7 @@ var mapa = {
 
         //Posicionar el mapa en la ubicacion del usuario
         if (mapa.soloCargar == false) {
-            if (isNaN($('#idDireccion').val())) {
+            if ($('#idDireccion').val().length==0) {
                 mapa.GeolicalizacionUsuario();
             } else {
                 mapa.PosicionarMapa();

@@ -39,7 +39,7 @@ exports.obtieneCiudades = function (object, req, res) {
             estado_id: object.estado_id
         },
         order: ['municipio'],
-        attributes: ['municipio_id', 'municipio']
+        attributes: ['id', 'municipio']
     }).then(function (ciudades) {
         res.send({
             'municipio': ciudades
@@ -107,8 +107,8 @@ exports.nuevaUbicacion = function (objects, req, res) {
 
 };
 
-exports.registrarUbicacion = function (objects, req, res) {
-    if (isNaN(objects.idDireccion)) {
+exports.registrarUbicacion = function (objects, req, res) {    
+    if (objects.idDireccion=='') {
         models.Direccion.create({
             ubicacionGM: 'object.ubicacionGM',
             calle: objects.calleUbi,
@@ -172,7 +172,7 @@ exports.registrarUbicacion = function (objects, req, res) {
 };
 
 exports.horarios = function (objects, req, res) {
-    var id = 43;
+    var id = 48;
     var resultado = [];
     models.Horarios.findAll({
         where: {
@@ -226,7 +226,7 @@ exports.horarios = function (objects, req, res) {
 
         res.render('horarios', {
             title: 'Horarios',
-            direccion_id: 43,
+            direccion_id: 48,
             horarios: JSON.stringify(resultado)
         });
     });
@@ -239,7 +239,7 @@ exports.registrarHorarios = function (objects, req, res) {
 
     models.Horarios.destroy({
         where: {
-            direccion_id: 43
+            direccion_id: 48
         }
     }).then(function () {
         continuarRegistro = true;
