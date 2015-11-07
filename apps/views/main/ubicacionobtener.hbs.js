@@ -29,6 +29,10 @@
     + alias3(alias4(((stack1 = (depth0 != null ? depth0.Municipio : depth0)) != null ? stack1.municipio : stack1), depth0))
     + ", "
     + alias3(alias4(((stack1 = ((stack1 = (depth0 != null ? depth0.Municipio : depth0)) != null ? stack1.Estado : stack1)) != null ? stack1.estado : stack1), depth0))
+    + "</p>\r\n                                <p>"
+    + alias3(((helper = (helper = helpers.calle1 || (depth0 != null ? depth0.calle1 : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"calle1","hash":{},"data":data}) : helper)))
+    + " y "
+    + alias3(((helper = (helper = helpers.calle2 || (depth0 != null ? depth0.calle2 : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"calle2","hash":{},"data":data}) : helper)))
     + "</p>\r\n                                <a href=\"registrarubicacion?idDireccion="
     + alias3(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"id","hash":{},"data":data}) : helper)))
     + "\">Editar Ubicaci&oacute;n</a>\r\n                            </div>\r\n";

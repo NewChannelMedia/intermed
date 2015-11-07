@@ -1,12 +1,15 @@
-﻿$(document).ready(function () {
+﻿var eventos = [];
+var fechaInicio = '2015-11-02';
 
-
+$(document).ready(function () {
     var valido = true;
+    var eventos = JSON.parse($('#horariosUbi').val());
+    console.log(eventos);
 
-    // page is now ready, initialize the calendar...
-
+    //inicializar calendario
     $('#calendar').fullCalendar({
         // put your options and callbacks here
+
         defaultView: 'agendaWeek',
         height: 350,
         allDaySlot: false,
@@ -25,13 +28,14 @@
         //},
         minTime: '8:00',
         maxTime: '19:00',
-        //defaultDate: '2015-02-12',
         lang: 'es',
+        defaultDate: fechaInicio,
+        events: eventos,
         selectable: true,
         selectHelper: true,
         displayEventTime: false,
         select: function (start, end) {
-            var eventData;            
+            var eventData;
             if (start.format('DMYYYY') != end.format('DMYYYY')) {
                 alert('fechas distintas');
                 valido = false;
@@ -62,20 +66,21 @@
         //    $(this).append('<span id=\"' + event._id + '\">Clic para eliminar</span>');
 
         //},
-        //eventMouseout: function (event, jsEvent, view) {
-        //    $('#' + event._id).remove();
-        //},
+        eventMouseout: function (event, jsEvent, view) {
+            $('#' + event._id).remove();
+        },
         //eventDrop: function (event, delta, revertFunc, jsEvent, ui, view) {
         //    console.log(jsEvent.target.id);
         //}
 
         eventMouseover: function (event, jsEvent, view) {
-            $(this).append('<img src="img/eliminar.png" id=\"' + event.id  + '\"/>');
+            $(this).append('<img src="img/eliminar.png" id=\"' + event.id + '\"/>');
 
         },
         eventMouseout: function (event, jsEvent, view) {
             $('#' + event.id).remove();
         }
+
     })
 
     //al cambiar de tab mostrar el calendario la usar bootstrap
@@ -83,7 +88,11 @@
         $('#calendar').fullCalendar('render');
     });
     $('#tabControl a:first').tab('show');
+
 });
+
+
+
 
 function obtenerHorarios() {
     var objhorarios = [];
@@ -94,9 +103,9 @@ function obtenerHorarios() {
     var fin = new moment();
 
     objhorarios = [];
-    for (i = 0; i <= h.length-1; i++) {
+    for (i = 0; i <= h.length - 1; i++) {
         evento = h[i];
-        
+
         inicio.hours(evento.start._d.getUTCHours());
         inicio.minute(evento.start._d.getUTCMinutes());
 
@@ -111,8 +120,8 @@ function obtenerHorarios() {
             horaInicio: inicio.format('HH:mm'),
             horaFin: fin.format('HH:mm')
         };
-        
-        objhorarios.push(horario);        
-    };    
+
+        objhorarios.push(horario);
+    };
     return objhorarios;
 };

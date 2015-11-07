@@ -1105,9 +1105,9 @@ var iniciar = function () {
         }
     });
 
-    app.get('/registrarubicacion', function (req, res) {
+    app.get('/registrarubicacion', function (req, res) {        
         //if (req.session.passport.user) {
-        intermed.callController('ubicacion', 'ubicacion', req.body, req, res);
+        intermed.callController('ubicacion', 'nuevaUbicacion', req.body, req, res);
         //}
         //else {
         //    res.send({

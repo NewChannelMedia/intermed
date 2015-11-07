@@ -87,7 +87,13 @@ var mapa = {
 
         //Posicionar el mapa en la ubicacion del usuario
         if (mapa.soloCargar == false) {
-            mapa.GeolicalizacionUsuario();
+            if (isNaN($('#idDireccion').val())) {
+                mapa.GeolicalizacionUsuario();
+            } else {
+                mapa.PosicionarMapa();
+                //Crear marcador en el centro del mapa()
+                mapa.Marcador();
+            };
 
             //Buscar Direcciones
             var searchDiv = document.getElementById('searchDiv');
@@ -257,54 +263,55 @@ mapa.nombreObjetoLongitud = 'longitud';
 
 //Objeto que recibe a direccion
 mapa.nombreObjetoDireccion = 'direccion';
+
 $(function () {
     //cargar mapa
     if (isNaN($('#idDireccion').val())) {
         mapa.soloCargar = true;
+        //Cargar marcadores cuando el mapa esta inicializado
+        google.maps.event.addDomListener(window, 'load', AgregarMarcadores);
     } else {
         if ($('#idDireccion').val() > 0) {
+            mapa.soloCargar = false;
             mapa.latitud = $('#latitud').val();
             mapa.longitud = $('#longitud').val();            
-            mapa.soloCargar = true;
         } else {
             mapa.soloCargar = false;
-        }        
-    };
+        };
+    }
 })
-
-function AgregarMarcadores() {
-    var id, titulo, lat, lon;
-    $('[id^=direccion]').each(function (obj, val) {
-        id = ($(val).attr('id')).replace('direccion', '');
-        titulo = $('#titulo' + id).html();
-        lat = $('#latitud' + id).val();
-        lon = $('#longitud' + id).val();
-
-        var pos = new google.maps.LatLng(lat, lon);
-
-        var marker = new google.maps.Marker({
-            position: pos,
-            map: mapa.map,
-            draggable: false,
-            title: titulo,
-            animation: google.maps.Animation.DROP
-        });
-        marker.setIcon('img/marker.png');
-
-    });
-    mapa.latitud = lat;
-    mapa.longitud = lon;
-    mapa.zoom = 14;
-    mapa.PosicionarMapa();
-}
-
 
 //Inicializa mapa
 google.maps.event.addDomListener(window, 'load', mapa.initMap);
 
-//Cargar marcadores cuando el mapa esta inicializado
-google.maps.event.addDomListener(window, 'load', AgregarMarcadores);
 
+function AgregarMarcadores() {
+    var id, titulo, lat, lon;
+    if (mapa.soloCargar) {
+        $('[id^=direccion]').each(function (obj, val) {
+            id = ($(val).attr('id')).replace('direccion', '');
+            titulo = $('#titulo' + id).html();
+            lat = $('#latitud' + id).val();
+            lon = $('#longitud' + id).val();
+
+            var pos = new google.maps.LatLng(lat, lon);
+
+            var marker = new google.maps.Marker({
+                position: pos,
+                map: mapa.map,
+                draggable: false,
+                title: titulo,
+                animation: google.maps.Animation.DROP
+            });
+            marker.setIcon('img/marker.png');
+
+        });
+        mapa.latitud = lat;
+        mapa.longitud = lon;
+        mapa.zoom = 14;
+        mapa.PosicionarMapa();
+    };
+}
 
 function AsignarCiudad() {
     SeleccionarValor('slc_ciudades', mapa.ciudad);

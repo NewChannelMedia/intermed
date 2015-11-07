@@ -75,12 +75,14 @@ exports.obtieneLocalidades = function (object, req, res) {
     });
 };
 
-exports.ubicacion = function (objects, req, res) {
+exports.nuevaUbicacion = function (objects, req, res) {
     var estados;
-   
+
+    console.log('entro');
+
     models.Estado.findAll().then(function (datos) {
-        estados = datos;       
-    });  
+        estados = datos;
+    });
 
     models.Direccion.findOne({
         where: {
@@ -98,7 +100,7 @@ exports.ubicacion = function (objects, req, res) {
             title: 'Editar Ubicacion',
             estados: estados,
             direccion: datos,
-            usuario_id: 1            
+            usuario_id: 1
         })
     });
 
@@ -106,41 +108,127 @@ exports.ubicacion = function (objects, req, res) {
 };
 
 exports.registrarUbicacion = function (objects, req, res) {
-    console.log(objects.slc_colonias);
-    console.log(objects.slc_ciudades);
-    models.Direccion.create({
-        ubicacionGM: 'object.ubicacionGM',
-        calle: objects.calleUbi,
-        numero: objects.numeroUbi,
-        calle1: objects.calle1Ubi,
-        calle2: objects.calle2Ubi,
-        principal: 0,
-        nombre: objects.nombreUbi,
-        horarioInicio: 'object.horarioInicio',
-        horarioFin: 'object.horarioFin',
-        dias: 'objects.dias',
-        usuario_id: objects.usuario_id,
-        // institucion_id: '0',
-        localidad_id: objects.slc_colonias,
-        municipio_id: objects.slc_ciudades,
-        latitud: objects.latitud,
-        longitud: objects.longitud
-    }).then(function (datos) {
-        res.status(200).json({
-            ok: true
-        });
+    if (isNaN(objects.idDireccion)) {
+        models.Direccion.create({
+            ubicacionGM: 'object.ubicacionGM',
+            calle: objects.calleUbi,
+            numero: objects.numeroUbi,
+            calle1: objects.calle1Ubi,
+            calle2: objects.calle2Ubi,
+            principal: 0,
+            nombre: objects.nombreUbi,
+            horarioInicio: 'object.horarioInicio',
+            horarioFin: 'object.horarioFin',
+            dias: 'objects.dias',
+            usuario_id: objects.usuario_id,
+            // institucion_id: '0',
+            localidad_id: objects.slc_colonias,
+            municipio_id: objects.slc_ciudades,
+            latitud: objects.latitud,
+            longitud: objects.longitud
+        }).then(function (datos) {
+            res.status(200).json({
+                ok: true
+            });
 
-    }).catch(function (err) {
-        res.status(500).json({
-            error: err
+        }).catch(function (err) {
+            res.status(500).json({
+                error: err
+            });
         });
-    });
+    } else {
+        models.Direccion.update({
+            ubicacionGM: 'object.ubicacionGM',
+            calle: objects.calleUbi,
+            numero: objects.numeroUbi,
+            calle1: objects.calle1Ubi,
+            calle2: objects.calle2Ubi,
+            principal: 0,
+            nombre: objects.nombreUbi,
+            horarioInicio: 'object.horarioInicio',
+            horarioFin: 'object.horarioFin',
+            dias: 'objects.dias',
+            usuario_id: objects.usuario_id,
+            // institucion_id: '0',
+            localidad_id: objects.slc_colonias,
+            municipio_id: objects.slc_ciudades,
+            latitud: objects.latitud,
+            longitud: objects.longitud
+        }, {
+            where: {
+                id: objects.idDireccion
+            }
+        }).then(function (datos) {
+            res.status(200).json({
+                ok: true
+            });
+
+        }).catch(function (err) {
+            res.status(500).json({
+                error: err
+            });
+        });
+    }
 };
 
 exports.horarios = function (objects, req, res) {
-    res.render('ubicacion', {
-        title: 'Horarios',
-        idDireccion: 43
+    var id = 43;
+    var resultado = [];
+    models.Horarios.findAll({
+        where: {
+            direccion_id: id
+        },
+        attributes: ['dia', 'horaInicio', 'horaFin'],
+    }).then(function (datos) {
+
+        var horaInicio;
+        var horaFin;
+        //se usa hardcode en la fecha, la fecha debe de ser lunes
+        for (i = 0; i <= datos.length - 1; i++) {
+            switch (datos[i].dataValues.dia) {
+                case 0: //domingo
+                    horaInicio = '2015-11-08 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-08 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 1: //lunes
+                    horaInicio = '2015-11-02 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-02 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 2: //martes
+                    horaInicio = '2015-11-03 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-03 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 3: //miercoles
+                    horaInicio = '2015-11-04 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-04 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 4: //jueves
+                    horaInicio = '2015-11-05 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-05 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 5: //viernes
+                    horaInicio = '2015-11-06 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-06 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 6: //sabado
+                    horaInicio = '2015-11-07 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-07 ' + datos[i].dataValues.horaFin;
+                    break;
+            };
+
+            var horario = {
+                title: datos[i].dataValues.horaInicio + ' - ' + datos[i].dataValues.horaFin,
+                start: horaInicio,
+                end: horaFin
+            };
+            resultado.push(horario);
+        };
+
+        res.render('horarios', {
+            title: 'Horarios',
+            direccion_id: 43,
+            horarios: JSON.stringify(resultado)
+        });
     });
 };
 
@@ -151,7 +239,7 @@ exports.registrarHorarios = function (objects, req, res) {
 
     models.Horarios.destroy({
         where: {
-            idDireccion: objects.direccion_id
+            direccion_id: 43
         }
     }).then(function () {
         continuarRegistro = true;
@@ -160,7 +248,7 @@ exports.registrarHorarios = function (objects, req, res) {
         mensajeError = err;
     });
 
-    if (continuarRegistro) {       
+    if (continuarRegistro) {
         models.Horarios.bulkCreate(JSON.parse(objects.horariosUbi)).then(function () {
             continuarRegistro = true;
         }).catch(function (err) {
@@ -185,7 +273,7 @@ exports.ubicacionObtener = function (objects, req, res) {
         where: {
             usuario_id: 1
         },
-        attributes: ['id', 'nombre', 'latitud', 'longitud', 'calle', 'numero'],
+        attributes: ['id', 'nombre', 'latitud', 'longitud', 'calle', 'numero', 'calle1','calle2'],
         include: [
           {
               model: models.Municipio,
@@ -199,7 +287,7 @@ exports.ubicacionObtener = function (objects, req, res) {
         res.render('ubicacionobtener', {
             title: 'Direcciones',
             usuario_id: 1,
-            direccion: datos            
+            direccion: datos
         });
     }).catch(function (err) {
         res.status(500).json({
