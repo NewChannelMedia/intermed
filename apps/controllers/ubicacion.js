@@ -94,7 +94,11 @@ exports.nuevaUbicacion = function (objects, req, res) {
              include: [{
                  model: models.Estado
              }]
-         }]
+         },
+         {
+             model: models.Localidad            
+         }
+        ]
     }).then(function (datos) {
         res.render('ubicacion', {
             title: 'Editar Ubicacion',

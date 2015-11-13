@@ -22,8 +22,8 @@ $(document).ready(function () {
             left: false
         },
         //businessHours: {
-        //    start: '6:00',
-        //    end: '19:00',
+        //    start: '2015-11-08 10:00',
+        //    end: '2015-11-08 12:00',
         //    dow: [0, 1, 2, 3, 4, 5, 6]
         //},
         minTime: '8:00',
@@ -34,6 +34,7 @@ $(document).ready(function () {
         selectable: true,
         selectHelper: true,
         displayEventTime: false,
+        eventOverlap:false,
         select: function (start, end) {
             var eventData;
             if (start.format('DMYYYY') != end.format('DMYYYY')) {
@@ -59,8 +60,17 @@ $(document).ready(function () {
         eventLimit: true,
 
         eventClick: function (event, jsEvent, view) {
-            $('#calendar').fullCalendar('removeEvents', event._id);
+            if (confirm('Desea eliminar el evento?')) {
+                $('#calendar').fullCalendar('removeEvents', event._id);
+            }
+            
 
+        },
+        eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
+            if (event.start.format('DMYYYY') != event.end.format('DMYYYY')) {
+                alert('fechas distintas');
+                revertFunc();
+            }
         },
         //eventMouseover: function (event, jsEvent, view) {
         //    $(this).append('<span id=\"' + event._id + '\">Clic para eliminar</span>');
@@ -82,13 +92,6 @@ $(document).ready(function () {
         }
 
     })
-
-    //al cambiar de tab mostrar el calendario la usar bootstrap
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        $('#calendar').fullCalendar('render');
-    });
-    $('#tabControl a:first').tab('show');
-
 });
 
 

@@ -529,11 +529,7 @@ function regUbicacion() {
             data: $('#frmRegUbi').serialize(),
             type: 'POST',
             success: function (data) {
-                document.getElementById("frmRegUbi").reset();
-                alert('registro guradado');
-                //data.forEach(function (record) {
-                //    addUbicacion(record);
-                //});
+                document.getElementById("frmRegUbi").reset();                                
                 //Reiniciar mapa
                 mapa.GeolicalizacionUsuario();
             },
@@ -558,8 +554,7 @@ function regHorarios() {
             data: $('#frmRegHorarios').serialize(),
             type: 'POST',
             success: function (data) {
-                document.getElementById("frmRegHorarios").reset();
-                alert('registro guradado');                
+                document.getElementById("frmRegHorarios").reset();                
             },
             error: function (jqXHR, textStatus, err) {
                 console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);

@@ -87,7 +87,7 @@ var mapa = {
 
         //Posicionar el mapa en la ubicacion del usuario
         if (mapa.soloCargar == false) {
-            if ($('#idDireccion').val().length==0) {
+            if ($('#idDireccion').val().length == 0) {
                 mapa.GeolicalizacionUsuario();
             } else {
                 mapa.PosicionarMapa();
@@ -233,6 +233,10 @@ var mapa = {
                             mapa.codigoPostal = addr.long_name;
                         };
 
+                        $('#numeroUbi').val(mapa.numero);
+                        $('#calleUbi').val(mapa.calle);
+                        $('#cpUbi').val(mapa.codigoPostal);
+
                         //if (results[0].formatted_address != null) {
                         //    console.log(results[0].formatted_address);
                         //};
@@ -274,7 +278,15 @@ $(function () {
         if ($('#idDireccion').val() > 0) {
             mapa.soloCargar = false;
             mapa.latitud = $('#latitud').val();
-            mapa.longitud = $('#longitud').val();            
+            mapa.longitud = $('#longitud').val();
+            //cargar Estado, Municipio, Localidad            
+
+            mapa.estado = $('#estadoDato').val();
+            mapa.ciudad = $('#municipioDato').val();
+            mapa.colonia = $('#localidadDato').val();
+
+            SeleccionarValor('slc_estados', mapa.estado);
+            obtenerCiudades();
         } else {
             mapa.soloCargar = false;
         };
@@ -308,7 +320,7 @@ function AgregarMarcadores() {
         });
         mapa.latitud = lat;
         mapa.longitud = lon;
-        mapa.zoom = 14;
+        mapa.zoom = 10;
         mapa.PosicionarMapa();
     };
 }
@@ -319,10 +331,7 @@ function AsignarCiudad() {
 }
 
 function AsignarColonia() {
-    SeleccionarValor('slc_colonias', mapa.colonia);
-    $('#numeroUbi').val(mapa.numero);
-    $('#calleUbi').val(mapa.calle);
-    $('#cpUbi').val(mapa.codigoPostal);
+    SeleccionarValor('slc_colonias', mapa.colonia);  
 }
 
 function SeleccionarValor(control, valor) {

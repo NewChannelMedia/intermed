@@ -11,9 +11,9 @@
                         <form method="POST" name="frmRegUb" id="frmRegUbi">
                             <input type="hidden" id="idDireccion" name="idDireccion" value="{{direccion.id}}">
                             <input type="hidden" id="usuario_id" name="usuario_id" value="{{usuario_id}}">
-                            <input type="hidden" id="estadoDato" name="estadoDato" value="{{Municipio.Estado.estado}}">
-                            <input type="hidden" id="municipioDato" name="usuario_id" value="{{Municipio.municipio}}">
-                            <input type="hidden" id="localidadDato" name="usuario_id" value="{{usuario_id}}">
+                            <input type="hidden" id="estadoDato" name="estadoDato" value="{{direccion.Municipio.Estado.estado}}">
+                            <input type="hidden" id="municipioDato" name="municipioDato" value="{{direccion.Municipio.municipio}}">
+                            <input type="hidden" id="localidadDato" name="localidadDato" value="{{direccion.Localidad.localidad}}">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="col-md-6">
@@ -35,7 +35,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <select class="form-control" name="slc_ciudades" id="slc_ciudades" required="required" onchange="obtenerColonias()">
-                                                            <option value="{{direccion.ciudad}}">Ciudad</option>
+                                                            <option>Ciudad</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -44,7 +44,7 @@
                                                 <div class="col-md-6">
                                                     <div class="form-group">
                                                         <select class="form-control" name="slc_colonias" id="slc_colonias" required="required">
-                                                            <option value="{{direccion.colonia}}">Colonia</option>
+                                                            <option>Colonia</option>
                                                         </select>
                                                     </div>
                                                 </div>
