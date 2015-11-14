@@ -694,7 +694,7 @@ exports.pedirRecomendacion = function( req ){
     });
   });
 };
-exports.tuRecomendacion = function( req ){console.log("NO Cinthia");
+exports.tuRecomendacion = function( req ){
   models.Notificacion.findAll({
     where:{
      usuario_id: req.usuario_id,
@@ -716,7 +716,7 @@ exports.tuRecomendacion = function( req ){console.log("NO Cinthia");
       limit: restante,
       order: 'inicio DESC'
     }).then(function( resultVisto ){
-      esult = JSON.parse( JSON.stringify( result ) );
+      result = JSON.parse( JSON.stringify( result ) );
       result = result.concat( JSON.parse( JSON.stringify( resultVisto )));
       var length = result.length;
       result.forEach( function( record ){

@@ -1827,7 +1827,13 @@ var idEspecialidad = '';
     $("#"+liID).remove();
     $("#"+tdID).removeClass('cambiando');
   }
-  function miRecomendacion( id){
+  function miRecomendacion( id, record){
+    console.log("RECORD:" +record.length);
+    // EN esta parte quede dead
+    /*$.each(JSON.parse(record), function(i, item){
+      console.log("ITEM: "+item);
+    });
+    console.log("RECORD: "+JSON.stringify(record));*/
     $(id).modal('toggle');//abre el modal
   }
   //EVENTO DEL CLICK
