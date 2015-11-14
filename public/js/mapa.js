@@ -87,7 +87,13 @@ var mapa = {
 
         //Posicionar el mapa en la ubicacion del usuario
         if (mapa.soloCargar == false) {
-            mapa.GeolicalizacionUsuario();
+            if ($('#idDireccion').val().length == 0) {
+                mapa.GeolicalizacionUsuario();
+            } else {
+                mapa.PosicionarMapa();
+                //Crear marcador en el centro del mapa()
+                mapa.Marcador();
+            };
 
             //Buscar Direcciones
             var searchDiv = document.getElementById('searchDiv');
@@ -210,7 +216,7 @@ var mapa = {
                         };
 
                         if (addr.types[0] == 'sublocality_level_1') {
-                            mapa.colonia = addr.long_name;                            
+                            mapa.colonia = addr.long_name;
                         };
 
                         if (addr.types[0] == 'locality') {
@@ -226,6 +232,10 @@ var mapa = {
                         if (addr.types[0] == 'postal_code') {
                             mapa.codigoPostal = addr.long_name;
                         };
+
+                        $('#numeroUbi').val(mapa.numero);
+                        $('#calleUbi').val(mapa.calle);
+                        $('#cpUbi').val(mapa.codigoPostal);
 
                         //if (results[0].formatted_address != null) {
                         //    console.log(results[0].formatted_address);
@@ -257,50 +267,63 @@ mapa.nombreObjetoLongitud = 'longitud';
 
 //Objeto que recibe a direccion
 mapa.nombreObjetoDireccion = 'direccion';
+
 $(function () {
     //cargar mapa
-    if ($('#idUsuario').length) {
+    if (isNaN($('#idDireccion').val())) {
         mapa.soloCargar = true;
+        //Cargar marcadores cuando el mapa esta inicializado
+        google.maps.event.addDomListener(window, 'load', AgregarMarcadores);
     } else {
-        mapa.soloCargar = false;
-    };
+        if ($('#idDireccion').val() > 0) {
+            mapa.soloCargar = false;
+            mapa.latitud = $('#latitud').val();
+            mapa.longitud = $('#longitud').val();
+            //cargar Estado, Municipio, Localidad            
 
+            mapa.estado = $('#estadoDato').val();
+            mapa.ciudad = $('#municipioDato').val();
+            mapa.colonia = $('#localidadDato').val();
 
+            SeleccionarValor('slc_estados', mapa.estado);
+            obtenerCiudades();
+        } else {
+            mapa.soloCargar = false;
+        };
+    }
 })
-
-function AgregarMarcadores() {
-    var id, titulo, lat, lon;
-    $('[id^=direccion]').each(function (obj, val) {
-        id = ($(val).attr('id')).replace('direccion', '');
-        titulo = $('#titulo' + id).html();
-        lat = $('#latitud' + id).val();
-        lon = $('#longitud' + id).val();
-
-        var pos = new google.maps.LatLng(lat, lon);
-
-        var marker = new google.maps.Marker({
-            position: pos,
-            map: mapa.map,
-            draggable: false,
-            title: titulo,
-            animation: google.maps.Animation.DROP
-        });
-        marker.setIcon('img/marker.png');
-
-    });
-    mapa.latitud = lat;
-    mapa.longitud = lon;
-    mapa.zoom = 14;
-    mapa.PosicionarMapa();
-}
-
 
 //Inicializa mapa
 google.maps.event.addDomListener(window, 'load', mapa.initMap);
 
-//Cargar marcadores cuando el mapa esta inicializado
-google.maps.event.addDomListener(window, 'load', AgregarMarcadores);
 
+function AgregarMarcadores() {
+    var id, titulo, lat, lon;
+    if (mapa.soloCargar) {
+        $('[id^=direccion]').each(function (obj, val) {
+            id = ($(val).attr('id')).replace('direccion', '');
+            titulo = $('#titulo' + id).html();
+            lat = $('#latitud' + id).val();
+            lon = $('#longitud' + id).val();
+
+            var pos = new google.maps.LatLng(lat, lon);
+
+            var marker = new google.maps.Marker({
+                position: pos,
+                map: mapa.map,
+                draggable: false,
+                title: titulo,
+                animation: google.maps.Animation.DROP
+            });
+            marker.setIcon('img/marker.png');
+
+        });
+        mapa.latitud = lat;
+        mapa.longitud = lon;
+        mapa.zoom = 10;
+        mapa.PosicionarMapa();
+    };
+}
 
 function AsignarCiudad() {
     SeleccionarValor('slc_ciudades', mapa.ciudad);
@@ -308,10 +331,7 @@ function AsignarCiudad() {
 }
 
 function AsignarColonia() {
-    SeleccionarValor('slc_colonias', mapa.colonia);
-    $('#numeroUbi').val(mapa.numero);
-    $('#calleUbi').val(mapa.calle);
-    $('#cpUbi').val(mapa.codigoPostal);
+    SeleccionarValor('slc_colonias', mapa.colonia);  
 }
 
 function SeleccionarValor(control, valor) {

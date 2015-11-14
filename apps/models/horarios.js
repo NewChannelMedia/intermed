@@ -2,7 +2,7 @@
 
 module.exports = function (sequelize, DataTypes) {
     var Horarios = sequelize.define("Horarios", {
-        id: {
+        Id: {
             type: DataTypes.BIGINT,
             autoIncrement: true,
             primaryKey: true

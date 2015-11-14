@@ -8,7 +8,7 @@
                     <h4>{{title}}</h4>
                     <div class="row">
                         <div class="col-md-4">
-                            <input type="hidden" name="idUsuario" value="{{usuario_id}}" id="idUsuario" />
+                            <input type="hidden" name="idUsuario" value="{{usuario_id}}" id="idUsuario" />                            
                             {{#each direccion}}
                             <div id="direccion{{id}}">
                                 <h1 id="titulo{{id}}">{{nombre}}</h1>
@@ -17,6 +17,8 @@
                                 <p>{{calle}}&nbsp;{{numero}}</p>
                                 <p>{{colonia}}</p>
                                 <p>{{Municipio.municipio}}, {{Municipio.Estado.estado}}</p>
+                                <p>{{calle1}} y {{calle2}}</p>
+                                <a href="registrarubicacion?idDireccion={{id}}">Editar Ubicaci&oacute;n</a>
                             </div>
                             {{/each}}
                         </div>                        

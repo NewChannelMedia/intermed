@@ -1854,7 +1854,7 @@ function obtenerCiudades() {
         },
         success: function (data) {
             data.municipio.forEach(function (record) {
-                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.municipio_id + '">' + record.municipio + '</option>';
+                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.id + '">' + record.municipio + '</option>';
             });
             AsignarCiudad();
         },
@@ -1905,10 +1905,6 @@ function regUbicacion() {
             type: 'POST',
             success: function (data) {
                 document.getElementById("frmRegUbi").reset();
-                alert('registro guradado');
-                //data.forEach(function (record) {
-                //    addUbicacion(record);
-                //});
                 //Reiniciar mapa
                 mapa.GeolicalizacionUsuario();
             },
@@ -1918,7 +1914,6 @@ function regUbicacion() {
         });
     }
 }
-
 
 //Registrar Ubicacion
 function regHorarios() {
@@ -1935,33 +1930,12 @@ function regHorarios() {
             type: 'POST',
             success: function (data) {
                 document.getElementById("frmRegHorarios").reset();
-                alert('registro guradado');
             },
             error: function (jqXHR, textStatus, err) {
                 console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
             }
         });
     }
-}
-
-// función que actualiza médico.
-function actDoctor() {
-	$.ajax( {
-		url: '/actualizaMedico',
-		type: 'POST',
-		dataType: "json",
-		cache: false,
-		data: $( '#frmActMed' ).serialize(),
-		type: 'POST',
-		success: function( data ) {
-			// al guardar cambios oculta la forma
-			$( "#UpdateModal" ).modal( "hide" );
-			addMedico( data,0 );
-		},
-		error: function( jqXHR, textStatus, err ) {
-			console.error( 'AJAX ERROR: (registro 166) : ' + err );
-		}
-	} );
 }
 
 function regHorariosValid() {
