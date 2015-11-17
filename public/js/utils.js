@@ -1456,6 +1456,7 @@ function eliminarFavoritos( medico, paciente_id , notificacion_id) {
   if ( $( '#MedicoId' ).val() ) medicoID = $( '#MedicoId' ).val();
   if ( $( '#PacienteId' ).val() ) pacienteID = $( '#PacienteId' ).val();
   if ( !medico && paciente_id ) pacienteID = paciente_id;
+  else if ( medico && paciente_id ) medicoID = paciente_id;
   $.ajax( {
     async: false,
     url: ruta,
