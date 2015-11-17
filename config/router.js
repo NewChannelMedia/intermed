@@ -51,6 +51,7 @@ app.set( 'view engine', 'hbs' );
 app.use( '/', express.static( __dirname + '/../public' ) );
 app.use( '/perfil', express.static( __dirname + '/../public' ) );
 app.use( '/inbox', express.static( __dirname + '/../public' ) );
+app.use( '/notificaciones', express.static( __dirname + '/../public' ) );
 
 //<----------------------------------------------------------------------------->
 /**
@@ -1290,6 +1291,23 @@ var iniciar = function () {
         var object = JSON.parse( JSON.stringify(req.body));
         rutas.routeLife('interno','interno',hps);
         intermed.callController('medicos', 'actualizar', object, req, res);
+    });
+
+    app.get('/notificaciones/configuracion', function (req, res){
+      if (!req.session.passport.user){
+        res.redirect( '/' );
+      }else {
+        rutas.routeLife( 'plataforma', 'plataforma', hps );
+        intermed.callController('notificaciones','configuracion', req.body, req, res);
+      }
+    });
+
+    app.post('/notificaciones/configurarNotificacion', function(req, res){
+        if (!req.session.passport.user){
+          res.send({'success':false,'error':0});
+        }else {
+          intermed.callController('notificaciones','configurarNotificacion', req.body, req, res);
+        }
     });
 }
 

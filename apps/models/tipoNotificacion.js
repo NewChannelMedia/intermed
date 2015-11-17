@@ -13,6 +13,12 @@ module.exports = function ( sequelize, DataTypes ) {
     tipo: {
       type: DataTypes.STRING
     },
+    nombre: {
+      type: DataTypes.STRING
+    },
+    descripcion: {
+      type: DataTypes.STRING
+    },
     tipoUsuario: {
       type: DataTypes.STRING
     },
@@ -23,6 +29,9 @@ module.exports = function ( sequelize, DataTypes ) {
       type: DataTypes.INTEGER
     },
     mail: {
+      type: DataTypes.INTEGER
+    },
+    configurable: {
       type: DataTypes.INTEGER
     }
   }, {
