@@ -122,7 +122,6 @@ else {
     } );
 
     if ( $( '#registroCompleto' ) && $( '#registroCompleto' ).val() === "0" && $( '#inicio' ).val() === "1" ) {
-      actualizarSesion();
       if ( $( '#tipoUsuario' ).val() === "M" ) {
         informacionRegistroMedico();
       }
@@ -223,6 +222,7 @@ function informacionRegistroMedico() {
       }
       else continuar = false;
 
+      actualizarSesion();
       $( "#RegMedModal" ).modal( "show" );
 
     },
@@ -300,6 +300,10 @@ function actualizarSesion() {
         if ( data.session.registroCompleto === 1 ) {
           $( '#registroIncompleto' ).css( 'display', 'none' );
         }
+
+        console.log('INICIO: ' + data.session.inicio);
+        $('#inicio').val(data.session.inicio);
+
         if ( data.session.fotoPerfil ) fotoPerfil = data.session.fotoPerfil;
         $( '#fotoPerfilMini' ).attr( "src", fotoPerfil );
         $( '#fotoPerfil' ).attr( "src", fotoPerfil );
@@ -1930,6 +1934,7 @@ function regHorarios() {
             type: 'POST',
             success: function (data) {
                 document.getElementById("frmRegHorarios").reset();
+                alert('registro guradado');
             },
             error: function (jqXHR, textStatus, err) {
                 console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);

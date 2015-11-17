@@ -266,7 +266,6 @@ function guardarImagenDePerfil( object, usuario ) {
     usuario.update( {
       urlFotoPerfil: path
     } );
-    console.log( 'IMAGEN GUARDADA' );
   } );
 }
 
@@ -347,8 +346,6 @@ exports.actualizarSesion = function ( object, req, res ) {
 
 var generarSesion = function ( req, res, usuario_id, redirect ) {
   if ( !redirect ) redirect = false;
-  var actualizacion = false;
-  if ( req.session.passport.user ) actualizacion = true;
   req.session.passport = {};
   models.Usuario.findOne( {
       where: {
@@ -383,11 +380,11 @@ var generarSesion = function ( req, res, usuario_id, redirect ) {
           tipoUsuario: usuario.tipoUsuario,
           tiempo: getDateTime( true )
         } );
-        if ( actualizacion ) {
-          req.session.passport.user.inicio = 0;
+        if ( redirect === true) {
+          req.session.passport.user.inicio = 1;
         }
         else {
-          req.session.passport.user.inicio = 1;
+          req.session.passport.user.inicio = 0;
         }
         usuario.update( {
           logueado: 1
@@ -445,10 +442,12 @@ function cargarExtraInfo( usuario, redirect, req, res ) {
           if ( redirect ) {
             res.redirect( '/perfil/' + req.session.passport.user.usuarioUrl );
           }
-          else res.send( {
-            'result': 'success',
-            'session': req.session.passport.user
-          } );
+          else {
+            res.send( {
+              'result': 'success',
+              'session': req.session.passport.user
+            } );
+          }
         }
       } );
   }
@@ -469,10 +468,12 @@ function obtenerDatosLocalidad( localidad_id, redirect, req, res ) {
       if ( redirect ) {
         res.redirect( '/perfil/'  + req.session.passport.user.usuarioUrl );
       }
-      else res.send( {
+      else {
+        res.send( {
         'result': 'success',
         'session': req.session.passport.user
       } );
+    }
     } )
 }
 
@@ -845,9 +846,6 @@ function generarRelacionInversa( usuario, tipoUsuario, medicopaciente_id, req, r
 
 var download = function ( uri, filename, callback ) {
   request.head( uri, function ( err, res, body ) {
-    console.log( 'content-type:', res.headers[ 'content-type' ] );
-    console.log( 'content-length:', res.headers[ 'content-length' ] );
-
     request( uri ).pipe( fs.createWriteStream( filename ) ).on( 'close', callback );
   } );
 };
@@ -857,9 +855,7 @@ var borrarInvitaciones = function ( correo ) {
     where: {
       correo: correo
     }
-  } ).then( function ( result ) {
-    console.log( 'Invitaciones eliminadas: ' + JSON.stringify( result ) );
-  } )
+  } );
 }
 
 
