@@ -50,6 +50,7 @@ exports.obtieneCiudades = function (object, req, res) {
 };
 
 
+
 exports.encontrarPorCP = function (object, req, res) {
     models.Localidad.findOne({
         where: {
@@ -62,9 +63,7 @@ exports.encontrarPorCP = function (object, req, res) {
         });
     });
 };
-
 exports.obtieneLocalidades = function (object, req, res) {
-
     models.Localidad.findAll({
         where: {
             estado_id: object.estado_id,

@@ -1930,7 +1930,7 @@ function obtenerColoniasModal(tipo) {
             'municipio_id': idCiudad //document.getElementById('slc_ciudades').value
         },
         success: function(data) {
-            data.localidades.forEach(function(record) {
+            data.localidades.forEach(function (record) {
 							colonias.append('<option value="' + record.id + '">' +  record.localidad + '</option>');
                 //document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' +  record.localidad + '</option>';
             });
@@ -2046,7 +2046,7 @@ function obtenerColonias() {
             'municipio_id': document.getElementById('slc_ciudades').value
         },
         success: function (data) {
-            data.municipios.forEach(function (record) {
+            data.localidades.forEach(function (record) {
                 document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
             });
             AsignarColonia();
