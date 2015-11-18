@@ -41,13 +41,14 @@ exports.obtieneCiudades = function (object, req, res) {
             estado_id: object.estado_id
         },
         order: ['municipio'],
-        attributes: ['municipio_id', 'municipio']
+        attributes: ['id', 'municipio']
     }).then(function (ciudades) {
         res.send({
             'municipio': ciudades
         });
     });
 };
+
 
 exports.encontrarPorCP = function (object, req, res) {
     models.Localidad.findOne({
@@ -88,42 +89,164 @@ exports.ubicacion = function (objects, req, res) {
     });
 };
 
-exports.registrarUbicacion = function (objects, req, res) {
-    console.log(objects.slc_colonias);
-    console.log(objects.slc_ciudades);
-    models.Direccion.create({
-        ubicacionGM: 'object.ubicacionGM',
-        calle: objects.calleUbi,
-        numero: objects.numeroUbi,
-        calle1: objects.calle1Ubi,
-        calle2: objects.calle2Ubi,
-        principal: 0,
-        nombre: objects.nombreUbi,
-        horarioInicio: 'object.horarioInicio',
-        horarioFin: 'object.horarioFin',
-        dias: 'objects.dias',
-        usuario_id: objects.usuario_id,
-        // institucion_id: '0',
-        localidad_id: objects.slc_colonias,
-        municipio_id: objects.slc_ciudades,
-        latitud: objects.latitud,
-        longitud: objects.longitud
-    }).then(function (datos) {
-        res.status(200).json({
-            ok: true
-        });
+exports.nuevaUbicacion = function (objects, req, res) {
+    var estados;
 
-    }).catch(function (err) {
-        res.status(500).json({
-            error: err
-        });
+    console.log('entro');
+
+    models.Estado.findAll().then(function (datos) {
+        estados = datos;
     });
+
+    models.Direccion.findOne({
+        where: {
+            id: req.query.idDireccion
+        },
+        include: [
+         {
+             model: models.Municipio,
+             include: [{
+                 model: models.Estado
+             }]
+         },
+         {
+             model: models.Localidad
+         }
+        ]
+    }).then(function (datos) {
+        res.render('ubicacion', {
+            title: 'Editar Ubicacion',
+            estados: estados,
+            direccion: datos,
+            usuario_id: 1
+        })
+    });
+
+
+};
+
+exports.registrarUbicacion = function (objects, req, res) {
+    if (objects.idDireccion == '') {
+        models.Direccion.create({
+            ubicacionGM: 'object.ubicacionGM',
+            calle: objects.calleUbi,
+            numero: objects.numeroUbi,
+            calle1: objects.calle1Ubi,
+            calle2: objects.calle2Ubi,
+            principal: 0,
+            nombre: objects.nombreUbi,
+            horarioInicio: 'object.horarioInicio',
+            horarioFin: 'object.horarioFin',
+            dias: 'objects.dias',
+            usuario_id: objects.usuario_id,
+            // institucion_id: '0',
+            localidad_id: objects.slc_colonias,
+            municipio_id: objects.slc_ciudades,
+            latitud: objects.latitud,
+            longitud: objects.longitud
+        }).then(function (datos) {
+            res.status(200).json({
+                ok: true
+            });
+
+        }).catch(function (err) {
+            res.status(500).json({
+                error: err
+            });
+        });
+    } else {
+        models.Direccion.update({
+            ubicacionGM: 'object.ubicacionGM',
+            calle: objects.calleUbi,
+            numero: objects.numeroUbi,
+            calle1: objects.calle1Ubi,
+            calle2: objects.calle2Ubi,
+            principal: 0,
+            nombre: objects.nombreUbi,
+            horarioInicio: 'object.horarioInicio',
+            horarioFin: 'object.horarioFin',
+            dias: 'objects.dias',
+            usuario_id: objects.usuario_id,
+            // institucion_id: '0',
+            localidad_id: objects.slc_colonias,
+            municipio_id: objects.slc_ciudades,
+            latitud: objects.latitud,
+            longitud: objects.longitud
+        }, {
+            where: {
+                id: objects.idDireccion
+            }
+        }).then(function (datos) {
+            res.status(200).json({
+                ok: true
+            });
+
+        }).catch(function (err) {
+            res.status(500).json({
+                error: err
+            });
+        });
+    }
 };
 
 exports.horarios = function (objects, req, res) {
-    res.render('ubicacion', {
-        title: 'Horarios',
-        idDireccion: 39
+    var id = 48;
+    var resultado = [];
+    models.Horarios.findAll({
+        where: {
+            direccion_id: id
+        },
+        attributes: ['dia', 'horaInicio', 'horaFin'],
+    }).then(function (datos) {
+
+        var horaInicio;
+        var horaFin;
+        //se usa hardcode en la fecha, la fecha debe de ser lunes
+        for (i = 0; i <= datos.length - 1; i++) {
+            switch (datos[i].dataValues.dia) {
+                case 0: //domingo
+                    horaInicio = '2015-11-08 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-08 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 1: //lunes
+                    horaInicio = '2015-11-02 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-02 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 2: //martes
+                    horaInicio = '2015-11-03 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-03 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 3: //miercoles
+                    horaInicio = '2015-11-04 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-04 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 4: //jueves
+                    horaInicio = '2015-11-05 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-05 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 5: //viernes
+                    horaInicio = '2015-11-06 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-06 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 6: //sabado
+                    horaInicio = '2015-11-07 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-07 ' + datos[i].dataValues.horaFin;
+                    break;
+            };
+
+            var horario = {
+                title: datos[i].dataValues.horaInicio + ' - ' + datos[i].dataValues.horaFin,
+                start: horaInicio,
+                end: horaFin
+            };
+            resultado.push(horario);
+        };
+
+        res.render('horarios', {
+            title: 'Horarios',
+            direccion_id: 48,
+            horarios: JSON.stringify(resultado)
+        });
     });
 };
 
@@ -131,9 +254,10 @@ exports.registrarHorarios = function (objects, req, res) {
     //eliminar registros anteriores
     var continuarRegistro = true;
     var mensajeError;
+
     models.Horarios.destroy({
         where: {
-            idDireccion: objects.idDireccion
+            direccion_id: 48
         }
     }).then(function () {
         continuarRegistro = true;
@@ -143,15 +267,12 @@ exports.registrarHorarios = function (objects, req, res) {
     });
 
     if (continuarRegistro) {
-        console.log(objects);
-
         models.Horarios.bulkCreate(JSON.parse(objects.horariosUbi)).then(function () {
             continuarRegistro = true;
         }).catch(function (err) {
             continuarRegistro = false;
             mensajeError = err;
         });
-
         //
         if (continuarRegistro) {
             res.status(200).json({
@@ -165,22 +286,26 @@ exports.registrarHorarios = function (objects, req, res) {
     };
 };
 
+
 exports.ubicacionObtener = function (objects, req, res) {
     models.Direccion.findAll({
         where: {
-            usuario_id: 6
+            usuario_id: 1
         },
+        attributes: ['id', 'nombre', 'latitud', 'longitud', 'calle', 'numero', 'calle1', 'calle2'],
         include: [
           {
               model: models.Municipio,
+              attributes: ['municipio'],
               include: [{
-                  model: models.Estado
-              }]
+                  model: models.Estado,
+                  attributes: ['estado'],
+              }],
           }]
     }).then(function (datos) {
         res.render('ubicacionobtener', {
             title: 'Direcciones',
-            usuario_id:1,
+            usuario_id: 1,
             direccion: datos
         });
     }).catch(function (err) {
@@ -190,63 +315,31 @@ exports.ubicacionObtener = function (objects, req, res) {
     });
 };
 
-exports.agregaDireccion = function(object, req, res) {
-    models.Direccion.create({
-      calle: object.calle,
-      nombre: object.nombre,
-      numero: object.numero,
-      calle1: object.calle1,
-      calle2: object.calle2,
-      localidad_id: object.colonia,
-      municipio_id: object.ciudad,
-      principal: 0,
-      longitud: object.longitud,
-      latitud: object.latitud,
-    usuario_id: id
-  }).then(function(medico) {
-        res.status(200).json({ok: true});
-  }).catch(function(err) {
-        res.status(500).json({error: err});
-  });
-}
+exports.horariosObtener = function (objects, req, res) {
+    models.Horarios.findOne({
+        where: {
+            usuario_id: 1
+        },
+        attributes: ['id', 'nombre', 'latitud', 'longitud', 'calle', 'numero'],
+        include: [
+          {
+              model: models.Municipio,
+              attributes: ['municipio'],
+              include: [{
+                  model: models.Estado,
+                  attributes: ['estado'],
+              }],
+          }]
+    }).then(function (datos) {
+        res.render('ubicacionobtener', {
+            title: 'Direcciones',
+            usuario_id: 1,
+            direccion: datos
+        });
+    }).catch(function (err) {
+        res.status(500).json({
+            error: err
+        })
+    });
+};
 
-exports.actualizaDireccion = function(object, req, res) {
-    models.Direccion.update({
-      calle: object.calle,
-      numero: object.numero,
-      nombre: object.nombre,
-      calle1: object.calle1,
-      calle2: object.calle2,
-      localidad_id: object.colonia,
-      municipio_id: object.ciudad,
-      principal: object.principal,
-      longitud: object.longitud,
-      latitud: object.latitud,
-      usuario_id: id
-    },{ where : {id : object.id}
-  }).then(function(medico) {
-        res.status(200).json({ok: true});
-  }).catch(function(err) {
-        res.status(500).json({error: err});
-  });
-}
-
-exports.borraDireccion = function(object, req, res) {
-    models.Direccion.destroy({
-      where : {id : object.id}
-  }).then(function(medico) {
-        res.status(200).json({ok: true});
-  }).catch(function(err) {
-        res.status(500).json({error: err});
-  });
-}
-
-exports.obtieneUbicacion = function(object, req, res) {
-  models.Direccion.findOne({
-      where : {id : object.id}
-  }).then(function(datos) {
-        res.send(datos);
-  }).catch(function(err) {
-        res.status(500).json({error: err});
-  });
-}
