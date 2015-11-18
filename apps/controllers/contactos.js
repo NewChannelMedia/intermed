@@ -132,6 +132,14 @@ module.exports = {
                 medico_id: req.session.passport.user.Medico_id
               }
             } );
+
+            models.Notificacion.destroy( {
+              where: {
+                tipoNotificacion_id: 4,
+                usuario_id: usuario_id,
+                data: req.session.passport.user.Medico_id
+              }
+            } );
           } );
         }
         condiciones = {
@@ -154,6 +162,14 @@ module.exports = {
               where: {
                 usuario_id: usuario_id,
                 paciente_id: req.session.passport.user.Paciente_id
+              }
+            } );
+
+            models.Notificacion.destroy( {
+              where: {
+                tipoNotificacion_id: 1,
+                usuario_id: usuario_id,
+                data: req.session.passport.user.Paciente_id
               }
             } );
           } );

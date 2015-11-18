@@ -1578,7 +1578,6 @@ function agregarFavoritos( medico ) {
 }
 
 function eliminarFavoritos( medico, paciente_id , notificacion_id) {
-  console.log('ENTRO');
   var ruta = '/eliminarMedFav';
   var medicoID = '',
     pacienteID = '';

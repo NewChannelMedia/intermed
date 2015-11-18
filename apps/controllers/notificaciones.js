@@ -50,7 +50,7 @@ exports.solicitudAmistad = function ( req ) {
       visto: 0,
       tipoNotificacion_id: numNot
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
     order: 'inicio DESC'
   } ).then( function ( result ) {
     var restante = 8 - result.length;
@@ -61,7 +61,7 @@ exports.solicitudAmistad = function ( req ) {
         visto: 1,
         tipoNotificacion_id: numNot
       },
-      attributes: [ 'id', 'data', 'inicio', 'visto' ],
+      attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
       limit: restante,
       order: 'inicio DESC'
     } ).then( function ( resultVisto ) {
@@ -134,7 +134,7 @@ exports.solicitudAmistadAceptada = function ( req ) {
       visto: 0,
       tipoNotificacion_id: numNot
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
     order: 'inicio DESC'
   } ).then( function ( result ) {
     var restante = 8 - result.length;
@@ -145,7 +145,7 @@ exports.solicitudAmistadAceptada = function ( req ) {
         visto: 1,
         tipoNotificacion_id: numNot
       },
-      attributes: [ 'id', 'data', 'inicio', 'visto' ],
+      attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
       limit: restante,
       order: 'inicio DESC'
     } ).then( function ( resultVisto ) {
@@ -220,7 +220,7 @@ exports.solicitudesAceptadas = function ( req ) {
       visto: 0,
       tipoNotificacion_id: numNot
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
     order: 'inicio DESC'
   } ).then( function ( result ) {
     var restante = 8 - result.length;
@@ -231,7 +231,7 @@ exports.solicitudesAceptadas = function ( req ) {
         visto: 1,
         tipoNotificacion_id: numNot
       },
-      attributes: [ 'id', 'data', 'inicio', 'visto' ],
+      attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
       limit: restante,
       order: 'inicio DESC'
     } ).then( function ( resultVisto ) {
@@ -307,7 +307,7 @@ exports.solicitudRechazada = function ( req ) {
       visto: 0,
       tipoNotificacion_id: numNot
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
     order: 'inicio DESC'
   } ).then( function ( result ) {
     var restante = 8 - result.length;
@@ -318,7 +318,7 @@ exports.solicitudRechazada = function ( req ) {
         visto: 1,
         tipoNotificacion_id: numNot
       },
-      attributes: [ 'id', 'data', 'inicio', 'visto' ],
+      attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
       limit: restante,
       order: 'inicio DESC'
     } ).then( function ( resultVisto ) {
@@ -387,7 +387,7 @@ exports.agregadoMedicoFavorito = function ( req ) {
         visto: 0,
         tipoNotificacion_id: 7
       },
-      attributes: [ 'id', 'data', 'inicio', 'visto' ],
+      attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
       order: 'inicio DESC'
     } ).then( function ( result ) {
       var restante = 8 - result.length;
@@ -398,7 +398,7 @@ exports.agregadoMedicoFavorito = function ( req ) {
           visto: 1,
           tipoNotificacion_id: 7
         },
-        attributes: [ 'id', 'data', 'inicio', 'visto' ],
+        attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
         limit: restante,
         order: 'inicio DESC'
       } ).then( function ( resultVisto ) {
@@ -447,7 +447,7 @@ exports.inbox = function ( req ) {
       visto: 0,
       tipoNotificacion_id: numNot
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
     group: ['data'],
     order: 'inicio DESC'
   } ).then( function ( result ) {
@@ -459,7 +459,7 @@ exports.inbox = function ( req ) {
             where: {
               id: record.data
             },
-            attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+            attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
             include: [ {
                 model: models.DatosGenerales,
                 attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
@@ -720,7 +720,7 @@ exports.pedirRecomendacion = function( req ){
       visto: 0,
       tipoNotificacion_id: 14
     },
-    attributes:['id','usuario_id','data','inicio','visto'],
+    attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
     order: 'inicio DESC'
   }).then(function( result ){
     var restante = 8 -result.length;
@@ -731,7 +731,7 @@ exports.pedirRecomendacion = function( req ){
         visto: 1,
         tipoNotificacion_id: 14
       },
-      attributes:['id','usuario_id','data','inicio','visto'],
+      attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
       limit: restante,
       order: 'inicio DESC'
     }).then(function( resultVisto ){
@@ -766,7 +766,7 @@ exports.tuRecomendacion = function( req ){
      visto: 0,
      tipoNotificacion_id: 15
    },
-   attributes:['id','usuario_id','data','inicio','visto'],
+   attributes: [ 'id','usuario_id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
    order: 'inicio DESC'
   }).then(function( result ){
     var restante = 8 -result.length;
@@ -777,7 +777,7 @@ exports.tuRecomendacion = function( req ){
         visto: 1,
         tipoNotificacion_id: 15
       },
-      attributes:['id','usuario_id','data','inicio','visto'],
+      attributes: [ 'id', 'usuario_id','tipoNotificacion_id','data', 'inicio', 'visto' ],
       limit: restante,
       order: 'inicio DESC'
     }).then(function( resultVisto ){
@@ -836,7 +836,7 @@ exports.medicoRecomendado = function(req){
       visto: 0,
       tipoNotificacion_id: 12
     },
-    attributes: [ 'id', 'data', 'inicio', 'visto' ],
+    attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
     order: 'inicio DESC'
   } ).then( function ( result ) {
     var restante = 8 - result.length;
@@ -847,7 +847,7 @@ exports.medicoRecomendado = function(req){
         visto: 1,
         tipoNotificacion_id: 12
       },
-      attributes: [ 'id','usuario_id', 'data', 'inicio', 'visto' ],
+      attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
       limit: restante,
       order: 'inicio DESC'
     } ).then( function ( resultVisto ) {
@@ -900,7 +900,7 @@ exports.doctorRecomendado = function( req ){
       visto: 0,
       tipoNotificacion_id: 13
     },
-    attributes: [ 'id','usuario_id', 'data', 'inicio', 'visto' ],
+    attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
     order: 'inicio DESC'
   }).then( function(result){
     var restante = 8 - result.length;
@@ -911,7 +911,7 @@ exports.doctorRecomendado = function( req ){
         visto: 1,
         tipoNotificacion_id: 13
       },
-      attributes: [ 'id','usuario_id', 'data', 'inicio', 'visto' ],
+      attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
       limit: restante,
       order: 'inicio DESC'
     }).then(function(resultVisto){
