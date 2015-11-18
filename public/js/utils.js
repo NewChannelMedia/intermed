@@ -1672,7 +1672,7 @@ function cargarFavCol( usuario ) {
               "<a class='contList-profileEsp' href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'> " + data[ p ].Medico.Usuario.Especialidad + "</a>" +
               "</div>" +
               "<div class='media-right contList-profileAction'>" +
-              "<a class='contList-profileActionLink Flama-bold s15'>Recomendar|</a>" +
+              "<a id ='"+data[ p ].Medico.id+"' href ='#' data-target='#recomendar' data-toggle='modal' class='recomendar contList-profileActionLink Flama-bold s15'>Recomendar</a>" +
               "<a id='"+data[ p ].Medico.id+"' href='#' data-target='#pedir' data-toggle='modal' class='Pedir contList-profileActionLink Flama-bold s15'><smal>Pedir Recomendacion</smal></a>"+
               "</div>" +
               "</li>"
