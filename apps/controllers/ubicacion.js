@@ -300,11 +300,8 @@ exports.ubicacionObtener = function (objects, req, res) {
                   model: models.Estado,
                   attributes: ['estado'],
               }],
-          },
-        {
-            model: model.Localidad,
-            attributes: ['localidad']
-        }]
+          }
+        ]
     }).then(function (datos) {
         res.render('ubicacionobtener', {
             title: 'Direcciones',
