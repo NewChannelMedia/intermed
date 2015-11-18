@@ -517,50 +517,6 @@ function regMedValid() {
 	return true;
 }
 
-function obtenerCiudades() {
-  document.getElementById( 'slc_ciudades' ).innerHTML = '<option value="">Ciudad</option>';
-  $.ajax( {
-    url: '/obtenerCiudades',
-    type: 'POST',
-    dataType: "json",
-    cache: false,
-    data: {
-      'estado_id': document.getElementById( 'slc_estados' ).value
-    },
-    success: function ( data ) {
-      data.ciudades.forEach( function ( record ) {
-        document.getElementById( 'slc_ciudades' ).innerHTML += '<option value="' + record.id + '">' + record.ciudad + '</option>';
-      } );
-    },
-    error: function ( jqXHR, textStatus, err ) {
-      console.error( 'AJAX ERROR: ' + err );
-    }
-  } );
-}
-
-function obtenerColonias() {
-  document.getElementById( 'slc_colonias' ).innerHTML = '<option value="">Colonia</option>';
-  $.ajax( {
-    url: '/obtenerLocalidades',
-    type: 'POST',
-    dataType: "json",
-    cache: false,
-    data: {
-      'estado_id': document.getElementById( 'slc_estados' ).value,
-      'ciudad_id': document.getElementById( 'slc_ciudades' ).value
-    },
-    success: function ( data ) {
-      data.localidades.forEach( function ( record ) {
-        document.getElementById( 'slc_colonias' ).innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
-      } );
-    },
-    error: function ( jqXHR, textStatus, err ) {
-      console.error( 'AJAX ERROR: ' + err );
-    }
-  } );
-}
-
-
 function obtenerCP() {
   document.getElementById( 'nmb_cp' ).value = '';
   $.ajax( {
@@ -1837,113 +1793,6 @@ function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
   } );
 }
 
-
-function obtenerCiudades() {
-    if ($('#slc_ciudades option').length == 1) {
-        $('#slc_ciudades option').remove();
-    };
-
-    document.getElementById('slc_ciudades').innerHTML = '<option value="">Ciudad</option>';
-    $.ajax({
-        url: '/obtenerCiudades',
-        type: 'POST',
-        dataType: "json",
-        cache: false,
-        data: {
-            'estado_id': document.getElementById('slc_estados').value
-        },
-        success: function (data) {
-            data.municipio.forEach(function (record) {
-                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.municipio_id + '">' + record.municipio + '</option>';
-            });
-            AsignarCiudad();
-        },
-        error: function (jqXHR, textStatus, err) {
-            console.error('AJAX ERROR: ' + err);
-            ciudadesCargando = false;
-        }
-    });
-}
-
-function obtenerColonias() {
-    if ($('#slc_colonias option').length != 1) {
-        $('#slc_colonias option').remove();
-    };
-
-    document.getElementById('slc_colonias').innerHTML = '<option value="">Colonia</option>';
-    $.ajax({
-        url: '/obtenerLocalidades',
-        type: 'POST',
-        dataType: "json",
-        cache: false,
-        data: {
-            'estado_id': document.getElementById('slc_estados').value,
-            'municipio_id': document.getElementById('slc_ciudades').value
-        },
-        success: function (data) {
-            data.municipios.forEach(function (record) {
-                document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
-            });
-            AsignarColonia();
-        },
-        error: function (jqXHR, textStatus, err) {
-            console.error('AJAX ERROR: ' + err);
-        }
-    });
-}
-
-
-//Registrar Ubicacion
-function regUbicacion() {
-    if (regUbiValid() == true) {
-        $.ajax({
-            url: '/registrarubicacion',
-            type: 'POST',
-            dataType: "json",
-            cache: false,
-            data: $('#frmRegUbi').serialize(),
-            type: 'POST',
-            success: function (data) {
-                document.getElementById("frmRegUbi").reset();
-                alert('registro guradado');
-                //data.forEach(function (record) {
-                //    addUbicacion(record);
-                //});
-                //Reiniciar mapa
-                mapa.GeolicalizacionUsuario();
-            },
-            error: function (jqXHR, textStatus, err) {
-                console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
-            }
-        });
-    }
-}
-
-
-//Registrar Ubicacion
-function regHorarios() {
-    if (regHorariosValid() == true) {
-        //agregar horarios al control
-        $('#horariosUbi').val(JSON.stringify(obtenerHorarios()));
-
-        $.ajax({
-            url: '/registrarhorarios',
-            type: 'POST',
-            dataType: "json",
-            cache: false,
-            data: $('#frmRegHorarios').serialize(),
-            type: 'POST',
-            success: function (data) {
-                document.getElementById("frmRegHorarios").reset();
-                alert('registro guradado');
-            },
-            error: function (jqXHR, textStatus, err) {
-                console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
-            }
-        });
-    }
-}
-
 // función que actualiza médico.
 function actDoctor() {
 	$.ajax( {
@@ -1964,68 +1813,6 @@ function actDoctor() {
 	} );
 }
 
-function regHorariosValid() {
-    return true;
-}
-function regUbiValid() {
-    var blnValido = true;
-    //if ($('#nombreUbi').val().length == 0) {
-    //    $('#nombreUbi').parent().addClass("has-error");
-    //    blnValido = false;
-    //} else {
-    //    $('#nombreUbi').parent().removeClass("has-error");
-    //};
-
-    //if ($('#slc_estados option:selected').text() == 'Estado') {
-    //    $('#slc_estados').parent().addClass('has-error');
-    //    blnValido = false;
-    //} else {
-    //    $('#slc_estados').parent().removeClass('has-error');
-    //};
-
-    //if ($('#slc_ciudades option:selected').text() == 'Ciudad') {
-    //    $('#slc_ciudades').parent().addClass('has-error');
-    //    blnValido = false;
-    //} else {
-    //    $('#slc_ciudades').parent().removeClass('has-error');
-    //};
-
-
-    //if ($('#slc_colonias option:selected').text() == 'Colonia') {
-    //    $('#slc_colonias').parent().addClass('has-error');
-    //    blnValido = false;
-    //} else {
-    //    $('#slc_colonias').parent().removeClass('has-error');
-    //};
-
-    //if ($('#cpUbi').val().length == 0) {
-    //    $('#cpUbi').parent().addClass('has-error');
-    //    blnValido = false;
-    //} else {
-    //    $('#cpUbi').parent().removeClass('has-error');
-    //};
-
-    //if ($('#calleUbi').val().length == 0) {
-    //    $('#calleUbi').parent().addClass('has-error');
-    //    blnValido = false;
-    //} else {
-    //    $('#calleUbi').parent().removeClass('has-error');
-    //};
-
-    //if ($('#numeroUbi').val().length == 0) {
-    //    $('#numeroUbi').parent().addClass('has-error');
-    //    blnValido = false;
-    //} else {
-    //    $('#numeroUbi').parent().removeClass('has-error');
-    //};
-
-
-    //if (objhorarios.length == 0) {
-    //    blnValido = false;
-    //};
-
-    return blnValido;
-}
 // muestra la ventana para editar al médico
 function muestraMedico( id ) {
 	$( "#UpdateModal .modal-body").load("edicionMedico/" + id, function() {
@@ -2214,4 +2001,114 @@ if ( location.pathname === '/' ) {
 			} );
 		} ).change();
 	} );
+}
+
+function obtenerCiudades() {
+    if ($('#slc_ciudades option').length == 1) {
+        $('#slc_ciudades option').remove();
+    };
+
+    document.getElementById('slc_ciudades').innerHTML = '<option value="">Ciudad</option>';
+    $.ajax({
+        url: '/obtenerCiudades',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: {
+            'estado_id': document.getElementById('slc_estados').value
+        },
+        success: function (data) {
+            data.municipio.forEach(function (record) {
+                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.id + '">' + record.municipio + '</option>';
+            });
+            AsignarCiudad();
+        },
+        error: function (jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+            ciudadesCargando = false;
+        }
+    });
+}
+
+function obtenerColonias() {
+    if ($('#slc_colonias option').length != 1) {
+        $('#slc_colonias option').remove();
+    };
+
+    document.getElementById('slc_colonias').innerHTML = '<option value="">Colonia</option>';
+    $.ajax({
+        url: '/obtenerLocalidades',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: {
+            'estado_id': document.getElementById('slc_estados').value,
+            'municipio_id': document.getElementById('slc_ciudades').value
+        },
+        success: function (data) {
+            data.municipios.forEach(function (record) {
+                document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
+            });
+            AsignarColonia();
+        },
+        error: function (jqXHR, textStatus, err) {
+            console.error('AJAX ERROR: ' + err);
+        }
+    });
+}
+
+
+//Registrar Ubicacion
+function regUbicacion() {
+    if (regUbiValid() == true) {
+        $.ajax({
+            url: '/registrarubicacion',
+            type: 'POST',
+            dataType: "json",
+            cache: false,
+            data: $('#frmRegUbi').serialize(),
+            type: 'POST',
+            success: function (data) {
+                document.getElementById("frmRegUbi").reset();
+                //Reiniciar mapa
+                mapa.GeolicalizacionUsuario();
+            },
+            error: function (jqXHR, textStatus, err) {
+                console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
+            }
+        });
+    }
+}
+
+//Registrar Horarios
+function regHorarios() {
+    if (regHorariosValid() == true) {
+        //agregar horarios al control         
+        $('#horariosUbi').val(JSON.stringify(obtenerHorarios()));
+
+        $.ajax({
+            url: '/registrarhorarios',
+            type: 'POST',
+            dataType: "json",
+            cache: false,
+            data: $('#frmRegHorarios').serialize(),
+            type: 'POST',
+            success: function (data) {
+                document.getElementById("frmRegHorarios").reset();
+            },
+            error: function (jqXHR, textStatus, err) {
+                console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
+            }
+        });
+    }
+}
+
+function regHorariosValid() {
+    return true;
+}
+
+function regUbiValid() {
+    var blnValido = true;   
+
+    return blnValido;
 }
