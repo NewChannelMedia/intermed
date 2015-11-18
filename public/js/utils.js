@@ -4,7 +4,6 @@
  */
 var regTotalDoc = 0;
 var base_url = 'http://localhost:3000/';
-
 if ( location.pathname === '/registro' ) {
   $( document ).ready( getAllDoctors() );
 }
@@ -851,6 +850,136 @@ function cargarInfoSesion() {
     }
   } );
 }
+//<- inserciones con AJAX de diferentes envios a la db desde un click de un btn
+$(document).ready(function(){
+  $( "#agregaDatosContacto" ).click(function(){
+    var nombre = $( "#agregaNContacto" ).val();
+    var telefonoContacto = $( "#agregaNtel" ).val();
+    if( nombre != "" && telefonoContacto != "" ){
+      $.post('/contactoEmergengia',{nombre:nombre,tel:telefonoContacto},function(){});
+    }else{
+      alert("Favor de llenar ambos campos.");
+    }
+  });
+  $( "#ingresaPeso" ).click(function(){
+    var peso = $( "#inputIngresaPe" ).val();
+    var altura = $( "#ingresaAlt" ).val();
+    var tipoS = $( "#ingresaSa" ).val();
+    var genero = $( "#ingresaGene" ).val();
+    if( peso != "" && altura != "" && tipoS != "" && genero != "" ){
+      $.post('/biometricFull',{
+        peso:peso,
+        altura:altura,
+        tipoS:tipoS,
+        genero:genero
+      },function(){});
+    }else{
+      alert("Debe de llenar todo los campos de biometricos");
+    }
+  });
+  $( "#agregaLada" ).click(function(){
+    if( $( "#agregaAddLada" ).val() == "" && $( "#addFon" ).val() == "" ){
+      alert("Debe de llenar los dos campos antes de presionar el boton");
+    }else{
+      var numero = $( "#addFon" ).val();
+      var lada = $( "#agregaAddLada" ).val();
+      $.post("/insertarLT",{numero:numero,lada:lada},function(e){
+        if(e != 'ok' ){
+          alert("Datos guardados correctamente");
+        }else{
+          alert("lada y telefono repetido revise de nuevo por favor");
+        }
+      });
+    }
+  });
+});
+//<- fin inserciones con ajax ->
+//<-- autocompletar -->
+  //cuando den click en el boton de agregar padecimiento debe de checar si existe y mostrar
+  // la opcion si es nuevo insertarlo
+  $(document).ready(function(){
+    $( '#ingresaPadecimiento' ).autocomplete({
+      minLength:0,
+      source:function( request, response ){
+        $.post('/autocompletar',{valor: request.term},function(pos){
+          var total = [];
+          $.each(pos,function(index, valor){
+            total.push({
+              'name': valor.padecimiento,
+              'value': valor.id,
+              'label': valor.padecimiento
+            });
+          });
+           response(total);
+        });
+      },
+      focus:function(event, ui){
+        $("#ingresaPadecimiento").val(ui.item.label);
+        return false;
+      },
+      select:function(event, ui){
+        $( '#project-id' ).val(ui.item.value);
+        $("#ingresaPadecimiento").html('');
+        return false;
+      }
+    }).autocomplete('instance')._renderItem = function( ul, item){
+      return $( '<li>' ).append('<p>'+item.label+'</p>').appendTo(ul);
+    };
+    $("#ingresaAlergia").autocomplete({
+      minLength:0,
+      source:function( request, response ){
+        $.post('/autocompletarA',{valor: request.term},function(pos){
+          var total = [];
+          $.each(pos,function(index, valor){
+            total.push({
+              'name': valor.alergia,
+              'value': valor.id,
+              'label': valor.alergia
+            });
+          });
+           response(total);
+        });
+      },
+      focus:function(event, ui){
+        $("#ingresaAlergia").val(ui.item.label);
+        return false;
+      },
+      select:function(event, ui){
+        $( '#id-project' ).val(ui.item.value);
+        return false;
+      }
+    }).autocomplete('instance')._renderItem = function( ul, item){
+      return $( '<li>' ).append('<p>'+item.label+'</p>').appendTo(ul);
+    };
+    $( '#addPadecimiento' ).click(function(){
+      var id_campo = $( '#project-id' ).val();
+      var valorCampo = $( '#ingresaPadecimiento' ).val();
+      if(valorCampo != "" ){
+        $.post('/insertarPad',{valor:id_campo,valorCampo:valorCampo},function(e){
+          console.log(e);
+          if( e != 'ok' ){
+            alert("Padecimiento repetido inserte uno nuevo");
+          }else{
+            alert("Padecimiento guardado");
+          }
+        });
+      }
+    });
+    $( "#addAlergia" ).click(function(){
+      var id_campo = $( "#id-project" ).val();
+      var valorCampo = $( "#ingresaAlergia" ).val();
+      if( valorCampo != "" ){
+        $.post('/insertAler',{id_campo:id_campo,valorCampo:valorCampo},function(e){
+          if( e == "ok" ){
+            alert("Alergia guardada");
+          }else{
+            alert("Ud. Ya ha ingresado esta alergia ingrese una nueva por favor");
+          }
+        });
+      }
+    });
+  });
+//<-- fin autocompletar -->
 //<-------------- OSCAR --------------------------->
 /**
  * En la siguiente function con ella se podrá actualizar los campos que se hayan mandado por parametro
@@ -1534,16 +1663,17 @@ function cargarFavCol( usuario ) {
         for ( var p in data ) {
           if ( data[ p ].medico_id ) {
             $( "#FavColPanel .contList" ).append(
-              "<li class='media contList-profile'>" +
+              "<li class='media contList-profile' id='"+ data[ p ].Medico.Usuario.id +"'>" +
               "<div class='media-left contList-profilePic'>" +
-              "<a class='contList-profileName' href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'><img class='media-object contList-profilePicImg' src='" + data[ p ].Medico.Usuario.urlFotoPerfil + "'></a>" +
+              "<a href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'><img class='media-object contList-profilePicImg' src='" + data[ p ].Medico.Usuario.urlFotoPerfil + "'></a>" +
               "</div>" +
               "<div class='media-body contList-profileBody'> " +
               "<a class='contList-profileName' href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'> Dr. " + data[ p ].Medico.Usuario.DatosGenerale.nombre + " " + data[ p ].Medico.Usuario.DatosGenerale.apellidoP + " " + data[ p ].Medico.Usuario.DatosGenerale.apellidoM + "</a><br>" +
               "<a class='contList-profileEsp' href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'> " + data[ p ].Medico.Usuario.Especialidad + "</a>" +
               "</div>" +
               "<div class='media-right contList-profileAction'>" +
-              "<a id ='"+data[ p ].Medico.id+"' href ='#' data-target='#recomendar' data-toggle='modal' class='recomendar contList-profileActionLink Flama-bold s15'>Recomendar</a>" +
+              "<a class='contList-profileActionLink Flama-bold s15'>Recomendar|</a>" +
+              "<a id='"+data[ p ].Medico.id+"' href='#' data-target='#pedir' data-toggle='modal' class='Pedir contList-profileActionLink Flama-bold s15'><smal>Pedir Recomendacion</smal></a>"+
               "</div>" +
               "</li>"
             );
@@ -2195,3 +2325,212 @@ if ( location.pathname === '/' ) {
 		} ).change();
 	} );
 }
+/**
+* Pedir recomendacion a un medico, la siguiente parte del script
+* es para poder pedirle a cualquier medico una recomenacion
+* de sus contactos de algun especialista.
+* le llegara a el una notificacion donde se le avisara que usuario
+* pidio una recomendacion, donde el podra elegir desde sus contactos
+* una recomendacion y mandar, ya sea por correo o por el mismo sistema
+* al cual al usuario le podra llegar una notificacion que al darle click
+* lo mande al perfil del medico donde podra agregarlo a sus favoritos.
+**/
+//<------------------- OSCAR -------------------------->
+var xEspecialidad;
+var idEspecialidad = '';
+  $(document).ready(function(){
+    $(".Pedir.contList-profileActionLink").click(function(){
+      var nombre = $(this).parent().parent().find('a.contList-profileName').text();
+      var usuario_id = $(this).parent().parent().prop('id');
+      $.post('/especialidadesMedico',function(data){
+        var option ="";
+        $("#especialidadesMedic").html('');
+        option +='<option value="0">Especialidades</option>'
+        for(var i in data ){
+            option += '<option value="'+data[ i ].id+'">'+data[ i ].especialidad+'</option>';
+        }
+        $("#especialidadesMedic").append(option);
+      });
+      // carga nombre e id del medico
+      $.post('/medicoDatos',function(data){
+        var nombreCompleto = data.Usuario.DatosGenerale.nombre+' '+data.Usuario.DatosGenerale.apellidoP+' '+data.Usuario.DatosGenerale.apellidoM;
+        $("#nombreDoctor").text(nombre);
+        $("#idMedico").text(usuario_id);
+      });
+    });
+    $("#especialidadesMedic").change(function(){
+      var id = $(this).val();
+      var valor = $("#especialidadesMedic option:selected").text();
+      var html2 ="";
+       html2 += '<li>';
+         html2 +="<p>";
+           html2 += "<div class='label label-success'><span class='glyphicon glyphicon-remove'>&nbsp;"
+             html2 +="<small>";
+               html2 +=valor;
+               html2 += "<span class='hidden'>";
+                 html2 += id;
+               html2 += "</span>";
+             html2 +="</small>";
+           html2 += "</span></div>";
+         html2 +="</p>";
+       html2 +="</li>";
+       $( '#tipoRecomendacionPedir ul' ).append(html2);
+    });
+    //<--------------- Peticion --------------------->
+      $("#mandarPeticion").click(function(){
+        if( $("#especialidadesMedic option:selected").text() != "Especialidades" ){
+          var id = $("#idMedico").text();
+          var recomendacion = $("#especialidadesMedic option:selected").text();
+          $.each($("li div.label.label-success small span.hidden"),function(index, data){
+            idEspecialidad += "|"+$( this ).text();
+          });
+          $.post('/pedirRecomendacionMedico',{
+              idMedico:id,
+              idEspecialidad: idEspecialidad,
+          },function(data){
+            if(data){
+              $('.modal').modal('hide');
+              $('.modal').on('hidden.bs.modal',function(e){
+              $(".label.label-success").remove().parent('div');
+            });
+            }
+          });
+        }else{
+          alert("Seleccione una opcion");
+        }
+      });
+    //<--------------- fin Peticion ----------------->
+  });
+  function presionando(hola){
+    $(hola).modal('toggle');
+    var html = "";
+    var html2 = "";
+    $.post('/traerDatos',function(dat){
+      var arreglo = new Array();
+      var spanOculto ="";
+      for( var i in dat ){
+          arreglo=dat[ i ].data.split("|");
+          spanOculto=arreglo[0];
+      }
+      arreglo.shift();
+      $.post('/especial',{ides:arreglo},function(datas){
+        for( var i in datas ){
+          for(var j in i)
+          html += '<li>';
+          html += '<span class="label label-warning">';
+          html += datas[ i ][j].especialidad;
+          html += '</span>';
+          html+='</li>';
+        }
+        $( "#contenidoRequerido ul" ).html(html);
+        $( "#idOculto" ).html(spanOculto);
+        var titulo;
+        var lugarEstudio;
+        var especialidad;
+        var name;
+        var imgUrl;
+        var idMedico;
+        $.post('/cargarContactosMedico',function(medicosContactos){
+          //console.log("MEDICOS CONTACTOS: "+JSON.stringify(medicosContactos));
+          for( var i in medicosContactos ){
+            if( medicosContactos[ i ].Medico.Usuario ){
+              idMedico = medicosContactos[i ].Medico.id;
+              var tdID = "td"+idMedico;
+              name = medicosContactos[ i ].Medico.Usuario.DatosGenerale.nombre+' '+medicosContactos[ i ].Medico.Usuario.DatosGenerale.apellidoP+' '+medicosContactos[ i ].Medico.Usuario.DatosGenerale.apellidoM;
+              imgUrl = medicosContactos[i].Medico.Usuario.urlFotoPerfil;
+              html2 += '<tr class="" id="'+tdID+'" onclick="labelTag(\''+name+'\',\''+idMedico+'\',\''+tdID+'\')">';
+                html2 += '<td>';
+                  html2 += '<img src="'+imgUrl+'" alt="" class="img-circle"/>';
+                html2 += '</td>';
+                html2 += '<td>';
+                  html2 += '<h4>'+name+'</h4>';
+                  html2 += '<span class="s15">';
+                  for( var j in medicosContactos[ i ].Medico.MedicoEspecialidads){
+                    if( medicosContactos[ i ].Medico.MedicoEspecialidads[ j ].subEsp == 0){
+                      html2 +="<strong>"+medicosContactos[ i ].Medico.MedicoEspecialidads[ j ].Especialidad.especialidad+'</strong>';
+                    }
+                  }
+                  for( var p in medicosContactos[ i ].Medico.MedicoEspecialidads ){
+                    if(medicosContactos[ i ].Medico.MedicoEspecialidads[ p ].subEsp == 1){
+                      html2 +='<small>&nbsp;'+medicosContactos[ i ].Medico.MedicoEspecialidads[ p ].Especialidad.especialidad+'</small>';
+                    }
+                  }
+                  html2 += '</span>';
+                html2 += '</td>';
+                html2 += '<td>';
+                html2 += '</td>';
+              html2 += '</tr>';
+            }
+          }
+          $( "#tabla table.table-hover.table-condensed #agregandoContacto").html(html2);
+        });
+      });
+    });
+  }
+  function labelTag( name, idMedico, tdID ){
+    var axxios = "";
+    var liID = 'li'+idMedico;
+    axxios += '<li id="'+liID+'" onclick="remueveTagLi(\''+tdID+'\',\''+liID+'\');">';
+      axxios += '<div class="label label-danger">';
+        axxios += '<small>';
+          axxios += '<span class="glyphicon glyphicon-remove">&nbsp;</span>';
+          axxios += name;
+        axxios += '</small>';
+        axxios += '<span class="hidden">'+idMedico+'</span>';
+      axxios += '</div>';
+    axxios += '</li>';
+    if( $("#"+tdID).attr('class') == '' ){
+      $("#"+tdID).addClass('cambiando');
+      $( "#sendFor ul.list-inline" ).append(axxios);
+    }
+  }
+  function remueveTagLi( tdID, liID ){
+    $("#"+liID).remove();
+    $("#"+tdID).removeClass('cambiando');
+  }
+  function miRecomendacion( record ){
+    $("#cuerpoRecomendado").html('');
+      $.post('/consultaMedInfo',{
+        id:record
+      }, function(data){
+        var html = "";
+        $.each(data, function( i, item){
+            html += '<tr>';
+              html += '<td>';
+                html += '<img src ="'+item[0].Usuario.urlFotoPerfil+'" class="img-circle">';
+              html += '</td>';
+              html += '<td>';
+                html += '<a href ="'+base_url+"perfil/"+item[0].Usuario.usuarioUrl+'">';
+                  html += '<span>'+item[0].Usuario.DatosGenerale.nombre+' '+item[0].Usuario.DatosGenerale.apellidoP+' '+item[0].Usuario.DatosGenerale.apellidoM+'</span>';
+                html += '</a>';
+              html += '</td>';
+            html += '</tr>';
+        });
+        $("#cuerpoRecomendado").append(html);
+      }).fail(function(e){
+        alert("Error 718: "+JSON.stringify(e));
+      });
+    $("#meRecomendaron").modal('toggle');//abre el modal
+  }
+  //EVENTO DEL CLICK
+  $(document).ready(function(){
+    $( "#buscarRecomendar" ).click( function(){
+      var spanOculto = $( "#idOculto" ).text();
+      var datos="";
+      $.each($('#sendFor li div.label.label-danger span.hidden'), function(index, value){
+        if(datos != "") datos += "|"+$( this ).text();
+        else datos = $( this ).text();
+      });
+      $.post('/enviarMedAPacientes',{idMed:spanOculto,data:datos},function(send){
+        if(send){
+          $('.modal').modal('hide');
+            $('.modal').on('hidden.bs.modal',function(e){
+              $("#sendFor").html('');
+              $("#mensajeRecomendar").val('');
+              $( "#correoEnviarRecomendado" ).val('');
+            });
+        }
+      });
+    });
+  });
+//<------------------- FIN OSCAR ---------------------->

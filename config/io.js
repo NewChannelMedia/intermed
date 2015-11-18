@@ -128,7 +128,22 @@ var io = function ( io, bundle, ioPassport ) {
         intermed.callController( 'notificaciones', 'solicitudRechazada', req );
       } );
 
-
+      socket.on('pedirRecomendacion', function(){
+        var req = {
+          socket: socket,
+          usuario_id: socket.request.cookies.intermed_sesion.id,
+          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
+        };
+        intermed.callController('notificaciones','pedirRecomendacion',req);
+      });
+      socket.on('tuRecomendacion', function(){
+        var req = {
+          socket: socket,
+          usuario_id: socket.request.cookies.intermed_sesion.id,
+          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
+        };
+        intermed.callController('notificaciones','tuRecomendacion', req);
+      });
       socket.on( 'verNotificaciones', function () {
         //console.log( 'socket_id: ' + socket.id + ' [Buscar: verNotificaciones]' );
         var req = {

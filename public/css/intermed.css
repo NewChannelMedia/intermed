@@ -1811,6 +1811,22 @@ hr {
   overflow: hidden;
   overflow-y: auto;
 }
+#agregandoContacto tr td img{
+  height: 30px;
+}
+#sendFor ul li small span.glyphicon.glyphicon-remove{
+  cursor:pointer;
+}
+#tabla table tbody tr td{
+  cursor: pointer;
+}
+.cambiando{
+  background-color: #eee;
+}
+#cuerpoRecomendado img{
+  height: 30px;
+  width: 30px;
+}
 .modal-dialog {
   position: relative;
 }

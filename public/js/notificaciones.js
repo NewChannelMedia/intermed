@@ -3,6 +3,8 @@ var notificaciones = [];
 var notificacionesScroll = [];
 var notificacionesTotal = [];
 var doctorRecomendado = [];
+var pedirRecomendacion = [];
+var tuRecomendacion = [];
 
 //Manejar notificaciones
 $.ajax( {
@@ -108,6 +110,8 @@ function actualizarNotificaciones() {
     totalNotificaciones = totalNotificaciones.concat( solicitudesRechazadas );
     totalNotificaciones = totalNotificaciones.concat( medicoRecomendado );
     totalNotificaciones = totalNotificaciones.concat( doctorRecomendado );
+    totalNotificaciones = totalNotificaciones.concat( pedirRecomendacion );
+    totalNotificaciones = totalNotificaciones.concat( tuRecomendacion );
     totalNotificaciones = totalNotificaciones.sort( ordenarPorFecha );
     if ( totalNotificaciones.length > 0 ) {
       $( '#totalNotificaciones' ).removeClass( 'hidden invisible' );
@@ -189,6 +193,12 @@ function actualizarNotificaciones() {
                                   contenido = '<div class="media-left"><a href="/perfil/'+record.paciente.Usuario.usuarioUrl+'"><img class="media-object" src="'+record.paciente.Usuario.urlFotoPerfil+'" style="width: 50px;"></div><div class="media-body">'+record.paciente.Usuario.DatosGenerale.nombre + ' ' +record.paciente.Usuario.DatosGenerale.apellidoP + ' ' +record.paciente.Usuario.DatosGenerale.apellidoM +' Te ha recomendado a otro paciente</a><br /><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span></div></div>';
                                 }
                                 break;
+                        case 14:
+                          '<div class="media-left">'+'<a href="#" data-toggle="modal" data-target="#recomendandoAndo" class="recomendando">'+'<img class="media-object" src="existe" style="width: 50px;">'+'</div>'+'<div class="media-body">existeNo Recomendo tu perfil a otro paciente'+ '</a>'+'<br />'+'<div class="text-left" style="margin-top:-25px;">'+'<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>'+'</div>'+'</div>';
+                          break;
+                        case 15:
+                          '<div class="media-left">'+'<a href="#" onclick="" class="recomendando">'+'<img class="media-object" src="" style="width: 50px;">'+'</div>'+'<div class="media-body">Estas son tus recomendaciones enviadas por "X" doctor'+'</a>'+'<br />'+'<div class="text-left" style="margin-top:-25px;">'+'<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>'+'</div>'+'</div>';
+                          break;
                     }
                     if (contenido != '')
                       $( '#notificacinesList' ).append( '<li class="media" id="li' + record.id + '">' + contenido + '</li>' );
@@ -552,6 +562,71 @@ function socketManejadores() {
         },1000);
     });
 
+    socket.on('pedirRecomendacion',function(data){
+      pedirRecomendacion = [];
+      data.forEach( function ( record ) {
+        date = formattedDate( record.inicio );
+        var content = '';
+        if( record.paciente ){
+          var imagen = record.paciente.Usuario.urlFotoPerfil;
+          var nombre = record.paciente.Usuario.DatosGenerale.nombre+' '+record.paciente.Usuario.DatosGenerale.apellidoP+' '+record.paciente.Usuario.DatosGenerale.apellidoM;
+          content += '<div class="media-left">';
+            content += '<a href="#" onclick="presionando(\'#recomendandoAndo\');" class="recomendando">';
+              content += '<img class="media-object" src="'+imagen+'" style="width: 50px;">';
+              content += '</div>';
+              content += '<div class="media-body">'+nombre+' te ha pedido las siguientes recomendaciones';
+            content += '</a>';
+            content += '<br />';
+            content += '<div class="text-left" style="margin-top:-25px;">';
+              content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>';
+            content += '</div>';
+          content += '</div>';
+        }
+        console.log("RECORD "+record);
+        if (content){
+          pedirRecomendacion.unshift( {
+            id: record.id,
+            time: record.inicio,
+            visto: record.visto,
+            content: content
+          });
+        }
+      });
+      actualizarNotificaciones();
+    });
+    socket.on('tuRecomendacion',function(data){
+      tuRecomendacion = [];
+      ides = '';
+      var i = 0;
+      data.forEach( function ( record ){
+        date = formattedDate( record.inicio );
+        var content = '';
+        var usuario_id = record.usuario_id
+        for( var i in record.medicos ){
+          ides += "|"+record.medicos[ i ].id;
+        }
+        content += '<div class="media-left">';
+          content += '<a href="#" onclick="miRecomendacion(\''+ides+'\');" class="recomendando">';
+            content += '<img class="media-object" src="" style="width: 50px;">';
+            content += '</div>';
+            content += '<div class="media-body">Estas son tus recomendaciones';
+          content += '</a>';
+          content += '<br />';
+          content += '<div class="text-left" style="margin-top:-25px;">';
+            content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>';
+          content += '</div>';
+        content += '</div>';
+        if (content){
+          tuRecomendacion.unshift( {
+            id: record.id,
+            time: record.inicio,
+            visto: record.visto,
+            content: content
+          });
+        }
+      });
+      actualizarNotificaciones();
+    });
 }
 
 $(document).ready(function(){
@@ -657,6 +732,12 @@ function verTodasNotificaciones(){
                         contenido = '<a href="/perfil/'+record.paciente.Usuario.usuarioUrl+'"><img class="media-object" src="'+record.paciente.Usuario.urlFotoPerfil+'" style="width: 50px;"></div><div class="media-body">'+record.paciente.Usuario.DatosGenerale.nombre + ' ' +record.paciente.Usuario.DatosGenerale.apellidoP + ' ' +record.paciente.Usuario.DatosGenerale.apellidoM +' Te ha recomendado a otro paciente</a><br /><div class="text-left" style="margin-top:-25px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span></div>';
                       }
                       break;
+                  case 14:
+                    '<div class="media-left">'+'<a href="#" data-toggle="modal" data-target="#recomendandoAndo" class="recomendando">'+'<img class="media-object" src="existe" style="width: 50px;">'+'</div>'+'<div class="media-body">existeNo Recomendo tu perfil a otro paciente'+ '</a>'+'<br />'+'<div class="text-left" style="margin-top:-25px;">'+'<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>'+'</div>'+'</div>';
+                    break;
+                  case 15:
+                    '<div class="media-left">'+'<a href="#" onclick="" class="recomendando">'+'<img class="media-object" src="" style="width: 50px;">'+'</div>'+'<div class="media-body">Estas son tus recomendaciones enviadas por "X" doctor'+'</a>'+'<br />'+'<div class="text-left" style="margin-top:-25px;">'+'<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>'+'</div>'+'</div>';
+                    break;
               }
               if (contenido != ""){
                 $( '#notifListTable' ).append('<tr><td>' + contenido + '</td></tr>');

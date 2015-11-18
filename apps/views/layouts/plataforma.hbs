@@ -602,6 +602,103 @@
       </div>
     </div>
     <!-- Fin Recomendaciones -->
+    <!-- PERDIR RECOMENDACION A MEDICOS -->
+      <div id="pedir" class="modal fade">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <!-- Inicio HEADER -->
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title">
+                <span id="nombreOcultoPerfil" class="hidden"></span>
+                Pedir una Recomendación al <span id="nombreDoctor"></span><span class="hidden" id="idMedico"></span>
+              </h4>
+            </div>
+            <!-- FIN HEADER -->
+            <!-- INICIO BODY -->
+              <div class="modal-body">
+                <p>En esta ventana podrá elegir una especialidad para poder pedirle una recomendacion a su medico</p>
+                <div class="form-group">
+                  <label for="especialidadesMedic" class="col-sm-2 control-label">Especialidad</label>
+                  <select id="especialidadesMedic" class="form-control">
+                  </select>
+                </div>
+                <div class="" id="tipoRecomendacionPedir">
+                  <ul class="list-inline"></ul>
+                </div>
+              </div>
+            <!-- FIN BODY -->
+            <!-- INICIO FOOTER -->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="mandarPeticion" class="btn btn-primary" class="btn btn-primary">Pedir</button>
+              </div>
+            <!-- FIN FOOTER -->
+          </div>
+        </div>
+      </div>
+      <!-- Enviar recomendaciones medico -->
+        <div id="recomendandoAndo" class="modal fade" role="dialog" aria-labelledby="recomendandoAndo">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <!-- Header -->
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">Recomienda las siguientes especialidades</h4>
+                  <span class="hidden" id="idOculto"></span>
+                  <div id="contenidoRequerido">
+                    <ul class="list-inline"></ul>
+                  </div>
+                </div>
+              <!-- Fin Header -->
+              <!-- Body -->
+                <div class="modal-body">
+                  <div class="" id="tabla">
+                    <table class="table table-hover table-condensed">
+                      <tbody id="agregandoContacto">
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="paraEnviar" id="sendFor">
+                    <ul class="list-inline"></ul>
+                  </div>
+                </div>
+              <!-- Fin body -->
+              <!-- Footer -->
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" id="buscarRecomendar" class="btn btn-primary">Recomendar</button>
+                </div>
+              <!-- Fin footer -->
+            </div>
+          </div>
+        </div>
+      <!-- Fin enviar recomendaciones medico -->
+      <!-- inicio de mi recomendacion recibida del medico -->
+        <div id="meRecomendaron" class="modal fade" role="dialog" aria-labelledby="meRecomendaron">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h4>Estas son las recomendaciones que pediste</h4>
+              </div>
+              <div class="modal-body">
+                <table id="misRecomendacionesMed" class="table table-hover table-condensed">
+                  <tbody id="cuerpoRecomendado"></tbody>
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <!-- fin de mi recomendacion recibida del medico -->
+    <!-- FIN PEDIR RECOMENDACION A MEDICOS -->
   </body>
 
   <style>

@@ -1082,6 +1082,31 @@ var iniciar = function () {
   app.post( "/despachador", function ( req, res ) {
     intermed.callController( 'usuarios', 'despachador', req.body, req, res );
   } );
+  //eventos click para insertar nueva informacion en biometricos
+  app.post('/contactoEmergengia', function( req, res ){
+    intermed.callController('usuarios','contactoEmergencia',req,res);
+  });
+  app.post('/biometricFull',function( req, res ){
+    intermed.callController('usuarios','biometricFull',req, res);
+  });
+  app.post('/insertarLT', function( req, res ){
+    intermed.callController('usuarios','insertarLT',req, res);
+  });
+  //<--------------- AUTOCOMPLETADOR ----------------------->
+  app.post('/autocompletar',function( req, res ){
+    intermed.callController( 'usuarios', 'autocompletar',req, res);
+  });
+  app.post('/autocompletarA',function( req, res ){
+    intermed.callController( 'usuarios', 'autocompletarA',req, res);
+  });
+  //se insertan los valores cuando se selecccionan con el autocompletador
+  app.post('/insertarPad',function( req, res ){
+    intermed.callController('usuarios','insertarPad', req, res);
+  });
+  app.post('/insertAler',function(req, res){
+    intermed.callController('usuarios','insertAler',req,res);
+  });
+  //<--------------- FIN AUTOCOMPLETADOR ------------------->
 
 
 
@@ -1309,6 +1334,34 @@ var iniciar = function () {
           intermed.callController('notificaciones','configurarNotificacion', req.body, req, res);
         }
     });
+  // <---------------- OSCAR ESPECIALIDADES ---------------------->
+    app.post('/especialidadesMedico',function(req, res){
+      intermed.callController('contactos','especialidadesMedico',req,res);
+    });
+    app.post('/medicoDatos', function(req, res){
+      intermed.callController('contactos','medicoDatos',req,res);
+    });
+  // <---------------- FIN OSCAR ESPECIALIDADES ------------------>
+  // <---------------- PEDIR RECOMENDACION MEDICO ---------------->
+    app.post('/pedirRecomendacionMedico', function( req, res){
+      intermed.callController('contactos','pedirRecomendacionMedico',req, res);
+    });
+    app.post('/traerDatos', function( req, res ){
+      intermed.callController('contactos','traerDatos', req, res);
+    });
+    app.post('/especial',function( req, res ){
+      intermed.callController('contactos','especial',req, res);
+    });
+    app.post('/cargarContactosMedico', function( req, res ){
+      intermed.callController('contactos','cargarContactosMedico', req, res);
+    });
+    app.post('/enviarMedAPacientes',function( req, res ){
+      intermed.callController('contactos','enviarMedAPacientes',req, res);
+    });
+    app.post('/consultaMedInfo', function( req, res ){
+      intermed.callController('contactos','consultaMedInfo', req, res);
+    });
+  // <---------------- FIN RECOMENDACION MEDICO ------------------>
 }
 
 var io = serv.server( app, 3000 );
