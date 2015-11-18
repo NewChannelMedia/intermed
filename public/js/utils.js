@@ -3,7 +3,7 @@
  *
  */
 var regTotalDoc = 0;
-
+var base_url = 'http://localhost:3000/';
 if ( location.pathname === '/registro' ) {
   $( document ).ready( getAllDoctors() );
 }
@@ -1827,14 +1827,29 @@ var idEspecialidad = '';
     $("#"+liID).remove();
     $("#"+tdID).removeClass('cambiando');
   }
-  function miRecomendacion( id, record){
-    console.log("RECORD:" +record.length);
-    // EN esta parte quede dead
-    /*$.each(JSON.parse(record), function(i, item){
-      console.log("ITEM: "+item);
-    });
-    console.log("RECORD: "+JSON.stringify(record));*/
-    $(id).modal('toggle');//abre el modal
+  function miRecomendacion( record ){
+    $("#cuerpoRecomendado").html('');
+      $.post('/consultaMedInfo',{
+        id:record
+      }, function(data){
+        var html = "";
+        $.each(data, function( i, item){
+            html += '<tr>';
+              html += '<td>';
+                html += '<img src ="'+item[0].Usuario.urlFotoPerfil+'" class="img-circle">';
+              html += '</td>';
+              html += '<td>';
+                html += '<a href ="'+base_url+"perfil/"+item[0].Usuario.usuarioUrl+'">';
+                  html += '<span>'+item[0].Usuario.DatosGenerale.nombre+' '+item[0].Usuario.DatosGenerale.apellidoP+' '+item[0].Usuario.DatosGenerale.apellidoM+'</span>';
+                html += '</a>';
+              html += '</td>';
+            html += '</tr>';
+        });
+        $("#cuerpoRecomendado").append(html);
+      }).fail(function(e){
+        alert("Error 718: "+JSON.stringify(e));
+      });
+    $("#meRecomendaron").modal('toggle');//abre el modal
   }
   //EVENTO DEL CLICK
   $(document).ready(function(){
@@ -1845,11 +1860,11 @@ var idEspecialidad = '';
         if(datos != "") datos += "|"+$( this ).text();
         else datos = $( this ).text();
       });
-      console.log("DATOS: "+JSON.stringify(datos));
       $.post('/enviarMedAPacientes',{idMed:spanOculto,data:datos},function(send){
         if(send){
           $('.modal').modal('hide');
             $('.modal').on('hidden.bs.modal',function(e){
+              $("#sendFor").html('');
               $("#mensajeRecomendar").val('');
               $( "#correoEnviarRecomendado" ).val('');
             });

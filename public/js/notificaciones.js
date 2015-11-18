@@ -369,21 +369,26 @@ function socketManejadores() {
     });
     socket.on('tuRecomendacion',function(data){
       tuRecomendacion = [];
+      ides = '';
+      var i = 0;
       data.forEach( function ( record ){
         date = formattedDate( record.inicio );
         var content = '';
+        var usuario_id = record.usuario_id
+        for( var i in record.medicos ){
+          ides += "|"+record.medicos[ i ].id;
+        }
         content += '<div class="media-left">';
-          content += '<a href="#" onclick="miRecomendacion(\'#meRecomendaron\',\''+data+'\');" class="recomendando">';
+          content += '<a href="#" onclick="miRecomendacion(\''+ides+'\');" class="recomendando">';
             content += '<img class="media-object" src="" style="width: 50px;">';
             content += '</div>';
-            content += '<div class="media-body">Estas son tus recomendaciones enviadas por "X" doctor';
+            content += '<div class="media-body">Estas son tus recomendaciones';
           content += '</a>';
           content += '<br />';
           content += '<div class="text-left" style="margin-top:-25px;">';
             content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>';
           content += '</div>';
         content += '</div>';
-        //console.log("RECORD: "+JSON.stringify(record));
         if (content){
           tuRecomendacion.unshift( {
             id: record.id,

@@ -485,5 +485,38 @@ module.exports = {
         res.send(true);
       });
     }
+  },
+  consultaMedInfo: function( req, res ){
+    var cortando = req.body.id.split("|");
+    var count = 0;
+    var medicosArreglo = [];
+    for( var i in cortando ){
+      if( cortando[ i ] != "" ){
+        console.log("cortando: "+cortando);
+        models.Medico.findAll({
+          where:{id:cortando[i]},
+          attributes:['id'],
+          include:[{
+            model: models.Usuario,
+            attributes:['usuarioUrl','urlFotoPerfil'],
+            include:[{
+              model: models.DatosGenerales,
+              attributes:['nombre','apellidoP','apellidoM']
+            }]
+          }]
+        }).then( function(medicos){
+          medicosArreglo.push(medicos);
+          count++;
+          if (count == cortando.length){
+            res.send(medicosArreglo);
+          }
+        });
+      }else{
+        count++;
+        if (count == cortando.length){
+          res.send(medicosArreglo);
+        }
+      }
+    }
   }
 }
