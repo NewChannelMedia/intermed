@@ -1199,62 +1199,63 @@ var iniciar = function () {
       }
   });
 
-    app.get('/registrarubicacion', function (req, res) {
-        //if (req.session.passport.user) {
-        intermed.callController('ubicacion', 'ubicacion', req.body, req, res);
-        //}
-        //else {
-        //    res.send({
-        //        result: 'null'
-        //    });
-        //}
-    });
-
-    app.post('/registrarubicacion', function (req, res) {
-        //if (req.session.passport.user) {
+  app.get('/registrarubicacion', function (req, res) {
+      //if (req.session.passport.user) {
+      intermed.callController('ubicacion', 'nuevaUbicacion', req.body, req, res);
+      //}
+      //else {
+      //    res.send({
+      //        result: 'null'
+      //    });
+      //}
+  });
 
 
-        intermed.callController('ubicacion', 'registrarUbicacion', req.body, req, res);
-        //}
-        //else {
-        //    res.send({
-        //        result: 'null'
-        //    });
-        //}
-    });
+  app.post('/registrarubicacion', function (req, res) {
+      //if (req.session.passport.user) {   
 
-    app.get('/registrarhorarios', function (req, res) {
-        //if (req.session.passport.user) {
-        intermed.callController('ubicacion', 'horarios', req.body, req, res);
-        //}
-        //else {
-        //    res.send({
-        //        result: 'null'
-        //    });
-        //}
-    });
 
-    app.post('/registrarhorarios', function (req, res) {
-        //if (req.session.passport.user) {
-        intermed.callController('ubicacion', 'registrarHorarios', req.body, req, res);
-        //}
-        //else {
-        //    res.send({
-        //        result: 'null'
-        //    });
-        //}
-    });
+      intermed.callController('ubicacion', 'registrarUbicacion', req.body, req, res);
+      //}
+      //else {
+      //    res.send({
+      //        result: 'null'
+      //    });
+      //}
+  });
 
-    app.get('/ubicacionobtener', function (req, res) {
-        //if (req.session.passport.user) {
-        intermed.callController('ubicacion', 'ubicacionObtener', req.body, req, res);
-        //}
-        //else {
-        //    res.send({
-        //        result: 'null'
-        //    });
-        //}
-    });
+  app.get('/registrarhorarios', function (req, res) {
+      //if (req.session.passport.user) {
+      intermed.callController('ubicacion', 'horarios', req.body, req, res);
+      //}
+      //else {
+      //    res.send({
+      //        result: 'null'
+      //    });
+      //}
+  });
+
+  app.post('/registrarhorarios', function (req, res) {
+      //if (req.session.passport.user) {   
+      intermed.callController('ubicacion', 'registrarHorarios', req.body, req, res);
+      //}
+      //else {
+      //    res.send({
+      //        result: 'null'
+      //    });
+      //}
+  });
+
+  app.get('/ubicacionobtener', function (req, res) {
+      //if (req.session.passport.user) {   
+      intermed.callController('ubicacion', 'ubicacionObtener', req.body, req, res);
+      //}
+      //else {
+      //    res.send({
+      //        result: 'null'
+      //    });
+      //}
+  });
 
     //Obtiene Horarios por direccion
     app.get('/seleccionaHorarios/:id', function(req, res) {
