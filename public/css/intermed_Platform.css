@@ -565,46 +565,6 @@ a:visited {
   min-height: 150px;
   background-color: #f1eee6;
 }
-
-#info {
-
-}
-#info-experto_en {
-  background-image: url('../img/plataforma/perfil/layer1.jpg');
-}
-#info-hospitales {
-  background-image: url('../img/plataforma/perfil/layer2.jpg');
-}
-#info-aseguradoras {
-  background-image: url('../img/plataforma/perfil/layer3.jpg');
-}
-
-.info-container{
-  height: 300px;
-  padding: 0;
-  margin: 0;
-}
-.info-row{
-  height: 100%;
-  padding: 0;
-  margin: 0;
-}
-.info-inner-section {
-  height: 100%;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  display: table-cell;
-  vertical-align: middle;
-  margin: 0;
-  padding: 0;
-}
-.info-inner-container {
-  display: block;
-  height: 100%;
-  background-color: rgba(22,56,93,.6);
-}
-
 /* ------------------------------- */
 
 .csslider {
@@ -654,8 +614,8 @@ a:visited {
   position: absolute;
   top: 30px;
   bottom: 0;
-  left: 70px;
-  right: 70px;
+  left: 35px;
+  right: 35px;
   z-index: 1;
   font-size: 0;
   line-height: 0;
@@ -692,8 +652,8 @@ a:visited {
 .csslider > .navigation {
   position: absolute;
   top: 0;
-  left: 70px;
-  right: 70px;
+  left: 35px;
+  right: 35px;
   padding: 0 4px;
   z-index: 10;
   font-size: 20px;
@@ -850,42 +810,53 @@ a:visited {
   position: relative;
   overflow: hidden;
 }
-/*#slider1 > ul > li:nth-of-type(3) {
-  background: url(https://raw.github.com/drygiel/csslider/master/examples/themes/fruit.jpg);
-}
-#slider1 > input:nth-of-type(3):checked ~ ul #bg {
-  width: 80%;
-  padding: 22px;
-  -moz-transition: .5s .5s;
-  -o-transition: .5s .5s;
-  -webkit-transition: .5s .5s;
-  transition: .5s .5s;
-}
-#slider1 > input:nth-of-type(3):checked ~ ul #bg div {
-  -moz-transform: translate(0);
-  -ms-transform: translate(0);
-  -o-transform: translate(0);
-  -webkit-transform: translate(0);
-  transform: translate(0);
-  -moz-transition: .5s .9s;
-  -o-transition: .5s .9s;
-  -webkit-transition: .5s .9s;
-  transition: .5s .9s;
-}
-#slider1 > input:nth-of-type(6):checked ~ ul #dex-sign {
-  -moz-animation: sign-anim 3.5s 0.5s steps(85) forwards;
-  -o-animation: sign-anim 3.5s 0.5s steps(85) forwards;
-  -webkit-animation: sign-anim 3.5s 0.5s steps(85) forwards;
-  animation: sign-anim 3.5s 0.5s steps(85) forwards;
-}
-*/
 
 .direccion-pagination-bg {
   height: 100%;
   background-color: #1e7198;
   color: #ffffff;
   text-align: center;
-  margin: 0 auto;
   padding: 0;
   font-size: 90px;
+}
+
+/* -------------- */
+
+#info {
+
+}
+#info-experto_en {
+  background-image: url('../img/plataforma/perfil/layer1.jpg');
+}
+#info-hospitales {
+  background-image: url('../img/plataforma/perfil/layer2.jpg');
+}
+#info-aseguradoras {
+  background-image: url('../img/plataforma/perfil/layer3.jpg');
+}
+
+.info-container{
+  height: 300px;
+  padding: 0;
+  margin: 0;
+}
+.info-row{
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+.info-inner-section {
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: table-cell;
+  vertical-align: middle;
+  margin: 0;
+  padding: 0;
+}
+.info-inner-container {
+  display: block;
+  height: 100%;
+  background-color: rgba(22,56,93,.6);
 }
