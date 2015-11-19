@@ -1290,29 +1290,51 @@ function formatearNotificacion(result, emit, object){
             var total = 0;
             record['medicos'] = [];
             for(var i in medicos_id){
-              models.Medico.findOne({
-                where:{ id: medicos_id[i]},
-                attributes:['id'],
-                include:[{
-                  model: models.Usuario,
+              if (i == 0){
+                models.Usuario.findOne({
+                  where:{ id: medicos_id[i]},
                   attributes:['usuarioUrl','urlFotoPerfil'],
                   include:[{
-                    model: models.DatosGenerales,
-                    attributes:['nombre','apellidoP','apellidoM']
-                  }]
-                }]
-              }).then(function(medicos){
-                if(medicos){
-                  record['medicos'].push(JSON.parse( JSON.stringify( medicos )));
-                }
-                total++;
-                if( total == medicos_id.length){
-                  totalProcesados++;
-                  if ( totalProcesados === result.length) {
-                    object.socket.emit(emit,result);
+                      model: models.DatosGenerales,
+                      attributes:['nombre','apellidoP','apellidoM']
+                    }]
+                }).then(function(usuario){
+                  if(usuario){
+                    record['medico'] = {'Usuario':JSON.parse(JSON.stringify(usuario))};
                   }
-                }
-              });
+                  total++;
+                  if( total == medicos_id.length){
+                    totalProcesados++;
+                    if ( totalProcesados === result.length) {
+                      object.socket.emit(emit,result);
+                    }
+                  }
+                });
+              } else {
+                models.Medico.findOne({
+                  where:{ id: medicos_id[i]},
+                  attributes:['id','usuario_id'],
+                  include:[{
+                    model: models.Usuario,
+                    attributes:['usuarioUrl','urlFotoPerfil'],
+                    include:[{
+                      model: models.DatosGenerales,
+                      attributes:['nombre','apellidoP','apellidoM']
+                    }]
+                  }]
+                }).then(function(medico){
+                  if(medico){
+                    record['medicos'].push(JSON.parse( JSON.stringify( medico )));
+                  }
+                  total++;
+                  if( total == medicos_id.length){
+                    totalProcesados++;
+                    if ( totalProcesados === result.length) {
+                      object.socket.emit(emit,result);
+                    }
+                  }
+                });
+              }
             }
             break;
         default:

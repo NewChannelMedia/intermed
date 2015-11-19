@@ -196,7 +196,7 @@ module.exports = {
       }
       if (object.notificacion_id){
         models.Notificacion.update({
-          tipoNotificacion_id: 8
+          tipoNotificacion_id: numNo
         },{
           where: { id: object.notificacion_id}
         })
@@ -620,20 +620,21 @@ module.exports = {
   enviarMedAPacientes: function( req, res ){
     var d = new Date();
     var strDate = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds();
-    console.log("Fecha y Hora: "+strDate);
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
-      models.Notificacion.create({
-        usuario_id: req.body.idMed,
-        tipoNotificacion_id: 15,
-        data: req.body.data,
-        inicio:strDate,
-        fin: null,
-        visto: 0,
-        leido: 0,
-        recordatorio: null
-      }).then( function( creado ){
-        res.send(true);
+      models.Paciente.findOne({where: {id: req.body.idMed}}).then(function(result){
+        models.Notificacion.create({
+          usuario_id: result.usuario_id,
+          tipoNotificacion_id: 15,
+          data: req.session.passport.user.id + '|' + req.body.data,
+          inicio:strDate,
+          fin: null,
+          visto: 0,
+          leido: 0,
+          recordatorio: null
+        }).then( function( creado ){
+          res.send(true);
+        });
       });
     }
   },

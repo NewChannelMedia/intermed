@@ -551,17 +551,20 @@ function formatearNotificacion(record){
   var not = '';
   if (record.medico){
     tipo = 'medico';
-  } else {
+  } else if (record.paciente){
     tipo = 'paciente';
   }
+
   var visto = '';
   if (record.visto == 0){
     visto = '  style="background-color:#DDD" ';
   }
 
+  console.log('NOTIFICACION: '+ JSON.stringify(record));
+
   var fecha = formattedDate( record.inicio );
   if (record[tipo]){
-    not = '<div class="media-left">';
+    not = '';
     var usuarioUrl = record[tipo].Usuario.usuarioUrl;
     var fotoPerfil = record[tipo].Usuario.urlFotoPerfil;
     var nombreCompleto = record[tipo].Usuario.DatosGenerale.nombre + ' ' + record[tipo].Usuario.DatosGenerale.apellidoP + ' ' + record[tipo].Usuario.DatosGenerale.apellidoM ;
@@ -571,7 +574,7 @@ function formatearNotificacion(record){
 
     var mediaObjectFecha = '<div class="text-left" style="margin-top:-5px;"><span class="not-fecha hidden invisible">'+ record.inicio.slice(0, 19).replace('T', ' ') +'</span><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + fecha + '</span></div>';
 
-    var mediaObjectFotoPerfil = '<a href= "/perfil/' + usuarioUrl + '"><img class="media-object" src="' + fotoPerfil + '" style="width: 50px;"></div></a>';
+    var mediaObjectFotoPerfil = '<div class="media-left"><a href= "/perfil/' + usuarioUrl + '"><img class="media-object" src="' + fotoPerfil + '" style="width: 50px;"></a></div>';
 
     switch (record.tipoNotificacion_id) {
       /*PACIENTE*/
@@ -616,17 +619,18 @@ function formatearNotificacion(record){
       case 15:
           //tuRecomendacion
           content = '';
+          var ides = '';
           for( var i in record.medicos ){
             ides += "|"+record.medicos[ i ].id;
           }
           content += '<div class="media-left">';
-            content += '<a href="#" onclick="miRecomendacion(\''+ides+'\');" class="recomendando">';
-              content += '<img class="media-object" src="" style="width: 50px;">';
+            content += '<a href="#" onclick="miRecomendacion(\''+ides+'\');cerrarNotModal()" class="recomendando">';
+              content += '<img class="media-object" src="'+fotoPerfil+'" style="width: 50px;">';
             content += '</a>';
           content += '</div>';
-          content +  '<div class="media-body">';
-            content += '<a href="#" onclick="miRecomendacion(\''+ides+'\');" class="recomendando">';
-              content += 'Estas son tus recomendaciones';
+          content +=  '<div class="media-body">';
+            content += '<a href="#" onclick="miRecomendacion(\''+ides+'\');cerrarNotModal();" class="recomendando">';
+              content += nombreCompleto + ' te recomendo unos médicos';
             content += '</a>';
             content += mediaObjectFecha
           content += '</div>';
@@ -680,30 +684,13 @@ function formatearNotificacion(record){
           break;
       case 14:
           //pedirRecomendacion
-          not += '<a href="#" onclick="presionando(\'#recomendandoAndo\');" class="recomendando">'+ fotoPerfil+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');" class="recomendando">'+ nombreCompleto +' te ha pedido las siguientes recomendaciones</a>'+ mediaObjectFecha +'</div>';
+          not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando"><img class="media-object" src="' + fotoPerfil + '" style="width: 50px;"></a></div></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+ nombreCompleto +' te ha pedido las siguientes recomendaciones</a>'+ mediaObjectFecha +'</div>';
           break;
-      case 15:
-          var usuario_id = record.usuario_id
-          for( var i in record.medicos ){
-            ides += "|"+record.medicos[ i ].id;
-          }
-          content += '<div class="media-left">';
-            content += '<a href="#" onclick="miRecomendacion(\''+ides+'\');" class="recomendando">';
-            content += '<img class="media-object" src="" style="width: 50px;">';
-          content += '</a></div>';
-          content += '<div class="media-body">';
-          content += '<a href="#" onclick="miRecomendacion(\''+ides+'\');" class="recomendando">';
-            content += 'Estas son tus recomendaciones';
-          content += '</a>';
-          content += mediaObjectFecha
-          content += '</div>';
-          not = content;
-          break;
-        }
       }
     not+='</div>';
     not = '<li class="media" id="li' + record.id + '" '+ visto +'>' + not + '</li>'
-    return not;
+  }
+  return not;
 }
 
 $(document).ready(function(){
@@ -901,12 +888,6 @@ if (window.location.href.indexOf("/notificaciones/configuracion") > 0){
           cache: false,
           success: function ( data ) {
             if ( data ) {
-              /*
-              notificaciones.forEach( function ( notificacion ) {
-                clearInterval( notificacion.id );
-              } );
-              notificaciones = [];
-              */
               if ( Object.prototype.toString.call( data ) === '[object Array]' ) {
                 if ( data ) {
                   data.forEach( function ( record ) {
@@ -1002,4 +983,8 @@ function mostrarNotificaciones(){
     },100);
 
   }
+}
+
+function cerrarNotModal(){
+  $(".notificationDropdown").dropdown("toggle");
 }

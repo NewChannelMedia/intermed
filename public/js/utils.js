@@ -2328,7 +2328,6 @@ var idEspecialidad = '';
       });
       // carga nombre e id del medico
       $.post('/medicoDatos',function(data){
-        var nombreCompleto = data.Usuario.DatosGenerale.nombre+' '+data.Usuario.DatosGenerale.apellidoP+' '+data.Usuario.DatosGenerale.apellidoM;
         $("#nombreDoctor").text(nombre);
         $("#idMedico").text(usuario_id);
       });
