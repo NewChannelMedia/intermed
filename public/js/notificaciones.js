@@ -582,7 +582,6 @@ function socketManejadores() {
             content += '</div>';
           content += '</div>';
         }
-        console.log("RECORD "+record);
         if (content){
           pedirRecomendacion.unshift( {
             id: record.id,

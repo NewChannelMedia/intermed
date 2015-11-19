@@ -119,9 +119,9 @@ function recomendacion( object ,res, file ) {
     context: {
       name: object.nombre,
       correo: object.to,
-      enlace:  object.enlace,
-      usuario:object.usuario,
-      mensaje: object.mensaje,
+      enlace: object.enlace,
+      usuario: object.usuario,
+      mensaje: object.mensaje
     }
   };
   /*if ( object.enlace ) mailOptions.context.enlace = object.enlace;

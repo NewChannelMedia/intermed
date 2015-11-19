@@ -300,7 +300,6 @@ function actualizarSesion() {
           $( '#registroIncompleto' ).css( 'display', 'none' );
         }
 
-        console.log('INICIO: ' + data.session.inicio);
         $('#inicio').val(data.session.inicio);
 
         if ( data.session.fotoPerfil ) fotoPerfil = data.session.fotoPerfil;
@@ -371,7 +370,7 @@ function existeCorreo( correo ) {
         'email': correo
       },
       success: function ( data ) {
-        console.log( 'DATA ' + data.result );
+        //console.log( 'DATA ' + data.result );
         return data.result;
       },
       error: function ( jqXHR, textStatus, err ) {
@@ -812,7 +811,7 @@ function cargarInfoSesion() {
               break;
             case 'addPad':
               var padarray = {};
-              console.log( "Cambio pade" + cambioPadecimiento );
+              //console.log( "Cambio pade" + cambioPadecimiento );
               if ( cambioPadecimiento != "0" ) {
                 padarray = {
                   paciente_id: 1,
@@ -829,7 +828,7 @@ function cargarInfoSesion() {
               break;
             case 'addAle':
               var alearray = {};
-              console.log( "Cambio alergia" + cambioAlergia );
+              //console.log( "Cambio alergia" + cambioAlergia );
               if ( cambioAlergia != "0" ) {
                 alearray = {
                   paciente_id: 1,
@@ -956,7 +955,7 @@ $(document).ready(function(){
       var valorCampo = $( '#ingresaPadecimiento' ).val();
       if(valorCampo != "" ){
         $.post('/insertarPad',{valor:id_campo,valorCampo:valorCampo},function(e){
-          console.log(e);
+          //console.log(e);
           if( e != 'ok' ){
             alert("Padecimiento repetido inserte uno nuevo");
           }else{
@@ -1016,7 +1015,7 @@ function despachador( nameTa, acction, campoAmodificar, campoAmoficar2, nameInpu
       objecto: objectoInsert
     },
     success: function ( data ) {
-      console.log( "EXITOSO" );
+      //console.log( "EXITOSO" );
       if ( data == true ) {
         console.log( "AGREGAR EFECTOS PARA QUE SE QUITE" );
       }
@@ -1169,7 +1168,7 @@ function validateForm( tipoForm, nameForm ) {
           password = $( "#" + nameForm ).val();
           dato = String( password );
           for ( var i in dato ) {
-            console.log( "STRING:" + dato );
+            //console.log( "STRING:" + dato );
             var t = dato.length;
             if ( dato.length < 8 && ( dato[ 0 ] != " " || dato[ t ] || " " && dato[ i ] != " " ) ) {
               comprobando = false;
@@ -1578,7 +1577,7 @@ function agregarFavoritos( medico ) {
 }
 
 function eliminarFavoritos( medico, paciente_id , notificacion_id) {
-  console.log('ENTRO');
+  //console.log('ENTRO');
   var ruta = '/eliminarMedFav';
   var medicoID = '',
     pacienteID = '';
@@ -1772,7 +1771,7 @@ function cargarFavCol( usuario ) {
         $("#cargador").removeClass('hidden');
         $('#enviarAtodos').prop('disabled',true);
         $.post('/enviaCorreoRecomendados',{toMail:to,enlace:enlace,usuario:usuario,mensaje:mensaje},function(data,status){
-          if(status == "success"){
+          if(data){
             $('#enviarAtodos').prop('disabled',false);
             $("#cargador").addClass('hidden');
             $('.modal').modal('hide');

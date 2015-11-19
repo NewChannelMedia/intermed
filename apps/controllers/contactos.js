@@ -118,7 +118,6 @@ module.exports = {
 
       if ( object.medicoID ) {
         if (req.session.passport.user.tipoUsuario == "M"){
-          console.log( '--->ELIMNAR RELACIÓN MUTUA' )
             /*Si se trata de una relacion médico-médico eliminamos las relaciones por ambos lados*/
           models.Medico.findOne( {
             where: {
@@ -141,14 +140,12 @@ module.exports = {
       }
       else if ( object.pacienteID ) {
         if ( req.session.passport.user.tipoUsuario == "P" ) {
-          console.log( '--->ELIMNAR RELACIÓN MUTUA' )
             /*Si se trata de una relacion paciente-paciente eliminamos las relaciones por ambos lados*/
           models.Paciente.findOne( {
             where: {
               id: object.pacienteID
             }
           } ).then( function ( paciente ) {
-            console.log( 'PACIENTE: ' + JSON.stringify( paciente ) );
             var usuario_id = paciente.usuario_id;
             models.MedicoFavorito.destroy( {
               where: {
@@ -402,7 +399,6 @@ module.exports = {
   medicoRecomendado: function( req, res ){
     var d = new Date();
     var strDate = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds();
-    console.log("Fecha y Hora: "+strDate);
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
       for( var i in req.body.objeto ){
@@ -423,7 +419,6 @@ module.exports = {
   doctorRecomendado: function( req, res ){
     var d = new Date();
     var strDate = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds();
-    console.log("Fecha y Hora: "+strDate);
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
       models.Notificacion.create({
@@ -521,7 +516,6 @@ module.exports = {
   pedirRecomendacionMedico: function( req, res ){
     var d = new Date();
     var strDate = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds();
-    console.log("Fecha y Hora: "+strDate);
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
       //for( var i in req.body.idEspecialidad ){
@@ -603,7 +597,6 @@ module.exports = {
   enviarMedAPacientes: function( req, res ){
     var d = new Date();
     var strDate = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds();
-    console.log("Fecha y Hora: "+strDate);
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
       models.Notificacion.create({
@@ -626,7 +619,6 @@ module.exports = {
     var medicosArreglo = [];
     for( var i in cortando ){
       if( cortando[ i ] != "" ){
-        console.log("cortando: "+cortando);
         models.Medico.findAll({
           where:{id:cortando[i]},
           attributes:['id'],
