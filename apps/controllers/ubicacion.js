@@ -61,18 +61,37 @@ exports.encontrarPorCP = function (object, req, res) {
 };
 
 exports.obtieneLocalidades = function (object, req, res) {
-    models.Localidad.findAll({
+  console.log("ESTADO: "+object.estado_id+"\n"+"municipio_id "+object.municipio_id);
+  models.Ciudad.findAll({
+    where:{
+      municipio_id: object.municipio_id,
+      estado_id: object.estado_id
+    },
+    attributes:['id'],
+    include:[{
+      model: models.Localidad,
+      order: ['localidad'],
+      attributes: ['id', 'localidad']
+    }]
+  }).then( function( municipios){
+    console.log("MUNICIPIOS: "+JSON.stringify(municipios));
+    res.send({
+        'municipios': municipios
+    });
+  });
+    /*models.Localidad.findAll({
         where: {
-            estado_id: object.estado_id,
+            ciudad_id: object.estado_id,
             municipio_id: object.municipio_id
         },
         order: ['localidad'],
         attributes: ['id', 'localidad']
     }).then(function (municipios) {
+        console.log("MUNICIPIOS: "+JSON.stringify(municipios));
         res.send({
             'municipios': municipios
         });
-    });
+    });*/
 };
 
 exports.nuevaUbicacion = function (objects, req, res) {

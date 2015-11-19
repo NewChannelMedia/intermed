@@ -1990,7 +1990,7 @@ function obtenerCiudades() {
             data.municipio.forEach(function (record) {
                 document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.id + '">' + record.municipio + '</option>';
             });
-            AsignarCiudad();
+            //AsignarCiudad();
         },
         error: function (jqXHR, textStatus, err) {
             console.error('AJAX ERROR: ' + err);
@@ -2018,7 +2018,7 @@ function obtenerColonias() {
             data.municipios.forEach(function (record) {
                 document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
             });
-            AsignarColonia();
+            //AsignarColonia();
         },
         error: function (jqXHR, textStatus, err) {
             console.error('AJAX ERROR: ' + err);
