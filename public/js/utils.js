@@ -1612,19 +1612,7 @@ function eliminarFavoritos( medico, paciente_id , notificacion_id) {
         if ( notificacion_id ) {
           $( '#pre' + notificacion_id ).html( 'Rechazaste la solicitud de amistad de ' );
           $( '#post' + notificacion_id ).html( '' );
-          for ( var x in solicitudAmistad ) {
-            if ( solicitudAmistad[ x ].id == notificacion_id ) {
-              $( '#button' + notificacion_id ).html( '' );
-              solicitudesRechazadas.unshift( {
-                id: solicitudAmistad[ x ].id,
-                time: solicitudAmistad[ x ].time,
-                visto: solicitudAmistad[ x ].visto,
-                content: $( '#li' + notificacion_id ).html()
-              } );
-              solicitudAmistad.splice( x, 1 );
-              actualizarNotificaciones();
-            }
-          }
+          if (notificacion_id) $( '#button' + notificacion_id ).remove();
         }
       }
       else {
@@ -1949,19 +1937,7 @@ function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
         if ( notificacion_id ) {
           $( '#pre' + notificacion_id ).html( 'Aceptaste la solicitud de amistad de ' );
           $( '#post' + notificacion_id ).html( '' );
-          for ( var x in solicitudAmistad ) {
-            if ( solicitudAmistad[ x ].id == notificacion_id ) {
-              $( '#button' + notificacion_id ).html( '' );
-              solicitudesAceptadas.unshift( {
-                id: solicitudAmistad[ x ].id,
-                time: solicitudAmistad[ x ].time,
-                visto: solicitudAmistad[ x ].visto,
-                content: $( '#li' + notificacion_id ).html()
-              } );
-              solicitudAmistad.splice( x, 1 );
-              actualizarNotificaciones();
-            }
-          }
+          if (notificacion_id) $( '#button' + notificacion_id ).remove();
         }
       }
     },

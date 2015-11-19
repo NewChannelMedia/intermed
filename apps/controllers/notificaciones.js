@@ -485,7 +485,8 @@ exports.verNotificaciones = function ( req ) {
     where: {
       usuario_id: req.usuario_id,
       visto: 0,
-      tipoNotificacion_id: {$notBetween: [100, 200]}
+      tipoNotificacion_id: {$lt: 100},
+      inicio: {$lt: new Date().toISOString().slice(0, 19).replace('T', ' ')},
     }
   } ).then( function ( result ) {
     req.socket.emit( 'verNotificaciones', result );
@@ -505,102 +506,20 @@ exports.verNotificacionesInbox = function ( req ) {
   });
 }
 
-exports.scroll = function (object, req, res){
+exports.notificacionesScroll = function (object){
   models.Notificacion.findAll( {
     where: {
-      usuario_id: req.session.passport.user.id,
-      tipoNotificacion_id: {$notIn: [10, 11]},//Inbox
-      id: {not: [object.id]}
+      id: {$notIn: object.notificacionesId},
+      usuario_id: object.usuario_id,
+      tipoNotificacion_id: {$in: object.notificaciones,$lt: 100},
+      inicio: {$lt: object.maxfecha},
     },
-    limit: 4,
+    order: [ ['inicio', 'DESC']],
+    limit: 8,
     attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ],
     order: 'inicio DESC'
   } ).then( function ( result ) {
-    if (result.length > 0){
-      result = JSON.parse( JSON.stringify( result ) );
-      var length = result.length;
-      result.forEach( function ( record ) {
-        var tipoUsuario = '';
-        switch(record.tipoNotificacion_id) {
-            case 1:
-              tipoUsuario = "P";
-              break;
-            case 2:
-              tipoUsuario = "P";
-              break;
-            case 3:
-              tipoUsuario = "P";
-              break;
-            case 4:
-              tipoUsuario = "M";
-              break;
-            case 5:
-              tipoUsuario = "M";
-              break;
-            case 6:
-              tipoUsuario = "M";
-              break;
-            case 7:
-              tipoUsuario = "P";
-              break;
-            case 8:
-            tipoUsuario = "P";
-                break;
-            case 9:
-              tipoUsuario = "M";
-              break;
-        }
-        var paciente_id = '', medico_id = '';
-        if (tipoUsuario == "P"){
-          paciente_id = record.data;
-          record[ 'paciente_id' ] = paciente_id;
-          models.Paciente.findOne( {
-            where: {
-              id: paciente_id
-            },
-            attributes: [ 'id' ],
-            include: [ {
-              model: models.Usuario,
-              attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-              include: [ {
-                model: models.DatosGenerales,
-                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                          } ]
-                      } ]
-          } ).then( function ( usuario ) {
-            record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
-            if ( record === result[ result.length - 1 ] ) {
-              res.send(result);
-            }
-          } )
-        } else if (tipoUsuario == "M"){
-          medico_id = record.data;
-          record[ 'medico_id' ] = medico_id;
-
-          models.Medico.findOne( {
-            where: {
-              id: medico_id
-            },
-            attributes: [ 'id' ],
-            include: [ {
-              model: models.Usuario,
-              attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-              include: [ {
-                model: models.DatosGenerales,
-                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                          } ]
-                      } ]
-          } ).then( function ( usuario ) {
-            record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
-            if ( record === result[ result.length - 1 ] ) {
-              res.send(result);
-            }
-          } )
-        }
-      } );
-    } else {
-      res.send(JSON.parse(JSON.stringify([])));
-    }
+    formatearNotificacion(result,'notificacionesScroll',object);
   } )
 }
 
@@ -999,259 +918,294 @@ exports.configurarNotificacion = function (object, req, res){
 };
 
 
+exports.contarNuevasNotificaciones = function (object){
+    models.Notificacion.findAll( {
+      where: {
+        usuario_id: object.usuario_id,
+        tipoNotificacion_id: {$in: object.notificaciones,$lt: 100},
+        inicio: {$lt: new Date().toISOString().slice(0, 19).replace('T', ' ')},
+        visto: 0
+      },
+      attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ],
+      order: 'inicio DESC'
+    } ).then( function ( result ) {
+        object.socket.emit('contarNuevasNotificaciones',result.length);
+    } );
+}
+
+
 exports.buscarNotificaciones = function (object){
   models.Notificacion.findAll( {
     where: {
       usuario_id: object.usuario_id,
-      tipoNotificacion_id: {$in: object.notificaciones,$lt: 100}
+      tipoNotificacion_id: {$in: object.notificaciones,$lt: 100},
+      inicio: {$lt: new Date().toISOString().slice(0, 19).replace('T', ' ')},
     },
     limit: 8,
     attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ],
     order: 'inicio DESC'
   } ).then( function ( result ) {
-    if (result.length > 0){
-      result = JSON.parse( JSON.stringify( result ) );
-      var length = result.length;
-      var totalProcesados = 0;
-      result.forEach( function ( record ) {
-        var tipoUsuario = '';
-        console.log('tipoNotificacion_id: ' + record.tipoNotificacion_id);
-        switch(record.tipoNotificacion_id) {
-            case 1:
-              paciente_id = record.data;
-              record[ 'paciente_id' ] = paciente_id;
-              models.Paciente.findOne( {
-                where: {
-                  id: paciente_id
-                },
-                attributes: [ 'id' ],
-                include: [ {
-                  model: models.Usuario,
-                  attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-                  include: [ {
-                    model: models.DatosGenerales,
-                    attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                              } ]
-                          } ]
-              } ).then( function ( usuario ) {
-                totalProcesados++;
-                record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
-                console.log('tipoNotificacion_id: ' + record.tipoNotificacion_id + ' - totalProcesados: ' + totalProcesados + ' - length: ' + result.length);
-                if ( totalProcesados === result.length) {
-                  object.socket.emit('notificacionesEncontradas',result);
-                }
-              } );
-              break;
-            case 2:
-
-              paciente_id = record.data;
-              record[ 'paciente_id' ] = paciente_id;
-              models.Paciente.findOne( {
-                where: {
-                  id: paciente_id
-                },
-                attributes: [ 'id' ],
-                include: [ {
-                  model: models.Usuario,
-                  attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-                  include: [ {
-                    model: models.DatosGenerales,
-                    attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                              } ]
-                          } ]
-              } ).then( function ( usuario ) {
-                totalProcesados++;
-                console.log('tipoNotificacion_id: ' + record.tipoNotificacion_id + ' - totalProcesados: ' + totalProcesados + ' - length: ' + result.length);
-                record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
-                if ( totalProcesados === result.length) {
-                  object.socket.emit('notificacionesEncontradas',result);
-                }
-              } );
-              break;
-            case 3:
-
-              paciente_id = record.data;
-              record[ 'paciente_id' ] = paciente_id;
-              models.Paciente.findOne( {
-                where: {
-                  id: paciente_id
-                },
-                attributes: [ 'id' ],
-                include: [ {
-                  model: models.Usuario,
-                  attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-                  include: [ {
-                    model: models.DatosGenerales,
-                    attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                              } ]
-                          } ]
-              } ).then( function ( usuario ) {
-                totalProcesados++;
-                console.log('tipoNotificacion_id: ' + record.tipoNotificacion_id + ' - totalProcesados: ' + totalProcesados + ' - length: ' + result.length);
-                record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
-                if ( totalProcesados === result.length) {
-                  object.socket.emit('notificacionesEncontradas',result);
-                }
-              } );
-              break;
-            case 4:
-              medico_id = record.data;
-              record[ 'medico_id' ] = medico_id;
-
-              models.Medico.findOne( {
-                where: {
-                  id: medico_id
-                },
-                attributes: [ 'id' ],
-                include: [ {
-                  model: models.Usuario,
-                  attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-                  include: [ {
-                    model: models.DatosGenerales,
-                    attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                              } ]
-                          } ]
-              } ).then( function ( usuario ) {
-                totalProcesados++;
-                console.log('tipoNotificacion_id: ' + record.tipoNotificacion_id + ' - totalProcesados: ' + totalProcesados + ' - length: ' + result.length);
-                record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
-                if ( totalProcesados === result.length) {
-                  object.socket.emit('notificacionesEncontradas',result);
-                }
-              } )
-              break;
-            case 5:
-              medico_id = record.data;
-              record[ 'medico_id' ] = medico_id;
-
-              models.Medico.findOne( {
-                where: {
-                  id: medico_id
-                },
-                attributes: [ 'id' ],
-                include: [ {
-                  model: models.Usuario,
-                  attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-                  include: [ {
-                    model: models.DatosGenerales,
-                    attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                              } ]
-                          } ]
-              } ).then( function ( usuario ) {
-                totalProcesados++;
-                console.log('tipoNotificacion_id: ' + record.tipoNotificacion_id + ' - totalProcesados: ' + totalProcesados + ' - length: ' + result.length);
-                record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
-                if ( totalProcesados === result.length) {
-                  object.socket.emit('notificacionesEncontradas',result);
-                }
-              } )
-              break;
-            case 6:
-              medico_id = record.data;
-              record[ 'medico_id' ] = medico_id;
-
-              models.Medico.findOne( {
-                where: {
-                  id: medico_id
-                },
-                attributes: [ 'id' ],
-                include: [ {
-                  model: models.Usuario,
-                  attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-                  include: [ {
-                    model: models.DatosGenerales,
-                    attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                              } ]
-                          } ]
-              } ).then( function ( usuario ) {
-                totalProcesados++;
-                console.log('tipoNotificacion_id: ' + record.tipoNotificacion_id + ' - totalProcesados: ' + totalProcesados + ' - length: ' + result.length);
-                record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
-                if ( totalProcesados === result.length) {
-                  object.socket.emit('notificacionesEncontradas',result);
-                }
-              } )
-              break;
-            case 7:
-              paciente_id = record.data;
-              record[ 'paciente_id' ] = paciente_id;
-              models.Paciente.findOne( {
-                where: {
-                  id: paciente_id
-                },
-                attributes: [ 'id' ],
-                include: [ {
-                  model: models.Usuario,
-                  attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-                  include: [ {
-                    model: models.DatosGenerales,
-                    attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                              } ]
-                          } ]
-              } ).then( function ( usuario ) {
-                totalProcesados++;
-                console.log('tipoNotificacion_id: ' + record.tipoNotificacion_id + ' - totalProcesados: ' + totalProcesados + ' - length: ' + result.length);
-                record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
-                if ( totalProcesados === result.length) {
-                  object.socket.emit('notificacionesEncontradas',result);
-                }
-              } );
-              break;
-            case 8:
-              paciente_id = record.data;
-              record[ 'paciente_id' ] = paciente_id;
-              models.Paciente.findOne( {
-                where: {
-                  id: paciente_id
-                },
-                attributes: [ 'id' ],
-                include: [ {
-                  model: models.Usuario,
-                  attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-                  include: [ {
-                    model: models.DatosGenerales,
-                    attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                              } ]
-                          } ]
-              } ).then( function ( usuario ) {
-                totalProcesados++;
-                console.log('tipoNotificacion_id: ' + record.tipoNotificacion_id + ' - totalProcesados: ' + totalProcesados + ' - length: ' + result.length);
-                record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
-                if ( totalProcesados === result.length) {
-                  object.socket.emit('notificacionesEncontradas',result);
-                }
-              } );
-              break;
-            case 9:
-              medico_id = record.data;
-              record[ 'medico_id' ] = medico_id;
-
-              models.Medico.findOne( {
-                where: {
-                  id: medico_id
-                },
-                attributes: [ 'id' ],
-                include: [ {
-                  model: models.Usuario,
-                  attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-                  include: [ {
-                    model: models.DatosGenerales,
-                    attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                              } ]
-                          } ]
-              } ).then( function ( usuario ) {
-                totalProcesados++;
-                console.log('tipoNotificacion_id: ' + record.tipoNotificacion_id + ' - totalProcesados: ' + totalProcesados + ' - length: ' + result.length);
-                record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
-                if ( totalProcesados === result.length) {
-                  object.socket.emit('notificacionesEncontradas',result);
-                }
-              } )
-              break;
-        }
-      });
-    } else {
-      console.log('NO NOTIFICACIONES');
-    }
+    formatearNotificacion(result,'notificacionesEncontradas',object);
   } )
 };
+
+
+
+exports.traerNuevasNotificaciones = function (object){
+  models.Notificacion.findAll( {
+    where: {
+      usuario_id: object.usuario_id,
+      tipoNotificacion_id: {$in: object.notificaciones,$lt: 100},
+      inicio: {$lt: new Date().toISOString().slice(0, 19).replace('T', ' ')},
+      visto: 0
+    },
+    limit: 8,
+    attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ],
+    order: 'inicio ASC'
+  } ).then( function ( result ) {
+    formatearNotificacion(result,'traerNuevasNotificaciones',object);
+  } )
+};
+
+
+function formatearNotificacion(result, emit, object){
+  if (result.length > 0){
+    result = JSON.parse( JSON.stringify( result ) );
+    var length = result.length;
+    var totalProcesados = 0;
+    result.forEach( function ( record ) {
+      var tipoUsuario = '';
+      switch(record.tipoNotificacion_id) {
+          case 1:
+            paciente_id = record.data;
+            record[ 'paciente_id' ] = paciente_id;
+            models.Paciente.findOne( {
+              where: {
+                id: paciente_id
+              },
+              attributes: [ 'id' ],
+              include: [ {
+                model: models.Usuario,
+                attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+                include: [ {
+                  model: models.DatosGenerales,
+                  attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                            } ]
+                        } ]
+            } ).then( function ( usuario ) {
+              totalProcesados++;
+              record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            } );
+            break;
+          case 2:
+            paciente_id = record.data;
+            record[ 'paciente_id' ] = paciente_id;
+            models.Paciente.findOne( {
+              where: {
+                id: paciente_id
+              },
+              attributes: [ 'id' ],
+              include: [ {
+                model: models.Usuario,
+                attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+                include: [ {
+                  model: models.DatosGenerales,
+                  attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                            } ]
+                        } ]
+            } ).then( function ( usuario ) {
+              totalProcesados++;
+              record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            } );
+            break;
+          case 3:
+
+            paciente_id = record.data;
+            record[ 'paciente_id' ] = paciente_id;
+            models.Paciente.findOne( {
+              where: {
+                id: paciente_id
+              },
+              attributes: [ 'id' ],
+              include: [ {
+                model: models.Usuario,
+                attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+                include: [ {
+                  model: models.DatosGenerales,
+                  attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                            } ]
+                        } ]
+            } ).then( function ( usuario ) {
+              totalProcesados++;
+              record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            } );
+            break;
+          case 4:
+            medico_id = record.data;
+            record[ 'medico_id' ] = medico_id;
+
+            models.Medico.findOne( {
+              where: {
+                id: medico_id
+              },
+              attributes: [ 'id' ],
+              include: [ {
+                model: models.Usuario,
+                attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+                include: [ {
+                  model: models.DatosGenerales,
+                  attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                            } ]
+                        } ]
+            } ).then( function ( usuario ) {
+              totalProcesados++;
+              record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            } )
+            break;
+          case 5:
+            medico_id = record.data;
+            record[ 'medico_id' ] = medico_id;
+
+            models.Medico.findOne( {
+              where: {
+                id: medico_id
+              },
+              attributes: [ 'id' ],
+              include: [ {
+                model: models.Usuario,
+                attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+                include: [ {
+                  model: models.DatosGenerales,
+                  attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                            } ]
+                        } ]
+            } ).then( function ( usuario ) {
+              totalProcesados++;
+              record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            } )
+            break;
+          case 6:
+            medico_id = record.data;
+            record[ 'medico_id' ] = medico_id;
+
+            models.Medico.findOne( {
+              where: {
+                id: medico_id
+              },
+              attributes: [ 'id' ],
+              include: [ {
+                model: models.Usuario,
+                attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+                include: [ {
+                  model: models.DatosGenerales,
+                  attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                            } ]
+                        } ]
+            } ).then( function ( usuario ) {
+              totalProcesados++;
+              record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            } )
+            break;
+          case 7:
+            paciente_id = record.data;
+            record[ 'paciente_id' ] = paciente_id;
+            models.Paciente.findOne( {
+              where: {
+                id: paciente_id
+              },
+              attributes: [ 'id' ],
+              include: [ {
+                model: models.Usuario,
+                attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+                include: [ {
+                  model: models.DatosGenerales,
+                  attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                            } ]
+                        } ]
+            } ).then( function ( usuario ) {
+              totalProcesados++;
+              record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            } );
+            break;
+          case 8:
+            paciente_id = record.data;
+            record[ 'paciente_id' ] = paciente_id;
+            models.Paciente.findOne( {
+              where: {
+                id: paciente_id
+              },
+              attributes: [ 'id' ],
+              include: [ {
+                model: models.Usuario,
+                attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+                include: [ {
+                  model: models.DatosGenerales,
+                  attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                            } ]
+                        } ]
+            } ).then( function ( usuario ) {
+              totalProcesados++;
+              record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            } );
+            break;
+          case 9:
+            medico_id = record.data;
+            record[ 'medico_id' ] = medico_id;
+
+            models.Medico.findOne( {
+              where: {
+                id: medico_id
+              },
+              attributes: [ 'id' ],
+              include: [ {
+                model: models.Usuario,
+                attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+                include: [ {
+                  model: models.DatosGenerales,
+                  attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                            } ]
+                        } ]
+            } ).then( function ( usuario ) {
+              totalProcesados++;
+              record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            } )
+            break;
+        default:
+            console.log('Notificacion sin procesar: [tipoNotificacion_id: '+ record.tipoNotificacion_id +']');
+            totalProcesados++;
+            if ( totalProcesados === result.length) {
+              object.socket.emit(emit,result);
+            }
+      }
+    });
+  } else {
+    object.socket.emit(emit,[]);
+  }
+}

@@ -1,13 +1,13 @@
 var socket = io();
 
 $('document').ready(function(){
-  socket.emit('buscarNotificaciones');
+  socket.emit('contarNuevasNotificaciones');
   socket.emit('inbox');
   var notificacionesInterval;
   clearInterval(notificacionesInterval);
   notificacionesInterval = setInterval(function () {
         try {
-          socket.emit('buscarNotificaciones');
+          socket.emit('contarNuevasNotificaciones');
           socket.emit('inbox');
         }
         catch ( err ) {
@@ -154,14 +154,7 @@ function ordenarPorFecha( a, b ) {
   return d - c;
 }
 
-var totalNotificaciones = [],
-  solicitudAmistad = [],
-  solicitudAmistadAceptada = [],
-  solicitudesAceptadas = [],
-  agregadoMedicoFavorito = [],
-  solicitudesRechazadas = [],
-  medicoRecomendado = [];
-
+var notificacionesId = [];
 var InboxListLoaded = [];
 
 
@@ -260,17 +253,6 @@ function socketManejadores() {
       actualizarNotificaciones();
     });
 
-    socket.on( 'verNotificaciones', function ( data ) {
-      $( '#totalNotificaciones' ).html( '' );
-      $( '#totalNotificaciones' ).addClass( 'hidden invisible' );
-      totalNotificaciones.forEach( function ( notificacion ) {
-        notificacion.visto = 1;
-      } );
-      setTimeout( function () {
-        actualizarNotificaciones();
-      }, 3000 );
-
-    } );
     socket.on( 'medicoRecomendado', function ( data ) {
       medicoRecomendado = [];
       data.forEach( function ( record ) {
@@ -492,14 +474,76 @@ function socketManejadores() {
       actualizarNotificaciones();
     });
 
+    socket.on('contarNuevasNotificaciones',function(total){
+      if (total>0){
+        $( '#totalNotificaciones' ).html( total );
+        $('#totalNotificaciones').removeClass('invisible hidden');
+        if ($('.notificationDropdown').is(':visible')){
+          socket.emit('traerNuevasNotificaciones');
+        }
+      } else {
+        $( '#totalNotificaciones' ).html('');
+        $('#totalNotificaciones').addClass('invisible hidden');
+      }
+    });
+
     socket.on('notificacionesEncontradas',function(notificaciones){
+      $( '#notificacinesList' ).html('');
       notificaciones.forEach( function ( record ){
+        notificacionesId.push(record.id);
         var contenido = formatearNotificacion(record);
         if (contenido != ''){
-          $( '#notificacinesList' ).append( '<li class="media" id="li' + record.id + '">' + contenido + '</li>' );
+          $( '#notificacinesList' ).append( contenido );
         }
       });
       $('#notificacinesList').append('<a class="_next" href="#"></a>');
+
+      var scroll = $('#notificacinesList').iscroll({
+        onBeginRequest:function(request){
+          $( "#notificacinesList" ).find( "a._next" ).remove();
+          socket.emit('notificacionesScroll',notificacionesId, $('.not-fecha').last().text());
+        }
+      });
+      socket.emit('verNotificaciones');
+      setTimeout(function(){
+        socket.emit('contarNuevasNotificaciones');
+      },300);
+    });
+
+    socket.on('notificacionesScroll',function(notificaciones){
+      notificaciones.forEach( function ( record ){
+        notificacionesId.push(record.id);
+        var contenido = formatearNotificacion(record);
+        if (contenido != ''){
+          $( '#notificacinesList' ).append( contenido);
+        }
+      });
+      if (notificaciones.length>0){
+        $('#notificacinesList').append('<a class="_next" href="#"></a>');
+
+        var scroll = $('#notificacinesList').iscroll({
+          onBeginRequest:function(request){
+            $( "#notificacinesList" ).find( "a._next" ).remove();
+            socket.emit('notificacionesScroll',notificacionesId, $('.not-fecha').last().text());
+          }
+        });
+      }
+      socket.emit('verNotificaciones');
+      setTimeout(function(){
+        socket.emit('contarNuevasNotificaciones');
+      },300);
+    });
+
+    socket.on('traerNuevasNotificaciones',function(notificaciones){
+      socket.emit('verNotificaciones');
+      socket.emit('contarNuevasNotificaciones');
+      notificaciones.forEach( function ( record ){
+        notificacionesId.push(record.id);
+        var contenido = formatearNotificacion(record);
+        if (contenido != ''){
+          $( '#notificacinesList' ).prepend( contenido);
+        }
+      });
     });
 }
 
@@ -510,6 +554,11 @@ function formatearNotificacion(record){
   } else {
     tipo = 'paciente';
   }
+  var visto = '';
+  if (record.visto == 0){
+    visto = '  style="background-color:#DDD" ';
+  }
+
   var fecha = formattedDate( record.inicio );
   if (record[tipo]){
     not = '<div class="media-left">';
@@ -520,7 +569,7 @@ function formatearNotificacion(record){
       nombreCompleto = 'Dr. ' + nombreCompleto;
     }
 
-    var mediaObjectFecha = '<div class="text-left" style="margin-top:-5px;"><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + fecha + '</span></div>';
+    var mediaObjectFecha = '<div class="text-left" style="margin-top:-5px;"><span class="not-fecha hidden invisible">'+ record.inicio.slice(0, 19).replace('T', ' ') +'</span><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + fecha + '</span></div>';
 
     var mediaObjectFotoPerfil = '<a href= "/perfil/' + usuarioUrl + '"><img class="media-object" src="' + fotoPerfil + '" style="width: 50px;"></div></a>';
 
@@ -630,9 +679,11 @@ function formatearNotificacion(record){
           break;
       case 14:
           //pedirRecomendacion
-          not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');" class="recomendando">'+ fotoPerfil+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');" class="recomendando">'+ nombreCompleto +' te ha pedido las siguientes recomendaciones</a>'+ mediaObjectFecha +'</div>';
+          not += '<a href="#" onclick="presionando(\'#recomendandoAndo\');" class="recomendando">'+ fotoPerfil+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');" class="recomendando">'+ nombreCompleto +' te ha pedido las siguientes recomendaciones</a>'+ mediaObjectFecha +'</div>';
         }
       }
+    not+='</div>';
+    not = '<li class="media" id="li' + record.id + '" '+ visto +'>' + not + '</li>'
     return not;
 }
 
@@ -648,6 +699,7 @@ $(document).ready(function(){
     }
 });
 
+var notificacionesTotal = [];
 
 function verTodasNotificaciones(){
   var respuesta = false;
@@ -919,4 +971,16 @@ if (window.location.href.indexOf("/notificaciones/configuracion") > 0){
         }
       });
     }
+}
+
+
+function mostrarNotificaciones(){
+  if (socket){
+    socket.emit('contarNuevasNotificaciones');
+    $('#notificacinesList').html('<li class="text-center"><div class="throbber-loader" style="margin-top:10px">…</div></li>');
+    setTimeout(function(){
+      socket.emit('buscarNotificaciones');
+    },100);
+
+  }
 }
