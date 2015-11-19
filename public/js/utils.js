@@ -574,7 +574,6 @@ function obtenerCP() {
       'localidad_id': document.getElementById( 'slc_colonias' ).value
     },
     success: function ( data ) {
-      console.log("DATA SI: "+JSON.stringify(data));
       document.getElementById( 'nmb_cp' ).value = data.CP;
     },
     error: function ( jqXHR, textStatus, err ) {
