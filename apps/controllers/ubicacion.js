@@ -46,21 +46,17 @@ exports.obtieneCiudades = function (object, req, res) {
 };
 
 exports.encontrarPorCP = function (object, req, res) {
-    console.log("LOCALIDAD ID: "+object.localidad_id);
     models.Localidad.findOne({
         where: {
             id: object.localidad_id
         },
         attributes: ['CP']
     }).then(function (localidad) {
-        res.send({
-            'cp': localidad.CP
-        });
+        res.send(localidad);
     });
 };
 
 exports.obtieneLocalidades = function (object, req, res) {
-  console.log("ESTADO: "+object.estado_id+"\n"+"municipio_id "+object.municipio_id);
   models.Localidad.findAll({
     where:{
       estado_id:object.estado_id,
