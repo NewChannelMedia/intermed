@@ -124,9 +124,9 @@ function recomendacion( object ,res, file ) {
       mensaje: object.mensaje
     }
   };
-  /*if ( object.enlace ) mailOptions.context.enlace = object.enlace;
+  if ( object.enlace ) mailOptions.context.enlace = object.enlace;
   if ( object.nombreSesion ) mailOptions.context.nombresesion = object.nombreSesion;
-  if ( object.mensaje ) mailOptions.context.mensaje = object.mensaje;*/
+  if ( object.mensaje ) mailOptions.context.mensaje = object.mensaje;
 
   var transporter = nodemailer.createTransport( smtpTransport( datos ) );
   transporter.use( 'compile', hbs( options ) );
