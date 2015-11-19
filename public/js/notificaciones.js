@@ -1,60 +1,22 @@
 var socket = io();
-var notificaciones = [];
-var notificacionesScroll = [];
-var notificacionesTotal = [];
-var doctorRecomendado = [];
-var pedirRecomendacion = [];
-var tuRecomendacion = [];
 
-//Manejar notificaciones
-$.ajax( {
-  url: '/notificaciones',
-  type: 'POST',
-  dataType: "json",
-  cache: false,
-  success: function ( data ) {
-    if ( data ) {
-      notificaciones.forEach( function ( notificacion ) {
-        clearInterval( notificacion.id );
-      } );
-      notificaciones = [];
-
-      if ( Object.prototype.toString.call( data ) === '[object Array]' ) {
-        if ( data ) {
-          data.forEach( function ( record ) {
-            if ( record.interno) {
-              socket.emit( record.tipo );
-              //console.log( '[' + new Date().toLocaleString().substring( 0, 18 ) + '] Revisar: ' + record.tipo );
-
-              var idInterval = setInterval(
-                function () {
-                      try {
-                        socket.emit( record.tipo );
-                        //console.log( '[' + new Date().toLocaleString().substring( 0, 18 ) + '] Revisar: ' + record.tipo );
-                      }
-                      catch ( err ) {
-                        console.log( 'No se puede conectar con el servidor' );
-                      }
-                }, ( parseInt( record.intervalo ) * 1000 ) );
-              notificaciones.push( {
-                id: idInterval,
-                tipoNotificacion_id: record.id,
-                tipo: record.tipo,
-                interno: record.interno,
-                push: record.push,
-                mail: record.mail
-              } );
-            }
-          } );
-          socketManejadores();
+$('document').ready(function(){
+  socket.emit('buscarNotificaciones');
+  socket.emit('inbox');
+  var notificacionesInterval;
+  clearInterval(notificacionesInterval);
+  notificacionesInterval = setInterval(function () {
+        try {
+          socket.emit('buscarNotificaciones');
+          socket.emit('inbox');
         }
-      }
-    }
-  },
-  error: function ( jqXHR, textStatus, err ) {
-    console.error( 'AJAX ERROR: ' + err );
-  }
-} );
+        catch ( err ) {
+          console.log( 'No se puede conectar con el servidor' );
+        }
+  }, ( 10000 ) );
+  socketManejadores();
+});
+
 
 function formattedDate( date ) {
   date = new Date( date );
@@ -97,6 +59,9 @@ function formattedDate( date ) {
   }
 }
 
+
+function actualizarNotificaciones() {}
+/*
 function actualizarNotificaciones() {
     if (!$('.notificationDropdown').is(':visible')){
         $( '#notificacinesList' ).html( '' );
@@ -179,9 +144,9 @@ function actualizarNotificaciones() {
             notificacion.visto = 1;
           } );
         },1000);
-      }*/
+      }*//*
     }
-}
+}*/
 
 function ordenarPorFecha( a, b ) {
   var c = new Date( a.time );
@@ -525,6 +490,16 @@ function socketManejadores() {
         }
       });
       actualizarNotificaciones();
+    });
+
+    socket.on('notificacionesEncontradas',function(notificaciones){
+      notificaciones.forEach( function ( record ){
+        var contenido = formatearNotificacion(record);
+        if (contenido != ''){
+          $( '#notificacinesList' ).append( '<li class="media" id="li' + record.id + '">' + contenido + '</li>' );
+        }
+      });
+      $('#notificacinesList').append('<a class="_next" href="#"></a>');
     });
 }
 

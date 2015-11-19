@@ -1,4 +1,5 @@
 var intermed = require( '../apps/controllers/Intermed' );
+var models = require( '../apps/models' );
 
 var io = function ( io, bundle, ioPassport ) {
   io.use( bundle.cookieParser() );
@@ -237,6 +238,55 @@ var io = function ( io, bundle, ioPassport ) {
             UsuarioUrl: object
           };
           intermed.callController( 'usuarios', 'obtenerUsuarioId', req );
+      });
+
+      socket.on('buscarNotificaciones',function (object){
+        var req = {
+          socket: socket,
+          usuario_id: socket.request.cookies.intermed_sesion.id,
+          UsuarioUrl: object
+        };
+
+        models.TipoNotificacion.findAll( {
+          where: {
+            tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
+          }
+        } ).
+        then( function ( result ) {
+          models.ConfNotUsu.findAll( {
+            where: {
+              usuario_id: req.usuario_id
+            }
+          } ).then( function ( confPersonal ) {
+            for ( var key in confPersonal ) {
+              for ( var key2 in result ) {
+                if (result[ key2 ].configurable === 1){
+                  if ( result[ key2 ].id === confPersonal[ key ].tipoNotificacion_id) {
+                    result[ key2 ].interno = confPersonal[ key ].interno;
+                    result[ key2 ].push = confPersonal[ key ].push;
+                    result[ key2 ].mail = confPersonal[ key ].mail;
+                  }
+                }
+              }
+            }
+            var notificaciones = [];
+            for (var key in result){
+              if (result[key].interno == 1){
+                notificaciones.push(result[key].id);
+              }
+            }
+            if (notificaciones.length > 0){
+                var req = {
+                  socket: socket,
+                  usuario_id: socket.request.cookies.intermed_sesion.id,
+                  tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario,
+                  notificaciones: notificaciones
+                };
+                intermed.callController( 'notificaciones', 'buscarNotificaciones', req );
+            }
+          } )
+        } );
+        console.log('buscarNotificaciones');
       });
     }
   } );
