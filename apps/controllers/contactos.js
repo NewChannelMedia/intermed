@@ -254,6 +254,7 @@ module.exports = {
   },
 
   aceptarInvitacion: function ( object, req, res ) {
+    console.log('OBJECT: ' + JSON.stringify(object));
     if ( req.session.passport.user ) {
       var condiciones = [];
       if (object.pacienteID){
