@@ -15,7 +15,7 @@ module.exports = function ( sequelize, DataTypes ) {
   }, {
     classMethods: {
       associate: function ( models ) {
-        Estado.hasMany( models.Ciudad );
+        //Estado.hasMany( models.Ciudad );
         Estado.hasMany( models.Municipio );
         Estado.hasMany( models.Localidad );
       }

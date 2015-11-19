@@ -1988,7 +1988,7 @@ function obtenerCiudades() {
         },
         success: function (data) {
             data.municipio.forEach(function (record) {
-                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.id + '">' + record.municipio + '</option>';
+                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.municipio_id + '">' + record.municipio + '</option>';
             });
             //AsignarCiudad();
         },
