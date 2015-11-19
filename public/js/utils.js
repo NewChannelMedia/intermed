@@ -897,86 +897,88 @@ $(document).ready(function(){
   //cuando den click en el boton de agregar padecimiento debe de checar si existe y mostrar
   // la opcion si es nuevo insertarlo
   $(document).ready(function(){
-    $( '#ingresaPadecimiento' ).autocomplete({
-      minLength:0,
-      source:function( request, response ){
-        $.post('/autocompletar',{valor: request.term},function(pos){
-          var total = [];
-          $.each(pos,function(index, valor){
-            total.push({
-              'name': valor.padecimiento,
-              'value': valor.id,
-              'label': valor.padecimiento
+    if( $('#recomendar').attr('valor') === "verdadero" ){
+      $( '#ingresaPadecimiento' ).autocomplete({
+        minLength:0,
+        source:function( request, response ){
+          $.post('/autocompletar',{valor: request.term},function(pos){
+            var total = [];
+            $.each(pos,function(index, valor){
+              total.push({
+                'name': valor.padecimiento,
+                'value': valor.id,
+                'label': valor.padecimiento
+              });
             });
+             response(total);
           });
-           response(total);
-        });
-      },
-      focus:function(event, ui){
-        $("#ingresaPadecimiento").val(ui.item.label);
-        return false;
-      },
-      select:function(event, ui){
-        $( '#project-id' ).val(ui.item.value);
-        $("#ingresaPadecimiento").html('');
-        return false;
-      }
-    }).autocomplete('instance')._renderItem = function( ul, item){
-      return $( '<li>' ).append('<p>'+item.label+'</p>').appendTo(ul);
-    };
-    $("#ingresaAlergia").autocomplete({
-      minLength:0,
-      source:function( request, response ){
-        $.post('/autocompletarA',{valor: request.term},function(pos){
-          var total = [];
-          $.each(pos,function(index, valor){
-            total.push({
-              'name': valor.alergia,
-              'value': valor.id,
-              'label': valor.alergia
+        },
+        focus:function(event, ui){
+          $("#ingresaPadecimiento").val(ui.item.label);
+          return false;
+        },
+        select:function(event, ui){
+          $( '#project-id' ).val(ui.item.value);
+          $("#ingresaPadecimiento").html('');
+          return false;
+        }
+      }).autocomplete('instance')._renderItem = function( ul, item){
+        return $( '<li>' ).append('<p>'+item.label+'</p>').appendTo(ul);
+      };
+      $("#ingresaAlergia").autocomplete({
+        minLength:0,
+        source:function( request, response ){
+          $.post('/autocompletarA',{valor: request.term},function(pos){
+            var total = [];
+            $.each(pos,function(index, valor){
+              total.push({
+                'name': valor.alergia,
+                'value': valor.id,
+                'label': valor.alergia
+              });
             });
+             response(total);
           });
-           response(total);
-        });
-      },
-      focus:function(event, ui){
-        $("#ingresaAlergia").val(ui.item.label);
-        return false;
-      },
-      select:function(event, ui){
-        $( '#id-project' ).val(ui.item.value);
-        return false;
-      }
-    }).autocomplete('instance')._renderItem = function( ul, item){
-      return $( '<li>' ).append('<p>'+item.label+'</p>').appendTo(ul);
-    };
-    $( '#addPadecimiento' ).click(function(){
-      var id_campo = $( '#project-id' ).val();
-      var valorCampo = $( '#ingresaPadecimiento' ).val();
-      if(valorCampo != "" ){
-        $.post('/insertarPad',{valor:id_campo,valorCampo:valorCampo},function(e){
-          //console.log(e);
-          if( e != 'ok' ){
-            alert("Padecimiento repetido inserte uno nuevo");
-          }else{
-            alert("Padecimiento guardado");
-          }
-        });
-      }
-    });
-    $( "#addAlergia" ).click(function(){
-      var id_campo = $( "#id-project" ).val();
-      var valorCampo = $( "#ingresaAlergia" ).val();
-      if( valorCampo != "" ){
-        $.post('/insertAler',{id_campo:id_campo,valorCampo:valorCampo},function(e){
-          if( e == "ok" ){
-            alert("Alergia guardada");
-          }else{
-            alert("Ud. Ya ha ingresado esta alergia ingrese una nueva por favor");
-          }
-        });
-      }
-    });
+        },
+        focus:function(event, ui){
+          $("#ingresaAlergia").val(ui.item.label);
+          return false;
+        },
+        select:function(event, ui){
+          $( '#id-project' ).val(ui.item.value);
+          return false;
+        }
+      }).autocomplete('instance')._renderItem = function( ul, item){
+        return $( '<li>' ).append('<p>'+item.label+'</p>').appendTo(ul);
+      };
+      $( '#addPadecimiento' ).click(function(){
+        var id_campo = $( '#project-id' ).val();
+        var valorCampo = $( '#ingresaPadecimiento' ).val();
+        if(valorCampo != "" ){
+          $.post('/insertarPad',{valor:id_campo,valorCampo:valorCampo},function(e){
+            //console.log(e);
+            if( e != 'ok' ){
+              alert("Padecimiento repetido inserte uno nuevo");
+            }else{
+              alert("Padecimiento guardado");
+            }
+          });
+        }
+      });
+      $( "#addAlergia" ).click(function(){
+        var id_campo = $( "#id-project" ).val();
+        var valorCampo = $( "#ingresaAlergia" ).val();
+        if( valorCampo != "" ){
+          $.post('/insertAler',{id_campo:id_campo,valorCampo:valorCampo},function(e){
+            if( e == "ok" ){
+              alert("Alergia guardada");
+            }else{
+              alert("Ud. Ya ha ingresado esta alergia ingrese una nueva por favor");
+            }
+          });
+        }
+      });
+    }
   });
 //<-- fin autocompletar -->
 //<-------------- OSCAR --------------------------->
@@ -1734,6 +1736,7 @@ function cargarFavCol( usuario ) {
       // con ajax se hace la peticion a la url la cual me mostrara la informacion en una tabla con
       // la lista de mis contactos
       $.post('/contactosRecomendados',function(data){
+        $('#recomendar').attr('valor','verdadero');
         //Si nos dejan solitos nos amamos
         var html = "";
         var nombreTodo="";
