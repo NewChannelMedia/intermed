@@ -50,33 +50,9 @@ exports.inbox = function ( req ) {
       visto: 0,
       tipoNotificacion_id: numNot
     },
-    attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
-    group: ['data'],
-    order: 'inicio DESC'
+    group: ['data']
   } ).then( function ( result ) {
-    if (result.length > 0){
-      result = JSON.parse( JSON.stringify( result ) );
-      var length = result.length;
-      result.forEach( function ( record ) {
-          models.Usuario.findOne( {
-            where: {
-              id: record.data
-            },
-            attributes: [ 'id', 'tipoNotificacion_id','data', 'inicio', 'visto' ],
-            include: [ {
-                model: models.DatosGenerales,
-                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                } ]
-          } ).then( function ( usuario ) {
-            record[ 'usuario' ] = JSON.parse( JSON.stringify( usuario ) );
-            if ( record === result[ result.length - 1 ] ) {
-              req.socket.emit( 'inbox', result );
-            }
-          } )
-      })
-    } else {
-      req.socket.emit( 'inbox', [] );
-    }
+    req.socket.emit( 'inbox', result.length );
   })
 }
 
@@ -110,12 +86,13 @@ exports.verNotificacionesInbox = function ( req ) {
 }
 
 exports.notificacionesScroll = function (object){
+  console.log('BEGIN REQUEST');
   models.Notificacion.findAll( {
     where: {
       id: {$notIn: object.notificacionesId},
       usuario_id: object.usuario_id,
       tipoNotificacion_id: {$in: object.notificaciones,$lt: 100},
-      inicio: {$lt: object.maxfecha},
+      inicio: {$lte: object.maxfecha},
     },
     order: [ ['inicio', 'DESC']],
     limit: 5,
@@ -133,9 +110,9 @@ exports.cargarNotificacionesList = function (object){
       whereid = {id: {not: [object.notificacionesId]}}
     }
     if (object.maxfecha && object.maxfecha != "") {
-      wherefecha = {inicio: {$lt: object.maxfecha}}
+      wherefecha = {inicio: {$lte: object.maxfecha}}
     } else {
-      wherefecha = {inicio: {$lt: new Date().toISOString().slice(0, 19).replace('T', ' ')}}
+      wherefecha = {inicio: {$lte: new Date().toISOString().slice(0, 19).replace('T', ' ')}}
     }
     if (object.limit) {
       limit = object.limit
@@ -158,114 +135,6 @@ exports.cargarNotificacionesList = function (object){
     } );
 }
 
-exports.cargarNotificaciones = function ( object, req, res ) {
-  if (!req.session.passport.user) res.send(JSON.parse(JSON.stringify({'result':'error'})));
-  var whereid = new Array();
-  var limit = 0;
-  if (object.id && object.id!= "" && object.id != null) {
-    whereid = {id: {not: [object.id]}}
-  }
-  if (object.limit) {
-    limit = object.limit
-  }
-  var where = new Array(models.sequelize.and(
-    {usuario_id: req.session.passport.user.id},
-    {tipoNotificacion_id: {$notBetween: [100, 200]}},//Inbox,,
-    whereid
-  ));
-  models.Notificacion.findAll( {
-    where: where,
-    limit: limit,
-    attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ],
-    order: 'inicio DESC'
-  } ).then( function ( result ) {
-    if (result.length > 0){
-      result = JSON.parse( JSON.stringify( result ) );
-      var length = result.length;
-      result.forEach( function ( record ) {
-        var tipoUsuario = '';
-        switch(record.tipoNotificacion_id) {
-            case 1:
-              tipoUsuario = "P";
-              break;
-            case 2:
-              tipoUsuario = "P";
-              break;
-            case 3:
-              tipoUsuario = "P";
-              break;
-            case 4:
-              tipoUsuario = "M";
-              break;
-            case 5:
-              tipoUsuario = "M";
-              break;
-            case 6:
-              tipoUsuario = "M";
-              break;
-            case 7:
-              tipoUsuario = "P";
-              break;
-            case 8:
-            tipoUsuario = "P";
-                break;
-            case 9:
-              tipoUsuario = "M";
-              break;
-        }
-        var paciente_id = '', medico_id = '';
-        if (tipoUsuario == "P"){
-          paciente_id = record.data;
-          record[ 'paciente_id' ] = paciente_id;
-          models.Paciente.findOne( {
-            where: {
-              id: paciente_id
-            },
-            attributes: [ 'id' ],
-            include: [ {
-              model: models.Usuario,
-              attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-              include: [ {
-                model: models.DatosGenerales,
-                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                          } ]
-                      } ]
-          } ).then( function ( usuario ) {
-            record[ 'paciente' ] = JSON.parse( JSON.stringify( usuario ) );
-            if ( record === result[ result.length - 1 ] ) {
-              res.send(result);
-            }
-          } )
-        } else if (tipoUsuario == "M"){
-          medico_id = record.data;
-          record[ 'medico_id' ] = medico_id;
-
-          models.Medico.findOne( {
-            where: {
-              id: medico_id
-            },
-            attributes: [ 'id' ],
-            include: [ {
-              model: models.Usuario,
-              attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-              include: [ {
-                model: models.DatosGenerales,
-                attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                          } ]
-                      } ]
-          } ).then( function ( usuario ) {
-            record[ 'medico' ] = JSON.parse( JSON.stringify( usuario ) );
-            if ( record === result[ result.length - 1 ] ) {
-              res.send(result);
-            }
-          } )
-        }
-      } );
-    } else {
-      res.send({});
-    }
-  } )
-};
 function getDateTime() {
   var date = new Date();
   var hour = date.getHours();
