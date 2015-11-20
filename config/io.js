@@ -1,4 +1,5 @@
 var intermed = require( '../apps/controllers/Intermed' );
+var models = require( '../apps/models' );
 
 var io = function ( io, bundle, ioPassport ) {
   io.use( bundle.cookieParser() );
@@ -52,98 +53,7 @@ var io = function ( io, bundle, ioPassport ) {
         //console.log('[desconectar]Usuarios conectados: ' + JSON.stringify(conectados));
         //console.log( '[DESCONEXIÓN:' + socket.id + ']USUARIO:' + socket.request.cookies.intermed_sesion.usuario + '.' );
       } );
-
-      socket.on( 'solicitudAmistad', function () {
-        //console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudAmistad]' );
-        var req = {
-          socket: socket,
-          usuario_id: socket.request.cookies.intermed_sesion.id,
-          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
-        };
-
-        intermed.callController( 'notificaciones', 'solicitudAmistad', req );
-      } );
-      //OSCAR
-      socket.on('medicoRecomendado', function(){
-        var req = {
-          socket: socket,
-          usuario_id: socket.request.cookies.intermed_sesion.id,
-          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
-        };
-        intermed.callController('notificaciones', 'medicoRecomendado',req);
-      });
-      socket.on('doctorRecomendado',function(){
-        var req = {
-          socket: socket,
-          usuario_id: socket.request.cookies.intermed_sesion.id,
-          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
-        };
-        intermed.callController('notificaciones','doctorRecomendado',req);
-      });
-      //FIN OSCAR
-      socket.on( 'solicitudAmistadAceptada', function () {
-        //console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudAmistadAceptada]' );
-        var req = {
-          socket: socket,
-          usuario_id: socket.request.cookies.intermed_sesion.id,
-          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
-        };
-
-        intermed.callController( 'notificaciones', 'solicitudAmistadAceptada', req );
-      } );
-
-      socket.on( 'solicitudesAceptadas', function ( id ) {
-        //console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudesAceptadas]' );
-        var req = {
-          socket: socket,
-          usuario_id: socket.request.cookies.intermed_sesion.id,
-          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario,
-          notificacion_id: id
-        };
-
-        intermed.callController( 'notificaciones', 'solicitudesAceptadas', req );
-      } );
-
-      socket.on( 'agregadoMedicoFavorito', function ( id ) {
-        //console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudesAceptadas]' );
-        var req = {
-          socket: socket,
-          usuario_id: socket.request.cookies.intermed_sesion.id,
-          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario,
-          notificacion_id: id
-        };
-
-        intermed.callController( 'notificaciones', 'agregadoMedicoFavorito', req );
-      } );
-
-      socket.on( 'solicitudRechazada', function ( id ) {
-        //console.log( 'socket_id: ' + socket.id + ' [Buscar: solicitudesAceptadas]' );
-        var req = {
-          socket: socket,
-          usuario_id: socket.request.cookies.intermed_sesion.id,
-          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario,
-          notificacion_id: id
-        };
-
-        intermed.callController( 'notificaciones', 'solicitudRechazada', req );
-      } );
-
-      socket.on('pedirRecomendacion', function(){
-        var req = {
-          socket: socket,
-          usuario_id: socket.request.cookies.intermed_sesion.id,
-          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
-        };
-        intermed.callController('notificaciones','pedirRecomendacion',req);
-      });
-      socket.on('tuRecomendacion', function(){
-        var req = {
-          socket: socket,
-          usuario_id: socket.request.cookies.intermed_sesion.id,
-          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
-        };
-        intermed.callController('notificaciones','tuRecomendacion', req);
-      });
+      
       socket.on( 'verNotificaciones', function () {
         //console.log( 'socket_id: ' + socket.id + ' [Buscar: verNotificaciones]' );
         var req = {
@@ -237,6 +147,235 @@ var io = function ( io, bundle, ioPassport ) {
             UsuarioUrl: object
           };
           intermed.callController( 'usuarios', 'obtenerUsuarioId', req );
+      });
+
+      socket.on('contarNuevasNotificaciones',function (object){
+        var req = {
+          socket: socket,
+          usuario_id: socket.request.cookies.intermed_sesion.id,
+          UsuarioUrl: object
+        };
+
+        models.TipoNotificacion.findAll( {
+          where: {
+            tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
+          }
+        } ).
+        then( function ( result ) {
+          models.ConfNotUsu.findAll( {
+            where: {
+              usuario_id: req.usuario_id
+            }
+          } ).then( function ( confPersonal ) {
+            for ( var key in confPersonal ) {
+              for ( var key2 in result ) {
+                if (result[ key2 ].configurable === 1){
+                  if ( result[ key2 ].id === confPersonal[ key ].tipoNotificacion_id) {
+                    result[ key2 ].interno = confPersonal[ key ].interno;
+                    result[ key2 ].push = confPersonal[ key ].push;
+                    result[ key2 ].mail = confPersonal[ key ].mail;
+                  }
+                }
+              }
+            }
+            var notificaciones = [];
+            for (var key in result){
+              if (result[key].interno == 1){
+                notificaciones.push(result[key].id);
+              }
+            }
+            if (notificaciones.length > 0){
+                var req = {
+                  socket: socket,
+                  usuario_id: socket.request.cookies.intermed_sesion.id,
+                  tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario,
+                  notificaciones: notificaciones
+                };
+                intermed.callController( 'notificaciones', 'contarNuevasNotificaciones', req );
+            }
+          } )
+        } );
+      });
+
+      socket.on('buscarNotificaciones',function (object){
+        var req = {
+          socket: socket,
+          usuario_id: socket.request.cookies.intermed_sesion.id,
+          UsuarioUrl: object
+        };
+
+        models.TipoNotificacion.findAll( {
+          where: {
+            tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
+          }
+        } ).
+        then( function ( result ) {
+          models.ConfNotUsu.findAll( {
+            where: {
+              usuario_id: socket.request.cookies.intermed_sesion.id
+            }
+          } ).then( function ( confPersonal ) {
+            for ( var key in confPersonal ) {
+              for ( var key2 in result ) {
+                if (result[ key2 ].configurable === 1){
+                  if ( result[ key2 ].id === confPersonal[ key ].tipoNotificacion_id) {
+                    result[ key2 ].interno = confPersonal[ key ].interno;
+                    result[ key2 ].push = confPersonal[ key ].push;
+                    result[ key2 ].mail = confPersonal[ key ].mail;
+                  }
+                }
+              }
+            }
+            var notificaciones = [];
+            for (var key in result){
+              if (result[key].interno == 1){
+                notificaciones.push(result[key].id);
+              }
+            }
+            if (notificaciones.length > 0){
+                var req = {
+                  socket: socket,
+                  usuario_id: socket.request.cookies.intermed_sesion.id,
+                  tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario,
+                  notificaciones: notificaciones
+                };
+                intermed.callController( 'notificaciones', 'buscarNotificaciones', req );
+            }
+          } )
+        } );
+      });
+
+
+
+      socket.on('notificacionesScroll',function (object, maxfecha){
+        models.TipoNotificacion.findAll( {
+          where: {
+            tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
+          }
+        } ).
+        then( function ( result ) {
+          models.ConfNotUsu.findAll( {
+            where: {
+              usuario_id: socket.request.cookies.intermed_sesion.id
+            }
+          } ).then( function ( confPersonal ) {
+            for ( var key in confPersonal ) {
+              for ( var key2 in result ) {
+                if (result[ key2 ].configurable === 1){
+                  if ( result[ key2 ].id === confPersonal[ key ].tipoNotificacion_id) {
+                    result[ key2 ].interno = confPersonal[ key ].interno;
+                    result[ key2 ].push = confPersonal[ key ].push;
+                    result[ key2 ].mail = confPersonal[ key ].mail;
+                  }
+                }
+              }
+            }
+            var notificaciones = [];
+            for (var key in result){
+              if (result[key].interno == 1){
+                notificaciones.push(result[key].id);
+              }
+            }
+            if (notificaciones.length > 0){
+                var req = {
+                  socket: socket,
+                  usuario_id: socket.request.cookies.intermed_sesion.id,
+                  tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario,
+                  notificaciones: notificaciones,
+                  notificacionesId: object,
+                  maxfecha: maxfecha
+                };
+                intermed.callController( 'notificaciones', 'notificacionesScroll', req );
+            }
+          } )
+        } );
+      });
+
+      socket.on('traerNuevasNotificaciones',function(){
+        models.TipoNotificacion.findAll( {
+          where: {
+            tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
+          }
+        } ).
+        then( function ( result ) {
+          models.ConfNotUsu.findAll( {
+            where: {
+              usuario_id: socket.request.cookies.intermed_sesion.id
+            }
+          } ).then( function ( confPersonal ) {
+            for ( var key in confPersonal ) {
+              for ( var key2 in result ) {
+                if (result[ key2 ].configurable === 1){
+                  if ( result[ key2 ].id === confPersonal[ key ].tipoNotificacion_id) {
+                    result[ key2 ].interno = confPersonal[ key ].interno;
+                    result[ key2 ].push = confPersonal[ key ].push;
+                    result[ key2 ].mail = confPersonal[ key ].mail;
+                  }
+                }
+              }
+            }
+            var notificaciones = [];
+            for (var key in result){
+              if (result[key].interno == 1){
+                notificaciones.push(result[key].id);
+              }
+            }
+            if (notificaciones.length > 0){
+                var req = {
+                  socket: socket,
+                  usuario_id: socket.request.cookies.intermed_sesion.id,
+                  tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario,
+                  notificaciones: notificaciones
+                };
+                intermed.callController( 'notificaciones', 'traerNuevasNotificaciones', req );
+            }
+          } )
+        } );
+      });
+
+      socket.on('cargarNotificacionesList',function (notificacionesId,limit,maxfecha){
+          models.TipoNotificacion.findAll( {
+            where: {
+              tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
+            }
+          } ).
+          then( function ( result ) {
+            models.ConfNotUsu.findAll( {
+              where: {
+                usuario_id: socket.request.cookies.intermed_sesion.id
+              }
+            } ).then( function ( confPersonal ) {
+              for ( var key in confPersonal ) {
+                for ( var key2 in result ) {
+                  if (result[ key2 ].configurable === 1){
+                    if ( result[ key2 ].id === confPersonal[ key ].tipoNotificacion_id) {
+                      result[ key2 ].interno = confPersonal[ key ].interno;
+                      result[ key2 ].push = confPersonal[ key ].push;
+                      result[ key2 ].mail = confPersonal[ key ].mail;
+                    }
+                  }
+                }
+              }
+              var notificaciones = [];
+              for (var key in result){
+                if (result[key].interno == 1){
+                  notificaciones.push(result[key].id);
+                }
+              }
+              if (notificaciones.length > 0){
+                  var req = {
+                    socket: socket,
+                    usuario_id: socket.request.cookies.intermed_sesion.id,
+                    tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario,
+                    notificaciones: notificaciones,
+                    maxfecha: maxfecha,
+                    limit: limit,
+                    notificacionesId: notificacionesId
+                  };
+                  intermed.callController( 'notificaciones', 'cargarNotificacionesList', req );
+              }
+            } )
+          } );
       });
     }
   } );

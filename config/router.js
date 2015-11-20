@@ -86,9 +86,18 @@ var intermed = require( '../apps/controllers/Intermed' );
  */
 var iniciar = function () {
   app.all( '*', function ( req, res, next ) {
-    if ( req.session.passport.user ) hps.varSession( req.session.passport.user );
+    if ( req.session.passport.user ) {
+      hps.varSession( req.session.passport.user );
+      res.cookie( 'intermed_sesion', {
+        id: req.session.passport.user.id,
+        usuario: req.session.passport.user.usuarioUrl,
+        tipoUsuario: req.session.passport.user.tipoUsuario
+      } );
+    }
     else {
-      hps.varSession( req.session.passport );
+      hps.varSession([]);
+      //Eliminar cookie
+      res.clearCookie( 'intermed_sesion' );
     }
     rutas.routeLife( 'main', 'main', hps );
     next();

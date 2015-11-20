@@ -22,16 +22,13 @@
 </section>
 
 <script type="text/javascript">
+    var limitNotificacionesList = 3;
+    var notificacionesList = [];
+    var fechaNotificacionList = '';
 
     $(document).ready(function(){
-      cargarNotificacionesCondicional();
-
-      $('#notifList').append('<a class="_next" href="#"></a>');
-      var scroll = $('#notifList').iscroll({
-        onBeginRequest:function(request){
-          verTodasNotificaciones();
-        }
-      });
+      //cargarNotificacionesCondicional();
+      socket.emit('cargarNotificacionesList',notificacionesList,limitNotificacionesList,fechaNotificacionList);
     });
 
     function cargarNotificacionesCondicional(){
