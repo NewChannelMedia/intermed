@@ -272,7 +272,37 @@ module.exports = {
           usuarios: usuarios
         } );
       } );
-    } //fin del metodo searching
+    }, //fin del metodo searching
+    homeEspecialidades: function( req, res ){
+      // carga la info para que retorne las especialidades
+      models.Especialidad.findAll({
+        attributes:['id','especialidad']
+      }).then(function(especialidades){
+        res.send(especialidades);
+      });
+    },
+    homePadecimientos: function( req, res ){
+      models.Padecimiento.findAll({
+        attributes:['id','padecimiento']
+      }).then(function(padecimiento){
+        res.send(padecimiento);
+      })
+    },
+    homeEstados: function( req, res ){
+      models.Estado.findAll({
+        attributes:['id','estado']
+      }).then(function(estado){
+        res.send(estado);
+      });
+    },
+    homeCiudad: function( req, res ){
+      models.Municipio.findAll({
+        where:{estado_id:req.body.id},
+        attributes:['id','municipio']
+      }).then( function( ciudades ){
+        res.send(ciudades);
+      });
+    }
 }
 
 

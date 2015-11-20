@@ -1225,7 +1225,7 @@ var iniciar = function () {
       }
   });
 
-    app.get('/registrarubicacion', function (req, res) {        
+    app.get('/registrarubicacion', function (req, res) {
         //if (req.session.passport.user) {
         intermed.callController('ubicacion', 'nuevaUbicacion', req.body, req, res);
         //}
@@ -1362,6 +1362,20 @@ var iniciar = function () {
       intermed.callController('contactos','consultaMedInfo', req, res);
     });
   // <---------------- FIN RECOMENDACION MEDICO ------------------>
+  // <---------------- TRAE INFO A HOME ET ----------------------->
+    app.post('/homeEspecialidades', function( req, res ){
+      intermed.callController('Home','homeEspecialidades', req, res);
+    });
+    app.post('/homePadecimientos', function( req, res ){
+      intermed.callController('Home','homePadecimientos', req, res);
+    });
+    app.post('/homeEstados', function( req, res ){
+      intermed.callController('Home','homeEstados', req, res );
+    });
+    app.post('/homeCiudad', function( req, res ){
+      intermed.callController('Home','homeCiudad',req, res);
+    });
+  // <---------------- FIN TRAE INFO HOME ET --------------------->
 }
 
 var io = serv.server( app, 3000 );

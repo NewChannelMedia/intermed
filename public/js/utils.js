@@ -2532,3 +2532,58 @@ var idEspecialidad = '';
     });
   });
 //<------------------- FIN OSCAR ---------------------->
+//<------------------ OSCAR --------------------------->
+  /**
+  * En esta parde del script se va a cargar los option
+  * de los diferentes select que estan en la pagina
+  * Home y en los de estado municipio, se haran los respectivos
+  * cambios
+  *
+  *
+  **/
+  $(document).ready(function(){
+    //Ajax para traer especialidades
+    $.post('/homeEspecialidades', function(data){
+      var html = "";
+      if( data != null ){
+        $.each(data, function( i, item){
+          html += '<option value="'+item.id+'">'+item.especialidad+'</option>';
+        });
+        $("#especialidad").append(html);
+      }
+    });
+    //Ajax para traer padecimiento
+    $.post('/homePadecimientos',function(padecimientos){
+      var html = "";
+      if( padecimientos != null ){
+        $.each(padecimientos, function( i, item ){
+          html += '<option value ="'+item.id+'">'+item.padecimiento+'</option>';
+        });
+        $("#padecimientoHome").append(html);
+      }
+    });
+    // Ajax para estados
+    $.post('/homeEstados', function(estados){
+      var html = "";
+      if( estados != null ){
+        $.each(estados, function(i, item){
+          html += '<option value="'+item.id+'">'+item.estado+'</option>';
+        });
+        $("#Estado").append(html);
+      }
+    });
+    // evento change para las ciudades
+    $("#Estado").change(function(){
+      var valor = $( this ).val();
+      $.post('/homeCiudad',{id:valor},function(ciudades){
+        var html = "";
+        if( ciudades != null ){
+          $.each(ciudades, function( i, item ){
+            html += '<option value="'+item.id+'">'+item.municipio+'</option>';
+          });
+          $("#Ciudad").html(html);
+        }
+      })
+    });
+  });
+//<------------------ FIN OSCAR ----------------------->
