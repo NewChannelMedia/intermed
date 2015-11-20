@@ -34,17 +34,15 @@ exports.obtieneEstados = function (req, res) {
 };
 
 exports.obtieneCiudades = function (object, req, res) {
-    models.Municipio.findAll({
-        where: {
-            estado_id: object.estado_id
-        },
-        order: ['municipio'],
-        attributes: ['id', 'municipio']
-    }).then(function (ciudades) {
-        res.send({
-            'municipio': ciudades
-        });
+  models.Municipio.findAll({
+    where:{estado_id: object.estado_id},
+    order: ['municipio'],
+    attributes: ['id','municipio_id', 'municipio']
+  }).then(function(ciudades){
+    res.send({
+        'municipio': ciudades
     });
+  });
 };
 
 exports.encontrarPorCP = function (object, req, res) {
@@ -54,25 +52,23 @@ exports.encontrarPorCP = function (object, req, res) {
         },
         attributes: ['CP']
     }).then(function (localidad) {
-        res.send({
-            'cp': localidad.CP
-        });
+        res.send(localidad);
     });
 };
 
 exports.obtieneLocalidades = function (object, req, res) {
-    models.Localidad.findAll({
-        where: {
-            estado_id: object.estado_id,
-            municipio_id: object.municipio_id
-        },
-        order: ['localidad'],
-        attributes: ['id', 'localidad']
-    }).then(function (municipios) {
-        res.send({
-            'municipios': municipios
-        });
+  models.Localidad.findAll({
+    where:{
+      estado_id:object.estado_id,
+      municipio_id: object.municipio_id
+    },
+    order:['localidad'],
+    attributes:['id','localidad']
+  }).then( function(municipios){
+    res.send({
+        'municipios': municipios
     });
+  });
 };
 
 exports.nuevaUbicacion = function (objects, req, res) {

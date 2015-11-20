@@ -574,7 +574,7 @@ function obtenerCP() {
       'localidad_id': document.getElementById( 'slc_colonias' ).value
     },
     success: function ( data ) {
-      document.getElementById( 'nmb_cp' ).value = data.cp;
+      document.getElementById( 'nmb_cp' ).value = data.CP;
     },
     error: function ( jqXHR, textStatus, err ) {
       console.error( 'AJAX ERROR: ' + err );
@@ -1984,9 +1984,9 @@ function obtenerCiudades() {
         },
         success: function (data) {
             data.municipio.forEach(function (record) {
-                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.id + '">' + record.municipio + '</option>';
+                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.municipio_id + '">' + record.municipio + '</option>';
             });
-            AsignarCiudad();
+            //AsignarCiudad();
         },
         error: function (jqXHR, textStatus, err) {
             console.error('AJAX ERROR: ' + err);
@@ -2014,7 +2014,7 @@ function obtenerColonias() {
             data.municipios.forEach(function (record) {
                 document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
             });
-            AsignarColonia();
+            //AsignarColonia();
         },
         error: function (jqXHR, textStatus, err) {
             console.error('AJAX ERROR: ' + err);
