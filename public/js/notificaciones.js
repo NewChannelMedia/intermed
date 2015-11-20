@@ -560,8 +560,6 @@ function formatearNotificacion(record){
     visto = '  style="background-color:#DDD" ';
   }
 
-  console.log('NOTIFICACION: '+ JSON.stringify(record));
-
   var fecha = formattedDate( record.inicio );
   if (record[tipo]){
     not = '';
@@ -597,6 +595,7 @@ function formatearNotificacion(record){
       case 12:
           //medicoRecomendado
           content = '';
+          console.log('Notificación 12');
           if( record.medico && record.paciente ){
             var medicoUrl = record.medico.Usuario.usuarioUrl;
             var fotoPaciente = record.paciente.Usuario.urlFotoPerfil;
@@ -610,7 +609,7 @@ function formatearNotificacion(record){
               content += '</a>';
               content += '<br />';
               content += '<div class="text-left" style="margin-top:-25px;">';
-                content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>';
+                content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+fecha+'</span>';
               content += '</div>';
             content += '</div>';
           }
@@ -662,12 +661,10 @@ function formatearNotificacion(record){
           break;
       case 13:
           //doctorRecomendado
-          if( record.paciente && record.medico ){
             content = '';
             var pacienteUrl = record.paciente.Usuario.usuarioUrl;
             var fotoPaciente = record.paciente.Usuario.urlFotoPerfil;
             var nombreCompleto = record.paciente.Usuario.DatosGenerale.nombre + ' ' +record.paciente.Usuario.DatosGenerale.apellidoP + ' ' +record.paciente.Usuario.DatosGenerale.apellidoM ;
-            var nombreDoctor = record.medico.Usuario.DatosGenerale.nombre+' '+record.medico.Usuario.DatosGenerale.apellidoP+' '+record.medico.Usuario.DatosGenerale.ApellidoM;
             content += '<div class="media-left">';
               content += '<a href="/perfil/'+pacienteUrl+'">';
                 content += '<img class="media-object" src="'+fotoPaciente+'" style="width: 50px;">';
@@ -676,11 +673,10 @@ function formatearNotificacion(record){
               content += '</a>';
               content += '<br />';
               content += '<div class="text-left" style="margin-top:-25px;">';
-                content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>';
+                content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+fecha+'</span>';
               content += '</div>';
             content += '</div>';
             not = content;
-          }
           break;
       case 14:
           //pedirRecomendacion

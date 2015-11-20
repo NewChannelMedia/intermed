@@ -1198,7 +1198,6 @@ function formatearNotificacion(result, emit, object){
             } )
             break;
         case 12:
-
             models.Paciente.findOne( {
               where: {
                 id: record.data.split("|")[0],
@@ -1235,35 +1234,22 @@ function formatearNotificacion(result, emit, object){
             } );
             break;
         case 13:
-            models.Medico.findOne({
-              where:{usuario_id:record.usuario_id},
+            models.Paciente.findOne({
+              where:{usuario_id:record.data},
               include:[{
                 model:models.Usuario,
-                attributes:['usuarioUrl'],
+                attributes:['usuarioUrl','urlFotoPerfil'],
                 include:[{
                   model:models.DatosGenerales,
                   attributes:['nombre','apellidoP','apellidoM']
                 }]
               }]
-            }).then(function(medico){
-              models.Paciente.findOne({
-                where:{usuario_id:record.data},
-                include:[{
-                  model:models.Usuario,
-                  attributes:['usuarioUrl','urlFotoPerfil'],
-                  include:[{
-                    model:models.DatosGenerales,
-                    attributes:['nombre','apellidoP','apellidoM']
-                  }]
-                }]
-              }).then(function(paciente){
-                totalProcesados++;
-                record[ 'paciente' ] = JSON.parse( JSON.stringify( paciente ) );
-                record[ 'medico' ] = JSON.parse( JSON.stringify( medico ) );
-                if ( totalProcesados === result.length) {
-                  object.socket.emit(emit,result);
-                }
-              });
+            }).then(function(paciente){
+              totalProcesados++;
+              record[ 'paciente' ] = JSON.parse( JSON.stringify( paciente ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
             });
             break;
         case 14:
