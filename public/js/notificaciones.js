@@ -145,12 +145,35 @@ function socketManejadores() {
       focusUltimo();
     }
 
-    var li = $('#notificacionesInboxList li.media#vistaPrev_'+result.de).clone();
-    $('#notificacionesInboxList li.media#vistaPrev_'+result.de).remove();
-    li.css('background-color','#EEEEEE');
-    li.find('div.msg').html(renderHTML(result.mensaje));
-    li.find('span.fecha').html(formattedDate(getDateTime( true )));
-    $('#notificacionesInboxList').prepend(li);
+    if ($('.notificationDropdown').is(':visible')){
+      var li = $('#notificacionesInboxList li.media#vistaPrev_'+result.de).clone();
+      if (li.length>0){
+        $('#notificacionesInboxList li.media#vistaPrev_'+result.de).remove();
+        li.css('background-color','#EEEEEE');
+        li.find('div.msg').html(renderHTML(result.mensaje));
+        li.find('span.fecha').html(formattedDate(getDateTime( true )));
+        $('#notificacionesInboxList').prepend(li);
+      } else {
+        $.ajax( {
+          url: '/usuarios/informacionUsuario',
+          type: 'POST',
+          dataType: "json",
+          cache: false,
+          data: {usuario_id: result.de},
+          success: function ( usuario ) {
+            if (usuario){
+              InboxListLoaded.push( usuario.id );
+              visto = ' style="background-color:#EEEEEE" ';
+              $( '#notificacionesInboxList' ).prepend( '<li class="media" ' + visto + ' id="vistaPrev_'+usuario.id+'"><div class="media-left"><a href="' + base_url + 'inbox/' + usuario.usuarioUrl + '"><img class="media-object img-circle" src="' + usuario.urlFotoPerfil + '" style="width: 40px;height:40px"></a></div><div class="media-body"><a href="' + base_url + 'inbox/' + usuario.usuarioUrl + '">' + usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM + '</a><br><div class="text-left msg" style="margin-top:-25px;">' + renderHTML(result.mensaje) + '</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" ><span class="fecha">' + formattedDate(getDateTime( true )) + ' </span><span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>' );
+            }
+          },
+          error: function (err){
+            console.log('ERROR: ' + JSON.stringify(err));
+          }
+        });
+      }
+    }
+
     socket.emit( 'inbox' );
   } );
 
@@ -326,7 +349,7 @@ function formatearNotificacion( record , element) {
 
   var style = 'style="width: 40px;height:40px"';
   if (!(element && element != "")){
-    element = 'li'
+    element = 'li';
   } else {
     style= 'style="width: 30px;height:30px"'
   }
