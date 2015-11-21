@@ -426,7 +426,7 @@ a:visited {
     padding: 0;
   }
   .optn-lbl {
-    font-size: 20px;
+    font-size: 15px;
   }
 }
 
@@ -1067,22 +1067,15 @@ a:visited {
   display: block;
 }
 .main-colegas a.pPic{
-  -webkit-transition: all .2s ease;
-   -moz-transition: all .2s ease;
-     -o-transition: all .2s ease;
-    -ms-transition: all .2s ease;
-        transition: all .2s ease;
-        border: 0;
 }
 .main-colegas a.pPic:hover{
- border: solid 5px white;
 }
 .main-colegas a.pPic img{
-  -webkit-transition: all .2s ease;
-   -moz-transition: all .2s ease;
-     -o-transition: all .2s ease;
-    -ms-transition: all .2s ease;
-        transition: all .2s ease;
+  -webkit-transition: all .5s ease;
+   -moz-transition: all .5s ease;
+     -o-transition: all .5s ease;
+    -ms-transition: all .5s ease;
+        transition: all .5s ease;
   max-width: 100%;
   height: auto;
 }
