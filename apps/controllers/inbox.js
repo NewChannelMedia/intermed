@@ -314,3 +314,66 @@ function getDateTime() {
   day = ( day < 10 ? "0" : "" ) + day;
   return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
 }
+
+
+exports.obtenerNotificacionInboxSinLeer = function( object, req, res){
+  if (req.session.passport.user){
+
+      var numNot = 0;
+      if (req.session.passport.user.tipoUsuario == "P"){
+        numNot = 101;
+      } else if (req.session.passport.user.tipoUsuario == "M"){
+        numNot = 102;
+      }
+
+      models.Notificacion.findAll( {
+        where: {
+          usuario_id: req.session.passport.user.id,
+          visto: 0,
+          tipoNotificacion_id: numNot
+        },
+        group: ['data']
+      } ).then( function ( result ) {
+        var total = 0;
+        var resultado = [];
+        result.forEach(function(record){
+          models.Usuario.findOne( {
+            where: {
+              id: record.data
+            },
+            attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+            include: [ {
+              model: models.DatosGenerales,
+              attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+              } ]
+            }).then( function ( usuario ) {
+              models.Inbox.findOne({
+                where:
+                      models.sequelize.or(
+                        {
+                          usuario_id_para: usuario.id,
+                          usuario_id_de: req.session.passport.user.id
+                       },
+                       {
+                          usuario_id_para: req.session.passport.user.id,
+                          usuario_id_de: usuario.id
+                        }),
+                attributes: ['mensaje','fecha'],
+                order:  '`fecha` DESC',
+                limit: 1
+              }).then(function(msg){
+                visto = 1;
+                resultado[result.indexOf(record)] = {'fecha': msg.fecha, 'usuario': usuario, 'visto':visto, 'mensaje': msg.mensaje};
+                total++;
+                if ( total == result.length ) {
+                    res.send(JSON.parse(JSON.stringify(resultado)));
+                }
+              });
+          } )
+        });
+
+      });
+  }else {
+      res.send(JSON.parse(JSON.stringify({})));
+  }
+}

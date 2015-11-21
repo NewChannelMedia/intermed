@@ -76,6 +76,34 @@ function socketManejadores() {
     //$('#totalInbox').html('');
     if ( total > 0 ) {
       $( '#totalInbox' ).html( total );
+
+      if ($('.notificationDropdown.Inbox').is(':visible')){
+        console.log('visible');
+        $.ajax( {
+          url: '/inbox/obtenerNotificacionInboxSinLeer',
+          type: 'POST',
+          dataType: "json",
+          cache: false,
+          success: function ( notificaciones ) {
+            notificaciones.forEach(function(record){
+              var li = $('#notificacionesInboxList li.media#vistaPrev_'+record.usuario.id).clone();
+              if (li.length>0){
+                $('#notificacionesInboxList li.media#vistaPrev_'+record.usuario.id).remove();
+                li.css('background-color','#EEEEEE');
+                li.find('div.msg').html(renderHTML(record.mensaje));
+                li.find('span.fecha').html(formattedDate( record.fecha ));
+                $( '#notificacionesInboxList' ).prepend(li);
+              } else {
+                $( '#notificacionesInboxList' ).prepend( '<li class="media" ' + record.visto + ' id="vistaPrev_'+record.usuario.id+'"><div class="media-left"><a href="' + base_url + 'inbox/' + record.usuario.usuarioUrl + '"><img class="media-object img-circle" src="' + record.usuario.urlFotoPerfil + '" style="width: 40px;height:40px"></a></div><div class="media-body"><a href="' + base_url + 'inbox/' + record.usuario.usuarioUrl + '">' + record.usuario.DatosGenerale.nombre + ' ' + record.usuario.DatosGenerale.apellidoP + ' ' + record.usuario.DatosGenerale.apellidoM + '</a><br><div class="text-left msg" style="margin-top:-25px;">' + renderHTML(record.mensaje) + '</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" ><span class="fecha">' + formattedDate( record.fecha ) + ' </span><span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>' );
+              }
+            });
+          },
+          error: function (err){
+            console.log('ERROR: ' + JSON.stringify(err));
+          }
+        });
+      }else
+        console.log('no visible');
     }
     else {
       $( '#totalInbox' ).html( '' );
@@ -145,7 +173,7 @@ function socketManejadores() {
       focusUltimo();
     }
 
-    if ($('.notificationDropdown').is(':visible')){
+    if ($('.notificationDropdown.Inbox').is(':visible')){
       var li = $('#notificacionesInboxList li.media#vistaPrev_'+result.de).clone();
       if (li.length>0){
         $('#notificacionesInboxList li.media#vistaPrev_'+result.de).remove();
@@ -161,10 +189,11 @@ function socketManejadores() {
           cache: false,
           data: {usuario_id: result.de},
           success: function ( usuario ) {
+            console.log('USUARIO: ' + JSON.stringify(usuario));
             if (usuario){
               InboxListLoaded.push( usuario.id );
               visto = ' style="background-color:#EEEEEE" ';
-              $( '#notificacionesInboxList' ).prepend( '<li class="media" ' + visto + ' id="vistaPrev_'+usuario.id+'"><div class="media-left"><a href="' + base_url + 'inbox/' + usuario.usuarioUrl + '"><img class="media-object img-circle" src="' + usuario.urlFotoPerfil + '" style="width: 40px;height:40px"></a></div><div class="media-body"><a href="' + base_url + 'inbox/' + usuario.usuarioUrl + '">' + usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM + '</a><br><div class="text-left msg" style="margin-top:-25px;">' + renderHTML(result.mensaje) + '</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" ><span class="fecha">' + formattedDate(getDateTime( true )) + ' </span><span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>' );
+              $( '#notificacionesInboxList' ).prepend( '<li class="media" ' + visto + ' id="vistaPrev_'+usuario.id+'"><div class="media-left"><a href="' + base_url + 'inbox/' + usuario.UsuarioUrl + '"><img class="media-object img-circle" src="' + usuario.urlFotoPerfil + '" style="width: 40px;height:40px"></a></div><div class="media-body"><a href="' + base_url + 'inbox/' + usuario.UsuarioUrl + '">' + usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM + '</a><br><div class="text-left msg" style="margin-top:-25px;">' + renderHTML(result.mensaje) + '</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" ><span class="fecha">' + formattedDate(getDateTime( true )) + ' </span><span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>' );
             }
           },
           error: function (err){
@@ -657,4 +686,17 @@ function mostrarNotificaciones() {
 
 function cerrarNotModal() {
   $( ".notificationDropdown" ).dropdown( "toggle" );
+}
+
+
+function renderHTML(text) {
+  var urlRegex = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?()=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+  text = text.replace(urlRegex, function(url) {
+      //if ( ( url.indexOf(".jpg") > 0 ) || ( url.indexOf(".png") > 0 ) || ( url.indexOf(".gif") > 0 ) ) {
+      //    return '<a href="' + url + '" target="_blanck"><img src="' + url + '" style="max-width:60%" class="img-thumbnail"></a>' + '<br/>'
+      //} else {
+          return '<a href="' + url + '" target="_blanck">' + url + '</a>'
+      //}
+  });
+  return text;
 }

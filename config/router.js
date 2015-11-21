@@ -1388,6 +1388,10 @@ var iniciar = function () {
     app.post('/usuarios/informacionUsuario',function (req, res){
       intermed.callController('usuarios','informacionUsuario',req.body,req, res);
     });
+
+    app.post('/inbox/obtenerNotificacionInboxSinLeer',function(req,res){
+      intermed.callController('inbox','obtenerNotificacionInboxSinLeer',req.body,req, res);
+    });
 }
 
 var io = serv.server( app, 3000 );

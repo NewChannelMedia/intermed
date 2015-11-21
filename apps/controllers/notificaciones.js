@@ -86,7 +86,6 @@ exports.verNotificacionesInbox = function ( req ) {
 }
 
 exports.notificacionesScroll = function (object){
-  console.log('BEGIN REQUEST');
   models.Notificacion.findAll( {
     where: {
       id: {$notIn: object.notificacionesId},
