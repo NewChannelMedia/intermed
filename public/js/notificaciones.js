@@ -59,96 +59,6 @@ function formattedDate( date ) {
   }
 }
 
-
-function actualizarNotificaciones() {}
-/*
-function actualizarNotificaciones() {
-    if (!$('.notificationDropdown').is(':visible')){
-        $( '#notificacinesList' ).html( '' );
-        $( '#totalNotificaciones' ).html( '' );
-        $( '#totalNotificaciones' ).addClass( 'hidden invisible' );
-    } else {
-      $( '#totalNotificaciones' ).removeClass( 'hidden invisible' );
-    }
-    totalNotificaciones = [];
-    totalNotificaciones = totalNotificaciones.concat( solicitudAmistad );
-    totalNotificaciones = totalNotificaciones.concat( solicitudAmistadAceptada );
-    totalNotificaciones = totalNotificaciones.concat( solicitudesAceptadas );
-    totalNotificaciones = totalNotificaciones.concat( agregadoMedicoFavorito );
-    totalNotificaciones = totalNotificaciones.concat( solicitudesRechazadas );
-    totalNotificaciones = totalNotificaciones.concat( medicoRecomendado );
-    totalNotificaciones = totalNotificaciones.concat( doctorRecomendado );
-    totalNotificaciones = totalNotificaciones.concat( pedirRecomendacion );
-    totalNotificaciones = totalNotificaciones.concat( tuRecomendacion );
-    totalNotificaciones = totalNotificaciones.sort( ordenarPorFecha );
-    if ( totalNotificaciones.length > 0 ) {
-      $( '#totalNotificaciones' ).removeClass( 'hidden invisible' );
-      var total = 0;
-      //notificacionesScroll = [];
-      totalNotificaciones.forEach( function ( notificacion ) {
-        if (notificacionesScroll.indexOf(notificacion.id) === -1){
-          notificacionesScroll.push(notificacion.id);
-        }
-        if ( notificacion.toString() != "undefined" ) {
-          console.log('VISTO: ' + notificacion.visto);
-          if ( notificacion.visto === 1 ) {
-            if (!$('.notificationDropdown').is(':visible')){
-              $( '#notificacinesList' ).append( '<li class="media" id="li' + notificacion.id + '">' + notificacion.content + '</li>' );
-            }
-          }
-          else {
-            $('#li'+notificacion.id).remove();
-            $( '#totalNotificaciones' ).html( ++total );
-            if ($('.notificationDropdown').is(':visible')){
-              $( '#notificacinesList' ).prepend( '<li class="media" style="background-color:#DDD" id="li' + notificacion.id + '">' + notificacion.content + '</li>' );
-            } else {
-              $( '#notificacinesList' ).append( '<li class="media" style="background-color:#DDD" id="li' + notificacion.id + '">' + notificacion.content + '</li>' );
-            }
-          }
-        }
-      } );
-      $('#notificacinesList').append('<a class="_next" href="#"></a>');
-      var scroll = $('#notificacinesList').iscroll({
-        onBeginRequest:function(request){
-          $( "#notificacinesList" ).find( "a._next" ).remove();
-          $.ajax( {
-            url: '/notificaciones/scroll',
-            type: 'POST',
-            dataType: "json",
-            cache: false,
-            data: {'id': notificacionesScroll},
-            success: function ( data ) {
-              $('#notificacinesList').find('.loader').remove();
-              if (data.length>0){
-                data.forEach(function(record){
-                  if (notificacionesScroll.indexOf(record.id) === -1){
-                    notificacionesScroll.push(record.id);
-                    var date = formattedDate( record.inicio );
-                    var contenido = '';
-                    contenido = formatearNotificacion(record);
-                    if (contenido != '')
-                      $( '#notificacinesList' ).append( '<li class="media" id="li' + record.id + '">' + contenido + '</li>' );
-                  }
-                });
-                $('#notificacinesList').append('<a class="_next" href="#"></a>');
-              }
-            }
-          })
-        }
-      });
-      /*
-      if ($('.notificationDropdown').is(':visible')){
-        setTimeout(function(){
-          socket.emit( 'verNotificaciones' );
-          totalNotificaciones.forEach( function ( notificacion ) {
-            notificacion.visto = 1;
-          } );
-        },1000);
-      }*/
-/*
-    }
-}*/
-
 function ordenarPorFecha( a, b ) {
   var c = new Date( a.time );
   var d = new Date( b.time );
@@ -161,144 +71,15 @@ var InboxListLoaded = [];
 
 function socketManejadores() {
 
-  /*
-    function borrarNotificaciones() {
-      $( '#totalNotificaciones' ).html( '' );
-      $( '#totalNotificaciones' ).addClass( 'hidden invisible' );
-      socket.emit( 'verNotificaciones' );
-      totalNotificaciones.forEach( function ( notificacion ) {
-        notificacion.visto = 1;
-      } );
-    }
-    socket.on( 'solicitudAmistad', function ( data ) {
-      solicitudAmistad = [];
-      data.forEach( function ( record ) {
-
-        content = formatearNotificacion(record);
-        if (content){
-          solicitudAmistad.unshift( {
-            id: record.id,
-            time: record.inicio,
-            visto: record.visto,
-            content: content
-          } );
-        }
-      } );
-      actualizarNotificaciones();
-    } );
-
-    socket.on( 'solicitudAmistadAceptada', function ( data ) {
-      solicitudAmistadAceptada = [];
-      data.forEach( function ( record ) {
-      date = formattedDate( record.inicio );
-      var content = formatearNotificacion(record);
-      if (content){
-        solicitudAmistadAceptada.unshift( {
-          id: record.id,
-          time: record.inicio,
-          visto: record.visto,
-          content: content
-        } );
-      }
-      } );
-      actualizarNotificaciones();
-    } );
-
-    socket.on( 'solicitudesAceptadas', function ( data ) {
-      solicitudesAceptadas = [];
-      data.forEach( function ( record ) {
-        date = formattedDate( record.inicio );
-        var content = formatearNotificacion(record);
-        if (content){
-          solicitudesAceptadas.unshift( {
-            id: record.id,
-            time: record.inicio,
-            visto: record.visto,
-            content: content
-          } );
-        }
-      } );
-      actualizarNotificaciones();
-    });
-
-    socket.on( 'solicitudRechazada', function ( data ) {
-      solicitudesRechazadas = [];
-      data.forEach( function ( record ) {
-        date = formattedDate( record.inicio );
-        var content = formatearNotificacion(record);
-        if (content){
-          solicitudesRechazadas.unshift( {
-            id: record.id,
-            time: record.inicio,
-            visto: record.visto,
-            content: content
-          } );
-        }
-      } );
-      actualizarNotificaciones();
-    });
-
-    socket.on('agregadoMedicoFavorito', function ( data ) {
-      agregadoMedicoFavorito = [];
-      data.forEach( function ( record ) {
-        if ( record.paciente ) {
-          var content = formatearNotificacion(record);
-          agregadoMedicoFavorito.unshift( {
-            id: record.id,
-            time: record.inicio,
-            visto: record.visto,
-            content: content
-          } );
-        }
-      } );
-      actualizarNotificaciones();
-    });
-
-    socket.on( 'medicoRecomendado', function ( data ) {
-      medicoRecomendado = [];
-      data.forEach( function ( record ) {
-        date = formattedDate( record.inicio );
-        var content = formatearNotificacion(record);
-        if (content){
-          medicoRecomendado.unshift( {
-            id: record.id,
-            time: record.inicio,
-            visto: record.visto,
-            content: content
-          } );
-        }
-      } );
-      actualizarNotificaciones();
-    });
-    socket.on( 'doctorRecomendado', function( data ){
-      doctorRecomendado = [];
-      data.forEach( function ( record ) {
-        date = formattedDate( record.inicio );
-        var content = formatearNotificacion(record);
-        if (content){
-          doctorRecomendado.unshift( {
-            id: record.id,
-            time: record.inicio,
-            visto: record.visto,
-            content: content
-          } );
-        }
-      } );
-      actualizarNotificaciones();
-    });
-    */
-
-  socket.on( 'inbox', function ( data ) {
+  socket.on( 'inbox', function ( total ) {
     //socket.emit( 'verNotificacionesInbox' );
     //$('#totalInbox').html('');
-    var total = data.length;
     if ( total > 0 ) {
       $( '#totalInbox' ).html( total );
     }
     else {
       $( '#totalInbox' ).html( '' );
     }
-
   } );
 
   socket.on( 'cargarInboxVistaPrevia', function ( data ) {
@@ -309,7 +90,7 @@ function socketManejadores() {
       if ( record.visto === 0 ) {
         visto = ' style="background-color:#EEEEEE" ';
       }
-      $( '#notificacionesInboxList' ).append( '<li class="media" ' + visto + '><div class="media-left"><a href="' + base_url + 'inbox/' + record.usuario.usuarioUrl + '"><img class="media-object" src="' + record.usuario.urlFotoPerfil + '" style="width: 50px;"></a></div><div class="media-body"><a href="' + base_url + 'inbox/' + record.usuario.usuarioUrl + '">' + record.usuario.DatosGenerale.nombre + ' ' + record.usuario.DatosGenerale.apellidoP + ' ' + record.usuario.DatosGenerale.apellidoM + '</a><br><div class="text-left" style="margin-top:-25px;">' + record.mensaje + '</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" > ' + formattedDate( record.fecha ) + ' <span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>' );
+      $( '#notificacionesInboxList' ).append( '<li class="media" ' + visto + ' id="vistaPrev_'+record.usuario.id+'"><div class="media-left"><a href="' + base_url + 'inbox/' + record.usuario.usuarioUrl + '"><img class="media-object img-circle" src="' + record.usuario.urlFotoPerfil + '" style="width: 40px;height:40px"></a></div><div class="media-body"><a href="' + base_url + 'inbox/' + record.usuario.usuarioUrl + '">' + record.usuario.DatosGenerale.nombre + ' ' + record.usuario.DatosGenerale.apellidoP + ' ' + record.usuario.DatosGenerale.apellidoM + '</a><br><div class="text-left msg" style="margin-top:-25px;">' + record.mensaje + '</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" ><span class="fecha">' + formattedDate( record.fecha ) + ' </span><span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>' );
     } );
     if ( data.length > 0 ) {
       loadInboxList = true;
@@ -331,7 +112,7 @@ function socketManejadores() {
       var fecha = getDateTime( true );
       tr.find( 'input.time' ).prop( 'value', fecha );
       var nuevafecha = formattedDate( fecha );
-      tr.find( 'span.timeFormated' ).html( nuevafecha + ' ' );
+      tr.find( 'span.timeFormated' ).html( nuevafecha );
       //
 
       tr.prependTo( '#InboxListaContactos' );
@@ -363,12 +144,42 @@ function socketManejadores() {
 
       focusUltimo();
     }
+
+    if ($('.notificationDropdown').is(':visible')){
+      var li = $('#notificacionesInboxList li.media#vistaPrev_'+result.de).clone();
+      if (li.length>0){
+        $('#notificacionesInboxList li.media#vistaPrev_'+result.de).remove();
+        li.css('background-color','#EEEEEE');
+        li.find('div.msg').html(renderHTML(result.mensaje));
+        li.find('span.fecha').html(formattedDate(getDateTime( true )));
+        $('#notificacionesInboxList').prepend(li);
+      } else {
+        $.ajax( {
+          url: '/usuarios/informacionUsuario',
+          type: 'POST',
+          dataType: "json",
+          cache: false,
+          data: {usuario_id: result.de},
+          success: function ( usuario ) {
+            if (usuario){
+              InboxListLoaded.push( usuario.id );
+              visto = ' style="background-color:#EEEEEE" ';
+              $( '#notificacionesInboxList' ).prepend( '<li class="media" ' + visto + ' id="vistaPrev_'+usuario.id+'"><div class="media-left"><a href="' + base_url + 'inbox/' + usuario.usuarioUrl + '"><img class="media-object img-circle" src="' + usuario.urlFotoPerfil + '" style="width: 40px;height:40px"></a></div><div class="media-body"><a href="' + base_url + 'inbox/' + usuario.usuarioUrl + '">' + usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM + '</a><br><div class="text-left msg" style="margin-top:-25px;">' + renderHTML(result.mensaje) + '</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" ><span class="fecha">' + formattedDate(getDateTime( true )) + ' </span><span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>' );
+            }
+          },
+          error: function (err){
+            console.log('ERROR: ' + JSON.stringify(err));
+          }
+        });
+      }
+    }
+
     socket.emit( 'inbox' );
   } );
 
   socket.on( 'crearConversacion', function ( usuario ) {
     var fecha = getDateTime( true );
-    $( '#InboxListaContactos' ).prepend( '<tr id="' + usuario.id + '" ><td class="nombreContacto noleido" onclick="cargarInbox(this)"><img src="' + usuario.urlFotoPerfil + '" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> ' + usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM + '</span><br/><input type="hidden" class="time" value="' + fecha + '"><small class="pull-right text-right" style="font-size:70%"><span class="timeFormated">' + formattedDate( fecha ) + ' </span><span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>' );
+    $( '#InboxListaContactos' ).prepend( '<tr id="' + usuario.id + '" ><td class="nombreContacto noleido" onclick="cargarInbox(this)"><img src="' + usuario.urlFotoPerfil + '" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> ' + usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM + '</span><br/><input type="hidden" class="time" value="' + fecha + '"><small class="pull-right text-right" style="font-size:70%"><span class="timeFormated">' + formattedDate( fecha ) + '</span> <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>' );
   } );
 
   socket.on( 'obtenerUsuarioId', function ( id ) {
@@ -428,57 +239,6 @@ function socketManejadores() {
       socket.emit( 'inbox' );
     }, 1000 );
   } );
-  /*
-  socket.on('pedirRecomendacion',function(data){
-    pedirRecomendacion = [];
-    data.forEach( function ( record ) {
-      date = formattedDate( record.inicio );
-      var content = formatearNotificacion(record);
-      if (content){
-        pedirRecomendacion.unshift( {
-          id: record.id,
-          time: record.inicio,
-          visto: record.visto,
-          content: content
-        });
-      }
-    });
-    actualizarNotificaciones();
-  });
-  socket.on('tuRecomendacion',function(data){
-    tuRecomendacion = [];
-    ides = '';
-    var i = 0;
-    data.forEach( function ( record ){
-      date = formattedDate( record.inicio );
-      var content = '';
-      var usuario_id = record.usuario_id
-      for( var i in record.medicos ){
-        ides += "|"+record.medicos[ i ].id;
-      }
-      content += '<div class="media-left">';
-        content += '<a href="#" onclick="miRecomendacion(\''+ides+'\');" class="recomendando">';
-          content += '<img class="media-object" src="" style="width: 50px;">';
-          content += '</div>';
-          content += '<div class="media-body">Estas son tus recomendaciones';
-        content += '</a>';
-        content += '<br />';
-        content += '<div class="text-left" style="margin-top:-25px;">';
-          content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >'+date+'</span>';
-        content += '</div>';
-      content += '</div>';
-      if (content){
-        tuRecomendacion.unshift( {
-          id: record.id,
-          time: record.inicio,
-          visto: record.visto,
-          content: content
-        });
-      }
-    });
-    actualizarNotificaciones();
-  });
-  */
 
   socket.on( 'contarNuevasNotificaciones', function ( total ) {
     if ( total > 0 ) {
@@ -526,6 +286,7 @@ function socketManejadores() {
       }
     } );
     if ( notificaciones.length > 0 ) {
+      console.log('notificaciones scroll next');
       $( '#notificacinesList' ).append( '<a class="_next" href="#"></a>' );
 
       var scroll = $( '#notificacinesList' ).iscroll( {
@@ -554,27 +315,23 @@ function socketManejadores() {
   } );
 
   socket.on('cargarNotificacionesList',function(notificaciones){
-    //console.log('CARGAR NOTIFICACIONES LIST: ' + notificaciones.length);
-    console.log(JSON.stringify(notificaciones));
     notificaciones.forEach(function (record){
       var contenido = formatearNotificacion(record, 'div');
       $('#notifListTable').append('<tr><td>' + contenido + '</td></tr>');
       notificacionesList.push(record.id);
+      fechaNotificacionList = record.inicio;
     });
     if (document.getElementById('notifListTable').offsetHeight<$(window).height()){
       if (notificaciones.length === limitNotificacionesList){
-        //console.log('notificacionesList: ' + JSON.stringify(notificacionesList));
         socket.emit('cargarNotificacionesList',notificacionesList,limitNotificacionesList,fechaNotificacionList);
-      } else {
-        console.log('NO hay mas notificaciones');
       }
     } else {
-      console.log('Pantalla llena: Scroll agregado');
-
-      $('#notifList').append('<a class="_next" href="#"></a>');
+      if (notificaciones.length === limitNotificacionesList){
+        $('#notifList').append('<a class="_next" href="#"></a>');
+      }
       var scroll = $('#notifList').iscroll({
         onBeginRequest:function(request){
-          verTodasNotificaciones();
+          socket.emit('cargarNotificacionesList',notificacionesList,limitNotificacionesList,fechaNotificacionList);
         }
       });
     }
@@ -590,14 +347,19 @@ function formatearNotificacion( record , element) {
     tipo = 'paciente';
   }
 
+  var style = 'style="width: 40px;height:40px"';
   if (!(element && element != "")){
-    element = 'li'
+    element = 'li';
+  } else {
+    style= 'style="width: 30px;height:30px"'
   }
 
   var visto = '';
   if ( record.visto == 0 ) {
     visto = '  style="background-color:#DDD" ';
   }
+
+  //$('img').on('error', function() { $(this).attr("src", '/garage/profilepics/dpp.png')});
 
   var fecha = formattedDate( record.inicio );
   if ( record[ tipo ] ) {
@@ -610,8 +372,8 @@ function formatearNotificacion( record , element) {
     }
 
     var mediaObjectFecha = '<div class="text-left" style="margin-top:-5px;"><span class="not-fecha hidden invisible">' + record.inicio.slice( 0, 19 ).replace( 'T', ' ' ) + '</span><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + fecha + '</span></div>';
-
-    var mediaObjectFotoPerfil = '<div class="media-left"><a href= "/perfil/' + usuarioUrl + '"><img class="media-object" src="' + fotoPerfil + '" style="width: 50px;"></a></div>';
+    var mediaObjectImagen = '<img class="media-object img-circle" src="' + fotoPerfil + '" '+style+'>';
+    var mediaObjectFotoPerfil = '<div class="media-left"><a href= "/perfil/' + usuarioUrl + '">'+mediaObjectImagen+'</a></div>';
 
     switch ( record.tipoNotificacion_id ) {
       /*PACIENTE*/
@@ -641,9 +403,9 @@ function formatearNotificacion( record , element) {
           var nombreDoctor = record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.ApellidoM;
           content += '<div class="media-left">';
           content += '<a href="/perfil/' + medicoUrl + '">';
-          content += '<img class="media-object" src="' + fotoPaciente + '" style="width: 50px;">';
+          content += mediaObjectImagen;
           content += '</div>';
-          content += '<div class="media-body">' + nombreCompleto + ' Te ha recomendado al siguiente Dr.' + nombreDoctor;
+          content += '<div class="media-body">' + nombreCompleto + ' Te ha recomendado al Dr.' + nombreDoctor;
           content += '</a>';
           content += '<br />';
           content += mediaObjectFecha
@@ -660,7 +422,7 @@ function formatearNotificacion( record , element) {
         }
         content += '<div class="media-left">';
         content += '<a href="#" onclick="miRecomendacion(\'' + ides + '\');cerrarNotModal()" class="recomendando">';
-        content += '<img class="media-object" src="' + fotoPerfil + '" style="width: 50px;">';
+        content += mediaObjectImagen;
         content += '</a>';
         content += '</div>';
         content += '<div class="media-body">';
@@ -692,31 +454,13 @@ function formatearNotificacion( record , element) {
         //solicitudRechazada
         not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/perfil/' + usuarioUrl + '">Rechazaste la solicitud de amistad de ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
         break;
-      case 11:
-        //medicoRecomienda
-        break;
       case 13:
         //doctorRecomendado
-        content = '';
-        var pacienteUrl = record.paciente.Usuario.usuarioUrl;
-        var fotoPaciente = record.paciente.Usuario.urlFotoPerfil;
-        var nombreCompleto = record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM;
-        content += '<div class="media-left">';
-        content += '<a href="/perfil/' + pacienteUrl + '">';
-        content += '<img class="media-object" src="' + fotoPaciente + '" style="width: 50px;">';
-        content += '</div>';
-        content += '<div class="media-body">' + nombreCompleto + ' Recomendo tu perfil a otro paciente';
-        content += '</a>';
-        content += '<br />';
-        content += '<div class="text-left" style="margin-top:-25px;">';
-        content += '<span style="font-size: 60%" class="glyphicon glyphicon-time" >' + fecha + '</span>';
-        content += '</div>';
-        content += '</div>';
-        not = content;
+        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/perfil/' + usuarioUrl + '">' + nombreCompleto + ' Recomendo tu perfil a otro paciente</a>' + mediaObjectFecha + '</div>';
         break;
       case 14:
         //pedirRecomendacion
-        not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando"><img class="media-object" src="' + fotoPerfil + '" style="width: 50px;"></a></div></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' te ha pedido las siguientes recomendaciones</a>' + mediaObjectFecha + '</div>';
+        not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' te ha pedido las siguientes recomendaciones</a>' + mediaObjectFecha + '</div>';
         break;
     }
     not += '</div>';
@@ -730,7 +474,6 @@ $( document ).ready( function () {
   $( '#notificaciones' ).on( 'hidden.bs.dropdown', function () {
     $( '#notificationIcon' ).attr( 'aria-expanded', '' );
     notificacionesScroll = [];
-    actualizarNotificaciones();
   } );
 
   if ( window.location.href.indexOf( "/inbox" ) > 0 ) {

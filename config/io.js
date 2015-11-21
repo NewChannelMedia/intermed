@@ -53,7 +53,7 @@ var io = function ( io, bundle, ioPassport ) {
         //console.log('[desconectar]Usuarios conectados: ' + JSON.stringify(conectados));
         //console.log( '[DESCONEXIÓN:' + socket.id + ']USUARIO:' + socket.request.cookies.intermed_sesion.usuario + '.' );
       } );
-      
+
       socket.on( 'verNotificaciones', function () {
         //console.log( 'socket_id: ' + socket.id + ' [Buscar: verNotificaciones]' );
         var req = {

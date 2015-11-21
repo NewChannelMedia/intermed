@@ -27,18 +27,6 @@
     var fechaNotificacionList = '';
 
     $(document).ready(function(){
-      //cargarNotificacionesCondicional();
       socket.emit('cargarNotificacionesList',notificacionesList,limitNotificacionesList,fechaNotificacionList);
     });
-
-    function cargarNotificacionesCondicional(){
-        var result = verTodasNotificaciones();
-        setTimeout(function(){
-          if (document.getElementById('notifListTable').offsetHeight<$(window).height()){
-            if (result === true){
-              cargarNotificacionesCondicional();
-            }
-          }
-        },200);
-    }
 </script>

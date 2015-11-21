@@ -1385,6 +1385,9 @@ var iniciar = function () {
       intermed.callController('Home','homeCiudad',req, res);
     });
   // <---------------- FIN TRAE INFO HOME ET --------------------->
+    app.post('/usuarios/informacionUsuario',function (req, res){
+      intermed.callController('usuarios','informacionUsuario',req.body,req, res);
+    });
 }
 
 var io = serv.server( app, 3000 );

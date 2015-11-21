@@ -871,3 +871,22 @@ exports.obtenerUsuarioId = function(object){
     }
   });
 }
+
+exports.informacionUsuario = function (object, req, res){
+  models.Usuario.findOne( {
+    where: {
+      id: object.usuario_id
+    },
+    include: [ {
+      model: models.DatosGenerales,
+      attributes: ['nombre','apellidoP','apellidoM']
+    }],
+    attributes: ['id','UsuarioUrl','tipoUsuario','urlFotoPerfil']
+  }).then(function(usuario){
+      if (usuario){
+        res.send(JSON.parse(JSON.stringify(usuario)));
+      } else {
+        res.send(JSON.parse(JSON.stringify([])));
+      }
+  });
+}
