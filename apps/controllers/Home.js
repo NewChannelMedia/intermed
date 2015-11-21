@@ -179,7 +179,8 @@ module.exports = {
    *	@param response
    *
    */
-  searching: function ( object, req, res ) {
+  searching: function (  object, req, res ) {
+      // se hace la busqueda respecto al parametro que se manda por post del primer select
       var condicionNombre;
       if ( object.nombreMedico != '' && object.apellidoMedico != '' ) {
         // los dos campos con datos
@@ -249,25 +250,13 @@ module.exports = {
                 }, {
           model: models.Direccion,
           attributes: [ 'id', 'ubicacionGM', 'calle', 'numero', 'nombre' ],
-          include: [ {
-            model: models.Localidad,
-            include: [ {
-              model: models.Estado,
-              where: condicionEstado,
-              attributes: [ 'id', 'estado' ]
-                        }, {
-              model: models.Ciudad,
-              where: condicionCiudad,
-              attributes: [ 'id', 'ciudad' ]
-                        } ]
-                    } ]
-                }, {
-          model: models.Telefono,
-          attributes: [ 'tipo', 'numero', 'claveRegion', 'lada' ]
-                } ],
+          include:[{
+            model: models.Municipio,
+            attributes:['municipio']
+          }]
+                }],
         attributes: [ 'id', 'urlFotoPerfil' ]
       } ).then( function ( usuarios ) {
-        console.log( 'USUARIOS: ' + JSON.stringify( usuarios ) );
         res.render( 'searchMedic', {
           usuarios: usuarios
         } );

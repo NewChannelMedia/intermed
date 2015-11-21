@@ -2578,10 +2578,11 @@ var idEspecialidad = '';
       $.post('/homeCiudad',{id:valor},function(ciudades){
         var html = "";
         if( ciudades != null ){
+          $("#Ciudad").html('');
           $.each(ciudades, function( i, item ){
             html += '<option value="'+item.id+'">'+item.municipio+'</option>';
           });
-          $("#Ciudad").html(html);
+          $("#Ciudad").append(html);
         }
       })
     });
