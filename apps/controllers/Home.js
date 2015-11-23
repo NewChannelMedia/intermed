@@ -140,6 +140,12 @@ module.exports = {
   perfilPacientes: function ( object, req, res ) {
     res.render( 'perfil', object )
   },
+
+  //perfil nuevo
+  nuevoPerfilMedicos: function ( object, req, res ) {
+    res.render( 'nuevoPerfilMedicos', object )
+  },
+
   sayHello: function ( object, req, res ) {
     res.render( 'home', {}, function ( err, html ) {
       res.send( html )
