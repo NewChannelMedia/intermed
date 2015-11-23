@@ -1,6 +1,6 @@
 {
 	"name":"intermed",
-	"version":"0.0.0",
+	"version":"0.0.1",
 	"description":"La red social de la salud",
 	"author": "New Channel",
 	"private": true,
@@ -36,5 +36,8 @@
 		"nodemailer": "1.4.0",
 		"nodemailer-smtp-transport": "1.0.3",
 		"nodemailser-express-handlebars": "1.0.0"
+	},
+	"engines":{
+		"node":"0.12.x"
 	}
 }
