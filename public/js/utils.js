@@ -1105,12 +1105,16 @@ if ( location.pathname === '/' ) {
   } );
 }
 
-// script para los intervalos del carousel
+/* script para los intervalos del carousel
 $( document ).ready( function () {
   $( '.carousel' ).carousel( {
     interval: 5000
   } );
+  $(function () {
+    $('#direcciones-carousel').carousel();
+  });
 } );
+*/
 
 // script para obtener el DateStamp
 $( document ).ready( function () {
@@ -1891,15 +1895,15 @@ $( function () {
   } );
 } )
 
-//Funcion que previene que un carousel gire
+/*Funcion que previene que un carousel gire
 $( function () {
   $( '#vCard' ).carousel( 'pause' );
   $( '#vCard' ).carousel( {
     interval: false
   } );
-} );
+} );*/
 
-$( function () {
+/*$( function () {
   $( '.uIndicators li' ).click( function ( e ) {
     e.stopPropagation();
     var goTo = $( this ).data( 'slide-to' );
@@ -1912,7 +1916,7 @@ $( function () {
 
     $( '#ubicacionesCarousel' ).carousel( goTo );
   } );
-} );
+} );*/
 
 function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
   if ( !(paciente_id > 0) ) paciente_id = $( '#PacienteId' ).val();
@@ -2563,3 +2567,103 @@ var idEspecialidad = '';
     });
   });
 //<------------------ FIN OSCAR ----------------------->
+function sticky_relocate() {
+    var window_top = $(window).scrollTop();
+    var div_top = $('#sticky-anchor').offset().top;
+    if (window_top > div_top) {
+        $('.sticky').addClass('stick');
+    } else {
+        $('.sticky').removeClass('stick');
+    }
+}
+
+$(function () {
+    $(window).scroll(sticky_relocate);
+    sticky_relocate();
+});
+
+
+(function($) {
+    $(function() {
+        $('.jcarousel').jcarousel();
+
+        $('.jcarousel-control-prev')
+            .on('jcarouselcontrol:active', function() {
+                $(this).removeClass('inactive');
+            })
+            .on('jcarouselcontrol:inactive', function() {
+                $(this).addClass('inactive');
+            })
+            .jcarouselControl({
+                target: '-=1'
+            });
+
+        $('.jcarousel-control-next')
+            .on('jcarouselcontrol:active', function() {
+                $(this).removeClass('inactive');
+            })
+            .on('jcarouselcontrol:inactive', function() {
+                $(this).addClass('inactive');
+            })
+            .jcarouselControl({
+                target: '+=1'
+            });
+
+        $('.jcarousel-pagination')
+            .on('jcarouselpagination:active', 'a', function() {
+                $(this).addClass('active');
+            })
+            .on('jcarouselpagination:inactive', 'a', function() {
+                $(this).removeClass('active');
+            })
+            .jcarouselPagination();
+    });
+})(jQuery);
+
+
+jQuery(document).ready(function ($) {
+
+  $('#checkbox').change(function(){
+    setInterval(function () {
+        moveRight();
+    }, 3000);
+  });
+
+	var slideCount = $('#slider ul li').length;
+	var slideWidth = $('#slider ul li').width();
+	var slideHeight = $('#slider ul li').height();
+	var sliderUlWidth = slideCount * slideWidth;
+
+	$('#slider').css({ width: slideWidth, height: slideHeight });
+
+	$('#slider ul').css({ width: sliderUlWidth, marginLeft: - slideWidth });
+
+    $('#slider ul li:last-child').prependTo('#slider ul');
+
+    function moveLeft() {
+        $('#slider ul').animate({
+            left: + slideWidth
+        }, 200, function () {
+            $('#slider ul li:last-child').prependTo('#slider ul');
+            $('#slider ul').css('left', '');
+        });
+    };
+
+    function moveRight() {
+        $('#slider ul').animate({
+            left: - slideWidth
+        }, 200, function () {
+            $('#slider ul li:first-child').appendTo('#slider ul');
+            $('#slider ul').css('left', '');
+        });
+    };
+
+    $('a.control_prev').click(function () {
+        moveLeft();
+    });
+
+    $('a.control_next').click(function () {
+        moveRight();
+    });
+
+});

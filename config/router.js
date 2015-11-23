@@ -163,6 +163,11 @@ var iniciar = function () {
     rutas.routeLife( 'plataforma', 'plataforma/pacientes', hps );
     intermed.callController( 'Home', 'perfilPacientes', '', req, res );
   } );
+  //perfil nuevo
+  app.get( '/nuevoPerfilMedicos', function ( req, res ) {
+    rutas.routeLife( 'plataforma2', 'plataforma/medico', hps );
+    intermed.callController( 'Home', 'nuevoPerfilMedicos', '', req, res );
+  } );
 
   app.get( '/auth/facebook/request/:tipo', function ( req, res, next ) {
     req.session.tipo = '';
