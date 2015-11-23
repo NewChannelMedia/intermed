@@ -7,25 +7,6 @@
 	"scripts":{
 		"start":"node app.js"
 	},
-	"contributors":
-	{
-		{
-			"name":"Oscar Ivan Muñoz Barajas",
-			"email":"oscar.m@newchannel.mx"
-		},
-		{
-			"name":"Juan Carlos Medina",
-			"email":"jcmedina@newchannel.mx"
-		},
-		{
-			"name": "Cinthia Margarita Bermudez Acosta",
-			"email": "cinthia.b@newchannel.mx"
-		},
-		{
-			"name": "Jorge Alejandro Preciado",
-			"email":"jorge@newchannel.mx"
-		}
-	},
 	"preferGlobal": "true",
 	"dependencies":{
 		"express": "4.13.3",
