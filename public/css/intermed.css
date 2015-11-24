@@ -2093,3 +2093,7 @@ li.error{
   font-weight: bold;
   color: #FFF;
 }
+
+.pac-container.pac-logo{
+  z-index: 30000;
+}

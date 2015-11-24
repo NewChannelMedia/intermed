@@ -27,7 +27,7 @@ exports.ObtieneDirecciones = function (req, res) {
     });
 };
 
-exports.obtieneEstados = function (req, res) {
+exports.obtieneEstados = function (object, req, res) {
     models.Estado.findAll().then(function (datos) {
         res.send(datos);
     });
@@ -60,9 +60,10 @@ exports.obtieneLocalidades = function (object, req, res) {
   models.Localidad.findAll({
     where:{
       estado_id:object.estado_id,
-      municipio_id: object.municipio_id
+      municipio_ant_id: object.municipio_id
     },
     order:['localidad'],
+    logging: console.log,
     attributes:['id','localidad']
   }).then( function(municipios){
     res.send({

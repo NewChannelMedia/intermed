@@ -58,7 +58,7 @@ function agregarUbicacion(){
                                       <div class="row">
                                         <label class="col-md-12 control-label" for="textinput" style="color:white">Calle o avenida:</label>
                                         <div class="col-md-12">
-                                        <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                        <input id="calleUbi" name="textinput" type="text" placeholder="" class="form-control input-md">
                                         </div>
                                       </div>
                                     </div>
@@ -68,7 +68,7 @@ function agregarUbicacion(){
                                             <label class="control-label" for="textinput" style="color:white">Número:</label>
                                         </div>
                                         <div class="col-md-12">
-                                            <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                            <input id="numeroUbi" name="textinput" type="text" placeholder="" class="form-control input-md">
                                         </div>
                                       </div>
                                     </div>
@@ -125,7 +125,8 @@ function agregarUbicacion(){
                                         <div class="row">
                                           <label class="col-md-12 control-label" for="textinput" style="color:white">Estado:</label>
                                           <div class="col-md-12">
-                                          <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                          <select id="slc_estados" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                          </select>
                                           </div>
                                         </div>
                                       </div>
@@ -133,7 +134,8 @@ function agregarUbicacion(){
                                         <div class="row">
                                           <label class="col-md-12 control-label" for="textinput" style="color:white">Municipio/ciudad:</label>
                                           <div class="col-md-12">
-                                          <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                          <select id="slc_ciudades" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                          </select>
                                           </div>
                                         </div>
                                       </div>
@@ -152,7 +154,8 @@ function agregarUbicacion(){
                                       <div class="row">
                                         <label class="col-md-12 control-label" for="textinput" style="color:white">Localidad/colonia:</label>
                                         <div class="col-md-12">
-                                        <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                        <select id="slc_colonias" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                        </select>
                                         </div>
                                       </div>
                                     </div>
@@ -160,7 +163,7 @@ function agregarUbicacion(){
                                       <div class="row">
                                         <label class="col-md-12 control-label" for="textinput" style="color:white">CP:</label>
                                         <div class="col-md-12">
-                                        <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                        <input id="cpUbi" name="textinput" type="text" placeholder="" class="form-control input-md">
                                         </div>
                                       </div>
                                     </div>
@@ -200,10 +203,13 @@ function agregarUbicacion(){
                     </div>
                     <div class="col-md-6">
                       <div class="row">
-                            <div id="searchDiv">
-                                <input id="autocomplete_searchField" type="text" placeholder="Buscar Dirección">
-                            </div>
-                            <div id="mapDiv" class="col-md-12" style="margin-left:10px;"></div>
+                          <input type="text" value="{{direccion.latitud}}" id="latitud" name="latitud" />
+                          <input type="text" value="{{direccion.longitud}}" id="longitud" name="longitud" />
+                          <div id="searchDiv">
+                              <input id="autocomplete_searchField" type="text" placeholder="Buscar Dirección">
+                          </div>
+                          <div id="direccion"></div>
+                          <div id="mapDiv"></div>
                       </div>
                     </div>
                 </div>

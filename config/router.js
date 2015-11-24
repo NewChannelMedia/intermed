@@ -1393,6 +1393,10 @@ var iniciar = function () {
     app.post('/usuarios/informacionUsuario',function (req, res){
       intermed.callController('usuarios','informacionUsuario',req.body,req, res);
     });
+
+    app.post('/obtenerEstados',function( req, res){
+      intermed.callController( 'ubicacion', 'obtieneEstados', req.body, req, res );
+    })
 }
 
 var io = serv.server( app, 3000 );
