@@ -91,8 +91,6 @@ exports.ubicacion = function (objects, req, res) {
 exports.nuevaUbicacion = function (objects, req, res) {
     var estados;
 
-    console.log('entro');
-
     models.Estado.findAll().then(function (datos) {
         estados = datos;
     });
