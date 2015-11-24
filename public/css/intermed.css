@@ -2034,3 +2034,62 @@ li.error{
 }
 
 /*Fin Inbox*/
+
+.menuUbicacion{
+  padding:0px;
+}
+
+.menuUbicacion li{
+  text-align: center;
+  font-weight: bold;
+  width:50%;
+  margin:0px;
+  border-radius: 0px;
+  background-color:#1e6485;
+}
+
+.menuUbicacion li a {
+  color: white;
+  margin:0px;
+  border-radius: 0px 0px 0 0!important;
+}
+
+.menuUbicacion li.active a,
+.menuUbicacion li.active a:focus,
+.menuUbicacion li.active a:hover,
+.menuUbicacion li a:hover{
+  background-color:#2383AF;
+  color:white!important;
+  border: 0px!important;
+  border-bottom: 0px!important;
+}
+
+#divUbicacion{
+  padding:30px;
+  background-color:#5D9AB7;
+  padding-bottom: 0px;
+}
+
+#divUbicacion .row{
+  padding-bottom: 2px!important;
+}
+
+.btn-add{
+  background-color: #5AA5C9;
+  border-style: solid;
+  border-color: white;
+  border-width: 2px;
+  border-radius: 3px;
+  font-weight: bold;
+  color: #FFF;
+}
+
+.btn-save{
+  background-color: #FFBF00;
+  border-style: solid;
+  border-color: white;
+  border-width: 2px;
+  border-radius: 3px;
+  font-weight: bold;
+  color: #FFF;
+}

@@ -2667,3 +2667,13 @@ jQuery(document).ready(function ($) {
     });
 
 });
+
+$(function(){
+  $('#btnAgregaUbi').on('click',function(){
+    agregarUbicacion();
+  });
+
+  $('#btnEditaUbi').on('click',function(){
+    alert('Edita ubicacion');
+  });
+});

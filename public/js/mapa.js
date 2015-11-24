@@ -31,7 +31,7 @@ var mapa = {
     zoom: 16,
     mapId: google.maps.MapTypeId.ROADMAP,
     /*
-                                            Opciones Para mostrar mapas    
+                                            Opciones Para mostrar mapas
                                             ROADMAP
                                             SATELLITE
                                             HYBRID
@@ -60,37 +60,70 @@ var mapa = {
 
 
     initMap: function () {
-        //Activar cartografia y temas
         google.maps.visualRefresh = true;
-
-        //Direcciones
-        mapa.markers = new Array();
-        mapa.popup = new google.maps.InfoWindow();
-
-        //Opciones de inicio para el mapa
         var mapOptions = {
             center: new google.maps.LatLng(mapa.latitud, mapa.longitud),
             zoom: 5,//Mostrar Mexico
             mapTypeId: mapa.mapId
         };
-
-        //Obtener objeto para mostrar mapa
+        mapa.markers = new Array();
+        mapa.popup = new google.maps.InfoWindow();
         var mapElement = document.getElementById(mapa.nombreObjetoMostrarMapa);
 
-        //Crear objeto mapa
-        mapa.map = new google.maps.Map(mapElement, mapOptions);
+        mapa.map =new google.maps.Map(mapElement,mapOptions);
+        resizeMap();
 
+        /*Nuevo*/
         var styledMap = new google.maps.StyledMapType(styles, { name: "Styled Map" });
         mapa.map.mapTypes.set('map_style', styledMap);
         mapa.map.setMapTypeId('map_style');
+        console.log('Test 6');
+        /**/
+        mapa.GeolicalizacionUsuario();
+
+        var searchDiv = document.getElementById('searchDiv');
+        var searchField = document.getElementById('autocomplete_searchField');
+        mapa.map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchDiv);
+
+        console.log('Test 10');
+        var searchOptions = {
+            bounds: new google.maps.LatLngBounds(
+                new google.maps.LatLng(mapa.latitud, mapa.longitud)
+            ),
+            types: new Array()
+        };
+
+        var autocompleteSearch = new google.maps.places.Autocomplete(searchField, searchOptions);
 
 
+        google.maps.event.addListener(autocompleteSearch, 'place_changed', function () {
+            while (mapa.markers[0]) {
+                mapa.markers.pop().setMap(null);
+            }
+            var place = autocompleteSearch.getPlace();
+
+            console.log('PLACE: ' + JSON.stringify(place));
+            if (place.geometry) {
+                mapa.latitud = place.geometry.location.lat();
+                mapa.longitud = place.geometry.location.lng();
+                mapa.PosicionarMapa();
+                mapa.Marcador();
+                mapa.DireccionObtener();
+            };
+            mapa.Marcador();
+
+        });
+
+        /*
         //Posicionar el mapa en la ubicacion del usuario
         if (mapa.soloCargar == false) {
+            console.log('Test 7');
             if ($('#idDireccion').val().length == 0) {
                 mapa.GeolicalizacionUsuario();
+                console.log('Test 8');
             } else {
                 mapa.PosicionarMapa();
+                console.log('Test 9');
                 //Crear marcador en el centro del mapa()
                 mapa.Marcador();
             };
@@ -101,6 +134,7 @@ var mapa = {
             mapa.map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchDiv);
 
 
+            console.log('Test 10');
             var searchOptions = {
                 bounds: new google.maps.LatLngBounds(
                     new google.maps.LatLng(mapa.latitud, mapa.longitud)
@@ -110,7 +144,10 @@ var mapa = {
 
             var autocompleteSearch = new google.maps.places.Autocomplete(searchField, searchOptions);
 
+            console.log('Test 11');
+            /*
             google.maps.event.addListener(autocompleteSearch, 'place_changed', function () {
+                console.log('Test 12');
                 while (mapa.markers[0]) {
                     mapa.markers.pop().setMap(null);
                 }
@@ -126,7 +163,8 @@ var mapa = {
                 mapa.Marcador();
 
             });
-        }
+                console.log('Test 13');
+        }*/
     },
     PosicionarMapa: function () {
         var devCenter = new google.maps.LatLng(mapa.latitud, mapa.longitud);
@@ -141,11 +179,13 @@ var mapa = {
                 function (position) {
                     mapa.latitud = position.coords.latitude;
                     mapa.longitud = position.coords.longitude;
+                    console.log('lat: ' + mapa.latitud);
+                    console.log('long: ' + mapa.longitud);
 
                     mapa.PosicionarMapa();
                     //Crear marcador en el centro del mapa()
                     mapa.Marcador();
-                    mapa.DireccionObtener();
+                    //mapa.DireccionObtener();
                 });
         };
     },
@@ -226,7 +266,7 @@ var mapa = {
                         if (addr.types[0] == 'administrative_area_level_1') {
                             mapa.estado = addr.long_name;
                             $("#slc_estados option:contains(" + mapa.estado + ")").attr("selected", true);
-                            obtenerCiudades();
+                            //obtenerCiudades();
                         };
 
                         if (addr.types[0] == 'postal_code') {
@@ -268,18 +308,45 @@ mapa.nombreObjetoLongitud = 'longitud';
 //Objeto que recibe a direccion
 mapa.nombreObjetoDireccion = 'direccion';
 
-$(function () {
+function cargarMapa2(){
+  var mapProp = {
+      center:new google.maps.LatLng(23.6266557, -102.5377501),
+      zoom: 4,
+      draggable: true,
+      scrollwheel: true,
+      mapTypeId:google.maps.MapTypeId.ROADMAP
+  };
+
+  map=new google.maps.Map(document.getElementById("mapDiv"),mapProp);
+  resizeMap();
+}
+
+function resizeMap() {
+   if(typeof mapa.map =="undefined") return;
+   setTimeout( function(){resizingMap();} , 400);
+}
+
+function resizingMap() {
+   if(typeof mapa.map =="undefined") return;
+   var center = mapa.map.getCenter();
+   google.maps.event.trigger(mapa.map, "resize");
+   mapa.map.setCenter(center);
+}
+function cargarMapa() {
+    //Inicializa mapa
     //cargar mapa
     if (isNaN($('#idDireccion').val())) {
         mapa.soloCargar = true;
-        //Cargar marcadores cuando el mapa esta inicializado
-        google.maps.event.addDomListener(window, 'load', AgregarMarcadores);
+        AgregarMarcadores();
     } else {
+        mapa.soloCargar = false;
         if ($('#idDireccion').val() > 0) {
             mapa.soloCargar = false;
+            /*HACER ESTO CON AJAX*/
+            /*
             mapa.latitud = $('#latitud').val();
             mapa.longitud = $('#longitud').val();
-            //cargar Estado, Municipio, Localidad            
+            //cargar Estado, Municipio, Localidad
 
             mapa.estado = $('#estadoDato').val();
             mapa.ciudad = $('#municipioDato').val();
@@ -287,14 +354,12 @@ $(function () {
 
             SeleccionarValor('slc_estados', mapa.estado);
             obtenerCiudades();
-        } else {
-            mapa.soloCargar = false;
-        };
+            */
+        }
     }
-})
+    mapa.initMap();
+}
 
-//Inicializa mapa
-google.maps.event.addDomListener(window, 'load', mapa.initMap);
 
 
 function AgregarMarcadores() {
@@ -331,7 +396,7 @@ function AsignarCiudad() {
 }
 
 function AsignarColonia() {
-    SeleccionarValor('slc_colonias', mapa.colonia);  
+    SeleccionarValor('slc_colonias', mapa.colonia);
 }
 
 function SeleccionarValor(control, valor) {
@@ -359,4 +424,3 @@ function ReemplezarAcentos(valor) {
 
     return resultado;
 }
-
