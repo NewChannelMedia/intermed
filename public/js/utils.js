@@ -2667,3 +2667,6 @@ jQuery(document).ready(function ($) {
     });
 
 });
+$("#listaEspecialidades a").on('click', function(event) {
+  event.preventDefault();
+});
