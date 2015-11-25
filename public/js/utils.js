@@ -2726,3 +2726,7 @@ $(function(){
     alert('Edita ubicacion');
   });
 });
+
+$("#listaEspecialidades a").on('click', function(event) {
+  event.preventDefault();
+});

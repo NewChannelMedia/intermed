@@ -947,6 +947,7 @@ a:visited {
   min-height: 830px;
   padding-top: 40px;
   clear: both;
+  position: relative;
 }
 
 .side-especialidades{
@@ -987,7 +988,8 @@ a:visited {
   padding: 6px!important;
 }
 
-.side-especialidades .nav li>a:hover,.side-especialidades .nav li>a:active,.side-especialidades .nav li>a:focus{
+.side-especialidades .nav li>a:hover,.side-especialidades .nav li>a:active,.side-especialidades .nav li>a:focus,
+.side-especialidades .nav-pills li.active>a,.side-especialidades .nav-pills li.active>a:hover,.side-especialidades .nav-pills li.active>a:active,.side-especialidades .nav-pills li.active>a:focus{
   color: #3c6b8a;
   background-color: #fff;
 }
@@ -1004,11 +1006,18 @@ a:visited {
   }
 }
 
+.affix {
+  top: 20px;
+}
 
 .sep {
   border-width: 2px;
   border-color: #fff;
   margin-top: 0;
+}
+
+#listaColegas {
+  padding-bottom: 640px;
 }
 
 .main-colegas {
