@@ -2008,21 +2008,69 @@ function obtenerColonias() {
 
 //Registrar Ubicacion
 function regUbicacion() {
+    var nombreUbi = '', principal = 0, calleUbi = '', numeroUbi = '', numeroIntUbi= '';
+    var calle1Ubi='',calle2Ubi='',slc_estados = '', slc_ciudades = '', slc_colonias = '', cp = '';
+    nombreUbi = $('#nombreUbi').val();
+    if ($('#principal').is(':checked')){
+      principal = 1;
+    }
+    calleUbi = $('#calleUbi').val();
+    numeroUbi = $('#numeroUbi').val();
+    numeroIntUbi = $('#numeroIntUbi').val();
+
+    calle1Ubi = $('#calle1Ubi').val();
+    calle2Ubi = $('#calle2Ubi').val();
+
+    slc_estados = $('#slc_estados').val();
+    slc_ciudades = $('#slc_ciudades').val();
+    slc_colonias = $('#slc_colonias').val();
+    cpUbi = $('#cpUbi').val();
+    idDireccion = $('#idDireccion').val();
+    latitud = $('#latitud').val();
+    longitud = $('#longitud').val();
+
+    UbicData = {
+      nombreUbi: nombreUbi,
+      principal: principal,
+      calleUbi: calleUbi,
+      numeroUbi: numeroUbi,
+      numeroIntUbi: numeroIntUbi,
+      calle1Ubi: calle1Ubi,
+      calle2Ubi: calle2Ubi,
+      idDireccion: idDireccion,
+      latitud: latitud,
+      longitud: longitud
+    }
+    if (slc_estados != ""){
+      UbicData['slc_estados'] = slc_estados;
+    }
+    if (slc_ciudades != ""){
+      console.log('Guardado');
+      UbicData['slc_ciudades'] = slc_ciudades;
+    }
+    if (slc_colonias != ""){
+      UbicData['slc_colonias'] = slc_colonias;
+    }
+    if (cpUbi != ""){
+      UbicData['cpUbi'] = cpUbi;
+    }
+
     if (regUbiValid() == true) {
         $.ajax({
             url: '/registrarubicacion',
             type: 'POST',
             dataType: "json",
             cache: false,
-            data: $('#frmRegUbi').serialize(),
+            data: UbicData,
             type: 'POST',
             success: function (data) {
-                document.getElementById("frmRegUbi").reset();
+                $("#frmRegUbi").find('input select').val('');
+                obtenerCiudades();
                 //Reiniciar mapa
                 mapa.GeolicalizacionUsuario();
             },
-            error: function (jqXHR, textStatus, err) {
-                console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
+            error: function (err) {
+                console.error('AJAX ERROR: (registro 166) : ' + JSON.stringify(err));
             }
         });
     }
@@ -2577,6 +2625,7 @@ function sticky_relocate() {
     }
 }
 
+if ( location.pathname === '/nuevoperfilmedicos' ) {
 $(function () {
     $(window).scroll(sticky_relocate);
     sticky_relocate();
@@ -2619,7 +2668,7 @@ $(function () {
             .jcarouselPagination();
     });
 })(jQuery);
-
+}
 
 jQuery(document).ready(function ($) {
 

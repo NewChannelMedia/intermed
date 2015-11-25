@@ -96,7 +96,6 @@ var mapa = {
         var styledMap = new google.maps.StyledMapType(styles, { name: "Styled Map" });
         mapa.map.mapTypes.set('map_style', styledMap);
         mapa.map.setMapTypeId('map_style');
-        console.log('Test 6');
         /**/
         mapa.GeolicalizacionUsuario();
 
@@ -157,8 +156,6 @@ var mapa = {
                 function (position) {
                     mapa.latitud = position.coords.latitude;
                     mapa.longitud = position.coords.longitude;
-                    console.log('lat: ' + mapa.latitud);
-                    console.log('long: ' + mapa.longitud);
 
                     mapa.PosicionarMapa();
                     //Crear marcador en el centro del mapa()
@@ -179,7 +176,7 @@ var mapa = {
                 position: pos,
                 map: mapa.map,
                 draggable: true,
-                title: "Esto es un marcador",
+                title: "Arrastre y suelte para seleccionar la ubicación",
                 animation: google.maps.Animation.DROP
             });
 
@@ -225,6 +222,7 @@ var mapa = {
                     for (var i = 0; i < results[0].address_components.length; i++) {
                         var addr = results[0].address_components[i];
 
+                        console.log('ADDR: ' + JSON.stringify(results[0]));
                         if (addr.types[0] == 'street_number') {
                             mapa.numero = addr.long_name;
                         };

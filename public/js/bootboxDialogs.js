@@ -32,13 +32,13 @@ function agregarUbicacion(){
                                   <div class="row">
                                     <label class="col-md-12 control-label" for="textinput" style="color:white">Nombre de la ubicación:</label>
                                     <div class="col-md-7">
-                                    <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                    <input id="nombreUbi" name="nombreUbi" type="text" placeholder="" class="form-control input-md">
                                     </div>
                                     <div class="col-md-5">
                                       <div class="row">
                                         <div class="checkbox">
                                         <label style="color:white;font-weight:bold">
-                                          <input type="checkbox" value="" style="margin-top:0px">
+                                          <input type="checkbox" id="principal" name="principal" value="" style="margin-top:0px">
                                           Ubicación principal.
                                         </label>
                                         </div>
@@ -58,7 +58,7 @@ function agregarUbicacion(){
                                       <div class="row">
                                         <label class="col-md-12 control-label" for="textinput" style="color:white">Calle o avenida:</label>
                                         <div class="col-md-12">
-                                        <input id="calleUbi" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                        <input id="calleUbi" name="calleUbi" type="text" placeholder="" class="form-control input-md">
                                         </div>
                                       </div>
                                     </div>
@@ -68,7 +68,7 @@ function agregarUbicacion(){
                                             <label class="control-label" for="textinput" style="color:white">Número:</label>
                                         </div>
                                         <div class="col-md-12">
-                                            <input id="numeroUbi" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                            <input id="numeroUbi" name="numeroUbi" type="text" placeholder="" class="form-control input-md">
                                         </div>
                                       </div>
                                     </div>
@@ -78,7 +78,7 @@ function agregarUbicacion(){
                                             <label class="control-label" for="textinput" style="color:white">Interior:</label>
                                         </div>
                                         <div class="col-md-12">
-                                            <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                            <input id="numeroIntUbi" name="numeroIntUbi" type="text" placeholder="" class="form-control input-md">
                                         </div>
                                       </div>
                                     </div>
@@ -97,7 +97,7 @@ function agregarUbicacion(){
                                       <div class="row">
                                         <label class="col-md-12 control-label" for="textinput" style="color:white">Entre calles:</label>
                                         <div class="col-md-12">
-                                        <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                        <input id="calle1Ubi" name="calle1Ubi" type="text" placeholder="" class="form-control input-md">
                                         </div>
                                       </div>
                                     </div>
@@ -105,7 +105,7 @@ function agregarUbicacion(){
                                       <div class="row">
                                         <label class="col-md-12 control-label" for="textinput" style="color:white">Y:</label>
                                         <div class="col-md-12">
-                                        <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                        <input id="calle2Ubi" name="calle2Ubi" type="text" placeholder="" class="form-control input-md">
                                         </div>
                                       </div>
                                     </div>
@@ -125,7 +125,7 @@ function agregarUbicacion(){
                                         <div class="row">
                                           <label class="col-md-12 control-label" for="textinput" style="color:white">Estado:</label>
                                           <div class="col-md-12">
-                                          <select id="slc_estados" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                          <select id="slc_estados" name="slc_estados" type="text" placeholder="" class="form-control input-md" onChange="obtenerCiudades()">
                                           </select>
                                           </div>
                                         </div>
@@ -134,7 +134,7 @@ function agregarUbicacion(){
                                         <div class="row">
                                           <label class="col-md-12 control-label" for="textinput" style="color:white">Municipio/ciudad:</label>
                                           <div class="col-md-12">
-                                          <select id="slc_ciudades" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                          <select id="slc_ciudades" name="slc_ciudades" type="text" placeholder="" class="form-control input-md" onChange="obtenerColonias()">
                                           </select>
                                           </div>
                                         </div>
@@ -154,7 +154,7 @@ function agregarUbicacion(){
                                       <div class="row">
                                         <label class="col-md-12 control-label" for="textinput" style="color:white">Localidad/colonia:</label>
                                         <div class="col-md-12">
-                                        <select id="slc_colonias" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                        <select id="slc_colonias" name="slc_colonias" type="text" placeholder="" class="form-control input-md">
                                         </select>
                                         </div>
                                       </div>
@@ -163,7 +163,7 @@ function agregarUbicacion(){
                                       <div class="row">
                                         <label class="col-md-12 control-label" for="textinput" style="color:white">CP:</label>
                                         <div class="col-md-12">
-                                        <input id="cpUbi" name="textinput" type="text" placeholder="" class="form-control input-md">
+                                        <input id="cpUbi" name="cpUbi" type="text" placeholder="" class="form-control input-md">
                                         </div>
                                       </div>
                                     </div>
@@ -171,26 +171,26 @@ function agregarUbicacion(){
                                 </div>
                               </div>
                             </div>
-                            <hr/>
 
                             <div class="col-md-12">
                               <div class="row">
-                              <span style="font-weight:bold;color:white">
+                              <hr class="style-white"/>
+                              <span style="font-weight:bold;color:white;font-size:80%;">
                                 Al finalizar de agregar tus ubicaciones, pasa a la pestaña de "horarios" para organizar las horas de atención que se mostrarán en tu agenda de citas.
                               </span>
                               </div>
                             </div>
 
 
-                            <div class="col-md-12" style="margin-top:5px;">
+                            <div class="col-md-12" style="margin-top:15px;">
                                 <div class="form-group">
                                   <div class="row">
-                                    <div class="col-md-5">
+                                    <div class="col-md-5" style="margin-right:5px">
                                       <div class="row">
-                                        <input type="button" class="btn btn-add btn-block" value="Añadir ubicación">
+                                        <input type="button" class="btn btn-add btn-block" value="Añadir ubicación" onclick="regUbicacion()">
                                       </div>
                                     </div>
-                                    <div class="col-md-5" style="margin-left:10px">
+                                    <div class="col-md-5" style="margin-right:5px">
                                       <div class="row">
                                         <input type="button" class="btn btn-save btn-block" value="Guardar y salir">
                                       </div>
@@ -203,8 +203,8 @@ function agregarUbicacion(){
                     </div>
                     <div class="col-md-6">
                       <div class="row">
-                          <input type="text" value="{{direccion.latitud}}" id="latitud" name="latitud" />
-                          <input type="text" value="{{direccion.longitud}}" id="longitud" name="longitud" />
+                          <input type="hidden" value="" id="latitud" name="latitud" />
+                          <input type="hidden" value="" id="longitud" name="longitud" />
                           <div id="searchDiv">
                               <input id="autocomplete_searchField" type="text" placeholder="Buscar Dirección">
                           </div>

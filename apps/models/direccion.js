@@ -3,20 +3,18 @@
 module.exports = function(sequelize, DataTypes) {
   var Direccion = sequelize.define("Direccion", {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
-    ubicacionGM: {type: DataTypes.STRING},
     calle: {type:  DataTypes.STRING, required: true},
     numero: {type: DataTypes.STRING, required: true},
     calle1: {type: DataTypes.STRING},
     calle2: {type: DataTypes.STRING},
-    principal: {type:  DataTypes.BOOLEAN},
+    principal: {type:  DataTypes.INTEGER},
     nombre: {type: DataTypes.STRING},
-    horaInicio: {type: DataTypes.STRING},
-    horaFin: {type: DataTypes.STRING},
-    dias: {type: DataTypes.STRING},
     usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true},
     institucion_id: {type: DataTypes.INTEGER},
-    localidad_id: {type: DataTypes.INTEGER},
+    estado_id: {type: DataTypes.INTEGER, required: true},
     municipio_id: {type: DataTypes.INTEGER, required: true},
+    localidad_id: {type: DataTypes.INTEGER},
+    cp: {type: DataTypes.STRING},
     latitud: {type: DataTypes.STRING},
     longitud: {type: DataTypes.STRING}
     //estado_id: {type: DataTypes.INTEGER, required: true}

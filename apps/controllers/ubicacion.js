@@ -63,7 +63,6 @@ exports.obtieneLocalidades = function (object, req, res) {
       municipio_ant_id: object.municipio_id
     },
     order:['localidad'],
-    logging: console.log,
     attributes:['id','localidad']
   }).then( function(municipios){
     res.send({
@@ -109,30 +108,29 @@ exports.nuevaUbicacion = function (objects, req, res) {
 };
 
 exports.registrarUbicacion = function (objects, req, res) {
+  if (req.session.passport.user){
     if (objects.idDireccion=='') {
         models.Direccion.create({
-            ubicacionGM: 'object.ubicacionGM',
             calle: objects.calleUbi,
             numero: objects.numeroUbi,
+            numeroInt: objects.numeroIntUbi,
             calle1: objects.calle1Ubi,
             calle2: objects.calle2Ubi,
-            principal: 0,
+            principal: objects.principal,
             nombre: objects.nombreUbi,
-            horarioInicio: 'object.horarioInicio',
-            horarioFin: 'object.horarioFin',
-            dias: 'objects.dias',
-            usuario_id: objects.usuario_id,
-            // institucion_id: '0',
+            usuario_id: req.session.passport.user.id,
+            estado_id: objects.slc_estados,
             localidad_id: objects.slc_colonias,
             municipio_id: objects.slc_ciudades,
+            cp: objects.cpUbi,
             latitud: objects.latitud,
             longitud: objects.longitud
         }).then(function (datos) {
             res.status(200).json({
                 ok: true
             });
-
         }).catch(function (err) {
+            console.log('ERROR:: ' + JSON.stringify(err));
             res.status(500).json({
                 error: err
             });
@@ -170,6 +168,11 @@ exports.registrarUbicacion = function (objects, req, res) {
             });
         });
     }
+  } else {
+      res.status(500).json({
+          error: 0
+      });
+  }
 };
 
 exports.horarios = function (objects, req, res) {
