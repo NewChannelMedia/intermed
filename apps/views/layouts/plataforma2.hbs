@@ -15,12 +15,15 @@
     <link rel="stylesheet" type="text/css" href="css/intermed.css">
     <link rel="stylesheet" type="text/css" href="css/intermed_Platform.css">
     <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
+    <link href="css/mapa.css" rel="stylesheet" />
     <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
     <script src="js/jcarousel.js"></script>
+    <script src="js/bootbox.min.js"></script>
+    <script src="js/bootboxDialogs.js"></script>
     <script src="js/utils.js"></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -492,7 +495,7 @@
         </div>
         <div class="container">
           <hr class="sep">
-          <div class="side-especialidades">
+          <nav id="listaEspecialidades" class="side-especialidades" >
             <p>
               <span class="side-especialides-header h77-boldcond">Selecciona</span>
               <span class="side-especialides-subheader h67-medcond">una especialidad</span>
@@ -500,27 +503,27 @@
             <hr class="sep">
             <ul class="nav nav-pills nav-stacked h67-medcond">
               <li>
-                <a href="#">Alergología <span class="badge pull-right">2</span></a>
+                <a href="#alergologia">Alergología <span class="badge pull-right">2</span></a>
               </li>
               <li>
-                <a href="#">Angiología <span class="badge pull-right">1</span></a>
+                <a href="#angiologia">Angiología <span class="badge pull-right">1</span></a>
               </li>
               <li>
-                <a href="#">Cardiología <span class="badge pull-right">4</span></a>
+                <a href="#cardiologia">Cardiología <span class="badge pull-right">4</span></a>
               </li>
               <li>
-                <a href="#">Dermatología <span class="badge pull-right">6</span></a>
+                <a href="#dermatologia">Dermatología <span class="badge pull-right">6</span></a>
               </li>
               <li>
-                <a href="#">Endocrinología <span class="badge pull-right">2</span></a>
+                <a href="#endocrinologia">Endocrinología <span class="badge pull-right">2</span></a>
               </li>
               <li>
-                <a href="#">Ginecología <span class="badge pull-right">1</span></a>
+                <a href="#ginecologia">Ginecología <span class="badge pull-right">1</span></a>
               </li>
             </ul>
-          </div>
-          <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12 pull-right main-colegas">
-            <div class="row">
+          </nav>
+          <div id="listaColegas" class="col-lg-9 col-md-9 col-sm-8 col-xs-12 pull-right main-colegas" data-spy="scroll" data-target="#listaEspecialidades" data-offset="180">
+            <div id="alergologia" class="row" >
               <h1 class="h67-medcond">Alergología</h1>
               <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
                 <div class="thumbnail">
@@ -555,7 +558,7 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div id="angiologia" class="row">
               <h1 class="h67-medcond">Angiología</h1>
               <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
                 <div class="thumbnail">
@@ -574,7 +577,7 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div id="cardiologia" class="row">
               <h1 class="h67-medcond">Cardiología</h1>
               <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
                 <div class="thumbnail">
@@ -641,7 +644,7 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div id="dermatologia" class="row">
               <h1 class="h67-medcond">Dermatología</h1>
               <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
                 <div class="thumbnail">
@@ -740,7 +743,7 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div id="endocrinologia" class="row">
               <h1 class="h67-medcond">Endocrinología</h1>
               <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
                 <div class="thumbnail">
@@ -839,7 +842,7 @@
                 </div>
               </div>
             </div>
-            <div class="row">
+            <div id="ginecologia" class="row">
               <h1 class="h67-medcond">Ginecología</h1>
               <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
                 <div class="thumbnail">
@@ -884,10 +887,36 @@
         </div>
       </div>
     </section>
+    <section id="comentariosv">
+      <div class="container-fluid">
+        <div class="row cat-header cv">
+          <div class="container">
+            <div class="col-lg-9 col-md-10 col-lg-offset-3 col-md-offset-2">
+              <div class="media">
+                <div class="media-left">
+                  <img class="cat-icon" src="img/plataforma/icons/curriculum.png">
+                </div>
+                <div class="media-body">
+                  <span class="cat-sub-title h67-medcond">Perfil profesional / Dr. <span>Juan Carlos Medina Martinez</span></span>
+                  <span class="cat-main-title h77-boldcond">Currículum y experiencia</span><br>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cat-header-arrow cv">
+          </div>
+        </div>
+        <div class="row cv-body">
+        </div>
+      </div>
+    </section>
 
   </body>
 
   <script src="js/jquery.Jcrop.js"></script>
   <script src="js/jquery.SimpleCropper.js"></script>
+
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=drawing,places&components=country:‌​MX&sensor=true&key=AIzaSyCBOC0Cq0T10nAmZNLkVMVBzU6MLd3DfKs"></script>
+  <script src="js/mapa.js"></script>
 
 </html>

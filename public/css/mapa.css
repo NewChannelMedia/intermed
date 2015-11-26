@@ -1,9 +1,17 @@
 ﻿/*Estilos para Mapas*/
 #mapDiv {
-    width: 100%;
-    height: 300px;
+    width: 97%;
+    height: 475px;
+    float:right;
 }
 
 #autocomplete_searchField {
     width:300px;
+}
+
+hr.style-white {
+    margin-bottom: 2px;
+    border: 0;
+    height: 2px;
+    background: #FFF;
 }

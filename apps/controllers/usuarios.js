@@ -463,8 +463,10 @@ function obtenerDatosLocalidad( localidad_id, redirect, req, res ) {
       type: models.sequelize.QueryTypes.SELECT
     } )
     .then( function ( localidad ) {
-      req.session.passport.user.ciudad = localidad[ 0 ].ciudad;
-      req.session.passport.user.estado = localidad[ 0 ].estado;
+      if (localidad[0]){
+        req.session.passport.user.ciudad = localidad[ 0 ].ciudad;
+        req.session.passport.user.estado = localidad[ 0 ].estado;
+      }
       if ( redirect ) {
         res.redirect( '/perfil/'  + req.session.passport.user.usuarioUrl );
       }
