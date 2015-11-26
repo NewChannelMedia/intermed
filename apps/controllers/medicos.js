@@ -485,6 +485,8 @@ module.exports = {
             numero: object[ 'numeroFact' ],
             localidad_id: object[ 'locFact' ],
             municipio_id: localidad.municipio_id,
+            estado_id: localidad.estado_id,
+            cp: localidad.cp,
             usuario_id: usuario_id
           } ).then( function ( Direccion ) {
             models.Direccion.findOne( {

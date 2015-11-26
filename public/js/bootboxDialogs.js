@@ -1,6 +1,10 @@
 function agregarUbicacion(){
   $('.modal-body').css('padding',0);
   bootbox.dialog({
+    backdrop: true,
+    onEscape: function () {
+        bootbox.hideAll();
+    },
     size:'large',
     message: `
     <div class="" style="background-color:#172c3b;padding:5px" >

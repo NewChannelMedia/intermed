@@ -222,7 +222,6 @@ var mapa = {
                     for (var i = 0; i < results[0].address_components.length; i++) {
                         var addr = results[0].address_components[i];
 
-                        console.log('ADDR: ' + JSON.stringify(results[0]));
                         if (addr.types[0] == 'street_number') {
                             mapa.numero = addr.long_name;
                         };

@@ -307,11 +307,15 @@ a:visited {
   border: solid 4px #fff;
   border-radius: 5px;
   background-color: #7dc9f7;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .header-profile-photo-img {
   height: 100%;
   width: auto;
+  flex: none;
 }
 
 .header-profile-body-container {
