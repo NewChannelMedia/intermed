@@ -226,7 +226,6 @@ module.exports = {
                    calle1: object['calle1Med'],
                    calle2: object['calle2Med'],
                    colonia: object['coloniaMed'],
-                   estado_id: object['estadoMed'],
                    localidad_id: object['coloniaMed']
                  }, {
                    where: { usuario_id : id }

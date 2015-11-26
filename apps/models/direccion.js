@@ -11,10 +11,8 @@ module.exports = function(sequelize, DataTypes) {
     nombre: {type: DataTypes.STRING},
     usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true},
     institucion_id: {type: DataTypes.INTEGER},
-    estado_id: {type: DataTypes.INTEGER, required: true},
     municipio_id: {type: DataTypes.INTEGER, required: true},
     localidad_id: {type: DataTypes.INTEGER},
-    cp: {type: DataTypes.STRING},
     latitud: {type: DataTypes.STRING},
     longitud: {type: DataTypes.STRING}
     //estado_id: {type: DataTypes.INTEGER, required: true}
