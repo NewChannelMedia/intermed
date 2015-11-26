@@ -144,7 +144,7 @@ module.exports = {
   //perfil nuevo
   nuevoPerfilMedicos: function ( object, req, res ) {
     //usuario = object.usuario;
-    usuario = '0000001';
+    usuario = '0000002';
 
     if ( ( req.session.passport.user && ( !usuario ) ) || ( req.session.passport.user && usuario == req.session.passport.user.usuarioUrl ) ) {
       var tipoUsuario = '';

@@ -28,6 +28,8 @@
     <script src="js/utils.js"></script>
     <script src="js/buscadorInterno.js"></script>
     <script src="js/notificaciones.js"></script>
+    <script src="js/bootbox.min.js"></script>
+    <script src="js/bootboxDialogs.js"></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -563,82 +565,6 @@
         </form>
       </div>
     </div>
-    <!-- Recomendaciones -->
-    <div id ="recomendar" valor="falso"class="modal fade">
-      <div class="modal-dialog">
-        <div class="hidden" id="cargador"><span class="three-quarters-loader">Enviando...</span></div>
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close"data-dismiss="modal" aria-labe="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title"><span id="nombreOcultoPerfil" class="hidden"></span>Recomendar Dr.<span id="doctorSpan"></span> A:</h4>
-          </div>
-          <div class="modal-body">
-            <div class="form-group has-feedback" id="buscador">
-              <label class="control-label"for="buscadorRecomendados">Busca entre tus contactos para que les recomiendes al Dr.<span class="hidden"id="pacienteIdOculto"></span></label>
-              <input type="text" class="form-control" id="buscadorRecomendados" placeholder="Buscar contacto...">
-              <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
-            </div>
-            <div class="" id="contactosArecomendar">
-              <table class="table table-condensed" id="recomendarA">
-                <tbody></tbody>
-              </table>
-            </div>
-            <div class="" id="enviarRecomendaciones">
-              <ul class="list-inline"></ul>
-            </div>
-            <div class="form-group" id="correoRecomendados">
-              <label class="control-label" for="correoEnviarRecomendado">Recomendar via correo:</label>
-              <input type="mail" class="form-control" id="correoEnviarRecomendado" placeholder="Correo:"/>
-            </div>
-            <div class="" id="mensajeParaRecomendados">
-              <textarea id="mensajeRecomendar" class="form-control" rows="3" placeholder="mensaje para los recomendados"></textarea>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
-            <button type="button" id="enviarAtodos" class="btn btn-primary">Recomendar</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Fin Recomendaciones -->
-    <!-- PERDIR RECOMENDACION A MEDICOS -->
-      <div id="pedir" class="modal fade">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <!-- Inicio HEADER -->
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-              <h4 class="modal-title">
-                <span id="nombreOcultoPerfil" class="hidden"></span>
-                Pedir una Recomendación al <span id="nombreDoctor"></span><span class="hidden" id="idMedico"></span>
-              </h4>
-            </div>
-            <!-- FIN HEADER -->
-            <!-- INICIO BODY -->
-              <div class="modal-body">
-                <p>En esta ventana podrá elegir una especialidad para poder pedirle una recomendacion a su medico</p>
-                <div class="form-group">
-                  <label for="especialidadesMedic" class="col-sm-2 control-label">Especialidad</label>
-                  <select id="especialidadesMedic" class="form-control">
-                  </select>
-                </div>
-                <div class="" id="tipoRecomendacionPedir">
-                  <ul class="list-inline"></ul>
-                </div>
-              </div>
-            <!-- FIN BODY -->
-            <!-- INICIO FOOTER -->
-              <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="mandarPeticion" class="btn btn-primary" class="btn btn-primary">Pedir</button>
-              </div>
-            <!-- FIN FOOTER -->
-          </div>
-        </div>
-      </div>
       <!-- Enviar recomendaciones medico -->
         <div id="recomendandoAndo" class="modal fade" role="dialog" aria-labelledby="recomendandoAndo">
           <div class="modal-dialog">

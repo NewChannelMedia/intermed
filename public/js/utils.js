@@ -1696,15 +1696,17 @@ function cargarFavCol( usuario ) {
 * todos sus contactos y se les podra enviar la recomendacion en este caso el
 * medico al cual le dio click al click de recomendar
 */
+var id = "";
+var usuarioRL="";
+var extraDato ="";
+var usuario = "";
+var uId ="";
 //<----------- RECOMENDACIONES -------------------->
   $(document).ready(function(){
-    var id = "";
-    var usuarioRL="";
-    var extraDato ="";
-    var usuario = "";
-    var uId ="";
     // inpyt type text
     $( '.recomendar.contList-profileActionLink' ).click(function(){
+      //se manda a llamar al bootbox
+      recomendacionesBoot();
       id += $( this ).attr('id');
       $("#pacienteIdOculto").text(id);
       var medico_id="";
@@ -1741,7 +1743,7 @@ function cargarFavCol( usuario ) {
           html +='<img src="'+data[ i ].Paciente.Usuario.urlFotoPerfil+'" alt="" class="img-thumbnail">';
           html +='</td>';
           html +='<td id="paciente'+data[ i ].Paciente.id+'">';
-          html +='<p>'+nombreTodo+'</p>';
+          html +='<p style="color:white">'+nombreTodo+'</p>';
           html +='</td>';
           html +='</tr>';
           extraDato = nombreTodo;
@@ -1753,56 +1755,57 @@ function cargarFavCol( usuario ) {
         $( "#recomendarA tbody" ).append(html);
       });
     });
-    $( "#enviarAtodos" ).click(function(){
-      if( $( "#correoEnviarRecomendado" ).val() != ""){
-        var to = $( "#correoEnviarRecomendado" ).val();
-        var enlace = usuarioRL;
-        var mensaje =$("#mensajeRecomendar").val();
-        usuario=$("#nombreOcultoPerfil").text();
-        $("#cargador").removeClass('hidden');
-        $('#enviarAtodos').prop('disabled',true);
-        $.post('/enviaCorreoRecomendados',{toMail:to,enlace:enlace,usuario:usuario,mensaje:mensaje},function(data,status){
-          if(data){
-            $('#enviarAtodos').prop('disabled',false);
-            $("#cargador").addClass('hidden');
-            $('.modal').modal('hide');
-            $('.modal').on('hidden.bs.modal',function(e){
-              $("#mensajeRecomendar").val('');
-              $( "#correoEnviarRecomendado" ).val('');
-            });
-          }
-        });
-      }
-      var obj = new Array();
-      var objId = new Array();
-      var medico;
-      var paciente;
-      $.each($("li div.label.label-primary small span.hidden"),function(count, valor){
-        obj.push($( this ).text());
-        medico = parseInt( $(this).attr('di'));
-        objId.push( $( this ).attr('da') );
-        paciente = parseInt( $(this).attr('da'));
-      });
-      $.post('/medicoRecomendado',{objeto:obj, objectoId:objId},function(data){
-        $.post('/doctorRecomendado',{medicoId:medico, paciente:paciente},function(dat){});
+  });
+  //se carga el bootbox para que funcionen el boton de enviar
+  function enviarTodo(){
+    if( $( "#correoEnviarRecomendado" ).val() != ""){
+      var to = $( "#correoEnviarRecomendado" ).val();
+      var enlace = usuarioRL;
+      var mensaje =$("#mensajeRecomendar").val();
+      usuario=$("#nombreOcultoPerfil").text();
+      $("#cargador").removeClass('hidden');
+      $('#enviarAtodos').prop('disabled',true);
+      $.post('/enviaCorreoRecomendados',{toMail:to,enlace:enlace,usuario:usuario,mensaje:mensaje},function(data,status){
         if(data){
+          $('#enviarAtodos').prop('disabled',false);
+          $("#cargador").addClass('hidden');
           $('.modal').modal('hide');
           $('.modal').on('hidden.bs.modal',function(e){
-            $("#mensajeRecomendar").text('');
+            $("#mensajeRecomendar").val('');
             $( "#correoEnviarRecomendado" ).val('');
-            $("#buscadorRecomendados").val('');
           });
         }
       });
+    }
+    var obj = new Array();
+    var objId = new Array();
+    var medico;
+    var paciente;
+    $.each($("li div.label.label-primary small span.hidden"),function(count, valor){
+      obj.push($( this ).text());
+      medico = parseInt( $(this).attr('di'));
+      objId.push( $( this ).attr('da') );
+      paciente = parseInt( $(this).attr('da'));
     });
-  });
+    $.post('/medicoRecomendado',{objeto:obj, objectoId:objId},function(data){
+      $.post('/doctorRecomendado',{medicoId:medico, paciente:paciente},function(dat){});
+      if(data){
+        $('.modal').modal('hide');
+        $('.modal').on('hidden.bs.modal',function(e){
+          $("#mensajeRecomendar").text('');
+          $( "#correoEnviarRecomendado" ).val('');
+          $("#buscadorRecomendados").val('');
+        });
+      }
+    });
+  }
 function seleccionarUsuario(i, tr, nombre, mas, otroMas, di){
   var html2 ="";
   var otroId = 'li'+i;
   html2 += '<li id="'+otroId+'" onclick="removerUsuario(\''+otroId+'\',\''+tr+'\')" >';
     html2 +="<p>";
       html2 += "<div class='label label-primary'><span class='glyphicon glyphicon-remove'>&nbsp;"
-        html2 +="<small>";
+        html2 +="<small style='color:white'>";
           html2 +=nombre;
           html2 += "<span class='hidden' da='"+otroMas+"' di ='"+di+"' >";
             html2 += mas;
@@ -2369,6 +2372,7 @@ var idEspecialidad = '';
       var nombre = $(this).parent().parent().find('a.contList-profileName').text();
       var usuario_id = $(this).parent().parent().prop('id');
       $.post('/especialidadesMedico',function(data){
+        pedirRecomendacionesBoot();
         var option ="";
         $("#especialidadesMedic").html('');
         option +='<option value="0">Especialidades</option>'
@@ -2383,49 +2387,44 @@ var idEspecialidad = '';
         $("#idMedico").text(usuario_id);
       });
     });
-    $("#especialidadesMedic").change(function(){
-      var id = $(this).val();
-      var valor = $("#especialidadesMedic option:selected").text();
-      var html2 ="";
-       html2 += '<li>';
-         html2 +="<p>";
-           html2 += "<div class='label label-success'><span class='glyphicon glyphicon-remove'>&nbsp;"
-             html2 +="<small>";
-               html2 +=valor;
-               html2 += "<span class='hidden'>";
-                 html2 += id;
-               html2 += "</span>";
-             html2 +="</small>";
-           html2 += "</span></div>";
-         html2 +="</p>";
-       html2 +="</li>";
-       $( '#tipoRecomendacionPedir ul' ).append(html2);
-    });
-    //<--------------- Peticion --------------------->
-      $("#mandarPeticion").click(function(){
-        if( $("#especialidadesMedic option:selected").text() != "Especialidades" ){
-          var id = $("#idMedico").text();
-          var recomendacion = $("#especialidadesMedic option:selected").text();
-          $.each($("li div.label.label-success small span.hidden"),function(index, data){
-            idEspecialidad += "|"+$( this ).text();
-          });
-          $.post('/pedirRecomendacionMedico',{
-              idMedico:id,
-              idEspecialidad: idEspecialidad,
-          },function(data){
-            if(data){
-              $('.modal').modal('hide');
-              $('.modal').on('hidden.bs.modal',function(e){
-              $(".label.label-success").remove().parent('div');
-            });
-            }
-          });
-        }else{
-          alert("Seleccione una opcion");
+  });
+  function enviandoPeticion(){
+    if( $("#especialidadesMedic option:selected").text() != "Especialidades" ){
+      var id = $("#idMedico").text();
+      var recomendacion = $("#especialidadesMedic option:selected").text();
+      $.each($("li div.label.label-success small span.hidden"),function(index, data){
+        idEspecialidad += "|"+$( this ).text();
+      });
+      $.post('/pedirRecomendacionMedico',{
+          idMedico:id,
+          idEspecialidad: idEspecialidad,
+      },function(data){
+        if(data){
         }
       });
-    //<--------------- fin Peticion ----------------->
-  });
+    }else{
+      alert("Seleccione una opcion");
+    }
+  }
+  function cargando(ids){
+    var id = $(ids).val();
+    var valor = $(ids+" option:selected").text();
+    console.log("ID: "+id+"\n"+"Valor: "+valor);
+    var html2 ="";
+     html2 += '<li>';
+       html2 +="<p>";
+         html2 += "<div class='label label-success'><span class='glyphicon glyphicon-remove'>&nbsp;"
+           html2 +="<small>";
+             html2 +=valor;
+             html2 += "<span class='hidden'>";
+               html2 += id;
+             html2 += "</span>";
+           html2 +="</small>";
+         html2 += "</span></div>";
+       html2 +="</p>";
+     html2 +="</li>";
+     $( '#tipoRecomendacionPedir ul' ).append(html2);
+  }
   function presionando(hola){
     $(hola).modal('toggle');
     var html = "";

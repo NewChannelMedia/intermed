@@ -229,6 +229,90 @@ function agregarUbicacion(){
     </div>
     </div>`
   });
-    $('.modal-body').css('padding',0);
   cargarMapa();
 }
+//<--------------------- RECOMENDACIONES ------------------->
+function recomendacionesBoot(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+        bootbox.hideAll();
+    },
+    size:'large',
+    message: `
+    <div class="clearfix" style="background-color:#172c3b;padding:5px" >
+      <div class="col-md-12" style="color:white">
+        <div class="hidden" id="cargador"><span class="three-quarters-loader">Enviando...</span></div>
+        <h4 class="modal-title"><span id="nombreOcultoPerfil" class="hidden"></span>Recomendar Dr.<span id="doctorSpan"></span> A:</h4>
+      </div><br /><br /><br />
+      <div id=“recomienda” class=“col-md-12”>
+         <div class="form-group has-feedback" id="buscador">
+             <label class="control-label"for="buscadorRecomendados" style="color:white">Busca entre tus contactos para que les recomiendes al Dr.<span class="hidden"id="pacienteIdOculto"></span></label>
+             <input type="text" class="form-control" id="buscadorRecomendados" placeholder="Buscar contacto...">
+             <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
+         </div>
+         <div class="" id="contactosArecomendar">
+             <table class="table table-condensed" id="recomendarA">
+               <tbody></tbody>
+             </table>
+         </div>
+         <div class="" id="enviarRecomendaciones">
+           <ul class="list-inline"></ul>
+         </div>
+      </div>
+      <div class="form-group" id="correoRecomendados">
+         <label class="control-label" for="correoEnviarRecomendado" style="color:white">Recomendar via correo:</label>
+         <input type="mail" class="form-control" id="correoEnviarRecomendado" placeholder="Correo:"/>
+         <div class="" id="mensajeParaRecomendados">
+            <textarea id="mensajeRecomendar" class="form-control" rows="3" placeholder="mensaje para los recomendados"></textarea>
+         </div>
+      </div>
+      <div class="pull-right">
+        <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
+        <button type="button" id="enviarAtodos" onclick="enviarTodo();" class="btn btn-primary">Recomendar</button>
+      </div>
+    </div><!— FIN DIV PRINCIPAL —>
+    `
+  });
+}
+//<--------------------- FIN RECOMENDACIONES --------------->
+
+//<--------------------- PEDIR RECOMENDACIONES ------------->
+    function pedirRecomendacionesBoot(){
+      $('.modal-body').css('padding',0);
+      bootbox.dialog({
+        onEscape: function () {
+        bootbox.hideAll();
+      },
+        size:'large',
+        message: `
+          <div class="clearfix" id="pedir" style="background-color:#172c3b;padding:5px">
+            <div class="col-md-12">
+              <h4 class="modal-title">
+                <span id="nombreOcultoPerfil" class="hidden"></span>
+                <p style="color:white;">
+                  Pedir una Recomendación al <span id="nombreDoctor"></span><span class="hidden" id="idMedico"></span>
+                </p>
+              </h4>
+            </div><br /><br /><br />
+            <div class="">
+              <p style="color:white;">En esta ventana podrá elegir una especialidad para poder pedirle una recomendacion a su medico</p>
+                <div class="form-group">
+                  <label for="especialidadesMedic" class="col-sm-2 control-label"style="color:white;">Especialidad</label>
+                  <select id="especialidadesMedic" onChange="cargando('#especialidadesMedic');" class="form-control">
+                  </select>
+                </div>
+                <div class="" id="tipoRecomendacionPedir">
+                  <ul class="list-inline"></ul>
+                </div>
+              </div>
+            </div>
+            <div class="pull-right">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" id="mandarPeticion" onclick="enviandoPeticion();" class="btn btn-primary" class="btn btn-primary">Pedir</button>
+            </div>
+          </div><!-- div principal final -->
+        `
+      });
+    }
+//<------------------- FIN PEDIR RECOMENDACIONES ----------->
