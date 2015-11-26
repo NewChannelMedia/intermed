@@ -2729,3 +2729,18 @@ $(function(){
 $("#listaEspecialidades a").on('click', function(event) {
   event.preventDefault();
 });
+/**
+* abre el modal de login
+*
+**/
+$(document).ready(function(){
+  $("#logMod").click(function(){
+    loginModal();
+  });
+  $("#addForma").click(function(){
+    invitarModal();
+  });
+  $("#addForma1").click(function(){
+    invitarModal();
+  });
+});

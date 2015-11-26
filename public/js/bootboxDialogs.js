@@ -316,3 +316,90 @@ function recomendacionesBoot(){
       });
     }
 //<------------------- FIN PEDIR RECOMENDACIONES ----------->
+//<------------------- LOGIN ------------------------------->
+function loginModal(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+    bootbox.hideAll();
+  },
+    size:'small',
+    message: `
+      <div class="" id="logInicio">
+        <form method="POST" action="/auth/correo">
+          <div class="col-md-12">
+            <h4>Intermed&reg | Login</h4>
+          </div>
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+              <input name="loginFB" value="Login con Facebook" class="btn btn-primary btn-block" onclick="window.location='/auth/facebook/request/loguin'">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+              <div class="form-group">
+                <input type="text" class="form-control" id="email" name="email" placeholder="Usuario" required="true">
+              </div>
+              <div class="form-group">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required="true">
+              </div>
+              <input type="submit" name="login" value="Ingresar" class="btn btn-primary btn-block">
+            </div>
+          </div>
+          <div class="row" id="fin">
+            <div class="col-md-8 col-md-offset-2">
+              <p class="text-center">
+                <small>Recuerda que instituciones, proveedores y secretarias solo pueden ingresar con su correo y contraseña.</small>
+                <br>
+                <small>¿Olvidaste tus datos de acceso? <a href="#">Haz click aqui para recuperarlos</a></small>
+              </p>
+            </div>
+          </div>
+        </form>
+      </div><!-- fin del div principal -->
+    `
+  });
+}
+//<------------------- FIN LOGIN --------------------------->
+//<------------------- INVITAR ----------------------------->
+  function invitarModal(){
+    $('.modal-body').css('padding',0);
+    bootbox.dialog({
+      onEscape: function () {
+      bootbox.hideAll();
+    },
+      size:'small',
+      message: `
+      <div id="addFormaForm" class="" arialabelledby="addForma">
+        <div class="panel">
+          <div class="panel-body">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label class="col-md-3 control-label">Nombre</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="invitar_nombre">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-3 control-label">Correo</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="invitar_correo">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-3 control-label">Mensaje</label>
+                <div class="col-md-9">
+                  <textarea class="form-control" id="invitar_mensaje">Te invito a unirte a Intermed</textarea>
+                </div>
+              </div>
+              <div class="col-md-4 col-md-offset-8">
+                <button type="button" class="btn btn-primary btn-block dropdown-form-guardar" onclick="procesarInvitacion()">Enviar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      `
+    });
+  }
+//<------------------- FIN INVITAR ------------------------->
