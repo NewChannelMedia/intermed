@@ -323,7 +323,8 @@ function loginModal(){
     onEscape: function () {
     bootbox.hideAll();
   },
-    size:'small',
+    size:'medium',
+    backdrop:false,
     message: `
       <div class="" id="logInicio">
         <form method="POST" action="/auth/correo">
@@ -368,7 +369,7 @@ function loginModal(){
       onEscape: function () {
       bootbox.hideAll();
     },
-      size:'small',
+      size:'medium',
       message: `
       <div id="addFormaForm" class="" arialabelledby="addForma">
         <div class="panel">
@@ -403,3 +404,296 @@ function loginModal(){
     });
   }
 //<------------------- FIN INVITAR ------------------------->
+function registro(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+    bootbox.hideAll();
+  },
+    size:'large',
+    closeButton:false,
+    message: `
+      <div id="CatRegModal">
+        <form method="" action="">
+          <div class="">
+            <div class="">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4>Intermed&reg | Registro</h4>
+            </div>
+            <div class="">
+              <div class="row">
+                <h3 class="Flama-bold">SELECCIONA</h3>
+                <h1 class="Flama-normal">TU CATEGORÍA</h1>
+              </div>
+              <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                  <div class="iconos-servicios hi-icon-wrap hi-icon-effect hi-icon-effect-a">
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                      <a href="#" id="regPac" class="hi-icon hi-icon-modal" onclick='bootbox.hideAll();regPaciente();'>
+                        <img class="hi-icon-img" src="img/BotonPacientes.png">
+                      </a>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                      <a href="#set-9" class="hi-icon hi-icon-modal" onclick="bootbox.hideAll(); regMedico();">
+                        <img class="hi-icon-img" src="img/BotonMedicos.png">
+                      </a>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                      <a href="#set-9" class="hi-icon hi-icon-modal">
+                        <img class="hi-icon-img" src="img/BotonInstituciones.png">
+                      </a>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                      <a href="#set-9" class="hi-icon hi-icon-modal">
+                        <img class="hi-icon-img" src="img/BotonProveedores.png">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-1"></div>
+              </div>
+            </div>
+        </form>
+      </div>
+    `
+  });
+}
+function regPaciente(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+      bootbox.hideAll();
+    },
+  backdrop: true,
+    size:'large',
+    closeButton:false,
+    message: `
+      <div id="id="RegPacModal"">
+        <div class="modal-dialog modal-lg">
+          <form method="POST" action="/reg/local" id="frm_regP">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="FlamaBook-normal s25 regHeader">Intermed&reg / <b>Registro Pacientes</b></h4>
+              </div>
+              <div class="modal-body">
+                <hr class="separator">
+                <div class="row">
+                  <div class="col-md-6 regFacebook">
+                    <h3>Intermed &reg es mejor
+                      <br>con Facebook</h3>
+                    <br>
+                    <input name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block s20" onclick="window.location='/auth/facebook/request/P'">
+                    <br>
+                    <h2 class="Flama-bold">¡En un solo click!</h2>
+                    <p class="s20 flamaBook-normal">
+                      Utiliza tu cuenta de Facebook para registrarte en Intermed y conectate con tus amigos y conocidos.
+                    </p>
+                    <p class="s15 flamaBook-normal">
+                      Intermed no comparte tus datos con terceras personas ni compañias externas.
+                    </p>
+                  </div>
+                  <div class="col-md-6" class="regCorreo">
+                    <h3>Registrate con tu correo electronico</h3>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div id="alertError"></div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group" id="nameGroup">
+                          <input type="text" class="form-control" id="nombreReg" name="first_name" placeholder="Nombre" required="true">
+                          <span id="nameIcon" class="" aria-hidden="true"></span>
+                          <div id="nombre-error"></div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group" id="apellidoGroup">
+                          <input type="text" class="form-control" id="ApellidoReg" name="last_name" placeholder="Apellido" required="true">
+                          <span id="apellidoIcon" class="" aria-hidden="true"></span>
+                          <div id="apellido-error"></div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group" id="emailGroup">
+                          <input type="email" class="form-control" id="correoReg" name="email" placeholder="Correo Electrónico" required="true">
+                          <span id="emailIcon" class="" aria-hidden="true"></span>
+                          <div id="email-error"></div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group" id="passwordGroup">
+                          <input type="password" class="form-control" id="contraseñaReg" name="password" placeholder="Contraseña" pattern=".{6,13}" required="true">
+                          <span id="passwordIcon" class="" aria-hidden="true"></span>
+                          <div id="pass-error"></div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group" id="confirmGroup">
+                          <input type="password" class="form-control" id="contraseña2Reg" name="password2" placeholder="Confirma tu contraseña" pattern=".{6,13}" required="true">
+                          <span id="confirmIcon" class="" aria-hidden="true"></span>
+                          <div id="conf-error"></div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <h4>
+                          <small>Fecha de Nacimiento</small>
+                        </h4>
+                        <div class="col-md-4">
+                          <div class="form-group" id="diaGroup">
+                            <input type="text" class="form-control" id="diaNacReg" name="birthdayDay" placeholder="Dia" required="true">
+                            <span id="diaIcon" class="" aria-hidden="true"></span>
+                            <div id="dia-error"></div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group" id="mesGroup">
+                            <input type="text" class="form-control" id="mesNacReg" name="birthdayMonth" placeholder="Mes" required="true">
+                            <span id="mesIcon" class="" aria-hidden="true"></span>
+                            <div id="mes-error"></div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group" id="añoGroup">
+                            <input type="text" class="form-control" id="añoNacReg" name="birthdayYear" placeholder="Año" required="true">
+                            <span id="añoIcon" class="" aria-hidden="true"></span>
+                            <div id="año-error"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <h4>
+                          <small>Sexo</small>
+                        </h4>
+                        <div class="col-md-6">
+                          <div class="radio">
+                            <label>
+                              <input type="radio" name="gender" id="sexM" value="M" checked required="true"> Masculino
+                            </label>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="radio">
+                            <label>
+                              <input type="radio" name="gender" id="sexF" value="F" required="true"> Femenino
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <input type="hidden" id="tiempo" name="tiempoStamp" value="tiempo" />
+                        <!-- TIMESTAMPS -->
+                        <input type="submit" id="regi" name="registroCorreo" value="Registrate" class="btn btn-success btn-block">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <p class="s15">
+                  <small>Al hacer clic en "Regístate", aceptas las <a href="">Condiciones</a> y confirmas que leíste nuestra <a href="">Política de datos</a>, incluido el <a href="">uso de cookies</a></small>.
+                </p>
+              </div>
+          </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+      </div>
+    `
+  });
+}
+function regMedico(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+      bootbox.hideAll();
+    },
+  backdrop: true,
+    size:'large',
+    closeButton:false,
+    message: `
+      <div id="RegMedModal">
+        <div class="modal-dialog modal-lg Flama-normal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="FlamaBook-normal s25 regHeader">Intermed&reg / <b>Registro Médicos</b> </h4>
+            </div>
+            <div class="modal-body">
+              <hr class="separator">
+              <div class="row">
+                <div class="col-md-6 regFacebook">
+                  <h3>Intermed &reg es mejor
+                    <br>con Facebook</h3>
+                  <br>
+                  <input name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block s20" onclick="window.location='/auth/facebook/request/M'">
+                  <br>
+                  <h2 class="Flama-bold">¡En un solo click!</h2>
+                  <p class="s20 flamaBook-normal">
+                    Utiliza tu cuenta de Facebook para registrarte en Intermed y conectate con tus amigos y conocidos.
+                  </p>
+                  <p class="s15 flamaBook-normal">
+                    Intermed no comparte tus datos con terceras personas ni compañias externas.
+                  </p>
+                </div>
+                <div class="col-md-6 regCorreo">
+                  <h3>Regístrate con tu correo electronico</h3>
+                  <div class="row">
+                    <form method="POST" action="/reg/local" id="frm_regM">
+                      <div class="col-md-12">
+                        <div id="alertErrorM"></div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="hidden" name="tipoUsuario" value="M">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="email" class="form-control" id="correoRegM" name="email" placeholder="Correo Electrónico">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="email" class="form-control" id="correoConfirmRegM" placeholder="Confirma tu correo Electrónico">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="password" class="form-control" id="contraseñaRegM" name="password" placeholder="Contraseña" pattern=".{6,13}">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="password" class="form-control" id="contraseña2RegM" placeholder="Confirma tu contraseña" pattern=".{6,13}">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <input type="hidden" id="tiempo" name="tiempoStamp" value="tiempo" />
+                        <input type="submit" id="regi" name="registroCorreo" value="Registrate" class="btn btn-success btn-block s20">
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div class="row text-center">
+                <p class="s15">
+                  <small>Al hacer clic en "Regístate", aceptas las <a href="">Condiciones</a> y confirmas que leíste nuestra <a href="">Política de datos</a>, incluido el <a href="">uso de cookies</a></small>.
+                </p>
+              </div>
+            </div>
+            <div class="modal-footer">
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+  });
+}
