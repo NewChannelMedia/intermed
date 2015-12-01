@@ -68,10 +68,10 @@ a:visited {
   border-radius: 0;
   background-color: #375467;
   border: 0;
-  left: 0!important;
+  left: 20%!important;
   top: 0px!important;
-  height: 100px;
-  padding: 13px 0;
+  height: 60px;
+  padding: 7px 15px;
   margin: 0;
   z-index: 1000;
 }
@@ -170,6 +170,48 @@ a:visited {
   background-color: #7dc9f7;
 }
 
+@media (max-width: 991px) and (min-width: 0px) {
+  .navigator {
+    min-height: 60px;
+  }
+  .nav-logo {
+    height: 60px;
+  }
+  .nav-logo img {
+    height: 40px;
+    margin-top: 14px
+  }
+  .btn-menu {
+    height: 30px;
+    margin: 15px auto;
+  }
+  #search-section{
+    padding-top: 13px;
+    padding-bottom: 13px;
+  }
+  #menu-section{
+    padding: 0;
+    min-height: 60px;
+  }
+  .navigator-inner-section-menu li {
+    height: 60px;
+    vertical-align: middle;
+  }
+
+  .navigator-inner-section-menu li a {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    color: white;
+    border-radius: 0;
+  }
+
+  .navbar-collapse.in {
+    overflow-y: hidden;
+  }
+}
+
 #addFavMed_up,
 #addFavMed_down {
   padding: 0;
@@ -234,6 +276,12 @@ a:visited {
   padding-top: 24px;
   padding-bottom: 16px;
   color: #fff;
+}
+
+@media (max-width:768px){
+  .nav-menu-menu li a {
+    font-size: 20px;
+  }
 }
 
 .nav-menu-menu li a:hover,
@@ -430,7 +478,7 @@ a:visited {
     padding: 0;
   }
   .optn-lbl {
-    font-size: 15px;
+    font-size: 12px;
   }
 }
 
@@ -487,7 +535,6 @@ a:visited {
 }
 
 .profile-location {
-  font-family: 'FlamaBook';
   font-size: 17px;
   margin-top: 0;
   margin-bottom: 20px;
@@ -893,7 +940,7 @@ a:visited {
 @media (max-width:768px){
   .info-body-header {
     padding-left: 0;
-    font-size: 50px;
+    font-size: 35px;
   }
   .info-body-content {
     float: right;
@@ -902,11 +949,12 @@ a:visited {
     font-size: 20px!important;
   }
   .info-left-icon{
-    height: 36px!important;
-    width: 36px!important;
+    height: 27px!important;
+    width: 27px!important;
+    padding: 4px!important;
   }
   .info-left-icon .icon{
-    font-size: 25px!important;
+    font-size: 20px!important;
   }
 }
 
@@ -980,9 +1028,13 @@ a:visited {
   .side-especialidades {
     min-height: 140px;
     width: 100%;
+    text-align: left;
   }
-  .side-especialides-header {
+  .side-especialides-header,
+  .side-especialides-subheader {
     display: inline;
+    text-align: left;
+    font-size: 22px;
   }
 }
 
@@ -1030,8 +1082,6 @@ a:visited {
   overflow: hidden;
   margin-bottom: 30px;
   overflow-y: auto;
-  padding-left: 0;
-  padding-right: 10px;
 }
 
 .main-colegas h1 {
@@ -1067,6 +1117,15 @@ a:visited {
   width: 100%;
   margin: 0;
 }
+
+@media (max-width:768px){
+  .main-colegas .pPic{
+    height: 100px;
+    width: 100px;
+    overflow: hidden;
+  }
+}
+
 .main-colegas .nombre ,
 .main-colegas .esp {
   display: block;
@@ -1140,7 +1199,8 @@ a:visited {
 }
 
 .cat-icon {
-
+  height: 70px;
+  width: auto;
 }
 .cat-main-title {
   font-size: 50px;
@@ -1161,4 +1221,13 @@ a:visited {
   position: absolute;
   background-color: rgba(10,10,10,.5);
   width: 100%;
+}
+
+@media (max-width:768px){
+  .cat-main-title{
+    font-size: 30px;
+  }
+  .cat-icon{
+    height: 50px;
+  }
 }
