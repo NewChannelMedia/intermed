@@ -360,8 +360,17 @@ var generarSesion = function ( req, res, usuario_id, redirect ) {
         attributes: [ 'genero' ]
             }, {
         model: models.Direccion,
-        attributes: [ 'localidad_id' ]
-            } ]
+        order: [['principal', 'DESC']],
+        attributes: [ 'localidad_id' ],
+        include: [{
+              model: models.Municipio,
+              attributes: [ 'municipio' ],
+              include: [{
+                  model: models.Estado,
+                  attributes: [ 'estado' ]
+                  }]
+              }]
+          }]
     } )
     .then( function ( usuario ) {
       if ( usuario ) {
@@ -374,6 +383,12 @@ var generarSesion = function ( req, res, usuario_id, redirect ) {
           'logueado': usuario.logueado,
           'usuarioUrl': usuario.usuarioUrl
         } ) );
+
+        if (usuario.Direccions && usuario.Direccions[0]){
+          req.session.passport.user.municipio = usuario.Direccions[0].Municipio.municipio;
+          req.session.passport.user.estado = usuario.Direccions[0].Municipio.Estado.estado;
+        }
+
         res.cookie( 'intermed_sesion', {
           id: usuario.id,
           usuario: usuario.usuarioUrl,
@@ -414,13 +429,7 @@ var generarSesion = function ( req, res, usuario_id, redirect ) {
 function cargarExtraInfo( usuario, redirect, req, res ) {
   var tipoUsuario = '';
   if ( usuario.tipoUsuario === 'P' ) {
-    tipoUsuario = 'Paciente';
-  }
-  else if ( usuario.tipoUsuario === 'M' ) {
-    tipoUsuario = 'Medico';
-  }
-  if ( tipoUsuario ) {
-    models[ tipoUsuario ].findOne( {
+    models.Paciente.findOne( {
         where: {
           usuario_id: usuario.id
         },
@@ -433,21 +442,54 @@ function cargarExtraInfo( usuario, redirect, req, res ) {
         else {
           req.session.passport.user.registroCompleto = 0;
         }
-        var DireccionPrincipal = usuario.Direccions[ 0 ];
-        if ( DireccionPrincipal ) {
-          obtenerDatosLocalidad( DireccionPrincipal.localidad_id, redirect, req, res );
+        req.session.passport.user.registroCompleto = 0;
+        if ( redirect ) {
+          res.redirect( '/perfil/' + req.session.passport.user.usuarioUrl );
+        }
+        else {
+          res.send( {
+            'result': 'success',
+            'session': req.session.passport.user
+          } );
+        }
+      } );
+  }
+  else if ( usuario.tipoUsuario === 'M' ) {
+    models.Medico.findOne( {
+        where: {
+          usuario_id: usuario.id
+        },
+        attributes: [ 'id' ],
+        include: [ {
+          model: models.MedicoEspecialidad,
+          attributes: [ 'id', 'subEsp' ],
+          include: [ {
+            model: models.Especialidad
+            } ]
+        } ]
+      } )
+      .then( function ( extraInfo ) {
+        if ( extraInfo ) {
+          req.session.passport.user[ tipoUsuario + '_id' ] = JSON.parse( JSON.stringify( extraInfo.id ) );
+          if (usuario.tipoUsuario === 'M'){
+            req.session.passport.user['especialidades'] = [];
+            extraInfo.MedicoEspecialidads.forEach(function(rec){
+              req.session.passport.user['especialidades'].push(rec);
+            });
+          }
         }
         else {
           req.session.passport.user.registroCompleto = 0;
-          if ( redirect ) {
-            res.redirect( '/perfil/' + req.session.passport.user.usuarioUrl );
-          }
-          else {
-            res.send( {
-              'result': 'success',
-              'session': req.session.passport.user
-            } );
-          }
+        }
+        req.session.passport.user.registroCompleto = 0;
+        if ( redirect ) {
+          res.redirect( '/perfil/' + req.session.passport.user.usuarioUrl );
+        }
+        else {
+          res.send( {
+            'result': 'success',
+            'session': req.session.passport.user
+          } );
         }
       } );
   }

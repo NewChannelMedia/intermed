@@ -5,6 +5,7 @@ module.exports = function(sequelize, DataTypes) {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
     calle: {type:  DataTypes.STRING, required: true},
     numero: {type: DataTypes.STRING, required: true},
+    numeroInt: {type: DataTypes.STRING},
     calle1: {type: DataTypes.STRING},
     calle2: {type: DataTypes.STRING},
     principal: {type:  DataTypes.INTEGER},

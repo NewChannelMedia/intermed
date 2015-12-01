@@ -1,8 +1,14 @@
 ﻿/*Estilos para Mapas*/
-#mapDiv {
+#mapDiv{
     width: 97%;
     height: 475px;
     float:right;
+}
+
+#mapUbiDiv{
+  height: 300px;
+  width: 100%!important;
+  float:right;
 }
 
 #autocomplete_searchField {

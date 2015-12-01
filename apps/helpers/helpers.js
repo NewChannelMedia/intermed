@@ -65,8 +65,64 @@ function ifPaciente( value, options ) {
   }
 }
 
+function eachValSession(value, options){
+  var ret = "";
+  if (session[ value ]){
+    for(var i=0, j=session[ value ].length; i<j; i++) {
+      ret = ret + options.fn(session[ value ][i]);
+    }
+  }
+
+  return ret;
+}
+
+function ifsubEsp(options){
+  if ( session[ 'especialidades' ]){
+    var continuar = true;
+    for(var i=0, j=session['especialidades'].length; i<j; i++) {
+      console.log(i + ' - ' + session['especialidades'][i]['subEsp']);
+      if (session['especialidades'][i]['subEsp']==1 && continuar){
+        continuar = false;
+        return options.fn( true );
+      }
+    }
+  }
+  else
+    return options.inverse(true);
+}
+
+function unset(value){
+  session[value] = 0;
+}
+
+function set(value){
+  session[value] = 1;
+}
+
 function base_url() {
   return global.base_url;
+}
+
+function indexBaseUno(num){
+  return num + 1;
+}
+
+function ifFirst(num,options){
+  if (num == 0){
+    return options.fn( true );
+  } else {
+    return options.inverse(true);
+  }
+}
+
+var Last;
+
+function Last(num){
+  Last = num;
+}
+
+function numLast(){
+  return Last+1;
 }
 
 exports.varSession = varSession;
@@ -78,4 +134,12 @@ exports.ifID = ifID;
 exports.ifTipoMedico = ifTipoMedico;
 exports.ifTipoPaciente = ifTipoPaciente;
 exports.ifPaciente = ifPaciente;
+exports.eachValSession = eachValSession;
+exports.ifsubEsp = ifsubEsp;
+exports.set = set;
+exports.unset = unset;
 exports.base_url = base_url;
+exports.indexBaseUno = indexBaseUno;
+exports.ifFirst = ifFirst;
+exports.Last = Last;
+exports.numLast = numLast;

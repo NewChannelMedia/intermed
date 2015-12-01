@@ -84,21 +84,105 @@
         </div>
       </div>
     </div>
+
     {{#if usuario.id}}
-    <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
-      <div class="row nav-menu-row">
-        <div class="nav-menu-inner-section">
-          <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
-            <li>
-              <a href="#">
-                <span class="glyphicon h67-medcond s30">+</span> Agrega a
-                <span class="hidden-xs">tus médicos </span>favoritos</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
+      <input type="hidden" id="MedicoId" value="{{usuario.Medico.id}}" />
+      {{#if usuario.medFavCol}}
+        {{#ifTipoPaciente}}
+          <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
+            <div class="row nav-menu-row">
+              <div class="nav-menu-inner-section">
+                <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
+                  <li>
+                    <a onclick="eliminarFavoritos(true)" id="addFavoriteContact">
+                      <span class="glyphicon h67-medcond s30">-</span> Elimina de favoritos
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        {{/ifTipoPaciente}}
+        {{#ifTipoMedico}}
+          <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
+            <div class="row nav-menu-row">
+              <div class="nav-menu-inner-section">
+                <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
+                  <li>
+                    <a onclick="eliminarFavoritos(true)" id="addFavoriteContact">
+                      <span class="glyphicon h67-medcond s30">+</span> Eliminar de colegas</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        {{/ifTipoMedico}}
+      {{else}}
+        {{#if usuario.invitacionEnviada}}
+          {{#ifTipoMedico}}
+            <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
+              <div class="row nav-menu-row">
+                <div class="nav-menu-inner-section">
+                  <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
+                    <li>
+                      <a onclick="eliminarFavoritos(true)" id="addFavoriteContact">
+                        <span class="glyphicon h67-medcond s30">-</span> Invitación enviada</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          {{/ifTipoMedico}}
+        {{else}}
+          {{#if usuario.invitacionEspera}}
+            {{#ifTipoMedico}}
+              <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
+                <div class="row nav-menu-row">
+                  <div class="nav-menu-inner-section">
+                    <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
+                      <li>
+                        <a onclick="aceptarInvitacion()" id="addFavoriteContact">
+                          <span class="glyphicon h67-medcond s30">+</span> Aceptar colega</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            {{/ifTipoMedico}}
+          {{else}}
+            {{#ifTipoPaciente}}
+              <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
+                <div class="row nav-menu-row">
+                  <div class="nav-menu-inner-section">
+                    <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
+                      <li>
+                        <a onclick="agregarFavoritos(true)" id="addFavoriteContact">
+                          <span class="glyphicon h67-medcond s30">+</span> Agrega a favoritos</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            {{/ifTipoPaciente}}
+            {{#ifTipoMedico}}
+              <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
+                <div class="row nav-menu-row">
+                  <div class="nav-menu-inner-section">
+                    <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
+                      <li>
+                        <a onclick="agregarFavoritos(true)" id="addFavoriteContact">
+                          <span class="glyphicon h67-medcond s30">+</span> Agrega a colegas</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            {{/ifTipoMedico}}
+          {{/if}}
+        {{/if}}
+      {{/if}}
     {{/if}}
+
   </div>
 </nav>
 <header class="header-section">
@@ -107,7 +191,7 @@
       <div id="profile" class="header-profile col-lg-8 col-md-7 col-sm-10 col-xs-12">
         <div class="header-profile-container">
           <div class="header-profile-photo-container col-lg-4 col-md-5 col-sm-5 col-xs-12">
-            <a href="#" class="header-profile-photo-link center-block">
+              <div class="profilePic header-profile-photo-link center-block">
               {{#if usuario.id}}
                 <img class="header-profile-photo-img" src="{{usuario.urlFotoPerfil}}"  alt="perfil"/>
               {{else}}
@@ -115,7 +199,7 @@
                 <label for="imageFile">Cambiar Imagen</label>
                 <input type="file" id="imageFile" style="display:none">
               {{/if}}
-            </a>
+            </div>
           </div>
           <div class="header-profile-body-container col-lg-8 col-md-7 col-sm-7 col-xs-12">
             <div class="header-profile-body-content whiteF flama-normal">
@@ -137,7 +221,16 @@
                   {{/each}}
                 </ul>
                 <ul class="list-inline profile-subesp">
+                  {{#set "subEspPrint"}}{{/set}}
                   {{#each usuario.especialidades}}
+                    {{#if subEsp}}
+                      {{#ifSessionVal "subEspPrint"}}
+                        {{#unset "subEspPrint"}}{{/unset}}
+                        <li>
+                          <small>Subespecialidad: </small>
+                        </li>
+                      {{/ifSessionVal}}
+                    {{/if}}
                     {{#if subEsp}}
                       <li>
                         <small>{{Especialidad.especialidad}}</small>
@@ -146,26 +239,38 @@
                   {{/each}}
                 </ul>
               {{else}}
-                <h2 class="profile-name">Dr. Juan Carlos Medina Mtz.</h2>
-                <h4 class="profile-location">Zapopan, Jalisco. MX</h4>
+                <h2 class="profile-name" style="text-transform:capitalize;">
+                {{#ifSession "name"}}
+                  Dr. {{valSession "name"}}
+                  {{else}}
+                  Aun no tenemos tu nombre registrado, continúa tu registro <a onclick="informacionRegistroMedico()">aquí</a>.
+                {{/ifSession}}</h2>
+                <h4 class="profile-location">
+                  {{#ifSession "municipio"}}
+                    {{valSession "municipio"}}, {{valSession "estado"}}. MX
+                  {{/ifSession}}</h4>
                 <ul class="list-inline profile-esp">
-                  <li>
-                    Ingeniero en Sistemas
-                  </li>
-                  <li>
-                    Programador Web
-                  </li>
+                  {{#eachValSession "especialidades"}}
+                    {{#unless subEsp}}
+                    <li>
+                      {{Especialidad.especialidad}}
+                    </li>
+                    {{/unless}}
+                  {{/eachValSession}}
                 </ul>
                 <ul class="list-inline profile-subesp">
-                  <li>
-                    Subespecialidad:
-                  </li>
-                  <li>
-                    Interfaces de usuario
-                  </li>
-                  <li>
-                    Usabilidad
-                  </li>
+                  {{#ifsubEsp}}
+                    <li>
+                      Subespecialidad:
+                    </li>
+                    {{#eachValSession "especialidades"}}
+                      {{#if subEsp}}
+                      <li>
+                        <small>{{Especialidad.especialidad}}</small>
+                      </li>
+                      {{/if}}
+                    {{/eachValSession}}
+                  {{/ifsubEsp}}
                 </ul>
               {{/if}}
             </div>
@@ -244,7 +349,6 @@
     </div>
   </div>
 </header>
-
 <section id="ubicaciones">
   <div class="container-fluid ubicaciones-container">
     <div class="row ubicaciones-row">
@@ -271,11 +375,11 @@
           <div class="col-md-12">
             <div class="row">
               <div id="slider1" class="csslider infinity">
-                <input type="radio" name="slides" checked="checked" id="slides_1"/>
-                <input type="radio" name="slides" id="slides_2"/>
-                <input type="radio" name="slides" id="slides_3"/>
-                <input type="radio" name="slides" id="slides_4"/>
+                {{#each usuario.Direccions}}
+                  <input type="radio" name="slides" {{#ifFirst @index}}checked="checked"{{/ifFirst}} id="slides_{{#indexBaseUno @index}}{{/indexBaseUno}}" value="{{id}}"/>
+                {{/each}}
                 <ul>
+<<<<<<< HEAD
                   <li>
                     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 direccion-pagination-bg">
                       <span class=90>1</span>
@@ -348,22 +452,54 @@
                       </address>
                     </div>
                   </li>
+=======
+                  {{#each usuario.Direccions}}
+                      <li>
+                        <div class="direccionLtLn hidden">
+                          <span class="principal">{{principal}}</span>
+                          <span class="lat">{{latitud}}</span>
+                          <span class="long">{{longitud}}</span>
+                          <span class="nombre">{{nombre}}</span>
+                          <span class="direccion">
+                              <span>{{calle}}</span>&nbsp;<span>#{{numero}}</span><br>
+                              {{Localidad.TipoLocalidad.tipo}} <span>{{Localidad.localidad}}</span><br>
+                              <span>{{Municipio.municipio}}</span>, <pan>{{Municipio.Estado.estado}}</pan>. CP: <span>{{Localidad.CP}}</span>
+                          </span>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 direccion-pagination-bg">
+                          <span class=90>{{#indexBaseUno @index}}{{/indexBaseUno}}</span>
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                          <address class="whiteF Flama-bold">
+                            <strong><span>{{nombre}}</span></strong><br>
+                            <span>{{calle}}</span>&nbsp;<span>#{{numero}}</span><br>
+                            {{Localidad.TipoLocalidad.tipo}} <span>{{Localidad.localidad}}</span><br>
+                            <span>{{Municipio.municipio}}</span>, <pan>{{Municipio.Estado.estado}}</pan>. CP: <span>{{Localidad.CP}}</span><br>
+                            <br><strong>Teléfonos</strong><br>
+                            <abbr title="Phone">oficina:</abbr> (<span>33</span>) <span>31252200</span><br>
+                            <abbr title="Phone">celular:</abbr> (<span>871</span>) <span>2602226</span><br>
+                            <br><strong>E-mail</strong><br>
+                            <span>jcmedina@newchannel.mx</span><br>
+                          </address>
+                        </div>
+                      </li>
+                  {{/each}}
+>>>>>>> dev3_261115_perfilMedicoNuevoCargaDatos
                 </ul>
                 <div class="arrows">
-                  <label for="slides_1"></label>
-                  <label for="slides_2"></label>
-                  <label for="slides_3"></label>
-                  <label for="slides_4"></label>
+                  {{#each usuario.Direccions}}
+                    <label for="slides_{{#indexBaseUno @index}}{{/indexBaseUno}}"></label>
+                    {{#Last @index}}{{/Last}}
+                  {{/each}}
                   <label for="slides_1" class="goto-first"></label>
-                  <label for="slides_4" class="goto-last"></label>
+                  <label for="slides_{{#numLast}}{{/numLast}}" class="goto-last"></label>
                 </div>
                 <div class="navigation">
                   <div class="row">
                     <div class="col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">
-                      <label for="slides_1">1</label>
-                      <label for="slides_2">2</label>
-                      <label for="slides_3">3</label>
-                      <label for="slides_4">4</label>
+                      {{#each usuario.Direccions}}
+                      <label for="slides_{{#indexBaseUno @index}}{{/indexBaseUno}}">{{#indexBaseUno @index}}{{/indexBaseUno}}</label>
+                      {{/each}}
                     </div>
                   </div>
                 </div>
@@ -374,8 +510,7 @@
       </div>
       <div class="ubicaciones-inner-section col-lg-7 col-md-7 col-sm-5 col-xs-12">
         <div class="ubicaciones-mapa">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d7466.123943725772!2d-103.43773729999997!3d20.667057600000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2smx!4v1445909348743" width="100%" height="100%" frameborder="0" style="border:0"
-          allowfullscreen></iframe>
+            <div id="mapUbiDiv"></div>
         </div>
       </div>
     </div>
@@ -928,3 +1063,9 @@
     </div>
   </div>
 </section>
+
+<script type="text/javascript">
+$('document').ready(function(){
+  MostrarUbicaciones();
+})
+</script>

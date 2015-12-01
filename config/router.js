@@ -50,6 +50,7 @@ app.use( bodyParser.urlencoded( {
 app.set( 'view engine', 'hbs' );
 app.use( '/', express.static( __dirname + '/../public' ) );
 app.use( '/perfil', express.static( __dirname + '/../public' ) );
+app.use( '/nuevoPerfilMedicos', express.static( __dirname + '/../public' ) );
 app.use( '/inbox', express.static( __dirname + '/../public' ) );
 app.use( '/notificaciones', express.static( __dirname + '/../public' ) );
 
@@ -165,9 +166,18 @@ var iniciar = function () {
   } );
   //perfil nuevo
   app.get( '/nuevoPerfilMedicos', function ( req, res ) {
-    rutas.routeLife( 'plataforma2', 'plataforma/medico', hps );
+    rutas.routeLife( 'plataforma2', 'plataforma', hps );
     intermed.callController( 'Home', 'nuevoPerfilMedicos', '', req, res );
   } );
+
+
+  app.get( '/nuevoPerfilMedicos/:usuario', function ( req, res ) {
+    var usuario = '';
+    if ( req.params.usuario ) usuario = req.params.usuario;
+    rutas.routeLife( 'plataforma2', 'plataforma', hps );
+    intermed.callController( 'Home', 'nuevoPerfilMedicos', {usuario: usuario}, req, res );
+  } );
+
 
   app.get( '/auth/facebook/request/:tipo', function ( req, res, next ) {
     req.session.tipo = '';
@@ -1397,6 +1407,10 @@ var iniciar = function () {
     app.post('/obtenerEstados',function( req, res){
       intermed.callController( 'ubicacion', 'obtieneEstados', req.body, req, res );
     })
+
+    app.post('/ubicaciones/traer',function (req, res){
+      intermed.callController( 'ubicacion', 'obtieneUbicacion', req.body, req, res );
+    });
 }
 
 var io = serv.server( app, 3000 );

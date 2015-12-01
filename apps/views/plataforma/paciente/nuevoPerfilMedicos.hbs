@@ -1,0 +1,659 @@
+<!-- interno -->
+<!-- empieza nav superior -->
+<nav id="" class="navbar navigator navbar-static-top">
+  <section class="navigator-container container-fluid">
+    <div class="navigator-inner row">
+      <div id="logo-section" class="navigator-inner-section col-lg-3 col-md-3 col-sm-4 col-xs-10">
+        <div class="navbar-header navigator-inner-section-cell">
+          <a href="/" class="navbar-brand nav-logo white no-transform">
+            <img class="logoIntermed" src="img/logos/logo1.png" />
+          </a>
+        </div>
+      </div>
+      <button type="button" class="navbar-toggle collapsed btn-menu col-xs-2" data-toggle="collapse" data-target="#collapse-menu" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="glyphicon glyphicon-menu-hamburger"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="collapse-menu">
+        <div id="search-section" class="navigator-inner-section col-lg-5 col-md-4 col-sm-1 col-xs-12 hidden-sm">
+          <div class="input-group navbar-search navigator-inner-section-cell col-md-10 col-md-offset-1 h65-medium">
+            <input type="text" class="form-control" id="" name="" placeholder="Search for people, places or things" required="">
+            <span class="input-group-btn">
+              <button class="btn btn-default" type="button">
+                <span class="glyphicon glyphicon-search"></span>
+              </button>
+            </span>
+          </div>
+        </div>
+
+        <div id="menu-section" class="navigator-inner-section col-lg-4 col-md-5 col-sm-8 col-xs-12">
+          <div class="navigator-inner-section-cell">
+            <ul class="nav nav-pills nav-justified navigator-inner-section-menu h57-cond s20">
+              <li>
+                <a href="#">Perfil</a>
+              </li>
+              <li>
+                <a href="#">Oficina</a>
+              </li>
+              <li>
+                <a href="#">Agenda</a>
+              </li>
+              <li>
+                <a href="#">Mensajes</a>
+              </li>
+              <li class="visible-sm dropdown navigator-dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                  Buscar
+                </a>
+                <div class="dropdown-menu dropdown-form panel navigator-dropdown-panel">
+                  <div class="panel-body input-group navbar-search navigator-inner-section-cell h65-medium">
+                    <input type="text" class="form-control input-lg" id="" name="" placeholder="Search for people, places or things">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default btn-lg" type="button">
+                        <span class="glyphicon glyphicon-search"></span>
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</nav>
+
+<div id="sticky-anchor"></div>
+<nav class="nav-menu sticky h67-medcond">
+  <div class="container-fluid nav-menu-container">
+    <div id="menuMed" class="col-lg-8 col-md-7 col-sm-6 col-xs-12">
+      <div class="row nav-menu-row">
+        <div class="nav-menu-inner-section">
+          <ul class="nav nav-pills nav-justified nav-menu-menu h67-medcond s20">
+            <li>
+              <a href="#">Perfil</a>
+            </li>
+            <li>
+              <a href="#">Publicaciones</a>
+            </li>
+            <li>
+              <a href="#">Galería</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    {{#if usuario.id}}
+      <input type="hidden" id="PacienteId" value="{{usuario.Paciente.id}}" />
+      {{#if usuario.medFavCol}}
+        {{#ifTipoPaciente}}
+          <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
+            <div class="row nav-menu-row">
+              <div class="nav-menu-inner-section">
+                <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
+                  <li>
+                    <a onclick="eliminarFavoritos(false)" id="addFavoriteContact">
+                      <span class="glyphicon h67-medcond s30">-</span> Eliminar
+                      <span class="hidden-xs">como </span>contacto</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        {{/ifTipoPaciente}}
+      {{else}}
+        {{#if usuario.invitacionEnviada}}
+          {{#ifTipoPaciente}}
+            <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
+              <div class="row nav-menu-row">
+                <div class="nav-menu-inner-section">
+                  <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
+                    <li>
+                      <a onclick="eliminarFavoritos(false)" id="addFavoriteContact">
+                        <span class="glyphicon h67-medcond s30">-</span> Invitación
+                        <span class="hidden-xs">a tus contactos </span>enviada</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          {{/ifTipoPaciente}}
+        {{else}}
+          {{#if usuario.invitacionEspera}}
+            {{#ifTipoPaciente}}
+              <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
+                <div class="row nav-menu-row">
+                  <div class="nav-menu-inner-section">
+                    <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
+                      <li>
+                        <a onclick="aceptarInvitacion()" id="addFavoriteContact">
+                          <span class="glyphicon h67-medcond s30">+</span> Aceptar
+                          <span class="hidden-xs">como </span>contacto</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            {{/ifTipoPaciente}}
+          {{else}}
+            {{#ifTipoPaciente}}
+              <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
+                <div class="row nav-menu-row">
+                  <div class="nav-menu-inner-section">
+                    <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
+                      <li>
+                        <a onclick="agregarFavoritos(false)" id="addFavoriteContact">
+                          <span class="glyphicon h67-medcond s30">+</span> Agrega a
+                          <span class="hidden-xs">tus </span>contactos</a>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            {{/ifTipoPaciente}}
+          {{/if}}
+        {{/if}}
+      {{/if}}
+    {{/if}}
+
+  </div>
+</nav>
+<header class="header-section">
+  <div class="container-fluid header-container">
+    <div class="row header-row">
+      <div id="profile" class="header-profile col-lg-8 col-md-7 col-sm-10 col-xs-12">
+        <div class="header-profile-container">
+          <div class="header-profile-photo-container col-lg-4 col-md-5 col-sm-5 col-xs-12">
+              <div class="profilePic header-profile-photo-link center-block">
+              {{#if usuario.id}}
+                <img class="header-profile-photo-img" src="{{usuario.urlFotoPerfil}}"  alt="perfil"/>
+              {{else}}
+                <img class="header-profile-photo-img" src="{{valSession 'fotoPerfil'}}" id='fotoPerfil'  alt="perfil"/>
+                <label for="imageFile">Cambiar Imagen</label>
+                <input type="file" id="imageFile" style="display:none">
+              {{/if}}
+            </div>
+          </div>
+          <div class="header-profile-body-container col-lg-8 col-md-7 col-sm-7 col-xs-12">
+            <div class="header-profile-body-content whiteF flama">
+              {{#if usuario.id}}
+                <h2 class="profile-name" style="text-transform:capitalize;">
+                    {{#if usuario.DatosGenerale}}
+                      {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
+                    {{/if}}
+                  </h2>
+                <h4 class="profile-location">
+                  {{#if usuario.direccion}}
+                      {{usuario.direccion.Municipio.municipio}}, {{usuario.direccion.Municipio.Estado.estado}}, MX.
+                  {{/if}}</h4>
+                <ul class="list-inline profile-esp">
+                  {{#each usuario.especialidades}}
+                    {{#unless subEsp}}
+                      <li>{{Especialidad.especialidad}}</li>
+                    {{/unless}}
+                  {{/each}}
+                </ul>
+                <ul class="list-inline profile-subesp">
+                  {{#set "subEspPrint"}}{{/set}}
+                  {{#each usuario.especialidades}}
+                    {{#if subEsp}}
+                      {{#ifSessionVal "subEspPrint"}}
+                        {{#unset "subEspPrint"}}{{/unset}}
+                        <li>
+                          <small>Subespecialidad: </small>
+                        </li>
+                      {{/ifSessionVal}}
+                    {{/if}}
+                    {{#if subEsp}}
+                      <li>
+                        <small>{{Especialidad.especialidad}}</small>
+                      </li>
+                    {{/if}}
+                  {{/each}}
+                </ul>
+              {{else}}
+                <h2 class="profile-name" style="text-transform:capitalize;">
+                {{#ifSession "name"}}
+                  Dr. {{valSession "name"}}
+                  {{else}}
+                  Aun no tenemos tu nombre registrado, continúa tu registro <a onclick="informacionRegistroMedico()">aquí</a>.
+                {{/ifSession}}</h2>
+                <h4 class="profile-location">
+                  {{#ifSession "municipio"}}
+                    {{valSession "municipio"}}, {{valSession "estado"}}. MX
+                  {{/ifSession}}</h4>
+                <ul class="list-inline profile-esp">
+                  {{#eachValSession "especialidades"}}
+                    {{#unless subEsp}}
+                    <li>
+                      {{Especialidad.especialidad}}
+                    </li>
+                    {{/unless}}
+                  {{/eachValSession}}
+                </ul>
+                <ul class="list-inline profile-subesp">
+                  {{#ifsubEsp}}
+                    <li>
+                      Subespecialidad:
+                    </li>
+                    {{#eachValSession "especialidades"}}
+                      {{#if subEsp}}
+                      <li>
+                        <small>{{Especialidad.especialidad}}</small>
+                      </li>
+                      {{/if}}
+                    {{/eachValSession}}
+                  {{/ifsubEsp}}
+                </ul>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="colegas">
+  <div class="container-fluid">
+    <div class="container cat-header">
+      <div class="col-lg-9 col-md-10 col-lg-offset-3 col-md-offset-2">
+        <div class="media">
+          <div class="media-left">
+            <img class="cat-icon" src="img/plataforma/icons/colegas.png">
+          </div>
+          <div class="media-body">
+            <span class="cat-main-title h77-boldcond">Mis médicos favoritos</span><br>
+            <span class="cat-sub-title h67-medcond">Ligas a los perfiles de mis médicos recomendados</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <ul class="list-inline text-center center-block">
+          <li>
+            <span class="glyphicon glyphicon-circle-arrow-right"></span> Ordenar por especialidad
+          </li>
+          <li>
+            <span class="glyphicon glyphicon-circle-arrow-right"></span> Ordenar por apellido
+          </li>
+          <li>
+            <span class="glyphicon glyphicon-search"></span> Buscar
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="container">
+      <hr class="sep">
+      <nav id="listaEspecialidades" class="side-especialidades" >
+        <p>
+          <span class="side-especialides-header h77-boldcond">Selecciona</span>
+          <span class="side-especialides-subheader h67-medcond">una especialidad</span>
+        </p>
+        <hr class="sep">
+        <ul class="nav nav-pills nav-stacked h67-medcond">
+          <li>
+            <a href="#alergologia">Alergología <span class="badge pull-right">2</span></a>
+          </li>
+          <li>
+            <a href="#angiologia">Angiología <span class="badge pull-right">1</span></a>
+          </li>
+          <li>
+            <a href="#cardiologia">Cardiología <span class="badge pull-right">4</span></a>
+          </li>
+          <li>
+            <a href="#dermatologia">Dermatología <span class="badge pull-right">6</span></a>
+          </li>
+          <li>
+            <a href="#endocrinologia">Endocrinología <span class="badge pull-right">2</span></a>
+          </li>
+          <li>
+            <a href="#ginecologia">Ginecología <span class="badge pull-right">1</span></a>
+          </li>
+        </ul>
+      </nav>
+      <div id="listaColegas" class="col-lg-9 col-md-9 col-sm-8 col-xs-12 pull-right main-colegas" data-spy="scroll" data-target="#listaEspecialidades" data-offset="180">
+        <div id="alergologia" class="row" >
+          <h1 class="h67-medcond">Alergología</h1>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div >
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp1.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div>
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp2.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="angiologia" class="row">
+          <h1 class="h67-medcond">Angiología</h1>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp3.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="cardiologia" class="row">
+          <h1 class="h67-medcond">Cardiología</h1>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp4.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp1.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp2.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp3.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="dermatologia" class="row">
+          <h1 class="h67-medcond">Dermatología</h1>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp4.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp1.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp2.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp3.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp4.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp1.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="endocrinologia" class="row">
+          <h1 class="h67-medcond">Endocrinología</h1>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp2.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp3.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp4.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp1.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp2.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp3.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="ginecologia" class="row">
+          <h1 class="h67-medcond">Ginecología</h1>
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div class="">
+                <a class="pPic" href="#"><img src="img/plataforma/temp/profile-pics/pp4.jpg" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>Fulano</span>&nbsp;<span>de Tal</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>Alergólogo</span>
+                </div>
+                <a class="h67-medcondobl" href="#">Ver Perfil</a>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</section>

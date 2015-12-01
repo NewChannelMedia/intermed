@@ -8,7 +8,7 @@
                     <h4>{{title}}</h4>
                     <div class="row">
                         <div class="col-md-4">
-                            <input type="hidden" name="idUsuario" value="{{usuario_id}}" id="idUsuario" />                            
+                            <input type="hidden" name="idUsuario" value="{{usuario_id}}" id="idUsuario" />
                             {{#each direccion}}
                             <div id="direccion{{id}}">
                                 <h1 id="titulo{{id}}">{{nombre}}</h1>
@@ -21,9 +21,9 @@
                                 <a href="registrarubicacion?idDireccion={{id}}">Editar Ubicaci&oacute;n</a>
                             </div>
                             {{/each}}
-                        </div>                        
+                        </div>
                         <div class="col-md-8">
-                            <div class="col-md-12">                                
+                            <div class="col-md-12">
                                 <div id="mapDiv"></div>
                             </div>
                         </div>
@@ -34,3 +34,9 @@
     </div>
 </section>
 <script src="js/mapa.js"></script>
+<script type="text/javascript">
+$(function(){
+  setTimeout(function(){MostrarUbicaciones();
+  },1000);
+})
+</script>

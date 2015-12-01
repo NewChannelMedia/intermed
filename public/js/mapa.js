@@ -67,7 +67,7 @@ var mapa = {
             type: 'POST',
             dataType: "json",
             cache: false,
-            asyn: false,
+            async: false,
             success: function (data) {
                 data.forEach(function (record) {
                     $('#slc_estados').append('<option value="' + record.id + '">' + record.estado + '</option>');
@@ -87,7 +87,7 @@ var mapa = {
         };
         mapa.markers = new Array();
         mapa.popup = new google.maps.InfoWindow();
-        var mapElement = document.getElementById(mapa.nombreObjetoMostrarMapa);
+        var mapElement = document.getElementById('mapDiv');
 
         mapa.map =new google.maps.Map(mapElement,mapOptions);
         resizeMap();
@@ -97,7 +97,25 @@ var mapa = {
         mapa.map.mapTypes.set('map_style', styledMap);
         mapa.map.setMapTypeId('map_style');
         /**/
-        mapa.GeolicalizacionUsuario();
+        if (!($('#idDireccion') && $('#idDireccion').val() != "" && $('#idDireccion').val() > 0)){
+          mapa.GeolicalizacionUsuario();
+        } else {
+          $('#slc_estados').val($('#idEstado').val());
+          obtenerCiudades();
+          setTimeout(function(){
+            $('#slc_ciudades').val($('#idMunicipio').val());
+            obtenerColonias();
+            setTimeout(function(){
+              $('#slc_colonias').val($('#idLocalidad').val());
+            },300);
+          },300);
+          mapa.latitud = $('#latitud').val();
+          mapa.longitud = $('#longitud').val();
+          var devCenter = new google.maps.LatLng(mapa.latitud, mapa.longitud);
+          mapa.map.setCenter(devCenter);
+          mapa.map.setZoom(14);
+          mapa.Marcador();
+        }
 
         //Buscar Direcciones
         var searchDiv = document.getElementById('searchDiv');
@@ -127,21 +145,6 @@ var mapa = {
             };
 
         });
-
-        /*
-        //Posicionar el mapa en la ubicacion del usuario
-        if (mapa.soloCargar == false) {
-            console.log('Test 7');
-            if ($('#idDireccion').val().length == 0) {
-                mapa.GeolicalizacionUsuario();
-                console.log('Test 8');
-            } else {
-                mapa.PosicionarMapa();
-                console.log('Test 9');
-                //Crear marcador en el centro del mapa()
-                mapa.Marcador();
-            };
-        }*/
     },
     PosicionarMapa: function () {
         var devCenter = new google.maps.LatLng(mapa.latitud, mapa.longitud);
@@ -189,6 +192,7 @@ var mapa = {
 
     //Acciones sobre el marcador
     funcionClick: function () {
+      if (!($('#btnGuardar') && $('#btnGuardar').val() == "Editar")){
         if (mapa.marker.getAnimation() != null) {
             mapa.marker.setAnimation(null);
         } else {
@@ -199,13 +203,7 @@ var mapa = {
         mapa.latitud = pos.lat();
         mapa.longitud = pos.lng();
         mapa.DireccionObtener();
-
-        //var infowindow = new google.maps.InfoWindow({
-        //    content: 'Marker Info Window – lat : ' + latitud + ' lng: ' + longitud
-        //});
-
-
-        //infowindow.open(map, marker);
+      }
     },
 
     //Obtener la direccion en base a la posicion del usuario
@@ -222,7 +220,6 @@ var mapa = {
                     for (var i = 0; i < results[0].address_components.length; i++) {
                         var addr = results[0].address_components[i];
 
-                        console.log('ADDR: ' + JSON.stringify(results[0]));
                         if (addr.types[0] == 'street_number') {
                             mapa.numero = addr.long_name;
                         };
@@ -278,7 +275,7 @@ var mapa = {
 
 
 //objeto donde se mostrara el objeto
-mapa.nombreObjetoMostrarMapa = 'mapDiv';
+//mapa.nombreObjetoMostrarMapa = 'mapDiv';
 
 //objetos que reciben los valores al cambiar posicion
 mapa.nombreObjetoLatitud = 'latitud';
@@ -287,17 +284,61 @@ mapa.nombreObjetoLongitud = 'longitud';
 //Objeto que recibe a direccion
 mapa.nombreObjetoDireccion = 'direccion';
 
-function cargarMapa2(){
+var infoWindows = [];
+
+function MostrarUbicaciones(){
   var mapProp = {
-      center:new google.maps.LatLng(23.6266557, -102.5377501),
-      zoom: 4,
+      center:new google.maps.LatLng(20.667015199999998, -103.43773089999999),
+      zoom: 12,
       draggable: true,
       scrollwheel: true,
       mapTypeId:google.maps.MapTypeId.ROADMAP
   };
 
-  map=new google.maps.Map(document.getElementById("mapDiv"),mapProp);
-  resizeMap();
+  map=new google.maps.Map(document.getElementById("mapUbiDiv"),mapProp);
+
+  $('.direccionLtLn').each(function( index ) {
+    var principal = $( this ).find('.principal').text();
+    var latitud = $( this ).find('.lat').text();
+    var longitud = $( this ).find('.long').text();
+    var nombre = $( this ).find('.nombre').text();
+    var direccion = $( this ).find('.direccion').html();
+
+    var pos = new google.maps.LatLng(latitud, longitud);
+
+    var marker = new google.maps.Marker({
+        position: pos,
+        map: map,
+        draggable: false,
+        title: nombre,
+        animation: google.maps.Animation.DROP
+    });
+
+
+      var contentString = '<div><h4>'+nombre+'</h4><p>'+direccion+'</p></div>';
+
+      var infowindow = new google.maps.InfoWindow({
+        content: contentString
+      });
+
+      infoWindows.push(infowindow);
+
+      marker.addListener('click', function() {
+        infoWindows.forEach(function(info){
+          info.close();
+        });
+
+        infowindow.open(map, marker);
+      });
+
+      if (principal == 1){
+        //Centrar mapa
+        map.setCenter(pos);
+      }
+      marker.setIcon('img/marker.png');
+  });
+
+  //resizeMap();
 }
 
 function resizeMap() {
@@ -311,32 +352,12 @@ function resizingMap() {
    google.maps.event.trigger(mapa.map, "resize");
    mapa.map.setCenter(center);
 }
-function cargarMapa() {
-    //Inicializa mapa
-    //cargar mapa
-    if (isNaN($('#idDireccion').val())) {
-        mapa.soloCargar = true;
-        AgregarMarcadores();
-    } else {
-        mapa.soloCargar = false;
-        if ($('#idDireccion').val() > 0) {
-            mapa.soloCargar = false;
-            /*HACER ESTO CON AJAX*/
-            /*
-            mapa.latitud = $('#latitud').val();
-            mapa.longitud = $('#longitud').val();
-            //cargar Estado, Municipio, Localidad
-
-            mapa.estado = $('#estadoDato').val();
-            mapa.ciudad = $('#municipioDato').val();
-            mapa.colonia = $('#localidadDato').val();
-
-            SeleccionarValor('slc_estados', mapa.estado);
-            obtenerCiudades();
-            */
-        }
-    }
+function cargarMapa(ubicacion_id) {
     mapa.initMap();
+
+    if (ubicacion_id && ubicacion_id > 0){
+      console.log('Ubicacion_id: ' + ubicacion_id);
+    }
 }
 
 

@@ -1553,15 +1553,15 @@ function agregarFavoritos( medico ) {
       if ( data.result == 'success' ) {
         if ( $( '#tipoUsuario' ).val() === "P" ) {
           if ( medicoID ) {
-            $( '#addFavoriteContact' ).html( 'Eliminar de favoritos' );
+            $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Elimina de favoritos');
           }
           else {
-            $( '#addFavoriteContact' ).html( 'Invitación enviada' );
+            $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Invitación enviada');
           }
         }
         else if ( $( '#tipoUsuario' ).val() === "M" ) {
             if ( medicoID ) {
-              $( '#addFavoriteContact' ).html( 'Invitación enviada' );
+              $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Invitación enviada');
             }
         }
         $( "#addFavoriteContact" ).attr( "onclick", "eliminarFavoritos()" );
@@ -1602,13 +1602,13 @@ function eliminarFavoritos( medico, paciente_id , notificacion_id) {
       if ( data.result == 'success' ) {
         if ( $( '#tipoUsuario' ).val() === "P" ) {
           if ( medicoID ) {
-            $( '#addFavoriteContact' ).html( 'Agregar a favoritos' );
+            $( '#addFavoriteContact' ).html( '<span class="glyphicon h67-medcond s30">+</span> Agrega a favoritos' );
           }
           else {
-            $( '#addFavoriteContact' ).html( 'Agregar a contactos' );
+            $( '#addFavoriteContact' ).html( '<span class="glyphicon h67-medcond s30">+</span> Agrega a contactos' );
           }
         }
-        else if ( $( '#tipoUsuario' ).val() === "M" ) $( '#addFavoriteContact' ).html( 'Agregar a colegas' );
+        else if ( $( '#tipoUsuario' ).val() === "M" ) $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">+</span> Agrega a colegas');
         $( "#addFavoriteContact" ).attr( "onclick", "agregarFavoritos()" );
         cargarFavCol( $( '#usuarioPerfil' ).val() );
         if ( notificacion_id ) {
@@ -1952,59 +1952,64 @@ function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
 
 
 function obtenerCiudades() {
-    if ($('#slc_ciudades option').length == 1) {
-        $('#slc_ciudades option').remove();
-    };
+    if (document.getElementById('slc_ciudades')){
+        if ($('#slc_ciudades option').length == 1) {
+            $('#slc_ciudades option').remove();
+        };
 
-    document.getElementById('slc_ciudades').innerHTML = '<option value="">Ciudad</option>';
-    $.ajax({
-        url: '/obtenerCiudades',
-        type: 'POST',
-        dataType: "json",
-        cache: false,
-        data: {
-            'estado_id': document.getElementById('slc_estados').value
-        },
-        success: function (data) {
-            data.municipio.forEach(function (record) {
-                document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.municipio_id + '">' + record.municipio + '</option>';
-            });
-            //AsignarCiudad();
-        },
-        error: function (jqXHR, textStatus, err) {
-            console.error('AJAX ERROR: ' + err);
-            ciudadesCargando = false;
-        }
-    });
+        document.getElementById('slc_ciudades').innerHTML = '<option value="">Ciudad</option>';
+        $.ajax({
+            url: '/obtenerCiudades',
+            type: 'POST',
+            dataType: "json",
+            cache: false,
+            data: {
+                'estado_id': document.getElementById('slc_estados').value
+            },
+            success: function (data) {
+                data.municipio.forEach(function (record) {
+                    document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.id + '">' + record.municipio + '</option>';
+                });
+                //AsignarCiudad();
+            },
+            error: function (jqXHR, textStatus, err) {
+                console.error('AJAX ERROR: ' + err);
+                ciudadesCargando = false;
+            }
+        });
+
+    }
 }
 
 function obtenerColonias() {
-    if ($('#slc_colonias option').length != 1) {
-        $('#slc_colonias option').remove();
-    };
+  if (document.getElementById('slc_colonias')){
 
-    document.getElementById('slc_colonias').innerHTML = '<option value="">Colonia</option>';
-    $.ajax({
-        url: '/obtenerLocalidades',
-        type: 'POST',
-        dataType: "json",
-        cache: false,
-        data: {
-            'estado_id': document.getElementById('slc_estados').value,
-            'municipio_id': document.getElementById('slc_ciudades').value
-        },
-        success: function (data) {
-            data.municipios.forEach(function (record) {
-                document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
-            });
-            //AsignarColonia();
-        },
-        error: function (jqXHR, textStatus, err) {
-            console.error('AJAX ERROR: ' + err);
-        }
-    });
+      if ($('#slc_colonias option').length != 1) {
+          $('#slc_colonias option').remove();
+      };
+
+      document.getElementById('slc_colonias').innerHTML = '<option value="">Colonia</option>';
+      $.ajax({
+          url: '/obtenerLocalidades',
+          type: 'POST',
+          dataType: "json",
+          cache: false,
+          data: {
+              'estado_id': document.getElementById('slc_estados').value,
+              'municipio_id': document.getElementById('slc_ciudades').value
+          },
+          success: function (data) {
+              data.municipios.forEach(function (record) {
+                  document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
+              });
+              //AsignarColonia();
+          },
+          error: function (jqXHR, textStatus, err) {
+              console.error('AJAX ERROR: ' + err);
+          }
+      });
+  }
 }
-
 
 //Registrar Ubicacion
 function regUbicacion() {
@@ -2029,7 +2034,10 @@ function regUbicacion() {
     latitud = $('#latitud').val();
     longitud = $('#longitud').val();
 
+    ubicacion_id = $('#idDireccion').val();
+
     UbicData = {
+      idDireccion: ubicacion_id,
       nombreUbi: nombreUbi,
       principal: principal,
       calleUbi: calleUbi,
@@ -2039,23 +2047,26 @@ function regUbicacion() {
       calle2Ubi: calle2Ubi,
       idDireccion: idDireccion,
       latitud: latitud,
-      longitud: longitud
-    }
-    if (slc_estados != ""){
-      UbicData['slc_estados'] = slc_estados;
-    }
-    if (slc_ciudades != ""){
-      console.log('Guardado');
-      UbicData['slc_ciudades'] = slc_ciudades;
-    }
-    if (slc_colonias != ""){
-      UbicData['slc_colonias'] = slc_colonias;
-    }
-    if (cpUbi != ""){
-      UbicData['cpUbi'] = cpUbi;
+      longitud: longitud,
+      slc_estados: slc_estados,
+      slc_ciudades: slc_ciudades,
+      slc_colonias: slc_colonias,
+      cpUbi: cpUbi
     }
 
-    if (regUbiValid() == true) {
+
+    var resultado = {};
+    if ($('#btnGuardar').val() == "Editar"){
+      resultado.valido = false;
+      $('#btnGuardar').val('Guardar');
+      $("#frmRegUbi :input").prop('disabled', false);
+      $("#frmRegUbi #btnGuardarSalir").removeClass('hidden');
+      mapa.marker.setOptions({draggable: true,animation:google.maps.Animation.DROP});
+    } else {
+      resultado = regUbiValid(UbicData);
+    }
+
+    if (resultado.valido) {
         $.ajax({
             url: '/registrarubicacion',
             type: 'POST',
@@ -2064,15 +2075,31 @@ function regUbicacion() {
             data: UbicData,
             type: 'POST',
             success: function (data) {
+              if ($('#btnGuardar').val() == "Guardar"){
+                $("#frmRegUbi :input").prop('disabled', true);
+                $('#frmRegUbi :button #addFon').prop('disabled', true);
+                $("#frmRegUbi :button").prop('disabled', false);
+                $("#frmRegUbi #btnGuardarSalir").addClass('hidden');
+                $('#btnGuardar').val('Editar');
+                mapa.marker.setOptions({draggable: false,animation:null});
+                actualizarDirecciones();
+              } else {
+                actualizarDirecciones();
                 $("#frmRegUbi").find('input select').val('');
                 obtenerCiudades();
                 //Reiniciar mapa
                 mapa.GeolicalizacionUsuario();
+              }
             },
             error: function (err) {
                 console.error('AJAX ERROR: (registro 166) : ' + JSON.stringify(err));
             }
         });
+    } else if (resultado.error){
+      bootbox.alert({
+        message: "Es necesario indicar " + resultado.error + " de la ubicación para su registro.",
+        title: "No se puede guardar la ubicación"
+      });
     }
 }
 
@@ -2103,64 +2130,50 @@ function regHorarios() {
 function regHorariosValid() {
     return true;
 }
-function regUbiValid() {
+function regUbiValid(UbicData) {
+    var error = '';
     var blnValido = true;
-    //if ($('#nombreUbi').val().length == 0) {
-    //    $('#nombreUbi').parent().addClass("has-error");
-    //    blnValido = false;
-    //} else {
-    //    $('#nombreUbi').parent().removeClass("has-error");
-    //};
+    if (blnValido && UbicData.nombreUbi == ''){
+      blnValido = false;
+      error = 'el nombre';
+    }
 
-    //if ($('#slc_estados option:selected').text() == 'Estado') {
-    //    $('#slc_estados').parent().addClass('has-error');
-    //    blnValido = false;
-    //} else {
-    //    $('#slc_estados').parent().removeClass('has-error');
-    //};
+    if (blnValido && UbicData.calleUbi == ''){
+      blnValido = false;
+      error = 'la calle';
+    }
 
-    //if ($('#slc_ciudades option:selected').text() == 'Ciudad') {
-    //    $('#slc_ciudades').parent().addClass('has-error');
-    //    blnValido = false;
-    //} else {
-    //    $('#slc_ciudades').parent().removeClass('has-error');
-    //};
+    if (blnValido && UbicData.numeroUbi == ''){
+      blnValido = false;
+      error = 'el número';
+    }
 
+    if (blnValido && (UbicData.latitud == '' || UbicData.longitud == '')){
+      blnValido = false;
+      error = 'la ubicacion';
+    }
 
-    //if ($('#slc_colonias option:selected').text() == 'Colonia') {
-    //    $('#slc_colonias').parent().addClass('has-error');
-    //    blnValido = false;
-    //} else {
-    //    $('#slc_colonias').parent().removeClass('has-error');
-    //};
+    if (blnValido && UbicData.slc_estados <= 0){
+      blnValido = false;
+      error = 'el estado';
+    }
 
-    //if ($('#cpUbi').val().length == 0) {
-    //    $('#cpUbi').parent().addClass('has-error');
-    //    blnValido = false;
-    //} else {
-    //    $('#cpUbi').parent().removeClass('has-error');
-    //};
+    if (blnValido && UbicData.slc_ciudades <= 0){
+      blnValido = false;
+      error = 'la ciudad';
+    }
 
-    //if ($('#calleUbi').val().length == 0) {
-    //    $('#calleUbi').parent().addClass('has-error');
-    //    blnValido = false;
-    //} else {
-    //    $('#calleUbi').parent().removeClass('has-error');
-    //};
+    if (blnValido && UbicData.slc_colonias <= 0){
+      blnValido = false;
+      error = 'la colonia';
+    }
 
-    //if ($('#numeroUbi').val().length == 0) {
-    //    $('#numeroUbi').parent().addClass('has-error');
-    //    blnValido = false;
-    //} else {
-    //    $('#numeroUbi').parent().removeClass('has-error');
-    //};
+    if (blnValido && UbicData.cpUbi <= 0){
+      blnValido = false;
+      error = 'el código postal';
+    }
 
-
-    //if (objhorarios.length == 0) {
-    //    blnValido = false;
-    //};
-
-    return blnValido;
+    return {'valido':blnValido, 'error':error};
 }
 // muestra la ventana para editar al médico
 function muestraMedico( id ) {
@@ -2723,10 +2736,90 @@ $(function(){
   });
 
   $('#btnEditaUbi').on('click',function(){
-    alert('Edita ubicacion');
+    var ubicacion_id = $('.csslider > input:checked').prop('value');
+    agregarUbicacion(ubicacion_id);
   });
 });
 
 $("#listaEspecialidades a").on('click', function(event) {
   event.preventDefault();
 });
+
+function actualizarDirecciones(){
+  $.ajax( {
+    async: false,
+    url: '/ubicaciones/traer',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      if (data){
+        var contenido = '';
+        var contador = 0;
+        data.forEach(function(record){
+          var checked = '';
+          if (contador == 0){
+            checked = 'checked="checked"';
+          }
+          contenido+= '<input type="radio" name="slides" '+ checked +' id="slides_'+ ++contador +'" value="'+ record.id +'"/>';
+        });
+        contenido+= '<ul>';
+        var contador = 0;
+        data.forEach(function(record){
+          var interior = '';
+          if (record.numeroInt){
+            interior = ' interior ' + record.numeroInt;
+          }
+
+          contenido += `
+              <li>
+                <div class="direccionLtLn hidden">
+                  <span class="principal">`+ record.principal +`</span>
+                  <span class="lat">`+record.latitud+`</span>
+                  <span class="long">`+ record.longitud +`</span>
+                  <span class="nombre">`+ record.nombre +`</span>
+                  <span class="direccion">
+                      <span>`+ record.calle +`</span>&nbsp;<span>#`+ record.nombre + interior +`</span><br>
+                      `+ record.Localidad.TipoLocalidad.tipo +` <span>`+ record.Localidad.localidad +`</span><br>
+                      <span>`+ record.Municipio.municipio +`</span>, <pan>`+ record.Municipio.Estado.estado +`</pan>. CP: <span>`+ record.Localidad.CP +`</span>
+                  </span>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 direccion-pagination-bg">
+                  <span class=90>`+ ++contador +`</span>
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                  <address class="whiteF Flama-bold">
+                    <strong><span>`+ record.nombre +`</span></strong><br>
+                    <span>`+ record.calle +`</span>&nbsp;<span>#`+ record.nombre + interior +`</span><br>
+                    `+ record.Localidad.TipoLocalidad.tipo +` <span>`+ record.Localidad.localidad +`</span><br>
+                    <span>`+ record.Municipio.municipio +`</span>, <pan>`+ record.Municipio.Estado.estado +`</pan>. CP: <span>`+ record.Localidad.CP +`</span><br>
+                    <br><strong>Teléfonos</strong><br>
+                    <abbr title="Phone">oficina:</abbr> (<span>33</span>) <span>31252200</span><br>
+                    <abbr title="Phone">celular:</abbr> (<span>871</span>) <span>2602226</span><br>
+                    <br><strong>E-mail</strong><br>
+                    <span>jcmedina@newchannel.mx</span><br>
+                  </address>
+                </div>
+              </li>`;
+            });
+        contenido+= '</ul><div class="arrows">';
+        var contador = 0;
+        data.forEach(function(record){
+          contenido+= '<label for="slides_'+ ++contador +'"></label>';
+        });
+        contenido+= '<label for="slides_1" class="goto-first"></label><label for="slides_'+ contador +'" class="goto-last"></label></div>';
+        contenido+= '<div class="navigation"><div class="row"><div class="col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">';
+        var contador = 0;
+        data.forEach(function(record){
+          contenido+= '<label for="slides_'+ ++contador +'">'+ contador +'&nbsp;</label>';
+        });
+        contenido+= '</div></div></div>';
+        $('#slider1').html(contenido);
+        MostrarUbicaciones();
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
