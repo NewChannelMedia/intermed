@@ -2760,5 +2760,201 @@ $(document).ready(function(){
 * @param id es el id de el div donde se va a maquetar la informacion
 **/
 function downloadServices(id){
-  
+  //post para mostrar los servicios en la primera pestaña
+    $.post('/searchServices',function(data){
+      if( data != null ){
+        $("#tusServices").html('');
+        var html ="";
+        $.each(data,function(i, item){
+          html += "<tr>";
+            html += "<td><center>"+i+"</center></td>";
+            html += "<td><center>"+item.concepto+"</center></td>";
+            html += "<td><center>"+item.descripcion+"</center></td>";
+            html += "<td><center>"+item.precio+"</center></td>";
+            html += "<td><center>"+item.duracion+"</center></td>";
+          html += "</tr>";
+        });
+        $("#tusServices").append(html);
+      }else{
+        $("#encontroServicios").removeClass('hidden');
+      }
+    }).fail(function(e){
+      console.log("Error:-"+JSON.stringify(e));
+    });
+}
+//funcion para agregar mas servicios
+function addServices(concepto, descripcion,precio,duracion){
+  var con = $(concepto).val();
+  var des = $(descripcion).val();
+  var pre = $(precio).val();
+  var dur = $(duracion+ " :selected").val();
+  //post para el envio de la informacion
+  if( con != "" && des != "" && pre != "" && dur != "time" ){
+    $.post('/addServices',{
+      concepto:con,
+      descripcion: des,
+      precio: pre,
+      duracion: dur
+    },function(data){
+      if(data == true){
+        $("#exitoAgregado").removeClass('hidden');
+        $(concepto).html('');
+        $(descripcion).html('');
+        $(precio).html('');
+      }else{
+        console.log("Entro aqui");
+        $("#exitoNoAgregado").removeClass('hidden');
+      }
+    });
+  }
+}
+// funcion para maquetar y poder modificar los resultados
+function maquetaServices(){
+  var html = "";
+  //Maqueta los inputs y los botones para poder maquetar
+  $("#modificatusServices").html('');
+  var con = "";
+  var des = "";
+  var pre = "";
+  var dur = "";
+  $.post('/searchServices', function(data){
+    $.each(data, function( i, item){
+      con = "#conceptModifica"+i;
+      des = "#decriptModifica"+i;
+      pre = "#precModifica"+i;
+      dur = "#durModifica"+i;
+      html += '<tr>';
+        html += '<td>';
+          html += '<center>';
+            html += '<button type="button" onclick="updateServices(\''+con+'\',\''+des+'\',\''+pre+'\',\''+dur+'\')" class="btn btn-success">';
+              html += '<span style="color:white;" class="glyphicon glyphicon-pencil"></span>';
+            html += '</button>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<input type="text" oculto="'+item.id+'" class="form-control" id="conceptModifica'+i+'" value="'+item.concepto+'"/>';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<input type="text" class="form-control" id="decriptModifica'+i+'" value="'+item.descripcion+'"/>';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<input type="text" class="form-control" id="precModifica'+i+'" value="'+item.precio+'"/>';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<select id="durModifica'+i+'">';
+                html += '<option value="'+item.duracion+'">'+item.duracion+'</option>';
+                html += '<option value="00:30:00">30 minutos</option>';
+                html += '<option value="00:45:00">45 minutos</option>';
+                html += '<option value="01:00:00">1 hora</option>';
+                html += '<option value="02:00:00">2 horas</option>';
+                html += '<option value="03:00:00">3 horas</option>';
+              html += '</select>';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+      html += '</tr>';
+    });
+    $("#modificatusServices").append(html);
+  }).fail(function(e){
+    console.log("Error:-"+JSON.stringify(e));
+  });
+}
+function maquetaDeleteServices(){
+  var html = "";
+  $("#deleteServicesTable").html('');
+  $.post('/searchServices', function(data){
+    $.each(data, function( i, item){
+      var tr = "#tr-"+item.id;
+      var delet = item.id;
+      html += '<tr class="">';
+        html += '<td>';
+          html += '<center>';
+            html += '<button onclick="deleteFunction(\'#tr-'+tr+'\',\''+delet+'\');" type="button" class="btn btn-danger">';
+              html += '<span style="color:white;" class="glyphicon glyphicon-remove"></span>';
+            html += '</button>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<input type="text" class="form-control" id="conceptModifica" value="'+item.concepto+'" disabled />';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<input type="text" class="form-control" id="decriptModifica" value="'+item.descripcion+'" disabled />';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<input type="text" class="form-control" id="precModifica" value="'+item.precio+'" disabled />';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<select disabled>';
+                html += '<option value="'+item.duracion+'">'+item.duracion+'</option>';
+              html += '</select>';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+      html += '</tr>';
+    });
+    $("#deleteServicesTable").append(html);
+  }).fail(function(e){
+    console.log("Error:-"+JSON.stringify(e));
+  });
+}
+function deleteFunction(tr, id){
+  //bootbox para confirmar que desea eliminar la seleccion
+  bootbox.confirm('¿Estas seguro de eliminar este servicio?', function(result){
+    if( result == true ){
+      // se manda un post con el id que se desea eliminar
+      $.post('/deleteServicio',{id:id},function(data){
+        $('.eliminaServicios'+tr).remove();
+      }).fail(function(e){
+        $('.eliminaServicios'+tr).remove();
+      });
+    }
+  });
+}
+function updateServices( con, des, pre, dur){
+  var concepto = $(con).val();
+  var descripcion = $(des).val();
+  var precio = $(pre).val();
+  var duracion = $(dur+ " :selected").val();
+  var id = $(con).attr('oculto');
+  $.post('/updateServices',{
+    id: id,
+    concepto: concepto,
+    descripcion: descripcion,
+    precio: precio,
+    duracion: duracion
+  },function(data){
+    if( data == 1 ){
+      $("#exitoModificado").removeClass('hidden');
+    }else{
+      $("#exitoNoModificado").removeClass('hidden');
+    }
+  });
 }

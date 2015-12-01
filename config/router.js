@@ -1396,7 +1396,20 @@ var iniciar = function () {
 
     app.post('/obtenerEstados',function( req, res){
       intermed.callController( 'ubicacion', 'obtieneEstados', req.body, req, res );
-    })
+    });
+    // catalogo de servicios
+    app.post('/addServices', function( req, res ){
+      intermed.callController('catServicios', 'addServices', req, res);
+    });
+    app.post('/searchServices', function( req, res){
+      intermed.callController('catServicios','searchServices',req, res);
+    });
+    app.post('/deleteServicio',function( req, res ){
+      intermed.callController('catServicios','deleteServicio',req, res);
+    });
+    app.post('/updateServices', function( req, res ){
+      intermed.callController('catServicios','updateServices',req, res);
+    });
 }
 
 var io = serv.server( app, 3000 );

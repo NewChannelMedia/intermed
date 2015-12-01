@@ -721,7 +721,7 @@ function catServices(){
             <div class="row">
               <div class="col-md-12">
                 <ul class="nav nav-tabs menuUbicacion" role="tablist">
-                  <li role="presentation" class="active">
+                  <li role="presentation" class="active" id="cargar" onclick="downloadServices('#cargar');">
                     <a data-toggle="tab" aria-control="serv" role="tab" href="#serv">
                       <span style="color:white" class="glyphicon glyphicon-flash">&nbsp;Servicios</span>
                     </a>
@@ -731,12 +731,12 @@ function catServices(){
                       <span style="color:white" class="glyphicon glyphicon-floppy-disk">&nbsp;Agregar Servicios</span>
                     </a>
                   </li>
-                  <li role="presentation" >
+                  <li role="presentation" onclick="maquetaServices();">
                     <a data-toggle="tab" aria-control="modifServ" role="tab" href="#modifServ">
                       <span style="color:white" class="glyphicon glyphicon-floppy-saved">&nbsp;Modifica servicios</span>
                     </a>
                   </li>
-                  <li role="presentation">
+                  <li role="presentation" onclick="maquetaDeleteServices();">
                     <a data-toggle="tab" aria-control="deleteServ" role="tab" href="#deleteServ">
                       <span style="color:white" class="glyphicon glyphicon-floppy-remove">&nbsp;Borra servicios</span>
                     </a>
@@ -744,8 +744,8 @@ function catServices(){
                 </ul>
                 <div class="tab-content" style="color:white">
                   <div role="tabpanel" class="tab-pane active" id="serv">
-                    <h3>Tus servicios</h3>
-                    <table class="table table-hover">
+                    <h3>Tus servicios:</h3>
+                    <table class="table table-condensed">
                       <thead>
                         <td><center>#</center></td>
                         <td><center>Concepto</center></td>
@@ -756,10 +756,14 @@ function catServices(){
                       <tbody id="tusServices">
                       </tbody>
                     </table>
+                    <div class="hidden" id="encontroServicios">
+                      <h2 style="color:red;">No se encontraron servicios</h2>
+                    </div>
                   </div>
+                  <!-- Agregar mas servicios -->
                   <div id="agServ" role="tabpanel" class="tab-pane">
                     <h3>Agrega mas servicios</h3>
-                    <table class="table table-hover">
+                    <table class="table table-condensed">
                       <thead>
                         <td><center>#</center></td>
                         <td><center>Concepto</center></td>
@@ -770,7 +774,7 @@ function catServices(){
                       <tbody id="agregatuServices">
                         <td>
                           <center>
-                            <button type="button" class="btn btn-primary">
+                            <button type="button" onclick="addServices('#conceptServ','#decriptServ','#precServ','#duraServ');" class="btn btn-primary">
                               <span style="color:white;" class="glyphicon glyphicon-plus"></span>
                             </button>
                           </center>
@@ -799,141 +803,66 @@ function catServices(){
                         <td>
                           <center>
                             <div class="form-group">
-                              <input type="text" class="form-control" id="duraServ" />
+                              <select id="duraServ">
+                                <option value="time">--Selecciona--</option>
+                                <option value="00:30:00">30 minutos</option>
+                                <option value="00:45:00">45 minutos</option>
+                                <option value="01:00:00">1 hora</option>
+                                <option value="02:00:00">2 horas</option>
+                                <option value="03:00:00">3 horas</option>
+                              </select>
                             </div>
                           </center>
                         </td>
                       </tbody>
                     </table>
-                    <table class="table table-hover table-condensed">
-                      <thead>
-                        <td><center></center></td>
-                        <td><center></center></td>
-                        <td><center></center></td>
-                        <td><center></center></td>
-                        <td><center></center></td>
-                      </thead>
-                      <tbody id="muestraAgregados">
-                      </tbody>
-                    </table>
+                    <div class="hidden" id="exitoAgregado">
+                      <h2 style="color:green">
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;se ha agregado exitosamente
+                      </h2>
+                    </div>
+                    <div class="hidden" id="exitoNoAgregado">
+                      <h2 style="color:red">
+                        <span class="glyphicon glyphicon-remove"></span>&nbsp;su servicio no se pudo agregado
+                      </h2>
+                    </div>
                   </div>
+                  <!-- modifica -->
                   <div id="modifServ" role="tabpanel" class="tab-pane">
                     <h3>Modifica tus servicios</h3>
-                    <table class="table table-hover">
+                    <table class="table table-condensed">
                       <thead>
-                        <td><center>#</center></td>
+                        <td><center>Modificar</center></td>
                         <td><center>Concepto</center></td>
                         <td><center>Descripcion</center></td>
                         <td><center>Precio</center></td>
                         <td><center>Duracion</center></td>
                       </thead>
                       <tbody id="modificatusServices">
-                        <td>
-                          <center>
-                            <button type="button" class="btn btn-success">
-                              <span style="color:white;" class="glyphicon glyphicon-pencil"></span>
-                            </button>
-                          </center>
-                        </td>
-                        <td>
-                          <center>
-                            <div class="form-group">
-                              <input type="text" class="form-control" id="conceptModifica" />
-                            </div>
-                          </center>
-                        </td>
-                        <td>
-                          <center>
-                            <div class="form-group">
-                              <input type="text" class="form-control" id="decriptModifica" />
-                            </div>
-                          </center>
-                        </td>
-                        <td>
-                          <center>
-                            <div class="form-group">
-                              <input type="text" class="form-control" id="precModifica" />
-                            </div>
-                          </center>
-                        </td>
-                        <td>
-                          <center>
-                            <div class="form-group">
-                              <input type="text" class="form-control" id="duraModifica" />
-                            </div>
-                          </center>
-                        </td>
                       </tbody>
                     </table>
-                    <table class="table table-hover table-condensed">
-                      <thead>
-                        <td><center></center></td>
-                        <td><center></center></td>
-                        <td><center></center></td>
-                        <td><center></center></td>
-                        <td><center></center></td>
-                      </thead>
-                      <tbody id="muestraModificados">
-                      </tbody>
-                    </table>
+                    <div class="hidden" id="exitoModificado">
+                      <h2 style="color:green">
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;se ha modificado exitosamente
+                      </h2>
+                    </div>
+                    <div class="hidden" id="exitoNoModificado">
+                      <h2 style="color:red">
+                        <span class="glyphicon glyphicon-remove"></span>&nbsp;su servicio no Modificado
+                      </h2>
+                    </div>
                   </div>
                   <div id="deleteServ" role="tabpanel" class="tab-pane">
                     <h3>Elimina servicios</h3>
-                    <table class="table table-hover">
+                    <table class="eliminaServicios table table-condensed">
                       <thead>
-                        <td><center>#</center></td>
+                        <td><center>Borrar</center></td>
                         <td><center>Concepto</center></td>
                         <td><center>Descripcion</center></td>
                         <td><center>Precio</center></td>
                         <td><center>Duracion</center></td>
                       </thead>
-                      <tbody id="agregatuServices">
-                        <td>
-                          <center>
-                            <button type="button" class="btn btn-danger">
-                              <span style="color:white;" class="glyphicon glyphicon-remove"></span>
-                            </button>
-                          </center>
-                        </td>
-                        <td>
-                          <center>
-                            <div class="form-group">
-                              <input type="text" class="form-control" id="conceptDelete" />
-                            </div>
-                          </center>
-                        </td>
-                        <td>
-                          <center>
-                            <div class="form-group">
-                              <input type="text" class="form-control" id="decriptDelete" />
-                            </div>
-                          </center>
-                        </td>
-                        <td>
-                          <center>
-                            <div class="form-group">
-                              <input type="text" class="form-control" id="precDelete" />
-                            </div>
-                          </center>
-                        </td>
-                        <td>
-                          <center>
-                            <div class="form-group">
-                              <input type="text" class="form-control" id="duraDelete" />
-                            </div>
-                          </center>
-                        </td>
-                      </tbody>
-                    </table>
-                    <table class="table table-hover table-condensed">
-                      <thead>
-                        <td><center></center></td>
-                        <td><center></center></td>
-                        <td><center></center></td>
-                        <td><center></center></td>
-                        <td><center></center></td>
-                      </thead>
-                      <tbody id="muestraEliminados">
+                      <tbody id="deleteServicesTable">
                       </tbody>
                     </table>
                   </div>
