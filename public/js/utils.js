@@ -2625,7 +2625,7 @@ function sticky_relocate() {
     }
 }
 
-if ( location.pathname === '/nuevoperfilmedicos' ) {
+if ( location.pathname === '/nuevoPerfilMedicos' ) {
 $(function () {
     $(window).scroll(sticky_relocate);
     sticky_relocate();
