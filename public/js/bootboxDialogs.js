@@ -697,3 +697,256 @@ function regMedico(){
     `
   });
 }
+function catServices(){
+  $('.modal-body').css('padding',0);
+    bootbox.dialog({
+      onEscape: function () {
+        bootbox.hideAll();
+    },
+    backdrop: true,
+    size:'large',
+    closeButton:false,
+    message: `
+      <div class="completoService" style="background-color:#172c3b; padding:5px;">
+        <!-- INICIO HEADER -->
+          <div class="modal-header" style="background-color:#172c3b">
+            <button style="color:white" type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 style="color:white">Catalogo de servicios</h4>
+          </div>
+        <!-- FIN HEADER -->
+        <!-- INICIO BODY -->
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-12">
+                <ul class="nav nav-tabs menuUbicacion" role="tablist">
+                  <li role="presentation" class="active">
+                    <a data-toggle="tab" aria-control="serv" role="tab" href="#serv">
+                      <span style="color:white" class="glyphicon glyphicon-flash">&nbsp;Servicios</span>
+                    </a>
+                  </li>
+                  <li role="presentation">
+                    <a data-toggle="tab" aria-control="agServ" role="tab" href="#agServ">
+                      <span style="color:white" class="glyphicon glyphicon-floppy-disk">&nbsp;Agregar Servicios</span>
+                    </a>
+                  </li>
+                  <li role="presentation" >
+                    <a data-toggle="tab" aria-control="modifServ" role="tab" href="#modifServ">
+                      <span style="color:white" class="glyphicon glyphicon-floppy-saved">&nbsp;Modifica servicios</span>
+                    </a>
+                  </li>
+                  <li role="presentation">
+                    <a data-toggle="tab" aria-control="deleteServ" role="tab" href="#deleteServ">
+                      <span style="color:white" class="glyphicon glyphicon-floppy-remove">&nbsp;Borra servicios</span>
+                    </a>
+                  </li>
+                </ul>
+                <div class="tab-content" style="color:white">
+                  <div role="tabpanel" class="tab-pane active" id="serv">
+                    <h3>Tus servicios</h3>
+                    <table class="table table-hover">
+                      <thead>
+                        <td><center>#</center></td>
+                        <td><center>Concepto</center></td>
+                        <td><center>Descripcion</center></td>
+                        <td><center>Precio</center></td>
+                        <td><center>Duracion</center></td>
+                      </thead>
+                      <tbody id="tusServices">
+                      </tbody>
+                    </table>
+                  </div>
+                  <div id="agServ" role="tabpanel" class="tab-pane">
+                    <h3>Agrega mas servicios</h3>
+                    <table class="table table-hover">
+                      <thead>
+                        <td><center>#</center></td>
+                        <td><center>Concepto</center></td>
+                        <td><center>Descripcion</center></td>
+                        <td><center>Precio</center></td>
+                        <td><center>Duracion</center></td>
+                      </thead>
+                      <tbody id="agregatuServices">
+                        <td>
+                          <center>
+                            <button type="button" class="btn btn-primary">
+                              <span style="color:white;" class="glyphicon glyphicon-plus"></span>
+                            </button>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="conceptServ" />
+                            </div>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="decriptServ" />
+                            </div>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="precServ" />
+                            </div>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="duraServ" />
+                            </div>
+                          </center>
+                        </td>
+                      </tbody>
+                    </table>
+                    <table class="table table-hover table-condensed">
+                      <thead>
+                        <td><center></center></td>
+                        <td><center></center></td>
+                        <td><center></center></td>
+                        <td><center></center></td>
+                        <td><center></center></td>
+                      </thead>
+                      <tbody id="muestraAgregados">
+                      </tbody>
+                    </table>
+                  </div>
+                  <div id="modifServ" role="tabpanel" class="tab-pane">
+                    <h3>Modifica tus servicios</h3>
+                    <table class="table table-hover">
+                      <thead>
+                        <td><center>#</center></td>
+                        <td><center>Concepto</center></td>
+                        <td><center>Descripcion</center></td>
+                        <td><center>Precio</center></td>
+                        <td><center>Duracion</center></td>
+                      </thead>
+                      <tbody id="modificatusServices">
+                        <td>
+                          <center>
+                            <button type="button" class="btn btn-success">
+                              <span style="color:white;" class="glyphicon glyphicon-pencil"></span>
+                            </button>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="conceptModifica" />
+                            </div>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="decriptModifica" />
+                            </div>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="precModifica" />
+                            </div>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="duraModifica" />
+                            </div>
+                          </center>
+                        </td>
+                      </tbody>
+                    </table>
+                    <table class="table table-hover table-condensed">
+                      <thead>
+                        <td><center></center></td>
+                        <td><center></center></td>
+                        <td><center></center></td>
+                        <td><center></center></td>
+                        <td><center></center></td>
+                      </thead>
+                      <tbody id="muestraModificados">
+                      </tbody>
+                    </table>
+                  </div>
+                  <div id="deleteServ" role="tabpanel" class="tab-pane">
+                    <h3>Elimina servicios</h3>
+                    <table class="table table-hover">
+                      <thead>
+                        <td><center>#</center></td>
+                        <td><center>Concepto</center></td>
+                        <td><center>Descripcion</center></td>
+                        <td><center>Precio</center></td>
+                        <td><center>Duracion</center></td>
+                      </thead>
+                      <tbody id="agregatuServices">
+                        <td>
+                          <center>
+                            <button type="button" class="btn btn-danger">
+                              <span style="color:white;" class="glyphicon glyphicon-remove"></span>
+                            </button>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="conceptDelete" />
+                            </div>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="decriptDelete" />
+                            </div>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="precDelete" />
+                            </div>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="duraDelete" />
+                            </div>
+                          </center>
+                        </td>
+                      </tbody>
+                    </table>
+                    <table class="table table-hover table-condensed">
+                      <thead>
+                        <td><center></center></td>
+                        <td><center></center></td>
+                        <td><center></center></td>
+                        <td><center></center></td>
+                        <td><center></center></td>
+                      </thead>
+                      <tbody id="muestraEliminados">
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- FIN BODY -->
+        <!-- INICIO FOOTER -->
+          <div class="modal-footer">
+          </div>
+        <!-- FIN FOOTER -->
+      </div>
+    `
+  });
+}

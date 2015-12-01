@@ -2037,12 +2037,16 @@ li.error{
 
 .menuUbicacion{
   padding:0px;
+  width: 100%;
 }
 
 .menuUbicacion li{
   text-align: center;
   font-weight: bold;
-  width:50%;
+  width:1%;
+  display: table-cell;
+  vertical-align: middle;
+  float: none;
   margin:0px;
   border-radius: 0px;
   background-color:#1e6485;

@@ -2744,3 +2744,21 @@ $(document).ready(function(){
     invitarModal();
   });
 });
+/**
+* Funciones para los catalogos de servicios
+* Las siguientes funciones se iran codificando
+* las diferentes funciones para hacer el insert,
+* update, delete, view, de catalogos,
+* seran cuatro diferentes funciones una para cada
+* funcion.
+**/
+
+/**
+* downloadServices funcion que servira solo para
+* cargar todos los catalogos de servicios que esta
+* ofreciendo el medico
+* @param id es el id de el div donde se va a maquetar la informacion
+**/
+function downloadServices(id){
+  
+}
