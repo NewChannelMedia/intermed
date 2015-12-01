@@ -57,24 +57,28 @@ exports.encontrarPorCP = function (object, req, res) {
 };
 
 exports.obtieneLocalidades = function (object, req, res) {
-  models.Localidad.findAll({
-    where:{
-      estado_id:object.estado_id,
-      municipio_ant_id: object.municipio_id
-    },
-    order:['localidad'],
-    attributes:['id','localidad']
-  }).then( function(municipios){
-    res.send({
-        'municipios': municipios
+  models.Municipio.findOne({
+    where: {
+      id: object.municipio_id
+    }
+  }).then(function(municipio){
+    models.Localidad.findAll({
+      where:{
+        estado_id:object.estado_id,
+        municipio_ant_id: municipio.municipio_id
+      },
+      order:['localidad'],
+      attributes:['id','localidad']
+    }).then( function(municipios){
+      res.send({
+          'municipios': municipios
+      });
     });
   });
 };
 
 exports.nuevaUbicacion = function (objects, req, res) {
     var estados;
-
-    console.log('entro');
 
     models.Estado.findAll().then(function (datos) {
         estados = datos;
@@ -108,7 +112,18 @@ exports.nuevaUbicacion = function (objects, req, res) {
 };
 
 exports.registrarUbicacion = function (objects, req, res) {
+  console.log(JSON.stringify(objects.principal));
   if (req.session.passport.user){
+    if (objects.principal == 1){
+      models.Direccion.update({
+        principal:0
+      },{
+        where: {
+          usuario_id: req.session.passport.user.id,
+          principal: 1
+        }
+      });
+    }
     if (objects.idDireccion=='') {
         models.Direccion.create({
             calle: objects.calleUbi,
@@ -137,20 +152,18 @@ exports.registrarUbicacion = function (objects, req, res) {
         });
     } else {
         models.Direccion.update({
-            ubicacionGM: 'object.ubicacionGM',
             calle: objects.calleUbi,
             numero: objects.numeroUbi,
+            numeroInt: objects.numeroIntUbi,
             calle1: objects.calle1Ubi,
             calle2: objects.calle2Ubi,
-            principal: 0,
+            principal: objects.principal,
             nombre: objects.nombreUbi,
-            horarioInicio: 'object.horarioInicio',
-            horarioFin: 'object.horarioFin',
-            dias: 'objects.dias',
-            usuario_id: objects.usuario_id,
-            // institucion_id: '0',
+            usuario_id: req.session.passport.user.id,
+            estado_id: objects.slc_estados,
             localidad_id: objects.slc_colonias,
             municipio_id: objects.slc_ciudades,
+            cp: objects.cpUbi,
             latitud: objects.latitud,
             longitud: objects.longitud
         }, {
@@ -380,11 +393,40 @@ exports.borraDireccion = function(object, req, res) {
 }
 
 exports.obtieneUbicacion = function(object, req, res) {
-  models.Direccion.findOne({
-      where : {id : object.id}
-  }).then(function(datos) {
-        res.send(datos);
-  }).catch(function(err) {
-        res.status(500).json({error: err});
-  });
+  if (req.session.passport.user){
+    var where = {usuario_id : req.session.passport.user.id};
+    var tipo = "findAll";
+    if (object.ubicacion_id && object.ubicacion_id >0){
+      where = {id : object.ubicacion_id};
+      tipo = "findOne";
+    }
+
+    models.Direccion[tipo]({
+        where : where,
+        include: [
+          {
+              model: models.Municipio,
+              attributes: ['id','municipio'],
+              include: [{
+                  model: models.Estado,
+                  attributes: ['id','estado'],
+              }],
+          },
+          {
+              model: models.Localidad,
+              attributes: ['id','localidad','CP'],
+              include: [{
+                  model: models.TipoLocalidad,
+                  attributes: ['tipo'],
+              }],
+          }],
+          order: [['principal','DESC']]
+    }).then(function(datos) {
+          res.send(datos);
+    }).catch(function(err) {
+          res.status(500).json({error: err});
+    });
+  } else {
+        res.status(500).json({error: 0});
+  }
 }

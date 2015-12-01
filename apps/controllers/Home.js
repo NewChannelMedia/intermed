@@ -109,10 +109,12 @@ module.exports = {
                     type: models.sequelize.QueryTypes.SELECT
                   } )
                   .then( function ( localidad ) {
-                    usuario.localidad = {
-                      ciudad: localidad[ 0 ].ciudad,
-                      estado: localidad[ 0 ].estado
-                    };
+                    if (usuario.localidad && localidad[0]){
+                      usuario.localidad = {
+                        ciudad: localidad[ 0 ].ciudad,
+                        estado: localidad[ 0 ].estado
+                      };
+                    }
                     armarPerfil( usuario, req, res );
                   } )
               }
@@ -143,8 +145,7 @@ module.exports = {
 
   //perfil nuevo
   nuevoPerfilMedicos: function ( object, req, res ) {
-    //usuario = object.usuario;
-    usuario = '0000001';
+    usuario = object.usuario;
 
     if ( ( req.session.passport.user && ( !usuario ) ) || ( req.session.passport.user && usuario == req.session.passport.user.usuarioUrl ) ) {
       var tipoUsuario = '';
@@ -154,9 +155,35 @@ module.exports = {
       models.Estado.findAll( {
         attributes: [ 'id', 'estado' ]
       } ).then( function ( estados ) {
-        res.render( 'nuevoPerfilMedicos', {
-          estados: estados
-        } );
+        models.Direccion.findAll({
+            where: {
+                usuario_id: req.session.passport.user.id
+            },
+            order: [['principal','DESC']],
+            attributes: ['id', 'nombre', 'latitud', 'longitud', 'calle', 'numero', 'calle1','calle2','principal'],
+            include: [{
+              model: models.Localidad,
+              attributes: ['localidad','CP'],
+              include: [{
+                  model: models.TipoLocalidad,
+                  attributes: ['tipo'],
+              }],
+              },
+              {
+                  model: models.Municipio,
+                  attributes: ['municipio'],
+                  include: [{
+                      model: models.Estado,
+                      attributes: ['estado'],
+                  }],
+              }],
+              order: [['principal', 'DESC']]
+        }).then(function (direccion) {
+          res.render( tipoUsuario + '/nuevoPerfilMedicos', {
+            estados: estados,
+            usuario:{Direccions: JSON.parse(JSON.stringify(direccion))}
+          } );
+        })
         if ( !usuario ) req.session.passport.user.logueado = "1";
       } );
     }
@@ -182,61 +209,52 @@ module.exports = {
                 }, {
           model: models.Paciente,
           attributes: [ 'id' ]
-                } ]
+                }],
+          logging: console.log
       } ).then( function ( usuario ) {
         if ( usuario ) {
-          usuario = JSON.parse( JSON.stringify( usuario ) );
+          models.Direccion.findAll({
+             where: {usuario_id: usuario.id},
+             order: [['principal', 'DESC']],
+             attributes: ['id', 'nombre', 'latitud', 'longitud', 'calle', 'numero', 'calle1','calle2','principal'],
+             include: [{
+             model: models.Localidad,
+             attributes: ['localidad','CP'],
+             include: [{
+                 model: models.TipoLocalidad,
+                 attributes: ['tipo'],
+             }],
+             },
+             {
+             model: models.Municipio,
+             attributes: ['municipio'],
+             include: [{
+                 model: models.Estado,
+                 attributes: ['estado'],
+             }],
+             }]
+          }).then(function(direccion){
+            usuario = JSON.parse( JSON.stringify( usuario ) );
+            usuario.Direccions = JSON.parse(JSON.stringify(direccion));
 
-          if ( req.session.passport.user && ( usuario.Medico || usuario.Paciente ) ) {
-            if (usuario.Medico){
-              var condiciones = {
-                usuario_id: req.session.passport.user.id,
-                medico_id: usuario.Medico.id
-              };
-            } else {
-              var condiciones = {
-                usuario_id: req.session.passport.user.id,
-                paciente_id: usuario.Paciente.id
-              };
-            }
-            cargarInfoPerfilNuevo( usuario, condiciones, req, res );
-          }
-          else {
-            models.Direccion.findOne( {
-              where: {
-                usuario_id: usuario.id
-              },
-              include: [ {
-                model: models.Municipio,
-                attributes: ['municipio'],
-                include: [ {
-                  model: models.Estado,
-                  attributes: ['estado']
-                            } ]
-                          } ]
-            } ).then( function ( direccion ) {
-              usuario['direccion'] = direccion;
-              /*
-              if ( direccion ) {
-                models.sequelize.query( "SELECT `Localidad`.`CP`, `Localidad`.`localidad`, `TipoLocalidad`.`id` AS 'tipo_id', `TipoLocalidad`.`tipo`, `Ciudad`.`id` AS 'ciudad_id', `Ciudad`.`ciudad`, `Municipio`.`id` AS 'municipio_id', `Municipio`.`municipio`, `Estado`.`id` AS 'estado_id', `Estado`.`estado` FROM `localidades` AS `Localidad`INNER JOIN `tipoLocalidad` AS `TipoLocalidad` ON `TipoLocalidad`.`id` = `Localidad`.`tipo_localidad_id` INNER JOIN `ciudades` AS `Ciudad` ON `Localidad`.`ciudad_id` = `Ciudad`.`id` and `Localidad`.`municipio_id` = `Ciudad`.`municipio_id` and `Localidad`.`estado_id` = `Ciudad`.`estado_id` INNER JOIN `municipios` AS `Municipio` ON `Localidad`.`municipio_id` = `Municipio`.`municipio_id` and `Localidad`.`estado_id` = `Municipio`.`estado_id` INNER JOIN `estados` AS `Estado` ON `Localidad`.`estado_id` = `Estado`.`id` WHERE `Localidad`.`id` = " + direccion.localidad_id + ";", {
-                    type: models.sequelize.QueryTypes.SELECT
-                  } )
-                  .then( function ( localidad ) {
-                    if (localidad.length>0){
-                      usuario.localidad = {
-                        ciudad: localidad[ 0 ].ciudad,
-                        estado: localidad[ 0 ].estado
-                      };
-                    }
-                    armarPerfilNuevo( usuario, req, res );
-                  } )
+            if ( req.session.passport.user && ( usuario.Medico || usuario.Paciente ) ) {
+              if (usuario.Medico){
+                var condiciones = {
+                  usuario_id: req.session.passport.user.id,
+                  medico_id: usuario.Medico.id
+                };
+              } else {
+                var condiciones = {
+                  usuario_id: req.session.passport.user.id,
+                  paciente_id: usuario.Paciente.id
+                };
               }
-              else {
-                armarPerfilNuevo( usuario, req, res );
-              }*/
-                armarPerfilNuevo( usuario, req, res );
-            } );
-          }
+              cargarInfoPerfilNuevo( usuario, condiciones, req, res );
+            }
+            else {
+              armarPerfilNuevo( usuario, req, res );
+            }
+          });
         }
         else {
           res.status( 200 ).send( 'El usuario \'' + object.usuario + '\' no existe.' );
@@ -486,28 +504,7 @@ function cargarInfoPerfilNuevo( usuario, condiciones, req, res ) {
     } else {
       usuario.noAmigos = "1";
     }
-
-    models.Direccion.findOne( {
-      where: {
-        usuario_id: usuario.id
-      }
-    } ).then( function ( direccion ) {
-      if ( direccion ) {
-        models.sequelize.query( "SELECT `Localidad`.`CP`, `Localidad`.`localidad`, `TipoLocalidad`.`id` AS 'tipo_id', `TipoLocalidad`.`tipo`, `Ciudad`.`id` AS 'ciudad_id', `Ciudad`.`ciudad`, `Municipio`.`id` AS 'municipio_id', `Municipio`.`municipio`, `Estado`.`id` AS 'estado_id', `Estado`.`estado` FROM `localidades` AS `Localidad`INNER JOIN `tipoLocalidad` AS `TipoLocalidad` ON `TipoLocalidad`.`id` = `Localidad`.`tipo_localidad_id` INNER JOIN `ciudades` AS `Ciudad` ON `Localidad`.`ciudad_id` = `Ciudad`.`id` and `Localidad`.`municipio_id` = `Ciudad`.`municipio_id` and `Localidad`.`estado_id` = `Ciudad`.`estado_id` INNER JOIN `municipios` AS `Municipio` ON `Localidad`.`municipio_id` = `Municipio`.`municipio_id` and `Localidad`.`estado_id` = `Municipio`.`estado_id` INNER JOIN `estados` AS `Estado` ON `Localidad`.`estado_id` = `Estado`.`id` WHERE `Localidad`.`id` = " + direccion.localidad_id + ";", {
-            type: models.sequelize.QueryTypes.SELECT
-          } )
-          .then( function ( localidad ) {
-            usuario.localidad = {
-              ciudad: localidad[ 0 ].ciudad,
-              estado: localidad[ 0 ].estado
-            };
-            armarPerfilNuevo( usuario, req, res );
-          } )
-      }
-      else {
-        armarPerfilNuevo( usuario, req, res );
-      }
-    } );
+    armarPerfilNuevo( usuario, req, res );
   } );
 }
 
@@ -527,8 +524,7 @@ function armarPerfilNuevo( usuario, req, res ) {
     }
   } ).then( function ( result ) {
     usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
-    console.log('USUARIO::::'+JSON.stringify(usuario));
-    res.render( /*tipoUsuario.toLowerCase() + */'nuevoPerfilMedicos', {
+    res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
       usuario: usuario
     } );
   } )

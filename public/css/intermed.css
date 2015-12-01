@@ -1203,16 +1203,17 @@ footer a:visited {
   background: rgba(0, 0, 0, .5);
   text-align: center;
   margin: 0 auto;
-  height: 35px;
+  height: 40px;
   cursor: pointer;
-  bottom: 10px;
+  padding: 15px;
+  bottom: 4px;
   left: 0;
+  width: 192px;
   right: 0;
 }
 
 .profilePic:hover label {
   display: block;
-  padding: 10px;
 }
 
 .topDrBadge {
@@ -1373,18 +1374,6 @@ footer a:visited {
 .profileBodyNav ul li a {
   border-radius: 0!important;
   border: 0;
-}
-
-#addFavoriteContact {
-  background-color: #50a7dd;
-  border-radius: 20px!important;
-  padding: 5px;
-}
-
-.profileBodyNav ul li a#addFavoriteContact:hover,
-.profileBodyNav ul li a#addFavoriteContact:focus {
-  background-color: #50a7dd;
-  border: 0!important;
 }
 
 .profileBodyNav ul li.active a,
