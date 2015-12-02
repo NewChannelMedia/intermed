@@ -1342,10 +1342,10 @@ var base64file;
 
 $( function () {
   $( '#imageFile' ).change( function () {
-    cambioFotoPerfil();
     base64file = '';
     var tamanio = $( this )[ 0 ].files[ 0 ].size;
     if ( tamanio < 1048576 ) {
+      cambioFotoPerfil();
       $( '#btnCrop' ).hide();
       document.getElementById( "contenedorFoto" ).innerHTML = '<img id="fotoPerfilNueva" >';
       var reader = new FileReader();
@@ -1384,6 +1384,7 @@ function guardarImagenPerfil() {
     cache: false,
     success: function ( data ) {
       if ( data.result === 'success' ) {
+        $( '#CambiarFotoPerfil' ).modal( 'toggle' );
         actualizarSesion();
       }
       else {
