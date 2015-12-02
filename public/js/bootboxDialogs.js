@@ -904,3 +904,96 @@ function cambioFotoPerfil(){
     `
   });
 }
+function editaPerfBoot(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+      bootbox.hideAll();
+  },
+  backdrop: true,
+  size:'large',
+  closeButton:false,
+  message: `
+  <div class="" id="ModificarPerfilModal" name="modificarPerfilModal" style="background-color:#172c3b; padding:5px;">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="col-md-4">
+            <img src="{{fotoPerfil}}" width="200" height="200" class="img-rounded">
+          </div>
+          <div class="col-md-8">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                  <div class="input-group">
+                    <div id="idNombre"></div>
+                    <div id="inputNombre"></div>
+                    <span class="input-group-btn" id="buttonName"></span>
+                  </div>
+               </div>
+                <div class="col-md-4">
+                  <div class="input-group">
+                    <div id="inputApellidoP"></div>
+                    <span class="input-group-btn" id="buttonApellidoP"></span>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="input-group">
+                    <div id="inputApellidoM"></div>
+                    <span class="input-group-btn" id="buttonApellidoM"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- Fin primer container fluid -->
+      <hr>
+      <!-- INICIO SEGUNDO CONTAINER FLUID -->
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-btn"></span>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="col-md-12">
+                  <label style="color:white;">LADA/S:</label>
+                </div>
+                <div class="col-lg-6">
+                  <div class="input-group">
+                    <span class="input-group-btn" id="buttonAddLada"></span>
+                    <div id="addladaTelefono"></div>
+                    <div id="idLada"></div>
+                  </div>
+                </div>
+              </div>
+              <!-- -->
+              <div class="col-md-4">
+                <div class="col-md-12">
+                  <label style="color:white;">Telefono/s:</label>
+                </div>
+                <div class="col-lg-6">
+                  <div class="input-group">
+                    <span class="input-group-btn" id="buttonAddTel"></span>
+                    <div id="addnumeroTelefono"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="col-lg-6">
+                  <div class="input-group">
+                    <span class="input-group-btn" id="buttonLada"></span>
+                    <div id="ladaTelefono"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <!-- FIN SEGUNDO CONTAINER FLUID -->
+  </div><!-- PRINCIPAL -->
+    `
+  });
+}
