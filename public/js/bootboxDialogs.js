@@ -238,12 +238,13 @@ function recomendacionesBoot(){
     onEscape: function () {
         bootbox.hideAll();
     },
+    closeButton:true,
     size:'large',
     message: `
     <div class="clearfix" style="background-color:#172c3b;padding:5px" >
       <div class="col-md-12" style="color:white">
         <div class="hidden" id="cargador"><span class="three-quarters-loader">Enviando...</span></div>
-        <h4 class="modal-title"><span id="nombreOcultoPerfil" class="hidden"></span>Recomendar Dr.<span id="doctorSpan"></span> A:</h4>
+        <h4 class=""><span id="nombreOcultoPerfil" class="hidden"></span>Recomendar Dr.<span id="doctorSpan"></span> A:</h4>
       </div><br /><br /><br />
       <div id=“recomienda” class=“col-md-12”>
          <div class="form-group has-feedback" id="buscador">
@@ -268,8 +269,8 @@ function recomendacionesBoot(){
          </div>
       </div>
       <div class="pull-right">
-        <button type="button" class="btn btn-default" data-dismiss="modal">close</button>
-        <button type="button" id="enviarAtodos" onclick="enviarTodo();" class="btn btn-primary">Recomendar</button>
+        <button type="button" class="btn btn-default" onclick="bootbox.hideAll();">close</button>
+        <button type="button" id="enviarAtodos" onclick="enviarTodo();bootbox.hideAll();" class="btn btn-primary">Recomendar</button>
       </div>
     </div><!— FIN DIV PRINCIPAL —>
     `
@@ -411,15 +412,12 @@ function registro(){
     bootbox.hideAll();
   },
     size:'large',
-    closeButton:false,
+    closeButton:true,
     message: `
       <div id="CatRegModal">
         <form method="" action="">
           <div class="">
             <div class="">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
               <h4>Intermed&reg | Registro</h4>
             </div>
             <div class="">
@@ -468,19 +466,16 @@ function regPaciente(){
     },
   backdrop: true,
     size:'large',
-    closeButton:false,
+    closeButton:true,
     message: `
       <div id="id="RegPacModal"">
-        <div class="modal-dialog modal-lg">
+        <div class="">
           <form method="POST" action="/reg/local" id="frm_regP">
-            <div class="modal-content">
-              <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
+            <div class="">
+              <div class="">
                 <h4 class="FlamaBook-normal s25 regHeader">Intermed&reg / <b>Registro Pacientes</b></h4>
               </div>
-              <div class="modal-body">
+              <div class="">
                 <hr class="separator">
                 <div class="row">
                   <div class="col-md-6 regFacebook">
@@ -615,18 +610,15 @@ function regMedico(){
     },
   backdrop: true,
     size:'large',
-    closeButton:false,
+    closeButton:true,
     message: `
       <div id="RegMedModal">
-        <div class="modal-dialog modal-lg Flama-normal">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
+        <div class="Flama-normal">
+          <div class="">
+            <div class="">
               <h4 class="FlamaBook-normal s25 regHeader">Intermed&reg / <b>Registro Médicos</b> </h4>
             </div>
-            <div class="modal-body">
+            <div class="">
               <hr class="separator">
               <div class="row">
                 <div class="col-md-6 regFacebook">
@@ -689,7 +681,7 @@ function regMedico(){
                 </p>
               </div>
             </div>
-            <div class="modal-footer">
+            <div class="">
             </div>
           </div>
         </div>
@@ -705,19 +697,16 @@ function catServices(){
     },
     backdrop: true,
     size:'large',
-    closeButton:false,
+    closeButton:true,
     message: `
       <div class="completoService" style="background-color:#172c3b; padding:5px;">
         <!-- INICIO HEADER -->
-          <div class="modal-header" style="background-color:#172c3b">
-            <button style="color:white" type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+          <div class="" style="background-color:#172c3b">
             <h4 style="color:white">Catalogo de servicios</h4>
           </div>
         <!-- FIN HEADER -->
         <!-- INICIO BODY -->
-          <div class="modal-body">
+          <div class="">
             <div class="row">
               <div class="col-md-12">
                 <ul class="nav nav-tabs menuUbicacion" role="tablist">
