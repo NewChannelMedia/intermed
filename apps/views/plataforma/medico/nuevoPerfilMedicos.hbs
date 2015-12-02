@@ -107,13 +107,13 @@
       <div id="profile" class="header-profile col-lg-8 col-md-7 col-sm-10 col-xs-12">
         <div class="header-profile-container">
           <div class="header-profile-photo-container col-lg-4 col-md-5 col-sm-5 col-xs-12">
-            <a href="#" class="header-profile-photo-link center-block">
+            <a href="#" class="header-profile-photo-link center-block profilePic">
               {{#if usuario.id}}
                 <img class="header-profile-photo-img" src="{{usuario.urlFotoPerfil}}"  alt="perfil"/>
               {{else}}
                 <img class="header-profile-photo-img" src="{{valSession 'fotoPerfil'}}" id='fotoPerfil'  alt="perfil"/>
                 <label for="imageFile">Cambiar Imagen</label>
-                <input type="file" id="imageFile" style="display:none">
+                <input type="file" id="imageFile" onclick="cambioFotoPerfil();" style="display:none">
               {{/if}}
             </a>
           </div>

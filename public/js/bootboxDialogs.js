@@ -879,3 +879,39 @@ function catServices(){
     `
   });
 }
+function cambioFotoPerfil(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+      bootbox.hideAll();
+    },
+  backdrop: true,
+    size:'large',
+    closeButton:false,
+    message: `
+      <div id="CambiarFotoPerfil">
+          <form>
+            <div class="modal-content">
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="row" style="display: flex;align-items: center;justify-content: center;flex-direction: column;">
+                      <h4 class="modal-title">Selecciona el area a guardar</h4>
+                      <hr/>
+                      <input type="hidden" value="" name="base64file" id="base64file">
+                      <div class="col-md-12" id="contenedorFoto" class="text-center" style="width: auto;margin: auto"></div>
+                      <canvas id="canvas" height="300" width="300" style="display: none"></canvas>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <input type="button" value="Guardar" class="btn btn-primary" id="btnCrop" onclick="guardarImagenPerfil()">
+                <input type="button" value="Cancelar" class="btn btn-danger" data-toggle="modal" data-target="#CambiarFotoPerfil">
+              </div>
+            </div>
+          </form>
+      </div>
+    `
+  });
+}
