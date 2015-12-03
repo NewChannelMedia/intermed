@@ -2958,3 +2958,87 @@ function updateServices( con, des, pre, dur){
     }
   });
 }
+function loadDatosGenerales(){
+  $.post("/loadDatosGenerales",function(data){
+    $("#editMail").attr('value',data.correo);
+    $("#editNom").attr('value',data.DatosGenerale.nombre);
+    $("#editApeP").attr('value',data.DatosGenerale.apellidoP);
+    $("#editApeM").attr('value',data.DatosGenerale.apellidoM);
+  });
+}
+function loadBiometricos(){
+  var html="";
+  $.post('/loadBiometricos',function(data){
+    if( data.length > 0 ){
+      $("#noBiometrico").addClass('hidden');
+      $("#bioBody").html('');
+      $.each(data, function(i, item){
+        html += '<tr style="color:white;">';
+          html += '<td><center>'+item.peso+'</center></td>';
+          html += '<td><center>'+item.altura+'</center></td>';
+          html += '<td><center>'+item.tipoSangre+'</center></td>';
+          html += '<td><center>'+item.genero+'<c/enter></td>';
+          html += '<td>';
+            html += '<center>';
+              html += '<button class="btn btn-danger" type="button" id="bioModi-'+i+'">';
+                html += '<span class="glyphicon glyphicon-wrench"></span>';
+              html += '</button>';
+            html += '</center>';
+          html += '</td>';
+        html += '</tr>';
+      });
+      $("#bioBody").append(html);
+    }else{console.log("entro al else");
+      $("#noBiometrico").removeClass('hidden');
+    }
+  });
+}
+function loadTelefonos(){
+  var html = "";
+  console.log("Entro a la funcion");
+  $.post('/loadTelefonos', function( data ){
+    console.log("DATA: "+JSON.stringify(data));
+    if( data.length > 0 ){
+      console.log("Entro a la condicion if");
+      $("#noTelefono").addClass('hidden');
+      $("#telBody").html('');
+      $.each(data, function(i, item){
+        html += '<tr>';
+          html += '<td>';
+            html += '<center>';
+              html += item.nombre;
+            html += '</center>';
+          html += '</td>';
+          html += '<td>';
+            html += '<center>';
+              html += item.tel;
+            html += '</center>';
+          html += '</td>';
+          if( item.medico == 1 ){
+            html += '<td>';
+              html += '<center>';
+                html += 'Medico';
+              html += '</center>';
+            html += '</td>';
+          }else{
+            html += '<td>';
+              html += '<center>';
+                html += 'Familiar/Conocido';
+              html += '</center>';
+            html += '</td>';
+          }
+          html += '<td>';
+            html += '<center>';
+              html += '<button class="btn btn-danger" type="button" id="deleteTelBio-'+i+'">';
+                html += '<span class="glyphicon glyphicon-remove-sign"></span>';
+              html += '</button>';
+            html += '</center>';
+          html += '</td>';
+        html += '</tr>';
+      });
+      $("#telBody").append(html);
+    }else{console.log("Entro a la condicion else");
+      $("#noTelefono").removeClass('hidden');
+    }
+  });
+}

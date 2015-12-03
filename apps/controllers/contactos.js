@@ -663,5 +663,42 @@ module.exports = {
         }
       }
     }
+  },
+  loadDatosGenerales: function(req, res){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Usuario.findOne({
+        where:{id:usuario_id},
+        attributes:['correo'],
+        include:[{
+          model:models.DatosGenerales,
+          attributes:['nombre','apellidoP','apellidoM']
+        }]
+      }).then(function(usuario){
+        res.send(usuario);
+      });
+    }
+  },
+  loadBiometricos: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Biometrico.findAll({
+        where:{usuario_id:usuario_id},
+        attributes:['peso','altura','tipoSangre','genero']
+      }).then(function(biometricos){
+        res.send(biometricos);
+      });
+    }
+  },
+  loadTelefonos: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.ContactoEmergencia.findAll({
+        where:{usuario_id:usuario_id},
+        attributes:['nombre','tel','medico']
+      }).then(function(contactos){
+        res.send(contactos);
+      });
+    }
   }
 }

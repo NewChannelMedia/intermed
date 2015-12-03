@@ -912,87 +912,157 @@ function editaPerfBoot(){
   },
   backdrop: true,
   size:'large',
-  closeButton:false,
+  closeButton:true,
   message: `
-  <div class="" id="ModificarPerfilModal" name="modificarPerfilModal" style="background-color:#172c3b; padding:5px;">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-md-12">
-          <div class="col-md-4">
-            <img src="{{fotoPerfil}}" width="200" height="200" class="img-rounded">
-          </div>
-          <div class="col-md-8">
-            <div class="col-md-12">
+  <div class="" id="tabPerfilModificar" style="background-color:#172c3b; padding:5px;">
+    <ul class="nav nav-tabs menuBootbox">
+      <li role="presentation" class="active" onclick="loadDatosGenerales();">
+        <a href="#general" aria-control="general" role="tab" data-toggle="tab">
+          <span class="glyphicon glyphicon-th">&nbsp;Generales</span>
+        </a>
+      </li>
+      <li role="presentation" onclick="loadBiometricos();">
+        <a href="#biometricos" aria-control="biometricos" role="tab" data-toggle="tab">
+          <span class="glyphicon glyphicon-heart">&nbsp;Biometricos</span>
+        </a>
+      </li>
+      <li role="presentation" onclick="loadTelefonos();">
+        <a href="#emergencia" aria-control="emergencia" role="tab" data-toggle="tab">
+          <span class="glyphicon glyphicon-plus-sign">&nbsp;Emergencia</span>
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content tabBootBox">
+      <div class="tab-pane active" role="tabpanel" id="general">
+          <div class="container-fluid">
+            <div class="row">
               <div class="col-md-4">
-                  <div class="input-group">
-                    <div id="idNombre"></div>
-                    <div id="inputNombre"></div>
-                    <span class="input-group-btn" id="buttonName"></span>
-                  </div>
-               </div>
-                <div class="col-md-4">
-                  <div class="input-group">
-                    <div id="inputApellidoP"></div>
-                    <span class="input-group-btn" id="buttonApellidoP"></span>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="input-group">
-                    <div id="inputApellidoM"></div>
-                    <span class="input-group-btn" id="buttonApellidoM"></span>
-                  </div>
-                </div>
+                <img src="{{fotoPerfil}}" width="200" height="200" class="img-rounded">
+              </div>
+              <div class="col-lg-8 input-group">
+                <input type="text" class="form-control" id="editNom" placeholder="Nombre" />
+                <span class="input-group-btn">
+                  <button id="nomEdit" class="btn btn-danger" type="button"><span class="glyphicon glyphicon-wrench"></span></button>
+                </span>
+              </div><!-- /.col-lg-6 -->
+              <div class="col-lg-8 input-group">
+                <input type="text" class="form-control" id="editApeP" placeholder="Apelido paterno" />
+                <span class="input-group-btn">
+                  <button id="apePEdit" class="btn btn-danger" type="button"><span class="glyphicon glyphicon-wrench" ></span></button>
+                </span>
+              </div><!-- /.col-lg-6 -->
+              <div class="col-lg-8 input-group">
+                <input type="text" class="form-control" id="editApeM" placeholder="Apellido materno" />
+                <span class="input-group-btn">
+                  <button id="apeMEdit" class="btn btn-danger" type="button"><span class="glyphicon glyphicon-wrench" ></span></button>
+                </span>
+              </div><!-- /.col-lg-6 -->
+              <div class="col-lg-8 input-group">
+                <input type="text" class="form-control" id="editMail" placeholder="E-mail" />
+                <span class="input-group-btn">
+                  <button type="button" id="editMailbutton" class="btn btn-danger"><span class="glyphicon glyphicon-sunglasses"></span></button>
+                </span>
+              </div>
+              <div class="col-lg-8">
+                <hr>
               </div>
             </div>
           </div>
+        <hr>
+        <div class="container-fluid" id="ubicacionGeneral">
+          <h1 style="color:white;">MAPITA DE CINTHIA</h1>
         </div>
-      </div><!-- Fin primer container fluid -->
-      <hr>
-      <!-- INICIO SEGUNDO CONTAINER FLUID -->
+      </div>
+      <div class="tab-pane" role="tabpanel" id="biometricos">
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
-              <div class="col-md-4">
-                <div class="input-group">
-                  <span class="input-group-btn"></span>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="col-md-12">
-                  <label style="color:white;">LADA/S:</label>
-                </div>
-                <div class="col-lg-6">
-                  <div class="input-group">
-                    <span class="input-group-btn" id="buttonAddLada"></span>
-                    <div id="addladaTelefono"></div>
-                    <div id="idLada"></div>
-                  </div>
-                </div>
-              </div>
-              <!-- -->
-              <div class="col-md-4">
-                <div class="col-md-12">
-                  <label style="color:white;">Telefono/s:</label>
-                </div>
-                <div class="col-lg-6">
-                  <div class="input-group">
-                    <span class="input-group-btn" id="buttonAddTel"></span>
-                    <div id="addnumeroTelefono"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="col-lg-6">
-                  <div class="input-group">
-                    <span class="input-group-btn" id="buttonLada"></span>
-                    <div id="ladaTelefono"></div>
-                  </div>
-                </div>
-              </div>
+              <label style="color:white">Biometricos</label>
+            </div>
+            <div class="col-md-12 form-group">
+              <input type="text" class="form-control" id="bioPeso" placeholder="Peso(kg.)" />
+            </div>
+            <div class="col-md-12 form-group">
+              <input type="text" class="form-control" id="bioAltura" placeholder="Altura" />
+            </div>
+            <div class="col-md-12 form-group">
+              <input type="text" class="form-control" id="bioSangre" placeholder="Tipo de sangre" />
+            </div>
+            <div class="col-md-12 form-group">
+              <input type="text" class="form-control" id="bioGenero" placeholder="Genero" />
+            </div>
+            <div class="col-md-12 form-group">
+              <button class="btn btn-danger form-control" id="addBio" type="button">
+                <span class="glyphicon glyphicon-plus">&nbsp;Agregar</span>
+              </button>
             </div>
           </div>
         </div>
-      <!-- FIN SEGUNDO CONTAINER FLUID -->
+        <hr>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12 hidden" id="noBiometrico">
+              <h2 style="color:red;">Aun no ha registrado ningun biometrico</h2>
+            </div>
+            <div class="col-md-12">
+              <table class="table table-condensed">
+                <thead style="color:white;">
+                  <tr>
+                    <th><center><span class="glyphicon glyphicon-scale">&nbsp;Peso</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-resize-vertical">&nbsp;Altura(cm)</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-question-sign">&nbsp;Tipo de sangre</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-user">&nbsp;Genero</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-remove-sign">&nbsp;Eliminar</span></center></ht>
+                  </tr>
+                </thead>
+                <tbody id="bioBody">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane" role="tabpanel" id="emergencia">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-4 form-group">
+              <input type="text" class="form-control" id="bioNombretel" placeholder="Nombre del contacto" />
+            </div>
+            <div class="col-md-4 form-group">
+              <input type="text" class="form-control" id="bioTel" placeholder="Telefono" />
+            </div>
+            <div class="col-md-4 form-group">
+              <button type="button" id="bioTelbutton" class="form-control btn btn-danger">
+                <span class="glyphicon glyphicon-phone-alt">&nbsp;Agregar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="container-fluid hidden" id="noTelefono">
+          <div class="row">
+            <h2 style="color:red">UD. No tiene agregado telefono de emergencia</h2>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-condensed">
+                <thead style="color:white;">
+                  <tr>
+                    <th><center><span class="glyphicon glyphicon-user">&nbsp;Nombre</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-phone-alt">&nbsp;Telefonos</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-user">&nbsp;Es mi medico</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-remove-sign">&nbsp;Eliminar</span></center></th>
+                  </tr>
+                </thead>
+                <tbody id="telBody" style="color:white;"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div><!-- PRINCIPAL -->
     `
   });

@@ -1410,6 +1410,15 @@ var iniciar = function () {
     app.post('/updateServices', function( req, res ){
       intermed.callController('catServicios','updateServices',req, res);
     });
+    app.post('/loadDatosGenerales', function(req, res){
+      intermed.callController('contactos','loadDatosGenerales',req,res);
+    });
+    app.post('/loadBiometricos', function( req, res ){
+      intermed.callController('contactos', 'loadBiometricos', req, res);
+    });
+    app.post('/loadTelefonos', function( req, res ){
+      intermed.callController('contactos', 'loadTelefonos', req, res );
+    });
 }
 
 var io = serv.server( app, 3000 );
