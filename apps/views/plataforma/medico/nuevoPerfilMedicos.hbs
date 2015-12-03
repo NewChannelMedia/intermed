@@ -405,11 +405,12 @@
                             <span>{{calle}}</span>&nbsp;<span>#{{numero}}</span><br>
                             {{Localidad.TipoLocalidad.tipo}} <span>{{Localidad.localidad}}</span><br>
                             <span>{{Municipio.municipio}}</span>, <pan>{{Municipio.Estado.estado}}</pan>. CP: <span>{{Localidad.CP}}</span><br>
+                            {{#if Telefonos}}
                             <br><strong>Teléfonos</strong><br>
-                            <abbr title="Phone">oficina:</abbr> (<span>33</span>) <span>31252200</span><br>
-                            <abbr title="Phone">celular:</abbr> (<span>871</span>) <span>2602226</span><br>
-                            <br><strong>E-mail</strong><br>
-                            <span>jcmedina@newchannel.mx</span><br>
+                            {{#each Telefonos}}
+                            <abbr title="Phone" style="text-transform: capitalize;">{{tipo}}:</abbr> {{#if claveRegion}}(<span>{{claveRegion}}</span>) {{/if}}<span>{{numero}}</span><br>
+                            {{/each}}
+                            {{/if}}
                           </address>
                         </div>
                       </li>

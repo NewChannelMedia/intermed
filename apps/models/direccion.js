@@ -25,6 +25,7 @@ module.exports = function(sequelize, DataTypes) {
         //Direccion.belongsTo(models.Estado)
         Direccion.belongsTo(models.Localidad);
         Direccion.hasMany(models.Horarios);
+        Direccion.hasMany(models.Telefono);
       }
     },
    timestamps: false,

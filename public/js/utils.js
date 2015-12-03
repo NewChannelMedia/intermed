@@ -2065,6 +2065,7 @@ function regUbicacion() {
       $("#frmRegUbi button.borrar").prop('disabled',true);
       $("#frmRegUbi #btnGuardarSalir").removeClass('hidden');
       mapa.marker.setOptions({draggable: true,animation:google.maps.Animation.DROP});
+      funcionesTelefonos();
     } else {
       resultado = regUbiValid(UbicData);
     }
@@ -2092,9 +2093,6 @@ function regUbicacion() {
           }
         });
 
-        console.log('Actualizar telefonos: ' + JSON.stringify(telefonosActualizar));
-        console.log('Nuevos telefonos: ' + JSON.stringify(telefonosNuevos));
-
         UbicData['telefonosActualizar'] = telefonosActualizar;
         UbicData['telefonosNuevos'] = telefonosNuevos;
 
@@ -2111,14 +2109,18 @@ function regUbicacion() {
               $('#btnGuardarSalir').addClass('hidden');
               $('#btnGuardar').val('Editar');
               $('#btnGuardar').parent().parent().addClass('pull-right');
-              if ($('#btnGuardar').val() == "Guardar"){
+              //Telefonos
+              $('#addFon').val('Añadir');
+              $('#tipoTelefono').prop('selectedIndex', 0);
+              $('#tipoTelefono').change();
+
+                $('#btnGuardar').val('Editar');
                 $("#frmRegUbi :input").prop('disabled', true);
                 $('#frmRegUbi :button #addFon').prop('disabled', true);
                 $("#frmRegUbi :button").prop('disabled', false);
                 $("#frmRegUbi #btnGuardarSalir").addClass('hidden');
-                $('#btnGuardar').val('Editar');
                 mapa.marker.setOptions({draggable: false,animation:null});
-              }
+
               cargarTelefonos();
               actualizarDirecciones();
             },
@@ -2827,15 +2829,21 @@ function actualizarDirecciones(){
                     <strong><span>`+ record.nombre +`</span></strong><br>
                     <span>`+ record.calle +`</span>&nbsp;<span>#`+ record.nombre + interior +`</span><br>
                     `+ record.Localidad.TipoLocalidad.tipo +` <span>`+ record.Localidad.localidad +`</span><br>
-                    <span>`+ record.Municipio.municipio +`</span>, <pan>`+ record.Municipio.Estado.estado +`</pan>. CP: <span>`+ record.Localidad.CP +`</span><br>
-                    <br><strong>Teléfonos</strong><br>
-                    <abbr title="Phone">oficina:</abbr> (<span>33</span>) <span>31252200</span><br>
-                    <abbr title="Phone">celular:</abbr> (<span>871</span>) <span>2602226</span><br>
-                    <br><strong>E-mail</strong><br>
-                    <span>jcmedina@newchannel.mx</span><br>
-                  </address>
-                </div>
-              </li>`;
+                    <span>`+ record.Municipio.municipio +`</span>, <pan>`+ record.Municipio.Estado.estado +`</pan>. CP: <span>`+ record.Localidad.CP +`</span><br>`;
+
+            if (record.Telefonos.length > 0){
+              contenido += `<br><strong>Teléfonos</strong><br>`;
+
+              record.Telefonos.forEach(function(tel){
+                var claveRegion = '';
+                if (tel.claveRegion){
+                  claveRegion = '('+ tel.claveRegion +') ';
+                }
+                contenido += `<abbr title="Phone" style="text-transform: capitalize;">`+ tel.tipo +`:</abbr> `+ claveRegion + tel.numero +`<br>`;
+              });
+            }
+
+            contenido += `</address></div></li>`;
             });
         contenido+= '</ul><div class="arrows">';
         var contador = 0;
@@ -3024,17 +3032,24 @@ function eliminarUbicacion(){
     title: "Mensaje de confirmación",
     callback: function(result) {
       if (result){
-        console.log('Eliminar ubicación');
-        actualizarDirecciones();
-        bootbox.hideAll();
-      }
-    },
-    buttons: {
-      confirm: {
-        label: "Si"
-      },
-      cancel: {
-        label: "No"
+          var direccion_id = $('#idDireccion').val();
+          $.ajax( {
+            async: false,
+            url: '/ubicaciones/eliminar',
+            type: 'POST',
+            dataType: "json",
+            data: {idDireccion: direccion_id},
+            cache: false,
+            success: function ( data ) {
+              if (data.success){
+                actualizarDirecciones();
+                bootbox.hideAll();
+              }
+            },
+            error: function (err){
+              console.log('ERROR AJAX: ' + JSON.stringify(err));
+            }
+          });
       }
     }
   });
@@ -3067,6 +3082,12 @@ function cargarTelefonos(){
             default:
                 console.log('El tipo de telefono no existe');
               }
+          var numTel = '';
+          if (telefono.claveRegion && telefono.claveRegion != ""){
+            numTel += telefono.claveRegion + '-' + telefono.numero.replace(' ','-');
+          } else {
+            numTel += telefono.numero.replace(' ','-');
+          }
           $('#divTelefonoAgregado').append(`
             <div class="input-group-btn numeroTelefono">
               <input type="hidden" class="idTelefono" value="`+telefono.id+`">
@@ -3075,7 +3096,7 @@ function cargarTelefonos(){
                 <input type="radio" autocomplete="off">
                 <span class="tipoTelefono hidden">`+telefono.tipo+`</span>
                 <span class="tipoTelefonoIcon"><span class="glyphicon `+ clase +`"></span></span>
-                <span class="numTelefono">`+ telefono.numero +`</span>
+                <span class="numTelefono">`+ numTel +`</span>
                 <span class="extTelefono">`+ telefono.ext +`</span>
               </label>
               <button class="btn btn-sm borrar" disabled="true" onclick="eliminarTelefono(this)">

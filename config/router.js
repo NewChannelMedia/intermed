@@ -1415,6 +1415,10 @@ var iniciar = function () {
     app.post('/telefonos/traer',function (req, res){
       intermed.callController( 'ubicacion', 'obtieneTelefonos', req.body, req, res );
     });
+
+    app.post('/ubicaciones/eliminar', function (req, res){
+      intermed.callController( 'ubicacion', 'eliminaUbicacion', req.body, req, res );
+    });
 }
 
 var io = serv.server( app, 3000 );
