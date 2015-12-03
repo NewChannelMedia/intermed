@@ -2824,7 +2824,7 @@ function actualizarDirecciones(){
                   <span class="long">`+ record.longitud +`</span>
                   <span class="nombre">`+ record.nombre +`</span>
                   <span class="direccion">
-                      <span>`+ record.calle +`</span>&nbsp;<span>#`+ record.nombre + interior +`</span><br>
+                      <span>`+ record.calle +`</span>&nbsp;<span>#`+ record.numero + interior +`</span><br>
                       `+ record.Localidad.TipoLocalidad.tipo +` <span>`+ record.Localidad.localidad +`</span><br>
                       <span>`+ record.Municipio.municipio +`</span>, <pan>`+ record.Municipio.Estado.estado +`</pan>. CP: <span>`+ record.Localidad.CP +`</span>
                   </span>
@@ -2835,7 +2835,7 @@ function actualizarDirecciones(){
                 <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
                   <address class="whiteF Flama-bold">
                     <strong><span>`+ record.nombre +`</span></strong><br>
-                    <span>`+ record.calle +`</span>&nbsp;<span>#`+ record.nombre + interior +`</span><br>
+                    <span>`+ record.calle +`</span>&nbsp;<span>#`+ record.numero + interior +`</span><br>
                     `+ record.Localidad.TipoLocalidad.tipo +` <span>`+ record.Localidad.localidad +`</span><br>
                     <span>`+ record.Municipio.municipio +`</span>, <pan>`+ record.Municipio.Estado.estado +`</pan>. CP: <span>`+ record.Localidad.CP +`</span><br>`;
 
