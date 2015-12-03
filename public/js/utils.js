@@ -2077,18 +2077,26 @@ function regUbicacion() {
         $('#divTelefonoAgregado').find('.numeroTelefono').each(function(){
           if ($(this).find('.idTelefono').val() != "" && parseInt($(this).find('.idTelefono').val())>0){
             //Actualizar telefono
+            var ext = '';
+            if ($(this).find('.extTelefono')){
+              ext = $(this).find('.extTelefono').text();
+            }
             telefonosActualizar.push({
               id: $(this).find('.idTelefono').val(),
               tipo: $(this).find('.tipoTelefono').text(),
               numero: $(this).find('.numTelefono').text(),
-              ext: $(this).find('.extTelefono').text(),
+              ext: ext
             });
           } else {
             //Nuevo telefono
+            var ext = '';
+            if ($(this).find('.extTelefono')){
+              ext = $(this).find('.extTelefono').text();
+            }
             telefonosNuevos.push({
               tipo: $(this).find('.tipoTelefono').text(),
               numero: $(this).find('.numTelefono').text(),
-              ext: $(this).find('.extTelefono').text(),
+              ext: ext,
             });
           }
         });
@@ -2837,9 +2845,9 @@ function actualizarDirecciones(){
               record.Telefonos.forEach(function(tel){
                 var claveRegion = '';
                 if (tel.claveRegion){
-                  claveRegion = '('+ tel.claveRegion +') ';
+                  claveRegion = tel.claveRegion +' ';
                 }
-                contenido += `<abbr title="Phone" style="text-transform: capitalize;">`+ tel.tipo +`:</abbr> `+ claveRegion + tel.numero +`<br>`;
+                contenido += `<abbr title="Phone" style="text-transform: capitalize;">`+ tel.tipo +`:</abbr> `+ claveRegion + tel.numero + ' ' +  tel.ext +`<br>`;
               });
             }
 
@@ -2881,11 +2889,9 @@ function funcionesTelefonos(){
       switch($('#tipoTelefono').val()) {
       case "celular":
           $('#divTelefono').html('<div class="form-group"><input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" maxlength="12" onpaste="soloNumeros()" ></div>');
-            $('#numTelefono').mask('000-000-0000',{reverse:true});
           break;
       case "oficina":
           $('#divTelefono').html('<div class="col-md-8"><div class="row" style="margin-right:2px;"><div class="form-group"><input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" maxlength="12" onpaste="soloNumeros()" ></div></div></div><div class="col-md-4"><div class="row"><div class="form-group"><input type="text" id="extTelefono" class="form-control solo-numero" placeholder="Ext:" maxlength="10" onpaste="soloNumeros()" ></div></div></div>');
-          $('#numTelefono').mask('000-000-0000',{reverse:true});
           break;
       case "localizador":
         $('#divTelefono').html('<div class="col-md-7"><div class="row" style="margin-right:2px;"><div class="form-group"><input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" maxlength="10" onpaste="soloNumeros()" ></div></div></div><div class="col-md-5"><div class="row"><div class="form-group"><input type="text" id="extTelefono" class="form-control solo-numero" placeholder="Localizador:" maxlength="10" onpaste="soloNumeros()" ></div></div></div>');
@@ -2893,6 +2899,7 @@ function funcionesTelefonos(){
       default:
           console.log('El tipo de telefono no existe');
         }
+      $('#numTelefono').mask('000-000-0000',{reverse:true});
     }
   });
 

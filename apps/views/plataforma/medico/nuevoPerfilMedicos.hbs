@@ -408,7 +408,7 @@
                             {{#if Telefonos}}
                             <br><strong>Teléfonos</strong><br>
                             {{#each Telefonos}}
-                            <abbr title="Phone" style="text-transform: capitalize;">{{tipo}}:</abbr> {{#if claveRegion}}(<span>{{claveRegion}}</span>) {{/if}}<span>{{numero}}</span><br>
+                            <abbr title="Phone" style="text-transform: capitalize;">{{tipo}}:</abbr><span> {{claveRegion}}</span> <span>{{numero}}</span> <span>{{ext}}</span><br>
                             {{/each}}
                             {{/if}}
                           </address>
