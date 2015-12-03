@@ -942,29 +942,31 @@ function editaPerfBoot(){
               <div class="col-lg-8 input-group">
                 <input type="text" class="form-control" id="editNom" placeholder="Nombre" />
                 <span class="input-group-btn">
-                  <button id="nomEdit" class="btn btn-danger" type="button"><span class="glyphicon glyphicon-wrench"></span></button>
+                  <button id="nomEdit" class="btn btn-danger" onclick="updateName();"type="button"><span class="glyphicon glyphicon-wrench"></span></button>
                 </span>
               </div><!-- /.col-lg-6 -->
               <div class="col-lg-8 input-group">
                 <input type="text" class="form-control" id="editApeP" placeholder="Apelido paterno" />
                 <span class="input-group-btn">
-                  <button id="apePEdit" class="btn btn-danger" type="button"><span class="glyphicon glyphicon-wrench" ></span></button>
+                  <button id="apePEdit" class="btn btn-danger" onclick="updateApellidoP();" type="button"><span class="glyphicon glyphicon-wrench" ></span></button>
                 </span>
               </div><!-- /.col-lg-6 -->
               <div class="col-lg-8 input-group">
                 <input type="text" class="form-control" id="editApeM" placeholder="Apellido materno" />
                 <span class="input-group-btn">
-                  <button id="apeMEdit" class="btn btn-danger" type="button"><span class="glyphicon glyphicon-wrench" ></span></button>
+                  <button id="apeMEdit" class="btn btn-danger" onclick="updateApellidoM();" type="button"><span class="glyphicon glyphicon-wrench" ></span></button>
                 </span>
               </div><!-- /.col-lg-6 -->
               <div class="col-lg-8 input-group">
                 <input type="text" class="form-control" id="editMail" placeholder="E-mail" />
                 <span class="input-group-btn">
-                  <button type="button" id="editMailbutton" class="btn btn-danger"><span class="glyphicon glyphicon-sunglasses"></span></button>
+                  <button type="button" id="editMailbutton" onclick="updateMail();" class="btn btn-danger"><span class="glyphicon glyphicon-sunglasses"></span></button>
                 </span>
               </div>
               <div class="col-lg-8">
                 <hr>
+                <h4 style="color:white" class="hidden" id="infoGeneral">Información actualizada</h4>
+                <h3 style="color:white" class="hidden" id="cambiandoGenerales"></h3>
               </div>
             </div>
           </div>

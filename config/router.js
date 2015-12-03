@@ -1419,6 +1419,18 @@ var iniciar = function () {
     app.post('/loadTelefonos', function( req, res ){
       intermed.callController('contactos', 'loadTelefonos', req, res );
     });
+    app.post('/updateName', function( req, res ){
+      intermed.callController('contactos','updateName', req, res);
+    });
+    app.post('/updateApellidoP', function( req, res ){
+      intermed.callController('contactos','updateApellidoP', req, res);
+    });
+    app.post('/updateApellidoM', function( req, res ){
+      intermed.callController('contactos','updateApellidoM', req, res);
+    });
+    app.post('/updateMail', function( req, res ){
+      intermed.callController('contactos','updateMail', req, res);
+    });
 }
 
 var io = serv.server( app, 3000 );

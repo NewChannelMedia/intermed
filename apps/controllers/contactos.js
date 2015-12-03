@@ -700,5 +700,49 @@ module.exports = {
         res.send(contactos);
       });
     }
+  },
+  updateName: function(req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      var obj = {nombre:req.body.nombre};
+      models.DatosGenerales.update(obj, {
+        where:{usuario_id:usuario_id}
+      }).then(function(actualizado){
+        res.send(actualizado);
+      });
+    }
+  },
+  updateApellidoP: function(req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      var obj = {apellidoP:req.body.nombre};
+      models.DatosGenerales.update(obj, {
+        where:{usuario_id:usuario_id}
+      }).then(function(actualizado){
+        res.send(actualizado);
+      });
+    }
+  },
+  updateApellidoM: function(req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      var obj = {apellidoM:req.body.nombre};
+      models.DatosGenerales.update(obj, {
+        where:{usuario_id:usuario_id}
+      }).then(function(actualizado){
+        res.send(actualizado);
+      });
+    }
+  },
+  updateMail: function(req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      var obj = {correo:req.body.mail};
+      models.Usuario.update(obj,{
+        where:{id:usuario_id}
+      }).then(function(usuario){
+        res.send(usuario);
+      });
+    }
   }
 }

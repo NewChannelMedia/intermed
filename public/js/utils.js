@@ -2995,9 +2995,7 @@ function loadBiometricos(){
 }
 function loadTelefonos(){
   var html = "";
-  console.log("Entro a la funcion");
   $.post('/loadTelefonos', function( data ){
-    console.log("DATA: "+JSON.stringify(data));
     if( data.length > 0 ){
       console.log("Entro a la condicion if");
       $("#noTelefono").addClass('hidden');
@@ -3037,8 +3035,67 @@ function loadTelefonos(){
         html += '</tr>';
       });
       $("#telBody").append(html);
-    }else{console.log("Entro a la condicion else");
+    }else{
       $("#noTelefono").removeClass('hidden');
     }
   });
+}
+function updateName(){
+  var nombre = $("#editNom").val();
+  $.post('/updateName',{nombre:nombre},function(data){
+    if( data.length > 0 ){
+      $("#infoGeneral").removeClass('hidden');
+      $("#cambiandoGenerales").removeClass('hidden');
+      $("#cambiandoGenerales").text('Nombre: '+nombre);
+    }else{
+      $("#infoGeneral").addClass('hidden');
+      $("#cambiandoGenerales").addClass('hidden');
+    }
+  });
+}
+function updateApellidoP(){
+  var apellidoP = $("#editApeP").val();
+  $.post('/updateApellidoP',{nombre:apellidoP},function(data){
+    if( data.length > 0 ){
+      $("#infoGeneral").removeClass('hidden');
+      $("#cambiandoGenerales").removeClass('hidden');
+      $("#cambiandoGenerales").text('Apellido paterno: '+apellidoP);
+    }else{
+      $("#infoGeneral").addClass('hidden');
+      $("#cambiandoGenerales").addClass('hidden');
+    }
+  });
+}
+function updateApellidoM(){
+  var apellidoM = $("#editApeM").val();
+  $.post('/updateApellidoP',{nombre:apellidoM},function(data){
+    if( data.length > 0 ){
+      $("#infoGeneral").removeClass('hidden');
+      $("#cambiandoGenerales").removeClass('hidden');
+      $("#cambiandoGenerales").text('Apellido materno: '+apellidoM);
+    }else{
+      $("#infoGeneral").addClass('hidden');
+      $("#cambiandoGenerales").addClass('hidden');
+    }
+  });
+}
+function updateMail(){
+  var mail = $("#editMail").val();
+  $.post('/updateApellidoP',{mail:mail},function(data){
+    if( data.length > 0 ){
+      $("#infoGeneral").removeClass('hidden');
+      $("#cambiandoGenerales").removeClass('hidden');
+      $("#cambiandoGenerales").text('Apellido materno: '+mail);
+    }else{
+      $("#infoGeneral").addClass('hidden');
+      $("#cambiandoGenerales").addClass('hidden');
+    }
+  });
+}
+function addBio(){
+  var peso = $("#bioPeso").val();
+  var altura = $("#bioAltura").val();
+  var tipoS = $("#bioSangre").val();
+  var genero = $("#bioGenero").val();
+
 }
