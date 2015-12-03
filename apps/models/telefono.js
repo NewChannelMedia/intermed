@@ -11,25 +11,27 @@ module.exports = function ( sequelize, DataTypes ) {
       type: DataTypes.STRING,
       required: true
     },
-    numero: {
-      type: DataTypes.STRING,
-      required: true
+    lada: {
+      type: DataTypes.INTEGER
     },
     claveRegion: {
       type: DataTypes.INTEGER
     },
-    lada: {
-      type: DataTypes.INTEGER
+    numero: {
+      type: DataTypes.STRING,
+      required: true
     },
-    usuario_id: {
+    ext: {
+      type: DataTypes.STRING
+    },
+    direccion_id: {
       type: DataTypes.BIGINT,
-      allowNull: false,
-      unique: true
+      allowNull: false
     }
   }, {
     classMethods: {
       associate: function ( models ) {
-        Telefono.belongsTo( models.Usuario, {
+        Telefono.belongsTo( models.Direccion, {
           onDelete: "CASCADE",
           foreignKey: {
             allowNull: false

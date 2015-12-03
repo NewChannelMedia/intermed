@@ -366,7 +366,11 @@
                     <h2 class="h67-medium s20 uppercase whiteF">Ubicaciones y contacto</h2>
                   </div>
                   <div class="col-md-3 pull-right text-right" style="margin-top:20px" >
-                    <button class="btn btn-primary btn-xs" id="btnEditaUbi"><span class="glyphicon glyphicon-pencil"></span></button>
+                    <span id="editUbi">
+                    {{#if usuario.Direccions}}
+                      <button class="btn btn-primary btn-xs" id="btnEditaUbi"><span class="glyphicon glyphicon-pencil"></span></button>
+                    {{/if}}
+                    </span>
                     <button class="btn btn-primary btn-xs" id="btnAgregaUbi"><span class="glyphicon glyphicon-plus-sign"></span></button>
                   </div>
                 {{/if}}

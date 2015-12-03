@@ -164,18 +164,18 @@ function informacionRegistroMedico() {
       $( "#step3" ).hide();
       var continuar = true;
       //PASO 1 de 3 (falta fecha de nacimiento)
-      if ( data.DatosGenerale ) {
+      if ( data.DatosGenerale && document.getElementById( 'nombreRegMed' )) {
         document.getElementById( 'nombreRegMed' ).value = data.DatosGenerale.nombre;
         document.getElementById( 'apePatRegMed' ).value = data.DatosGenerale.apellidoP;
         document.getElementById( 'apeMatRegMed' ).value = data.DatosGenerale.apellidoM;
       }
       else continuar = false;
       if ( data.Biometrico ) {
-        if ( data.Biometrico.genero == "F" ) document.getElementById( "sexF" ).checked = true;
-        else if ( data.Biometrico.genero == "M" ) document.getElementById( "sexM" ).checked = true;
+        if ( data.Biometrico.genero == "F" && document.getElementById( "sexF" )) document.getElementById( "sexF" ).checked = true;
+        else if ( data.Biometrico.genero == "M" && document.getElementById( "sexM" )) document.getElementById( "sexM" ).checked = true;
       }
       else continuar = false;
-      if ( data.Medico && data.Medico.curp) {
+      if ( data.Medico && data.Medico.curp && document.getElementById( 'curpRegMed' )) {
         document.getElementById( 'curpRegMed' ).value = data.Medico.curp;
         document.getElementById( 'cedulaRegMed' ).value = data.Medico.cedula;
       }
@@ -196,7 +196,7 @@ function informacionRegistroMedico() {
         goToNextStep( i++ );
       }
 
-      if ( data.DatosFacturacion ) {
+      if ( data.DatosFacturacion && document.getElementById( 'nomRSocialFact' )) {
         document.getElementById( 'nomRSocialFact' ).value = data.DatosFacturacion.razonSocial;
         document.getElementById( 'rfcFact' ).value = data.DatosFacturacion.RFC;
         if ( data.DatosFacturacion.Direccion ) {
@@ -2057,9 +2057,12 @@ function regUbicacion() {
 
     var resultado = {};
     if ($('#btnGuardar').val() == "Editar"){
+      $('#btnEliminar').addClass('hidden');
+      $('#btnGuardar').parent().parent().removeClass('pull-right');
       resultado.valido = false;
       $('#btnGuardar').val('Guardar');
       $("#frmRegUbi :input").prop('disabled', false);
+      $("#frmRegUbi button.borrar").prop('disabled',true);
       $("#frmRegUbi #btnGuardarSalir").removeClass('hidden');
       mapa.marker.setOptions({draggable: true,animation:google.maps.Animation.DROP});
     } else {
@@ -2067,6 +2070,34 @@ function regUbicacion() {
     }
 
     if (resultado.valido) {
+        var telefonosNuevos = [];
+        var telefonosActualizar = [];
+
+        $('#divTelefonoAgregado').find('.numeroTelefono').each(function(){
+          if ($(this).find('.idTelefono').val() != "" && parseInt($(this).find('.idTelefono').val())>0){
+            //Actualizar telefono
+            telefonosActualizar.push({
+              id: $(this).find('.idTelefono').val(),
+              tipo: $(this).find('.tipoTelefono').text(),
+              numero: $(this).find('.numTelefono').text(),
+              ext: $(this).find('.extTelefono').text(),
+            });
+          } else {
+            //Nuevo telefono
+            telefonosNuevos.push({
+              tipo: $(this).find('.tipoTelefono').text(),
+              numero: $(this).find('.numTelefono').text(),
+              ext: $(this).find('.extTelefono').text(),
+            });
+          }
+        });
+
+        console.log('Actualizar telefonos: ' + JSON.stringify(telefonosActualizar));
+        console.log('Nuevos telefonos: ' + JSON.stringify(telefonosNuevos));
+
+        UbicData['telefonosActualizar'] = telefonosActualizar;
+        UbicData['telefonosNuevos'] = telefonosNuevos;
+
         $.ajax({
             url: '/registrarubicacion',
             type: 'POST',
@@ -2075,6 +2106,11 @@ function regUbicacion() {
             data: UbicData,
             type: 'POST',
             success: function (data) {
+              $('#idDireccion').val(data.ubicacion_id);
+              $('#btnEliminar').removeClass('hidden');
+              $('#btnGuardarSalir').addClass('hidden');
+              $('#btnGuardar').val('Editar');
+              $('#btnGuardar').parent().parent().addClass('pull-right');
               if ($('#btnGuardar').val() == "Guardar"){
                 $("#frmRegUbi :input").prop('disabled', true);
                 $('#frmRegUbi :button #addFon').prop('disabled', true);
@@ -2082,14 +2118,9 @@ function regUbicacion() {
                 $("#frmRegUbi #btnGuardarSalir").addClass('hidden');
                 $('#btnGuardar').val('Editar');
                 mapa.marker.setOptions({draggable: false,animation:null});
-                actualizarDirecciones();
-              } else {
-                actualizarDirecciones();
-                $("#frmRegUbi").find('input select').val('');
-                obtenerCiudades();
-                //Reiniciar mapa
-                mapa.GeolicalizacionUsuario();
               }
+              cargarTelefonos();
+              actualizarDirecciones();
             },
             error: function (err) {
                 console.error('AJAX ERROR: (registro 166) : ' + JSON.stringify(err));
@@ -2737,6 +2768,7 @@ $(function(){
 
   $('#btnEditaUbi').on('click',function(){
     var ubicacion_id = $('.csslider > input:checked').prop('value');
+    console.log('UBI: ' + ubicacion_id);
     agregarUbicacion(ubicacion_id);
   });
 });
@@ -2754,6 +2786,9 @@ function actualizarDirecciones(){
     cache: false,
     success: function ( data ) {
       if (data){
+        if (data.length> 0 && $('#editUbi').html() != ""){
+          $('#editUbi').html('<button class="btn btn-primary btn-xs" id="btnEditaUbi"><span class="glyphicon glyphicon-pencil"></span></button>');
+        }
         var contenido = '';
         var contador = 0;
         data.forEach(function(record){
@@ -2816,10 +2851,244 @@ function actualizarDirecciones(){
         contenido+= '</div></div></div>';
         $('#slider1').html(contenido);
         MostrarUbicaciones();
+
+        $('#btnEditaUbi').on('click',function(){
+          var ubicacion_id = $('.csslider > input:checked').prop('value');
+          console.log('UBI: ' + ubicacion_id);
+          agregarUbicacion(ubicacion_id);
+        });
       }
     },
     error: function ( jqXHR, textStatus, err ) {
       console.error( 'AJAX ERROR: ' + err );
     }
   } );
+}
+
+
+function funcionesTelefonos(){
+  $('#tipoTelefono').unbind();
+  $('#tipoTelefono').change(function(){
+    if ($('#divTelefono')){
+      switch($('#tipoTelefono').val()) {
+      case "celular":
+          $('#divTelefono').html('<div class="form-group"><input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" maxlength="12" onpaste="soloNumeros()" ></div>');
+            $('#numTelefono').mask('000-000-0000',{reverse:true});
+          break;
+      case "oficina":
+          $('#divTelefono').html('<div class="col-md-8"><div class="row" style="margin-right:2px;"><div class="form-group"><input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" maxlength="12" onpaste="soloNumeros()" ></div></div></div><div class="col-md-4"><div class="row"><div class="form-group"><input type="text" id="extTelefono" class="form-control solo-numero" placeholder="Ext:" maxlength="10" onpaste="soloNumeros()" ></div></div></div>');
+          $('#numTelefono').mask('000-000-0000',{reverse:true});
+          break;
+      case "localizador":
+        $('#divTelefono').html('<div class="col-md-7"><div class="row" style="margin-right:2px;"><div class="form-group"><input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" maxlength="10" onpaste="soloNumeros()" ></div></div></div><div class="col-md-5"><div class="row"><div class="form-group"><input type="text" id="extTelefono" class="form-control solo-numero" placeholder="Localizador:" maxlength="10" onpaste="soloNumeros()" ></div></div></div>');
+        break;
+      default:
+          console.log('El tipo de telefono no existe');
+        }
+    }
+  });
+
+  $('#addFon').unbind();
+  $('#addFon').click(function(){
+    var clase = '';
+    switch($('#tipoTelefono').val()) {
+    case "celular":
+        clase = 'glyphicon-phone';
+        break;
+    case "oficina":
+        clase = 'glyphicon-phone-alt';
+        break;
+    case "localizador":
+        clase = 'glyphicon-bell';
+        break;
+    default:
+        console.log('El tipo de telefono no existe');
+      }
+    if ($('#addFon').val() == "Guardar"){
+      var parent = $('#divTelefonoAgregado').find('.editando').parent();
+        parent.find('.tipoTelefono').text($('#tipoTelefono').val());
+        parent.find('.tipoTelefonoIcon').html("<span class='glyphicon "+clase+"'></span>");
+        parent.find('.numTelefono').text($('#numTelefono').val());
+        var ext = '';
+        if ($('#extTelefono')) ext = $('#extTelefono').val();
+        parent.find('.extTelefono').text(ext);
+        parent.find('.editando').removeClass('editando');
+        parent.find('.borrar').prop('disabled',true);
+        $('#tipoTelefono').prop('selectedIndex', 0);
+        $('#tipoTelefono').change();
+        $('#addFon').val('Añadir');
+    } else {
+      var idTemp = 0;
+      $('#divTelefonoAgregado').find('.idTempTelefono').each(function(){
+        idTemp = parseInt($(this).val());
+      });
+      idTemp++;
+      var ext = '';
+      if ($('#extTelefono') && $('#extTelefono').val()) ext = $('#extTelefono').val();
+      $('#divTelefonoAgregado').append(`
+        <div class="input-group-btn numeroTelefono">
+          <input type="hidden" class="idTelefono" value="">
+          <input type="hidden" class="idTempTelefono" value="`+idTemp+`">
+          <label class="btn btn-sm editar btnChk">
+            <input type="radio" autocomplete="off">
+            <span class="tipoTelefono hidden">`+$('#tipoTelefono').val()+`</span>
+            <span class="tipoTelefonoIcon"><span class="glyphicon `+ clase +`"></span></span>
+            <span class="numTelefono">`+ $('#numTelefono').val() +`</span>
+            <span class="extTelefono">`+ ext +`</span>
+          </label>
+          <button class="btn btn-sm borrar" disabled="true" onclick="eliminarTelefono(this)">
+            <span class="glyphicon glyphicon-remove"></span>
+          </button>
+        </div>`
+      );
+      funcionesTelefonos();
+      $('#tipoTelefono').prop('selectedIndex', 0);
+      $('#tipoTelefono').change();
+    }
+  });
+
+  $('label.editar').unbind();
+  $('label.editar').click(function(){
+    if ($('#btnGuardar').val() != "Editar"){
+      if ($(this).hasClass('editando')){
+        $(this).removeClass('editando');
+        $(this).parent().find('.borrar').prop('disabled',true);
+        $('#addFon').val('Añadir');
+        $('#tipoTelefono').prop('selectedIndex', 0);
+        $('#tipoTelefono').change();
+      } else {
+        $('.editando').each(function(){
+          $(this).removeClass('editando');
+          $(this).parent().find('.borrar').prop('disabled',true);
+        });
+        $(this).addClass('editando');
+        $('#addFon').val('Guardar');
+        $('#tipoTelefono').val($(this).parent().find('.tipoTelefono').text());
+        $('#tipoTelefono').change();
+        $('#numTelefono').val($(this).find('.numTelefono').text());
+        $('#extTelefono').val($(this).find('.extTelefono').text());
+        $(this).parent().find('.borrar').prop('disabled',false);
+      }
+    }
+  });
+
+
+  $('.solo-numero').unbind();
+  $('.solo-numero').bind("paste", function(e){
+    // access the clipboard using the api
+    var pastedData = e.originalEvent.clipboardData.getData('text');
+    if (!parseInt(pastedData)){
+      if (e.preventDefault) {
+          e.preventDefault();
+      } else {
+          e.returnValue = false;
+      }
+    }
+  } );
+
+   $('.solo-numero').keypress(function(evt) {
+    var charCode = evt.keyCode || evt.which;
+    if ((charCode < 45 || charCode > 57) &&  charCode != 13) {
+        if (evt.preventDefault) {
+            evt.preventDefault();
+        } else {
+            evt.returnValue = false;
+        }
+    }
+  });
+}
+
+function eliminarTelefono(element){
+  bootbox.confirm({
+    message: "¿Desea eliminar el teléfono?.",
+    title: "Mensaje de confirmación",
+    callback: function(result) {
+      if (result){
+        $(element).parent().remove();
+      }
+    },
+    buttons: {
+      confirm: {
+        label: "Si"
+      },
+      cancel: {
+        label: "No"
+      }
+    }
+  });
+}
+
+function eliminarUbicacion(){
+  bootbox.confirm({
+    message: "¿Desea eliminar la dirección?.<br/><br/>*** Esta acción eliminara los telefonos,horarios y citas vinculados con la ubicación.",
+    title: "Mensaje de confirmación",
+    callback: function(result) {
+      if (result){
+        console.log('Eliminar ubicación');
+        actualizarDirecciones();
+        bootbox.hideAll();
+      }
+    },
+    buttons: {
+      confirm: {
+        label: "Si"
+      },
+      cancel: {
+        label: "No"
+      }
+    }
+  });
+}
+
+function cargarTelefonos(){
+  var direccion_id = $('#idDireccion').val();
+  $('#divTelefonoAgregado').html('');
+  if (direccion_id){
+    $.ajax( {
+      async: false,
+      url: '/telefonos/traer',
+      type: 'POST',
+      dataType: "json",
+      data: {direccion_id: direccion_id},
+      cache: false,
+      success: function ( data ) {
+        data.forEach(function(telefono){
+            var clase = '';
+            switch(telefono.tipo) {
+            case "celular":
+                clase = 'glyphicon-phone';
+                break;
+            case "oficina":
+                clase = 'glyphicon-phone-alt';
+                break;
+            case "localizador":
+                clase = 'glyphicon-bell';
+                break;
+            default:
+                console.log('El tipo de telefono no existe');
+              }
+          $('#divTelefonoAgregado').append(`
+            <div class="input-group-btn numeroTelefono">
+              <input type="hidden" class="idTelefono" value="`+telefono.id+`">
+              <input type="hidden" class="idTempTelefono" value="">
+              <label class="btn btn-sm editar btnChk">
+                <input type="radio" autocomplete="off">
+                <span class="tipoTelefono hidden">`+telefono.tipo+`</span>
+                <span class="tipoTelefonoIcon"><span class="glyphicon `+ clase +`"></span></span>
+                <span class="numTelefono">`+ telefono.numero +`</span>
+                <span class="extTelefono">`+ telefono.ext +`</span>
+              </label>
+              <button class="btn btn-sm borrar" disabled="true" onclick="eliminarTelefono(this)">
+                <span class="glyphicon glyphicon-remove"></span>
+              </button>
+            </div>`
+          );
+        });
+        funcionesTelefonos();
+      },
+      error: function (err){
+        console.log('ERROR AJAX: ' + JSON.stringify(err));
+      }
+    });
+  }
 }

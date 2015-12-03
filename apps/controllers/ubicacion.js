@@ -15,8 +15,12 @@ exports.mostrar = function (req, res) {
     });
 };
 
-exports.ObtieneTelefonos = function (req, res) {
-    models.Telefono.findAll().then(function (datos) {
+exports.obtieneTelefonos = function (object,req, res) {
+    models.Telefono.findAll({
+      where: {
+        direccion_id: object.direccion_id
+      }
+    }).then(function (datos) {
         res.send(datos);
     });
 };
@@ -125,6 +129,7 @@ exports.registrarUbicacion = function (objects, req, res) {
       });
     }
     if (objects.idDireccion=='') {
+        console.log('Crear ubicación');
         models.Direccion.create({
             calle: objects.calleUbi,
             numero: objects.numeroUbi,
@@ -141,16 +146,28 @@ exports.registrarUbicacion = function (objects, req, res) {
             latitud: objects.latitud,
             longitud: objects.longitud
         }).then(function (datos) {
+            if (datos){
+              console.log('NUEVOS: ' + JSON.stringify(objects.telefonosNuevos));
+              if (objects.telefonosNuevos){
+                objects.telefonosNuevos.forEach(function(record){
+                  models.Telefono.create({
+                    tipo:record.tipo,
+                    numero:record.numero,
+                    ext:record.ext,
+                    direccion_id: datos.id
+                  }).then(function(tel){
+                    console.log('Telefono nuevo : ' + JSON.stringify(tel));
+                  });
+                });
+              }
+            }
             res.status(200).json({
-                ok: true
-            });
-        }).catch(function (err) {
-            console.log('ERROR:: ' + JSON.stringify(err));
-            res.status(500).json({
-                error: err
+                ok: true,
+                ubicacion_id: datos.id
             });
         });
     } else {
+        console.log('Actualizar ubicación');
         models.Direccion.update({
             calle: objects.calleUbi,
             numero: objects.numeroUbi,
@@ -171,14 +188,55 @@ exports.registrarUbicacion = function (objects, req, res) {
                 id: objects.idDireccion
             }
         }).then(function (datos) {
+            if (datos){
+            console.log('Actualizar: ' + JSON.stringify(objects.telefonosActualizar));
+              if (objects.telefonosActualizar){
+                var noEliminarId = [];
+                objects.telefonosActualizar.forEach(function(record){
+                  noEliminarId.push(record.id);
+                });
+                models.Telefono.destroy({
+                  where:{
+                    id: {$notIn: noEliminarId},
+                    direccion_id: objects.idDireccion
+                  }
+                }).then(function(){
+                  console.log('Telefonos no eliminados: ' + noEliminarId);
+                  objects.telefonosActualizar.forEach(function(record){
+                    models.Telefono.update({
+                      tipo:record.tipo,
+                      numero:record.numero,
+                      ext:record.ext
+                    },{
+                      where: {
+                        id: record.id
+                      }
+                    });
+                  });
+                });
+              }
+              console.log('NUEVOS: ' + JSON.stringify(objects.telefonosNuevos));
+              if (objects.telefonosNuevos){
+                objects.telefonosNuevos.forEach(function(record){
+                  console.log('N: ' + JSON.stringify(record));
+                  models.Telefono.create({
+                    tipo:record.tipo,
+                    numero:record.numero,
+                    ext:record.ext,
+                    direccion_id: objects.idDireccion
+                  },{
+                    logging: console.log
+                  }).then(function(tel){
+                    console.log('Telefono nuevo : ' + JSON.stringify(tel));
+                  });
+                });
+              }
+            }
             res.status(200).json({
-                ok: true
+                ok: true,
+                ubicacion_id: objects.idDireccion
             });
 
-        }).catch(function (err) {
-            res.status(500).json({
-                error: err
-            });
         });
     }
   } else {

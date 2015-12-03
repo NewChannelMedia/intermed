@@ -1,11 +1,12 @@
 function agregarUbicacion(ubicacion_id){
+  console.log('Ubicacion_id: ' + ubicacion_id);
   var id = '', nombre = '', principal = '', calle = '', numero = '', interior = '';
   var callea = '', calleb = '', estado = '', municipio = '', localidad = '', cp = '';
   var latitud = '', longitud = '';
   var btnGuardar = 'Añadir ubicación';
 
   if (ubicacion_id && ubicacion_id > 0){
-    btnGuardar = 'Guardar';
+    btnGuardar = 'Editar';
     $.ajax( {
       async: false,
       url: '/ubicaciones/traer',
@@ -55,7 +56,7 @@ function agregarUbicacion(ubicacion_id){
       <h3 class="s20">Señala la ubicación en el mapa y registra el horario de atención correspondiente con cada una.</h3>
     </div>
 
-    <ul class="nav nav-tabs menuUbicacion">
+    <ul class="nav nav-tabs menuBootbox">
       <li class="active"><a data-toggle="tab" href="#divUbicacion">UBICACIONES</a></li>
       <li><a data-toggle="tab" href="#divHorarios">HORARIOS</a></li>
     </ul>
@@ -219,78 +220,6 @@ function agregarUbicacion(ubicacion_id){
                                 </div>
                               </div>
                             </div>
-
-                            <div class="col-md-12">
-                              <div class="row">
-                                <hr class="style-white"/>
-                                <div class="col-md-12">
-                                  <div class="row" class="text-center">
-                                    <span style="font-weight:bold;color:white;font-size:130%;text-align:center;padding:7px;"  class="col-md-12">
-                                      Teléfonos
-                                    </span>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="row">
-                                <div class="col-md-10 col-sm-10">
-                                  <div class="row">
-                                    <div class="form-group col-md-3 col-sm-3">
-                                      <div class="row">
-                                        <select class="form-control" id="tipoTelefono" >
-                                          <option value="casa">Casa</option>
-                                          <option value="celular">Celular</option>
-                                          <option value="oficina">Oficina</option>
-                                          <option value="localizador">Localizador</option>
-                                        </select>
-                                      </div>
-                                    </div>
-                                    <div class="form-group col-md-9 col-sm-9">
-                                      <div class="form-group">
-                                        <input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" maxlength="10" onpaste="soloNumeros()" >
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div class="col-md-2 col-sm-2">
-                                  <div class="row">
-                                  <div class="form-group">
-                                    <input type="button" class="btn btn-warning btn-block" id="addFon" value="Añadir">
-                                  </div>
-                                  </div>
-                                </div>
-                            </div>
-                            </div>
-                            <div class="row">
-                              <div id="fonAgregado" class="btn-group edit-btns text-center" data-toggle="buttons"></div>
-                            </div>
-
-                            <div class="col-md-12">
-                              <div class="row">
-                              <hr class="style-white"/>
-                              <span style="font-weight:bold;color:white;font-size:80%;">
-                                Al finalizar de agregar tus ubicaciones, pasa a la pestaña de "horarios" para organizar las horas de atención que se mostrarán en tu agenda de citas.
-                              </span>
-                              </div>
-                            </div>
-
-
-                            <div class="col-md-12" style="margin-top:15px;">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-5" style="margin-right:5px">
-                                      <div class="row">
-                                        <input type="button" class="btn btn-add btn-block" value="`+btnGuardar+`" onclick="regUbicacion()" id="btnGuardar">
-                                      </div>
-                                    </div>
-                                    <div class="col-md-5" style="margin-right:5px">
-                                      <div class="row">
-                                        <input type="button" class="btn btn-save btn-block" value="Guardar y salir" onclick="regUbicacion();bootbox.hideAll();" id="btnGuardarSalir">
-                                      </div>
-                                    </div>
-                                  </div>
-                              </div>
-                            </div>
-
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -307,6 +236,91 @@ function agregarUbicacion(ubicacion_id){
                 </div>
             </div>
             </div>
+            <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <hr class="style-white"/>
+                <div class="col-md-12">
+                  <div class="row" class="text-center">
+                    <span style="font-weight:bold;color:white;font-size:130%;text-align:center;padding:7px;"  class="col-md-12">
+                      Teléfonos
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-10 col-sm-10">
+                  <div class="row">
+                    <div class="form-group col-md-3 col-sm-3">
+                      <div class="row">
+                        <select class="form-control" id="tipoTelefono" >
+                          <option value="celular">Celular</option>
+                          <option value="oficina">Oficina</option>
+                          <option value="localizador">Localizador</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-9 col-sm-9" id="divTelefono">
+                      <div class="form-group">
+                        <input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" onpaste="soloNumeros()" maxlength="12"  >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-2 col-sm-2">
+                  <div class="row">
+                  <div class="form-group">
+                    <input type="button" class="btn btn-warning btn-block" id="addFon" value="Añadir">
+                  </div>
+                  </div>
+                </div>
+            </div>
+            <div class ="row">
+              <div class="form-group col-md-12 col-sm-12 btn-group edit-btns text-center" id="divTelefonoAgregado" data-toggle="buttons"></div>
+            </div>
+            </div>
+            <div class="row">
+              <div id="fonAgregado" class="btn-group edit-btns text-center" data-toggle="buttons"></div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="row">
+              <hr class="style-white"/>
+              <span style="font-weight:bold;color:white;font-size:80%;">
+                Al finalizar de agregar tus ubicaciones, pasa a la pestaña de "horarios" para organizar las horas de atención que se mostrarán en tu agenda de citas.
+              </span>
+              </div>
+            </div>
+
+
+            <div class="col-md-12" style="margin-top:15px;margin-bottom:30px">
+              <div class="row">
+                <div class="col-md-6 pull-right">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="row">
+                      <input type="button" class="btn btn-add btn-block" value="`+btnGuardar+`" onclick="regUbicacion()" id="btnGuardar">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="row" style="margin-left:2px">
+                        <input type="button" class="btn btn-save btn-block" value="Guardar y salir" onclick="regUbicacion();bootbox.hideAll();" id="btnGuardarSalir">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 pull-left">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="row">
+                      <input type="button" class="btn btn-drop btn-block" value="Eliminar" onclick="eliminarUbicacion()" id="btnEliminar">
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
         </form>
     </div>
 
@@ -321,13 +335,25 @@ function agregarUbicacion(ubicacion_id){
     </div>
     </div>`
   });
-  if (btnGuardar == "Guardar"){
+  if (btnGuardar == "Editar"){
     $("#frmRegUbi :input").prop('disabled', true);
     $("#frmRegUbi :button").prop('disabled', false);
     $('#frmRegUbi :button #addFon').prop('disabled', true);
     $("#frmRegUbi #btnGuardarSalir").addClass('hidden');
-    $('#btnGuardar').val('Editar');
+    $('#btnGuardar').parent().parent().addClass('pull-right');
+    cargarTelefonos();
+  } else {
+    $('#btnEliminar').addClass('hidden');
   }
+  setTimeout(function(){
+    $('#numTelefono').mask('000-000-0000',{reverse:true});
+  },500);
   cargarMapa(ubicacion_id);
-  mapa.marker.setOptions({draggable: false,animation:null});
+  if (mapa.marker){
+    mapa.marker.setOptions({draggable: false,animation:null});
+  }
+  funcionesTelefonos();
+  if (btnGuardar == "Editar"){
+    $('label.editar').unbind();
+  }
 }

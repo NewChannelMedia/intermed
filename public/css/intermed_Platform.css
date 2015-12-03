@@ -1231,3 +1231,72 @@ a:visited {
     height: 50px;
   }
 }
+
+.edit-btns {
+  display: block;
+}
+
+.edit-btns .btn {
+  margin-right: 0;
+  margin-bottom: 0;
+  margin-left: 0!important;
+  border-radius: 0;
+  outline: none!important;
+}
+.edit-btns .input-group-btn {
+  margin-right: 3px;
+  margin-bottom: 3px;
+  position: relative;
+  display: inline-table;
+}
+
+.editar {
+  color: #fff;
+  border-color: #eea236;
+  background-color: #f0ad4e;
+}
+
+.input-group-btn >.editar.btn:hover,
+.input-group-btn >.editar.btn:focus,
+.input-group-btn >.editar.btn:active{
+  background-color: #eea236;
+  color: #fff;
+}
+
+.borrar {
+  color: #fff;
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+
+.borrar:hover,
+.borrar:focus,
+.borrar:active,
+.borrar.active{
+  background-color: #d9534f;
+  border-color: #d43f3a;
+  color: #fff;
+}
+
+
+.edit-btns .btn input[type="radio"],
+.edit-btns .btn-group > .btn input[type="radio"],
+.edit-btns .btn input[type="checkbox"],
+.edit-btns .btn-group > .btn input[type="checkbox"]{
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+  pointer-events: none;
+}
+
+
+.edit-btns .btn-group .btn + .btn,
+.edit-btns .btn-group .btn + .btn-group,
+.edit-btns .btn-group .btn-group + .btn,
+.edit-btns .btn-group .btn-group + .btn-group
+{
+  margin-left: 0!important;
+}
+.edit-btns .input-group-btn:first-child > .btn,
+.edit-btns .input-group-btn:first-child > .btn-group {
+  margin-right: 0!important;
+}
