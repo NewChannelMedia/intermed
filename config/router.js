@@ -1428,8 +1428,17 @@ var iniciar = function () {
     app.post('/updateApellidoM', function( req, res ){
       intermed.callController('contactos','updateApellidoM', req, res);
     });
-    app.post('/updateMail', function( req, res ){
-      intermed.callController('contactos','updateMail', req, res);
+    app.post('/addBio', function( req, res ){
+      intermed.callController('contactos','addBio', req, res);
+    });
+    app.post('/deleteBio',function( req, res ){
+      intermed.callController('contactos','deleteBio', req, res);
+    });
+    app.post('/postPaciente',function( req, res ){
+      intermed.callController('contactos','postPaciente',req, res);
+    });
+    app.post('/addTelefon',function(req, res){
+      intermed.callController('contactos','addTelefon',req, res);
     });
 }
 

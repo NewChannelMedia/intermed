@@ -2973,6 +2973,7 @@ function loadBiometricos(){
       $("#noBiometrico").addClass('hidden');
       $("#bioBody").html('');
       $.each(data, function(i, item){
+        var id="#bioModi-"+i;
         html += '<tr style="color:white;">';
           html += '<td><center>'+item.peso+'</center></td>';
           html += '<td><center>'+item.altura+'</center></td>';
@@ -2980,7 +2981,7 @@ function loadBiometricos(){
           html += '<td><center>'+item.genero+'<c/enter></td>';
           html += '<td>';
             html += '<center>';
-              html += '<button class="btn btn-danger" type="button" id="bioModi-'+i+'">';
+              html += '<button class="btn btn-danger" oculto="'+item.id+'" type="button" id="bioModi-'+i+'" onclick="deleteBio(\''+id+'\')">';
                 html += '<span class="glyphicon glyphicon-wrench"></span>';
               html += '</button>';
             html += '</center>';
@@ -2997,10 +2998,10 @@ function loadTelefonos(){
   var html = "";
   $.post('/loadTelefonos', function( data ){
     if( data.length > 0 ){
-      console.log("Entro a la condicion if");
       $("#noTelefono").addClass('hidden');
       $("#telBody").html('');
       $.each(data, function(i, item){
+        var id="#deleteTelBio-"+i;
         html += '<tr>';
           html += '<td>';
             html += '<center>';
@@ -3068,7 +3069,7 @@ function updateApellidoP(){
 }
 function updateApellidoM(){
   var apellidoM = $("#editApeM").val();
-  $.post('/updateApellidoP',{nombre:apellidoM},function(data){
+  $.post('/updateApellidoM',{nombre:apellidoM},function(data){
     if( data.length > 0 ){
       $("#infoGeneral").removeClass('hidden');
       $("#cambiandoGenerales").removeClass('hidden');
@@ -3079,23 +3080,68 @@ function updateApellidoM(){
     }
   });
 }
-function updateMail(){
-  var mail = $("#editMail").val();
-  $.post('/updateApellidoP',{mail:mail},function(data){
-    if( data.length > 0 ){
-      $("#infoGeneral").removeClass('hidden');
-      $("#cambiandoGenerales").removeClass('hidden');
-      $("#cambiandoGenerales").text('Apellido materno: '+mail);
-    }else{
-      $("#infoGeneral").addClass('hidden');
-      $("#cambiandoGenerales").addClass('hidden');
-    }
-  });
-}
 function addBio(){
   var peso = $("#bioPeso").val();
   var altura = $("#bioAltura").val();
   var tipoS = $("#bioSangre").val();
-  var genero = $("#bioGenero").val();
-
+  var genero = $("#bioGenero :selected").val();
+  $("#confirmacionBio").addClass('hidden');
+  $.post('/addBio',{
+    peso: peso,
+    altura: altura,
+    tipoS: tipoS,
+    genero: genero
+  },function(data){
+    if( data ){
+      $("#bioPeso").attr('value','');
+      $("#bioAltura").attr('value','');
+      $("#bioSangre").attr('value','');
+      $("#bioGenero").attr('value','0');
+      $("#confirmacionBio").removeClass('hidden');
+      loadBiometricos();
+    }else{
+      $("#negadoBio").removeClass('hidden');
+    }
+  });
+}
+function deleteBio(id){
+  var id = $(id).attr('oculto');
+  $.post('/deleteBio',{id:id},function(data){
+    console.log("DATA: "+JSON.stringify(data));
+    if( data == "OK"){
+      $("#delBio").removeClass('hidden');
+      $("#confirmacionBio").addClass('hidden');
+      loadBiometricos();
+    }else{
+      console.log("NO se borro");
+    }
+  });
+}
+function addTelefon(){
+  var nombreCon = $("#bioNombretel").val();
+  var tel = $("#bioTel").val();
+  var es_medico;
+  if( $("#esMedic").val() == 1 ){
+    es_medico = 1;
+  }else{
+    es_medico = 0;
+  }
+  var idPaciente;
+  //consulta a paciente para traer id
+  $.post('/postPaciente',function(data){
+    idPaciente = JSON.stringify(data.id);
+    $.post('/addTelefon',{
+      nombre: nombreCon,
+      tel: tel,
+      medico:es_medico,
+      paciente_id: idPaciente
+    },function(datas){
+      if( datas != null ){
+        $("#telAdd").removeClass('hidden');
+        loadTelefonos();
+      }else{
+        console.log("ERROR AL AGREGAR EL CONTACTO");
+      }
+    });
+  });
 }

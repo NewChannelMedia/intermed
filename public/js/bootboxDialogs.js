@@ -957,12 +957,6 @@ function editaPerfBoot(){
                   <button id="apeMEdit" class="btn btn-danger" onclick="updateApellidoM();" type="button"><span class="glyphicon glyphicon-wrench" ></span></button>
                 </span>
               </div><!-- /.col-lg-6 -->
-              <div class="col-lg-8 input-group">
-                <input type="text" class="form-control" id="editMail" placeholder="E-mail" />
-                <span class="input-group-btn">
-                  <button type="button" id="editMailbutton" onclick="updateMail();" class="btn btn-danger"><span class="glyphicon glyphicon-sunglasses"></span></button>
-                </span>
-              </div>
               <div class="col-lg-8">
                 <hr>
                 <h4 style="color:white" class="hidden" id="infoGeneral">Información actualizada</h4>
@@ -991,12 +985,25 @@ function editaPerfBoot(){
               <input type="text" class="form-control" id="bioSangre" placeholder="Tipo de sangre" />
             </div>
             <div class="col-md-12 form-group">
-              <input type="text" class="form-control" id="bioGenero" placeholder="Genero" />
+              <select id="bioGenero" class="form-control">
+                <option value="0">--Genero--</option>
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+              </select>
             </div>
             <div class="col-md-12 form-group">
-              <button class="btn btn-danger form-control" id="addBio" type="button">
+              <button class="btn btn-danger form-control" onclick="addBio();" id="addBio" type="button">
                 <span class="glyphicon glyphicon-plus">&nbsp;Agregar</span>
               </button>
+            </div>
+            <div class="col-md-12 hidden" id="confirmacionBio">
+              <h4 style="color:white"><span class="glyphicon glyphicon-ok">&nbsp;Informacion guardada correctamente</span></h4>
+            </div>
+            <div class="col-md-12 hidden" id="negadoBio">
+              <h4 style="color:white"><span class="glyphicon glyphicon-remove">&nbsp;Fallo al guardar la informacion</span></h4>
+            </div>
+            <div class="col-md-12 hidden" id="delBio">
+              <h4 style="color:white"><span class="glyphicon glyphicon-trash">&nbsp;Informacion borrada...</span></h4>
             </div>
           </div>
         </div>
@@ -1027,16 +1034,27 @@ function editaPerfBoot(){
       <div class="tab-pane" role="tabpanel" id="emergencia">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-md-4 form-group">
+            <div class="col-md-3 form-group">
               <input type="text" class="form-control" id="bioNombretel" placeholder="Nombre del contacto" />
             </div>
-            <div class="col-md-4 form-group">
+            <div class="col-md-3 form-group">
               <input type="text" class="form-control" id="bioTel" placeholder="Telefono" />
             </div>
-            <div class="col-md-4 form-group">
-              <button type="button" id="bioTelbutton" class="form-control btn btn-danger">
+            <div class="col-md-3 checkbox form-group">
+              <label style="color:white;">
+                <input type="checkbox" id="esMedic" value="1">¿Es medico?
+              </label>
+            </div>
+            <div class="col-md-3 form-group">
+              <button type="button" id="bioTelbutton" onclick="addTelefon();" class="form-control btn btn-danger">
                 <span class="glyphicon glyphicon-phone-alt">&nbsp;Agregar</span>
               </button>
+            </div>
+            <div class="col-md-12 hidden" id="telAdd">
+              <h4 style="color:white;"><span class="glyphicon glyphicon-phone-alt">&nbsp;Contacto agregado</span></h4>
+            </div>
+            <div class="col-md-12 hidden" id="deleFon">
+              <h4 style="color:white;"><span class="glyphicon glyphicon-remove">&nbsp;Contacto agregado</span></h4>
             </div>
           </div>
         </div>
