@@ -2024,29 +2024,33 @@ li.error{
 
 /*Fin Inbox*/
 
-.menuUbicacion{
+.menuBootbox{
   padding:0px;
+  width: 100%;
+  display: block;
 }
 
-.menuUbicacion li{
+.menuBootbox li{
   text-align: center;
   font-weight: bold;
-  width:50%;
+  width:1%;
   margin:0px;
   border-radius: 0px;
   background-color:#1e6485;
+  display: table-cell;
+  float: none;
 }
 
-.menuUbicacion li a {
+.menuBootbox li a {
   color: white;
   margin:0px;
   border-radius: 0px 0px 0 0!important;
 }
 
-.menuUbicacion li.active a,
-.menuUbicacion li.active a:focus,
-.menuUbicacion li.active a:hover,
-.menuUbicacion li a:hover{
+.menuBootbox li.active a,
+.menuBootbox li.active a:focus,
+.menuBootbox li.active a:hover,
+.menuBootbox li a:hover{
   background-color:#2383AF;
   color:white!important;
   border: 0px!important;
@@ -2063,6 +2067,16 @@ li.error{
   padding-bottom: 2px!important;
 }
 
+.divBodyBootbox {
+  padding:30px;
+  background-color:#5D9AB7;
+  padding-bottom: 0px;
+}
+
+.divBodyBootbox .row {
+  padding-bottom: 2px!important;
+}
+
 .btn-add{
   background-color: #5AA5C9;
   border-style: solid;
@@ -2075,6 +2089,16 @@ li.error{
 
 .btn-save{
   background-color: #FFBF00;
+  border-style: solid;
+  border-color: white;
+  border-width: 2px;
+  border-radius: 3px;
+  font-weight: bold;
+  color: #FFF;
+}
+
+.btn-drop{
+  background-color: #A92D2D;
   border-style: solid;
   border-color: white;
   border-width: 2px;

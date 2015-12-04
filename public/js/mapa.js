@@ -80,6 +80,13 @@ var mapa = {
         });
 
         google.maps.visualRefresh = true;
+
+
+        if ($('#idDireccion') && $('#idDireccion').val() != "" && $('#idDireccion').val() > 0){
+          mapa.latitud = $('#latitud').val();
+          mapa.longitud = $('#longitud').val();
+        }
+
         var mapOptions = {
             center: new google.maps.LatLng(mapa.latitud, mapa.longitud),
             zoom: 5,//Mostrar Mexico
@@ -92,11 +99,26 @@ var mapa = {
         mapa.map =new google.maps.Map(mapElement,mapOptions);
         resizeMap();
 
-        /*Nuevo*/
         var styledMap = new google.maps.StyledMapType(styles, { name: "Styled Map" });
         mapa.map.mapTypes.set('map_style', styledMap);
         mapa.map.setMapTypeId('map_style');
-        /**/
+
+        google.maps.event.addListener(mapa.map, 'click', function(e){
+          if (!($('#btnGuardar') && $('#btnGuardar').val() == "Editar")){
+            var location = e.latLng;
+            if (mapa.marker){
+              //Actualizar ubicacion
+              mapa.marker.setOptions({position: location});
+            } else {
+              //crear marcador
+              mapa.latitud = location.lat;
+              mapa.longitud = location.lng;
+              mapa.Marcador();
+            }
+            mapa.funcionClick();
+          }
+        });
+
         if (!($('#idDireccion') && $('#idDireccion').val() != "" && $('#idDireccion').val() > 0)){
           mapa.GeolicalizacionUsuario();
         } else {
@@ -109,12 +131,13 @@ var mapa = {
               $('#slc_colonias').val($('#idLocalidad').val());
             },300);
           },300);
-          mapa.latitud = $('#latitud').val();
-          mapa.longitud = $('#longitud').val();
           var devCenter = new google.maps.LatLng(mapa.latitud, mapa.longitud);
           mapa.map.setCenter(devCenter);
           mapa.map.setZoom(14);
-          mapa.Marcador();
+          setTimeout(function(){
+            mapa.Marcador();
+            mapa.marker.setOptions({draggable: false,animation:null});
+          },200);
         }
 
         //Buscar Direcciones
@@ -289,31 +312,40 @@ var infoWindows = [];
 function MostrarUbicaciones(){
   var mapProp = {
       center:new google.maps.LatLng(20.667015199999998, -103.43773089999999),
-      zoom: 12,
+      zoom: 20,
       draggable: true,
       scrollwheel: true,
       mapTypeId:google.maps.MapTypeId.ROADMAP
   };
 
-  map=new google.maps.Map(document.getElementById("mapUbiDiv"),mapProp);
+  MapaUbicaciones=new google.maps.Map(document.getElementById("mapUbiDiv"),mapProp);
 
-  $('.direccionLtLn').each(function( index ) {
-    var principal = $( this ).find('.principal').text();
-    var latitud = $( this ).find('.lat').text();
-    var longitud = $( this ).find('.long').text();
-    var nombre = $( this ).find('.nombre').text();
-    var direccion = $( this ).find('.direccion').html();
+  google.maps.event.addListenerOnce(MapaUbicaciones, 'idle', function(){
 
-    var pos = new google.maps.LatLng(latitud, longitud);
+    $('.direccionLtLn').each(function( index ) {
+      var principal = $( this ).find('.principal').text();
+      var latitud = $( this ).find('.lat').text();
+      var longitud = $( this ).find('.long').text();
+      var nombre = $( this ).find('.nombre').text();
+      var direccion = $( this ).find('.direccion').html();
 
-    var marker = new google.maps.Marker({
-        position: pos,
-        map: map,
-        draggable: false,
-        title: nombre,
-        animation: google.maps.Animation.DROP
-    });
+      var pos = new google.maps.LatLng(latitud, longitud);
 
+      if (principal == 1){
+        //Centrar mapa
+        MapaUbicaciones.setCenter(pos);
+      }
+
+      while (!(MapaUbicaciones.getBounds().contains(pos))){
+        MapaUbicaciones.setOptions({zoom: parseInt(MapaUbicaciones.get('zoom'))-1});
+      }
+
+      var marker = new google.maps.Marker({
+          position: pos,
+          map: MapaUbicaciones,
+          draggable: false
+      });
+      marker.setIcon('img/marker.png');
 
       var contentString = '<div><h4>'+nombre+'</h4><p>'+direccion+'</p></div>';
 
@@ -328,14 +360,10 @@ function MostrarUbicaciones(){
           info.close();
         });
 
-        infowindow.open(map, marker);
+        infowindow.open(MapaUbicaciones, marker);
       });
 
-      if (principal == 1){
-        //Centrar mapa
-        map.setCenter(pos);
-      }
-      marker.setIcon('img/marker.png');
+    });
   });
 
   //resizeMap();

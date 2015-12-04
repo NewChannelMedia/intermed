@@ -365,7 +365,11 @@
                     <h2 class="h67-medium s20 uppercase whiteF">Ubicaciones y contacto</h2>
                   </div>
                   <div class="col-md-3 pull-right text-right" style="margin-top:20px" >
-                    <button class="btn btn-primary btn-xs" id="btnEditaUbi"><span class="glyphicon glyphicon-pencil"></span></button>
+                    <span id="editUbi">
+                    {{#if usuario.Direccions}}
+                      <button class="btn btn-primary btn-xs" id="btnEditaUbi"><span class="glyphicon glyphicon-pencil"></span></button>
+                    {{/if}}
+                    </span>
                     <button class="btn btn-primary btn-xs" id="btnAgregaUbi"><span class="glyphicon glyphicon-plus-sign"></span></button>
                   </div>
                 {{/if}}
@@ -400,11 +404,12 @@
                             <span>{{calle}}</span>&nbsp;<span>#{{numero}}</span><br>
                             {{Localidad.TipoLocalidad.tipo}} <span>{{Localidad.localidad}}</span><br>
                             <span>{{Municipio.municipio}}</span>, <pan>{{Municipio.Estado.estado}}</pan>. CP: <span>{{Localidad.CP}}</span><br>
+                            {{#if Telefonos}}
                             <br><strong>Teléfonos</strong><br>
-                            <abbr title="Phone">oficina:</abbr> (<span>33</span>) <span>31252200</span><br>
-                            <abbr title="Phone">celular:</abbr> (<span>871</span>) <span>2602226</span><br>
-                            <br><strong>E-mail</strong><br>
-                            <span>jcmedina@newchannel.mx</span><br>
+                            {{#each Telefonos}}
+                            <abbr title="Phone" style="text-transform: capitalize;">{{tipo}}:</abbr><span> {{claveRegion}}</span> <span>{{numero}}</span> <span>{{ext}}</span><br>
+                            {{/each}}
+                            {{/if}}
                           </address>
                         </div>
                       </li>
@@ -450,11 +455,11 @@
             <div class="col-md-12">
               <div class="info-body-header h77-boldcond">
                 <div class="img-rounded info-left-icon">
-                  <span class="glyphicon glyphicon-pencil icon"></span>
+                  <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(1)"></span>
                 </div>
                 <span class="title">Experto en:</span>
               </div>
-              <div class="info-body-content h67-medcond">
+              <div class="info-body-content h67-medcond" id="divExpEn">
                 <ul>
                   <li>Garganta</li>
                   <li>Urgencias 24hrs.</li>
@@ -479,7 +484,7 @@
             <div class="col-md-12">
               <div class="info-body-header h77-boldcond">
                 <div class="img-rounded info-left-icon">
-                  <span class="glyphicon glyphicon-pencil icon"></span>
+                  <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(2)"></span>
                 </div>
                 <span class="title">Hospitales</span>
                 <span class="sub">y clínicas</span>
@@ -503,7 +508,7 @@
             <div class="col-md-12">
               <div class="info-body-header h77-boldcond">
                 <div class="img-rounded info-left-icon">
-                  <span class="glyphicon glyphicon-pencil icon"></span>
+                  <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(3)"></span>
                 </div>
                 <span class="title">Aseguradoras</span>
               </div>

@@ -15,8 +15,12 @@ exports.mostrar = function (req, res) {
     });
 };
 
-exports.ObtieneTelefonos = function (req, res) {
-    models.Telefono.findAll().then(function (datos) {
+exports.obtieneTelefonos = function (object,req, res) {
+    models.Telefono.findAll({
+      where: {
+        direccion_id: object.direccion_id
+      }
+    }).then(function (datos) {
         res.send(datos);
     });
 };
@@ -125,6 +129,7 @@ exports.registrarUbicacion = function (objects, req, res) {
       });
     }
     if (objects.idDireccion=='') {
+        console.log('Crear ubicación');
         models.Direccion.create({
             calle: objects.calleUbi,
             numero: objects.numeroUbi,
@@ -141,16 +146,36 @@ exports.registrarUbicacion = function (objects, req, res) {
             latitud: objects.latitud,
             longitud: objects.longitud
         }).then(function (datos) {
+            if (datos){
+              if (objects.telefonosNuevos){
+                objects.telefonosNuevos.forEach(function(record){
+                  var numVar = record.numero.split("-");
+                  var claveRegion = '';
+                  var numero = '';
+                  if (numVar.length==3){
+                    claveRegion = numVar[0];
+                    numero = numVar[1] + ' ' + numVar[2];
+                  } else {
+                    numero = numVar[0] + ' ' + numVar[1];
+                  }
+
+                  models.Telefono.create({
+                    tipo:record.tipo,
+                    claveRegion: claveRegion,
+                    numero:numero,
+                    ext:record.ext,
+                    direccion_id: datos.id
+                  });
+                });
+              }
+            }
             res.status(200).json({
-                ok: true
-            });
-        }).catch(function (err) {
-            console.log('ERROR:: ' + JSON.stringify(err));
-            res.status(500).json({
-                error: err
+                ok: true,
+                ubicacion_id: datos.id
             });
         });
     } else {
+        console.log('Actualizar ubicación');
         models.Direccion.update({
             calle: objects.calleUbi,
             numero: objects.numeroUbi,
@@ -171,14 +196,68 @@ exports.registrarUbicacion = function (objects, req, res) {
                 id: objects.idDireccion
             }
         }).then(function (datos) {
+            if (datos){
+              if (objects.telefonosActualizar){
+                var noEliminarId = [];
+                objects.telefonosActualizar.forEach(function(record){
+                  noEliminarId.push(record.id);
+                });
+                models.Telefono.destroy({
+                  where:{
+                    id: {$notIn: noEliminarId},
+                    direccion_id: objects.idDireccion
+                  }
+                }).then(function(){
+                  objects.telefonosActualizar.forEach(function(record){
+                    var numVar = record.numero.split("-");
+                    var claveRegion = '';
+                    var numero = '';
+                    if (numVar.length==3){
+                      claveRegion = numVar[0];
+                      numero = numVar[1] + ' ' + numVar[2];
+                    } else {
+                      numero = numVar[0] + ' ' + numVar[1];
+                    }
+                    models.Telefono.update({
+                      tipo:record.tipo,
+                      claveRegion: claveRegion,
+                      numero: numero,
+                      ext:record.ext
+                    },{
+                      where: {
+                        id: record.id
+                      }
+                    });
+                  });
+                });
+              }
+              if (objects.telefonosNuevos){
+                objects.telefonosNuevos.forEach(function(record){
+                  var numVar = record.numero.split("-");
+                  var claveRegion = '';
+                  var numero = '';
+                  if (numVar.length==3){
+                    claveRegion = numVar[0];
+                    numero = numVar[1] + ' ' + numVar[2];
+                  } else {
+                    numero = numVar[0] + ' ' + numVar[1];
+                  }
+
+                  models.Telefono.create({
+                    tipo:record.tipo,
+                    claveRegion: claveRegion,
+                    numero:numero,
+                    ext:record.ext,
+                    direccion_id: objects.idDireccion
+                  });
+                });
+              }
+            }
             res.status(200).json({
-                ok: true
+                ok: true,
+                ubicacion_id: objects.idDireccion
             });
 
-        }).catch(function (err) {
-            res.status(500).json({
-                error: err
-            });
         });
     }
   } else {
@@ -419,14 +498,30 @@ exports.obtieneUbicacion = function(object, req, res) {
                   model: models.TipoLocalidad,
                   attributes: ['tipo'],
               }],
+          },
+          {
+              model: models.Telefono
           }],
           order: [['principal','DESC']]
     }).then(function(datos) {
           res.send(datos);
-    }).catch(function(err) {
-          res.status(500).json({error: err});
     });
   } else {
         res.status(500).json({error: 0});
   }
+}
+
+
+exports.eliminaUbicacion = function(object, req, res){
+  models.Telefono.destroy({
+    where:{
+      direccion_id: object.idDireccion
+    }
+  }).then(function (datos) {
+    models.Direccion.destroy({
+      where:{ id: object.idDireccion}
+    }).then(function(result){
+        res.status(200).json({success: true,result: result});
+    });
+  });
 }

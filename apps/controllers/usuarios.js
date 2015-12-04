@@ -551,10 +551,6 @@ exports.obtenerInformacionUsuario = function ( object, req, res ) {
               }
                     ]
                   } ]
-              },
-        {
-          model: models.Telefono,
-          attributes: [ 'id', 'numero', 'claveRegion', 'lada', 'usuario_id' ]
         },
         {
           model: models.Biometrico,

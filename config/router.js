@@ -1411,6 +1411,22 @@ var iniciar = function () {
     app.post('/ubicaciones/traer',function (req, res){
       intermed.callController( 'ubicacion', 'obtieneUbicacion', req.body, req, res );
     });
+
+    app.post('/telefonos/traer',function (req, res){
+      intermed.callController( 'ubicacion', 'obtieneTelefonos', req.body, req, res );
+    });
+
+    app.post('/ubicaciones/eliminar', function (req, res){
+      intermed.callController( 'ubicacion', 'eliminaUbicacion', req.body, req, res );
+    });
+
+    app.post('/medicos/expertoActualizar',function (req, res){
+      intermed.callController( 'medicos', 'medicoExpertoActualizar', req.body, req, res );
+    });
+
+    app.post('/medicos/expertoTraer', function (req, res){
+      intermed.callController( 'medicos', 'medicoExpertoTraer', req.body, req, res );
+    });
 }
 
 var io = serv.server( app, 3000 );

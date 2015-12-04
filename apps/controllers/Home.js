@@ -176,6 +176,9 @@ module.exports = {
                       model: models.Estado,
                       attributes: ['estado'],
                   }],
+              },
+              {
+                  model: models.Telefono
               }],
               order: [['principal', 'DESC']]
         }).then(function (direccion) {
@@ -232,6 +235,9 @@ module.exports = {
                  model: models.Estado,
                  attributes: ['estado'],
              }],
+            },
+             {
+                 model: models.Telefono
              }]
           }).then(function(direccion){
             usuario = JSON.parse( JSON.stringify( usuario ) );

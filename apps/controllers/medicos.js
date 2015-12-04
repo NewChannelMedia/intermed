@@ -38,8 +38,7 @@ module.exports = {
                 include :[{ model : models.Localidad},
                   { model : models.Municipio,
                     include :[{ model : models.Estado}]}
-                ]},
-              { model: models.Telefono}
+                ]}
             ]
           }).then(function(medico) {
               // enviando datos
@@ -57,8 +56,7 @@ module.exports = {
           models.Usuario.findAll({
             include: [{ model: models.DatosGenerales },
               { model: models.Medico },
-              { model: models.Direccion},
-              { model: models.Telefono},
+              { model: models.Direccion}
             ]}
           ).then(function(medicos) {
       				//Rendereando index y pasando los registros a la vista
@@ -82,8 +80,7 @@ module.exports = {
                 include :[{ model : models.Localidad},
                   { model : models.Municipio,
                     include :[{ model : models.Estado}]}
-                ]},
-              { model: models.Telefono}
+                ]}
             ]
           }).then(function(medico) {
               // enviando datos
@@ -129,26 +126,7 @@ module.exports = {
                 municipio_id: object.ciudadMed,
                 principal: 1,
                 usuario_id: id
-                }, {transaction: t}).then(function (result){
-                      return models.Telefono.create({
-                          tipo: '1',
-                          numero: object['telefonoMed'],
-                          usuario_id: id
-                      }, {transaction: t}).then(function(result){
-                            return models.Medico.create({
-                              usuario_id: id
-                            }, {transaction: t}).then(function(medico) {
-                                // si se pudo insertar el médico, tomamos su id para pasarlo a medicos especialidades y agregarla
-                                return models.MedicoEspecialidad.create({
-                                    tipo: '1',
-                                    titulo: '',
-                                    lugarEstudio: '',
-                                    medico_id: medico.id,
-                                    especialidad_id: object.especialidadMed   // Id de la especialidad
-                                }, {transaction: t})
-                            })
-                      });
-                });
+                }, {transaction: t});
             });
           });
         }).then(function(result) {
@@ -161,8 +139,7 @@ module.exports = {
                   include :[{ model : models.Localidad},
                     { model : models.Municipio,
                       include :[{ model : models.Estado}]}
-                  ]},
-                { model: models.Telefono}
+                  ]}
               ]
             }).then(function(medico) {
                 // enviando datos
@@ -231,13 +208,6 @@ module.exports = {
                    where: { usuario_id : id }
                });
 
-              // actualizando telefono
-               models.Telefono.update({
-                   numero: object['telefonoMed']
-                 }, {
-                   where: { usuario_id : id }
-               });
-
                models.Medico.findOne({
                  where: {usuario_id : id}
                }).then(function(datos) {
@@ -259,8 +229,7 @@ module.exports = {
                     include :[{ model : models.Localidad},
                       { model : models.Municipio,
                         include :[{ model : models.Estado}]}
-                    ]},
-                  { model: models.Telefono}
+                    ]}
                 ]
               }).then(function(medico) {
                   // enviando datos
@@ -288,8 +257,7 @@ module.exports = {
                   include :[{ model : models.Localidad},
                     { model : models.Municipio,
                       include :[{ model : models.Estado}]}
-                  ]},
-                { model: models.Telefono}
+                  ]}
               ]
             }).then(function(medico) {
               idEstado  = medico.Direccions[0].Municipio.estado_id;
@@ -328,8 +296,7 @@ module.exports = {
           where : { id : object.id },
           include: [{ model: models.DatosGenerales },
             { model: models.Medico },
-            { model: models.Direccion},
-            { model: models.Telefono}
+            { model: models.Direccion}
           ]
         }).then(function(medico) {
         				//Rendereando index y pasando los registros a la vista
@@ -344,8 +311,7 @@ module.exports = {
         models.Usuario.findAll({
           include: [{ model: models.DatosGenerales },
             { model: models.Medico },
-            { model: models.Direccion},
-            { model: models.Telefono}
+            { model: models.Direccion}
           ]
         }).then(function(medico) {
                 //Rendereando index y pasando los registros a la vista
@@ -389,8 +355,6 @@ module.exports = {
           model: models.Biometrico
                 }, {
           model: models.Direccion
-                }, {
-          model: models.Telefono
                 }, {
           model: models.DatosFacturacion,
           include: [ {
@@ -770,5 +734,58 @@ module.exports = {
         error: err
       } )
     } );
+  },
+
+  medicoExpertoActualizar: function (object, req, res){
+    if (req.session.passport.user){
+      models.Medico.findOne({
+        where: { usuario_id : req.session.passport.user.id},
+        attributes: ['id']
+      }).then(function(medico){
+        models.MedicoExpertoEn.destroy({
+          where: { medico_id: medico.id}
+        }).then(function(result){
+          object.expertoEn.forEach(function(rec){
+            models.MedicoExpertoEn.create({
+              medico_id: medico.id,
+              expertoen: rec.exp.val,
+              orden: rec.exp.num
+            }).then(function(padre){
+              if (rec.hijos){
+                rec.hijos.forEach(function(hijo){
+                  models.MedicoExpertoEn.create({
+                    medico_id: medico.id,
+                    expertoen: hijo.val,
+                    padre_id: padre.id,
+                    orden: hijo.num
+                  });
+                });
+              }
+            });
+          });
+          res.status(200).json({'success':true});
+        });
+      });
+    } else {
+      res.status(200).json({'success':false});
+    }
+  },
+
+  medicoExpertoTraer : function (object, req, res){
+    if (req.session.passport.user){
+      models.Medico.findOne({
+        where: { usuario_id : req.session.passport.user.id},
+        attributes: ['id']
+      }).then(function(medico){
+        models.MedicoExpertoEn.findAll({
+          where: { medico_id: medico.id},
+          order: [['orden','ASC']]
+        }).then(function(expertoEn){
+          res.status(200).json({'success':true, 'result':expertoEn});
+        });
+      });
+    } else {
+      res.status(200).json({'success':false});
+    }
   }
 }
