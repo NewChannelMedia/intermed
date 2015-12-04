@@ -3174,10 +3174,9 @@ function guardarExperiencia(){
     }
     last++;
   });
-    console.log('expertoEn: ' + JSON.stringify(expertoEn));
   $.ajax( {
     async: false,
-    url: '/medicos/expertoEn',
+    url: '/medicos/expertoActualizar',
     type: 'POST',
     dataType: "json",
     cache: false,
@@ -3186,18 +3185,48 @@ function guardarExperiencia(){
     },
     success: function ( data ) {
       if (data.success){
+        traerExpertoEn();
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+
+}
+
+function traerExpertoEn(){
+
+  $.ajax( {
+    async: false,
+    url: '/medicos/expertoTraer',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      if (data.success){
+        console.log('Experto En: ' + JSON.stringify(data));
         var listaNueva = '<ul>';
-        var parent = '';
-        expertoEn.forEach(function(rec){
-          if (rec.padre !== '' && parent === ''){
-            parent = rec.padre;
-            listaNueva += '<ul>';
-          } else if (rec.padre === "" && parent !== ''){
-            parent = '';
+        if (data.result){
+          var sub = false;
+          data.result.forEach(function(rec){
+            if (!rec.padre_id){
+              if (sub){
+                listaNueva += '</ul>';
+                sub = false;
+              }
+            } else {
+              if (sub === false){
+                listaNueva += '<ul>';
+                sub = true;
+              }
+            }
+            listaNueva += '<li>'+ rec.expertoen +'</li>';
+          });
+          if (sub){
             listaNueva += '</ul>';
           }
-          listaNueva += '<li>'+ rec.exp +'</li>';
-        });
+        }
         listaNueva += '</ul>';
         $('#divExpEn').html(listaNueva);
       }
@@ -3207,4 +3236,21 @@ function guardarExperiencia(){
     }
   } );
 
+
+/*
+
+  var listaNueva = '<ul>';
+  var parent = '';
+  expertoEn.forEach(function(rec){
+    if (rec.padre !== '' && parent === ''){
+      parent = rec.padre;
+      listaNueva += '<ul>';
+    } else if (rec.padre === "" && parent !== ''){
+      parent = '';
+      listaNueva += '</ul>';
+    }
+    listaNueva += '<li>'+ rec.exp +'</li>';
+  });
+  listaNueva += '</ul>';
+  $('#divExpEn').html(listaNueva);*/
 }

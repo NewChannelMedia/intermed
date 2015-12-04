@@ -1420,8 +1420,12 @@ var iniciar = function () {
       intermed.callController( 'ubicacion', 'eliminaUbicacion', req.body, req, res );
     });
 
-    app.post('/medicos/expertoEn',function (req, res){
+    app.post('/medicos/expertoActualizar',function (req, res){
       intermed.callController( 'medicos', 'medicoExpertoActualizar', req.body, req, res );
+    });
+
+    app.post('/medicos/expertoTraer', function (req, res){
+      intermed.callController( 'medicos', 'medicoExpertoTraer', req.body, req, res );
     });
 }
 

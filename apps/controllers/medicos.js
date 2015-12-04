@@ -737,7 +737,6 @@ module.exports = {
   },
 
   medicoExpertoActualizar: function (object, req, res){
-    console.log('OBJECT: ' + JSON.stringify(object));
     if (req.session.passport.user){
       models.Medico.findOne({
         where: { usuario_id : req.session.passport.user.id},
@@ -752,17 +751,37 @@ module.exports = {
               expertoen: rec.exp.val,
               orden: rec.exp.num
             }).then(function(padre){
-              rec.hijos.forEach(function(hijo){
-                models.MedicoExpertoEn.create({
-                  medico_id: medico.id,
-                  expertoen: hijo.val,
-                  padre_id: padre.id,
-                  orden: hijo.num
+              if (rec.hijos){
+                rec.hijos.forEach(function(hijo){
+                  models.MedicoExpertoEn.create({
+                    medico_id: medico.id,
+                    expertoen: hijo.val,
+                    padre_id: padre.id,
+                    orden: hijo.num
+                  });
                 });
-              });
+              }
             });
           });
           res.status(200).json({'success':true});
+        });
+      });
+    } else {
+      res.status(200).json({'success':false});
+    }
+  },
+
+  medicoExpertoTraer : function (object, req, res){
+    if (req.session.passport.user){
+      models.Medico.findOne({
+        where: { usuario_id : req.session.passport.user.id},
+        attributes: ['id']
+      }).then(function(medico){
+        models.MedicoExpertoEn.findAll({
+          where: { medico_id: medico.id},
+          order: [['orden','ASC']]
+        }).then(function(expertoEn){
+          res.status(200).json({'success':true, 'result':expertoEn});
         });
       });
     } else {
