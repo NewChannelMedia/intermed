@@ -1042,7 +1042,7 @@ function editaPerfBoot(){
             </div>
             <div class="col-md-3 checkbox form-group">
               <label style="color:white;">
-                <input type="checkbox" id="esMedic" value="1">¿Es medico?
+                <input type="checkbox" id="esMedic" name="esMedic" value="1">¿Es medico?
               </label>
             </div>
             <div class="col-md-3 form-group">
@@ -1054,7 +1054,7 @@ function editaPerfBoot(){
               <h4 style="color:white;"><span class="glyphicon glyphicon-phone-alt">&nbsp;Contacto agregado</span></h4>
             </div>
             <div class="col-md-12 hidden" id="deleFon">
-              <h4 style="color:white;"><span class="glyphicon glyphicon-remove">&nbsp;Contacto agregado</span></h4>
+              <h4 style="color:white;"><span class="glyphicon glyphicon-remove">&nbsp;Contacto eliminado</span></h4>
             </div>
           </div>
         </div>

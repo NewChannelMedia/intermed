@@ -3028,7 +3028,7 @@ function loadTelefonos(){
           }
           html += '<td>';
             html += '<center>';
-              html += '<button class="btn btn-danger" type="button" id="deleteTelBio-'+i+'">';
+              html += '<button class="btn btn-danger" oculto="'+item.id+'"type="button" id="deleteTelBio-'+i+'" onclick="deleteFon(\''+id+'\');">';
                 html += '<span class="glyphicon glyphicon-remove-sign"></span>';
               html += '</button>';
             html += '</center>';
@@ -3107,7 +3107,6 @@ function addBio(){
 function deleteBio(id){
   var id = $(id).attr('oculto');
   $.post('/deleteBio',{id:id},function(data){
-    console.log("DATA: "+JSON.stringify(data));
     if( data == "OK"){
       $("#delBio").removeClass('hidden');
       $("#confirmacionBio").addClass('hidden');
@@ -3117,11 +3116,22 @@ function deleteBio(id){
     }
   });
 }
+function deleteFon(id){
+  var id = $(id).attr('oculto');
+  $.post('/deleteFon',{id:id},function(data){
+    if( data == "OK" ){
+      $("#deleFon").removeClass('hidden');
+      loadTelefonos();
+    }else{
+      console.log("NO SE PUDO ELIMINAR EL CONTACTO")
+    }
+  });
+}
 function addTelefon(){
   var nombreCon = $("#bioNombretel").val();
   var tel = $("#bioTel").val();
   var es_medico;
-  if( $("#esMedic").val() == 1 ){
+  if( $("#esMedic:checked").val() == 1 ){
     es_medico = 1;
   }else{
     es_medico = 0;

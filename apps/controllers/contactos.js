@@ -695,7 +695,7 @@ module.exports = {
       var usuario_id = req.session.passport.user.id;
       models.ContactoEmergencia.findAll({
         where:{usuario_id:usuario_id},
-        attributes:['nombre','tel','medico']
+        attributes:['id','nombre','tel','medico']
       }).then(function(contactos){
         res.send(contactos);
       });
@@ -755,6 +755,20 @@ module.exports = {
         where:{id:req.body.id}
       }).then(function(destruido){
         if( destruido == 1 ){
+          res.sendStatus(200);
+        }else{
+          res.sendStatus(400);
+        }
+      });
+    }
+  },
+  deleteFon: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.ContactoEmergencia.destroy({
+        where:{id:req.body.id}
+      }).then(function(contacto){
+        if( contacto == 1){
           res.sendStatus(200);
         }else{
           res.sendStatus(400);

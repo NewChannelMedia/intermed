@@ -1440,6 +1440,9 @@ var iniciar = function () {
     app.post('/addTelefon',function(req, res){
       intermed.callController('contactos','addTelefon',req, res);
     });
+    app.post('/deleteFon',function( req, res ){
+      intermed.callController('contactos','deleteFon',req, res);
+    });
 }
 
 var io = serv.server( app, 3000 );
