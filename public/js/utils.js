@@ -3120,3 +3120,91 @@ function cargarTelefonos(){
     });
   }
 }
+
+function agregarExperiencia(){
+  var addExp = $('#addExp').val();
+  if (addExp && addExp != ""){
+    $('#sortableExpertoEn').append(`
+      <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
+      <div class="menuDiv">
+        <span>
+          <span data-id="2" class="itemTitle">`+ addExp +`</span>
+          <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
+          <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
+        </span>
+      </div>
+      </li>`);
+      $('#addExp').val('');
+
+  } else {
+    //Input de experiencia vacio
+  }
+  $('#addExp').focus();
+}
+
+function guardarExperiencia(){
+  var expertoEn = {};
+  var parent;
+  var lastparent;
+  var last = 0;
+  $('.menuDiv').each(function(){
+    if ($(this).parent().parent().prop('id') === "sortableExpertoEn"){
+      lastparent = last;
+      parent = '';
+    } else {
+      parent = lastparent;
+    }
+
+    if (parent === ''){
+      expertoEn[lastparent] = {};
+      expertoEn[lastparent].exp = {};
+      expertoEn[lastparent].hijos = [];
+
+      expertoEn[lastparent].exp = {
+        num: last,
+        val: $(this).find('.itemTitle').text(),
+        padre: parent
+      }
+    } else {
+      expertoEn[lastparent].hijos.push({
+        num: last,
+        val: $(this).find('.itemTitle').text(),
+        padre: parent
+      });
+    }
+    last++;
+  });
+    console.log('expertoEn: ' + JSON.stringify(expertoEn));
+  $.ajax( {
+    async: false,
+    url: '/medicos/expertoEn',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'expertoEn': expertoEn
+    },
+    success: function ( data ) {
+      if (data.success){
+        var listaNueva = '<ul>';
+        var parent = '';
+        expertoEn.forEach(function(rec){
+          if (rec.padre !== '' && parent === ''){
+            parent = rec.padre;
+            listaNueva += '<ul>';
+          } else if (rec.padre === "" && parent !== ''){
+            parent = '';
+            listaNueva += '</ul>';
+          }
+          listaNueva += '<li>'+ rec.exp +'</li>';
+        });
+        listaNueva += '</ul>';
+        $('#divExpEn').html(listaNueva);
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+
+}

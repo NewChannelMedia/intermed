@@ -734,5 +734,39 @@ module.exports = {
         error: err
       } )
     } );
+  },
+
+  medicoExpertoActualizar: function (object, req, res){
+    console.log('OBJECT: ' + JSON.stringify(object));
+    if (req.session.passport.user){
+      models.Medico.findOne({
+        where: { usuario_id : req.session.passport.user.id},
+        attributes: ['id']
+      }).then(function(medico){
+        models.MedicoExpertoEn.destroy({
+          where: { medico_id: medico.id}
+        }).then(function(result){
+          object.expertoEn.forEach(function(rec){
+            models.MedicoExpertoEn.create({
+              medico_id: medico.id,
+              expertoen: rec.exp.val,
+              orden: rec.exp.num
+            }).then(function(padre){
+              rec.hijos.forEach(function(hijo){
+                models.MedicoExpertoEn.create({
+                  medico_id: medico.id,
+                  expertoen: hijo.val,
+                  padre_id: padre.id,
+                  orden: hijo.num
+                });
+              });
+            });
+          });
+          res.status(200).json({'success':true});
+        });
+      });
+    } else {
+      res.status(200).json({'success':false});
+    }
   }
 }

@@ -1419,6 +1419,10 @@ var iniciar = function () {
     app.post('/ubicaciones/eliminar', function (req, res){
       intermed.callController( 'ubicacion', 'eliminaUbicacion', req.body, req, res );
     });
+
+    app.post('/medicos/expertoEn',function (req, res){
+      intermed.callController( 'medicos', 'medicoExpertoActualizar', req.body, req, res );
+    });
 }
 
 var io = serv.server( app, 3000 );

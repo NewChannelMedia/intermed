@@ -2067,6 +2067,16 @@ li.error{
   padding-bottom: 2px!important;
 }
 
+.divBodyBootbox {
+  padding:30px;
+  background-color:#5D9AB7;
+  padding-bottom: 0px;
+}
+
+.divBodyBootbox .row {
+  padding-bottom: 2px!important;
+}
+
 .btn-add{
   background-color: #5AA5C9;
   border-style: solid;
