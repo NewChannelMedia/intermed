@@ -1,6 +1,6 @@
 <!-- interno -->
 <!-- empieza nav superior -->
-<nav id="" class="navbar navigator navbar-static-top">
+<nav id="mainNav" class="navbar navigator navbar-static-top">
   <section class="navigator-container container-fluid">
     <div class="navigator-inner row">
       <div id="logo-section" class="navigator-inner-section col-lg-3 col-md-3 col-sm-4 col-xs-9">
@@ -65,7 +65,7 @@
 </nav>
 
 <div id="sticky-anchor"></div>
-<nav class="nav-menu sticky h67-medcond">
+<nav id="stickyNav" class="nav-menu sticky h67-medcond">
   <div class="container-fluid nav-menu-container">
     <div id="menuMed" class="col-lg-8 col-md-7 col-sm-6 col-xs-12">
       <div class="row nav-menu-row">
@@ -182,13 +182,12 @@
         {{/if}}
       {{/if}}
     {{/if}}
-
   </div>
 </nav>
 <header class="header-section">
   <div class="container-fluid header-container">
     <div class="row header-row">
-      <div id="profile" class="header-profile col-lg-8 col-md-7 col-sm-10 col-xs-12">
+      <div id="profile" name="profile" class="header-profile col-lg-8 col-md-7 col-sm-10 col-xs-12">
         <div class="header-profile-container">
           <div class="header-profile-photo-container col-lg-4 col-md-5 col-sm-5 col-xs-12">
               <div class="profilePic header-profile-photo-link center-block">
@@ -571,7 +570,7 @@
         </div>
         <div class="row">
           <hr class="sep">
-          <nav id="listaEspecialidades" class="side-especialidades" >
+          <div id="listaEspecialidades" class="side-especialidades" >
             <p>
               <span class="side-especialides-header h77-boldcond">Selecciona</span><!--<div class="clearfix"></div>-->
               <span class="side-especialides-subheader h67-medcond">una especialidad</span>
@@ -597,7 +596,7 @@
                 <a href="#ginecologia">Ginecología <span class="badge pull-right">1</span></a>
               </li>
             </ul>
-          </nav>
+          </div>
           <div id="listaColegas" class="col-lg-9 col-md-9 col-sm-8 col-xs-12 pull-right main-colegas" data-spy="scroll" data-target="#listaEspecialidades" data-offset="180">
             <div id="alergologia" class="row" >
               <h1 class="h67-medcond">Alergología</h1>
@@ -952,7 +951,7 @@
               <img class="cat-icon" src="img/plataforma/icons/curriculum.png">
             </div>
             <div class="media-body">
-              <span class="cat-sub-title h67-medcond ">Perfil profesional / Dr. <span>Juan Carlos Medina Martinez</span></span>
+              <span class="cat-sub-title h67-medcond hidden-xs">Perfil profesional / Dr. <span>Juan Carlos Medina Martinez</span></span>
               <span class="cat-main-title h77-boldcond">Currículum y experiencia</span><br>
             </div>
           </div>
@@ -962,35 +961,264 @@
       </div>
     </div>
     <div class="row cv-body">
+      <div class="container cv-body-main">
+        <div class="cv-body-main-section col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <div class="row">
+            <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12 ">
+              <a href="#">
+                <div class="img-rounded info-left-icon">
+                  <span class="glyphicon glyphicon-pencil icon"></span>
+                </div>
+                <span class="info-label s20 whiteF h67-medcond text-uppercase">Editar sección</span>
+              </a>
+              <div class="media cv-header">
+                <div class="media-left cv-icon-cont">
+                  <img class="cv-icon" src="img/plataforma/icons/formacion.png">
+                </div>
+                <div class="media-body cv-title">
+                  <span class="whiteF h67-medcond s30">Formación Académica</span>
+                </div>
+              </div>
+              <div class="cv-info whiteF s15">
+                <p class="cv-element col-md-12 col-sm-12 col-xs-6">
+                  <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
+                  <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
+                  <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
+                  <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
+                  <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
+                </p>
+                <p class="cv-element col-md-12 col-sm-12 col-xs-6">
+                  <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
+                  <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
+                  <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
+                  <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
+                  <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
+                </p>
+                <p class="cv-element col-md-12 col-sm-12 col-xs-6">
+                  <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
+                  <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
+                  <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
+                  <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
+                  <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
+                </p>
+                <p class="cv-element col-md-12 col-sm-12 col-xs-6">
+                  <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
+                  <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
+                  <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
+                  <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
+                  <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
+                </p>
+                <p class="cv-element col-md-12 col-sm-12 col-xs-6">
+                  <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
+                  <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
+                  <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
+                  <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
+                  <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
+                </p>
+                <p class="cv-element col-md-12 col-sm-12 col-xs-6">
+                  <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
+                  <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
+                  <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
+                  <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
+                  <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cv-body-main-section col-lg-6 col-md-6 col-sm-6 col-xs-12">
+          <div class="row">
+            <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
+              <a href="#">
+                <div class="img-rounded info-left-icon">
+                  <span class="glyphicon glyphicon-pencil icon"></span>
+                </div>
+                <span class="info-label s20 whiteF h67-medcond text-uppercase">Editar sección</span>
+              </a>
+              <div class="media cv-header">
+                <div class="media-left cv-icon-cont">
+                  <img class="cv-icon" src="img/plataforma/icons/experiencia.png">
+                </div>
+                <div class="media-body cv-title">
+                  <span class="whiteF h67-medcond s30">Experiencia Laboral</span>
+                </div>
+              </div>
+              <div class="cv-info whiteF s15">
+                <p class="cv-element col-md-12 col-sm-12 col-xs-6">
+                  <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
+                  <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
+                  <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
+                  <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
+                  <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
+                </p>
+                <p class="cv-element col-md-12 col-sm-12 col-xs-6">
+                  <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
+                  <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
+                  <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
+                  <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
+                  <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
+                </p>
+                <p class="cv-element col-md-12 col-sm-12 col-xs-6">
+                  <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
+                  <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
+                  <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
+                  <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
+                  <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
+                </p>
+                <p class="cv-element col-md-12 col-sm-12 col-xs-6">
+                  <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
+                  <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
+                  <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
+                  <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
+                  <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
-<section id="comentariosv">
+<section id="comentarios">
   <div class="container-fluid">
-    <div class="row cat-header cv">
+    <div class="row cat-header comentarios">
       <div class="container">
         <div class="col-lg-9 col-md-10 col-lg-offset-3 col-md-offset-2">
           <div class="media">
             <div class="media-left">
-              <img class="cat-icon" src="img/plataforma/icons/curriculum.png">
+              <img class="cat-icon" src="img/plataforma/icons/logros.png">
             </div>
             <div class="media-body">
-              <span class="cat-sub-title h67-medcond">Perfil profesional / Dr. <span>Juan Carlos Medina Martinez</span></span>
-              <span class="cat-main-title h77-boldcond">Currículum y experiencia</span><br>
+              <span class="cat-sub-title h67-medcond">Comentarios de pacientes y logros</span>
+              <span class="cat-main-title h77-boldcond">Comentarios y logros</span><br>
             </div>
           </div>
         </div>
       </div>
-      <div class="cat-header-arrow cv">
+      <div class="cat-header-arrow comentarios">
       </div>
     </div>
-    <div class="row cv-body">
+    <div class="row logros-row">
+      <ul class="logros-slider">
+        <li class="slide">
+          <div class="media">
+            <div class="media-left">
+              <img class="logro-badge" src="img/plataforma/icons/logros.png">
+            </div>
+            <div class="media-body">
+              <span class="logro-title whiteF s25 h77-boldcond text-uppercase">Atención Inmediata</span>
+              <p class="s15 whiteF h67-medcond">
+                Por responder en primer lugar a 10 preguntas en los foros.
+              </p>
+            </div>
+          </div>
+        </li>
+        <li class="slide">
+          <div class="media">
+            <div class="media-left">
+              <img class="logro-badge" src="img/plataforma/icons/logros.png">
+            </div>
+            <div class="media-body">
+              <span class="logro-title whiteF s25 h77-boldcond text-uppercase">Popularity</span>
+              <p class="s15 whiteF h67-medcond">
+                Por ser recomendado a mas de 10 personas.
+              </p>
+            </div>
+          </div>
+        </li>
+        <li class="slide">
+          <div class="media">
+            <div class="media-left">
+              <img class="logro-badge" src="img/plataforma/icons/logros.png">
+            </div>
+            <div class="media-body">
+              <span class="logro-title whiteF s25 h77-boldcond text-uppercase">Rocket Science</span>
+              <p class="s15 whiteF h67-medcond">
+                Por publicar 20 artículos de divulgación.
+              </p>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="row logros-actions">
+      <div class="container">
+        <div class="center-block">
+          <a class="btn btn-tranparent s20 h67-medcond logros-actions-action"><span class="glyphicon glyphicon-check"></span>&nbsp;CALIFICA EL SERVICIO DE ESTE MEDICO</a>
+          <a class="btn btn-tranparent s20 h67-medcond logros-actions-action"><span class="glyphicon glyphicon-pencil"></span>&nbsp;DEJA UN COMENTARIO</a>
+        </div>
+      </div>
+    </div>
+    <div class="row comentarios-row">
+      <div class="container">
+        <div class="col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1">
+          <div class="media comment-container">
+            <div class="media-left">
+              <img class="img-circle comment-img" style="width:150px;" src="img/plataforma/temp/profile-pics/pp1.jpg">
+            </div>
+            <article class="media-body">
+              <div class="comment-title s30 h67-medcond">
+                ¡Un gran médico!
+              </div>
+              <p class="s15 h67-medium">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+              </p>
+              <p class="comment-autor s15 h75-bold">
+                <span>Fulano de Tal</span>. <span>Guadalajara</span>, <span>Jal</span>.
+              </p>
+              <p class="comment-date s15 h67-medium text-info">
+                20 de Noviembre de 2015
+              </p>
+            </article>
+          </div>
+          <div class="media comment-container">
+            <div class="media-left">
+              <img class="img-circle comment-img" style="width:150px;" src="img/plataforma/temp/profile-pics/pp2.jpg">
+            </div>
+            <article class="media-body">
+              <div class="comment-title s30 h67-medcond">
+                Muy agradecido
+              </div>
+              <p class="s15 h67-medium">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+              </p>
+              <p class="comment-autor s15 h75-bold">
+                <span>Perengano Mendiola</span>. <span>Guadalajara</span>, <span>Jal</span>.
+              </p>
+              <p class="comment-date s15 h67-medium text-info">
+                20 de Noviembre de 2015
+              </p>
+            </article>
+          </div>
+          <div class="media comment-container">
+            <div class="media-left">
+              <img class="img-circle comment-img" style="width:150px;" src="img/plataforma/temp/profile-pics/pp3.jpg">
+            </div>
+            <article class="media-body">
+              <div class="comment-title s30 h67-medcond">
+                No lo recomiendo
+              </div>
+              <p class="s15 h67-medium">
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+              </p>
+              <p class="comment-autor s15 h75-bold">
+                <span>Gordolfo de la Colina</span>. <span>Guadalajara</span>, <span>Jal</span>.
+              </p>
+              <p class="comment-date s15 h67-medium text-info">
+                20 de Noviembre de 2015
+              </p>
+            </article>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
+
 <script type="text/javascript">
-$('document').ready(function(){
-  MostrarUbicaciones();
-})
+  $('document').ready(function(){
+    MostrarUbicaciones();
+  })
 </script>

@@ -2628,6 +2628,7 @@ var idEspecialidad = '';
     });
   });
 //<------------------ FIN OSCAR ----------------------->
+
 function sticky_relocate() {
     var window_top = $(window).scrollTop();
     var div_top = $('#sticky-anchor').offset().top;
@@ -2638,97 +2639,11 @@ function sticky_relocate() {
     }
 }
 
-if ( location.pathname === '/nuevoPerfilMedicos' ) {
 $(function () {
     $(window).scroll(sticky_relocate);
     sticky_relocate();
 });
 
-
-(function($) {
-    $(function() {
-        $('.jcarousel').jcarousel();
-
-        $('.jcarousel-control-prev')
-            .on('jcarouselcontrol:active', function() {
-                $(this).removeClass('inactive');
-            })
-            .on('jcarouselcontrol:inactive', function() {
-                $(this).addClass('inactive');
-            })
-            .jcarouselControl({
-                target: '-=1'
-            });
-
-        $('.jcarousel-control-next')
-            .on('jcarouselcontrol:active', function() {
-                $(this).removeClass('inactive');
-            })
-            .on('jcarouselcontrol:inactive', function() {
-                $(this).addClass('inactive');
-            })
-            .jcarouselControl({
-                target: '+=1'
-            });
-
-        $('.jcarousel-pagination')
-            .on('jcarouselpagination:active', 'a', function() {
-                $(this).addClass('active');
-            })
-            .on('jcarouselpagination:inactive', 'a', function() {
-                $(this).removeClass('active');
-            })
-            .jcarouselPagination();
-    });
-})(jQuery);
-}
-
-jQuery(document).ready(function ($) {
-
-  $('#checkbox').change(function(){
-    setInterval(function () {
-        moveRight();
-    }, 3000);
-  });
-
-	var slideCount = $('#slider ul li').length;
-	var slideWidth = $('#slider ul li').width();
-	var slideHeight = $('#slider ul li').height();
-	var sliderUlWidth = slideCount * slideWidth;
-
-	$('#slider').css({ width: slideWidth, height: slideHeight });
-
-	$('#slider ul').css({ width: sliderUlWidth, marginLeft: - slideWidth });
-
-    $('#slider ul li:last-child').prependTo('#slider ul');
-
-    function moveLeft() {
-        $('#slider ul').animate({
-            left: + slideWidth
-        }, 200, function () {
-            $('#slider ul li:last-child').prependTo('#slider ul');
-            $('#slider ul').css('left', '');
-        });
-    };
-
-    function moveRight() {
-        $('#slider ul').animate({
-            left: - slideWidth
-        }, 200, function () {
-            $('#slider ul li:first-child').appendTo('#slider ul');
-            $('#slider ul').css('left', '');
-        });
-    };
-
-    $('a.control_prev').click(function () {
-        moveLeft();
-    });
-
-    $('a.control_next').click(function () {
-        moveRight();
-    });
-
-});
 
 $(function(){
   $('#btnAgregaUbi').on('click',function(){
@@ -2741,8 +2656,34 @@ $(function(){
   });
 });
 
-$("#listaEspecialidades a").on('click', function(event) {
+$('#listaEspecialidades a').on('click', function(event) {
   event.preventDefault();
+});
+
+$(function() {
+  $('nav a[href*=#]:not([href=#])').click(function() {
+    event.preventDefault();
+    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+      var target = $(this.hash);
+      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+      if (target.length) {
+        $('html,body').animate({
+          scrollTop: target.offset().top - $('#stickyNav').height()
+        }, 1000);
+        return false;
+      }
+    }
+  });
+});
+
+$(document).ready(function(){
+  $('.logros-slider').bxSlider({
+    slideWidth: 250,
+    minSlides: 1,
+    maxSlides: 5,
+    moveSlides: 1,
+    slideMargin: 50,
+  });
 });
 
 function actualizarDirecciones(){
