@@ -701,3 +701,859 @@ function bootbox_modificaMedicoDetalles(tipo){
 		startCollapsed: false
 	});
 }
+//<--------------------- RECOMENDACIONES ------------------->
+function recomendacionesBoot(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+        bootbox.hideAll();
+    },
+    closeButton:true,
+    size:'large',
+    message: `
+    <div class="clearfix" style="background-color:#172c3b;padding:5px" >
+      <div class="col-md-12" style="color:white">
+        <div class="hidden" id="cargador"><span class="three-quarters-loader">Enviando...</span></div>
+        <h4 class=""><span id="nombreOcultoPerfil" class="hidden"></span>Recomendar Dr.<span id="doctorSpan"></span> A:</h4>
+      </div><br /><br /><br />
+      <div id=“recomienda” class=“col-md-12”>
+         <div class="form-group has-feedback" id="buscador">
+             <label class="control-label"for="buscadorRecomendados" style="color:white">Busca entre tus contactos para que les recomiendes al Dr.<span class="hidden"id="pacienteIdOculto"></span></label>
+             <input type="text" class="form-control" id="buscadorRecomendados" placeholder="Buscar contacto...">
+             <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
+         </div>
+         <div class="" id="contactosArecomendar">
+             <table class="table table-condensed" id="recomendarA">
+               <tbody></tbody>
+             </table>
+         </div>
+         <div class="" id="enviarRecomendaciones">
+           <ul class="list-inline"></ul>
+         </div>
+      </div>
+      <div class="form-group" id="correoRecomendados">
+         <label class="control-label" for="correoEnviarRecomendado" style="color:white">Recomendar via correo:</label>
+         <input type="mail" class="form-control" id="correoEnviarRecomendado" placeholder="Correo:"/>
+         <div class="" id="mensajeParaRecomendados">
+            <textarea id="mensajeRecomendar" class="form-control" rows="3" placeholder="mensaje para los recomendados"></textarea>
+         </div>
+      </div>
+      <div class="pull-right">
+        <button type="button" class="btn btn-default" onclick="bootbox.hideAll();">close</button>
+        <button type="button" id="enviarAtodos" onclick="enviarTodo();bootbox.hideAll();" class="btn btn-primary">Recomendar</button>
+      </div>
+    </div><!— FIN DIV PRINCIPAL —>
+    `
+  });
+}
+//<--------------------- FIN RECOMENDACIONES --------------->
+
+//<--------------------- PEDIR RECOMENDACIONES ------------->
+    function pedirRecomendacionesBoot(){
+      $('.modal-body').css('padding',0);
+      bootbox.dialog({
+        onEscape: function () {
+        bootbox.hideAll();
+      },
+        size:'large',
+        message: `
+          <div class="clearfix" id="pedir" style="background-color:#172c3b;padding:5px">
+            <div class="col-md-12">
+              <h4 class="modal-title">
+                <span id="nombreOcultoPerfil" class="hidden"></span>
+                <p style="color:white;">
+                  Pedir una Recomendación al <span id="nombreDoctor"></span><span class="hidden" id="idMedico"></span>
+                </p>
+              </h4>
+            </div><br /><br /><br />
+            <div class="">
+              <p style="color:white;">En esta ventana podrá elegir una especialidad para poder pedirle una recomendacion a su medico</p>
+                <div class="form-group">
+                  <label for="especialidadesMedic" class="col-sm-2 control-label"style="color:white;">Especialidad</label>
+                  <select id="especialidadesMedic" onChange="cargando('#especialidadesMedic');" class="form-control">
+                  </select>
+                </div>
+                <div class="" id="tipoRecomendacionPedir">
+                  <ul class="list-inline"></ul>
+                </div>
+              </div>
+            </div>
+            <div class="pull-right">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="button" id="mandarPeticion" onclick="enviandoPeticion();" class="btn btn-primary" class="btn btn-primary">Pedir</button>
+            </div>
+          </div><!-- div principal final -->
+        `
+      });
+    }
+//<------------------- FIN PEDIR RECOMENDACIONES ----------->
+//<------------------- LOGIN ------------------------------->
+function loginModal(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+    bootbox.hideAll();
+  },
+    size:'medium',
+    backdrop:false,
+    message: `
+      <div class="" id="logInicio">
+        <form method="POST" action="/auth/correo">
+          <div class="col-md-12">
+            <h4>Intermed&reg | Login</h4>
+          </div>
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+              <input name="loginFB" value="Login con Facebook" class="btn btn-primary btn-block" onclick="window.location='/auth/facebook/request/loguin'">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+              <div class="form-group">
+                <input type="text" class="form-control" id="email" name="email" placeholder="Usuario" required="true">
+              </div>
+              <div class="form-group">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required="true">
+              </div>
+              <input type="submit" name="login" value="Ingresar" class="btn btn-primary btn-block">
+            </div>
+          </div>
+          <div class="row" id="fin">
+            <div class="col-md-8 col-md-offset-2">
+              <p class="text-center">
+                <small>Recuerda que instituciones, proveedores y secretarias solo pueden ingresar con su correo y contraseña.</small>
+                <br>
+                <small>¿Olvidaste tus datos de acceso? <a href="#">Haz click aqui para recuperarlos</a></small>
+              </p>
+            </div>
+          </div>
+        </form>
+      </div><!-- fin del div principal -->
+    `
+  });
+}
+//<------------------- FIN LOGIN --------------------------->
+//<------------------- INVITAR ----------------------------->
+  function invitarModal(){
+    $('.modal-body').css('padding',0);
+    bootbox.dialog({
+      onEscape: function () {
+      bootbox.hideAll();
+    },
+      size:'medium',
+      message: `
+      <div id="addFormaForm" class="" arialabelledby="addForma">
+        <div class="panel">
+          <div class="panel-body">
+            <form class="form-horizontal">
+              <div class="form-group">
+                <label class="col-md-3 control-label">Nombre</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="invitar_nombre">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-3 control-label">Correo</label>
+                <div class="col-md-9">
+                  <input type="text" class="form-control" id="invitar_correo">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="col-md-3 control-label">Mensaje</label>
+                <div class="col-md-9">
+                  <textarea class="form-control" id="invitar_mensaje">Te invito a unirte a Intermed</textarea>
+                </div>
+              </div>
+              <div class="col-md-4 col-md-offset-8">
+                <button type="button" class="btn btn-primary btn-block dropdown-form-guardar" onclick="procesarInvitacion()">Enviar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      `
+    });
+  }
+//<------------------- FIN INVITAR ------------------------->
+function registro(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+    bootbox.hideAll();
+  },
+    size:'large',
+    closeButton:true,
+    message: `
+      <div id="CatRegModal">
+        <form method="" action="">
+          <div class="">
+            <div class="">
+              <h4>Intermed&reg | Registro</h4>
+            </div>
+            <div class="">
+              <div class="row">
+                <h3 class="Flama-bold">SELECCIONA</h3>
+                <h1 class="Flama-normal">TU CATEGORÍA</h1>
+              </div>
+              <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                  <div class="iconos-servicios hi-icon-wrap hi-icon-effect hi-icon-effect-a">
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                      <a href="#" id="regPac" class="hi-icon hi-icon-modal" onclick='bootbox.hideAll();regPaciente();'>
+                        <img class="hi-icon-img" src="img/BotonPacientes.png">
+                      </a>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                      <a href="#set-9" class="hi-icon hi-icon-modal" onclick="bootbox.hideAll(); regMedico();">
+                        <img class="hi-icon-img" src="img/BotonMedicos.png">
+                      </a>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                      <a href="#set-9" class="hi-icon hi-icon-modal">
+                        <img class="hi-icon-img" src="img/BotonInstituciones.png">
+                      </a>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                      <a href="#set-9" class="hi-icon hi-icon-modal">
+                        <img class="hi-icon-img" src="img/BotonProveedores.png">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-1"></div>
+              </div>
+            </div>
+        </form>
+      </div>
+    `
+  });
+}
+function regPaciente(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+      bootbox.hideAll();
+    },
+  backdrop: true,
+    size:'large',
+    closeButton:true,
+    message: `
+      <div id="id="RegPacModal"">
+        <div class="">
+          <form method="POST" action="/reg/local" id="frm_regP">
+            <div class="">
+              <div class="">
+                <h4 class="FlamaBook-normal s25 regHeader">Intermed&reg / <b>Registro Pacientes</b></h4>
+              </div>
+              <div class="">
+                <hr class="separator">
+                <div class="row">
+                  <div class="col-md-6 regFacebook">
+                    <h3>Intermed &reg es mejor
+                      <br>con Facebook</h3>
+                    <br>
+                    <input name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block s20" onclick="window.location='/auth/facebook/request/P'">
+                    <br>
+                    <h2 class="Flama-bold">¡En un solo click!</h2>
+                    <p class="s20 flamaBook-normal">
+                      Utiliza tu cuenta de Facebook para registrarte en Intermed y conectate con tus amigos y conocidos.
+                    </p>
+                    <p class="s15 flamaBook-normal">
+                      Intermed no comparte tus datos con terceras personas ni compañias externas.
+                    </p>
+                  </div>
+                  <div class="col-md-6" class="regCorreo">
+                    <h3>Registrate con tu correo electronico</h3>
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div id="alertError"></div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group" id="nameGroup">
+                          <input type="text" class="form-control" id="nombreReg" name="first_name" placeholder="Nombre" required="true">
+                          <span id="nameIcon" class="" aria-hidden="true"></span>
+                          <div id="nombre-error"></div>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group" id="apellidoGroup">
+                          <input type="text" class="form-control" id="ApellidoReg" name="last_name" placeholder="Apellido" required="true">
+                          <span id="apellidoIcon" class="" aria-hidden="true"></span>
+                          <div id="apellido-error"></div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group" id="emailGroup">
+                          <input type="email" class="form-control" id="correoReg" name="email" placeholder="Correo Electrónico" required="true">
+                          <span id="emailIcon" class="" aria-hidden="true"></span>
+                          <div id="email-error"></div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group" id="passwordGroup">
+                          <input type="password" class="form-control" id="contraseñaReg" name="password" placeholder="Contraseña" pattern=".{6,13}" required="true">
+                          <span id="passwordIcon" class="" aria-hidden="true"></span>
+                          <div id="pass-error"></div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group" id="confirmGroup">
+                          <input type="password" class="form-control" id="contraseña2Reg" name="password2" placeholder="Confirma tu contraseña" pattern=".{6,13}" required="true">
+                          <span id="confirmIcon" class="" aria-hidden="true"></span>
+                          <div id="conf-error"></div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <h4>
+                          <small>Fecha de Nacimiento</small>
+                        </h4>
+                        <div class="col-md-4">
+                          <div class="form-group" id="diaGroup">
+                            <input type="text" class="form-control" id="diaNacReg" name="birthdayDay" placeholder="Dia" required="true">
+                            <span id="diaIcon" class="" aria-hidden="true"></span>
+                            <div id="dia-error"></div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group" id="mesGroup">
+                            <input type="text" class="form-control" id="mesNacReg" name="birthdayMonth" placeholder="Mes" required="true">
+                            <span id="mesIcon" class="" aria-hidden="true"></span>
+                            <div id="mes-error"></div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="form-group" id="añoGroup">
+                            <input type="text" class="form-control" id="añoNacReg" name="birthdayYear" placeholder="Año" required="true">
+                            <span id="añoIcon" class="" aria-hidden="true"></span>
+                            <div id="año-error"></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <h4>
+                          <small>Sexo</small>
+                        </h4>
+                        <div class="col-md-6">
+                          <div class="radio">
+                            <label>
+                              <input type="radio" name="gender" id="sexM" value="M" checked required="true"> Masculino
+                            </label>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="radio">
+                            <label>
+                              <input type="radio" name="gender" id="sexF" value="F" required="true"> Femenino
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <input type="hidden" id="tiempo" name="tiempoStamp" value="tiempo" />
+                        <!-- TIMESTAMPS -->
+                        <input type="submit" id="regi" name="registroCorreo" value="Registrate" class="btn btn-success btn-block">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                </div>
+              </div>
+              <div class="modal-footer">
+                <p class="s15">
+                  <small>Al hacer clic en "Regístate", aceptas las <a href="">Condiciones</a> y confirmas que leíste nuestra <a href="">Política de datos</a>, incluido el <a href="">uso de cookies</a></small>.
+                </p>
+              </div>
+          </form>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+      </div>
+    `
+  });
+}
+function regMedico(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+      bootbox.hideAll();
+    },
+  backdrop: true,
+    size:'large',
+    closeButton:true,
+    message: `
+      <div id="RegMedModal">
+        <div class="Flama-normal">
+          <div class="">
+            <div class="">
+              <h4 class="FlamaBook-normal s25 regHeader">Intermed&reg / <b>Registro Médicos</b> </h4>
+            </div>
+            <div class="">
+              <hr class="separator">
+              <div class="row">
+                <div class="col-md-6 regFacebook">
+                  <h3>Intermed &reg es mejor
+                    <br>con Facebook</h3>
+                  <br>
+                  <input name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block s20" onclick="window.location='/auth/facebook/request/M'">
+                  <br>
+                  <h2 class="Flama-bold">¡En un solo click!</h2>
+                  <p class="s20 flamaBook-normal">
+                    Utiliza tu cuenta de Facebook para registrarte en Intermed y conectate con tus amigos y conocidos.
+                  </p>
+                  <p class="s15 flamaBook-normal">
+                    Intermed no comparte tus datos con terceras personas ni compañias externas.
+                  </p>
+                </div>
+                <div class="col-md-6 regCorreo">
+                  <h3>Regístrate con tu correo electronico</h3>
+                  <div class="row">
+                    <form method="POST" action="/reg/local" id="frm_regM">
+                      <div class="col-md-12">
+                        <div id="alertErrorM"></div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="hidden" name="tipoUsuario" value="M">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="email" class="form-control" id="correoRegM" name="email" placeholder="Correo Electrónico">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="email" class="form-control" id="correoConfirmRegM" placeholder="Confirma tu correo Electrónico">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="password" class="form-control" id="contraseñaRegM" name="password" placeholder="Contraseña" pattern=".{6,13}">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-group">
+                          <input type="password" class="form-control" id="contraseña2RegM" placeholder="Confirma tu contraseña" pattern=".{6,13}">
+                        </div>
+                      </div>
+                      <div class="col-md-12">
+                        <input type="hidden" id="tiempo" name="tiempoStamp" value="tiempo" />
+                        <input type="submit" id="regi" name="registroCorreo" value="Registrate" class="btn btn-success btn-block s20">
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div class="row text-center">
+                <p class="s15">
+                  <small>Al hacer clic en "Regístate", aceptas las <a href="">Condiciones</a> y confirmas que leíste nuestra <a href="">Política de datos</a>, incluido el <a href="">uso de cookies</a></small>.
+                </p>
+              </div>
+            </div>
+            <div class="">
+            </div>
+          </div>
+        </div>
+      </div>
+    `
+  });
+}
+function catServices(){
+  $('.modal-body').css('padding',0);
+    bootbox.dialog({
+      onEscape: function () {
+        bootbox.hideAll();
+    },
+    backdrop: true,
+    size:'large',
+    closeButton:true,
+    message: `
+      <div class="completoService" style="background-color:#172c3b; padding:5px;">
+        <!-- INICIO HEADER -->
+          <div class="" style="background-color:#172c3b">
+            <h4 style="color:white">Catalogo de servicios</h4>
+          </div>
+        <!-- FIN HEADER -->
+        <!-- INICIO BODY -->
+          <div class="">
+            <div class="row">
+              <div class="col-md-12">
+                <ul class="nav nav-tabs menuUbicacion" role="tablist">
+                  <li role="presentation" class="active" id="cargar" onclick="downloadServices('#cargar');">
+                    <a data-toggle="tab" aria-control="serv" role="tab" href="#serv">
+                      <span style="color:white" class="glyphicon glyphicon-flash">&nbsp;Servicios</span>
+                    </a>
+                  </li>
+                  <li role="presentation">
+                    <a data-toggle="tab" aria-control="agServ" role="tab" href="#agServ">
+                      <span style="color:white" class="glyphicon glyphicon-floppy-disk">&nbsp;Agregar Servicios</span>
+                    </a>
+                  </li>
+                  <li role="presentation" onclick="maquetaServices();">
+                    <a data-toggle="tab" aria-control="modifServ" role="tab" href="#modifServ">
+                      <span style="color:white" class="glyphicon glyphicon-floppy-saved">&nbsp;Modifica servicios</span>
+                    </a>
+                  </li>
+                  <li role="presentation" onclick="maquetaDeleteServices();">
+                    <a data-toggle="tab" aria-control="deleteServ" role="tab" href="#deleteServ">
+                      <span style="color:white" class="glyphicon glyphicon-floppy-remove">&nbsp;Borra servicios</span>
+                    </a>
+                  </li>
+                </ul>
+                <div class="tab-content" style="color:white">
+                  <div role="tabpanel" class="tab-pane active" id="serv">
+                    <h3>Tus servicios:</h3>
+                    <table class="table table-condensed">
+                      <thead>
+                        <td><center>#</center></td>
+                        <td><center>Concepto</center></td>
+                        <td><center>Descripcion</center></td>
+                        <td><center>Precio</center></td>
+                        <td><center>Duracion</center></td>
+                      </thead>
+                      <tbody id="tusServices">
+                      </tbody>
+                    </table>
+                    <div class="hidden" id="encontroServicios">
+                      <h2 style="color:red;">No se encontraron servicios</h2>
+                    </div>
+                  </div>
+                  <!-- Agregar mas servicios -->
+                  <div id="agServ" role="tabpanel" class="tab-pane">
+                    <h3>Agrega mas servicios</h3>
+                    <table class="table table-condensed">
+                      <thead>
+                        <td><center>#</center></td>
+                        <td><center>Concepto</center></td>
+                        <td><center>Descripcion</center></td>
+                        <td><center>Precio</center></td>
+                        <td><center>Duracion</center></td>
+                      </thead>
+                      <tbody id="agregatuServices">
+                        <td>
+                          <center>
+                            <button type="button" onclick="addServices('#conceptServ','#decriptServ','#precServ','#duraServ');" class="btn btn-primary">
+                              <span style="color:white;" class="glyphicon glyphicon-plus"></span>
+                            </button>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="conceptServ" />
+                            </div>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="decriptServ" />
+                            </div>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <input type="text" class="form-control" id="precServ" />
+                            </div>
+                          </center>
+                        </td>
+                        <td>
+                          <center>
+                            <div class="form-group">
+                              <select id="duraServ">
+                                <option value="time">--Selecciona--</option>
+                                <option value="00:30:00">30 minutos</option>
+                                <option value="00:45:00">45 minutos</option>
+                                <option value="01:00:00">1 hora</option>
+                                <option value="02:00:00">2 horas</option>
+                                <option value="03:00:00">3 horas</option>
+                              </select>
+                            </div>
+                          </center>
+                        </td>
+                      </tbody>
+                    </table>
+                    <div class="hidden" id="exitoAgregado">
+                      <h2 style="color:green">
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;se ha agregado exitosamente
+                      </h2>
+                    </div>
+                    <div class="hidden" id="exitoNoAgregado">
+                      <h2 style="color:red">
+                        <span class="glyphicon glyphicon-remove"></span>&nbsp;su servicio no se pudo agregado
+                      </h2>
+                    </div>
+                  </div>
+                  <!-- modifica -->
+                  <div id="modifServ" role="tabpanel" class="tab-pane">
+                    <h3>Modifica tus servicios</h3>
+                    <table class="table table-condensed">
+                      <thead>
+                        <td><center>Modificar</center></td>
+                        <td><center>Concepto</center></td>
+                        <td><center>Descripcion</center></td>
+                        <td><center>Precio</center></td>
+                        <td><center>Duracion</center></td>
+                      </thead>
+                      <tbody id="modificatusServices">
+                      </tbody>
+                    </table>
+                    <div class="hidden" id="exitoModificado">
+                      <h2 style="color:green">
+                        <span class="glyphicon glyphicon-ok"></span>&nbsp;se ha modificado exitosamente
+                      </h2>
+                    </div>
+                    <div class="hidden" id="exitoNoModificado">
+                      <h2 style="color:red">
+                        <span class="glyphicon glyphicon-remove"></span>&nbsp;su servicio no Modificado
+                      </h2>
+                    </div>
+                  </div>
+                  <div id="deleteServ" role="tabpanel" class="tab-pane">
+                    <h3>Elimina servicios</h3>
+                    <table class="eliminaServicios table table-condensed">
+                      <thead>
+                        <td><center>Borrar</center></td>
+                        <td><center>Concepto</center></td>
+                        <td><center>Descripcion</center></td>
+                        <td><center>Precio</center></td>
+                        <td><center>Duracion</center></td>
+                      </thead>
+                      <tbody id="deleteServicesTable">
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <!-- FIN BODY -->
+        <!-- INICIO FOOTER -->
+          <div class="modal-footer">
+          </div>
+        <!-- FIN FOOTER -->
+      </div>
+    `
+  });
+}
+function cambioFotoPerfil(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+      bootbox.hideAll();
+    },
+  backdrop: true,
+    size:'large',
+    closeButton:false,
+    message: `
+    <div  id="CambiarFotoPerfil" name="CambiarFotoPerfil" >
+      <form>
+        <div class="">
+          <div class="">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="row" style="display: flex;align-items: center;justify-content: center;flex-direction: column;">
+                  <h4 class="">Selecciona el area a guardar</h4>
+                  <hr/>
+                  <input type="hidden" value="" name="base64file" id="base64file">
+                  <div class="col-md-12" id="contenedorFoto" class="text-center" style="width: auto;margin: auto"></div>
+                  <canvas id="canvas" height="300" width="300" style="display: none"></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="">
+            <input type="button" value="Guardar" class="btn btn-primary" id="btnCrop" onclick="guardarImagenPerfil();bootbox.hideAll();">
+            <input type="button" value="Cancelar" class="btn btn-danger" onclick="bootbox.hideAll();">
+          </div>
+        </div>
+      </form>
+  </div>
+    `
+  });
+}
+function editaPerfBoot(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+      bootbox.hideAll();
+  },
+  backdrop: true,
+  size:'large',
+  closeButton:true,
+  message: `
+  <div class="" id="tabPerfilModificar" style="background-color:#172c3b; padding:5px;">
+    <ul class="nav nav-tabs menuBootbox">
+      <li role="presentation" class="active" onclick="loadDatosGenerales();">
+        <a href="#general" aria-control="general" role="tab" data-toggle="tab">
+          <span class="glyphicon glyphicon-th">&nbsp;Generales</span>
+        </a>
+      </li>
+      <li role="presentation" onclick="loadBiometricos();">
+        <a href="#biometricos" aria-control="biometricos" role="tab" data-toggle="tab">
+          <span class="glyphicon glyphicon-heart">&nbsp;Biometricos</span>
+        </a>
+      </li>
+      <li role="presentation" onclick="loadTelefonos();">
+        <a href="#emergencia" aria-control="emergencia" role="tab" data-toggle="tab">
+          <span class="glyphicon glyphicon-plus-sign">&nbsp;Emergencia</span>
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content tabBootBox">
+      <div class="tab-pane active" role="tabpanel" id="general">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-4">
+                <img src="{{fotoPerfil}}" width="200" height="200" class="img-rounded">
+              </div>
+              <div class="col-lg-8 input-group">
+                <input type="text" class="form-control" id="editNom" placeholder="Nombre" />
+                <span class="input-group-btn">
+                  <button id="nomEdit" class="btn btn-danger" onclick="updateName();"type="button"><span class="glyphicon glyphicon-wrench"></span></button>
+                </span>
+              </div><!-- /.col-lg-6 -->
+              <div class="col-lg-8 input-group">
+                <input type="text" class="form-control" id="editApeP" placeholder="Apelido paterno" />
+                <span class="input-group-btn">
+                  <button id="apePEdit" class="btn btn-danger" onclick="updateApellidoP();" type="button"><span class="glyphicon glyphicon-wrench" ></span></button>
+                </span>
+              </div><!-- /.col-lg-6 -->
+              <div class="col-lg-8 input-group">
+                <input type="text" class="form-control" id="editApeM" placeholder="Apellido materno" />
+                <span class="input-group-btn">
+                  <button id="apeMEdit" class="btn btn-danger" onclick="updateApellidoM();" type="button"><span class="glyphicon glyphicon-wrench" ></span></button>
+                </span>
+              </div><!-- /.col-lg-6 -->
+              <div class="col-lg-8">
+                <hr>
+                <h4 style="color:white" class="hidden" id="infoGeneral">Información actualizada</h4>
+                <h3 style="color:white" class="hidden" id="cambiandoGenerales"></h3>
+              </div>
+            </div>
+          </div>
+        <hr>
+        <div class="container-fluid" id="ubicacionGeneral">
+          <h1 style="color:white;">MAPITA DE CINTHIA</h1>
+        </div>
+      </div>
+      <div class="tab-pane" role="tabpanel" id="biometricos">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <label style="color:white">Biometricos</label>
+            </div>
+            <div class="col-md-12 form-group">
+              <input type="text" class="form-control" id="bioPeso" placeholder="Peso(kg.)" />
+            </div>
+            <div class="col-md-12 form-group">
+              <input type="text" class="form-control" id="bioAltura" placeholder="Altura" />
+            </div>
+            <div class="col-md-12 form-group">
+              <input type="text" class="form-control" id="bioSangre" placeholder="Tipo de sangre" />
+            </div>
+            <div class="col-md-12 form-group">
+              <select id="bioGenero" class="form-control">
+                <option value="0">--Genero--</option>
+                <option value="M">Masculino</option>
+                <option value="F">Femenino</option>
+              </select>
+            </div>
+            <div class="col-md-12 form-group">
+              <button class="btn btn-danger form-control" onclick="addBio();" id="addBio" type="button">
+                <span class="glyphicon glyphicon-plus">&nbsp;Agregar</span>
+              </button>
+            </div>
+            <div class="col-md-12 hidden" id="confirmacionBio">
+              <h4 style="color:white"><span class="glyphicon glyphicon-ok">&nbsp;Informacion guardada correctamente</span></h4>
+            </div>
+            <div class="col-md-12 hidden" id="negadoBio">
+              <h4 style="color:white"><span class="glyphicon glyphicon-remove">&nbsp;Fallo al guardar la informacion</span></h4>
+            </div>
+            <div class="col-md-12 hidden" id="delBio">
+              <h4 style="color:white"><span class="glyphicon glyphicon-trash">&nbsp;Informacion borrada...</span></h4>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12 hidden" id="noBiometrico">
+              <h2 style="color:red;">Aun no ha registrado ningun biometrico</h2>
+            </div>
+            <div class="col-md-12">
+              <table class="table table-condensed">
+                <thead style="color:white;">
+                  <tr>
+                    <th><center><span class="glyphicon glyphicon-scale">&nbsp;Peso</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-resize-vertical">&nbsp;Altura(cm)</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-question-sign">&nbsp;Tipo de sangre</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-user">&nbsp;Genero</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-remove-sign">&nbsp;Eliminar</span></center></ht>
+                  </tr>
+                </thead>
+                <tbody id="bioBody">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane" role="tabpanel" id="emergencia">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-3 form-group">
+              <input type="text" class="form-control" id="bioNombretel" placeholder="Nombre del contacto" />
+            </div>
+            <div class="col-md-3 form-group">
+              <input type="text" class="form-control" id="bioTel" placeholder="Telefono" />
+            </div>
+            <div class="col-md-3 checkbox form-group">
+              <label style="color:white;">
+                <input type="checkbox" id="esMedic" name="esMedic" value="1">¿Es medico?
+              </label>
+            </div>
+            <div class="col-md-3 form-group">
+              <button type="button" id="bioTelbutton" onclick="addTelefon();" class="form-control btn btn-danger">
+                <span class="glyphicon glyphicon-phone-alt">&nbsp;Agregar</span>
+              </button>
+            </div>
+            <div class="col-md-12 hidden" id="telAdd">
+              <h4 style="color:white;"><span class="glyphicon glyphicon-phone-alt">&nbsp;Contacto agregado</span></h4>
+            </div>
+            <div class="col-md-12 hidden" id="deleFon">
+              <h4 style="color:white;"><span class="glyphicon glyphicon-remove">&nbsp;Contacto eliminado</span></h4>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="container-fluid hidden" id="noTelefono">
+          <div class="row">
+            <h2 style="color:red">UD. No tiene agregado telefono de emergencia</h2>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-condensed">
+                <thead style="color:white;">
+                  <tr>
+                    <th><center><span class="glyphicon glyphicon-user">&nbsp;Nombre</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-phone-alt">&nbsp;Telefonos</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-user">&nbsp;Es mi medico</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-remove-sign">&nbsp;Eliminar</span></center></th>
+                  </tr>
+                </thead>
+                <tbody id="telBody" style="color:white;"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- PRINCIPAL -->
+    `
+  });
+}

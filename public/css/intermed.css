@@ -2110,3 +2110,7 @@ li.error{
 .pac-container.pac-logo{
   z-index: 30000;
 }
+
+.tabBootBox {
+  padding: 15px 0;
+}

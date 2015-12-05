@@ -663,5 +663,142 @@ module.exports = {
         }
       }
     }
+  },
+  loadDatosGenerales: function(req, res){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Usuario.findOne({
+        where:{id:usuario_id},
+        attributes:['correo'],
+        include:[{
+          model:models.DatosGenerales,
+          attributes:['nombre','apellidoP','apellidoM']
+        }]
+      }).then(function(usuario){
+        res.send(usuario);
+      });
+    }
+  },
+  loadBiometricos: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Biometrico.findAll({
+        where:{usuario_id:usuario_id},
+        attributes:['id','peso','altura','tipoSangre','genero']
+      }).then(function(biometricos){
+        res.send(biometricos);
+      });
+    }
+  },
+  loadTelefonos: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.ContactoEmergencia.findAll({
+        where:{usuario_id:usuario_id},
+        attributes:['id','nombre','tel','medico']
+      }).then(function(contactos){
+        res.send(contactos);
+      });
+    }
+  },
+  updateName: function(req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      var obj = {nombre:req.body.nombre};
+      models.DatosGenerales.update(obj, {
+        where:{usuario_id:usuario_id}
+      }).then(function(actualizado){
+        res.send(actualizado);
+      });
+    }
+  },
+  updateApellidoP: function(req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      var obj = {apellidoP:req.body.nombre};
+      models.DatosGenerales.update(obj, {
+        where:{usuario_id:usuario_id}
+      }).then(function(actualizado){
+        res.send(actualizado);
+      });
+    }
+  },
+  updateApellidoM: function(req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      var obj = {apellidoM:req.body.nombre};
+      models.DatosGenerales.update(obj, {
+        where:{usuario_id:usuario_id}
+      }).then(function(actualizado){
+        res.send(actualizado);
+      });
+    }
+  },
+  addBio: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Biometrico.create({
+        peso: parseFloat(req.body.peso),
+        altura: parseFloat(req.body.altura),
+        tipoSangre: req.body.tipoS,
+        genero: req.body.genero,
+        usuario_id: usuario_id
+      }).then(function(biometrico){
+        res.send(biometrico);
+      });
+    }
+  },
+  deleteBio: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Biometrico.destroy({
+        where:{id:req.body.id}
+      }).then(function(destruido){
+        if( destruido == 1 ){
+          res.sendStatus(200);
+        }else{
+          res.sendStatus(400);
+        }
+      });
+    }
+  },
+  deleteFon: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.ContactoEmergencia.destroy({
+        where:{id:req.body.id}
+      }).then(function(contacto){
+        if( contacto == 1){
+          res.sendStatus(200);
+        }else{
+          res.sendStatus(400);
+        }
+      });
+    }
+  },
+  postPaciente:function(req, res){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Paciente.findOne({
+        where:{usuario_id:usuario_id},
+        attributes:['id']
+      }).then(function(encontrado){
+        res.send(encontrado);
+      });
+    }
+  },
+  addTelefon: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.ContactoEmergencia.create({
+        nombre: req.body.nombre,
+        tel: req.body.tel,
+        medico: parseInt(req.body.medico),
+        usuario_id: usuario_id,
+        paciente_id: parseInt(req.body.paciente_id)
+      }).then(function(creado){
+        res.send(creado);
+      });
+    }
   }
 }

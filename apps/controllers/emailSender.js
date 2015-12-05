@@ -40,13 +40,13 @@ function mailer( object, file ) {
   };
   // se configuran los datos del host
   var datos = {
-    host: 'server119.neubox.net',
+    host: 'mx1.hostinger.mx',
     secure: true,
     port: 465,
     connectionTimeout: 3000,
     auth: {
-      user: 'hola@newchannel.mx',
-      pass: 'channel5766'
+      user: 'hola@intermed.online',
+      pass: 'holatomas5766'
     },
     tls: {
       rejectUnauthorized: false
@@ -55,7 +55,7 @@ function mailer( object, file ) {
   // se configura un json con los valores que debe de traer el object
   // este json se le pasara como parametro a la funcion para enviar el correo
   var mailOptions = {
-    from: 'Tu cuenta Intermed ®<hola@newchannel.mx>',
+    from: 'Tu cuenta Intermed ®<hola@intermed.online>',
     to: object.to,
     subject: object.subject,
     template: file,
@@ -97,13 +97,13 @@ function recomendacion( object ,res, file ) {
   };
   // se configuran los datos del host
   var datos = {
-    host: 'server119.neubox.net',
+    host: 'mx1.hostinger.mx',
     secure: true,
     port: 465,
     connectionTimeout: 3000,
     auth: {
-      user: 'hola@newchannel.mx',
-      pass: 'channel5766'
+      user: 'hola@intermed.online',
+      pass: 'holatomas5766'
     },
     tls: {
       rejectUnauthorized: false
@@ -112,7 +112,7 @@ function recomendacion( object ,res, file ) {
   // se configura un json con los valores que debe de traer el object
   // este json se le pasara como parametro a la funcion para enviar el correo
   var mailOptions = {
-    from: 'Recomendaciones Intermed ®<hola@newchannel.mx>',
+    from: 'Recomendaciones Intermed ®<hola@intermed.online>',
     to: object.to,
     subject: object.subject,
     template: file,

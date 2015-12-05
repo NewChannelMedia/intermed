@@ -477,10 +477,12 @@ function cargarInfoPerfil( usuario, condiciones, req, res ) {
             type: models.sequelize.QueryTypes.SELECT
           } )
           .then( function ( localidad ) {
-            usuario.localidad = {
-              ciudad: localidad[ 0 ].ciudad,
-              estado: localidad[ 0 ].estado
-            };
+            if(localidad[0]){
+              usuario.localidad = {
+                ciudad: localidad[ 0 ].ciudad,
+                estado: localidad[ 0 ].estado
+              };
+            }
             armarPerfil( usuario, req, res );
           } )
       }

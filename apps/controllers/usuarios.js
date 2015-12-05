@@ -429,6 +429,7 @@ var generarSesion = function ( req, res, usuario_id, redirect ) {
 function cargarExtraInfo( usuario, redirect, req, res ) {
   var tipoUsuario = '';
   if ( usuario.tipoUsuario === 'P' ) {
+    tipoUsuario = "Paciente";
     models.Paciente.findOne( {
         where: {
           usuario_id: usuario.id
@@ -455,6 +456,7 @@ function cargarExtraInfo( usuario, redirect, req, res ) {
       } );
   }
   else if ( usuario.tipoUsuario === 'M' ) {
+    tipoUsuario = "Medico";
     models.Medico.findOne( {
         where: {
           usuario_id: usuario.id

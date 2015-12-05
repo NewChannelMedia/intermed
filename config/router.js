@@ -1427,6 +1427,53 @@ var iniciar = function () {
     app.post('/medicos/expertoTraer', function (req, res){
       intermed.callController( 'medicos', 'medicoExpertoTraer', req.body, req, res );
     });
+
+    // catalogo de servicios
+    app.post('/addServices', function( req, res ){
+      intermed.callController('catServicios', 'addServices', req, res);
+    });
+    app.post('/searchServices', function( req, res){
+      intermed.callController('catServicios','searchServices',req, res);
+    });
+    app.post('/deleteServicio',function( req, res ){
+      intermed.callController('catServicios','deleteServicio',req, res);
+    });
+    app.post('/updateServices', function( req, res ){
+      intermed.callController('catServicios','updateServices',req, res);
+    });
+    app.post('/loadDatosGenerales', function(req, res){
+      intermed.callController('contactos','loadDatosGenerales',req,res);
+    });
+    app.post('/loadBiometricos', function( req, res ){
+      intermed.callController('contactos', 'loadBiometricos', req, res);
+    });
+    app.post('/loadTelefonos', function( req, res ){
+      intermed.callController('contactos', 'loadTelefonos', req, res );
+    });
+    app.post('/updateName', function( req, res ){
+      intermed.callController('contactos','updateName', req, res);
+    });
+    app.post('/updateApellidoP', function( req, res ){
+      intermed.callController('contactos','updateApellidoP', req, res);
+    });
+    app.post('/updateApellidoM', function( req, res ){
+      intermed.callController('contactos','updateApellidoM', req, res);
+    });
+    app.post('/addBio', function( req, res ){
+      intermed.callController('contactos','addBio', req, res);
+    });
+    app.post('/deleteBio',function( req, res ){
+      intermed.callController('contactos','deleteBio', req, res);
+    });
+    app.post('/postPaciente',function( req, res ){
+      intermed.callController('contactos','postPaciente',req, res);
+    });
+    app.post('/addTelefon',function(req, res){
+      intermed.callController('contactos','addTelefon',req, res);
+    });
+    app.post('/deleteFon',function( req, res ){
+      intermed.callController('contactos','deleteFon',req, res);
+    });
 }
 
 var io = serv.server( app, 3000 );

@@ -1335,7 +1335,7 @@ function validateForm( tipoForm, nameForm ){
 //<---------------------------------------------------->
 
 $( '#CambiarFotoPerfil' ).on( 'hidden.bs.modal', function ( e ) {
-  $( '#imageFile' ).val( '' );
+  $( '#imageFile' ).val( '' );cambioFotoPerfil();
 } )
 
 var base64file;
@@ -1345,8 +1345,8 @@ $( function () {
     base64file = '';
     var tamanio = $( this )[ 0 ].files[ 0 ].size;
     if ( tamanio < 1048576 ) {
+      cambioFotoPerfil();
       $( '#btnCrop' ).hide();
-      $( '#CambiarFotoPerfil' ).modal( "show" );
       document.getElementById( "contenedorFoto" ).innerHTML = '<img id="fotoPerfilNueva" >';
       var reader = new FileReader();
       var fotoPerfilNueva = $( '#fotoPerfilNueva' );
@@ -1696,15 +1696,17 @@ function cargarFavCol( usuario ) {
 * todos sus contactos y se les podra enviar la recomendacion en este caso el
 * medico al cual le dio click al click de recomendar
 */
+var id = "";
+var usuarioRL="";
+var extraDato ="";
+var usuario = "";
+var uId ="";
 //<----------- RECOMENDACIONES -------------------->
   $(document).ready(function(){
-    var id = "";
-    var usuarioRL="";
-    var extraDato ="";
-    var usuario = "";
-    var uId ="";
     // inpyt type text
     $( '.recomendar.contList-profileActionLink' ).click(function(){
+      //se manda a llamar al bootbox
+      recomendacionesBoot();
       id += $( this ).attr('id');
       $("#pacienteIdOculto").text(id);
       var medico_id="";
@@ -1741,7 +1743,7 @@ function cargarFavCol( usuario ) {
           html +='<img src="'+data[ i ].Paciente.Usuario.urlFotoPerfil+'" alt="" class="img-thumbnail">';
           html +='</td>';
           html +='<td id="paciente'+data[ i ].Paciente.id+'">';
-          html +='<p>'+nombreTodo+'</p>';
+          html +='<p style="color:white">'+nombreTodo+'</p>';
           html +='</td>';
           html +='</tr>';
           extraDato = nombreTodo;
@@ -1753,56 +1755,57 @@ function cargarFavCol( usuario ) {
         $( "#recomendarA tbody" ).append(html);
       });
     });
-    $( "#enviarAtodos" ).click(function(){
-      if( $( "#correoEnviarRecomendado" ).val() != ""){
-        var to = $( "#correoEnviarRecomendado" ).val();
-        var enlace = usuarioRL;
-        var mensaje =$("#mensajeRecomendar").val();
-        usuario=$("#nombreOcultoPerfil").text();
-        $("#cargador").removeClass('hidden');
-        $('#enviarAtodos').prop('disabled',true);
-        $.post('/enviaCorreoRecomendados',{toMail:to,enlace:enlace,usuario:usuario,mensaje:mensaje},function(data,status){
-          if(data){
-            $('#enviarAtodos').prop('disabled',false);
-            $("#cargador").addClass('hidden');
-            $('.modal').modal('hide');
-            $('.modal').on('hidden.bs.modal',function(e){
-              $("#mensajeRecomendar").val('');
-              $( "#correoEnviarRecomendado" ).val('');
-            });
-          }
-        });
-      }
-      var obj = new Array();
-      var objId = new Array();
-      var medico;
-      var paciente;
-      $.each($("li div.label.label-primary small span.hidden"),function(count, valor){
-        obj.push($( this ).text());
-        medico = parseInt( $(this).attr('di'));
-        objId.push( $( this ).attr('da') );
-        paciente = parseInt( $(this).attr('da'));
-      });
-      $.post('/medicoRecomendado',{objeto:obj, objectoId:objId},function(data){
-        $.post('/doctorRecomendado',{medicoId:medico, paciente:paciente},function(dat){});
+  });
+  //se carga el bootbox para que funcionen el boton de enviar
+  function enviarTodo(){
+    if( $( "#correoEnviarRecomendado" ).val() != ""){
+      var to = $( "#correoEnviarRecomendado" ).val();
+      var enlace = usuarioRL;
+      var mensaje =$("#mensajeRecomendar").val();
+      usuario=$("#nombreOcultoPerfil").text();
+      $("#cargador").removeClass('hidden');
+      $('#enviarAtodos').prop('disabled',true);
+      $.post('/enviaCorreoRecomendados',{toMail:to,enlace:enlace,usuario:usuario,mensaje:mensaje},function(data,status){
         if(data){
+          $('#enviarAtodos').prop('disabled',false);
+          $("#cargador").addClass('hidden');
           $('.modal').modal('hide');
           $('.modal').on('hidden.bs.modal',function(e){
-            $("#mensajeRecomendar").text('');
+            $("#mensajeRecomendar").val('');
             $( "#correoEnviarRecomendado" ).val('');
-            $("#buscadorRecomendados").val('');
           });
         }
       });
+    }
+    var obj = new Array();
+    var objId = new Array();
+    var medico;
+    var paciente;
+    $.each($("li div.label.label-primary small span.hidden"),function(count, valor){
+      obj.push($( this ).text());
+      medico = parseInt( $(this).attr('di'));
+      objId.push( $( this ).attr('da') );
+      paciente = parseInt( $(this).attr('da'));
     });
-  });
+    $.post('/medicoRecomendado',{objeto:obj, objectoId:objId},function(data){
+      $.post('/doctorRecomendado',{medicoId:medico, paciente:paciente},function(dat){});
+      if(data){
+        $('.modal').modal('hide');
+        $('.modal').on('hidden.bs.modal',function(e){
+          $("#mensajeRecomendar").text('');
+          $( "#correoEnviarRecomendado" ).val('');
+          $("#buscadorRecomendados").val('');
+        });
+      }
+    });
+  }
 function seleccionarUsuario(i, tr, nombre, mas, otroMas, di){
   var html2 ="";
   var otroId = 'li'+i;
   html2 += '<li id="'+otroId+'" onclick="removerUsuario(\''+otroId+'\',\''+tr+'\')" >';
     html2 +="<p>";
       html2 += "<div class='label label-primary'><span class='glyphicon glyphicon-remove'>&nbsp;"
-        html2 +="<small>";
+        html2 +="<small style='color:white'>";
           html2 +=nombre;
           html2 += "<span class='hidden' da='"+otroMas+"' di ='"+di+"' >";
             html2 += mas;
@@ -2423,6 +2426,7 @@ var idEspecialidad = '';
       var nombre = $(this).parent().parent().find('a.contList-profileName').text();
       var usuario_id = $(this).parent().parent().prop('id');
       $.post('/especialidadesMedico',function(data){
+        pedirRecomendacionesBoot();
         var option ="";
         $("#especialidadesMedic").html('');
         option +='<option value="0">Especialidades</option>'
@@ -2437,49 +2441,44 @@ var idEspecialidad = '';
         $("#idMedico").text(usuario_id);
       });
     });
-    $("#especialidadesMedic").change(function(){
-      var id = $(this).val();
-      var valor = $("#especialidadesMedic option:selected").text();
-      var html2 ="";
-       html2 += '<li>';
-         html2 +="<p>";
-           html2 += "<div class='label label-success'><span class='glyphicon glyphicon-remove'>&nbsp;"
-             html2 +="<small>";
-               html2 +=valor;
-               html2 += "<span class='hidden'>";
-                 html2 += id;
-               html2 += "</span>";
-             html2 +="</small>";
-           html2 += "</span></div>";
-         html2 +="</p>";
-       html2 +="</li>";
-       $( '#tipoRecomendacionPedir ul' ).append(html2);
-    });
-    //<--------------- Peticion --------------------->
-      $("#mandarPeticion").click(function(){
-        if( $("#especialidadesMedic option:selected").text() != "Especialidades" ){
-          var id = $("#idMedico").text();
-          var recomendacion = $("#especialidadesMedic option:selected").text();
-          $.each($("li div.label.label-success small span.hidden"),function(index, data){
-            idEspecialidad += "|"+$( this ).text();
-          });
-          $.post('/pedirRecomendacionMedico',{
-              idMedico:id,
-              idEspecialidad: idEspecialidad,
-          },function(data){
-            if(data){
-              $('.modal').modal('hide');
-              $('.modal').on('hidden.bs.modal',function(e){
-              $(".label.label-success").remove().parent('div');
-            });
-            }
-          });
-        }else{
-          alert("Seleccione una opcion");
+  });
+  function enviandoPeticion(){
+    if( $("#especialidadesMedic option:selected").text() != "Especialidades" ){
+      var id = $("#idMedico").text();
+      var recomendacion = $("#especialidadesMedic option:selected").text();
+      $.each($("li div.label.label-success small span.hidden"),function(index, data){
+        idEspecialidad += "|"+$( this ).text();
+      });
+      $.post('/pedirRecomendacionMedico',{
+          idMedico:id,
+          idEspecialidad: idEspecialidad,
+      },function(data){
+        if(data){
         }
       });
-    //<--------------- fin Peticion ----------------->
-  });
+    }else{
+      alert("Seleccione una opcion");
+    }
+  }
+  function cargando(ids){
+    var id = $(ids).val();
+    var valor = $(ids+" option:selected").text();
+    console.log("ID: "+id+"\n"+"Valor: "+valor);
+    var html2 ="";
+     html2 += '<li>';
+       html2 +="<p>";
+         html2 += "<div class='label label-success'><span class='glyphicon glyphicon-remove'>&nbsp;"
+           html2 +="<small>";
+             html2 +=valor;
+             html2 += "<span class='hidden'>";
+               html2 += id;
+             html2 += "</span>";
+           html2 +="</small>";
+         html2 += "</span></div>";
+       html2 +="</p>";
+     html2 +="</li>";
+     $( '#tipoRecomendacionPedir ul' ).append(html2);
+  }
   function presionando(hola){
     $(hola).modal('toggle');
     var html = "";
@@ -2680,12 +2679,6 @@ function sticky_relocate() {
     }
 }
 
-$(function () {
-    $(window).scroll(sticky_relocate);
-    sticky_relocate();
-});
-
-
 $(function(){
   $('#btnAgregaUbi').on('click',function(){
     agregarUbicacion();
@@ -2718,7 +2711,12 @@ $(function() {
   });
 });
 
-$(document).ready(function(){
+if ( location.pathname.substring(0,20) === '/nuevoRegistroMedicos' ) {
+  $(function () {
+      $(window).scroll(sticky_relocate);
+      sticky_relocate();
+  });
+  
   $('.logros-slider').bxSlider({
     slideWidth: 250,
     minSlides: 1,
@@ -2726,7 +2724,7 @@ $(document).ready(function(){
     moveSlides: 1,
     slideMargin: 50,
   });
-});
+}
 
 function actualizarDirecciones(){
   $.ajax( {
@@ -3177,21 +3175,431 @@ function traerExpertoEn(){
     }
   } );
 
+}
 
-/*
-
-  var listaNueva = '<ul>';
-  var parent = '';
-  expertoEn.forEach(function(rec){
-    if (rec.padre !== '' && parent === ''){
-      parent = rec.padre;
-      listaNueva += '<ul>';
-    } else if (rec.padre === "" && parent !== ''){
-      parent = '';
-      listaNueva += '</ul>';
-    }
-    listaNueva += '<li>'+ rec.exp +'</li>';
+/**
+* abre el modal de login
+*
+**/
+$(document).ready(function(){
+  $("#logMod").click(function(){
+    loginModal();
   });
-  listaNueva += '</ul>';
-  $('#divExpEn').html(listaNueva);*/
+  $("#addForma").click(function(){
+    invitarModal();
+  });
+  $("#addForma1").click(function(){
+    invitarModal();
+  });
+});
+/**
+* Funciones para los catalogos de servicios
+* Las siguientes funciones se iran codificando
+* las diferentes funciones para hacer el insert,
+* update, delete, view, de catalogos,
+* seran cuatro diferentes funciones una para cada
+* funcion.
+**/
+
+/**
+* downloadServices funcion que servira solo para
+* cargar todos los catalogos de servicios que esta
+* ofreciendo el medico
+* @param id es el id de el div donde se va a maquetar la informacion
+**/
+function downloadServices(id){
+  //post para mostrar los servicios en la primera pestaña
+    $.post('/searchServices',function(data){
+      if( data != null ){
+        $("#tusServices").html('');
+        var html ="";
+        $.each(data,function(i, item){
+          html += "<tr>";
+            html += "<td><center>"+i+"</center></td>";
+            html += "<td><center>"+item.concepto+"</center></td>";
+            html += "<td><center>"+item.descripcion+"</center></td>";
+            html += "<td><center>"+item.precio+"</center></td>";
+            html += "<td><center>"+item.duracion+"</center></td>";
+          html += "</tr>";
+        });
+        $("#tusServices").append(html);
+      }else{
+        $("#encontroServicios").removeClass('hidden');
+      }
+    }).fail(function(e){
+      console.log("Error:-"+JSON.stringify(e));
+    });
+}
+//funcion para agregar mas servicios
+function addServices(concepto, descripcion,precio,duracion){
+  var con = $(concepto).val();
+  var des = $(descripcion).val();
+  var pre = $(precio).val();
+  var dur = $(duracion+ " :selected").val();
+  //post para el envio de la informacion
+  if( con != "" && des != "" && pre != "" && dur != "time" ){
+    $.post('/addServices',{
+      concepto:con,
+      descripcion: des,
+      precio: pre,
+      duracion: dur
+    },function(data){
+      if(data == true){
+        $("#exitoAgregado").removeClass('hidden');
+        $(concepto).html('');
+        $(descripcion).html('');
+        $(precio).html('');
+      }else{
+        console.log("Entro aqui");
+        $("#exitoNoAgregado").removeClass('hidden');
+      }
+    });
+  }
+}
+// funcion para maquetar y poder modificar los resultados
+function maquetaServices(){
+  var html = "";
+  //Maqueta los inputs y los botones para poder maquetar
+  $("#modificatusServices").html('');
+  var con = "";
+  var des = "";
+  var pre = "";
+  var dur = "";
+  $.post('/searchServices', function(data){
+    $.each(data, function( i, item){
+      con = "#conceptModifica"+i;
+      des = "#decriptModifica"+i;
+      pre = "#precModifica"+i;
+      dur = "#durModifica"+i;
+      html += '<tr>';
+        html += '<td>';
+          html += '<center>';
+            html += '<button type="button" onclick="updateServices(\''+con+'\',\''+des+'\',\''+pre+'\',\''+dur+'\')" class="btn btn-success">';
+              html += '<span style="color:white;" class="glyphicon glyphicon-pencil"></span>';
+            html += '</button>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<input type="text" oculto="'+item.id+'" class="form-control" id="conceptModifica'+i+'" value="'+item.concepto+'"/>';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<input type="text" class="form-control" id="decriptModifica'+i+'" value="'+item.descripcion+'"/>';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<input type="text" class="form-control" id="precModifica'+i+'" value="'+item.precio+'"/>';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<select id="durModifica'+i+'">';
+                html += '<option value="'+item.duracion+'">'+item.duracion+'</option>';
+                html += '<option value="00:30:00">30 minutos</option>';
+                html += '<option value="00:45:00">45 minutos</option>';
+                html += '<option value="01:00:00">1 hora</option>';
+                html += '<option value="02:00:00">2 horas</option>';
+                html += '<option value="03:00:00">3 horas</option>';
+              html += '</select>';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+      html += '</tr>';
+    });
+    $("#modificatusServices").append(html);
+  }).fail(function(e){
+    console.log("Error:-"+JSON.stringify(e));
+  });
+}
+function maquetaDeleteServices(){
+  var html = "";
+  $("#deleteServicesTable").html('');
+  $.post('/searchServices', function(data){
+    $.each(data, function( i, item){
+      var tr = "#tr-"+item.id;
+      var delet = item.id;
+      html += '<tr class="">';
+        html += '<td>';
+          html += '<center>';
+            html += '<button onclick="deleteFunction(\'#tr-'+tr+'\',\''+delet+'\');" type="button" class="btn btn-danger">';
+              html += '<span style="color:white;" class="glyphicon glyphicon-remove"></span>';
+            html += '</button>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<input type="text" class="form-control" id="conceptModifica" value="'+item.concepto+'" disabled />';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<input type="text" class="form-control" id="decriptModifica" value="'+item.descripcion+'" disabled />';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<input type="text" class="form-control" id="precModifica" value="'+item.precio+'" disabled />';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+            html += '<div class="form-group">';
+              html += '<select disabled>';
+                html += '<option value="'+item.duracion+'">'+item.duracion+'</option>';
+              html += '</select>';
+            html += '</div>';
+          html += '</center>';
+        html += '</td>';
+      html += '</tr>';
+    });
+    $("#deleteServicesTable").append(html);
+  }).fail(function(e){
+    console.log("Error:-"+JSON.stringify(e));
+  });
+}
+function deleteFunction(tr, id){
+  //bootbox para confirmar que desea eliminar la seleccion
+  bootbox.confirm('¿Estas seguro de eliminar este servicio?', function(result){
+    if( result == true ){
+      // se manda un post con el id que se desea eliminar
+      $.post('/deleteServicio',{id:id},function(data){
+        $('.eliminaServicios'+tr).remove();
+      }).fail(function(e){
+        $('.eliminaServicios'+tr).remove();
+      });
+    }
+  });
+}
+function updateServices( con, des, pre, dur){
+  var concepto = $(con).val();
+  var descripcion = $(des).val();
+  var precio = $(pre).val();
+  var duracion = $(dur+ " :selected").val();
+  var id = $(con).attr('oculto');
+  $.post('/updateServices',{
+    id: id,
+    concepto: concepto,
+    descripcion: descripcion,
+    precio: precio,
+    duracion: duracion
+  },function(data){
+    if( data == 1 ){
+      $("#exitoModificado").removeClass('hidden');
+    }else{
+      $("#exitoNoModificado").removeClass('hidden');
+    }
+  });
+}
+function loadDatosGenerales(){
+  $.post("/loadDatosGenerales",function(data){
+    $("#editMail").attr('value',data.correo);
+    $("#editNom").attr('value',data.DatosGenerale.nombre);
+    $("#editApeP").attr('value',data.DatosGenerale.apellidoP);
+    $("#editApeM").attr('value',data.DatosGenerale.apellidoM);
+  });
+}
+function loadBiometricos(){
+  var html="";
+  $.post('/loadBiometricos',function(data){
+    if( data.length > 0 ){
+      $("#noBiometrico").addClass('hidden');
+      $("#bioBody").html('');
+      $.each(data, function(i, item){
+        var id="#bioModi-"+i;
+        html += '<tr style="color:white;">';
+          html += '<td><center>'+item.peso+'</center></td>';
+          html += '<td><center>'+item.altura+'</center></td>';
+          html += '<td><center>'+item.tipoSangre+'</center></td>';
+          html += '<td><center>'+item.genero+'<c/enter></td>';
+          html += '<td>';
+            html += '<center>';
+              html += '<button class="btn btn-danger" oculto="'+item.id+'" type="button" id="bioModi-'+i+'" onclick="deleteBio(\''+id+'\')">';
+                html += '<span class="glyphicon glyphicon-wrench"></span>';
+              html += '</button>';
+            html += '</center>';
+          html += '</td>';
+        html += '</tr>';
+      });
+      $("#bioBody").append(html);
+    }else{console.log("entro al else");
+      $("#noBiometrico").removeClass('hidden');
+    }
+  });
+}
+function loadTelefonos(){
+  var html = "";
+  $.post('/loadTelefonos', function( data ){
+    if( data.length > 0 ){
+      $("#noTelefono").addClass('hidden');
+      $("#telBody").html('');
+      $.each(data, function(i, item){
+        var id="#deleteTelBio-"+i;
+        html += '<tr>';
+          html += '<td>';
+            html += '<center>';
+              html += item.nombre;
+            html += '</center>';
+          html += '</td>';
+          html += '<td>';
+            html += '<center>';
+              html += item.tel;
+            html += '</center>';
+          html += '</td>';
+          if( item.medico == 1 ){
+            html += '<td>';
+              html += '<center>';
+                html += 'Medico';
+              html += '</center>';
+            html += '</td>';
+          }else{
+            html += '<td>';
+              html += '<center>';
+                html += 'Familiar/Conocido';
+              html += '</center>';
+            html += '</td>';
+          }
+          html += '<td>';
+            html += '<center>';
+              html += '<button class="btn btn-danger" oculto="'+item.id+'"type="button" id="deleteTelBio-'+i+'" onclick="deleteFon(\''+id+'\');">';
+                html += '<span class="glyphicon glyphicon-remove-sign"></span>';
+              html += '</button>';
+            html += '</center>';
+          html += '</td>';
+        html += '</tr>';
+      });
+      $("#telBody").append(html);
+    }else{
+      $("#noTelefono").removeClass('hidden');
+    }
+  });
+}
+function updateName(){
+  var nombre = $("#editNom").val();
+  $.post('/updateName',{nombre:nombre},function(data){
+    if( data.length > 0 ){
+      $("#infoGeneral").removeClass('hidden');
+      $("#cambiandoGenerales").removeClass('hidden');
+      $("#cambiandoGenerales").text('Nombre: '+nombre);
+    }else{
+      $("#infoGeneral").addClass('hidden');
+      $("#cambiandoGenerales").addClass('hidden');
+    }
+  });
+}
+function updateApellidoP(){
+  var apellidoP = $("#editApeP").val();
+  $.post('/updateApellidoP',{nombre:apellidoP},function(data){
+    if( data.length > 0 ){
+      $("#infoGeneral").removeClass('hidden');
+      $("#cambiandoGenerales").removeClass('hidden');
+      $("#cambiandoGenerales").text('Apellido paterno: '+apellidoP);
+    }else{
+      $("#infoGeneral").addClass('hidden');
+      $("#cambiandoGenerales").addClass('hidden');
+    }
+  });
+}
+function updateApellidoM(){
+  var apellidoM = $("#editApeM").val();
+  $.post('/updateApellidoM',{nombre:apellidoM},function(data){
+    if( data.length > 0 ){
+      $("#infoGeneral").removeClass('hidden');
+      $("#cambiandoGenerales").removeClass('hidden');
+      $("#cambiandoGenerales").text('Apellido materno: '+apellidoM);
+    }else{
+      $("#infoGeneral").addClass('hidden');
+      $("#cambiandoGenerales").addClass('hidden');
+    }
+  });
+}
+function addBio(){
+  var peso = $("#bioPeso").val();
+  var altura = $("#bioAltura").val();
+  var tipoS = $("#bioSangre").val();
+  var genero = $("#bioGenero :selected").val();
+  $("#confirmacionBio").addClass('hidden');
+  $.post('/addBio',{
+    peso: peso,
+    altura: altura,
+    tipoS: tipoS,
+    genero: genero
+  },function(data){
+    if( data ){
+      $("#bioPeso").attr('value','');
+      $("#bioAltura").attr('value','');
+      $("#bioSangre").attr('value','');
+      $("#bioGenero").attr('value','0');
+      $("#confirmacionBio").removeClass('hidden');
+      loadBiometricos();
+    }else{
+      $("#negadoBio").removeClass('hidden');
+    }
+  });
+}
+function deleteBio(id){
+  var id = $(id).attr('oculto');
+  $.post('/deleteBio',{id:id},function(data){
+    if( data == "OK"){
+      $("#delBio").removeClass('hidden');
+      $("#confirmacionBio").addClass('hidden');
+      loadBiometricos();
+    }else{
+      console.log("NO se borro");
+    }
+  });
+}
+function deleteFon(id){
+  var id = $(id).attr('oculto');
+  $.post('/deleteFon',{id:id},function(data){
+    if( data == "OK" ){
+      $("#deleFon").removeClass('hidden');
+      loadTelefonos();
+    }else{
+      console.log("NO SE PUDO ELIMINAR EL CONTACTO")
+    }
+  });
+}
+function addTelefon(){
+  var nombreCon = $("#bioNombretel").val();
+  var tel = $("#bioTel").val();
+  var es_medico;
+  if( $("#esMedic:checked").val() == 1 ){
+    es_medico = 1;
+  }else{
+    es_medico = 0;
+  }
+  var idPaciente;
+  //consulta a paciente para traer id
+  $.post('/postPaciente',function(data){
+    idPaciente = JSON.stringify(data.id);
+    $.post('/addTelefon',{
+      nombre: nombreCon,
+      tel: tel,
+      medico:es_medico,
+      paciente_id: idPaciente
+    },function(datas){
+      if( datas != null ){
+        $("#telAdd").removeClass('hidden');
+        loadTelefonos();
+      }else{
+        console.log("ERROR AL AGREGAR EL CONTACTO");
+      }
+    });
+  });
 }
