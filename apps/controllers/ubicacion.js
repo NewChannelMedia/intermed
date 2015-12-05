@@ -385,10 +385,6 @@ exports.ubicacionObtener = function (objects, req, res) {
             usuario_id: 1,
             direccion: datos
         });
-    }).catch(function (err) {
-        res.status(500).json({
-            error: err
-        })
     });
 };
 
@@ -435,8 +431,6 @@ exports.agregaDireccion = function(object, req, res) {
     usuario_id: id
   }).then(function(medico) {
         res.status(200).json({ok: true});
-  }).catch(function(err) {
-        res.status(500).json({error: err});
   });
 }
 
@@ -456,8 +450,6 @@ exports.actualizaDireccion = function(object, req, res) {
     },{ where : {id : object.id}
   }).then(function(medico) {
         res.status(200).json({ok: true});
-  }).catch(function(err) {
-        res.status(500).json({error: err});
   });
 }
 
@@ -466,8 +458,6 @@ exports.borraDireccion = function(object, req, res) {
       where : {id : object.id}
   }).then(function(medico) {
         res.status(200).json({ok: true});
-  }).catch(function(err) {
-        res.status(500).json({error: err});
   });
 }
 
