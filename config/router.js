@@ -1303,15 +1303,19 @@ var iniciar = function () {
 
     //rutas concekta
     app.get('/cargoportarjeta', function(req,res){
-        intermed.callController('conekta', 'cargoPorTarjeta', req.body, req, res);
+        //intermed.callController('conekta', 'cargoPorTarjeta', req.body, req, res);
+        res.render('cargoportarjeta', {
+            title: 'Pagos',            
+            usuario_id: 12
+        });
     });
 
 
     app.post('/cargoportarjeta', function (req, res) {        
         //intermed.callController('conekta', 'hacerCargoPorTarjeta', req.body, req, res, conekta);
-        var charge;
-        charge = _charge;
-        charge.card = req.body.conektaTokenId;
+        //var charge;
+        //charge = _charge;
+        //charge.card = req.body.conektaTokenId;
 
         conekta.Charge.create({
             "description": "Stogies",
@@ -1353,10 +1357,9 @@ var iniciar = function () {
                     "email": "purshasing@x-men.org"
                 }
             }
-        }, function (res) {
-            res.render('ubicacion', {
-                title: 'Ubicaciones',
-                estados: datos,
+        }, function (res) {            
+            res.render('cargoportarjeta', {
+                title: 'pago hecho',                
                 usuario_id: 12
             });
         }, function (err) {
