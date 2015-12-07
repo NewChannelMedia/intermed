@@ -387,13 +387,14 @@ module.exports = {
   medicosContacto: function( req, res ){
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
-      models.Medico.findAll({
-        where:{id:req.body.idMedico},
+      models.Medico.findOne({
+        attributes:['id'],
         include:[{
-          model:models.Usuario,
+          model: models.Usuario,
           attributes:['id','usuarioUrl','urlFotoPerfil'],
           include:[{
-            model:models.DatosGenerales,
+            model: models.DatosGenerales,
+            where:{ id: req.body.idMedico },
             attributes:['nombre','apellidoP','apellidoM']
           }]
         }]
