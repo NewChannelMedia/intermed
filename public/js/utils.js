@@ -1384,7 +1384,6 @@ function guardarImagenPerfil() {
     cache: false,
     success: function ( data ) {
       if ( data.result === 'success' ) {
-        $( '#CambiarFotoPerfil' ).modal( 'toggle' );
         actualizarSesion();
       }
       else {
@@ -2716,7 +2715,7 @@ if ( location.pathname.substring(0,20) === '/nuevoRegistroMedicos' ) {
       $(window).scroll(sticky_relocate);
       sticky_relocate();
   });
-  
+
   $('.logros-slider').bxSlider({
     slideWidth: 250,
     minSlides: 1,
