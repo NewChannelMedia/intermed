@@ -2711,12 +2711,12 @@ $(function() {
   });
 });
 
-if ( location.pathname.substring(0,20) === '/nuevoRegistroMedicos' ) {
+if ( location.pathname.indexOf('/nuevoPerfilMedicos/') == 0 ) {
+$(document).ready(function(){
   $(function () {
-      $(window).scroll(sticky_relocate);
-      sticky_relocate();
+    $(window).scroll(sticky_relocate);
+    sticky_relocate();
   });
-  
   $('.logros-slider').bxSlider({
     slideWidth: 250,
     minSlides: 1,
@@ -2724,6 +2724,10 @@ if ( location.pathname.substring(0,20) === '/nuevoRegistroMedicos' ) {
     moveSlides: 1,
     slideMargin: 50,
   });
+})
+
+
+
 }
 
 function actualizarDirecciones(){
