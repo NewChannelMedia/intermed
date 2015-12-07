@@ -1474,6 +1474,22 @@ var iniciar = function () {
     app.post('/deleteFon',function( req, res ){
       intermed.callController('contactos','deleteFon',req, res);
     });
+
+    app.post('/medicos/aseguradorasTraer', function (req, res){
+      intermed.callController( 'medicos', 'medicoAseguradorasTraer', req.body, req, res );
+    });
+
+    app.post('/medicos/clinicasTraer', function (req, res){
+      intermed.callController( 'medicos', 'medicoClinicasTraer', req.body, req, res );
+    });
+
+    app.post('/medicos/clinicasActualizar',function (req, res){
+      intermed.callController( 'medicos', 'medicoClinicasActualizar', req.body, req, res );
+    });
+
+    app.post('/medicos/aseguradorasActualizar',function (req, res){
+      intermed.callController( 'medicos', 'medicoAseguradorasActualizar', req.body, req, res );
+    });
 }
 
 var io = serv.server( app, 3000 );

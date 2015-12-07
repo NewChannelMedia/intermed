@@ -182,10 +182,37 @@ module.exports = {
               }],
               order: [['principal', 'DESC']]
         }).then(function (direccion) {
-          res.render( tipoUsuario + '/nuevoPerfilMedicos', {
-            estados: estados,
-            usuario:{Direccions: JSON.parse(JSON.stringify(direccion))}
-          } );
+          if (req.session.passport.user.Medico_id){
+            var medico = {};
+            models.MedicoExpertoEn.findAll({
+                where: {medico_id: req.session.passport.user.Medico_id},
+                order: [['orden','ASC']]
+              }).then(function(expertoen){
+                  medico['MedicoExpertoEns'] = expertoen;
+                  models.MedicoClinica.findAll({
+                      where: {medico_id: req.session.passport.user.Medico_id},
+                      order: [['orden','ASC']]
+                    }).then(function(clinica){
+                        medico['MedicoClinicas'] = clinica;
+                        models.MedicoAseguradora.findAll({
+                          where: {medico_id: req.session.passport.user.Medico_id},
+                          order: [['orden','ASC']]
+                        }).then(function(aseguradora){
+                            medico['MedicoAseguradoras'] = aseguradora;
+                            res.render( tipoUsuario + '/nuevoPerfilMedicos', {
+                              medico: medico,
+                              estados: estados,
+                              usuario:{Direccions: JSON.parse(JSON.stringify(direccion))}
+                            } );
+                        });
+                    });
+                  });
+          } else {
+            res.render( tipoUsuario + '/nuevoPerfilMedicos', {
+              estados: estados,
+              usuario:{Direccions: JSON.parse(JSON.stringify(direccion))}
+            } );
+          }
         })
         if ( !usuario ) req.session.passport.user.logueado = "1";
       } );
@@ -526,14 +553,45 @@ function armarPerfilNuevo( usuario, req, res ) {
 
   var tipoUsuario = 'Paciente';
   if ( usuario.tipoUsuario == 'M' ) tipoUsuario = 'Medico';
+
   models[ tipoUsuario ].findOne( {
     where: {
       usuario_id: usuario.id
     }
   } ).then( function ( result ) {
-    usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
-    res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
-      usuario: usuario
-    } );
-  } )
+    if (usuario.tipoUsuario == 'M'){
+        var medico = {};
+        models.MedicoExpertoEn.findAll({
+            where: {medico_id: result.id},
+            order: [['orden','ASC']],
+            logging: console.log
+          }).then(function(expertoEn){
+            medico['MedicoExpertoEns'] = expertoEn;
+
+            models.MedicoClinica.findAll({
+                where: {medico_id: result.id},
+                order: [['orden','ASC']]
+              }).then(function(clinica){
+                  medico['MedicoClinicas'] = clinica;
+                  models.MedicoAseguradora.findAll({
+                    where: {medico_id: result.id},
+                    order: [['orden','ASC']]
+                  }).then(function(aseguradora){
+                      medico['MedicoAseguradoras'] = aseguradora;
+
+                        usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
+                        res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
+                          usuario: usuario,
+                          medico: medico
+                        } );
+                  });
+              });
+          });
+    } else {
+      usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
+      res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
+        usuario: usuario
+      } );
+    }
+  });
 }

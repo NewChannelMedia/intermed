@@ -2716,7 +2716,7 @@ if ( location.pathname.substring(0,20) === '/nuevoRegistroMedicos' ) {
       $(window).scroll(sticky_relocate);
       sticky_relocate();
   });
-  
+
   $('.logros-slider').bxSlider({
     slideWidth: 250,
     minSlides: 1,
@@ -3060,7 +3060,7 @@ function cargarTelefonos(){
   }
 }
 
-function agregarExperiencia(){
+function agregarExpertoEn(){
   var addExp = $('#addExp').val();
   if (addExp && addExp != ""){
     $('#sortableExpertoEn').append(`
@@ -3081,12 +3081,12 @@ function agregarExperiencia(){
   $('#addExp').focus();
 }
 
-function guardarExperiencia(){
+function guardarExpertoEn(){
   var expertoEn = {};
   var parent;
   var lastparent;
   var last = 0;
-  $('.menuDiv').each(function(){
+  $('#sortableExpertoEn .menuDiv').each(function(){
     if ($(this).parent().parent().prop('id') === "sortableExpertoEn"){
       lastparent = last;
       parent = '';
@@ -3124,18 +3124,18 @@ function guardarExperiencia(){
     },
     success: function ( data ) {
       if (data.success){
-        traerExpertoEn();
+        setTimeout(function(){
+          traerExpertoEn();
+        },500);
       }
     },
     error: function ( jqXHR, textStatus, err ) {
       console.error( 'AJAX ERROR: ' + err );
     }
   } );
-
 }
 
 function traerExpertoEn(){
-
   $.ajax( {
     async: false,
     url: '/medicos/expertoTraer',
@@ -3174,7 +3174,6 @@ function traerExpertoEn(){
       console.error( 'AJAX ERROR: ' + err );
     }
   } );
-
 }
 
 /**
@@ -3602,4 +3601,293 @@ function addTelefon(){
       }
     });
   });
+}
+
+
+function agregarClinica(){
+  var addClin = $('#addClin').val();
+  if (addClin && addClin != ""){
+    $('#sortableClinica').append(`
+      <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
+      <div class="menuDiv">
+        <span>
+          <span data-id="2" class="itemTitle">`+ addClin +`</span>
+          <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
+          <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
+        </span>
+      </div>
+      </li>`);
+      $('#addClin').val('');
+  } else {
+    //Input de agregar clinica vacio
+  }
+  $('#addClin').focus();
+}
+
+
+function agregarAseguradora(){
+  var addAseg = $('#addAseg').val();
+  if (addAseg && addAseg != ""){
+    $('#sortableAseguradora').append(`
+      <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
+      <div class="menuDiv">
+        <span>
+          <span data-id="2" class="itemTitle">`+ addAseg +`</span>
+          <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
+          <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
+        </span>
+      </div>
+      </li>`);
+      $('#addAseg').val('');
+  } else {
+    //Input de agregar clinica vacio
+  }
+  $('#addAseg').focus();
+}
+
+function cargarExpertoEn(){
+  $.ajax( {
+    async: false,
+    url: '/medicos/expertoTraer',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      if (data.success){
+        var listaNueva = '';
+        if (data.result){
+          var sub = false;
+          var ol = false;
+          var li = false;
+          data.result.forEach(function(rec){
+            if (!rec.padre_id){
+              if (ol){
+                listaNueva += '</ol>';
+                ol = false;
+              }
+              if (li){
+                listaNueva += '</li>';
+              }
+              li = true;
+              listaNueva += `<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
+              <div class="menuDiv">
+                <span>
+                  <span data-id="2" class="itemTitle">`+ rec.expertoen +`</span>
+                  <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
+                  <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
+                </span>
+              </div>`;
+            } else {
+              if (!ol){
+                listaNueva += '<ol>';
+                ol = true;
+              }
+              listaNueva += `<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
+              <div class="menuDiv">
+                <span>
+                  <span data-id="2" class="itemTitle">`+ rec.expertoen +`</span>
+                  <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
+                  <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
+                </span>
+              </div>
+              </li>`;
+            }
+          });
+          if (sub){
+            listaNueva += '</li></ol>';
+          }
+        }
+        $('#sortableExpertoEn').html(listaNueva);
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+function cargarClinicas(){
+  $.ajax( {
+    async: false,
+    url: '/medicos/clinicasTraer',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      if (data.success){
+        var listaNueva = '';
+        if (data.result){
+          console.log('CLINICAS: ' + JSON.stringify(data));
+          var sub = false;
+          data.result.forEach(function(rec){
+            listaNueva += `<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
+            <div class="menuDiv">
+              <span>
+                <span data-id="2" class="itemTitle">`+ rec.clinica +`</span>
+                <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
+                <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
+              </span>
+            </div>
+            </li>`;
+          });
+        }
+        $('#sortableClinica').html(listaNueva);
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  });
+}
+
+function cargarAseguradoras(){
+  $.ajax( {
+    async: false,
+    url: '/medicos/aseguradorasTraer',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      if (data.success){
+        var listaNueva = '';
+        if (data.result){
+          console.log('ASEGURADORAS: ' + JSON.stringify(data));
+          var sub = false;
+          data.result.forEach(function(rec){
+            listaNueva += `<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
+            <div class="menuDiv">
+              <span>
+                <span data-id="2" class="itemTitle">`+ rec.aseguradora +`</span>
+                <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
+                <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
+              </span>
+            </div>
+            </li>`;
+          });
+        }
+        $('#sortableAseguradora').html(listaNueva);
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  });
+}
+
+
+function guardarClinicas(){
+  var clinicas = [];
+  var last = 0;
+  $('#sortableClinica .menuDiv').each(function(){
+    clinicas.push({
+      num: last,
+      val: $(this).find('.itemTitle').text()
+    });
+    last++;
+  });
+  $.ajax( {
+    async: false,
+    url: '/medicos/clinicasActualizar',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'clinicas': clinicas
+    },
+    success: function ( data ) {
+      if (data.success){
+        setTimeout(function(){
+          traerClinicas();
+        },500);
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+
+function guardarAseguradoras(){
+  var aseguradoras = [];
+  var last = 0;
+  $('#sortableAseguradora .menuDiv').each(function(){
+    aseguradoras.push({
+      num: last,
+      val: $(this).find('.itemTitle').text()
+    });
+    last++;
+  });
+  $.ajax( {
+    async: false,
+    url: '/medicos/aseguradorasActualizar',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'aseguradoras': aseguradoras
+    },
+    success: function ( data ) {
+      if (data.success){
+        setTimeout(function(){
+          traerAseguradoras();
+        },500);
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+function traerClinicas(){
+    $.ajax( {
+      async: false,
+      url: '/medicos/clinicasTraer',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      success: function ( data ) {
+        if (data.success){
+          var listaNueva = '<ul>';
+          if (data.result){
+            var sub = false;
+            data.result.forEach(function(rec){
+              listaNueva += '<li>'+ rec.clinica +'</li>';
+            });
+          }
+          listaNueva += '</ul>';
+          $('#divClinicas').html(listaNueva);
+        }
+      },
+      error: function ( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: ' + err );
+      }
+    } );
+}
+
+function traerAseguradoras(){
+    $.ajax( {
+      async: false,
+      url: '/medicos/aseguradorasTraer',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      success: function ( data ) {
+        if (data.success){
+          var listaNueva = '<ul>';
+          if (data.result){
+            var sub = false;
+            data.result.forEach(function(rec){
+              listaNueva += '<li>'+ rec.aseguradora +'</li>';
+            });
+          }
+          listaNueva += '</ul>';
+          $('#divAseg').html(listaNueva);
+        }
+      },
+      error: function ( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: ' + err );
+      }
+    } );
 }

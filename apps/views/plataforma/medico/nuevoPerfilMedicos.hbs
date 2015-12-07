@@ -455,24 +455,26 @@
           <div class="row">
             <div class="col-md-12">
               <div class="info-body-header h77-boldcond">
+                {{#unless usuario.id}}
                 <div class="img-rounded info-left-icon">
                   <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(1)"></span>
                 </div>
+                {{/unless}}
                 <span class="title">Experto en:</span>
               </div>
               <div class="info-body-content h67-medcond" id="divExpEn">
                 <ul>
-                  <li>Garganta</li>
-                  <li>Urgencias 24hrs.</li>
-                  <li>Enfermedades Alérgicas
-                    <ul>
-                      <li>Animales</li>
-                      <li>Insectos</li>
-                      <li>Vias respiratorias</li>
-                      <li>Ojos</li>
-                    </ul>
-                  </li>
-                  <li>Transtornos Respiratorios</li>
+                  {{#each medico.MedicoExpertoEns}}
+                    {{#if padre_id}}
+                      <ul>
+                    {{/if}}
+
+                    <li>{{expertoen}}</li>
+
+                    {{#if padre_id}}
+                      </ul>
+                    {{/if}}
+                  {{/each}}
                 </ul>
               </div>
             </div>
@@ -484,19 +486,19 @@
           <div class="row">
             <div class="col-md-12">
               <div class="info-body-header h77-boldcond">
+                {{#unless usuario.id}}
                 <div class="img-rounded info-left-icon">
                   <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(2)"></span>
                 </div>
+                {{/unless}}
                 <span class="title">Hospitales</span>
                 <span class="sub">y clínicas</span>
               </div>
-              <div class="info-body-content h67-medcond">
+              <div class="info-body-content h67-medcond" id="divClinicas">
                 <ul>
-                  <li>Hospital San Javier</li>
-                  <li>Clinica Chapalita</li>
-                  <li>Hospital Puerta de Hierro</li>
-                  <li>Clínica Terranova</li>
-                  <li>Clínica Sta. Cecilia</li>
+                  {{#each medico.MedicoClinicas}}
+                  <li>{{clinica}}</li>
+                  {{/each}}
                 </ul>
               </div>
             </div>
@@ -508,31 +510,18 @@
           <div class="row">
             <div class="col-md-12">
               <div class="info-body-header h77-boldcond">
+                {{#unless usuario.id}}
                 <div class="img-rounded info-left-icon">
                   <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(3)"></span>
                 </div>
+                {{/unless}}
                 <span class="title">Aseguradoras</span>
               </div>
-              <div class="info-body-content h67-medcond">
+              <div class="info-body-content h67-medcond" id="divAseg">
                 <ul>
-                  <li>Ace</li>
-                  <li>Alfa Uno</li>
-                  <li>Allianz de México</li>
-                  <li>Atlas</li>
-                  <li>Azteca</li>
-                  <li>Banobras</li>
-                  <li>Bupa</li>
-                  <li>Grupo Nacional Provicial</li>
-                  <li>IXE Asistencia</li>
-                  <li>Ace</li>
-                  <li>Alfa Uno</li>
-                  <li>Allianz de México</li>
-                  <li>Atlas</li>
-                  <li>Azteca</li>
-                  <li>Banobras</li>
-                  <li>Bupa</li>
-                  <li>Grupo Nacional Provicial</li>
-                  <li>IXE Asistencia</li>
+                  {{#each medico.MedicoAseguradoras}}
+                  <li>{{aseguradora}}</li>
+                  {{/each}}
                 </ul>
               </div>
             </div>
