@@ -780,7 +780,7 @@ function recomendacionesBoot(){
             </div>
             <div class="pull-right">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" id="mandarPeticion" onclick="enviandoPeticion();" class="btn btn-primary" class="btn btn-primary">Pedir</button>
+              <button type="button" id="mandarPeticion" onclick="enviandoPeticion();bootbox.hideAll();" class="btn btn-primary" class="btn btn-primary">Pedir</button>
             </div>
           </div><!-- div principal final -->
         `
