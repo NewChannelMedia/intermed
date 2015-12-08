@@ -17,7 +17,7 @@
       <div class="collapse navbar-collapse" id="collapse-menu">
         <div id="search-section" class="navigator-inner-section col-lg-5 col-md-4 col-sm-1 col-xs-12 hidden-sm">
           <div class="input-group navbar-search navigator-inner-section-cell col-md-10 col-md-offset-1 h65-medium">
-            <input type="text" class="form-control" id="" name="" placeholder="Search for people, places or things" required="">
+            <input type="text" class="form-control" id="buscadorInterno" name="" placeholder="Search for people, places or things" required="">
             <span class="input-group-btn">
               <button class="btn btn-default" type="button">
                 <span class="glyphicon glyphicon-search"></span>
@@ -46,14 +46,17 @@
                   Buscar
                 </a>
                 <div class="dropdown-menu dropdown-form panel navigator-dropdown-panel">
-                  <div class="input-group navbar-search navigator-inner-section-cell h65-medium">
-                    <input type="text" class="form-control input-lg" id="" name="" placeholder="Search for people, places or things">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default btn-lg" type="button">
-                        <span class="glyphicon glyphicon-search"></span>
-                      </button>
-                    </span>
-                  </div>
+
+                  <form method="POST" action="http://localhost:3000/buscar" class="form-inline" onsubmit="return false;">
+                    <div class="input-group navbar-search navigator-inner-section-cell h65-medium">
+                      <input type="text" class="form-control input-lg ui-autocomplete-input" id="buscadorInternoDropDown" name="" placeholder="Search for people, plaasdfasdfce or things" required="" style="width:300px" autocomplete="off">
+                      <span class="input-group-btn">
+                        <button class="btn btn-default btn-lg" type="button">
+                          <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                      </span>
+                    </div>
+                  </form>
                 </div>
               </li>
             </ul>

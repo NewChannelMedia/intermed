@@ -344,7 +344,10 @@ exports.actualizarSesion = function ( object, req, res ) {
   generarSesion( req, res, usuario_id, false );
 }
 
-var generarSesion = function ( req, res, usuario_id, redirect ) {
+var generarSesion = function ( req, res, usuario_id, redirect , response) {
+  if (!(response === false)){
+    response = true;
+  }
   if ( !redirect ) redirect = false;
   req.session.passport = {};
   models.Usuario.findOne( {
@@ -411,7 +414,7 @@ var generarSesion = function ( req, res, usuario_id, redirect ) {
           if ( usuario.DatosGenerale ) req.session.passport.user.name = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM;
           else req.session.passport.user.name = '';
           req.session.passport.user.fotoPerfil = usuario.urlFotoPerfil;
-          cargarExtraInfo( usuario, redirect, req, res );
+          cargarExtraInfo( usuario, redirect, response, req, res );
         } );
       }
       else {
@@ -426,7 +429,7 @@ var generarSesion = function ( req, res, usuario_id, redirect ) {
     } );
 };
 
-function cargarExtraInfo( usuario, redirect, req, res ) {
+function cargarExtraInfo( usuario, redirect, response, req, res ) {
   var tipoUsuario = '';
   if ( usuario.tipoUsuario === 'P' ) {
     tipoUsuario = "Paciente";
@@ -444,14 +447,18 @@ function cargarExtraInfo( usuario, redirect, req, res ) {
           req.session.passport.user.registroCompleto = 0;
         }
         req.session.passport.user.registroCompleto = 0;
-        if ( redirect ) {
-          res.redirect( '/perfil/' + req.session.passport.user.usuarioUrl );
-        }
-        else {
-          res.send( {
-            'result': 'success',
-            'session': req.session.passport.user
-          } );
+        if (response){
+          if ( redirect ) {
+            res.redirect( '/perfil/' + req.session.passport.user.usuarioUrl );
+          }
+          else {
+            res.send( {
+              'result': 'success',
+              'session': req.session.passport.user
+            } );
+          }
+        } else {
+          reloadPage(res);
         }
       } );
   }
@@ -484,14 +491,18 @@ function cargarExtraInfo( usuario, redirect, req, res ) {
           req.session.passport.user.registroCompleto = 0;
         }
         req.session.passport.user.registroCompleto = 0;
-        if ( redirect ) {
-          res.redirect( '/perfil/' + req.session.passport.user.usuarioUrl );
-        }
-        else {
-          res.send( {
-            'result': 'success',
-            'session': req.session.passport.user
-          } );
+        if (response){
+          if ( redirect ) {
+            res.redirect( '/perfil/' + req.session.passport.user.usuarioUrl );
+          }
+          else {
+            res.send( {
+              'result': 'success',
+              'session': req.session.passport.user
+            } );
+          }
+        } else {
+          reloadPage(res);
         }
       } );
   }
@@ -500,6 +511,10 @@ function cargarExtraInfo( usuario, redirect, req, res ) {
       res.redirect( '/registro' );
     }
   }
+}
+
+function reloadPage(res){
+  res.send('<!DOCTYPE><head><script type="text/javascript">location.reload();</script></head><body></body></html>');
 }
 
 function obtenerDatosLocalidad( localidad_id, redirect, req, res ) {
@@ -930,5 +945,13 @@ exports.informacionUsuario = function (object, req, res){
       } else {
         res.send(JSON.parse(JSON.stringify([])));
       }
+  });
+},
+
+exports.revivirSesion = function (object, req, res){
+  models.Usuario.findOne({
+    where: object
+  }).then(function(usuario){
+    generarSesion( req, res, usuario.id, false, false);
   });
 }

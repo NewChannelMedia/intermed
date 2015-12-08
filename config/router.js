@@ -86,7 +86,10 @@ var intermed = require( '../apps/controllers/Intermed' );
  *	function encargada de tener listo todo
  */
 var iniciar = function () {
+
   app.all( '*', function ( req, res, next ) {
+    var revivirSesion = false;
+    rutas.routeLife( 'main', 'main', hps );
     if ( req.session.passport.user ) {
       hps.varSession( req.session.passport.user );
       res.cookie( 'intermed_sesion', {
@@ -98,10 +101,17 @@ var iniciar = function () {
     else {
       hps.varSession([]);
       //Eliminar cookie
-      res.clearCookie( 'intermed_sesion' );
+      if (req.cookies['intermed_sesion'] && req.method == "GET"){
+        //Revivir sesión si existe usuario con ['intermed_sesion']['id'] y ['intermed_sesion']['usuarioUrl']
+        if (req.cookies['intermed_sesion']['id'] && req.cookies['intermed_sesion']['usuario']){
+          revivirSesion = true;
+          intermed.callController( 'usuarios', 'revivirSesion', {id:req.cookies['intermed_sesion']['id'],usuarioUrl:req.cookies['intermed_sesion']['usuario']}, req, res );
+        }
+      }
     }
-    rutas.routeLife( 'main', 'main', hps );
-    next();
+    if (!revivirSesion){
+      next();
+    }
   } );
 
   //LogIn

@@ -1427,9 +1427,9 @@ function SetCoordinates( c ) {
   }
 };
 
-$( document ).ready( function MakeWizard() {
+function MakeWizard() {
   $( "#RegMedModal" ).formToWizard()
-} );
+}
 
 // formToWizard
 ( function ( $ ) {
@@ -2115,25 +2115,31 @@ function regUbicacion() {
             data: UbicData,
             type: 'POST',
             success: function (data) {
-              $('#idDireccion').val(data.ubicacion_id);
-              $('#btnEliminar').removeClass('hidden');
-              $('#btnGuardarSalir').addClass('hidden');
-              $('#btnGuardar').val('Editar');
-              $('#btnGuardar').parent().parent().addClass('pull-right');
-              //Telefonos
-              $('#addFon').val('Añadir');
-              $('#tipoTelefono').prop('selectedIndex', 0);
-              $('#tipoTelefono').change();
-
+              if (data.success){
+                $('#idDireccion').val(data.ubicacion_id);
+                $('#btnEliminar').removeClass('hidden');
+                $('#btnGuardarSalir').addClass('hidden');
                 $('#btnGuardar').val('Editar');
-                $("#frmRegUbi :input").prop('disabled', true);
-                $('#frmRegUbi :button #addFon').prop('disabled', true);
-                $("#frmRegUbi :button").prop('disabled', false);
-                $("#frmRegUbi #btnGuardarSalir").addClass('hidden');
-                mapa.marker.setOptions({draggable: false,animation:null});
+                $('#btnGuardar').parent().parent().addClass('pull-right');
+                //Telefonos
+                $('#addFon').val('Añadir');
+                $('#tipoTelefono').prop('selectedIndex', 0);
+                $('#tipoTelefono').change();
 
-              cargarTelefonos();
-              actualizarDirecciones();
+                  $('#btnGuardar').val('Editar');
+                  $("#frmRegUbi :input").prop('disabled', true);
+                  $('#frmRegUbi :button #addFon').prop('disabled', true);
+                  $("#frmRegUbi :button").prop('disabled', false);
+                  $("#frmRegUbi #btnGuardarSalir").addClass('hidden');
+                  mapa.marker.setOptions({draggable: false,animation:null});
+
+                cargarTelefonos();
+                actualizarDirecciones();
+              } else {
+                if (data.error){
+                  manejadorDeErrores(data.error);
+                }
+              }
             },
             error: function (err) {
                 console.error('AJAX ERROR: (registro 166) : ' + JSON.stringify(err));
@@ -2686,7 +2692,6 @@ $(function(){
 
   $('#btnEditaUbi').on('click',function(){
     var ubicacion_id = $('.csslider > input:checked').prop('value');
-    console.log('UBI: ' + ubicacion_id);
     agregarUbicacion(ubicacion_id);
   });
 });
