@@ -78,6 +78,21 @@ exports.modificarPerfil = function ( object, req, res ) {
   }
 };
 
+exports.cargarUbicacion = function (object, req, res){
+  if (req.session.passport.user && req.session.passport.user.Paciente_id){
+    models.Direccion.findOne({
+      where: {
+        usuario_id: req.session.passport.user.id,
+        principal: 1
+      }
+    }).then(function(result){
+      res.status(200).json({'success':true,'result':result});
+    });
+  } else {
+    res.status(200).json({'success':false});
+  }
+}
+
 
 function getDateTime() {
   var date = new Date();

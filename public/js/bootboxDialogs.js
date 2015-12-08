@@ -174,7 +174,7 @@ function agregarUbicacion(ubicacion_id){
                                         <div class="row">
                                           <label class="col-md-12 control-label" for="textinput" style="color:white">Estado:</label>
                                           <div class="col-md-12">
-                                          <select id="slc_estados" name="slc_estados" type="text" placeholder="" class="form-control input-md" onChange="obtenerCiudades()">
+                                          <select id="slc_estados_mapa" name="slc_estados_mapa" type="text" placeholder="" class="form-control input-md" onChange="obtenerCiudades()">
                                           </select>
                                           </div>
                                         </div>
@@ -183,7 +183,7 @@ function agregarUbicacion(ubicacion_id){
                                         <div class="row">
                                           <label class="col-md-12 control-label" for="textinput" style="color:white">Municipio/ciudad:</label>
                                           <div class="col-md-12">
-                                          <select id="slc_ciudades" name="slc_ciudades" type="text" placeholder="" class="form-control input-md" onChange="obtenerColonias()">
+                                          <select id="slc_ciudades_mapa" name="slc_ciudades_mapa" type="text" placeholder="" class="form-control input-md" onChange="obtenerColonias()">
                                           </select>
                                           </div>
                                         </div>
@@ -203,7 +203,7 @@ function agregarUbicacion(ubicacion_id){
                                       <div class="row">
                                         <label class="col-md-12 control-label" for="textinput" style="color:white">Localidad/colonia:</label>
                                         <div class="col-md-12">
-                                        <select id="slc_colonias" name="slc_colonias" type="text" placeholder="" class="form-control input-md">
+                                        <select id="slc_colonias_mapa" name="slc_colonias_mapa" type="text" placeholder="" class="form-control input-md">
                                         </select>
                                         </div>
                                       </div>
@@ -350,7 +350,7 @@ function agregarUbicacion(ubicacion_id){
   },500);
   cargarMapa(ubicacion_id);
   if (mapa.marker){
-    mapa.marker.setOptions({draggable: false,animation:null});
+    mapa.marker.setOptions({draggable: false});
   }
   funcionesTelefonos();
   if (btnGuardar == "Editar"){
@@ -376,143 +376,6 @@ function bootbox_modificaMedicoDetalles(tipo){
     },
     size:'large',
     message: `
-
-
-        <style type="text/css">
-
-    		pre,code {
-    			font-size: 12px;
-    		}
-
-    		pre {
-    			width: 100%;
-    			overflow: auto;
-    		}
-
-    		small {
-    			font-size: 90%;
-    		}
-
-    		small code {
-    			font-size: 11px;
-    		}
-
-    		.placeholder {
-    			outline: 1px dashed #4183C4;
-    		}
-
-    		.mjs-nestedSortable-error {
-    			background: #fbe3e4;
-    			border-color: transparent;
-    		}
-
-    		#tree {
-    			width: 100%;
-    			margin: 0;
-    		}
-
-    		ol {
-    			max-width: 100%;
-    			padding-left: 25px;
-    		}
-
-        #sortableExpertoEnCont>ol{
-          padding-left:0px;
-        }
-
-    		ol.sortable,ol.sortable ol {
-    			list-style-type: none;
-    		}
-
-    		.sortable li div {
-    			border: 1px solid #d4d4d4;
-    			-webkit-border-radius: 3px;
-    			-moz-border-radius: 3px;
-    			border-radius: 3px;
-    			cursor: move;
-    			border-color: rgba(0,0,0,0.3);
-    			margin: 0;
-          margin-top:3px;
-    			padding: 3px;
-    		}
-
-    		li.mjs-nestedSortable-collapsed.mjs-nestedSortable-hovering div {
-    			border-color: #999;
-    		}
-
-    		.disclose, .expandEditor {
-    			cursor: pointer;
-    			width: 20px;
-    			display: none;
-    		}
-
-    		.sortable li.mjs-nestedSortable-collapsed > ol {
-    			display: none;
-    		}
-
-    		.sortable li.mjs-nestedSortable-branch > div > .disclose {
-    			display: inline-block;
-    		}
-
-    		.sortable span.ui-icon {
-    			display: inline-block;
-    			margin: 0;
-    			padding: 0;
-    		}
-
-    		.menuDiv {
-    			background: rgba(0,0,0,0.2);
-          margin:1px;
-          padding-top:2px;
-          padding-bottom:2px;
-          padding-left: 20px!important;
-    		}
-
-        .menuDiv .glyphicon{
-          font-size:80%;
-        }
-
-    		.menuEdit {
-    			background: #FFF;
-    		}
-
-    		.itemTitle {
-    			vertical-align: middle;
-    			cursor: pointer;
-    		}
-
-    		.deleteMenu {
-    			float: right;
-    			cursor: pointer;
-    		}
-
-    		p,ol,ul,pre,form {
-    			margin-top: 0;
-    			margin-bottom: 1em;
-    		}
-
-    		dl {
-    			margin: 0;
-    		}
-
-    		dd {
-    			margin: 0;
-    			padding: 0 0 0 1.5em;
-    		}
-
-    		code {
-    			background: #e5e5e5;
-    		}
-
-    		input {
-    			vertical-align: text-bottom;
-    		}
-
-    		.notice {
-    			color: #c33;
-    		}
-        </style>
-
     <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;">
       <div class="col-md-12" style="color:white">
         <h2 class="s25">CONFIGURA TUS UBICACIONES Y HORARIOS DE ATENCIÓN.</h2>
@@ -1402,12 +1265,12 @@ function editaPerfBoot(){
         </a>
       </li>
     </ul>
-    <div class="tab-content tabBootBox">
+    <div class="tab-content tabBootBox divBodyBootbox">
       <div class="tab-pane active" role="tabpanel" id="general">
           <div class="container-fluid">
             <div class="row">
               <div class="col-md-4">
-                <img src="{{fotoPerfil}}" width="200" height="200" class="img-rounded">
+                <img src="" width="200" height="200" class="img-rounded" id="usuarioUrlFotoPerfil">
               </div>
               <div class="col-lg-8 input-group">
                 <input type="text" class="form-control" id="editNom" placeholder="Nombre" />
@@ -1436,7 +1299,48 @@ function editaPerfBoot(){
           </div>
         <hr>
         <div class="container-fluid" id="ubicacionGeneral">
-          <h1 style="color:white;">MAPITA DE CINTHIA</h1>
+          <h1 style="color:white;">Guarda tu ubicación</h1>
+          <div class="row">
+            <div class="col-md-8">
+              <div class="row">
+                  <input type="hidden" id="latitud" name="latitud" value=""/>
+                  <input type="hidden" id="longitud" name="longitud" value=""/>
+                  <div id="searchDiv">
+                      <input id="autocomplete_searchField" type="text" placeholder="Buscar Dirección">
+                  </div>
+                  <div id="direccion"></div>
+                  <div id="mapDiv"></div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+
+              <div class="col-md-12 form-group">
+                <label for="slc_estados_mapa">Estado: </label>
+                <select type="text" class="form-control" id="slc_estados_mapa" >
+                </select>
+              </div>
+
+              <div class="col-md-12 form-group">
+                <label for="slc_ciudades_mapa">Municipio/Ciudad: </label>
+                <select type="text" class="form-control" id="slc_ciudades_mapa" >
+                </select>
+              </div>
+
+              <div class="col-md-12 form-group">
+                <label for="slc_colonias_mapa">Localidad/Colonia: </label>
+                <select type="text" class="form-control" id="slc_colonias_mapa" >
+                </select>
+              </div>
+
+              <div class="col-md-12 form-group">
+                <input type="button" value="Guardar ubicación" class="btn btn-block btn-warning" onclick="guardarUbicacionPaciente()">
+              </div>
+
+
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="tab-pane" role="tabpanel" id="biometricos">
@@ -1556,4 +1460,6 @@ function editaPerfBoot(){
   </div><!-- PRINCIPAL -->
     `
   });
+  loadDatosGenerales();
+  cargarMapaPaciente();
 }

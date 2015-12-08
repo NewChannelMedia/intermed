@@ -1474,6 +1474,12 @@ var iniciar = function () {
     app.post('/deleteFon',function( req, res ){
       intermed.callController('contactos','deleteFon',req, res);
     });
+    app.post('/paciente/cargarUbicacion',function (req, res){
+      intermed.callController('pacientes','cargarUbicacion',req.body,req, res);
+    });
+    app.post('/registrarubicacionPaciente',function(req,res){
+      intermed.callController('ubicacion','registrarubicacionPaciente',req.body,req, res);
+    });
 }
 
 var io = serv.server( app, 3000 );
