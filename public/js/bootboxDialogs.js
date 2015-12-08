@@ -804,7 +804,7 @@ function loginModal(){
           </div>
           <div class="row">
             <div class="col-md-8 col-md-offset-2">
-              <input name="loginFB" value="Login con Facebook" class="btn btn-primary btn-block" onclick="window.location='/auth/facebook/request/loguin'">
+              <input type="button" name="loginFB" value="Login con Facebook" class="btn btn-primary btn-block" onclick="window.location='/auth/facebook/request/loguin'">
             </div>
           </div>
           <div class="row">

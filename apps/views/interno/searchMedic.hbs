@@ -19,7 +19,6 @@
       <!-- empieza buscador -->
       <div class="panel searchbox">
         <div class="panel-body">
-          <form method="POST" action="/searchMedic">
             <input type="hidden" value="local" name="local" />
             <!-- Form principal -->
             <h4>Filtra tu busqueda o inicia una nueva</h4>
@@ -27,42 +26,30 @@
               <div class="row">
                 <div class="col-md-3">
                   <div class="form-group">
-                    <select class="form-control" name="especialidad">
+                    <select class="form-control" id="selectEspecialidad" name="especialidad">
                       <option value="0">Especialidades</option>
-                      {{#each especia}}
-                        <option value= {{id}}>{{especialidad}}</option>
-                      {{/each}}
                     </select>
                     </select>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="form-group">
-                    <select class="form-control" id="slc_estados" name="estado">
+                    <select class="form-control" id="selectEstados" onChange="cargarCiudades('#selectEstados');" name="estado">
                       <option value="0">Estado</option>
-                      {{#each estado}}
-                        <option value= {{id}}>{{estado}}</option>
-                      {{/each}}
                     </select>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="form-group">
-                    <select class="form-control" id="slc_ciudades" name="ciudad">
-                      <option value="0">Ciudad</option>
-                      {{#each ciudad}}
-                        <option value= {{id}}>{{ciudad}}</option>
-                      {{/each}}
+                    <select class="form-control" id="selectCiudad" name="ciudad">
+                      <option value="0">Municipio</option>
                     </select>
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="form-group">
-                    <select class="form-control" name="padecimiento">
+                    <select class="form-control" id="selectPadecimiento" name="padecimiento">
                       <option value="0">Padecimiento</option>
-                      {{#each padecimiento}}
-                        <option value= {{id}}>{{padecimiento}}</option>
-                      {{/each}}
                     </select>
                   </div>
                 </div>
@@ -73,17 +60,17 @@
                 </div>
                 <div class="col-md-3">
                   <div class="form-group">
-                    <input type="text" class="form-control" id="hospital" name="hospital" placeholder="Hospital">
+                    <input type="hidden" class="form-control" id="hospital" name="hospital" placeholder="Hospital">
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="form-group">
-                    <input type="text" class="form-control" id="aseguradora" name="aseguradora" placeholder="Aseguradora">
+                    <input type="hidden" class="form-control" id="aseguradora" name="aseguradora" placeholder="Aseguradora">
                   </div>
                 </div>
                 <div class="col-md-3">
                   <div class="form-group">
-                    <input type="text" class="form-control" id="costoMed" name="costoMedico" placeholder="Costo de consulta">
+                    <input type="hidden" class="form-control" id="costoMed" name="costoMedico" placeholder="Costo de consulta">
                   </div>
                 </div>
               </div>
@@ -93,10 +80,9 @@
                 <!-- <button class="btn btn-success btn-md btn-block"id = "btn">
                            <span class="glyphicon glyphicon-search"></span>&nbsp Buscar
                         </button> -->
-                <input type="submit" value="Buscar" class="btn btn-info btn-md btn-block" id="btn" />
+                <input type="button" value="Buscar" onclick="searchingData();" class="btn btn-info btn-md btn-block" id="btnSearch" />
               </div>
             </div>
-          </form>
           <!-- final del form principal -->
         </div>
       </div>
