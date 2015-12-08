@@ -1921,6 +1921,7 @@ function obtenerCiudades(post) {
         };
 
         document.getElementById(div).innerHTML = '<option value=""></option>';
+        document.getElementById('slc_colonias'+post).innerHTML = '<option value=""></option>';
         $.ajax({
             url: '/obtenerCiudades',
             type: 'POST',
@@ -3580,12 +3581,15 @@ function guardarUbicacionPaciente() {
     UbicData = {
       latitud: latitud,
       longitud: longitud,
-      slc_estados: slc_estados,
-      slc_ciudades: slc_ciudades,
-      slc_colonias: slc_colonias
+      municipio_id: slc_ciudades,
+      principal: 1
     }
 
-    if (latitud != '' && longitud != '' && slc_estados != '' && slc_colonias != ''){
+    if (latitud != '' && longitud != '' && slc_estados != '' && slc_ciudades != ''){
+      if (slc_colonias>0){
+        UbicData['localidad_id'] = slc_colonias;
+      }
+
       $.ajax({
           url: '/registrarubicacionPaciente',
           type: 'POST',
@@ -3594,7 +3598,12 @@ function guardarUbicacionPaciente() {
           data: UbicData,
           type: 'POST',
           success: function (data) {
-            console.log('Success: ' + JSON.stringify(data));
+            if (data.success){
+              bootbox.alert({
+                message: "Tu ubicación ha sido guardada.",
+                title: "Ubicación guardada"
+              });
+            }
           },
           error: function (err) {
               console.error('AJAX ERROR: (registro 166) : ' + JSON.stringify(err));

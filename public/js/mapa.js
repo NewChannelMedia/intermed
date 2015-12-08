@@ -137,7 +137,6 @@ var mapa = {
           mapa.map.setZoom(14);
           setTimeout(function(){
             mapa.Marcador();
-            mapa.marker.setOptions({draggable: false,animation:null});
           },200);
         }
 
@@ -431,18 +430,19 @@ function SeleccionarValor(control, valor) {
 
 function ReemplezarAcentos(valor) {
     var resultado = valor;
-    resultado = resultado.replace('Á', 'A');
-    resultado = resultado.replace('É', 'E');
-    resultado = resultado.replace('Í', 'I');
-    resultado = resultado.replace('Ó', 'O');
-    resultado = resultado.replace('Ú', 'U');
+    if (resultado){
+      resultado = resultado.replace('Á', 'A');
+      resultado = resultado.replace('É', 'E');
+      resultado = resultado.replace('Í', 'I');
+      resultado = resultado.replace('Ó', 'O');
+      resultado = resultado.replace('Ú', 'U');
 
-    resultado = resultado.replace('á', 'a');
-    resultado = resultado.replace('é', 'e');
-    resultado = resultado.replace('í', 'i');
-    resultado = resultado.replace('ó', 'o');
-    resultado = resultado.replace('ó', 'u');
-
+      resultado = resultado.replace('á', 'a');
+      resultado = resultado.replace('é', 'e');
+      resultado = resultado.replace('í', 'i');
+      resultado = resultado.replace('ó', 'o');
+      resultado = resultado.replace('ó', 'u');
+    }
     return resultado;
 }
 
@@ -455,7 +455,15 @@ function cargarMapaPaciente(){
       async: false,
       success: function (data) {
         if (data.success){
+          console.log('data: ' + JSON.stringify(data));
           if (data.result){
+            console.log('data: ' + JSON.stringify(data));
+            $('#idDireccion').val(data.result.id);
+            $('#idEstado').val(data.result.Municipio.estado_id);
+            $('#idMunicipio').val(data.result.municipio_id);
+            $('#idLocalidad').val(data.result.localidad_id);
+            $('#latitud').val(data.result.latitud);
+            $('#longitud').val(data.result.longitud);
             mapa.latitud = data.result.latitud;
             mapa.longitud = data.result.longitud;
           }

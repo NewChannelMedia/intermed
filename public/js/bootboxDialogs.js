@@ -1303,6 +1303,10 @@ function editaPerfBoot(){
           <div class="row">
             <div class="col-md-8">
               <div class="row">
+                  <input type="hidden" id="idDireccion" name="idDireccion" value=""/>
+                  <input type="hidden" id="idEstado" name="idEstado" value=""/>
+                  <input type="hidden" id="idMunicipio" name="idMunicipio" value=""/>
+                  <input type="hidden" id="idLocalidad" name="idLocalidad" value=""/>
                   <input type="hidden" id="latitud" name="latitud" value=""/>
                   <input type="hidden" id="longitud" name="longitud" value=""/>
                   <div id="searchDiv">
@@ -1317,13 +1321,13 @@ function editaPerfBoot(){
 
               <div class="col-md-12 form-group">
                 <label for="slc_estados_mapa">Estado: </label>
-                <select type="text" class="form-control" id="slc_estados_mapa" >
+                <select type="text" class="form-control" id="slc_estados_mapa" onChange="obtenerCiudades('_mapa');">
                 </select>
               </div>
 
               <div class="col-md-12 form-group">
                 <label for="slc_ciudades_mapa">Municipio/Ciudad: </label>
-                <select type="text" class="form-control" id="slc_ciudades_mapa" >
+                <select type="text" class="form-control" id="slc_ciudades_mapa" onChange="obtenerColonias('_mapa');">
                 </select>
               </div>
 

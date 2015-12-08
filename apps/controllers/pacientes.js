@@ -84,7 +84,13 @@ exports.cargarUbicacion = function (object, req, res){
       where: {
         usuario_id: req.session.passport.user.id,
         principal: 1
-      }
+      },
+      attributes: ['id','latitud','longitud','municipio_id','localidad_id'],
+      include: [
+        {
+          model : models.Municipio, attributes: ['estado_id']
+        }
+      ]
     }).then(function(result){
       res.status(200).json({'success':true,'result':result});
     });

@@ -66,18 +66,20 @@ exports.obtieneLocalidades = function (object, req, res) {
       id: object.municipio_id
     }
   }).then(function(municipio){
-    models.Localidad.findAll({
-      where:{
-        estado_id:object.estado_id,
-        municipio_ant_id: municipio.municipio_id
-      },
-      order:['localidad'],
-      attributes:['id','localidad']
-    }).then( function(municipios){
-      res.send({
-          'municipios': municipios
+    if (municipio){
+      models.Localidad.findAll({
+        where:{
+          estado_id:object.estado_id,
+          municipio_ant_id: municipio.municipio_id
+        },
+        order:['localidad'],
+        attributes:['id','localidad']
+      }).then( function(municipios){
+        res.send({
+            'municipios': municipios
+        });
       });
-    });
+    }
   });
 };
 
@@ -520,9 +522,10 @@ exports.registrarubicacionPaciente = function (object, req, res){
     models.Direccion.destroy({
       where: {
         usuario_id: req.session.passport.user.id
-      }
+      },
+      logging: console.log
     }).then(function(){
-      models.Direccion.create(object).then(function(result){
+      models.Direccion.create(object,{logging: console.log}).then(function(result){
           res.status(200).json({success: true,result: result});
       });
     });
