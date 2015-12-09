@@ -2711,25 +2711,6 @@ $(function() {
   });
 });
 
-if ( location.pathname.indexOf('/nuevoPerfilMedicos/') == 0 ) {
-$(document).ready(function(){
-  $(function () {
-    $(window).scroll(sticky_relocate);
-    sticky_relocate();
-  });
-  $('.logros-slider').bxSlider({
-    slideWidth: 250,
-    minSlides: 1,
-    maxSlides: 5,
-    moveSlides: 1,
-    slideMargin: 50,
-  });
-})
-
-
-
-}
-
 function actualizarDirecciones(){
   $.ajax( {
     async: false,
@@ -3606,4 +3587,77 @@ function addTelefon(){
       }
     });
   });
+}
+
+if ( location.pathname.indexOf('/nuevoPerfilMedicos/') == 0 ) {
+$(document).ready(function(){
+  MostrarUbicaciones();
+
+  $(function () {
+    $(window).scroll(sticky_relocate);
+    sticky_relocate();
+  });
+
+  $('.logros-slider').bxSlider({
+    slideWidth: 250,
+    minSlides: 1,
+    maxSlides: 5,
+    moveSlides: 1,
+    slideMargin: 50,
+  });
+
+  /*$('#sections').trigger( 'prev' );
+  $('#sections').trigger( 'next' );*/
+
+  /*$('#profile .float.up').scrollTo($('$ubicaciones'), 800);*/
+  $('#profile .float.bottom').scrollTo($('#ubicaciones'), 800);
+
+  $('#ubicaciones .float.up').scrollTo($('#profile'), 800);
+  $('#ubicaciones .float.bottom').scrollTo($('#info'), 800);
+
+  $('#info .float.up').scrollTo($('#ubicaciones'), 800);
+  $('#info .float.bottom').scrollTo($('#colegas'), 800);
+
+  $('#colegas .float.up').scrollTo($('#info'), 800);
+  $('#colegas .float.bottom').scrollTo($('#curriculum'), 800);
+
+  $('#curriculum .float.up').scrollTo($('#curriculum'), 800);
+  $('#curriculum .float.bottom').scrollTo($('#comentarios'), 800);
+
+  $('#comentarios .float.up').scrollTo($('#curriculum'), 800);
+  /*$('#comentarios .float. bottom').scrollTo($('$ubicaciones'), 800);*/
+
+
+  var _wheight = $(window).height();
+  $('body').css( 'height' , _wheight );
+/*
+  if($(window).width() < 992) {
+    var _sheight = _wheight - 120;
+    //$('#screen').css('top', '120px');
+    $('#screen').css('height', _sheight);
+
+  }
+  else if ($(window).width() >= 992) {
+    var _sheight = _wheight - 160;
+    //$('#screen').css('top', '160px');
+    $('#screen').css('height', _sheight);
+  }*/
+});
+
+$(window).resize(function(){
+  var _wheight = $(window).height();
+  $('body').css( 'height' , _wheight );
+
+  if($(window).width() < 992) {
+    var _sheight = _wheight - 120;
+    //$('#screen').css('top', '120px');
+    $('#screen').css('height', _sheight);
+
+  }
+  else if ($(window).width() >= 992) {
+    var _sheight = _wheight - 160;
+    //$('#screen').css('top', '160px');
+    $('#screen').css('height', _sheight);
+  }
+});
 }
