@@ -1,5 +1,11 @@
 <!-- interno -->
 <!-- empieza nav superior -->
+{{#unless usuario.id}}
+<input type="hidden" id="inicio" value="{{valSession 'inicio'}}">
+<input type="hidden" id="registroCompleto" value="{{valSession 'registroCompleto'}}">
+<input type="hidden" id="tipoUsuario" value="{{valSession 'tipoUsuario'}}">
+<input type="hidden" id="usuarioPerfil" value="{{#if usuario.id}}{{usuario.id}}{{else}}{{valSession 'id'}}{{/if}}">
+{{/unless}}
 <nav id="mainNav" class="navbar navigator navbar-static-top">
   <section class="navigator-container container-fluid">
     <div class="navigator-inner row">
@@ -41,6 +47,11 @@
               <li>
                 <a href="#">Mensajes</a>
               </li>
+              {{#unless usuario.id}}
+              <li>
+                <a href="/logout"><span class="glyphicon glyphicon-log-out"></span></a>
+              </li>
+              {{/unless}}
               <li class="visible-sm dropdown navigator-dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                   Buscar

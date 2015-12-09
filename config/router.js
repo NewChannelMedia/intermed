@@ -165,13 +165,13 @@ var iniciar = function () {
     intermed.callController( 'Home', 'perfilPacientes', '', req, res );
   } );
   //perfil nuevo
-  app.get( '/nuevoPerfilMedicos', function ( req, res ) {
+  app.get( '/perfil', function ( req, res ) {
     rutas.routeLife( 'plataforma2', 'plataforma', hps );
     intermed.callController( 'Home', 'nuevoPerfilMedicos', '', req, res );
   } );
 
 
-  app.get( '/nuevoPerfilMedicos/:usuario', function ( req, res ) {
+  app.get( '/perfil/:usuario', function ( req, res ) {
     var usuario = '';
     if ( req.params.usuario ) usuario = req.params.usuario;
     rutas.routeLife( 'plataforma2', 'plataforma', hps );
