@@ -3673,12 +3673,9 @@ function searchingData(){
     padecimiento: padecimiento,
     nombre: nombre
   },function(data){
-    console.log("DATAsssss:  "+JSON.stringify(data));
     $.each(data, function( i, item ){
       var nombreCompleto = item.DatosGenerale.nombre+' '+item.DatosGenerale.apellidoP+' '+item.DatosGenerale.apellidoM;
-      var medicoEspecialidad = item.Medico.MedicoEspecialidads.subEsp;
-      var especia = item.Medico.MedicoEspecialidads.Especialidad.especialidad;
-      var pade = item.Usuario.Medico.Padecimiento.padecimiento;
+      var medicoEspecialidad = "";
         html5 += '<ul class="media-list" id="agregando">';
         html5 += '<li class="media result">';
           html5 += '<div class="media-left">';
@@ -3693,28 +3690,39 @@ function searchingData(){
               html5 += '<h4 class="media-heading">';
                 html5 += '<span class="label label-topDr">Top Doctor</span>Dr. '+nombreCompleto;
               html5 += '</h4>';
-              html5 += '<ul class="list-unstyled list-inline">';
-                html5 += '<li><strong>Sub especialidades</strong>&nbsp;'+medicoEspecialidad+'</li>';
-              html5 += '</ul>';
-              html5 += '<ul class="list-unstyled list-inline">';
-                html5 += '<li><strong>Especialidades</strong>&nbsp;'+especia+'</li>';
-              html5 += '</ul>';
-              html5 += '<ul class="list-unstyled list-inline">';
-                html5 += '<li>';
-                  html5 += '<small>'+pade+'</small>';
-                html5 += '</li>';
-              html5 += '</ul>';
-              html5 += '<ul class="list-unstyled list-inline">';
-                html5 += '<li>';
-                  html5 += '<button class="btn btn-warning">';
-                    html5 += '<span class="glyphicon glyphicon-map-marker"></span>';
-                  html5 += '</button>';
-                  html5 += '<a href="#">';
-                    html5 += '<strong>nombrecalle</strong>';
-                    html5 += '<small>calle: calle #numero estado ciudad</small>';
-                  html5 += '</a>';
-                html5 += '</li>';
-              html5 += '</ul>';
+              $.each(item.Medico.MedicoEspecialidads, function(a, pipi ){
+                medicoEspecialidad += pipi.subEsp;
+                if( medicoEspecialidad == 1 ){
+                  html5 += '<ul class="list-unstyled list-inline">';
+                    html5 += '<li><strong>Sub especialidades</strong>&nbsp;'+pipi.Especialidad.especialidad+'</li>';
+                  html5 += '</ul>';
+                }else if( medicoEspecialidad == 0 ){
+                  html5 += '<ul class="list-unstyled list-inline">';
+                    html5 += '<li><strong>Especialidades</strong>&nbsp;'+pipi.Especialidad.especialidad+'</li>';
+                  html5 += '</ul>';
+                }
+              });
+              $.each(item.Medico.Padecimientos, function(d, dat ){
+                html5 += '<ul class="list-unstyled list-inline">';
+                  html5 += '<li>';
+                    html5 += '<small><strong>Padecimientos:</strong>'+dat.padecimiento+'</small>';
+                  html5 += '</li>';
+                html5 += '</ul>';
+              });
+              $.each(item.Direccions, function( i, item ){
+                console.log("ITEM: "+JSON.stringify(item));
+                html5 += '<ul class="list-unstyled list-inline">';
+                  html5 += '<li>';
+                    html5 += '<button class="btn btn-warning">';
+                      html5 += '<span class="glyphicon glyphicon-map-marker"></span>';
+                    html5 += '</button>';
+                    html5 += '<a href="#">';
+                      html5 += '<strong>nombre de la calle</strong>';
+                      html5 += '<small>&nbsp;'+item.calle+'&nbsp;#'+item.numero+'&nbsp;'+item.Municipio.municipio+'&nbsp;'+item.Municipio.Estado.estado+'</small>';
+                    html5 += '</a>';
+                  html5 += '</li>';
+                html5 += '</ul>';
+              });
             html5 += '</div>';
             html5 += '<div class="resultOptions col-md-4">';
               html5 += '<ul class="list-unstyled">';
