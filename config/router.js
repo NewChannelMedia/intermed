@@ -1033,6 +1033,11 @@ var iniciar = function () {
     intermed.callController( 'agenda', 'cancelaCita', object, req, res );
   } );
 
+  app.post( '/cancelaCita', function ( req, res ) {
+    //console.log(req.body)
+    intermed.callController( 'agenda', 'cancelaCita', req.body, req, res );
+  });
+
   app.get( '/borraCita', function ( req, res ) {
     var object = {
       id: 2
@@ -1311,6 +1316,11 @@ var iniciar = function () {
       intermed.callController('agenda','seleccionaHorarios', {id: req.params.id}, req, res);
     });
 
+    //Obtiene Horarios por direccion
+    app.get('/seleccionaHorarios/:id/:paciente', function(req, res) {
+      intermed.callController('agenda','seleccionaHorarios', {id: req.params.id, paciente_id: req.params.paciente}, req, res);
+    });
+
     //Obtiene Horarios por usuario
     app.get('/seleccionaHorariosMedico/:id', function(req, res) {
       intermed.callController('agenda','seleccionaHorariosMedico', {id: req.params.id}, req, res);
@@ -1474,6 +1484,23 @@ var iniciar = function () {
     app.post('/deleteFon',function( req, res ){
       intermed.callController('contactos','deleteFon',req, res);
     });
+
+    app.get('/agendaMedico/:id', function(req,res){
+        //rutas.routeLife('main','main',hps);
+        intermed.callController('agenda', 'seleccionaAgendaMedico', {id: req.params.id}, req, res);
+    });
+
+    app.get('/muestraAgendaMedico', function(req,res){
+        var datos =  { id : 12}
+        rutas.routeLife('main','main',hps);
+        intermed.callController('agenda','muestraAgendaMedico', datos, req, res);
+    });
+
+    app.post( '/cancelaCitaMedico', function ( req, res ) {
+      intermed.callController( 'agenda', 'cancelaCitaMedico', req.body, req, res );
+    });
+
+
 }
 
 var io = serv.server( app, 3000 );

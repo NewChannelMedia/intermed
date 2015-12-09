@@ -11,10 +11,11 @@
     <form method="POST" name="frmRegCita" id="frmRegCita">
       <input type="hidden" id="id" name="id">
       <input type="hidden" id="paciente_id" name="paciente_id" value="1">
-      <input type="hidden" id="medico_id" name="medico_id" value="12">
+      <input type="hidden" id="medico_id" name="medico_id" value="{{id}}">
       <input type="hidden" id="fecha" name="fecha" />
       <input type="hidden" id="fechaFin" name="fechaFin" />
 
+<!--
       <div class="row">
         <div class="col-md-12">
             <div class="form-group">
@@ -42,7 +43,7 @@
           <div id='precioServicio'></div>
           <div id='duracionServicio'></div>
         </div>
-
+-->
         <div class="col-md-12">
           <div id='calendar'></div>
         </div>
@@ -69,34 +70,7 @@
   var horariosMedico = 0;
 
 $(document).ready(function () {
-
     generarCalendario();
-
-    $('#lstServicio').change(function(){
-      $.ajax({
-          url: '/servicio/' +  $('#lstServicio').val(),
-          dataType: "json",
-          cache: false,
-          success: function(data) {
-              duracionServicio  =  data.duracion;
-              $('#precioServicio').html("<b>Costo del servicio : </b>" + data.precio);
-              $('#duracionServicio').html("<b>Duración : </b>" + data.duracion);
-              $('#calendar').fullCalendar('removeEvents', null);
-              generarCalendario();
-          },
-          error: function(jqXHR, textStatus, err) {
-              console.error('AJAX ERROR: ' + err);
-          }
-      });
-    });
-
-    $('#lstUbicacion').change(function(){
-      //$('#calendar').fullCalendar('refetchEvents');
-      $('#calendar').fullCalendar('destroy');
-      generarCalendario();
-      //alert($('#lstUbicacion').val());
-      $('#calendar').fullCalendar('refetchEvents');
-    });
 });
 
 
@@ -124,7 +98,7 @@ function generarCalendario()
           left: false
       },
       events: {
-        url: '/seleccionaHorarios/' +  $('#lstUbicacion').val() +  "/" + $('#paciente_id').val()
+        url: '/agendaMedico/' +  $('#medico_id').val()
       },
       /*
       minTime: '6:00',
@@ -168,19 +142,17 @@ function generarCalendario()
         }
       },
       eventClick: function (event, jsEvent, view) {
-        if (event.id != null && event.id.substring(0,4) != 'cita')
-        {
+        //if (event.id != null && event.id.substring(0,4) != 'cita') {
             if  (cancelaCita(event._id))
             {
-              console.log('cancelando')
               $('#calendar').fullCalendar('removeEvents', event._id);
             }
-        }
+        //}
       },
       eventMouseover: function (event, jsEvent, view) {
-        if (event.id != null && event.id.substring(0,4) != 'cita') {
-          $(this).append('<span id=\"' + event._id + '\">Clic para eliminar</span>');
-        }
+        //if (event.id != null && event.id.substring(0,4) != 'cita') {
+          $(this).append('<span id=\"' + event._id + '\">Clic para cancelar</span>');
+        //}
       },
       eventMouseout: function (event, jsEvent, view) {
           $('#' + event._id).remove();
@@ -291,13 +263,12 @@ function obtenerHorarios() {
 
 function cancelaCita(id) {
   $.ajax( {
-    url: '/cancelaCita',
+    url: '/cancelaCitaMedico',
     type: 'POST',
     dataType: "json",
     cache: false,
     data: {
       id: id,
-      paciente_id: $('#paciente_id').val(),
       usuario_id: $('#medico_id').val(),
     },
     success: function ( data ) {

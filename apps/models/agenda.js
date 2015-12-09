@@ -4,6 +4,7 @@ module.exports = function(sequelize, DataTypes) {
   var Agenda = sequelize.define("Agenda", {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
     fechaHoraInicio: {type: DataTypes.DATE},
+    fechaHoraFin: {type: DataTypes.DATE},
     status: {type: DataTypes.BOOLEAN},
     nota: {type: DataTypes.STRING},
     resumen: {type: DataTypes.STRING},

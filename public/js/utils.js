@@ -481,6 +481,7 @@ function addMedico( record, tipo ) {
 function registrarCita() {
 	var horarios = obtenerHorarios();
 	$("#fecha").val(horarios[0].inicio);
+  $("#fechaFin").val(horarios[0].fin);
 
 	$.ajax({
 		url: '/agregaCita',

@@ -462,6 +462,30 @@ function formatearNotificacion( record , element) {
         //pedirRecomendacion
         not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' te ha pedido las siguientes recomendaciones</a>' + mediaObjectFecha + '</div>';
         break;
+      case 20:
+          //paciente generando cita
+          not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' Ha solicitado una cita</a>' + mediaObjectFecha + '</div>';
+          break;
+      case 21:
+          //paciente calificación de cita
+          not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + 'Calificación de cita</a>' + mediaObjectFecha + '</div>';
+          break;
+      case 21:
+          //paciente calificación de medico
+          not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' Calificación de médico</a>' + mediaObjectFecha + '</div>';
+          break;
+      case 21:
+          //medico cancelando cita
+          not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' Ha cancelado la cita</a>' + mediaObjectFecha + '</div>';
+          break;
+      case 22:
+          //medico ha modificado cita
+          not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' Ha modificado la cita</a>' + mediaObjectFecha + '</div>';
+          break;
+      case 23:
+          //paciente ha rechazado cambio de cita
+          not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' Ha rechazado la cita</a>' + mediaObjectFecha + '</div>';
+          break;
     }
     not += '</div>';
 
