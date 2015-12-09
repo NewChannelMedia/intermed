@@ -1487,6 +1487,9 @@ var iniciar = function () {
     app.post('/cargaPadecimiento', function( req, res ){
       intermed.callController('search','cargaPadecimiento', req, res );
     });
+    app.post('/findData', function( req, res ){
+      intermed.callController('search','findData',req,res);
+    });
     //fin
 }
 

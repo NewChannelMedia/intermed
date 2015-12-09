@@ -31,37 +31,81 @@ module.exports = {
     });
   },
   findData: function( req, res ){
+    var especialidad = parseInt(req.body.especialidad);
+    var estado = parseInt(req.body.estado);
+    var municipio = parseInt(req.body.municipio);
+    var padecimiento = parseInt(req.body.padecimiento);
+    var nombre = req.body.nombre;
+    var condicionNombre;
+    var condicionEspecialidad;
+    var condicionEstado;
+    var condicionMunicipio;
+    var condicionPadecimiento;
+    if( nombre == "" ){
+      condicionNombre = "";
+    }else if( nombre != "" ){
+      condicionNombre = { nombre:{ $like: "%"+nombre+"%"} }
+    }
+    if( especialidad == 0 ){
+      condicionEspecialidad = "";
+    }else if( especialidad >= 1 ){
+      condicionEspecialidad = { especialidad_id: especialidad};
+    }
+    if( estado == 0 ){
+      condicionEstado = "";
+    }else if( estado >= 1 ){
+      condicionEstado = { id: estado };
+    }
+    if( municipio == 0 ){
+      condicionMunicipio = "";
+    }else if( municipio >= 1 ){
+      condicionMunicipio = {
+        id: municipio,
+        estado_id: estado
+      };
+    }
+    if( padecimiento == 0 ){
+      condicionPadecimiento = "";
+    }else if( padecimiento >= 1 ){
+      condicionPadecimiento = { id: padecimiento };
+    }
+    console.log("Nombre: "+JSON.stringify(condicionNombre));
+    console.log("Especialidad: "+JSON.stringify(condicionEspecialidad));
+    console.log("Estado: "+JSON.stringify(condicionEstado));
+    console.log("Municipio: "+JSON.stringify(condicionMunicipio));
+    console.log("Padecimiento: "+JSON.stringify(condicionPadecimiento));
     models.Usuario.findAll({
       where:{tipoUsuario:'M'},
-      attributes:['urlFotoPerfil'],
+      attributes:['usuarioUrl','urlFotoPerfil'],
       include:[{
         model: models.Medico,
         attributes:['id'],
         include:[{
           model: models.Padecimiento,
-          where:{ id: req.body.padecimiento}
+          where:condicionPadecimiento
         },{
           model: models.MedicoEspecialidad,
-          where:{ especialidad_id: req.body.especialidad},
+          where: condicionEspecialidad,
           attributes:['id','subEsp'],
           include:[{
             model: models.Especialidad,
             attributes:['id','especialidad']
-          },{
-            model: models.DatosGenerales,
-            where:{nombre:"%"+req.body.nombre+"%"},
-            attributes:['nombre','apellidoP','apellidoM']
-          },{
-            model: models.Direccion,
-            attributes:['calle','numero','nombre'],
-            include:[{
-              model: models.Municipio,
-              attributes:['municipio'],
-              include:[{
-                model: models.Estado,
-                attributes:['estado']
-              }]
-            }]
+          }]
+        }]
+      },{
+        model: models.DatosGenerales,
+        where:condicionNombre,
+        attributes:['nombre','apellidoP','apellidoM']
+      },{
+        model: models.Direccion,
+        attributes:['calle','numero','nombre'],
+        include:[{
+          model: models.Municipio,
+          where: condicionMunicipio,
+          attributes:['id','municipio'],
+          include:[{
+            model: models.Estado,
+            attributes:['id','estado']
           }]
         }]
       }]
