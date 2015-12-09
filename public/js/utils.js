@@ -241,7 +241,8 @@ function saveStepOne() {
     success: function ( data ) {
       if ( data.result === "success" ) {
         actualizarSesion();
-        goToNextStep( 0 );
+        bootbox.hideAll();
+        registroMedicoDatosPago();
       }
     },
     error: function ( jqXHR, textStatus, err ) {
@@ -259,7 +260,7 @@ function saveStepTwo() {
     success: function ( data ) {
       if ( data.result === "success" ) {
         actualizarSesion();
-        goToNextStep( 1 );
+        bootbox.hideAll();
       }
     },
     error: function ( jqXHR, textStatus, err ) {
@@ -3607,3 +3608,8 @@ function addTelefon(){
     });
   });
 }
+
+$(document).ready(function(){
+  registroMedicoDatosPersonales()
+  //registroMedicoDatosPago();
+})

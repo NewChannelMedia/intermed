@@ -897,14 +897,14 @@ footer a:visited {
 }
 
 .separator2 {
-  border: 5px solid #fbad18;
+  border: 5px solid #1E6488;
   margin: 10px 0;
 }
 
 .separator3 {
   width: 80%;
   float: right;
-  border: 8px solid #fbad18;
+  border: 8px solid #1E6488;
   margin: 10px 0;
 }
 
@@ -960,26 +960,26 @@ footer a:visited {
   margin-bottom: 0;
   padding: 10px 15px;
   color: #fff;
-  background-color: #009cde;
+  background-color: #5D9AB7;
 }
 
 .msgPrecio .trngl {
   position: absolute;
-  top: 12px;
-  left: -25px;
-  width: 20px;
-  height: 20px;
+  top: 6px;
+  left: -29px;
+  width: 27px;
+  height: 27px;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
-  background-color: #009cde;
+  background-color: #5D9AB7;
 }
 
 .topMsgReg h4 {
   margin: 0;
   padding: 10px 15px;
   color: #fff;
-  background-color: #fbad18;
+  background-color: #1E6488;
 }
 
 .topMsgReg .msgSuccess {

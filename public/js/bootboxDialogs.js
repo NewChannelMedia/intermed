@@ -1557,3 +1557,391 @@ function editaPerfBoot(){
     `
   });
 }
+
+function registroMedicoDatosPersonales(){
+
+  var nombre = '', apellidop = '', apellidom = '';
+  var curpRegMed = '', cedulaRegMed = '';
+  var genderF = '', genderM = '';
+
+  var continuar = true;
+  $.ajax( {
+    async: false,
+    url: '/informacionRegistroMedico',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      console.log('Result: ' + JSON.stringify(data));
+      if (data.success ){
+        if ( data.result.DatosGenerale) {
+          nombre = data.result.DatosGenerale.nombre;
+          apellidop = data.result.DatosGenerale.apellidoP;
+          apellidom = data.result.DatosGenerale.apellidoM;
+        }
+        else continuar = false;
+
+        if ( data.result.Biometrico ) {
+          if ( data.result.Biometrico.genero == "F"){
+            genderF = ' checked ';
+          }
+          else if ( data.result.Biometrico.genero == "M"){
+            genderM = ' checked ';
+          }
+        }else continuar = false;
+
+        if ( data.result.Medico && data.result.Medico.curp) {
+          curpRegMed = data.result.Medico.curp;
+          cedulaRegMed = data.result.Medico.cedula;
+        }
+        else continuar = false;
+
+          if (continuar){
+            registroMedicoDatosPago();
+          } else {
+            $('.modal-body').css('padding',0);
+            bootbox.dialog({
+              backdrop: true,
+              size:'large',
+              closeButton: false,
+              onEscape: function () {
+                  bootbox.hideAll();
+              },
+              message: `
+              <div style="background-color:#172c3b;padding:5px;margin:-15px;" >
+              <div class="col-md-12" style="color:white" >
+                <h2 class="s25"><h4 class="FlamaBook-normal s25 regHeader">Intermed® / <b>Registro Médicos</b> </h4></h2>
+              </div>.
+
+              <div class="divBodyBootbox">
+
+
+                <form id="regMedStepOne">
+                  <div class="row topMsgReg">
+                    <div class="col-md-12">
+                      <h4 class="Flama-bold s20">¡Bienvenido Dr.!
+                        <small></small>
+                      </h4>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div id="alertError"></div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="regBox">
+                        <div class="row">
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label class="Flama-normal s15" for="nombreRegMed">Nombres</label>
+                              <input type="text" class="form-control" id="nombreRegMed" name="nombreRegMed" placeholder="Nombres" value="`+ nombre +`">
+                            </div>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label class="Flama-normal s15" for="apePatRegMed">Apellido Paterno</label>
+                              <input type="text" class="form-control" id="apePatRegMed" name="apePatRegMed" placeholder="Apellido Paterno" value="`+ apellidop +`">
+                            </div>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label class="Flama-normal s15" for="apePatRegMed">Apellido Materno</label>
+                              <input type="text" class="form-control" id="apeMatRegMed" name="apeMatRegMed" placeholder="Apellido Materno" value="`+ apellidom +`">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <label class="Flama-normal s15">Fecha de Nacimiento</label>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                  <input type="text" class="form-control" id="diaNacReg" name="birthdayDay" placeholder="Dia" required="true">
+                                </div>
+                              </div>
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                  <input type="text" class="form-control" id="mesNacReg" name="birthdayMonth" placeholder="Mes" required="true">
+                                </div>
+                              </div>
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                  <input type="text" class="form-control" id="añoNacReg" name="birthdayYear" placeholder="Año" required="true">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="col-md-12">
+                              <label class="Flama-normal s15">Sexo</label>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="radio">
+                                <label>
+                                  <input type="radio" name="gender" id="sexM" value="M" `+ genderM +`> Masculino
+                                </label>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="radio">
+                                <label>
+                                  <input type="radio" name="gender" id="sexF" value="F" `+ genderF +`> Femenino
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <hr class="separator2">
+                      <div class="regBox">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="Flama-normal s15" for="curpRegMed">CURP</label>
+                              <input type="text" class="form-control" id="curpRegMed" name="curpRegMed" placeholder="CURP"  value="`+ curpRegMed +`">
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="Flama-normal s15" for="cedulaRegMed">Cedula Profesional</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="cedulaRegMed" name="cedulaRegMed" placeholder="CEDULA"  value="`+ cedulaRegMed +`">
+                                <span class="input-group-addon verificarAddon">
+                                  <button class="btn btn-warning verificarBtn Flama-normal s15">Verificar</button>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3 col-md-offset-9">
+                      <input type="button" id="regi" name="registroCorreo" value="Guardar" class="btn btn-warning btn-block btn-step" onclick="saveStepOne()" style="margin-top:10px;margin-bottom:10px">
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+              </div>`
+          });
+        }
+
+      } else {
+        continuar = false;
+        if (data.error){
+          //Manejador de errores
+        }
+      }
+    },
+    error: function (error){
+        console.log('Ajax error: ' + JSON.stringify(error));
+    }
+  });
+
+}
+
+
+function registroMedicoDatosPago(){
+  var continuar = true;
+  $.ajax( {
+    async: false,
+    url: '/informacionRegistroMedico',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      console.log('Result: ' + JSON.stringify(data));
+      if (data.success ){
+          if ( data.result.Medico.pago == 0 ) {
+            continuar = false;
+          }
+
+          if (!continuar){
+
+            $('.modal-body').css('padding',0);
+            bootbox.dialog({
+              backdrop: true,
+              closeButton: false,
+              onEscape: function () {
+                  bootbox.hideAll();
+              },
+              size:'large',
+              message: `
+              <div style="background-color:#172c3b;padding:5px;margin:-15px;" >
+              <div class="col-md-12" style="color:white" >
+                <h2 class="s25"><h4 class="FlamaBook-normal s25 regHeader">Intermed® / <b>Registro Médicos</b> </h4></h2>
+              </div>.
+
+              <div class="divBodyBootbox">
+                <div class="row topMsgReg">
+                  <div class="col-md-8">
+                    <h4 class="Flama-bold s20">Selecciona tu forma de pago.</h4>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="msgPrecio text-center FlamaBook">
+                      <span class="trngl"></span>Recuerda que tu suscripción tiene un costo mensual de $1,000.00
+                    </div>
+                  </div>
+                </div>
+
+
+                  <div class="col-md-12">
+                    <form class="radio">
+                      <div id="tarjOpt">
+                        <label class="bigLabel Flama-normal">
+                          <input type="radio" name="optionsRadios" id="tarjetaOptReg" value="tarjeta" checked=""> Tarjeta de crédito
+                        </label>
+                        <div id="tarjOptBox" class="regBox">
+                          <div class="row">
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label class="Flama-normal s15" for="tipoTarjetaRegMed">Tipo de tarjeta</label>
+                                <input type="text" class="form-control" id="tipoTarjetaRegMed" name="tipoTarjetaRegMed" placeholder="Visa / Mastercard / etc">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label class="Flama-normal s15" for="numTarjetaRegMed">Número de la tarjeta</label>
+                                <input type="text" class="form-control" id="numTarjetaRegMed" name="numTarjetaRegMed" placeholder="xxxx-xxxx-xxxx-xxxx">
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label class="Flama-normal s15" for="vencMesTarjetaRegMed">Vencimiento</label>
+                                    <input type="number" class="form-control" id="vencMesTarjetaRegMed" name="vencMesTarjetaRegMed" placeholder="Mes">
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label class="Flama-normal s15" for="vencAñoTarjetaRegMed">Vencimiento</label>
+                                    <input type="number" class="form-control" id="vencAñoTarjetaRegMed" name="vencAñoTarjetaRegMed" placeholder="Año">
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label class="Flama-normal s15" for="seguridadTarjetaRegMed">Seguridad</label>
+                                    <div class="input-group">
+                                      <input type="password" class="form-control" id="seguridadTarjetaRegMed" name="seguridadTarjetaRegMed">
+                                      <span class="input-group-addon glyphicon">
+                                        <a tabindex="0" role="button" data-toggle="popover" title="Codigo de seguridad:" data-placement="bottom" data-container="body" data-content="El numero de seguridad se encuentra al reverso de tu tarjeta.">
+                                          <span class="glyphicon-question-sign"></span>
+                                        </a>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-5">
+                              <div class="form-group">
+                                <label class="Flama-normal s15" for="nombreTarjetaRegMed">Nombre del titular</label>
+                                <input type="text" class="form-control" id="nombreTarjetaRegMed" name="nombreTarjetaRegMed" placeholder="Tal como aparece en la tarjeta">
+                              </div>
+                            </div>
+                            <div class="col-md-2">
+                              <div class="form-group">
+                                <label>
+                                  <br>
+                                </label>
+                                <input type="button" id="registraTarjeta" name="registraTarjeta" value="Pagar" class="btn btn-warning btn-block Flama-normal s15" onclick="saveStepTwo()">
+                              </div>
+                            </div>
+                            <div class="col-md-5 secureStamp">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <p>
+                                    <span class="glyphicon glyphicon-lock"></span>
+                                    <strong>Este es un sitio seguro</strong>
+                                    <br>
+                                    <small>Utilizamos conexiones seguras para proteger su información.</small>
+                                  </p>
+                                </div>
+                              </div>
+                              <div class="securedImgs row">
+                                <div class="col-md-3">
+                                  <img alt="verisign" src="/img/verisign.png">
+                                </div>
+                                <div class="col-md-2">
+                                  <img alt="ssl" src="/img/ssl.png">
+                                </div>
+                                <div class="col-md-7">
+                                  <img alt="newchannel" src="/img/newchannel-350x61.png">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <hr class="separator3" >
+                      <div id="paypalOpt" style="margin-top:5px">
+                        <label class="bigLabel Flama-normal">
+                          <input type="radio" name="optionsRadios" id="paypalOptReg" value="paypal"> PayPal
+                        </label>
+                        <div id="paypalOptBox" class="regBox">
+                          <div class="row">
+                            <div class="col-md-5">
+                              <div class="form-group">
+                                <label class="Flama-normal s15" for="paypalUser">Usuario de PayPal</label>
+                                <input type="text" class="form-control" id="paypalUser" name="paypalUser" placeholder="Usuario">
+                              </div>
+                            </div>
+                            <div class="col-md-5">
+                              <div class="form-group">
+                                <label class="Flama-normal s15" for="paypalPass">Constraseña</label>
+                                <input type="passwrod" class="form-control" id="paypalPass" name="paypalPass" placeholder="Contraseña">
+                              </div>
+                            </div>
+                            <div class="col-md-2">
+                              <label>
+                                <br>
+                              </label>
+                              <input type="button" id="paypalLogin" name="paypalLogin" value="PayPal Login" class="btn btn-warning btn-block Flama-normal s15">
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <a href="#">¿Olvidaste tu Usuario o Contraseña de Paypal? Haz click aquí.</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>.
+
+              </div>
+              </div>`
+            });
+
+            $('#tarjetaOptReg').change(function(){
+              $('#paypalOptBox').find('input').not(':input[type=button], :input[type=submit]').prop('value','');
+              $('#tarjOptBox').find('input').prop('disabled',false);
+              $('#paypalOptBox').find('input').prop('disabled',true);
+              $('#tarjOptBox').find('input').first().focus();
+            });
+
+            $('#paypalOptReg').change(function(){
+              $('#tarjOptBox').find('input').not(':input[type=button], :input[type=submit]').prop('value','');
+              $('#tarjOptBox').find('input').prop('disabled',true);
+              $('#paypalOptBox').find('input').prop('disabled',false);
+              $('#paypalOptBox').find('input').first().focus();
+            });
+
+            setTimeout(function(){
+              $('#tarjetaOptReg').change();
+            },500);
+          }
+        }
+      },
+      error: function( error ){
+        console.log('AJAX ERROR: ' +JSON.stringify(error));
+      }
+    });
+}

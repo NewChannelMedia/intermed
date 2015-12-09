@@ -314,11 +314,11 @@ module.exports = {
             { model: models.Direccion}
           ]
         }).then(function(medico) {
-                //Rendereando index y pasando los registros a la vista
-                res.render('actualizar', {
-                  layout: null,
-                  medico: medico
-                });
+            //Rendereando index y pasando los registros a la vista
+            res.render('actualizar', {
+              layout: null,
+              medico: medico
+            });
         });
     },
 
@@ -341,7 +341,7 @@ module.exports = {
   },
 
   informacionRegistro: function ( object, req, res ) {
-    if ( req.session.passport ) {
+    if (req.session.passport && req.session.passport.user) {
       models.Usuario.findOne( {
         where: {
           id: req.session.passport.user.id
@@ -365,13 +365,12 @@ module.exports = {
           } ]
                 } ]
       } ).then( function ( usuario ) {
-        res.send( usuario );
+        res.send( {success:true,result: usuario} );
       } );
     }
     else {
-      res.send( {
-        'response': 'error'
-      } );
+      res.status( 200 )
+          .send({success:false,error:1});
     }
   },
 
