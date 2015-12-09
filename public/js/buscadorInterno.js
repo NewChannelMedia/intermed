@@ -78,6 +78,7 @@ $(document).ready(function(){
       delay: 0,
       minLength: 0,
       source: function( request, response ) {
+        console.log('Test');
         request.term = replaceChars(request.term);
         var busqueda = request.term.split(" ");
         busqueda = $.grep(busqueda, function(v, k){
@@ -97,7 +98,7 @@ $(document).ready(function(){
               newUser['name'] = user.DatosGenerale.nombre + ' ' + user.DatosGenerale.apellidoP + ' ' + user.DatosGenerale.apellidoM;
               newUser['value'] = newUser['name'];
               newUser['category'] = "Usuarios";
-              newUser['url']  = 'perfil/'+user.usuarioUrl;
+              newUser['url']  = 'nuevoPerfilMedicos/'+user.usuarioUrl;
               newUser['image']  = "<img src="+user.urlFotoPerfil+" style='width:20px'></img> ";
               if (user.Medico){
                 newUser['name']  = 'Dr. ' + newUser['name'] ;
@@ -126,6 +127,94 @@ $(document).ready(function(){
       return li.appendTo(ul);
     };
   }
+
+
+  if ($( "#buscadorInternoDropDown" ).length > 0){
+
+      var autocompleteInicial = [];
+
+      var oficina = [
+      {value:'Bitácora',category:'Oficina',url:'bitacora',image:'<span class="glyphicon glyphicon-calendar"></span> ',label:'Bitácora'},
+      {value:'Perfil',category:'Oficina',url:'perfil',image:'<span class="glyphicon glyphicon-user"></span> ',label:'Perfil'},
+      {value:'Inicio',category:'Oficina',url:'',image:'<span class="glyphicon glyphicon-home"></span> ',label:'Inicio'}
+      ];
+
+      $.widget( "custom.catcomplete", $.ui.autocomplete, {
+      _create: function() {
+        this._super();
+        this.widget().menu( "option", "items", "> :not(.ui-autocomplete-category)" );
+      },
+      _renderMenu: function( ul, items ) {
+        var that = this,
+        currentCategory = "";
+        $.each( items, function( index, item ) {
+          var li;
+          if ( item.category != currentCategory ) {
+            ul.append( "<li class='ui-autocomplete-category'> " + item.category + "</li>" );
+            currentCategory = item.category;
+          }
+          li = that._renderItemData( ul, item );
+          if ( item.category ) {
+            li.attr( "aria-label", item.category + " : " + item.label );
+          }
+        });
+      }
+      });
+
+
+      $( "#buscadorInternoDropDown" ).catcomplete({
+        delay: 0,
+        minLength: 0,
+        source: function( request, response ) {
+          console.log('Test');
+          request.term = replaceChars(request.term);
+          var busqueda = request.term.split(" ");
+          busqueda = $.grep(busqueda, function(v, k){
+              return $.inArray(v ,busqueda) === k;
+          });
+          $.ajax({
+            url: "/buscadorInterno",
+            dataType: "json",
+            method: 'POST',
+            data: {
+              busqueda: busqueda
+            },
+            success: function( data ) {
+              var allUsers = [];
+              data.forEach(function(user){
+                var newUser = new Array();
+                newUser['name'] = user.DatosGenerale.nombre + ' ' + user.DatosGenerale.apellidoP + ' ' + user.DatosGenerale.apellidoM;
+                newUser['value'] = newUser['name'];
+                newUser['category'] = "Usuarios";
+                newUser['url']  = 'nuevoPerfilMedicos/'+user.usuarioUrl;
+                newUser['image']  = "<img src="+user.urlFotoPerfil+" style='width:20px'></img> ";
+                if (user.Medico){
+                  newUser['name']  = 'Dr. ' + newUser['name'] ;
+                }
+                newUser['label']  = newUser['name'];
+                user = newUser;
+                allUsers.push(newUser);
+              })
+              allUsers = oficina.concat(allUsers);
+              response(customFilter(allUsers,request.term));
+            }
+          });
+        },
+        focus: function( event, ui ) {
+          $( "#buscadorInternoDropDown" ).val( ui.item.label );
+          return false;
+        },
+        select: function( event, ui ) {
+          window.location.href = "http://localhost:3000/"+ui.item.url;
+          return false;
+        }
+      })
+      .catcomplete( "instance" )._renderItem = function( ul, item ) {
+        var li = $( "<li>" );
+        li.append( "<a>" + item.image + item.label +"</a>" );
+        return li.appendTo(ul);
+      };
+    }
 });
 
 function requestContactos(busqueda, medicos, pacientes){

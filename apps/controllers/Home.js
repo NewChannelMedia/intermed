@@ -239,8 +239,7 @@ module.exports = {
                 }, {
           model: models.Paciente,
           attributes: [ 'id' ]
-                }],
-          logging: console.log
+                }]
       } ).then( function ( usuario ) {
         if ( usuario ) {
           models.Direccion.findAll({
