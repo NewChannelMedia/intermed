@@ -526,10 +526,9 @@ exports.registrarubicacionPaciente = function (object, req, res){
     models.Direccion.destroy({
       where: {
         usuario_id: req.session.passport.user.id
-      },
-      logging: console.log
+      }
     }).then(function(){
-      models.Direccion.create(object,{logging: console.log}).then(function(result){
+      models.Direccion.create(object).then(function(result){
           res.status(200).json({success: true,result: result});
       });
     });

@@ -562,8 +562,7 @@ function armarPerfilNuevo( usuario, req, res ) {
         var medico = {};
         models.MedicoExpertoEn.findAll({
             where: {medico_id: result.id},
-            order: [['orden','ASC']],
-            logging: console.log
+            order: [['orden','ASC']]
           }).then(function(expertoEn){
             medico['MedicoExpertoEns'] = expertoEn;
 
