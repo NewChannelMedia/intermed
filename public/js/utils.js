@@ -446,50 +446,6 @@ function regMedValid() {
 	return true;
 }
 
-function obtenerCiudades() {
-  document.getElementById( 'slc_ciudades' ).innerHTML = '<option value="">Ciudad</option>';
-  $.ajax( {
-    url: '/obtenerCiudades',
-    type: 'POST',
-    dataType: "json",
-    cache: false,
-    data: {
-      'estado_id': document.getElementById( 'slc_estados' ).value
-    },
-    success: function ( data ) {
-      data.ciudades.forEach( function ( record ) {
-        document.getElementById( 'slc_ciudades' ).innerHTML += '<option value="' + record.id + '">' + record.ciudad + '</option>';
-      } );
-    },
-    error: function ( jqXHR, textStatus, err ) {
-      console.error( 'AJAX ERROR: ' + err );
-    }
-  } );
-}
-
-function obtenerColonias() {
-  document.getElementById( 'slc_colonias' ).innerHTML = '<option value="">Colonia</option>';
-  $.ajax( {
-    url: '/obtenerLocalidades',
-    type: 'POST',
-    dataType: "json",
-    cache: false,
-    data: {
-      'estado_id': document.getElementById( 'slc_estados' ).value,
-      'ciudad_id': document.getElementById( 'slc_ciudades' ).value
-    },
-    success: function ( data ) {
-      data.localidades.forEach( function ( record ) {
-        document.getElementById( 'slc_colonias' ).innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
-      } );
-    },
-    error: function ( jqXHR, textStatus, err ) {
-      console.error( 'AJAX ERROR: ' + err );
-    }
-  } );
-}
-
-
 function obtenerCP() {
   document.getElementById( 'nmb_cp' ).value = '';
   $.ajax( {
@@ -1881,24 +1837,29 @@ function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
 }
 
 
-function obtenerCiudades() {
-    if (document.getElementById('slc_ciudades')){
-        if ($('#slc_ciudades option').length == 1) {
-            $('#slc_ciudades option').remove();
+function obtenerCiudades(post) {
+    if (!post){
+      post = '';
+    }
+    div = 'slc_ciudades'+post;
+    if (document.getElementById(div)){
+        if ($('#'+div+' option').length == 1) {
+            $('#'+div+' option').remove();
         };
 
-        document.getElementById('slc_ciudades').innerHTML = '<option value="">Ciudad</option>';
+        document.getElementById(div).innerHTML = '<option value=""></option>';
+        document.getElementById('slc_colonias'+post).innerHTML = '<option value=""></option>';
         $.ajax({
             url: '/obtenerCiudades',
             type: 'POST',
             dataType: "json",
             cache: false,
             data: {
-                'estado_id': document.getElementById('slc_estados').value
+                'estado_id': $('#slc_estados'+post).val()
             },
             success: function (data) {
                 data.municipio.forEach(function (record) {
-                    document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.id + '">' + record.municipio + '</option>';
+                    document.getElementById(div).innerHTML += '<option value="' + record.id + '">' + record.municipio + '</option>';
                 });
                 //AsignarCiudad();
             },
@@ -1911,28 +1872,30 @@ function obtenerCiudades() {
     }
 }
 
-function obtenerColonias() {
-  if (document.getElementById('slc_colonias')){
-
-      if ($('#slc_colonias option').length != 1) {
-          $('#slc_colonias option').remove();
+function obtenerColonias(post) {
+  if (!post){
+    post = '';
+  }
+  div = 'slc_colonias'+post;
+  if ($('#'+div)){
+      if ($('#'+div+' option').length != 1) {
+          $('#'+div+' option').remove();
       };
 
-      document.getElementById('slc_colonias').innerHTML = '<option value="">Colonia</option>';
+      $('#'+div).html('<option value=""></option>');
       $.ajax({
           url: '/obtenerLocalidades',
           type: 'POST',
           dataType: "json",
           cache: false,
           data: {
-              'estado_id': document.getElementById('slc_estados').value,
-              'municipio_id': document.getElementById('slc_ciudades').value
+              'estado_id': $('#slc_estados'+post).val(),
+              'municipio_id': $('#slc_ciudades'+post).val()
           },
           success: function (data) {
               data.municipios.forEach(function (record) {
-                  document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
+                $('#'+div).append('<option value="' + record.id + '">' + record.localidad + '</option>');
               });
-              //AsignarColonia();
           },
           error: function (jqXHR, textStatus, err) {
               console.error('AJAX ERROR: ' + err);
@@ -1956,9 +1919,9 @@ function regUbicacion() {
     calle1Ubi = $('#calle1Ubi').val();
     calle2Ubi = $('#calle2Ubi').val();
 
-    slc_estados = $('#slc_estados').val();
-    slc_ciudades = $('#slc_ciudades').val();
-    slc_colonias = $('#slc_colonias').val();
+    slc_estados = $('#slc_estados_mapa').val();
+    slc_ciudades = $('#slc_ciudades_mapa').val();
+    slc_colonias = $('#slc_colonias_mapa').val();
     cpUbi = $('#cpUbi').val();
     idDireccion = $('#idDireccion').val();
     latitud = $('#latitud').val();
@@ -2649,7 +2612,7 @@ $(document).ready(function(){
     $(window).scroll(sticky_relocate);
     sticky_relocate();
   });
-  
+
   $('.logros-slider').bxSlider({
     slideWidth: 250,
     minSlides: 1,
@@ -3344,6 +3307,7 @@ function updateServices( con, des, pre, dur){
 }
 function loadDatosGenerales(){
   $.post("/loadDatosGenerales",function(data){
+    $('#usuarioUrlFotoPerfil').prop('src',data.urlFotoPerfil);
     $("#editMail").attr('value',data.correo);
     $("#editNom").attr('value',data.DatosGenerale.nombre);
     $("#editApeP").attr('value',data.DatosGenerale.apellidoP);
@@ -3539,7 +3503,6 @@ function addTelefon(){
     });
   });
 }
-
 
 function agregarClinica(){
   var addClin = $('#addClin').val();
@@ -3827,4 +3790,61 @@ function traerAseguradoras(){
         console.error( 'AJAX ERROR: ' + err );
       }
     } );
+  }
+
+//Registrar Ubicacion
+function guardarUbicacionPaciente() {
+    var latitud = '', longitud = '';
+    var slc_estados='',slc_ciudades='',slc_colonias = '';
+    latitud = $('#latitud').val();
+    longitud = $('#longitud').val();
+    slc_estados = $('#slc_estados_mapa').val();
+    slc_ciudades = $('#slc_ciudades_mapa').val();
+    slc_colonias = $('#slc_colonias_mapa').val();
+
+    UbicData = {
+      latitud: latitud,
+      longitud: longitud,
+      municipio_id: slc_ciudades,
+      principal: 1
+    }
+
+    if (latitud != '' && longitud != '' && slc_estados != '' && slc_ciudades != ''){
+      if (slc_colonias>0){
+        UbicData['localidad_id'] = slc_colonias;
+      }
+
+      $.ajax({
+          url: '/registrarubicacionPaciente',
+          type: 'POST',
+          dataType: "json",
+          cache: false,
+          data: UbicData,
+          type: 'POST',
+          success: function (data) {
+            if (data.success){
+              bootbox.alert({
+                message: "Tu ubicación ha sido guardada.",
+                title: "Ubicación guardada"
+              });
+            }
+          },
+          error: function (err) {
+              console.error('AJAX ERROR: (registro 166) : ' + JSON.stringify(err));
+          }
+      });
+    } else {
+      var mensaje = '';
+      if (latitud == '' || longitud == ''){
+        mensaje = 'la posición de su ubicación';
+      } else if (slc_estados == ''){
+        mensaje = 'el estado';
+      } else {
+        mensaje = 'el municipio o ciudad';
+      }
+      bootbox.alert({
+        message: "Es necesario indicar " + mensaje + " para el registro de su dirección.",
+        title: "No se puede guardar la ubicación"
+      });
+    }
 }

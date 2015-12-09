@@ -519,3 +519,21 @@ exports.eliminaUbicacion = function(object, req, res){
     });
   });
 }
+
+exports.registrarubicacionPaciente = function (object, req, res){
+  if (req.session.passport.user){
+    object['usuario_id'] =req.session.passport.user.id;
+    models.Direccion.destroy({
+      where: {
+        usuario_id: req.session.passport.user.id
+      },
+      logging: console.log
+    }).then(function(){
+      models.Direccion.create(object,{logging: console.log}).then(function(result){
+          res.status(200).json({success: true,result: result});
+      });
+    });
+  } else {
+      res.status(200).json({success: false});
+  }
+}

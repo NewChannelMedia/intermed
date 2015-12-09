@@ -41,6 +41,11 @@
               <li>
                 <a href="#">Mensajes</a>
               </li>
+              {{#unless usuario.id}}
+              <li>
+                <a href="/logout"><span class="glyphicon glyphicon-log-out"></span></a>
+              </li>
+              {{/unless}}
               <li class="visible-sm dropdown navigator-dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                   Buscar
@@ -215,11 +220,7 @@
                 </ul>
               {{else}}
                 <h2 class="profile-name" style="text-transform:capitalize;">
-                {{#ifSession "name"}}
-                  Dr. {{valSession "name"}}
-                  {{else}}
-                  Aun no tenemos tu nombre registrado, continúa tu registro <a onclick="informacionRegistroMedico()">aquí</a>.
-                {{/ifSession}}</h2>
+                {{valSession "name"}}
                 <h4 class="profile-location">
                   {{#ifSession "municipio"}}
                     {{valSession "municipio"}}, {{valSession "estado"}}. MX
@@ -246,6 +247,10 @@
                       {{/if}}
                     {{/eachValSession}}
                   {{/ifsubEsp}}
+                </ul>
+
+                <ul class="media-right profileExtraNav list-inline">
+                  <li class="active"><a href="#" onclick="cargarInfoSesion();editaPerfBoot();">Edita tu perfil</a></li>
                 </ul>
               {{/if}}
             </div>

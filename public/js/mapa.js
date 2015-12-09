@@ -69,13 +69,14 @@ var mapa = {
             cache: false,
             async: false,
             success: function (data) {
+                $('#slc_estados_mapa').append('<option value=""></option>');
                 data.forEach(function (record) {
-                    $('#slc_estados').append('<option value="' + record.id + '">' + record.estado + '</option>');
+                    $('#slc_estados_mapa').append('<option value="' + record.id + '">' + record.estado + '</option>');
                 });
             },
             error: function (jqXHR, textStatus, err) {
               console.log('ERROR: ' + JSON.stringify(err));
-                var success = false;
+              var success = false;
             }
         });
 
@@ -122,13 +123,13 @@ var mapa = {
         if (!($('#idDireccion') && $('#idDireccion').val() != "" && $('#idDireccion').val() > 0)){
           mapa.GeolicalizacionUsuario();
         } else {
-          $('#slc_estados').val($('#idEstado').val());
-          obtenerCiudades();
+          $('#slc_estados_mapa').val($('#idEstado').val());
+          obtenerCiudades('_mapa');
           setTimeout(function(){
-            $('#slc_ciudades').val($('#idMunicipio').val());
-            obtenerColonias();
+            $('#slc_ciudades_mapa').val($('#idMunicipio').val());
+            obtenerColonias('_mapa');
             setTimeout(function(){
-              $('#slc_colonias').val($('#idLocalidad').val());
+              $('#slc_colonias_mapa').val($('#idLocalidad').val());
             },300);
           },300);
           var devCenter = new google.maps.LatLng(mapa.latitud, mapa.longitud);
@@ -136,7 +137,6 @@ var mapa = {
           mapa.map.setZoom(14);
           setTimeout(function(){
             mapa.Marcador();
-            mapa.marker.setOptions({draggable: false,animation:null});
           },200);
         }
 
@@ -202,8 +202,7 @@ var mapa = {
                 position: pos,
                 map: mapa.map,
                 draggable: true,
-                title: "Arrastre y suelte para seleccionar la ubicación",
-                animation: google.maps.Animation.DROP
+                title: "Arrastre y suelte para seleccionar la ubicación"
             });
 
             google.maps.event.addListener(mapa.marker, 'mouseup', mapa.funcionClick);
@@ -216,11 +215,6 @@ var mapa = {
     //Acciones sobre el marcador
     funcionClick: function () {
       if (!($('#btnGuardar') && $('#btnGuardar').val() == "Editar")){
-        if (mapa.marker.getAnimation() != null) {
-            mapa.marker.setAnimation(null);
-        } else {
-            mapa.marker.setAnimation(google.maps.Animation.BOUNCE);
-        }
 
         var pos = mapa.marker.getPosition();
         mapa.latitud = pos.lat();
@@ -261,8 +255,8 @@ var mapa = {
 
                         if (addr.types[0] == 'administrative_area_level_1') {
                             mapa.estado = addr.long_name;
-                            $("#slc_estados option:contains(" + mapa.estado + ")").attr("selected", true);
-                            obtenerCiudades();
+                            $("#slc_estados_mapa option:contains(" + mapa.estado + ")").attr("selected", true);
+                            obtenerCiudades('_mapa');
                             setTimeout(function(){
                               AsignarCiudad();
                             },300);
@@ -382,10 +376,6 @@ function resizingMap() {
 }
 function cargarMapa(ubicacion_id) {
     mapa.initMap();
-
-    if (ubicacion_id && ubicacion_id > 0){
-      console.log('Ubicacion_id: ' + ubicacion_id);
-    }
 }
 
 
@@ -405,8 +395,7 @@ function AgregarMarcadores() {
                 position: pos,
                 map: mapa.map,
                 draggable: false,
-                title: titulo,
-                animation: google.maps.Animation.DROP
+                title: titulo
             });
             marker.setIcon('img/marker.png');
 
@@ -419,15 +408,15 @@ function AgregarMarcadores() {
 }
 
 function AsignarCiudad() {
-    SeleccionarValor('slc_ciudades', mapa.ciudad);
-    obtenerColonias();
+    SeleccionarValor('slc_ciudades_mapa', mapa.ciudad);
+    obtenerColonias('_mapa');
     setTimeout(function(){
       AsignarColonia();
     },300);
 }
 
 function AsignarColonia() {
-    SeleccionarValor('slc_colonias', mapa.colonia);
+    SeleccionarValor('slc_colonias_mapa', mapa.colonia);
 }
 
 function SeleccionarValor(control, valor) {
@@ -441,17 +430,49 @@ function SeleccionarValor(control, valor) {
 
 function ReemplezarAcentos(valor) {
     var resultado = valor;
-    resultado = resultado.replace('Á', 'A');
-    resultado = resultado.replace('É', 'E');
-    resultado = resultado.replace('Í', 'I');
-    resultado = resultado.replace('Ó', 'O');
-    resultado = resultado.replace('Ú', 'U');
+    if (resultado){
+      resultado = resultado.replace('Á', 'A');
+      resultado = resultado.replace('É', 'E');
+      resultado = resultado.replace('Í', 'I');
+      resultado = resultado.replace('Ó', 'O');
+      resultado = resultado.replace('Ú', 'U');
 
-    resultado = resultado.replace('á', 'a');
-    resultado = resultado.replace('é', 'e');
-    resultado = resultado.replace('í', 'i');
-    resultado = resultado.replace('ó', 'o');
-    resultado = resultado.replace('ó', 'u');
-
+      resultado = resultado.replace('á', 'a');
+      resultado = resultado.replace('é', 'e');
+      resultado = resultado.replace('í', 'i');
+      resultado = resultado.replace('ó', 'o');
+      resultado = resultado.replace('ó', 'u');
+    }
     return resultado;
+}
+
+function cargarMapaPaciente(){
+  $.ajax({
+      url: '/paciente/cargarUbicacion',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      async: false,
+      success: function (data) {
+        if (data.success){
+          console.log('data: ' + JSON.stringify(data));
+          if (data.result){
+            console.log('data: ' + JSON.stringify(data));
+            $('#idDireccion').val(data.result.id);
+            $('#idEstado').val(data.result.Municipio.estado_id);
+            $('#idMunicipio').val(data.result.municipio_id);
+            $('#idLocalidad').val(data.result.localidad_id);
+            $('#latitud').val(data.result.latitud);
+            $('#longitud').val(data.result.longitud);
+            mapa.latitud = data.result.latitud;
+            mapa.longitud = data.result.longitud;
+          }
+          mapa.initMap();
+        }
+      },
+      error: function (jqXHR, textStatus, err) {
+        console.log('ERROR: ' + JSON.stringify(err));
+          var success = false;
+      }
+  });
 }
