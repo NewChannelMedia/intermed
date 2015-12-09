@@ -376,147 +376,8 @@ function bootbox_modificaMedicoDetalles(tipo){
     },
     size:'large',
     message: `
-
-
-        <style type="text/css">
-
-    		pre,code {
-    			font-size: 12px;
-    		}
-
-    		pre {
-    			width: 100%;
-    			overflow: auto;
-    		}
-
-    		small {
-    			font-size: 90%;
-    		}
-
-    		small code {
-    			font-size: 11px;
-    		}
-
-    		.placeholder {
-    			outline: 1px dashed #4183C4;
-    		}
-
-    		.mjs-nestedSortable-error {
-    			background: #fbe3e4;
-    			border-color: transparent;
-    		}
-
-    		#tree {
-    			width: 100%;
-    			margin: 0;
-    		}
-
-    		ol {
-    			max-width: 100%;
-    			padding-left: 25px;
-    		}
-
-        #sortableExpertoEnCont>ol{
-          padding-left:0px;
-        }
-
-    		ol.sortable,ol.sortable ol {
-    			list-style-type: none;
-    		}
-
-    		.sortable li div {
-    			border: 1px solid #d4d4d4;
-    			-webkit-border-radius: 3px;
-    			-moz-border-radius: 3px;
-    			border-radius: 3px;
-    			cursor: move;
-    			border-color: rgba(0,0,0,0.3);
-    			margin: 0;
-          margin-top:3px;
-    			padding: 3px;
-    		}
-
-    		li.mjs-nestedSortable-collapsed.mjs-nestedSortable-hovering div {
-    			border-color: #999;
-    		}
-
-    		.disclose, .expandEditor {
-    			cursor: pointer;
-    			width: 20px;
-    			display: none;
-    		}
-
-    		.sortable li.mjs-nestedSortable-collapsed > ol {
-    			display: none;
-    		}
-
-    		.sortable li.mjs-nestedSortable-branch > div > .disclose {
-    			display: inline-block;
-    		}
-
-    		.sortable span.ui-icon {
-    			display: inline-block;
-    			margin: 0;
-    			padding: 0;
-    		}
-
-    		.menuDiv {
-    			background: rgba(0,0,0,0.2);
-          margin:1px;
-          padding-top:2px;
-          padding-bottom:2px;
-          padding-left: 20px!important;
-    		}
-
-        .menuDiv .glyphicon{
-          font-size:80%;
-        }
-
-    		.menuEdit {
-    			background: #FFF;
-    		}
-
-    		.itemTitle {
-    			vertical-align: middle;
-    			cursor: pointer;
-    		}
-
-    		.deleteMenu {
-    			float: right;
-    			cursor: pointer;
-    		}
-
-    		p,ol,ul,pre,form {
-    			margin-top: 0;
-    			margin-bottom: 1em;
-    		}
-
-    		dl {
-    			margin: 0;
-    		}
-
-    		dd {
-    			margin: 0;
-    			padding: 0 0 0 1.5em;
-    		}
-
-    		code {
-    			background: #e5e5e5;
-    		}
-
-    		input {
-    			vertical-align: text-bottom;
-    		}
-
-    		.notice {
-    			color: #c33;
-    		}
-        </style>
-
     <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;">
-      <div class="col-md-12" style="color:white">
-        <h2 class="s25">CONFIGURA TUS UBICACIONES Y HORARIOS DE ATENCIÓN.</h2>
-        <h3 class="s20">Señala la ubicación en el mapa y registra el horario de atención correspondiente con cada una.</h3>
+      <div class="col-md-12" style="color:white;height:10px">
       </div>
 
       <ul class="nav nav-tabs menuBootbox">
@@ -534,7 +395,7 @@ function bootbox_modificaMedicoDetalles(tipo){
                 <div class="row">
                   <div class="col-lg-2 col-md-2">
                     <div class="row text-center">
-                      <label for="addExp" style="padding-top:7px">Experiencia:</label>
+                      <label for="addExp" style="padding-top:7px">Experto en:</label>
                     </div>
                   </div>
                   <div class="col-lg-8 col-md-8">
@@ -544,7 +405,7 @@ function bootbox_modificaMedicoDetalles(tipo){
                   </div>
                   <div class="col-lg-2 col-md-2">
                     <div class="row" style="margin-left:2px">
-                      <input type="submit" class="btn btn-warning btn-block" value="Agregar" onclick="agregarExperiencia();">
+                      <input type="submit" class="btn btn-warning btn-block" value="Agregar" onclick="agregarExpertoEn();">
                     </div>
                   </div>
                 </div>
@@ -554,42 +415,7 @@ function bootbox_modificaMedicoDetalles(tipo){
               <div class="col-lg-12 col-md-12">
                 <div class="row" id="sortableExpertoEnCont">
                 <ol class="sortable ui-sortable mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="sortableExpertoEn">
-                  <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-                    <div class="menuDiv">
-                      <span>
-                        <span data-id="2" class="itemTitle">Garganta</span>
-                        <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-                        <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-                      </span>
-                    </div>
-                  </li>
-                  <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-                    <div class="menuDiv">
-                      <span>
-                        <span data-id="2" class="itemTitle">Urgencias 24hrs.</span>
-                        <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-                        <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-                      </span>
-                    </div>
-                  </li>
-                  <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-                    <div class="menuDiv">
-                      <span>
-                        <span data-id="2" class="itemTitle">Enfermedades Alérgicas</span>
-                        <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-                        <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-                      </span>
-                    </div>
-                  </li>
-                  <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-                    <div class="menuDiv">
-                      <span>
-                        <span data-id="2" class="itemTitle">Transtornos respiratorios</span>
-                        <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-                        <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-                      </span>
-                    </div>
-                  </li>
+
               	</ol>
               </div>
             </div>
@@ -605,7 +431,7 @@ function bootbox_modificaMedicoDetalles(tipo){
               <div class="row">
                 <div class="col-md-4 pull-right">
                   <div class="row">
-                    <input type="button" class="btn btn-add btn-block" value="Guardar" id="btnGuardar" onclick="guardarExperiencia()">
+                    <input type="button" class="btn btn-add btn-block" value="Guardar" id="btnGuardar" onclick="guardarExpertoEn()">
                   </div>
                 </div>
                 <div class="col-md-4 pull-left">
@@ -616,66 +442,119 @@ function bootbox_modificaMedicoDetalles(tipo){
               </div>
             </div>
           </div>
-        </form>
       </div>
 
         <div id="divHospClin" class="divBodyBootbox tab-pane fade in `+ hospActi +`">
-          <form method="POST" name="frmRegUb" id="frmRegUbi">
             <div class="row">
-              Hospitales y clínicas
-
-              <div class="col-md-12">
+              <form onsubmit="return false;">
+              <div class="col-lg-12 col-md-12" style="margin-bottom:20px;">
                 <div class="row">
-                  <hr class="style-white" />
-                </div>
-              </div>
-
-
-              <div class="col-md-12" style="margin-top:15px;margin-bottom:30px">
-                <div class="row">
-                  <div class="col-md-4 pull-right">
-                    <div class="row">
-                      <input type="button" class="btn btn-add btn-block" value="Guardar" id="btnGuardar">
+                  <div class="col-lg-2 col-md-2">
+                    <div class="row text-center">
+                      <label for="addExp" style="padding-top:7px">Hospital/Clínica:</label>
                     </div>
                   </div>
-                  <div class="col-md-4 pull-left">
-                    <div class="row">
-                      <input type="button" class="btn btn-drop btn-block" value="Salir" onclick="bootbox.hideAll()">
+                  <div class="col-lg-8 col-md-8">
+                    <div class="row" style="margin-left:2px">
+                      <input type="text" class="form-control" id="addClin">
                     </div>
+                  </div>
+                  <div class="col-lg-2 col-md-2">
+                    <div class="row" style="margin-left:2px">
+                      <input type="submit" class="btn btn-warning btn-block" value="Agregar" onclick="agregarClinica();">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </form>
+
+              <div class="col-lg-12 col-md-12">
+                <div class="row" id="sortableClinicaCont">
+                <ol class="sortable ui-sortable mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="sortableClinica">
+
+                </ol>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="row">
+                <hr class="style-white" />
+              </div>
+            </div>
+
+
+            <div class="col-md-12" style="margin-top:15px;margin-bottom:30px">
+              <div class="row">
+                <div class="col-md-4 pull-right">
+                  <div class="row">
+                    <input type="button" class="btn btn-add btn-block" value="Guardar" id="btnGuardar" onclick="guardarClinicas()">
+                  </div>
+                </div>
+                <div class="col-md-4 pull-left">
+                  <div class="row">
+                    <input type="button" class="btn btn-drop btn-block" value="Salir" onclick="bootbox.hideAll()">
                   </div>
                 </div>
               </div>
             </div>
-          </form>
+          </div>
         </div>
 
         <div id="divAseguradoras" class="divBodyBootbox tab-pane fade in `+ asegActi +`">
-          <form method="POST" name="frmRegUb" id="frmRegUbi">
+
             <div class="row">
-              Aseguradoras
-
-              <div class="col-md-12">
+              <form onsubmit="return false;">
+              <div class="col-lg-12 col-md-12" style="margin-bottom:20px;">
                 <div class="row">
-                  <hr class="style-white" />
-                </div>
-              </div>
-
-
-              <div class="col-md-12" style="margin-top:15px;margin-bottom:30px">
-                <div class="row">
-                  <div class="col-md-4 pull-right">
-                    <div class="row">
-                      <input type="button" class="btn btn-add btn-block" value="Guardar" id="btnGuardar">
+                  <div class="col-lg-2 col-md-2">
+                    <div class="row text-center">
+                      <label for="addExp" style="padding-top:7px">Aseguradora:</label>
                     </div>
                   </div>
-                  <div class="col-md-4 pull-left">
-                    <div class="row">
-                      <input type="button" class="btn btn-drop btn-block" value="Salir" onclick="bootbox.hideAll()">
+                  <div class="col-lg-8 col-md-8">
+                    <div class="row" style="margin-left:2px">
+                      <input type="text" class="form-control" id="addAseg">
                     </div>
+                  </div>
+                  <div class="col-lg-2 col-md-2">
+                    <div class="row" style="margin-left:2px">
+                      <input type="submit" class="btn btn-warning btn-block" value="Agregar" onclick="agregarAseguradora();">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </form>
+
+              <div class="col-lg-12 col-md-12">
+                <div class="row" id="sortableAseguradoraCont">
+                <ol class="sortable ui-sortable mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="sortableAseguradora">
+
+                </ol>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="row">
+                <hr class="style-white" />
+              </div>
+            </div>
+
+
+            <div class="col-md-12" style="margin-top:15px;margin-bottom:30px">
+              <div class="row">
+                <div class="col-md-4 pull-right">
+                  <div class="row">
+                    <input type="button" class="btn btn-add btn-block" value="Guardar" id="btnGuardar" onclick="guardarAseguradoras()">
+                  </div>
+                </div>
+                <div class="col-md-4 pull-left">
+                  <div class="row">
+                    <input type="button" class="btn btn-drop btn-block" value="Salir" onclick="bootbox.hideAll()">
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
         </div>
 
@@ -683,8 +562,11 @@ function bootbox_modificaMedicoDetalles(tipo){
     </div>`
   });
 
+  cargarClinicas();
+  cargarAseguradoras();
+  cargarExpertoEn();
 
-	var ns = $('ol.sortable').nestedSortable({
+	var ns = $('#sortableExpertoEnCont>ol.sortable').nestedSortable({
 		forcePlaceholderSize: true,
 		handle: 'div',
 		helper:	'clone',
@@ -696,6 +578,40 @@ function bootbox_modificaMedicoDetalles(tipo){
 		tolerance: 'pointer',
 		toleranceElement: '> div',
 		maxLevels: 2,
+		isTree: true,
+		expandOnHover: 700,
+		startCollapsed: false
+	});
+
+	var ns = $('#sortableClinicaCont>ol.sortable').nestedSortable({
+		forcePlaceholderSize: true,
+		handle: 'div',
+		helper:	'clone',
+		items: 'li',
+		opacity: .6,
+		placeholder: 'placeholder',
+		revert: 250,
+		tabSize: 25,
+		tolerance: 'pointer',
+		toleranceElement: '> div',
+		maxLevels: 1,
+		isTree: true,
+		expandOnHover: 700,
+		startCollapsed: false
+	});
+
+	var ns = $('#sortableAseguradoraCont>ol.sortable').nestedSortable({
+		forcePlaceholderSize: true,
+		handle: 'div',
+		helper:	'clone',
+		items: 'li',
+		opacity: .6,
+		placeholder: 'placeholder',
+		revert: 250,
+		tabSize: 25,
+		tolerance: 'pointer',
+		toleranceElement: '> div',
+		maxLevels: 1,
 		isTree: true,
 		expandOnHover: 700,
 		startCollapsed: false
