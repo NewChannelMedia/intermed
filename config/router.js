@@ -175,13 +175,13 @@ var iniciar = function () {
     intermed.callController( 'Home', 'perfilPacientes', '', req, res );
   } );
   //perfil nuevo
-  app.get( '/perfil', function ( req, res ) {
+  app.get( '/nuevoPerfilMedicos', function ( req, res ) {
     rutas.routeLife( 'plataforma2', 'plataforma', hps );
     intermed.callController( 'Home', 'nuevoPerfilMedicos', '', req, res );
   } );
 
 
-  app.get( '/perfil/:usuario', function ( req, res ) {
+  app.get( '/nuevoPerfilMedicos/:usuario', function ( req, res ) {
     var usuario = '';
     if ( req.params.usuario ) usuario = req.params.usuario;
     rutas.routeLife( 'plataforma2', 'plataforma', hps );
@@ -1213,7 +1213,7 @@ var iniciar = function () {
     if (!req.session.passport.user){
       res.redirect( '/' );
     }else {
-      rutas.routeLife( 'plataforma', 'plataforma', hps );
+      rutas.routeLife( 'plataforma2', 'plataforma', hps );
       intermed.callController('inbox','index', req.body, req, res);
     }
   });
@@ -1229,7 +1229,7 @@ var iniciar = function () {
 
   app.post('/inbox/enviar', function (req, res){
       if (!req.session.passport.user){
-        res.send({'success':false,'error':0});
+        res.send({'success':false,'error':1});
       }else {
         intermed.callController('inbox','enviar', req.body, req, res);
       }
@@ -1237,7 +1237,7 @@ var iniciar = function () {
 
   app.post('/inbox/cargartodos', function (req, res){
       if (!req.session.passport.user){
-        res.send({'success':false,'error':0});
+        res.send({'success':false,'error':1});
       }else {
         intermed.callController('inbox','cargartodos', req.body, req, res);
       }
@@ -1245,7 +1245,7 @@ var iniciar = function () {
 
   app.post('/inbox/cargarMensajesPorUsuario', function (req, res){
       if (!req.session.passport.user){
-        res.send({'success':false,'error':0});
+        res.send({'success':false,'error':1});
       }else {
         intermed.callController('inbox','cargarMensajesPorUsuario', req.body, req, res);
       }
@@ -1253,7 +1253,7 @@ var iniciar = function () {
 
   app.post('/inbox/cargarMensajesPorUsuarioAnteriores', function(req, res){
       if (!req.session.passport.user){
-        res.send({'success':false,'error':0});
+        res.send({'success':false,'error':1});
       }else {
         intermed.callController('inbox','cargarMensajesPorUsuarioAnteriores', req.body, req, res);
       }
@@ -1363,7 +1363,7 @@ var iniciar = function () {
 
     app.post('/notificaciones/configurarNotificacion', function(req, res){
         if (!req.session.passport.user){
-          res.send({'success':false,'error':0});
+          res.send({'success':false,'error':1});
         }else {
           intermed.callController('notificaciones','configurarNotificacion', req.body, req, res);
         }

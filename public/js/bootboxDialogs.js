@@ -1690,7 +1690,8 @@ function registroMedicoDatosPersonales(){
                               <div class="input-group">
                                 <input type="text" class="form-control" id="cedulaRegMed" name="cedulaRegMed" placeholder="CEDULA"  value="`+ cedulaRegMed +`">
                                 <span class="input-group-addon verificarAddon">
-                                  <button class="btn btn-warning verificarBtn Flama-normal s15">Verificar</button>
+                                  <input type="hidden" id="cedulaCurpVerificados" value="">
+                                  <button class="btn btn-warning verificarBtn Flama-normal s15" onclick="verificarCurpCedula()">Verificar</button>
                                 </span>
                               </div>
                             </div>
@@ -1929,13 +1930,28 @@ function manejadorDeErrores(error){
   var codigoError = '';
   var descripcionError = '';
   var solucion = '';
+  var box = false;
+  var accion = `<button onclick="$('.bootbox').last().modal('hide');if($('.bootbox')){ setTimeout(function(){$('body').addClass('modal-open');},300)}" class="btn btn-md btn-warning" style="margin-top:20px;margin-bottom:20px;">Aceptar</button>`;
     switch (error) {
       case 1:
-        codigoError = '0000001';
+        codigoError = 'GEN0001';
         descripcionError = 'Sesión cerrada de manera inesperada.';
+        solucion = '<span class="s15">Actualiza la página para solucionar este problema.</span>';
+        accion = `<div class="col-md-12" style="color:white"><div class="row text-center"><img src="http://i55.tinypic.com/33ksub8.jpg" width="50%" style="margin-top:10px;"></div></div><button onclick="location.reload()" class="btn btn-md btn-warning" style="margin-top:20px;margin-bottom:20px;">Actualizar <span class="glyphicon glyphicon-refresh"></span></button>`;
         //No sesión
         break;
+      case 101:
+        codigoError = 'MED0001';
+        descripcionError = 'La CURP proporcionada ya se encuentra registrada.';
+        solucion = '<span class="s15">Verifique que la CURP ingresada sea correcta, de ser así comuniquese con Intermed al número 01800123123.</span>';
+      break;
+      case 102:
+        codigoError = 'MED0002';
+        descripcionError = 'La cédula proporcionada ya se encuentra registrada.';
+        solucion = '<span class="s15">Verifique que la CEDULA ingresada sea correcta, de ser así comuniquese con Intermed al número 01800123123.</span>';
+        break;
       default:
+        console.log('Error desconocido: [code:' + error+']');
     }
 
   var backdrop = true;
@@ -1945,9 +1961,9 @@ function manejadorDeErrores(error){
   }
 
   $('.modal-body').css('padding',0);
-  bootbox.dialog({
+  box = bootbox.dialog({
     backdrop: backdrop,
-    closeButton: false,
+    closeButton: true,
     size:'small',
     message: `
     <div style="background-color:#172c3b;padding:5px;margin:-15px;" >
@@ -1966,16 +1982,12 @@ function manejadorDeErrores(error){
             <small>Descripción: `+ descripcionError +`</small>
           </div>
           <br/>
-          <span class="s15">Actualiza la página para solucionar este problema.</span>
+          `+solucion+`
         </div>
       </div>
-      <div class="col-md-12" style="color:white">
-        <div class="row text-center">
-          <img src="http://i55.tinypic.com/33ksub8.jpg" width="50%" style="margin-top:10px;">
-        </div>
-      </div>
-      <button onclick="location.reload()" class="btn btn-md btn-warning" style="margin-top:20px;margin-bottom:20px;">Actualizar <span class="glyphicon glyphicon-refresh"></span></button>
-      </center>
+      `+
+      accion
+      +`</center>
     </div>
     </div>`
   });

@@ -174,7 +174,7 @@ exports.registrarUbicacion = function (objects, req, res) {
               }
             }
             res.status(200).json({
-                ok: true,
+                success: true,
                 ubicacion_id: datos.id
             });
         });

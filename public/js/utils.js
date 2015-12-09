@@ -166,10 +166,14 @@ function saveStepOne() {
       cache: false,
       data: $( '#regMedStepOne' ).serialize(),
       success: function ( data ) {
-        if ( data.result === "success" ) {
+        if ( data.success) {
           actualizarSesion();
           bootbox.hideAll();
           registroMedicoDatosPago();
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
         }
       },
       error: function ( jqXHR, textStatus, err ) {
@@ -1433,7 +1437,8 @@ function agregarFavoritos( medico ) {
     },
     cache: false,
     success: function ( data ) {
-      if ( data.result == 'success' ) {
+      console.log('Agregar a favoritos: ' + JSON.stringify(data));
+      if ( data.success ) {
         if ( $( '#tipoUsuario' ).val() === "P" ) {
           if ( medicoID ) {
             $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Elimina de favoritos');
@@ -1452,7 +1457,9 @@ function agregarFavoritos( medico ) {
         cargarFavCol( $( '#usuarioPerfil' ).val() );
       }
       else {
-        alert( 'Error al guardar medico favorito' );
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
       }
     },
     error: function ( jqXHR, textStatus, err ) {
@@ -1482,7 +1489,8 @@ function eliminarFavoritos( medico, paciente_id , notificacion_id) {
     },
     cache: false,
     success: function ( data ) {
-      if ( data.result == 'success' ) {
+      console.log('Eliminar favoritos: ' + JSON.stringify(data));
+      if ( data.success ) {
         if ( $( '#tipoUsuario' ).val() === "P" ) {
           if ( medicoID ) {
             $( '#addFavoriteContact' ).html( '<span class="glyphicon h67-medcond s30">+</span> Agrega a favoritos' );
@@ -1501,7 +1509,9 @@ function eliminarFavoritos( medico, paciente_id , notificacion_id) {
         }
       }
       else {
-        alert( 'Error al guardar medico favorito' );
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
       }
     },
     error: function ( jqXHR, textStatus, err ) {
@@ -2016,13 +2026,12 @@ function regUbicacion() {
                 $('#tipoTelefono').prop('selectedIndex', 0);
                 $('#tipoTelefono').change();
 
-                  $('#btnGuardar').val('Editar');
-                  $("#frmRegUbi :input").prop('disabled', true);
-                  $('#frmRegUbi :button #addFon').prop('disabled', true);
-                  $("#frmRegUbi :button").prop('disabled', false);
-                  $("#frmRegUbi #btnGuardarSalir").addClass('hidden');
-                  mapa.marker.setOptions({draggable: false,animation:null});
-
+                $('#btnGuardar').val('Editar');
+                $("#frmRegUbi :input").prop('disabled', true);
+                $('#frmRegUbi :button #addFon').prop('disabled', true);
+                $("#frmRegUbi :button").prop('disabled', false);
+                $("#frmRegUbi #btnGuardarSalir").addClass('hidden');
+                mapa.marker.setOptions({draggable: false,animation:null});
                 cargarTelefonos();
                 actualizarDirecciones();
               } else {
@@ -2626,7 +2635,7 @@ $(document).ready(function(){
 
 }
 
-function actualizarDirecciones(){
+function actualizarDirecciones(salir){
   $.ajax( {
     async: false,
     url: '/ubicaciones/traer',
@@ -2634,13 +2643,13 @@ function actualizarDirecciones(){
     dataType: "json",
     cache: false,
     success: function ( data ) {
-      if (data){
-        if (data.length> 0 && $('#editUbi').html() != ""){
+      if (data.success){
+        if (data.result.length> 0 && $('#editUbi').html() != ""){
           $('#editUbi').html('<button class="btn btn-primary btn-xs" id="btnEditaUbi"><span class="glyphicon glyphicon-pencil"></span></button>');
         }
         var contenido = '';
         var contador = 0;
-        data.forEach(function(record){
+        data.result.forEach(function(record){
           var checked = '';
           if (contador == 0){
             checked = 'checked="checked"';
@@ -2649,7 +2658,7 @@ function actualizarDirecciones(){
         });
         contenido+= '<ul>';
         var contador = 0;
-        data.forEach(function(record){
+        data.result.forEach(function(record){
           var interior = '';
           if (record.numeroInt){
             interior = ' interior ' + record.numeroInt;
@@ -2694,13 +2703,13 @@ function actualizarDirecciones(){
             });
         contenido+= '</ul><div class="arrows">';
         var contador = 0;
-        data.forEach(function(record){
+        data.result.forEach(function(record){
           contenido+= '<label for="slides_'+ ++contador +'"></label>';
         });
         contenido+= '<label for="slides_1" class="goto-first"></label><label for="slides_'+ contador +'" class="goto-last"></label></div>';
         contenido+= '<div class="navigation"><div class="row"><div class="col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">';
         var contador = 0;
-        data.forEach(function(record){
+        data.result.forEach(function(record){
           contenido+= '<label for="slides_'+ ++contador +'">'+ contador +'&nbsp;</label>';
         });
         contenido+= '</div></div></div>';
@@ -2712,6 +2721,13 @@ function actualizarDirecciones(){
           console.log('UBI: ' + ubicacion_id);
           agregarUbicacion(ubicacion_id);
         });
+        if (salir){
+          bootbox.hideAll();
+        }
+      } else {
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
       }
     },
     error: function ( jqXHR, textStatus, err ) {
@@ -2888,8 +2904,7 @@ function eliminarUbicacion(){
             cache: false,
             success: function ( data ) {
               if (data.success){
-                actualizarDirecciones();
-                bootbox.hideAll();
+                actualizarDirecciones(true);
               }
             },
             error: function (err){
@@ -3847,4 +3862,9 @@ function guardarUbicacionPaciente() {
         title: "No se puede guardar la ubicación"
       });
     }
+}
+
+function verificarCurpCedula(){
+  var curp = $('#curpRegMed').val();
+  var cedula = $('#cedulaRegMed').val();
 }

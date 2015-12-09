@@ -93,21 +93,22 @@ module.exports = {
             });
           }
 
-          res.send( {
-            result: 'success'
+          res.status(200).send( {
+            success: true
           } );
         }
         else {
           res.send( {
-            result: 'error'
+            success: false,
+            error: 0
           } );
         }
       } );
     }
     else {
-      res.send( {
-        result: 'error',
-        error: 'Necesitas iniciar sesión'
+      res.status(200).send( {
+        success: false,
+        error: 1
       } );
     }
   },
@@ -180,8 +181,8 @@ module.exports = {
       models.MedicoFavorito.destroy( {
         where: condiciones
       } ).then( function ( result ) {
-        res.send( {
-          result: 'success'
+        res.status(200).send( {
+          success: true
         } );
       } );
 
@@ -200,9 +201,9 @@ module.exports = {
       }
     }
     else {
-      res.send( {
-        result: 'error',
-        error: 'Necesitas iniciar sesión'
+      res.status(200).send( {
+        success: false,
+        error: 1
       } );
     }
   },

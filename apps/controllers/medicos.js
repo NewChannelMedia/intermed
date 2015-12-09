@@ -377,36 +377,61 @@ module.exports = {
   regMedPasoUno: function ( object, req, res ) {
     if ( req.session.passport.user && req.session.passport.user.tipoUsuario === "M" ) {
       var usuario_id = req.session.passport.user.id;
-      models.DatosGenerales.upsert( {
-        nombre: object[ 'nombreRegMed' ],
-        apellidoP: object[ 'apePatRegMed' ],
-        apellidoM: object[ 'apeMatRegMed' ],
-        usuario_id: usuario_id
-      } ).then( function ( result ) {
-        models.Biometrico.upsert( {
-          genero: object[ 'gender' ],
-          usuario_id: usuario_id
-        } ).then( function ( result ) {
-          models.Medico.findOne( {
-            where: {
-              usuario_id: usuario_id
-            }
-          } ).then( function ( medico ) {
-            medico.update( {
-              curp: object[ 'curpRegMed' ],
-              cedula: object[ 'cedulaRegMed' ]
-            } ).then( function ( result ) {
-              res.send( {
-                'result': 'success'
-              } );
+      models.Medico.findOne({where: {
+          usuario_id: {$ne: req.session.passport.user.id},
+          curp: object[ 'curpRegMed' ]
+        }}).then(function(medicoCurp){
+          if (!medicoCurp){
+            models.Medico.findOne({where: {
+                usuario_id: {$ne: req.session.passport.user.id},
+                cedula: object[ 'cedulaRegMed' ]
+              }}).then(function(medicoCedula){
+                if (!medicoCedula){
+                  models.DatosGenerales.upsert( {
+                    nombre: object[ 'nombreRegMed' ],
+                    apellidoP: object[ 'apePatRegMed' ],
+                    apellidoM: object[ 'apeMatRegMed' ],
+                    usuario_id: usuario_id
+                  } ).then( function ( result ) {
+                    models.Biometrico.upsert( {
+                      genero: object[ 'gender' ],
+                      usuario_id: usuario_id
+                    } ).then( function ( result ) {
+                      models.Medico.findOne( {
+                        where: {
+                          usuario_id: usuario_id
+                        }
+                      } ).then( function ( medico ) {
+                        medico.update( {
+                          curp: object[ 'curpRegMed' ],
+                          cedula: object[ 'cedulaRegMed' ]
+                        } ).then( function ( result ) {
+                          res.send( {
+                            'success': true
+                          } );
+                        } );
+                      } )
+                    } )
+                  } );
+                } else {
+                  res.status(200).send( {
+                    'success': false,
+                    'error': 102
+                  } );
+                }
+              });
+          } else {
+            res.status(200).send( {
+              'success': false,
+              'error': 101
             } );
-          } )
-        } )
-      } )
+          }
+        })
     }
     else {
-      res.send( {
-        'result': 'error'
+      res.status(200).send( {
+        'success': false,
+        error: 1
       } );
     }
   },
