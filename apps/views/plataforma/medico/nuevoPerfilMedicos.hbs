@@ -488,7 +488,7 @@
               <li onclick="cargarListaEspCol( $( '#usuarioPerfil' ).val() );">
                 <span class="glyphicon glyphicon-circle-arrow-right"></span> Ordenar por especialidad
               </li>
-              <li>
+              <li onclick="cargarListaAlfCol( $( '#usuarioPerfil' ).val() );">
                 <span class="glyphicon glyphicon-circle-arrow-right"></span> Ordenar por apellido
               </li>
               <li>
@@ -506,7 +506,7 @@
           <div id="listaEspecialidades" class="side-especialidades" >
             <p>
               <span class="side-especialides-header h77-boldcond">Selecciona</span><!--<div class="clearfix"></div>-->
-              <span class="side-especialides-subheader h67-medcond">una especialidad</span>
+              <span class="side-especialides-subheader h67-medcond" id="tipoFiltro"></span>
             </p>
             <hr class="sep">
             <ul class="nav nav-pills nav-stacked h67-medcond" id="especialidadesList">

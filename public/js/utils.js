@@ -3892,6 +3892,7 @@ function cargarListaEspCol( usuario ) {
     cache: false,
     success: function ( data ) {
       $('#especialidadesList').html('');
+      $('#tipoFiltro').html('una especialidad');
       if ( data.success ) {
         var contenido = '';
         var primero = '';
@@ -3935,9 +3936,14 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id){
       if ( data.success ) {
         var contenido = '';
         contenido += '<div id="'+ data.especialidad.especialidad +'" class="row" ><h1 class="h67-medcond">'+data.especialidad.especialidad+'</h1>';
-        console.log('RESULT: ' + JSON.stringify(data.result));
         data.result.forEach(function(res){
-          console.log('USUARIO: ' + JSON.stringify(res));
+          var especialidad= '';
+          res.Medico.MedicoEspecialidads.forEach(function(esp){
+            if (especialidad != ""){
+              especialidad += ', ';
+            }
+            especialidad += esp.Especialidad.especialidad;
+          });
           contenido += `
           <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
             <div class="thumbnail">
@@ -3949,7 +3955,104 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id){
                   Dr.&nbsp;<span>`+ res.DatosGenerale.nombre +`</span>&nbsp;<span>`+ res.DatosGenerale.apellidoP +` `+ res.DatosGenerale.apellidoM +`</span>
                 </div>
                 <div class="esp h67-medcond">
-                  <span>`+ data.especialidad.especialidad +`</span>
+                  <span class="colEsp">`+ especialidad +`</span>
+                </div>
+                <a class="h67-medcondobl" href="/perfil/`+ res.usuarioUrl +`">Ver Perfil</a>
+              </div>
+            </div>
+          </div>`
+        })
+        contenido += '</div>';
+        $('#listaColegas').html(contenido);
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+
+function cargarListaAlfCol( usuario ) {
+  $.ajax( {
+    async: false,
+    url: '/cargarListaAlfCol',
+    type: 'POST',
+    data: {
+      usuario: usuario
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+        $('#especialidadesList').html('');
+        $('#tipoFiltro').html('una letra');
+        if ( data.success ) {
+          var contenido = '';
+          var primero = '';
+          data.result.forEach(function(rec){
+            if (primero == ""){
+              primero = rec.Letra;
+            }
+            contenido += `<li>
+              <a onclick="cargarListaColegasByAlf('`+usuario+`','`+ rec.Letra +`')">`+ rec.Letra +` <span class="badge pull-right">`+ rec.Total +` </span></a>
+            </li>`;
+          });
+          $('#especialidadesList').html(contenido);
+          if (primero != ""){
+            cargarListaColegasByAlf(usuario,primero);
+          }
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+function cargarListaColegasByAlf(usuario_id,letra){
+  $.ajax( {
+    async: false,
+    url: '/cargarListaColegasByAlf',
+    type: 'POST',
+    data: {
+      usuario_id: usuario_id,
+      letra: letra
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      $('#listaColegas').html('');
+      if ( data.success ) {
+        var contenido = '';
+        contenido += '<div id="'+ letra +'" class="row" ><h1 class="h67-medcond">'+letra+'</h1>';
+        data.result.forEach(function(res){
+          var especialidad= '';
+          res.Medico.MedicoEspecialidads.forEach(function(esp){
+            if (especialidad != ""){
+              especialidad += ', ';
+            }
+            especialidad += esp.Especialidad.especialidad;
+          });
+          contenido += `
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div >
+                <a class="pPic" href="#"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>`+ res.DatosGenerale.nombre +`</span>&nbsp;<span>`+ res.DatosGenerale.apellidoP +` `+ res.DatosGenerale.apellidoM +`</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span class="colEsp">`+ especialidad +`</span>
                 </div>
                 <a class="h67-medcondobl" href="/perfil/`+ res.usuarioUrl +`">Ver Perfil</a>
               </div>

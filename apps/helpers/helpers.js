@@ -80,7 +80,6 @@ function ifsubEsp(options){
   if ( session[ 'especialidades' ]){
     var continuar = true;
     for(var i=0, j=session['especialidades'].length; i<j; i++) {
-      console.log(i + ' - ' + session['especialidades'][i]['subEsp']);
       if (session['especialidades'][i]['subEsp']==1 && continuar){
         continuar = false;
         return options.fn( true );

@@ -258,7 +258,6 @@ module.exports = {
   },
 
   aceptarInvitacion: function ( object, req, res ) {
-    console.log('OBJECT: ' + JSON.stringify(object));
     if ( req.session.passport.user ) {
       var condiciones = [];
       if (object.pacienteID){
@@ -849,7 +848,6 @@ module.exports = {
 
     models.Usuario.findAll({
       attributes:['id','usuarioUrl','urlFotoPerfil'],
-      group: ['id'],
       include: [
         {
           model: models.DatosGenerales,
@@ -867,10 +865,98 @@ module.exports = {
             }
           }, {
             model: models.MedicoEspecialidad,
+            attributes: ['id'],
             where: {
-              especialidad_id: object.especialidad_id,
-              subEsp: 0
+              subEsp: 0,
+              especialidad_id: object.especialidad_id
+            },
+            include: [{
+              model: models.Especialidad,
+              attributes: ['especialidad']
+            }]
+          }]
+        }
+      ]
+    }).then(function (result){
+      models.Especialidad.findOne({
+        where:{
+          id: object.especialidad_id
+        }
+      }).then(function(esp){
+        res.status(200).send({'success':true,'result':result,'especialidad':esp});
+      })
+    });
+  },
+
+  cargarListaAlfCol: function ( object, req, res ) {
+    if ( object.usuario == '' && req.session.passport.user ) {
+      object.usuario = req.session.passport.user.id;
+    }
+    models.DatosGenerales.findAll({
+      attributes: [[models.Sequelize.fn('COUNT', models.Sequelize.col('apellidoP')), 'Total'],[models.Sequelize.fn('SUBSTRING', models.Sequelize.col('apellidoP'),1,1), 'Letra']],
+      group: [models.Sequelize.fn('SUBSTRING', models.Sequelize.col('apellidoP'),1,1), 'Letra'],
+      order: [models.Sequelize.fn('SUBSTRING', models.Sequelize.col('apellidoP'),1,1), 'Letra'],
+      include:[
+        {
+          model: models.Usuario,
+          attributes:['id'],
+          include:[
+            {
+              model: models.Medico,
+              attributes: [ 'id'],
+              include: [ {
+                model: models.MedicoFavorito,
+                attributes: ['id'],
+                where: {
+                  usuario_id: object.usuario,
+                  aprobado: 1,
+                  mutuo: 1
+                }
+              } ]
             }
+          ]
+        }
+      ]
+    }).then(function(result){
+      res.status(200).send({'success':true,'result':result});
+    });
+  },
+
+  cargarListaColegasByAlf: function (object, req, res){
+    if ( object.usuario_id == '' && req.session.passport.user ) {
+      object.usuario_id = req.session.passport.user.id;
+    }
+
+    models.Usuario.findAll({
+      attributes:['id','usuarioUrl','urlFotoPerfil'],
+      include: [
+        {
+          model: models.DatosGenerales,
+          attributes:['nombre','apellidoP','apellidoM'],
+          where:{
+            apellidoP: { $like: object.letra +'%'}
+          }
+        },
+        {
+          model: models.Medico,
+          attributes: [ 'id'],
+          include: [ {
+            model: models.MedicoFavorito,
+            where: {
+              usuario_id: object.usuario_id,
+              aprobado: 1,
+              mutuo: 1
+            }
+          }, {
+            model: models.MedicoEspecialidad,
+            attributes: ['id'],
+            where: {
+              subEsp: 0
+            },
+            include: [{
+              model: models.Especialidad,
+              attributes: ['especialidad']
+            }]
           }]
         }
       ]

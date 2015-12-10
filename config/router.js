@@ -1518,6 +1518,16 @@ var iniciar = function () {
     app.post('/cargarListaColegasByEsp', function (req, res){
       intermed.callController( 'contactos', 'cargarListaColegasByEsp', req.body, req, res );
     });
+
+    app.post('/cargarListaAlfCol', function (req, res){
+      intermed.callController( 'contactos', 'cargarListaAlfCol', {
+        usuario: req.body.usuario
+      }, req, res );
+    });
+
+    app.post('/cargarListaColegasByAlf', function (req, res){
+      intermed.callController( 'contactos', 'cargarListaColegasByAlf', req.body, req, res );
+    });
 }
 
 var io = serv.server( app, 3000 );
