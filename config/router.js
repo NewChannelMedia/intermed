@@ -29,6 +29,13 @@ var passport = require( 'passport' ),
   bundle = require( 'socket.io-bundle' ),
   ioPassport = require( 'socket.io-passport' );
 
+//Conekta
+var conekta = require('conekta');
+conekta.api_key = "key_KP2rs6xsxH3r6jy9y7vhWg";
+conekta.api_version = '1.0.0';
+conekta.locale = 'es'
+
+
 app.use( cookieParser( 'intermedSession' ) );
 
 app.use( session( {
@@ -1474,6 +1481,75 @@ var iniciar = function () {
     app.post('/deleteFon',function( req, res ){
       intermed.callController('contactos','deleteFon',req, res);
     });
+
+    //rutas concekta
+    app.get('/cargoportarjeta', function (req, res) {
+        //intermed.callController('conekta', 'cargoPorTarjeta', req.body, req, res);
+        res.render('cargoportarjeta', {
+            title: 'Pagos',
+            usuario_id: 12
+        });
+    });
+
+    app.post('/cargoportarjeta', function (req, res) {
+        //intermed.callController('conekta', 'hacerCargoPorTarjeta', req.body, req, res, conekta);
+        //var charge;
+        //charge = _charge;
+        //charge.card = req.body.conektaTokenId;
+
+        conekta.Charge.create({
+            "description": "Stogies",
+            "amount": 20000,
+            "currency": "MXN",
+            "reference_id": "9839-wolf_pack",
+            "card": "tok_test_visa_4242",
+            "details": {
+                "name": "Arnulfo Quimare",
+                "phone": "403-342-0642",
+                "email": "logan@x-men.org",
+                "customer": {
+                    "logged_in": true,
+                    "successful_purchases": 14,
+                    "created_at": 1379784950,
+                    "updated_at": 1379784950,
+                    "offline_payments": 4,
+                    "score": 9
+                },
+                "line_items": [{
+                    "name": "Box of Cohiba S1s",
+                    "description": "Imported From Mex.",
+                    "unit_price": 20000,
+                    "quantity": 1,
+                    "sku": "cohb_s1",
+                    "category": "food"
+                }],
+                "billing_address": {
+                    "street1": "77 Mystery Lane",
+                    "street2": "Suite 124",
+                    "street3": null,
+                    "city": "Darlington",
+                    "state": "NJ",
+                    "zip": "10192",
+                    "country": "Mexico",
+                    "tax_id": "xmn671212drx",
+                    "company_name": "X-Men Inc.",
+                    "phone": "77-777-7777",
+                    "email": "purshasing@x-men.org"
+                }
+            }
+        }, function (res) {
+            res.render('cargoportarjeta', {
+                title: 'pago hecho',
+                usuario_id: 12
+            });
+        }, function (err) {
+            console.log(err);
+        });
+
+    });
+
+    //fin rutas concekta
+
 }
 
 var io = serv.server( app, 3000 );
