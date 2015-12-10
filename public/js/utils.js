@@ -3412,7 +3412,6 @@ function updateServices( con, des, pre, dur){
 }
 function loadDatosGenerales(){
   $.post("/loadDatosGenerales",function(data){
-    $("#editMail").attr('value',data.correo);
     $("#editNom").attr('value',data.DatosGenerale.nombre);
     $("#editApeP").attr('value',data.DatosGenerale.apellidoP);
     $("#editApeM").attr('value',data.DatosGenerale.apellidoM);
@@ -3609,19 +3608,112 @@ function addTelefon(){
 }
 //<--------- EDIT PERFIL MEDICO ------------>
   function loadGenerales(){
-
+    // se cargan los datos generales y foto
+    var html = "";
+    $.post('/loadGenerales', function(data){
+      $("#editNombreMed").attr('value',data.DatosGenerale.nombre);
+      $("#editApellidoPMed").attr('value',data.DatosGenerale.apellidoP);
+      $("#editApellidoMMed").attr('value',data.DatosGenerale.apellidoM);
+      $("#imgPerfilMedic").attr('src',data.urlFotoPerfil);
+    });
   }
   function loadEspecialidades(){
-
+    // carga los datos de medicoEspecialidades
+    var html = "";
+    var contador = 1;
+    $.post('/loadEspecialidades', function(data){
+      $.each(data.MedicoEspecialidads, function( i, item ){
+        html += '<tr style="color:white;">'
+          html += '<td ><center>'+contador+'</center></td>';
+          if( item.subEsp == 0 ){
+            html += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
+            html += '<td><center>--x--</center></td>';
+          }else{
+            html += '<td><center>--x--</center></td>';
+            html += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
+          }
+          html += '<td><center>';
+            html += '<button type="button" class="btn btn-danger" id="mDelete-'+i+'">';
+              html += '<span class="glyphicon glyphicon-remove-sign"></span>';
+            html += '</button>';
+          html += '</center></td>';
+        html += '</tr>';
+        contador++;
+      });
+      $("#tableEspecialidades").html(html);
+    });
   }
   function loadPadecimientos(){
-
+    var html = "";
+    var contador = 1;
+    $.post('/loadPadecimientos', function( data ){
+      $.each(data.Padecimientos, function( i, item ){
+        html += '<tr style="color:white">';
+          html += '<td><center>'+contador+'</center></td>';
+          html += '<td><center>'+item.padecimiento+'</center></td>';
+          html += '<td><center>';
+            html += '<button class="btn btn-danger" id="pDelete-'+i+'">';
+              html += '<span class="glyphicon glyphicon-remove-circle"></span>';
+            html += '</button>';
+          html +='</center></td>';
+        html += '</tr>';
+        contador++;
+      });
+      $("#tablePadecimientos").html(html);
+    });
   }
   function loadPalabras(){
-    
+    var html = "";
+    var contador = 1;
+    $.post('/loadPalabras',function(data){
+      $.each(data, function( i, item ){
+        html += '<tr style="color:white;">';
+          html += '<td><center>'+contador+'</center></td>';
+          html += '<td><center>'+item.palabra+'</center></td>';
+          html += '<td><center>';
+            html += '<button class="btn btn-danger" id="palabrasDelete-'+i+'">';
+              html += '<span class="glyphicon glyphicon-remove-circle"></span>';
+            html += '</button>';
+          html += '</center></td>';
+        html += '</tr>';
+        contador++;
+      });
+      $("#tablePalabras").html(html);
+    });
   }
-  function editGenerales(){
-
+  function editGenerales(tipo){
+    // tipo 1: editar nombre
+    // tipo 2: editar apellido paterno
+    // tipo 3: editar apellido materno
+    switch(tipo){
+      case 1: var nombre = $("#editNombreMed").val();
+            $("#divEditGeneral").addClass('hidden');
+            $.post('/mEditMedic',{dato: nombre, tipo: 1}, function(data){
+              if( data.length > 0 ){
+                $("#divEditGeneral").removeClass('hidden');
+                $("#tipoUpdate").text('Nombre actualizado: '+nombre);
+              }
+            });
+            break;
+      case 2: var apellidoP = $("#editApellidoPMed").val();
+            $("#divEditGeneral").addClass('hidden');
+            $.post('/mEditMedic',{dato: apellidoP, tipo: 2}, function(data){
+              if( data.length > 0 ){
+                $("#divEditGeneral").removeClass('hidden');
+                $("#tipoUpdate").text('Apellido paterno actualizado: '+apellidoP);
+              }
+            });
+            break;
+      case 3: var apellidoM = $("#editApellidoMMed").val();
+            $("#divEditGeneral").addClass('hidden');
+            $.post('/mEditMedic',{dato: apellidoM, tipo: 3}, function(data){
+              if( data.length > 0 ){
+                $("#divEditGeneral").removeClass('hidden');
+                $("#tipoUpdate").text('Apellido materno actualizado: '+apellidoM);
+              }
+            });
+            break;
+    }
   }
   function editEspecialidades(){
 

@@ -1474,6 +1474,23 @@ var iniciar = function () {
     app.post('/deleteFon',function( req, res ){
       intermed.callController('contactos','deleteFon',req, res);
     });
+    //<-------------- EDICION DE MEDICO PERFIL ---------------->
+      app.post('/loadGenerales', function( req, res ){
+        intermed.callController('medicos','loadGenerales', req, res );
+      });
+      app.post('/loadEspecialidades', function( req, res ){
+        intermed.callController('medicos','loadEspecialidades', req, res );
+      });
+      app.post('/loadPadecimientos', function( req, res ){
+        intermed.callController('medicos','loadPadecimientos', req, res );
+      });
+      app.post('/loadPalabras', function( req, res ){
+        intermed.callController('medicos','loadPalabras', req, res );
+      });
+      app.post('/mEditMedic', function( req, res ){
+        intermed.callController('medicos','mEditMedic', req, res );
+      });
+    //<-------------- FIN EDICION MEDICO PERFIL --------------->
 }
 
 var io = serv.server( app, 3000 );

@@ -1575,18 +1575,8 @@ function editMedicoPerfil(){
         </a>
       </li>
       <li role="presentation" >
-        <a href="#especialidad" aria-control="especialidad" role="tab" data-toggle="tab">
-          <span class="glyphicon glyphicon-heart">&nbsp;Especialidades</span>
-        </a>
-      </li>
-      <li role="presentation" >
         <a href="#padecimiento" aria-control="padecimiento" role="tab" data-toggle="tab">
           <span class="glyphicon glyphicon-plus-sign">&nbsp;Padecimientos</span>
-        </a>
-      </li>
-      <li role="presentation">
-        <a href="#palabras" aria-control="palabras" role="tab" data-toggle="tab">
-          <span class="glyphicon glyphicon-star">&nbsp;Palabras clave</span>
         </a>
       </li>
     </ul>
@@ -1595,7 +1585,7 @@ function editMedicoPerfil(){
           <div class="container-fluid">
             <div class="row">
               <div class="col-md-4">
-                <img src="{{fotoPerfil}}" width="200" height="200" class="img-rounded">
+                <img id="imgPerfilMedic" src="" width="200" height="200" class="img-rounded">
               </div>
               <div class="col-lg-8 input-group">
                 <input type="text" id="editNombreMed" class="form-control" placeholder="Nombre" />
@@ -1621,25 +1611,27 @@ function editMedicoPerfil(){
                   </button>
                 </span>
               </div>
+              <div class="col-md-12 hidden" id="divEditGeneral">
+                <h4 id="tipoUpdate" style="color:green;"></h4>
+              </div>
             </div>
           </div>
         <hr>
-      </div>
-      <div class="tab-pane" role="tabpanel" id="especialidad">
         <div class="container-fluid">
           <div class="row">
+            <h4 style="color:white;">Especialidades</h4>
             <!-- AUTOCOMPLETE -->
               <div class="col-md-4 form-group">
                 <input type="text" id="autoEspecialidad" class="form-control" placeholder="Especialidades"/>
               </div>
               <div class="col-md-4 checkbox form-group">
                 <label style="color:white;">
-                  <input type="checkbox" id="subEspEdit" name="subEsp" value="1" />¿Sub especialidad?
+                  <input type="checkbox" id="subEspEdit" name="subEsp" value="1" />¿Especialidad principal?
                 </label>
               </div>
               <div class="col-md-4 form-group">
                 <button id="addEspecialidadMedic" class="btn btn-success form-control" type="button">
-                  <span class="glyphicon glyphicon-plus-sign" style="color:white;"></span>
+                  <span class="glyphicon glyphicon-floppy-disk" style="color:white;"></span>
                 </button>
               </div>
             <!-- FIN DEL AUTOCOMPLETE -->
@@ -1652,9 +1644,9 @@ function editMedicoPerfil(){
               <table class="table table-condensed">
                 <thead style="color:white;">
                   <th><center>#</center></th>
-                  <th><center>Especialidad</center></th>
-                  <th><center>Sub especialidad</center></th>
-                  <th><center>Eliminar</center></th>
+                  <th><center><span class="glyphicon glyphicon-leaf">&nbsp;Especialidad</span></center></th>
+                  <th><center><span class="glyphicon glyphicon-heart-empty">&nbsp;Sub especialidad</span></center></th>
+                  <th><center><span class="glyphicon glyphicon-warning-sign">&nbsp;Eliminar</span></center></th>
                 </thead>
                 <tbody id="tableEspecialidades" style="color:white;">
                 </tbody>
@@ -1666,56 +1658,48 @@ function editMedicoPerfil(){
       <div class="tab-pane" role="tabpanel" id="padecimiento">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-md-12 input-group">
-              <input type="text" class="form-control" id="editPadeMedic" placeholder="Padecimientos"/>
-              <span class="input-group-btn">
-                <button id="padeEditMedic" class="btn btn-success form-control" type="button">
-                  <span class="lyphicon glyphicon-plus"></span>
-                </button>
-              </span>
+            <div class="col-md-6 ">
+              <h4 style="color:white;">Padecimiento</h4>
+              <div class="input-group">
+                <input type="text" class="form-control" id="editPadeMedic" placeholder="Padecimientos"/>
+                <span class="input-group-btn">
+                  <button id="padeEditMedic" class="btn btn-success form-control" type="button">
+                    <span class="lyphicon glyphicon-plus"></span>
+                  </button>
+                </span>
+              </div>
+              <hr>
+              <table class="table table-condensed">
+                <thead style="color:white;">
+                  <th><center>#</center></th>
+                  <th><center><span class="glyphicon glyphicon-heart-empty">&nbsp;Padecimiento</span></center></th>
+                  <th><center><span class="glyphicon glyphicon-trash">&nbsp;Eliminar</span></center></th>
+                </thead>
+                <tbody id="tablePadecimientos" style="color:white;">
+                </tbody>
+              </table>
             </div>
-          </div>
-        </div>
-        <hr>
-        <div class="container-fluid">
-          <div class="row">
-            <table class="table table-condensed">
-              <thead style="color:white;">
-                <th><center>#</center></th>
-                <th><center>Padecimiento</center></th>
-                <th><center>Eliminar</center></th>
-              </thead>
-              <tbody id="tablePadecimientos" style="color:white;">
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div class="tab-pane" role="tabpanel" id="palabras">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-12 input-group">
-              <input type="text" class="form-control" id="autoPalabras" placeholder="Palabras clave"/>
-              <span class="input-group-btn">
-                <button id="palabrasEdit" class="btn btn-success form-control" type="button">
-                  <span class="lyphicon glyphicon-plus"></span>
-                </button>
-              </span>
+            <div class="col-md-6">
+              <h4 style="color:white;">Palabras clave</h4>
+              <div class="input-group">
+                <input type="text" class="form-control" id="autoPalabras" placeholder="Palabras clave"/>
+                <span class="input-group-btn">
+                  <button id="palabrasEdit" class="btn btn-success form-control" type="button">
+                    <span class="glyphicon glyphicon-plus"></span>
+                  </button>
+                </span>
+              </div>
+              <hr>
+              <table class="table table-condensed">
+                <thead style="color:white;">
+                  <th><center>#</center></th>
+                  <th><center><span class="glyphicon glyphicon-pushpin">&nbsp;Palabras clave</span></center></th>
+                  <th><center><span class="glyphicon glyphicon-trash">&nbsp;Eliminar</span></center></th>
+                </thead>
+                <tbody id="tablePalabras" style="color:white;">
+                </tbody>
+              </table>
             </div>
-          </div>
-        </div>
-        <hr>
-        <div class="container-fluid">
-          <div class="row">
-            <table class="table table-condensed">
-              <thead style="color:white;">
-                <th><center>#</center></th>
-                <th><center>Palabras clave</center></th>
-                <th><center>Eliminar</center></th>
-              </thead>
-              <tbody id="tablePalabras" style="color:white;">
-              </tbody>
-            </table>
           </div>
         </div>
       </div>
@@ -1723,4 +1707,8 @@ function editMedicoPerfil(){
   </div><!-- PRINCIPAL -->
   `
   });
+  loadGenerales();
+  loadEspecialidades();
+  loadPadecimientos();
+  loadPalabras();
 }

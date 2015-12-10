@@ -787,5 +787,84 @@ module.exports = {
     } else {
       res.status(200).json({'success':false});
     }
+  },
+  loadGenerales: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Usuario.findOne({
+        where:{id:usuario_id},
+        attributes:['urlFotoPerfil'],
+        include:[{
+          model: models.DatosGenerales,
+          attributes:['nombre','apellidoP','apellidoM']
+        }]
+      }).then(function(usuario){
+        res.send(usuario);
+      });
+    }
+  },
+  loadEspecialidades: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Medico.findOne({
+        where:{usuario_id:usuario_id},
+        attributes:['id'],
+        include:[{
+          model: models.MedicoEspecialidad,
+          attributes:['subEsp'],
+          include:[{
+            model: models.Especialidad,
+            attributes:['especialidad']
+          }]
+        }]
+      }).then(function(medicos){
+        res.send(medicos);
+      });
+    }
+  },
+  loadPadecimientos: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Medico.findOne({
+        where:{usuario_id:usuario_id},
+        attributes:['id'],
+        include:[{
+          model: models.Padecimiento,
+          attributes:['padecimiento']
+        }]
+      }).then(function(medico){
+        res.send(medico);
+      });
+    }
+  },
+  loadPalabras: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Palabras.findAll({
+        where:{ usuario_id: usuario_id},
+        attributes:['palabra']
+      }).then(function(palabras){
+        res.send(palabras);
+      });
+    }
+  },
+  mEditMedic: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      var objecto;
+      var tipo = req.body.tipo;
+      if( tipo == 1 ){
+        objecto = { nombre: req.body.dato };
+      }else if( tipo == 2 ){
+        objecto = { apellidoP: req.body.dato };
+      }else if( tipo == 3 ){
+        objecto = { apellidoM: req.body.dato };
+      }
+      models.DatosGenerales.update(objecto,{
+        where:{ usuario_id: usuario_id }
+      }).then(function(actualizado){
+        res.send(actualizado);
+      })
+    }
   }
 }
