@@ -7,18 +7,6 @@ module.exports = function ( sequelize, DataTypes ) {
       autoIncrement: true,
       primaryKey: true
     },
-    titulo: {
-      type: DataTypes.STRING,
-      required: true
-    },
-    lugarEstudio: {
-      type: DataTypes.STRING,
-      required: true
-    },
-    fecha: {
-      type: DataTypes.DATE,
-      required: true
-    },
     subEsp: {
       type: DataTypes.INTEGER
     },

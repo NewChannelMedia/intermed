@@ -3948,7 +3948,7 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id){
           <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
             <div class="thumbnail">
               <div >
-                <a class="pPic" href="#"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
+                <a class="pPic" href="/perfil/`+ res.usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
               </div>
               <div class="caption">
                 <div class="nombre h77-boldcond">
@@ -4047,7 +4047,7 @@ function cargarListaColegasByAlf(usuario_id,letra){
           <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
             <div class="thumbnail">
               <div >
-                <a class="pPic" href="#"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
+                <a class="pPic" href="/perfil/`+ res.usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
               </div>
               <div class="caption">
                 <div class="nombre h77-boldcond">
