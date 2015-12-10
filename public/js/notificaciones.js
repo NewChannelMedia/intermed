@@ -171,17 +171,32 @@ function socketManejadores() {
         });
       }
     }
-
     socket.emit( 'inbox' );
   } );
 
-  socket.on( 'crearConversacion', function ( usuario ) {
+  socket.on( 'crearConversacion', function ( usuario , append) {
+    var id= usuario.id;
     var fecha = getDateTime( true );
     $( '#InboxListaContactos' ).prepend( '<tr id="' + usuario.id + '" ><td class="nombreContacto noleido" onclick="cargarInbox(this)"><img src="' + usuario.urlFotoPerfil + '" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> ' + usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM + '</span><br/><input type="hidden" class="time" value="' + fecha + '"><small class="pull-right text-right" style="font-size:70%"><span class="timeFormated">' + formattedDate( fecha ) + '</span> <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>' );
+
+      console.log('Append:'+append)
+    if (append){
+      $( '.nombreContacto' ).removeClass( 'seleccionado' );
+      $( '#chat' ).html( '' );
+      $( '#InboxContact' ).html( $( '#InboxListaContactos' ).find( 'tr#' + id ).find( 'span.name' ).html() );
+      $( '#InboxListaContactos' ).find( 'tr#' + id ).find( 'td' ).removeClass( 'noleido' );
+      $( '#InboxListaContactos' ).find( 'tr#' + id ).find( 'td' ).addClass( 'seleccionado' );
+      $( '#InboxMsg' ).css( 'background-color', '#FFF' );
+      $( '#inboxInputText' ).prop( 'disabled', false );
+      $( '#inboxBtnEnviar' ).prop( 'disabled', false );
+      cargarMensajes( id );
+    }
   } );
 
   socket.on( 'obtenerUsuarioId', function ( id ) {
-    if ( $( '#InboxListaContactos' ).find( 'tr#' + id ).length > 0 ) {
+    if ( $( '#InboxListaContactos' ).find( 'tr#' + id ).length <= 0) {
+      socket.emit( 'crearConversacion', id ,true);
+    } else {
       $( '.nombreContacto' ).removeClass( 'seleccionado' );
       $( '#chat' ).html( '' );
       $( '#InboxContact' ).html( $( '#InboxListaContactos' ).find( 'tr#' + id ).find( 'span.name' ).html() );

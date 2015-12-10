@@ -120,11 +120,12 @@ var io = function ( io, bundle, ioPassport ) {
         intermed.callController( 'inbox', 'conversacionLeida', req );
       })
 
-      socket.on('crearConversacion', function (usuario_id){
+      socket.on('crearConversacion', function (usuario_id,append){
         var req = {
           socket: socket,
           usuario_id: socket.request.cookies.intermed_sesion.id,
-          usuario_id_de: usuario_id
+          usuario_id_de: usuario_id,
+          append: append
         };
         intermed.callController( 'inbox', 'crearConversacion', req );
       });

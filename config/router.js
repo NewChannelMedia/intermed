@@ -1222,7 +1222,7 @@ var iniciar = function () {
     if (!req.session.passport.user){
       res.redirect( '/' );
     }else {
-      rutas.routeLife( 'plataforma', 'plataforma', hps );
+      rutas.routeLife( 'plataforma2', 'plataforma', hps );
       intermed.callController('inbox','index', req.body, req, res);
     }
   });
