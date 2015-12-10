@@ -3607,3 +3607,29 @@ function addTelefon(){
     });
   });
 }
+//<--------- EDIT PERFIL MEDICO ------------>
+  function loadGenerales(){
+
+  }
+  function loadEspecialidades(){
+
+  }
+  function loadPadecimientos(){
+
+  }
+  function loadPalabras(){
+    
+  }
+  function editGenerales(){
+
+  }
+  function editEspecialidades(){
+
+  }
+  function editPadecimientos(){
+
+  }
+  function editPalabrasClave(){
+
+  }
+//<--------- FIN EDIT PERFIL MEDICO -------->

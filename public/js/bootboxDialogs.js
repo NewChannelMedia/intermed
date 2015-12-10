@@ -1557,3 +1557,170 @@ function editaPerfBoot(){
     `
   });
 }
+function editMedicoPerfil(){
+  $('.modal-body').css('padding',0);
+  bootbox.dialog({
+    onEscape: function () {
+      bootbox.hideAll();
+  },
+  backdrop: true,
+  size:'large',
+  closeButton:true,
+  message: `
+  <div class="" id="tabMedicoPerfil" style="background-color:#172c3b; padding:5px;">
+    <ul class="nav nav-tabs menuBootbox">
+      <li role="presentation" class="active" >
+        <a href="#general" aria-control="general" role="tab" data-toggle="tab">
+          <span class="glyphicon glyphicon-th">&nbsp;Generales</span>
+        </a>
+      </li>
+      <li role="presentation" >
+        <a href="#especialidad" aria-control="especialidad" role="tab" data-toggle="tab">
+          <span class="glyphicon glyphicon-heart">&nbsp;Especialidades</span>
+        </a>
+      </li>
+      <li role="presentation" >
+        <a href="#padecimiento" aria-control="padecimiento" role="tab" data-toggle="tab">
+          <span class="glyphicon glyphicon-plus-sign">&nbsp;Padecimientos</span>
+        </a>
+      </li>
+      <li role="presentation">
+        <a href="#palabras" aria-control="palabras" role="tab" data-toggle="tab">
+          <span class="glyphicon glyphicon-star">&nbsp;Palabras clave</span>
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content tabBootBox">
+      <div class="tab-pane active" role="tabpanel" id="general">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-4">
+                <img src="{{fotoPerfil}}" width="200" height="200" class="img-rounded">
+              </div>
+              <div class="col-lg-8 input-group">
+                <input type="text" id="editNombreMed" class="form-control" placeholder="Nombre" />
+                <span class="input-group-btn">
+                  <button id="editMedNombre" class="btn btn-danger" type="button">
+                    <span class="glyphicon glyphicon-wrench"></span>
+                  </button>
+                </span>
+              </div>
+              <div class="col-lg-8 input-group">
+                <input type="text" id="editApellidoPMed" class="form-control" placeholder="Apellido paterno" />
+                <span class="input-group-btn">
+                  <button id="editMedApellidoP" class="btn btn-danger" type="button">
+                    <span class="glyphicon glyphicon-wrench"></span>
+                  </button>
+                </span>
+              </div>
+              <div class="col-lg-8 input-group">
+                <input type="text" id="editApellidoMMed" class="form-control" placeholder="Apellido materno" />
+                <span class="input-group-btn">
+                  <button id="editMedApellidoM" class="btn btn-danger" type="button">
+                    <span class="glyphicon glyphicon-wrench"></span>
+                  </button>
+                </span>
+              </div>
+            </div>
+          </div>
+        <hr>
+      </div>
+      <div class="tab-pane" role="tabpanel" id="especialidad">
+        <div class="container-fluid">
+          <div class="row">
+            <!-- AUTOCOMPLETE -->
+              <div class="col-md-4 form-group">
+                <input type="text" id="autoEspecialidad" class="form-control" placeholder="Especialidades"/>
+              </div>
+              <div class="col-md-4 checkbox form-group">
+                <label style="color:white;">
+                  <input type="checkbox" id="subEspEdit" name="subEsp" value="1" />¿Sub especialidad?
+                </label>
+              </div>
+              <div class="col-md-4 form-group">
+                <button id="addEspecialidadMedic" class="btn btn-success form-control" type="button">
+                  <span class="glyphicon glyphicon-plus-sign" style="color:white;"></span>
+                </button>
+              </div>
+            <!-- FIN DEL AUTOCOMPLETE -->
+          </div>
+        </div>
+        <hr>
+        <div class="container-fluid">
+          <div class="row">
+            <!-- TABlA PARA EL CONTENIDO DONDE PODRA ELIMINAR -->
+              <table class="table table-condensed">
+                <thead style="color:white;">
+                  <th><center>#</center></th>
+                  <th><center>Especialidad</center></th>
+                  <th><center>Sub especialidad</center></th>
+                  <th><center>Eliminar</center></th>
+                </thead>
+                <tbody id="tableEspecialidades" style="color:white;">
+                </tbody>
+              </table>
+            <!-- FIN DE LA TABLA -->
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane" role="tabpanel" id="padecimiento">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12 input-group">
+              <input type="text" class="form-control" id="editPadeMedic" placeholder="Padecimientos"/>
+              <span class="input-group-btn">
+                <button id="padeEditMedic" class="btn btn-success form-control" type="button">
+                  <span class="lyphicon glyphicon-plus"></span>
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="container-fluid">
+          <div class="row">
+            <table class="table table-condensed">
+              <thead style="color:white;">
+                <th><center>#</center></th>
+                <th><center>Padecimiento</center></th>
+                <th><center>Eliminar</center></th>
+              </thead>
+              <tbody id="tablePadecimientos" style="color:white;">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane" role="tabpanel" id="palabras">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12 input-group">
+              <input type="text" class="form-control" id="autoPalabras" placeholder="Palabras clave"/>
+              <span class="input-group-btn">
+                <button id="palabrasEdit" class="btn btn-success form-control" type="button">
+                  <span class="lyphicon glyphicon-plus"></span>
+                </button>
+              </span>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <div class="container-fluid">
+          <div class="row">
+            <table class="table table-condensed">
+              <thead style="color:white;">
+                <th><center>#</center></th>
+                <th><center>Palabras clave</center></th>
+                <th><center>Eliminar</center></th>
+              </thead>
+              <tbody id="tablePalabras" style="color:white;">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div><!-- PRINCIPAL -->
+  `
+  });
+}
