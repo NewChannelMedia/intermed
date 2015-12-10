@@ -1508,6 +1508,16 @@ var iniciar = function () {
     app.post('/registrarubicacionPaciente',function(req,res){
       intermed.callController('ubicacion','registrarubicacionPaciente',req.body,req, res);
     });
+
+    app.post( '/cargarListaEspCol', function ( req, res ) {
+      intermed.callController( 'contactos', 'cargarListaEspCol', {
+        usuario: req.body.usuario
+      }, req, res );
+    } );
+
+    app.post('/cargarListaColegasByEsp', function (req, res){
+      intermed.callController( 'contactos', 'cargarListaColegasByEsp', req.body, req, res );
+    });
 }
 
 var io = serv.server( app, 3000 );

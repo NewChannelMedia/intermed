@@ -130,6 +130,10 @@ else {
       cargarFavCol( $( '#usuarioPerfil' ).val() );
     }
 
+    if ( location.pathname.substring( 0, 19 ) === '/nuevoperfilmedicos' ) {
+      cargarListaEspCol( $( '#usuarioPerfil' ).val() );
+    }
+
     /* validaciones al registro */
     validateForm( 'input-nombre', 'nombreMed' );
     validateForm( 'input-apellido', 'ApellidoReg' );
@@ -1544,6 +1548,12 @@ function cargarFavCol( usuario ) {
         }*/
         for ( var p in data ) {
           if ( data[ p ].medico_id ) {
+            var especialidad = '';
+            data[p].Medico.MedicoEspecialidads.forEach(function(esp){
+              if (especialidad=="" && esp.subEsp == 0){
+                especialidad = esp.Especialidad.especialidad;
+              }
+            });
             $( "#FavColPanel .contList" ).append(
               "<li class='media contList-profile' id='"+ data[ p ].Medico.Usuario.id +"'>" +
               "<div class='media-left contList-profilePic'>" +
@@ -1551,7 +1561,7 @@ function cargarFavCol( usuario ) {
               "</div>" +
               "<div class='media-body contList-profileBody'> " +
               "<a class='contList-profileName' href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'> Dr. " + data[ p ].Medico.Usuario.DatosGenerale.nombre + " " + data[ p ].Medico.Usuario.DatosGenerale.apellidoP + " " + data[ p ].Medico.Usuario.DatosGenerale.apellidoM + "</a><br>" +
-              "<a class='contList-profileEsp' href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'> " + data[ p ].Medico.Usuario.Especialidad + "</a>" +
+              "<a class='contList-profileEsp' href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'> " + especialidad + "</a>" +
               "</div>" +
               "<div class='media-right contList-profileAction'>" +
               "<a id ='"+data[ p ].Medico.id+"' href ='#' data-target='#recomendar' data-toggle='modal' class='recomendar contList-profileActionLink Flama-bold s15'>Recomendar</a>" +
@@ -3867,4 +3877,95 @@ function guardarUbicacionPaciente() {
 function verificarCurpCedula(){
   var curp = $('#curpRegMed').val();
   var cedula = $('#cedulaRegMed').val();
+}
+
+
+function cargarListaEspCol( usuario ) {
+  $.ajax( {
+    async: false,
+    url: '/cargarListaEspCol',
+    type: 'POST',
+    data: {
+      usuario: usuario
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      $('#especialidadesList').html('');
+      if ( data.success ) {
+        var contenido = '';
+        var primero = '';
+        data.result.forEach(function(esp){
+          if (primero == ""){
+            primero = esp.id;
+          }
+          contenido += `<li>
+            <a onclick="cargarListaColegasByEsp('`+usuario+`','`+ esp.id +`')">`+ esp.especialidad +` <span class="badge pull-right">`+ esp.total +` </span></a>
+          </li>`;
+        });
+        $('#especialidadesList').html(contenido);
+        if (primero != ""){
+          cargarListaColegasByEsp(usuario,primero);
+        }
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+function cargarListaColegasByEsp(usuario_id,especialidad_id){
+  $.ajax( {
+    async: false,
+    url: '/cargarListaColegasByEsp',
+    type: 'POST',
+    data: {
+      usuario_id: usuario_id,
+      especialidad_id: especialidad_id
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      $('#listaColegas').html('');
+      if ( data.success ) {
+        var contenido = '';
+        contenido += '<div id="'+ data.especialidad.especialidad +'" class="row" ><h1 class="h67-medcond">'+data.especialidad.especialidad+'</h1>';
+        console.log('RESULT: ' + JSON.stringify(data.result));
+        data.result.forEach(function(res){
+          console.log('USUARIO: ' + JSON.stringify(res));
+          contenido += `
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div >
+                <a class="pPic" href="#"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>`+ res.DatosGenerale.nombre +`</span>&nbsp;<span>`+ res.DatosGenerale.apellidoP +` `+ res.DatosGenerale.apellidoM +`</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span>`+ data.especialidad.especialidad +`</span>
+                </div>
+                <a class="h67-medcondobl" href="/perfil/`+ res.usuarioUrl +`">Ver Perfil</a>
+              </div>
+            </div>
+          </div>`
+        })
+        contenido += '</div>';
+        $('#listaColegas').html(contenido);
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
 }

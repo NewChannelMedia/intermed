@@ -229,6 +229,12 @@ module.exports = {
               include: [ {
                 model: models.DatosGenerales
                     } ]
+            },
+            {
+              model: models.MedicoEspecialidad,
+              include: [ {
+                model: models.Especialidad
+                    } ]
             }
           ]
         },
@@ -801,5 +807,81 @@ module.exports = {
         res.send(creado);
       });
     }
+  },
+
+  cargarListaEspCol: function ( object, req, res ) {
+    if ( object.usuario == '' && req.session.passport.user ) {
+      object.usuario = req.session.passport.user.id;
+    }
+    models.Especialidad.findAll({
+      group: ['especialidad'],
+      order: ['especialidad'],
+      attributes: ['id','especialidad',[models.Sequelize.fn('COUNT', models.Sequelize.col('especialidad')), 'total']],
+      include: [
+        {
+          model: models.MedicoEspecialidad,
+          attributes: [ 'id' ],
+          include: [
+            {
+              model: models.Medico,
+              attributes: [ 'id'],
+              include: [ {
+                model: models.MedicoFavorito,
+                where: {
+                  usuario_id: object.usuario,
+                  aprobado: 1,
+                  mutuo: 1
+                }
+              } ]
+            }
+          ]
+        }
+      ]
+    }).then(function (result){
+      res.status(200).send({'success':true,'result':result});
+    });
+  },
+
+  cargarListaColegasByEsp: function (object, req, res){
+    if ( object.usuario_id == '' && req.session.passport.user ) {
+      object.usuario_id = req.session.passport.user.id;
+    }
+
+    models.Usuario.findAll({
+      attributes:['id','usuarioUrl','urlFotoPerfil'],
+      group: ['id'],
+      include: [
+        {
+          model: models.DatosGenerales,
+          attributes:['nombre','apellidoP','apellidoM']
+        },
+        {
+          model: models.Medico,
+          attributes: [ 'id'],
+          include: [ {
+            model: models.MedicoFavorito,
+            where: {
+              usuario_id: object.usuario_id,
+              aprobado: 1,
+              mutuo: 1
+            }
+          }, {
+            model: models.MedicoEspecialidad,
+            where: {
+              especialidad_id: object.especialidad_id,
+              subEsp: 0
+            }
+          }]
+        }
+      ]
+    }).then(function (result){
+      models.Especialidad.findOne({
+        where:{
+          id: object.especialidad_id
+        }
+      }).then(function(esp){
+        res.status(200).send({'success':true,'result':result,'especialidad':esp});
+      })
+    });
   }
 }
