@@ -1071,7 +1071,8 @@ a:visited {
 }
 
 #listaColegas {
-  padding-bottom: 640px;
+  /*padding-bottom: 640px;*/
+  position: relative;
 }
 
 .main-colegas {

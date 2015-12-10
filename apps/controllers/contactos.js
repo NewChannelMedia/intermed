@@ -947,27 +947,31 @@ module.exports = {
               aprobado: 1,
               mutuo: 1
             }
-          }, {
-            model: models.MedicoEspecialidad,
-            attributes: ['id'],
-            where: {
-              subEsp: 0
-            },
-            include: [{
-              model: models.Especialidad,
-              attributes: ['especialidad']
-            }]
           }]
         }
       ]
     }).then(function (result){
-      models.Especialidad.findOne({
-        where:{
-          id: object.especialidad_id
-        }
-      }).then(function(esp){
-        res.status(200).send({'success':true,'result':result,'especialidad':esp});
-      })
+      result = JSON.parse(JSON.stringify(result));
+      var total = 0;
+      result.forEach(function(usuario){
+        models.MedicoEspecialidad.findAll({
+          attributes: ['id'],
+          where: {
+            subEsp: 0,
+            medico_id: usuario.Medico.id
+          },
+          include: [{
+            model: models.Especialidad,
+            attributes: ['especialidad']
+          }]
+        }).then(function(resultesp){
+          total++;
+          usuario.Medico.MedicoEspecialidads = resultesp;
+          if (total == result.length){
+            res.status(200).send({'success':true,'result':result});
+          }
+        });
+      });
     });
   }
 }

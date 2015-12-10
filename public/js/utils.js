@@ -4035,12 +4035,14 @@ function cargarListaColegasByAlf(usuario_id,letra){
         contenido += '<div id="'+ letra +'" class="row" ><h1 class="h67-medcond">'+letra+'</h1>';
         data.result.forEach(function(res){
           var especialidad= '';
-          res.Medico.MedicoEspecialidads.forEach(function(esp){
-            if (especialidad != ""){
-              especialidad += ', ';
-            }
-            especialidad += esp.Especialidad.especialidad;
-          });
+          if (res.Medico.MedicoEspecialidads){
+            res.Medico.MedicoEspecialidads.forEach(function(esp){
+              if (especialidad != ""){
+                especialidad += ', ';
+              }
+              especialidad += esp.Especialidad.especialidad;
+            });
+          }
           contenido += `
           <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
             <div class="thumbnail">
