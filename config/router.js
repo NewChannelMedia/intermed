@@ -1545,6 +1545,53 @@ var iniciar = function () {
       intermed.callController('search','findData',req,res);
     });
     //fin
+    //<-------------- EDICION DE MEDICO PERFIL ---------------->
+      app.post('/loadGenerales', function( req, res ){
+        intermed.callController('medicos','loadGenerales', req, res );
+      });
+      app.post('/loadEspecialidades', function( req, res ){
+        intermed.callController('medicos','loadEspecialidades', req, res );
+      });
+      app.post('/loadPadecimientos', function( req, res ){
+        intermed.callController('medicos','loadPadecimientos', req, res );
+      });
+      app.post('/loadPalabras', function( req, res ){
+        intermed.callController('medicos','loadPalabras', req, res );
+      });
+      app.post('/mEditMedic', function( req, res ){
+        intermed.callController('medicos','mEditMedic', req, res );
+      });
+      app.post('/todasEspecialidades', function( req, res ){
+        intermed.callController('medicos','todasEspecialidades', req, res);
+      });
+      app.post('/sacaMedicoId', function( req, res ){
+        intermed.callController('medicos','sacaMedicoId',req,res);
+      });
+      app.post('/editEspecialidades', function( req, res ){
+        intermed.callController('medicos','editEspecialidades', req, res);
+      });
+      app.post('/deleteEsp', function( req, res ){
+        intermed.callController('medicos','deleteEsp', req, res );
+      });
+      app.post('/traePadecimientos', function( req, res ){
+        intermed.callController('medicos', 'traePadecimientos',req, res);
+      });
+      app.post('/editPadecimientos', function( req, res ){
+        intermed.callController('medicos','editPadecimientos', req, res);
+      });
+      app.post('/traerPalabras', function( req, res) {
+        intermed.callController('medicos','traerPalabras', req, res);
+      });
+      app.post('/editPalabrasClave', function( req, res){
+        intermed.callController('medicos','editPalabrasClave', req, res);
+      });
+      app.post('/deletePad', function( req, res ){
+        intermed.callController('medicos','deletePad',req, res);
+      });
+      app.post('/deletePalabra', function( req, res ){
+        intermed.callController('medicos','deletePalabra',req, res);
+      });
+    //<-------------- FIN EDICION MEDICO PERFIL --------------->
 }
 
 var io = serv.server( app, 3000 );

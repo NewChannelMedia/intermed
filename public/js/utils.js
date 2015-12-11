@@ -3332,7 +3332,6 @@ function updateServices( con, des, pre, dur){
 function loadDatosGenerales(){
   $.post("/loadDatosGenerales",function(data){
     $('#usuarioUrlFotoPerfil').prop('src',data.urlFotoPerfil);
-    $("#editMail").attr('value',data.correo);
     $("#editNom").attr('value',data.DatosGenerale.nombre);
     $("#editApeP").attr('value',data.DatosGenerale.apellidoP);
     $("#editApeM").attr('value',data.DatosGenerale.apellidoM);
@@ -3531,16 +3530,15 @@ function addTelefon(){
 function agregarClinica(){
   var addClin = $('#addClin').val();
   if (addClin && addClin != ""){
-    $('#sortableClinica').append(`
-      <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-      <div class="menuDiv">
-        <span>
-          <span data-id="2" class="itemTitle">`+ addClin +`</span>
-          <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-          <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-        </span>
-      </div>
-      </li>`);
+    $('#sortableClinica').append('<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">'+
+      '<div class="menuDiv">'+
+        '<span>'+
+          '<span data-id="2" class="itemTitle">`+ addClin +`</span>'+
+          '<span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">'+
+          '<span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>'+
+        '</span>'+
+      '</div>'+
+      '</li>');
       $('#addClin').val('');
   } else {
     //Input de agregar clinica vacio
@@ -4207,3 +4205,224 @@ function searchingData(){
   });
 }
 //<------------- FIN DE LAS FUNCIONES ---------------------------->
+//<--------- EDIT PERFIL MEDICO ------------>
+  function loadGenerales(){
+    // se cargan los datos generales y foto
+    var html = "";
+    $.post('/loadGenerales', function(data){
+      $("#editNombreMed").attr('value',data.DatosGenerale.nombre);
+      $("#editApellidoPMed").attr('value',data.DatosGenerale.apellidoP);
+      $("#editApellidoMMed").attr('value',data.DatosGenerale.apellidoM);
+      $("#imgPerfilMedic").attr('src',data.urlFotoPerfil);
+    });
+  }
+  function loadEspecialidades(){
+    // carga los datos de medicoEspecialidades
+    var html = "";
+    var contador = 1;
+    //carga todas las especialidades
+    $.post('/todasEspecialidades',function(p){
+      var html2 = "";
+      html2 += '<option value="0">--Especialidad--</option>';
+      $.each(p,function(e, etem){
+        html2 += '<option value="'+etem.id+'">'+etem.especialidad+'</option>';
+      });
+      $("#autoEspecialidad").html(html2);
+    });
+    $.post('/loadEspecialidades', function(data){
+      $.each(data.MedicoEspecialidads, function( i, item ){
+        html += '<tr style="color:white;">'
+          html += '<td ><center>'+contador+'</center></td>';
+          if( item.subEsp == 0 ){
+            html += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
+            html += '<td><center>--x--</center></td>';
+          }else{
+            html += '<td><center>--x--</center></td>';
+            html += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
+          }
+          html += '<td><center>';
+            html += '<button type="button" onclick="deleteEsp(\'#mDelete-'+i+'\');" oculto="'+item.id+'" class="btn btn-danger" id="mDelete-'+i+'">';
+              html += '<span class="glyphicon glyphicon-remove-sign"></span>';
+            html += '</button>';
+          html += '</center></td>';
+        html += '</tr>';
+        contador++;
+      });
+      $("#tableEspecialidades").html(html);
+    });
+  }
+  function loadPadecimientos(){
+    var html = "";
+    var contador = 1;
+    $.post('/loadPadecimientos', function( data ){
+      $.each(data.Padecimientos, function( i, item ){
+        html += '<tr style="color:white">';
+          html += '<td><center>'+contador+'</center></td>';
+          html += '<td><center>'+item.padecimiento+'</center></td>';
+          html += '<td><center>';
+            html += '<button onclick="deletePad(\'#pDelete-'+i+'\')" oculto="'+item.MedicoPadecimiento['id']+'" class="btn btn-danger" id="pDelete-'+i+'">';
+              html += '<span class="glyphicon glyphicon-remove-circle"></span>';
+            html += '</button>';
+          html +='</center></td>';
+        html += '</tr>';
+        contador++;
+      });
+      $("#tablePadecimientos").html(html);
+    });
+  }
+  function loadPalabras(){
+    var html = "";
+    var contador = 1;
+    $.post('/loadPalabras',function(data){
+      $.each(data, function( i, item ){
+        html += '<tr style="color:white;">';
+          html += '<td><center>'+contador+'</center></td>';
+          html += '<td><center>'+item.palabra+'</center></td>';
+          html += '<td><center>';
+            html += '<button class="btn btn-danger" onclick="deletePalabra(\'#palabrasDelete-'+i+'\')" oculto="'+item.id+'" id="palabrasDelete-'+i+'">';
+              html += '<span class="glyphicon glyphicon-remove-circle"></span>';
+            html += '</button>';
+          html += '</center></td>';
+        html += '</tr>';
+        contador++;
+      });
+      $("#tablePalabras").html(html);
+    });
+  }
+  function editGenerales(tipo){
+    // tipo 1: editar nombre
+    // tipo 2: editar apellido paterno
+    // tipo 3: editar apellido materno
+    switch(tipo){
+      case 1: var nombre = $("#editNombreMed").val();
+            $("#divEditGeneral").addClass('hidden');
+            $.post('/mEditMedic',{dato: nombre, tipo: 1}, function(data){
+              if( data.length > 0 ){
+                $("#divEditGeneral").removeClass('hidden');
+                $("#tipoUpdate").text('Nombre actualizado: '+nombre);
+              }
+            });
+            break;
+      case 2: var apellidoP = $("#editApellidoPMed").val();
+            $("#divEditGeneral").addClass('hidden');
+            $.post('/mEditMedic',{dato: apellidoP, tipo: 2}, function(data){
+              if( data.length > 0 ){
+                $("#divEditGeneral").removeClass('hidden');
+                $("#tipoUpdate").text('Apellido paterno actualizado: '+apellidoP);
+              }
+            });
+            break;
+      case 3: var apellidoM = $("#editApellidoMMed").val();
+            $("#divEditGeneral").addClass('hidden');
+            $.post('/mEditMedic',{dato: apellidoM, tipo: 3}, function(data){
+              if( data.length > 0 ){
+                $("#divEditGeneral").removeClass('hidden');
+                $("#tipoUpdate").text('Apellido materno actualizado: '+apellidoM);
+              }
+            });
+            break;
+    }
+  }
+  function editEspecialidades(){
+    var medico_id;
+    $.post('/sacaMedicoId', function(data){
+      medico_id = data.id;
+    }).done(function(){
+      var especial = $("#autoEspecialidad option:selected").val();
+      var check;
+      if( $("#subEspEdit").is(":checked") ){
+        console.log("si esta checado");
+        check = 1;
+      }else{
+        console.log("no esta checado");
+        check = 0;
+      }
+      // se inserta una nueva especialidad
+      $.post('/editEspecialidades',{
+        especialidad:especial,
+        supEsp:check,
+        medico_id: medico_id
+      },function( data ){
+        if( data != null ){
+          loadEspecialidades();
+        }else{
+          console.log("ERror al agregar la especialidad");
+        }
+      });
+    });
+  }
+  function deleteEsp(id){
+    var id = $(id).attr('oculto');
+    bootbox.confirm('¿Estas seguro de eliminar esto?',function(result){
+      if(result){
+        $.post('/deleteEsp',{id:id}, function( data ){
+          if( data == "OK" ){
+            loadEspecialidades();
+          }else{
+            console.log("Error al eliminar especialidades");
+          }
+        });
+      }
+    });
+  }
+  function traePadecimientos(){
+    $.post('/traePadecimientos',function( data ){
+      var html = "";
+      html += '<option value="0">--Padecimiento--</option>';
+      $.each(data, function( i, item ){
+        html += '<option value="'+item.id+'">'+item.padecimiento+'</option>';
+      });
+      $("#editPadeMedic").html(html);
+    });
+  }
+  function editPadecimientos(){
+    var seleccion = $("#editPadeMedic option:selected").val();
+    $.post('/editPadecimientos',{
+      padecimiento: seleccion
+    },function(per){
+      if( per != null ){
+        loadPadecimientos();
+      }else{
+        console.log("Error 019: insercion de padecimientos");
+      }
+    });
+  }
+  function editPalabrasClave(){
+    var palabra = $("#autoPalabras").val();
+    $.post('/editPalabrasClave',{palabra:palabra},function(data){
+      if( data != null ){
+        loadPalabras();
+      }else{
+        console.log("Error: al agregar la palabra clave");
+      }
+    });
+  }
+  function deletePad(id){
+    var id = $(id).attr('oculto');
+    bootbox.confirm('¿Estas seguro de eliminar este campo?',function(result){
+      if( result ){
+        $.post('/deletePad',{id:id},function(data){
+          if( data == "OK" ){
+            loadPadecimientos();
+          }else{
+            console.log("Error: al eliminar el padecimiento")
+          }
+        });
+      }
+    });
+  }
+  function deletePalabra(id){
+    var id = $(id).attr('oculto');
+    bootbox.confirm('¿Estas seguro de eliminar este campo?', function(result){
+      if( result ){
+        $.post('/deletePalabra',{id:id}, function(data){
+          if( data == "OK" ){
+            loadPalabras();
+          }else{
+            console.log("ERROR: no se pudo eliminar la palabra clave seleccionada");
+          }
+        });
+      }
+    });
+  }
+//<--------- FIN EDIT PERFIL MEDICO -------->

@@ -895,5 +895,192 @@ module.exports = {
       } else {
         res.status(200).json({'success':false});
       }
+  },
+  loadGenerales: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Usuario.findOne({
+        where:{id:usuario_id},
+        attributes:['urlFotoPerfil'],
+        include:[{
+          model: models.DatosGenerales,
+          attributes:['nombre','apellidoP','apellidoM']
+        }]
+      }).then(function(usuario){
+        res.send(usuario);
+      });
+    }
+  },
+  loadEspecialidades: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Medico.findOne({
+        where:{usuario_id:usuario_id},
+        attributes:['id'],
+        include:[{
+          model: models.MedicoEspecialidad,
+          attributes:['id','subEsp'],
+          include:[{
+            model: models.Especialidad,
+            attributes:['especialidad']
+          }]
+        }]
+      }).then(function(medicos){
+        res.send(medicos);
+      });
+    }
+  },
+  loadPadecimientos: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Medico.findOne({
+        where:{usuario_id:usuario_id},
+        attributes:['id'],
+        include:[{
+          model: models.Padecimiento,
+          attributes:['padecimiento']
+        }]
+      }).then(function(medico){
+        res.send(medico);
+      });
+    }
+  },
+  loadPalabras: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Palabras.findAll({
+        where:{ usuario_id: usuario_id},
+        attributes:['id','palabra']
+      }).then(function(palabras){
+        res.send(palabras);
+      });
+    }
+  },
+  mEditMedic: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      var objecto;
+      var tipo = req.body.tipo;
+      if( tipo == 1 ){
+        objecto = { nombre: req.body.dato };
+      }else if( tipo == 2 ){
+        objecto = { apellidoP: req.body.dato };
+      }else if( tipo == 3 ){
+        objecto = { apellidoM: req.body.dato };
+      }
+      models.DatosGenerales.update(objecto,{
+        where:{ usuario_id: usuario_id }
+      }).then(function(actualizado){
+        res.send(actualizado);
+      })
+    }
+  },
+  todasEspecialidades: function( req, res ){
+    models.Especialidad.findAll({
+      attributes:['id','especialidad']
+    }).then(function(especialidades){
+      res.send(especialidades);
+    });
+  },
+  sacaMedicoId: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Medico.findOne({
+        where:{usuario_id: usuario_id},
+        attributes:['id']
+      }).then(function(medico){
+        res.send(medico);
+      });
+    }
+  },
+  editEspecialidades: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+        console.log("lo que quieras " + req.body.subEsp);
+        models.MedicoEspecialidad.create({
+        especialidad_id: parseInt(req.body.especialidad),
+        supEsp: parseInt(req.body.supEsp),
+        medico_id: parseInt(req.body.medico_id)
+      }).then(function(creado){
+        res.send(creado);
+      });
+    }
+  },
+  deleteEsp: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.MedicoEspecialidad.destroy({
+        where:{id:req.body.id}
+      }).then(function(des){
+          if(des == 1 ){
+            res.sendStatus(200);
+          }else{
+            res.sendStatus(404);
+          }
+      });
+    }
+  },
+  traePadecimientos: function(req, res){
+    models.Padecimiento.findAll({
+
+    }).then(function(todos){
+      res.send(todos);
+    });
+  },
+  editPadecimientos: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Medico.findOne({
+        where:{usuario_id:usuario_id},
+        attributes:['id']
+      }).then(function(medico){
+        models.MedicoPadecimiento.create({
+          medico_id:medico.id,
+          padecimiento_id:parseInt(req.body.padecimiento)
+        }).then(function(creado){
+          console.log("CREADO: "+JSON.stringify(creado));
+          res.send(creado);
+        });
+      });
+    }
+  },
+  editPalabrasClave: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Palabras.create({
+        palabra: req.body.palabra,
+        usuario_id:usuario_id
+      }).then(function(creado){
+        res.send(creado);
+      });
+    }
+  },
+  deletePad: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.MedicoPadecimiento.destroy({
+        where:{id:req.body.id}
+      }).then(function(destruido){
+        if( destruido == 1 ){
+          res.sendStatus(200);
+        }else{
+          res.sendStatus(404);
+        }
+      });
+    }
+  },
+  deletePalabra: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Palabras.destroy({
+        where:{id:req.body.id}
+      }).then(function(des){
+        if( des == 1 ){
+          res.sendStatus(200);
+        }else{
+          res.sendStatus(404);
+        }
+      });
+    }
   }
 }
