@@ -12,6 +12,7 @@ html a,
 
 body {
   background-color: #d9d9d9;
+  overflow: hidden;
 }
 
 a,
@@ -23,7 +24,7 @@ a:visited {
 
 .navigator {
   display: block;
-  min-height: 100px;
+  height: 60px;
   margin: 0 auto;
   padding: 0;
   border: 0;
@@ -71,7 +72,7 @@ a:visited {
   left: 20%!important;
   top: 0px!important;
   height: 60px;
-  padding: 7px 15px;
+  padding: 14px 15px;
   margin: 0;
   z-index: 1000;
 }
@@ -79,13 +80,13 @@ a:visited {
 .nav-logo {
   margin: 0 auto;
   padding: 0 15px;
-  height: 100px;
+  height: 60;
 }
 
 .nav-logo img {
   float: left;
-  height: 66px;
-  margin-top: 22px;
+  height: 45px;
+  margin-top: 10px;
 }
 
 .nav-logo span {
@@ -107,12 +108,12 @@ a:visited {
   padding-bottom: 0;
 }
 #search-section{
-  padding-top: 33px;
-  padding-bottom: 33px;
+  padding-top: 13px;
+  padding-bottom: 13px;
 }
 #menu-section{
   padding: 0;
-  min-height: 100px;
+  height: 60px;
 }
 
 .navigator-inner-section-menu {
@@ -120,14 +121,14 @@ a:visited {
 }
 
 .navigator-inner-section-menu li {
-  height: 100px;
+  height: 60px;
   vertical-align: middle;
 }
 
 
 .navigator-inner-section-menu li a {
-  padding-top: 40px;
-  padding-bottom: 40px;
+  padding-top: 23px;
+  padding-bottom: 17px;
   vertical-align: middle;
   text-transform: uppercase;
   color: white;
@@ -178,8 +179,8 @@ a:visited {
     height: 60px;
   }
   .nav-logo img {
-    height: 40px;
-    margin-top: 14px
+    height: 45px;
+    margin-top: 10px
   }
   .btn-menu {
     height: 30px;
@@ -199,8 +200,8 @@ a:visited {
   }
 
   .navigator-inner-section-menu li a {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 23px;
+    padding-bottom: 17px;
     vertical-align: middle;
     text-transform: uppercase;
     color: white;
@@ -1507,18 +1508,22 @@ a:visited {
 }
 
 #screen {
-  position: relative;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 120px;
 }
 
 #sections {
-/*  position: relative;
+  position: relative;
   clear: left;
   overflow: hidden;
   overflow-y: auto;
   width: 100%;
   height: 100%;
   margin: 0;
-  background-color: white;*/
+  background-color: white;
 }
 
 #sections section {
@@ -1558,13 +1563,13 @@ a:visited {
 
 #sections .float{
   position: absolute;
-  z-index: 10000;
+  z-index: 100;
   margin: 20px;
   right: 0;
 }
 #sections .float.up{
   top: 0;
 }
-#sections .float.bottom{
+#sections .float.down{
   bottom: 0;
 }

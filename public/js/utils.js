@@ -3628,20 +3628,25 @@ $(document).ready(function(){
   /*$('#comentarios .float. bottom').scrollTo($('$ubicaciones'), 800);*/
 
 
-  var _wheight = $(window).height();
-  $('body').css( 'height' , _wheight );
-/*
+  var _winheight = $(window).height();
+  $('body').css( 'height' , _winheight );
+
   if($(window).width() < 992) {
-    var _sheight = _wheight - 120;
+    var _sheight = _winheight - 60;
     //$('#screen').css('top', '120px');
     $('#screen').css('height', _sheight);
 
   }
   else if ($(window).width() >= 992) {
-    var _sheight = _wheight - 160;
+    var _sheight = _winheight - 60;
     //$('#screen').css('top', '160px');
     $('#screen').css('height', _sheight);
-  }*/
+  }
+
+  $('body').scrollLock('on', 'div');
+  $("html").niceScroll({background:"none"});
+  $("html").getNiceScroll().hide();
+
 });
 
 $(window).resize(function(){
