@@ -284,6 +284,63 @@
           </div>
         </div>
       </div>
+      {{else}}
+      <div id="profileOptions" class="header-options-container col-lg-4 col-md-5 col-sm-2 col-xs-12 h67-medcond">
+        <div class="header-options-row row">
+          <div class="header-options-content">
+            <a href="#" class="first-option option">
+              <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 hidden-xs">
+                <span class="option-icon glyphicon h67-medcond s90 center-block text-center">+</span>
+              </div>
+              <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 hidden-sm">
+                <div class="option-label">
+                  <span class="optn-lbl">NUEVO PACIENTE</span>
+                  <span class="optn-sb hidden-xs">Haz click aquí para generar un nuevo expediente.</span>
+                </div>
+              </div>
+            </a>
+            <a href="#" class="option">
+              <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                <span class="option-icon glyphicon glyphicon-user s30 center-block text-center"></span>
+              </div>
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                <div class="option-label">
+                  <span class="optn-lbl">
+                    <span class="option-icon glyphicon glyphicon-user hidden-xs">
+                    </span>&nbsp;CONSULTAS EN LÍNEA
+                  </span>
+                </div>
+              </div>
+            </a>
+            <a href="#" class="option">
+              <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                <span class="option-icon glyphicon glyphicon-check s30 center-block text-center"></span>
+              </div>
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                <div class="option-label">
+                  <span class="optn-lbl">
+                    <span class="option-icon glyphicon glyphicon-check hidden-xs">
+                    </span>&nbsp;INTERMARKET
+                  </span>
+                </div>
+              </div>
+            </a>
+            <a href="{{base_url}}inbox/{{valSession 'usuarioUrl'}}" class="option">
+              <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                <span class="option-icon glyphicon glyphicon-comment s30 center-block text-center"></span>
+              </div>
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                <div class="option-label">
+                  <span class="optn-lbl">
+                    <span class="option-icon glyphicon glyphicon-comment hidden-xs">
+                    </span>&nbsp;FOROS
+                  </span>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
       {{/if}}
     </div>
   </div>
