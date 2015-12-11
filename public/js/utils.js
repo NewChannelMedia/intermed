@@ -1609,17 +1609,20 @@ var uId ="";
     $( '.recomendar.contList-profileActionLink' ).click(function(){
       //se manda a llamar al bootbox
       recomendacionesBoot();
-      id = $( this ).attr('id');
+      id += $( this ).attr('id');
       $("#pacienteIdOculto").text(id);
       var medico_id="";
       var di = "";
+      //console.log("ID: "+id);
       $.post('/medicosContacto',{idMedico:id},function(data){
-        medico_id = data.id;
-        di = data.Usuario.id;
-        if( data.Usuario ){
-          usuarioUrl = data.Usuario.usuarioUrl;
-          var nombreCompleto = data.Usuario.DatosGenerale.nombre+' '+data.Usuario.DatosGenerale.apellidoP+' '+data.Usuario.DatosGenerale.apellidoM;
-          $("#doctorSpan").text(nombreCompleto);
+        for( var i in data ){
+          medico_id = data[ i ].id;
+          di = data[ i ].Usuario.id;
+          if( data[ i ].Usuario ){
+            usuarioRL += data[ i ].Usuario.usuarioUrl;
+            var nombreCompleto = data[ i ].Usuario.DatosGenerale.nombre+' '+data[ i ].Usuario.DatosGenerale.apellidoP+' '+data[ i ].Usuario.DatosGenerale.apellidoM;
+            $("#doctorSpan").text(nombreCompleto);
+          }
         }
       });
       // con ajax se hace la peticion a la url la cual me mostrara la informacion en una tabla con
@@ -4070,3 +4073,137 @@ function cargarListaColegasByAlf(usuario_id,letra){
     }
   } );
 }
+//<-------------- funciones para la busqueda de la pantalla searchMedic -------------->
+$(document).ready(function(){
+  //carga los estados y se llena el select con la siguiente consulta
+  var html = "";
+  $.post('/cargaEstados',function(data){
+    html += '<option value="0">--Estados--</option>';
+    $.each(data, function(i, item){
+      html += '<option value="'+item.id+'">'+item.estado+'</option>';
+    });
+    $("#selectEstados").html(html);
+  });
+  cargaEspecialidades();
+  cargaPadecimiento();
+});
+function cargarCiudades(id){
+  var idABuscar = $(id).val();// se saca el value del select de estados
+  // se hace la consulta se manda como parametro el id que se obtuvo de seleccionar el estado
+  var html2 = "";
+  if( idABuscar != 0 ){
+    html2 += '<opton value="0">--Municipio--</option>';
+    $.post('/cargarCiudades',{id:idABuscar}, function(data){
+      $.each(data,function(i, item){
+        html2 += '<option value="'+item.id+'">'+item.municipio+'</option>';
+      });
+      $("#selectCiudad").html(html2);
+    });
+  }else{
+    bootbox.alert('Seleccione un estado primero por favor.',function(){});
+  }
+}
+function cargaEspecialidades(){
+  var html3 = "";
+  // trae todas las especialidades
+  html3 += '<option value="0">--Especialidad--</option>';
+  $.post('/cargaEspecialidades', function(data){
+    $.each(data, function(i, item){
+      html3 += '<option value="'+item.id+'">'+item.especialidad+'</option>';
+    });
+    $("#selectEspecialidad").html(html3);
+  });
+}
+function cargaPadecimiento(){
+  var html4 = "";
+  html4 += '<option value="0">--Padecimiento--</option>';
+  $.post('/cargaPadecimiento', function(data){
+    $.each(data, function( i, item){
+      html4 += '<option value="'+item.id+'">'+item.padecimiento+'</option>';
+    });
+    $("#selectPadecimiento").html(html4);
+  });
+}
+function searchingData(){
+  var estado = $("#selectEstados").val();
+  var ciudad = $("#selectCiudad").val();
+  var especialidad = $("#selectEspecialidad").val();
+  var padecimiento = $("#selectPadecimiento").val();
+  var nombre = $("#nombreMed").val();
+  var html5 = "";
+  $("#medResults").html('');
+  $.post('/findData',{
+    estado: estado,
+    municipio: ciudad,
+    especialidad: especialidad,
+    padecimiento: padecimiento,
+    nombre: nombre
+  },function(data){
+    $.each(data, function( i, item ){
+      var nombreCompleto = item.DatosGenerale.nombre+' '+item.DatosGenerale.apellidoP+' '+item.DatosGenerale.apellidoM;
+      var medicoEspecialidad = "";
+        html5 += '<ul class="media-list" id="agregando">';
+        html5 += '<li class="media result">';
+          html5 += '<div class="media-left">';
+            html5 += '<div class="media-enclosure">';
+              html5 += '<a href="#">';
+                html5 += '<img class="media-object" src="'+item.urlFotoPerfil+'" alt=""/>';
+              html5 += '</a>';
+            html5 += '</div>';
+          html5 += '</div>';
+          html5 += '<div class="media-body">';
+            html5 += '<div class="col-md-8">';
+              html5 += '<h4 class="media-heading">';
+                html5 += '<span class="label label-topDr">Top Doctor</span>Dr. '+nombreCompleto;
+              html5 += '</h4>';
+              $.each(item.Medico.MedicoEspecialidads, function(a, pipi ){
+                medicoEspecialidad += pipi.subEsp;
+                if( medicoEspecialidad == 1 ){
+                  html5 += '<ul class="list-unstyled list-inline">';
+                    html5 += '<li><strong>Sub especialidades</strong>&nbsp;'+pipi.Especialidad.especialidad+'</li>';
+                  html5 += '</ul>';
+                }else if( medicoEspecialidad == 0 ){
+                  html5 += '<ul class="list-unstyled list-inline">';
+                    html5 += '<li><strong>Especialidades</strong>&nbsp;'+pipi.Especialidad.especialidad+'</li>';
+                  html5 += '</ul>';
+                }
+              });
+              $.each(item.Medico.Padecimientos, function(d, dat ){
+                html5 += '<ul class="list-unstyled list-inline">';
+                  html5 += '<li>';
+                    html5 += '<small><strong>Padecimientos:</strong>'+dat.padecimiento+'</small>';
+                  html5 += '</li>';
+                html5 += '</ul>';
+              });
+              $.each(item.Direccions, function( i, item ){
+                console.log("ITEM: "+JSON.stringify(item));
+                html5 += '<ul class="list-unstyled list-inline">';
+                  html5 += '<li>';
+                    html5 += '<button class="btn btn-warning">';
+                      html5 += '<span class="glyphicon glyphicon-map-marker"></span>';
+                    html5 += '</button>';
+                    html5 += '<a href="#">';
+                      html5 += '<strong>nombre de la calle</strong>';
+                      html5 += '<small>&nbsp;'+item.calle+'&nbsp;#'+item.numero+'&nbsp;'+item.Municipio.municipio+'&nbsp;'+item.Municipio.Estado.estado+'</small>';
+                    html5 += '</a>';
+                  html5 += '</li>';
+                html5 += '</ul>';
+              });
+            html5 += '</div>';
+            html5 += '<div class="resultOptions col-md-4">';
+              html5 += '<ul class="list-unstyled">';
+                html5 += '<li> Costo de la consulta<strong> $1,230</strong><li>';
+                html5 += '<li><a>Agrega a tus favoritos</a></li>';
+                html5 += '<li><a>Ver teléfono</a></li>';
+                html5 += '<li><a>Envía mensaje</a></li>';
+                html5 += '<li><a>Visita su perfil</a></li>';
+              html5 += '</ul>';
+            html5 += '</div>';
+          html5 += '</div>';
+        html5 += '</li>';
+      html5 += '</ul>';
+    });
+    $("#medResults").html(html5);
+  });
+}
+//<------------- FIN DE LAS FUNCIONES ---------------------------->

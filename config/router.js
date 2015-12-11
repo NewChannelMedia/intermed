@@ -1528,6 +1528,23 @@ var iniciar = function () {
     app.post('/cargarListaColegasByAlf', function (req, res){
       intermed.callController( 'contactos', 'cargarListaColegasByAlf', req.body, req, res );
     });
+    // boton de busqueda en searchMedic
+    app.post('/cargaEstados',function(req, res){
+      intermed.callController('search','cargaEstados',req, res);
+    });
+    app.post('/cargarCiudades',function(req, res){
+      intermed.callController('search','cargarCiudades',req, res);
+    });
+    app.post('/cargaEspecialidades', function( req, res ){
+      intermed.callController('search','cargaEspecialidades',req,res);
+    });
+    app.post('/cargaPadecimiento', function( req, res ){
+      intermed.callController('search','cargaPadecimiento', req, res );
+    });
+    app.post('/findData', function( req, res ){
+      intermed.callController('search','findData',req,res);
+    });
+    //fin
 }
 
 var io = serv.server( app, 3000 );

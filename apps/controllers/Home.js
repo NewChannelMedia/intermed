@@ -408,7 +408,7 @@ module.exports = {
           attributes: [ 'id', 'nombre', 'apellidoP', 'apellidoM' ]
                 }, {
           model: models.Direccion,
-          attributes: [ 'id', 'ubicacionGM', 'calle', 'numero', 'nombre' ],
+          attributes: [ 'id','calle', 'numero', 'nombre' ],
           include:[{
             model: models.Municipio,
             attributes:['municipio']
