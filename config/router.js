@@ -1545,6 +1545,16 @@ var iniciar = function () {
       intermed.callController('search','findData',req,res);
     });
     //fin
+
+    app.get( '/buscador', function (req, res){
+      req.body.get = true;
+      req.body.busqueda = req.query['search'].split(" ");
+      if (req.query['searchPac']){
+        req.body.pacientes = 1;
+      }
+      rutas.routeLife( 'plataforma2', 'plataforma', hps );
+      intermed.callController( 'buscadorInterno', 'buscar', req.body, req, res );
+    });
 }
 
 var io = serv.server( app, 3000 );

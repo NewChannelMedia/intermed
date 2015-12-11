@@ -305,8 +305,8 @@ var infoWindows = [];
 
 function MostrarUbicaciones(){
   var mapProp = {
-      center:new google.maps.LatLng(20.667015199999998, -103.43773089999999),
-      zoom: 20,
+      center:new google.maps.LatLng(21.94304553343818, -101.766357421875),
+      zoom: 16,
       draggable: true,
       scrollwheel: true,
       mapTypeId:google.maps.MapTypeId.ROADMAP
@@ -316,7 +316,10 @@ function MostrarUbicaciones(){
 
   google.maps.event.addListenerOnce(MapaUbicaciones, 'idle', function(){
 
+  var count = 0;
+
     $('.direccionLtLn').each(function( index ) {
+      count++;
       var principal = $( this ).find('.principal').text();
       var latitud = $( this ).find('.lat').text();
       var longitud = $( this ).find('.long').text();
@@ -325,7 +328,7 @@ function MostrarUbicaciones(){
 
       var pos = new google.maps.LatLng(latitud, longitud);
 
-      if (principal == 1){
+      if (count == 1){
         //Centrar mapa
         MapaUbicaciones.setCenter(pos);
       }
@@ -358,6 +361,9 @@ function MostrarUbicaciones(){
       });
 
     });
+    if (count===0){
+      MapaUbicaciones.setOptions({zoom: 4});
+    }
   });
 
   //resizeMap();

@@ -53,16 +53,19 @@
             <span class="glyphicon glyphicon-menu-hamburger"></span>
           </button>
           <div class="collapse navbar-collapse" id="collapse-menu">
-            <div id="search-section" class="navigator-inner-section col-lg-5 col-md-4 col-sm-1 col-xs-12 hidden-sm">
-              <div class="input-group navbar-search navigator-inner-section-cell col-md-10 col-md-offset-1 h65-medium">
-                <input type="text" class="form-control" id="buscadorInterno" name="" placeholder="Search for people, places or things" required="">
-                <span class="input-group-btn">
-                  <button class="btn btn-default" type="button">
-                    <span class="glyphicon glyphicon-search"></span>
-                  </button>
-                </span>
+            <form action="/buscador" method="GET">
+              <div id="search-section" class="navigator-inner-section col-lg-5 col-md-4 col-sm-1 col-xs-12 hidden-sm">
+                <div class="input-group navbar-search navigator-inner-section-cell col-md-10 col-md-offset-1 h65-medium">
+                  <span class="input-group-addon" id="basic-addon1"><input type="checkbox" id="tipoBusquedaPaciente"  data-toggle="tooltip" data-placement="left" title="Marcar para buscar pacientes" name="searchPac"></span>
+                  <input type="text" class="form-control" id="buscadorInterno" name="search" placeholder="Search for people, places or things">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                      <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                  </span>
+                </div>
               </div>
-            </div>
+            </form>
 
             {{#unless name}}
             <img class="hidden invisible" src="{{valSession 'fotoPerfil'}}" id='fotoPerfilMini' width="30px"/>

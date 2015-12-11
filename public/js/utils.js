@@ -2655,6 +2655,8 @@ function actualizarDirecciones(salir){
       if (data.success){
         if (data.result.length> 0 && $('#editUbi').html() != ""){
           $('#editUbi').html('<button class="btn btn-primary btn-xs" id="btnEditaUbi"><span class="glyphicon glyphicon-pencil"></span></button>');
+        } else {
+          $('#editUbi').html('');
         }
         var contenido = '';
         var contador = 0;
@@ -4207,3 +4209,6 @@ function searchingData(){
   });
 }
 //<------------- FIN DE LAS FUNCIONES ---------------------------->
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
