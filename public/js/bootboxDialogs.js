@@ -706,7 +706,7 @@ function recomendacionesBoot(){
             </div>
             <div class="pull-right">
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-              <button type="button" id="mandarPeticion" onclick="enviandoPeticion();" class="btn btn-primary" class="btn btn-primary">Pedir</button>
+              <button type="button" id="mandarPeticion" onclick="enviandoPeticion();bootbox.hideAll();" class="btn btn-primary" class="btn btn-primary">Pedir</button>
             </div>
           </div><!-- div principal final -->
         `
@@ -1108,7 +1108,7 @@ function catServices(){
           <div class="">
             <div class="row">
               <div class="col-md-12">
-                <ul class="nav nav-tabs menuUbicacion" role="tablist">
+                <ul class="nav nav-tabs menuBootbox" role="tablist">
                   <li role="presentation" class="active" id="cargar" onclick="downloadServices('#cargar');">
                     <a data-toggle="tab" aria-control="serv" role="tab" href="#serv">
                       <span style="color:white" class="glyphicon glyphicon-flash">&nbsp;Servicios</span>
