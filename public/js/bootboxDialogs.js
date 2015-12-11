@@ -1590,7 +1590,7 @@ function editMedicoPerfil(){
               <div class="col-lg-8 input-group">
                 <input type="text" id="editNombreMed" class="form-control" placeholder="Nombre" />
                 <span class="input-group-btn">
-                  <button id="editMedNombre" class="btn btn-danger" type="button">
+                  <button id="editMedNombre" class="btn btn-danger" type="button" onclick="editGenerales(1)">
                     <span class="glyphicon glyphicon-wrench"></span>
                   </button>
                 </span>
@@ -1598,7 +1598,7 @@ function editMedicoPerfil(){
               <div class="col-lg-8 input-group">
                 <input type="text" id="editApellidoPMed" class="form-control" placeholder="Apellido paterno" />
                 <span class="input-group-btn">
-                  <button id="editMedApellidoP" class="btn btn-danger" type="button">
+                  <button id="editMedApellidoP" class="btn btn-danger" type="button" onclick="editGenerales(2)">
                     <span class="glyphicon glyphicon-wrench"></span>
                   </button>
                 </span>
@@ -1606,7 +1606,7 @@ function editMedicoPerfil(){
               <div class="col-lg-8 input-group">
                 <input type="text" id="editApellidoMMed" class="form-control" placeholder="Apellido materno" />
                 <span class="input-group-btn">
-                  <button id="editMedApellidoM" class="btn btn-danger" type="button">
+                  <button id="editMedApellidoM" class="btn btn-danger" type="button" onclick="editGenerales(3)">
                     <span class="glyphicon glyphicon-wrench"></span>
                   </button>
                 </span>
@@ -1622,15 +1622,15 @@ function editMedicoPerfil(){
             <h4 style="color:white;">Especialidades</h4>
             <!-- AUTOCOMPLETE -->
               <div class="col-md-4 form-group">
-                <input type="text" id="autoEspecialidad" class="form-control" placeholder="Especialidades"/>
+                <select id="autoEspecialidad" class="form-control"></select>
               </div>
               <div class="col-md-4 checkbox form-group">
                 <label style="color:white;">
-                  <input type="checkbox" id="subEspEdit" name="subEsp" value="1" />¿Especialidad principal?
+                  <input type="checkbox" id="subEspEdit" name="subEsp" value="0"/>¿Es sub especialidad?
                 </label>
               </div>
               <div class="col-md-4 form-group">
-                <button id="addEspecialidadMedic" class="btn btn-success form-control" type="button">
+                <button id="addEspecialidadMedic" onclick="editEspecialidades();" class="btn btn-success form-control" type="button">
                   <span class="glyphicon glyphicon-floppy-disk" style="color:white;"></span>
                 </button>
               </div>
@@ -1661,9 +1661,9 @@ function editMedicoPerfil(){
             <div class="col-md-6 ">
               <h4 style="color:white;">Padecimiento</h4>
               <div class="input-group">
-                <input type="text" class="form-control" id="editPadeMedic" placeholder="Padecimientos"/>
+                <select class="form-control" id="editPadeMedic"></select>
                 <span class="input-group-btn">
-                  <button id="padeEditMedic" class="btn btn-success form-control" type="button">
+                  <button id="padeEditMedic" onclick="editPadecimientos();" class="btn btn-success" type="button">
                     <span class="lyphicon glyphicon-plus"></span>
                   </button>
                 </span>
@@ -1684,7 +1684,7 @@ function editMedicoPerfil(){
               <div class="input-group">
                 <input type="text" class="form-control" id="autoPalabras" placeholder="Palabras clave"/>
                 <span class="input-group-btn">
-                  <button id="palabrasEdit" class="btn btn-success form-control" type="button">
+                  <button id="palabrasEdit" onclick="editPalabrasClave();" class="btn btn-success form-control" type="button">
                     <span class="glyphicon glyphicon-plus"></span>
                   </button>
                 </span>
@@ -1711,4 +1711,5 @@ function editMedicoPerfil(){
   loadEspecialidades();
   loadPadecimientos();
   loadPalabras();
+  traePadecimientos();
 }
