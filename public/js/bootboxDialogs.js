@@ -1,10 +1,10 @@
 function agregarUbicacion(ubicacion_id){
-  console.log('Ubicacion_id: ' + ubicacion_id);
   var id = '', nombre = '', principal = '', calle = '', numero = '', interior = '';
   var callea = '', calleb = '', estado = '', municipio = '', localidad = '', cp = '';
   var latitud = '', longitud = '';
   var btnGuardar = 'Añadir ubicación';
 
+  var continuar = true;
   if (ubicacion_id && ubicacion_id > 0){
     btnGuardar = 'Editar';
     $.ajax( {
@@ -17,24 +17,31 @@ function agregarUbicacion(ubicacion_id){
         'ubicacion_id': ubicacion_id
       },
       success: function ( data ) {
-        id = data.id;
-        nombre = data.nombre;
-        if (data.principal == 1){
-          principal = 'checked="checked"';
+        if (data.success){
+          id = data.result.id;
+          nombre = data.result.nombre;
+          if (data.result.principal == 1){
+            principal = 'checked="checked"';
+          }
+          calle = data.result.calle;
+          numero = data.result.numero;
+          if (data.result.numeroInt){
+            interior = data.result.numeroInt;
+          }
+          callea = data.result.calle1;
+          calleb = data.result.calle2;
+          estado = data.result.Municipio.Estado.id
+          municipio = data.result.Municipio.id;
+          localidad = data.result.Localidad.id;
+          cp = data.result.Localidad.CP;
+          latitud = data.result.latitud;
+          longitud = data.result.longitud;
+        } else {
+          if (data.error){
+            continuar = false;
+            manejadorDeErrores(data.error);
+          }
         }
-        calle = data.calle;
-        numero = data.numero;
-        if (data.numeroInt){
-          interior = data.numeroInt;
-        }
-        callea = data.calle1;
-        calleb = data.calle2;
-        estado = data.Municipio.Estado.id
-        municipio = data.Municipio.id;
-        localidad = data.Localidad.id;
-        cp = data.Localidad.CP;
-        latitud = data.latitud;
-        longitud = data.longitud;
       },
       error: function ( jqXHR, textStatus, err ) {
         console.error( 'AJAX ERROR: ' + err );
@@ -42,126 +49,128 @@ function agregarUbicacion(ubicacion_id){
     } );
   }
 
+  if (continuar){
 
-  bootbox.dialog({
-    backdrop: true,
-    onEscape: function () {
-        bootbox.hideAll();
-    },
-    size:'large',
-    message: `
-    <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;" >
-    <div class="col-md-12" style="color:white">
-      <h2 class="s25">CONFIGURA TUS UBICACIONES Y HORARIOS DE ATENCIÓN.</h2>
-      <h3 class="s20">Señala la ubicación en el mapa y registra el horario de atención correspondiente con cada una.</h3>
-    </div>
 
-    <ul class="nav nav-tabs menuBootbox">
-      <li class="active"><a data-toggle="tab" href="#divUbicacion">UBICACIONES</a></li>
-      <li><a data-toggle="tab" href="#divHorarios">HORARIOS</a></li>
-    </ul>
+    bootbox.dialog({
+      backdrop: true,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      size:'large',
+      message: `
+      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;" >
+      <div class="col-md-12" style="color:white">
+        <h2 class="s25">CONFIGURA TUS UBICACIONES Y HORARIOS DE ATENCIÓN.</h2>
+        <h3 class="s20">Señala la ubicación en el mapa y registra el horario de atención correspondiente con cada una.</h3>
+      </div>
 
-    <div class="tab-content">
+      <ul class="nav nav-tabs menuBootbox">
+        <li class="active"><a data-toggle="tab" href="#divUbicacion">UBICACIONES</a></li>
+        <li><a data-toggle="tab" href="#divHorarios">HORARIOS</a></li>
+      </ul>
 
-    <div id="divUbicacion" class="tab-pane fade in active">
-        <form method="POST" name="frmRegUb" id="frmRegUbi">
-            <input type="hidden" id="idDireccion" name="idDireccion" value="`+id+`">
-            <input type="hidden" id="idEstado" name="idDireccion" value="`+estado+`">
-            <input type="hidden" id="idMunicipio" name="idDireccion" value="`+municipio+`">
-            <input type="hidden" id="idLocalidad" name="idDireccion" value="`+localidad+`">
-            <div class="row">
-                <div class="col-md-12">
-                  <div class="row">
+      <div class="tab-content">
 
-                    <div class="col-md-6">
-                        <div class="row">
-                            <div class="col-md-12">
-                              <div class="row">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <label class="col-md-12 control-label" for="textinput" style="color:white">Nombre de la ubicación:</label>
-                                    <div class="col-md-7">
-                                    <input id="nombreUbi" name="nombreUbi" type="text" placeholder="" class="form-control input-md" value="`+nombre+`">
-                                    </div>
-                                    <div class="col-md-5">
-                                      <div class="row">
-                                        <div class="checkbox">
-                                        <label style="color:white;font-weight:bold">
-                                          <input type="checkbox" id="principal" name="principal" value="" style="margin-top:0px" `+ principal +`>
-                                          Ubicación principal.
-                                        </label>
+      <div id="divUbicacion" class="tab-pane fade in active">
+          <form method="POST" name="frmRegUb" id="frmRegUbi">
+              <input type="hidden" id="idDireccion" name="idDireccion" value="`+id+`">
+              <input type="hidden" id="idEstado" name="idDireccion" value="`+estado+`">
+              <input type="hidden" id="idMunicipio" name="idDireccion" value="`+municipio+`">
+              <input type="hidden" id="idLocalidad" name="idDireccion" value="`+localidad+`">
+              <div class="row">
+                  <div class="col-md-12">
+                    <div class="row">
+
+                      <div class="col-md-6">
+                          <div class="row">
+                              <div class="col-md-12">
+                                <div class="row">
+                                  <div class="form-group">
+                                    <div class="row">
+                                      <label class="col-md-12 control-label" for="textinput" style="color:white">Nombre de la ubicación:</label>
+                                      <div class="col-md-7">
+                                      <input id="nombreUbi" name="nombreUbi" type="text" placeholder="" class="form-control input-md" value="`+nombre+`">
+                                      </div>
+                                      <div class="col-md-5">
+                                        <div class="row">
+                                          <div class="checkbox">
+                                          <label style="color:white;font-weight:bold">
+                                            <input type="checkbox" id="principal" name="principal" value="" style="margin-top:0px" `+ principal +`>
+                                            Ubicación principal.
+                                          </label>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
 
 
-                            <div class="col-md-12">
-                              <div class="row">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-7">
-                                      <div class="row">
-                                        <label class="col-md-12 control-label" for="textinput" style="color:white">Calle o avenida:</label>
-                                        <div class="col-md-12">
-                                        <input id="calleUbi" name="calleUbi" type="text" placeholder="" class="form-control input-md" value="`+calle+`">
+                              <div class="col-md-12">
+                                <div class="row">
+                                  <div class="form-group">
+                                    <div class="row">
+                                      <div class="col-md-7">
+                                        <div class="row">
+                                          <label class="col-md-12 control-label" for="textinput" style="color:white">Calle o avenida:</label>
+                                          <div class="col-md-12">
+                                          <input id="calleUbi" name="calleUbi" type="text" placeholder="" class="form-control input-md" value="`+calle+`">
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                      <div class="row">
-                                        <div class="col-md-12">
-                                            <label class="control-label" for="textinput" style="color:white">Número:</label>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <input id="numeroUbi" name="numeroUbi" type="text" placeholder="" class="form-control input-md" value="`+ numero +`">
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                      <div class="row">
-                                        <div class="col-md-12">
-                                            <label class="control-label" for="textinput" style="color:white">Interior:</label>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <input id="numeroIntUbi" name="numeroIntUbi" type="text" placeholder="" class="form-control input-md" value="`+ interior+`">
+                                      <div class="col-md-3">
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                              <label class="control-label" for="textinput" style="color:white">Número:</label>
+                                          </div>
+                                          <div class="col-md-12">
+                                              <input id="numeroUbi" name="numeroUbi" type="text" placeholder="" class="form-control input-md" value="`+ numero +`">
+                                          </div>
                                         </div>
                                       </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-
-
-
-                            <div class="col-md-12">
-                              <div class="row">
-                                <div class="form-group">
-                                  <div class="row">
-                                    <div class="col-md-6">
-                                      <div class="row">
-                                        <label class="col-md-12 control-label" for="textinput" style="color:white">Entre calles:</label>
-                                        <div class="col-md-12">
-                                        <input id="calle1Ubi" name="calle1Ubi" type="text" placeholder="" class="form-control input-md" value="`+callea+`">
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                      <div class="row">
-                                        <label class="col-md-12 control-label" for="textinput" style="color:white">Y:</label>
-                                        <div class="col-md-12">
-                                        <input id="calle2Ubi" name="calle2Ubi" type="text" placeholder="" class="form-control input-md" value="`+ calleb +`">
+                                      <div class="col-md-2">
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                              <label class="control-label" for="textinput" style="color:white">Interior:</label>
+                                          </div>
+                                          <div class="col-md-12">
+                                              <input id="numeroIntUbi" name="numeroIntUbi" type="text" placeholder="" class="form-control input-md" value="`+ interior+`">
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                            </div>
+
+
+
+                              <div class="col-md-12">
+                                <div class="row">
+                                  <div class="form-group">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        <div class="row">
+                                          <label class="col-md-12 control-label" for="textinput" style="color:white">Entre calles:</label>
+                                          <div class="col-md-12">
+                                          <input id="calle1Ubi" name="calle1Ubi" type="text" placeholder="" class="form-control input-md" value="`+callea+`">
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div class="row">
+                                          <label class="col-md-12 control-label" for="textinput" style="color:white">Y:</label>
+                                          <div class="col-md-12">
+                                          <input id="calle2Ubi" name="calle2Ubi" type="text" placeholder="" class="form-control input-md" value="`+ calleb +`">
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
 
 
 
@@ -174,7 +183,7 @@ function agregarUbicacion(ubicacion_id){
                                         <div class="row">
                                           <label class="col-md-12 control-label" for="textinput" style="color:white">Estado:</label>
                                           <div class="col-md-12">
-                                          <select id="slc_estados" name="slc_estados" type="text" placeholder="" class="form-control input-md" onChange="obtenerCiudades()">
+                                          <select id="slc_estados_mapa" name="slc_estados_mapa" type="text" placeholder="" class="form-control input-md" onChange="obtenerCiudades()">
                                           </select>
                                           </div>
                                         </div>
@@ -183,7 +192,7 @@ function agregarUbicacion(ubicacion_id){
                                         <div class="row">
                                           <label class="col-md-12 control-label" for="textinput" style="color:white">Municipio/ciudad:</label>
                                           <div class="col-md-12">
-                                          <select id="slc_ciudades" name="slc_ciudades" type="text" placeholder="" class="form-control input-md" onChange="obtenerColonias()">
+                                          <select id="slc_ciudades_mapa" name="slc_ciudades_mapa" type="text" placeholder="" class="form-control input-md" onChange="obtenerColonias()">
                                           </select>
                                           </div>
                                         </div>
@@ -203,7 +212,7 @@ function agregarUbicacion(ubicacion_id){
                                       <div class="row">
                                         <label class="col-md-12 control-label" for="textinput" style="color:white">Localidad/colonia:</label>
                                         <div class="col-md-12">
-                                        <select id="slc_colonias" name="slc_colonias" type="text" placeholder="" class="form-control input-md">
+                                        <select id="slc_colonias_mapa" name="slc_colonias_mapa" type="text" placeholder="" class="form-control input-md">
                                         </select>
                                         </div>
                                       </div>
@@ -350,12 +359,13 @@ function agregarUbicacion(ubicacion_id){
   },500);
   cargarMapa(ubicacion_id);
   if (mapa.marker){
-    mapa.marker.setOptions({draggable: false,animation:null});
+    mapa.marker.setOptions({draggable: false});
   }
   funcionesTelefonos();
   if (btnGuardar == "Editar"){
     $('label.editar').unbind();
   }
+}
 }
 
 function bootbox_modificaMedicoDetalles(tipo){
@@ -376,147 +386,8 @@ function bootbox_modificaMedicoDetalles(tipo){
     },
     size:'large',
     message: `
-
-
-        <style type="text/css">
-
-    		pre,code {
-    			font-size: 12px;
-    		}
-
-    		pre {
-    			width: 100%;
-    			overflow: auto;
-    		}
-
-    		small {
-    			font-size: 90%;
-    		}
-
-    		small code {
-    			font-size: 11px;
-    		}
-
-    		.placeholder {
-    			outline: 1px dashed #4183C4;
-    		}
-
-    		.mjs-nestedSortable-error {
-    			background: #fbe3e4;
-    			border-color: transparent;
-    		}
-
-    		#tree {
-    			width: 100%;
-    			margin: 0;
-    		}
-
-    		ol {
-    			max-width: 100%;
-    			padding-left: 25px;
-    		}
-
-        #sortableExpertoEnCont>ol{
-          padding-left:0px;
-        }
-
-    		ol.sortable,ol.sortable ol {
-    			list-style-type: none;
-    		}
-
-    		.sortable li div {
-    			border: 1px solid #d4d4d4;
-    			-webkit-border-radius: 3px;
-    			-moz-border-radius: 3px;
-    			border-radius: 3px;
-    			cursor: move;
-    			border-color: rgba(0,0,0,0.3);
-    			margin: 0;
-          margin-top:3px;
-    			padding: 3px;
-    		}
-
-    		li.mjs-nestedSortable-collapsed.mjs-nestedSortable-hovering div {
-    			border-color: #999;
-    		}
-
-    		.disclose, .expandEditor {
-    			cursor: pointer;
-    			width: 20px;
-    			display: none;
-    		}
-
-    		.sortable li.mjs-nestedSortable-collapsed > ol {
-    			display: none;
-    		}
-
-    		.sortable li.mjs-nestedSortable-branch > div > .disclose {
-    			display: inline-block;
-    		}
-
-    		.sortable span.ui-icon {
-    			display: inline-block;
-    			margin: 0;
-    			padding: 0;
-    		}
-
-    		.menuDiv {
-    			background: rgba(0,0,0,0.2);
-          margin:1px;
-          padding-top:2px;
-          padding-bottom:2px;
-          padding-left: 20px!important;
-    		}
-
-        .menuDiv .glyphicon{
-          font-size:80%;
-        }
-
-    		.menuEdit {
-    			background: #FFF;
-    		}
-
-    		.itemTitle {
-    			vertical-align: middle;
-    			cursor: pointer;
-    		}
-
-    		.deleteMenu {
-    			float: right;
-    			cursor: pointer;
-    		}
-
-    		p,ol,ul,pre,form {
-    			margin-top: 0;
-    			margin-bottom: 1em;
-    		}
-
-    		dl {
-    			margin: 0;
-    		}
-
-    		dd {
-    			margin: 0;
-    			padding: 0 0 0 1.5em;
-    		}
-
-    		code {
-    			background: #e5e5e5;
-    		}
-
-    		input {
-    			vertical-align: text-bottom;
-    		}
-
-    		.notice {
-    			color: #c33;
-    		}
-        </style>
-
     <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;">
-      <div class="col-md-12" style="color:white">
-        <h2 class="s25">CONFIGURA TUS UBICACIONES Y HORARIOS DE ATENCIÓN.</h2>
-        <h3 class="s20">Señala la ubicación en el mapa y registra el horario de atención correspondiente con cada una.</h3>
+      <div class="col-md-12" style="color:white;height:10px">
       </div>
 
       <ul class="nav nav-tabs menuBootbox">
@@ -534,7 +405,7 @@ function bootbox_modificaMedicoDetalles(tipo){
                 <div class="row">
                   <div class="col-lg-2 col-md-2">
                     <div class="row text-center">
-                      <label for="addExp" style="padding-top:7px">Experiencia:</label>
+                      <label for="addExp" style="padding-top:7px">Experto en:</label>
                     </div>
                   </div>
                   <div class="col-lg-8 col-md-8">
@@ -544,7 +415,7 @@ function bootbox_modificaMedicoDetalles(tipo){
                   </div>
                   <div class="col-lg-2 col-md-2">
                     <div class="row" style="margin-left:2px">
-                      <input type="submit" class="btn btn-warning btn-block" value="Agregar" onclick="agregarExperiencia();">
+                      <input type="submit" class="btn btn-warning btn-block" value="Agregar" onclick="agregarExpertoEn();">
                     </div>
                   </div>
                 </div>
@@ -554,42 +425,7 @@ function bootbox_modificaMedicoDetalles(tipo){
               <div class="col-lg-12 col-md-12">
                 <div class="row" id="sortableExpertoEnCont">
                 <ol class="sortable ui-sortable mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="sortableExpertoEn">
-                  <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-                    <div class="menuDiv">
-                      <span>
-                        <span data-id="2" class="itemTitle">Garganta</span>
-                        <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-                        <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-                      </span>
-                    </div>
-                  </li>
-                  <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-                    <div class="menuDiv">
-                      <span>
-                        <span data-id="2" class="itemTitle">Urgencias 24hrs.</span>
-                        <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-                        <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-                      </span>
-                    </div>
-                  </li>
-                  <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-                    <div class="menuDiv">
-                      <span>
-                        <span data-id="2" class="itemTitle">Enfermedades Alérgicas</span>
-                        <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-                        <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-                      </span>
-                    </div>
-                  </li>
-                  <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-                    <div class="menuDiv">
-                      <span>
-                        <span data-id="2" class="itemTitle">Transtornos respiratorios</span>
-                        <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-                        <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-                      </span>
-                    </div>
-                  </li>
+
               	</ol>
               </div>
             </div>
@@ -605,7 +441,7 @@ function bootbox_modificaMedicoDetalles(tipo){
               <div class="row">
                 <div class="col-md-4 pull-right">
                   <div class="row">
-                    <input type="button" class="btn btn-add btn-block" value="Guardar" id="btnGuardar" onclick="guardarExperiencia()">
+                    <input type="button" class="btn btn-add btn-block" value="Guardar" id="btnGuardar" onclick="guardarExpertoEn()">
                   </div>
                 </div>
                 <div class="col-md-4 pull-left">
@@ -616,66 +452,119 @@ function bootbox_modificaMedicoDetalles(tipo){
               </div>
             </div>
           </div>
-        </form>
       </div>
 
         <div id="divHospClin" class="divBodyBootbox tab-pane fade in `+ hospActi +`">
-          <form method="POST" name="frmRegUb" id="frmRegUbi">
             <div class="row">
-              Hospitales y clínicas
-
-              <div class="col-md-12">
+              <form onsubmit="return false;">
+              <div class="col-lg-12 col-md-12" style="margin-bottom:20px;">
                 <div class="row">
-                  <hr class="style-white" />
-                </div>
-              </div>
-
-
-              <div class="col-md-12" style="margin-top:15px;margin-bottom:30px">
-                <div class="row">
-                  <div class="col-md-4 pull-right">
-                    <div class="row">
-                      <input type="button" class="btn btn-add btn-block" value="Guardar" id="btnGuardar">
+                  <div class="col-lg-2 col-md-2">
+                    <div class="row text-center">
+                      <label for="addExp" style="padding-top:7px">Hospital/Clínica:</label>
                     </div>
                   </div>
-                  <div class="col-md-4 pull-left">
-                    <div class="row">
-                      <input type="button" class="btn btn-drop btn-block" value="Salir" onclick="bootbox.hideAll()">
+                  <div class="col-lg-8 col-md-8">
+                    <div class="row" style="margin-left:2px">
+                      <input type="text" class="form-control" id="addClin">
                     </div>
+                  </div>
+                  <div class="col-lg-2 col-md-2">
+                    <div class="row" style="margin-left:2px">
+                      <input type="submit" class="btn btn-warning btn-block" value="Agregar" onclick="agregarClinica();">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </form>
+
+              <div class="col-lg-12 col-md-12">
+                <div class="row" id="sortableClinicaCont">
+                <ol class="sortable ui-sortable mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="sortableClinica">
+
+                </ol>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="row">
+                <hr class="style-white" />
+              </div>
+            </div>
+
+
+            <div class="col-md-12" style="margin-top:15px;margin-bottom:30px">
+              <div class="row">
+                <div class="col-md-4 pull-right">
+                  <div class="row">
+                    <input type="button" class="btn btn-add btn-block" value="Guardar" id="btnGuardar" onclick="guardarClinicas()">
+                  </div>
+                </div>
+                <div class="col-md-4 pull-left">
+                  <div class="row">
+                    <input type="button" class="btn btn-drop btn-block" value="Salir" onclick="bootbox.hideAll()">
                   </div>
                 </div>
               </div>
             </div>
-          </form>
+          </div>
         </div>
 
         <div id="divAseguradoras" class="divBodyBootbox tab-pane fade in `+ asegActi +`">
-          <form method="POST" name="frmRegUb" id="frmRegUbi">
+
             <div class="row">
-              Aseguradoras
-
-              <div class="col-md-12">
+              <form onsubmit="return false;">
+              <div class="col-lg-12 col-md-12" style="margin-bottom:20px;">
                 <div class="row">
-                  <hr class="style-white" />
-                </div>
-              </div>
-
-
-              <div class="col-md-12" style="margin-top:15px;margin-bottom:30px">
-                <div class="row">
-                  <div class="col-md-4 pull-right">
-                    <div class="row">
-                      <input type="button" class="btn btn-add btn-block" value="Guardar" id="btnGuardar">
+                  <div class="col-lg-2 col-md-2">
+                    <div class="row text-center">
+                      <label for="addExp" style="padding-top:7px">Aseguradora:</label>
                     </div>
                   </div>
-                  <div class="col-md-4 pull-left">
-                    <div class="row">
-                      <input type="button" class="btn btn-drop btn-block" value="Salir" onclick="bootbox.hideAll()">
+                  <div class="col-lg-8 col-md-8">
+                    <div class="row" style="margin-left:2px">
+                      <input type="text" class="form-control" id="addAseg">
                     </div>
+                  </div>
+                  <div class="col-lg-2 col-md-2">
+                    <div class="row" style="margin-left:2px">
+                      <input type="submit" class="btn btn-warning btn-block" value="Agregar" onclick="agregarAseguradora();">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </form>
+
+              <div class="col-lg-12 col-md-12">
+                <div class="row" id="sortableAseguradoraCont">
+                <ol class="sortable ui-sortable mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="sortableAseguradora">
+
+                </ol>
+              </div>
+            </div>
+
+            <div class="col-md-12">
+              <div class="row">
+                <hr class="style-white" />
+              </div>
+            </div>
+
+
+            <div class="col-md-12" style="margin-top:15px;margin-bottom:30px">
+              <div class="row">
+                <div class="col-md-4 pull-right">
+                  <div class="row">
+                    <input type="button" class="btn btn-add btn-block" value="Guardar" id="btnGuardar" onclick="guardarAseguradoras()">
+                  </div>
+                </div>
+                <div class="col-md-4 pull-left">
+                  <div class="row">
+                    <input type="button" class="btn btn-drop btn-block" value="Salir" onclick="bootbox.hideAll()">
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
         </div>
 
@@ -683,8 +572,11 @@ function bootbox_modificaMedicoDetalles(tipo){
     </div>`
   });
 
+  cargarClinicas();
+  cargarAseguradoras();
+  cargarExpertoEn();
 
-	var ns = $('ol.sortable').nestedSortable({
+	var ns = $('#sortableExpertoEnCont>ol.sortable').nestedSortable({
 		forcePlaceholderSize: true,
 		handle: 'div',
 		helper:	'clone',
@@ -696,6 +588,40 @@ function bootbox_modificaMedicoDetalles(tipo){
 		tolerance: 'pointer',
 		toleranceElement: '> div',
 		maxLevels: 2,
+		isTree: true,
+		expandOnHover: 700,
+		startCollapsed: false
+	});
+
+	var ns = $('#sortableClinicaCont>ol.sortable').nestedSortable({
+		forcePlaceholderSize: true,
+		handle: 'div',
+		helper:	'clone',
+		items: 'li',
+		opacity: .6,
+		placeholder: 'placeholder',
+		revert: 250,
+		tabSize: 25,
+		tolerance: 'pointer',
+		toleranceElement: '> div',
+		maxLevels: 1,
+		isTree: true,
+		expandOnHover: 700,
+		startCollapsed: false
+	});
+
+	var ns = $('#sortableAseguradoraCont>ol.sortable').nestedSortable({
+		forcePlaceholderSize: true,
+		handle: 'div',
+		helper:	'clone',
+		items: 'li',
+		opacity: .6,
+		placeholder: 'placeholder',
+		revert: 250,
+		tabSize: 25,
+		tolerance: 'pointer',
+		toleranceElement: '> div',
+		maxLevels: 1,
 		isTree: true,
 		expandOnHover: 700,
 		startCollapsed: false
@@ -928,6 +854,7 @@ function registro(){
     `
   });
 }
+
 function regPaciente(){
   $('.modal-body').css('padding',0);
   bootbox.dialog({
@@ -1072,6 +999,7 @@ function regPaciente(){
     `
   });
 }
+
 function regMedico(){
   $('.modal-body').css('padding',0);
   bootbox.dialog({
@@ -1159,6 +1087,7 @@ function regMedico(){
     `
   });
 }
+
 function catServices(){
   $('.modal-body').css('padding',0);
     bootbox.dialog({
@@ -1338,6 +1267,7 @@ function catServices(){
     `
   });
 }
+
 function cambioFotoPerfil(){
   $('.modal-body').css('padding',0);
   bootbox.dialog({
@@ -1374,6 +1304,7 @@ function cambioFotoPerfil(){
     `
   });
 }
+
 function editaPerfBoot(){
   $('.modal-body').css('padding',0);
   bootbox.dialog({
@@ -1402,12 +1333,12 @@ function editaPerfBoot(){
         </a>
       </li>
     </ul>
-    <div class="tab-content tabBootBox">
+    <div class="tab-content tabBootBox divBodyBootbox">
       <div class="tab-pane active" role="tabpanel" id="general">
           <div class="container-fluid">
             <div class="row">
               <div class="col-md-4">
-                <img src="{{fotoPerfil}}" width="200" height="200" class="img-rounded">
+                <img src="" width="200" height="200" class="img-rounded" id="usuarioUrlFotoPerfil">
               </div>
               <div class="col-lg-8 input-group">
                 <input type="text" class="form-control" id="editNom" placeholder="Nombre" />
@@ -1436,7 +1367,52 @@ function editaPerfBoot(){
           </div>
         <hr>
         <div class="container-fluid" id="ubicacionGeneral">
-          <h1 style="color:white;">MAPITA DE CINTHIA</h1>
+          <h1 style="color:white;">Guarda tu ubicación</h1>
+          <div class="row">
+            <div class="col-md-8">
+              <div class="row">
+                  <input type="hidden" id="idDireccion" name="idDireccion" value=""/>
+                  <input type="hidden" id="idEstado" name="idEstado" value=""/>
+                  <input type="hidden" id="idMunicipio" name="idMunicipio" value=""/>
+                  <input type="hidden" id="idLocalidad" name="idLocalidad" value=""/>
+                  <input type="hidden" id="latitud" name="latitud" value=""/>
+                  <input type="hidden" id="longitud" name="longitud" value=""/>
+                  <div id="searchDiv">
+                      <input id="autocomplete_searchField" type="text" placeholder="Buscar Dirección">
+                  </div>
+                  <div id="direccion"></div>
+                  <div id="mapDiv"></div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="row">
+
+              <div class="col-md-12 form-group">
+                <label for="slc_estados_mapa">Estado: </label>
+                <select type="text" class="form-control" id="slc_estados_mapa" onChange="obtenerCiudades('_mapa');">
+                </select>
+              </div>
+
+              <div class="col-md-12 form-group">
+                <label for="slc_ciudades_mapa">Municipio/Ciudad: </label>
+                <select type="text" class="form-control" id="slc_ciudades_mapa" onChange="obtenerColonias('_mapa');">
+                </select>
+              </div>
+
+              <div class="col-md-12 form-group">
+                <label for="slc_colonias_mapa">Localidad/Colonia: </label>
+                <select type="text" class="form-control" id="slc_colonias_mapa" >
+                </select>
+              </div>
+
+              <div class="col-md-12 form-group">
+                <input type="button" value="Guardar ubicación" class="btn btn-block btn-warning" onclick="guardarUbicacionPaciente()">
+              </div>
+
+
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="tab-pane" role="tabpanel" id="biometricos">
@@ -1555,5 +1531,461 @@ function editaPerfBoot(){
     </div>
   </div><!-- PRINCIPAL -->
     `
+  });
+  loadDatosGenerales();
+  cargarMapaPaciente();
+}
+
+function registroMedicoDatosPersonales(){
+
+  var nombre = '', apellidop = '', apellidom = '';
+  var curpRegMed = '', cedulaRegMed = '';
+  var genderF = '', genderM = '';
+
+  var continuar = true;
+  $.ajax( {
+    async: false,
+    url: '/informacionRegistroMedico',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      if (data.success ){
+        if ( data.result.DatosGenerale) {
+          nombre = data.result.DatosGenerale.nombre;
+          apellidop = data.result.DatosGenerale.apellidoP;
+          apellidom = data.result.DatosGenerale.apellidoM;
+        }
+        else continuar = false;
+
+        if ( data.result.Biometrico ) {
+          if ( data.result.Biometrico.genero == "F"){
+            genderF = ' checked ';
+          }
+          else if ( data.result.Biometrico.genero == "M"){
+            genderM = ' checked ';
+          }
+        }else continuar = false;
+
+        if ( data.result.Medico && data.result.Medico.curp) {
+          curpRegMed = data.result.Medico.curp;
+          cedulaRegMed = data.result.Medico.cedula;
+        }
+        else continuar = false;
+
+          if (continuar){
+            registroMedicoDatosPago();
+          } else {
+            $('.modal-body').css('padding',0);
+            bootbox.dialog({
+              backdrop: true,
+              size:'large',
+              closeButton: false,
+              onEscape: function () {
+                  bootbox.hideAll();
+              },
+              message: `
+              <div style="background-color:#172c3b;padding:5px;margin:-15px;" >
+              <div class="col-md-12" style="color:white" >
+                <h2 class="s25"><h4 class="FlamaBook-normal s25 regHeader">Intermed® / <b>Registro Médicos</b> </h4></h2>
+              </div>.
+
+              <div class="divBodyBootbox">
+
+
+                <form id="regMedStepOne">
+                  <div class="row topMsgReg">
+                    <div class="col-md-12">
+                      <h4 class="Flama-bold s20">¡Bienvenido Dr.!
+                        <small></small>
+                      </h4>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div id="alertError"></div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="regBox">
+                        <div class="row">
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label class="Flama-normal s15" for="nombreRegMed">Nombres</label>
+                              <input type="text" class="form-control" id="nombreRegMed" name="nombreRegMed" placeholder="Nombres" value="`+ nombre +`">
+                            </div>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label class="Flama-normal s15" for="apePatRegMed">Apellido Paterno</label>
+                              <input type="text" class="form-control" id="apePatRegMed" name="apePatRegMed" placeholder="Apellido Paterno" value="`+ apellidop +`">
+                            </div>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="form-group">
+                              <label class="Flama-normal s15" for="apePatRegMed">Apellido Materno</label>
+                              <input type="text" class="form-control" id="apeMatRegMed" name="apeMatRegMed" placeholder="Apellido Materno" value="`+ apellidom +`">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <label class="Flama-normal s15">Fecha de Nacimiento</label>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                  <input type="text" class="form-control" id="diaNacReg" name="birthdayDay" placeholder="Dia" required="true">
+                                </div>
+                              </div>
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                  <input type="text" class="form-control" id="mesNacReg" name="birthdayMonth" placeholder="Mes" required="true">
+                                </div>
+                              </div>
+                              <div class="col-md-4">
+                                <div class="form-group">
+                                  <input type="text" class="form-control" id="añoNacReg" name="birthdayYear" placeholder="Año" required="true">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="col-md-12">
+                              <label class="Flama-normal s15">Sexo</label>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="radio">
+                                <label>
+                                  <input type="radio" name="gender" id="sexM" value="M" `+ genderM +`> Masculino
+                                </label>
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="radio">
+                                <label>
+                                  <input type="radio" name="gender" id="sexF" value="F" `+ genderF +`> Femenino
+                                </label>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <hr class="separator2">
+                      <div class="regBox">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="Flama-normal s15" for="curpRegMed">CURP</label>
+                              <input type="text" class="form-control" id="curpRegMed" name="curpRegMed" placeholder="CURP"  value="`+ curpRegMed +`">
+                            </div>
+                          </div>
+                          <div class="col-md-6">
+                            <div class="form-group">
+                              <label class="Flama-normal s15" for="cedulaRegMed">Cedula Profesional</label>
+                              <div class="input-group">
+                                <input type="text" class="form-control" id="cedulaRegMed" name="cedulaRegMed" placeholder="CEDULA"  value="`+ cedulaRegMed +`">
+                                <span class="input-group-addon verificarAddon">
+                                  <input type="hidden" id="cedulaCurpVerificados" value="">
+                                  <button class="btn btn-warning verificarBtn Flama-normal s15" onclick="verificarCurpCedula()">Verificar</button>
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-3 col-md-offset-9">
+                      <input type="button" id="regi" name="registroCorreo" value="Guardar" class="btn btn-warning btn-block btn-step" onclick="saveStepOne()" style="margin-top:10px;margin-bottom:10px">
+                    </div>
+                  </div>
+                </form>
+
+              </div>
+              </div>`
+          });
+        }
+
+      } else {
+        continuar = false;
+        if (data.error){
+          //Manejador de errores
+        }
+      }
+    },
+    error: function (error){
+        console.log('Ajax error: ' + JSON.stringify(error));
+    }
+  });
+
+}
+
+
+function registroMedicoDatosPago(){
+  var continuar = true;
+  $.ajax( {
+    async: false,
+    url: '/informacionRegistroMedico',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      if (data.success ){
+          if ( data.result.Medico.pago == 0 ) {
+            continuar = false;
+          }
+
+          if (!continuar){
+
+            $('.modal-body').css('padding',0);
+            bootbox.dialog({
+              backdrop: true,
+              closeButton: false,
+              onEscape: function () {
+                  bootbox.hideAll();
+              },
+              size:'large',
+              message: `
+              <div style="background-color:#172c3b;padding:5px;margin:-15px;" >
+              <div class="col-md-12" style="color:white" >
+                <h2 class="s25"><h4 class="FlamaBook-normal s25 regHeader">Intermed® / <b>Registro Médicos</b> </h4></h2>
+              </div>.
+
+              <div class="divBodyBootbox">
+                <div class="row topMsgReg">
+                  <div class="col-md-8">
+                    <h4 class="Flama-bold s20">Selecciona tu forma de pago.</h4>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="msgPrecio text-center FlamaBook">
+                      <span class="trngl"></span>Recuerda que tu suscripción tiene un costo mensual de $1,000.00
+                    </div>
+                  </div>
+                </div>
+
+
+                  <div class="col-md-12">
+                    <form class="radio">
+                      <div id="tarjOpt">
+                        <label class="bigLabel Flama-normal">
+                          <input type="radio" name="optionsRadios" id="tarjetaOptReg" value="tarjeta" checked=""> Tarjeta de crédito
+                        </label>
+                        <div id="tarjOptBox" class="regBox">
+                          <div class="row">
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label class="Flama-normal s15" for="tipoTarjetaRegMed">Tipo de tarjeta</label>
+                                <input type="text" class="form-control" id="tipoTarjetaRegMed" name="tipoTarjetaRegMed" placeholder="Visa / Mastercard / etc">
+                              </div>
+                            </div>
+                            <div class="col-md-3">
+                              <div class="form-group">
+                                <label class="Flama-normal s15" for="numTarjetaRegMed">Número de la tarjeta</label>
+                                <input type="text" class="form-control" id="numTarjetaRegMed" name="numTarjetaRegMed" placeholder="xxxx-xxxx-xxxx-xxxx">
+                              </div>
+                            </div>
+                            <div class="col-md-6">
+                              <div class="row">
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label class="Flama-normal s15" for="vencMesTarjetaRegMed">Vencimiento</label>
+                                    <input type="number" class="form-control" id="vencMesTarjetaRegMed" name="vencMesTarjetaRegMed" placeholder="Mes">
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label class="Flama-normal s15" for="vencAñoTarjetaRegMed">Vencimiento</label>
+                                    <input type="number" class="form-control" id="vencAñoTarjetaRegMed" name="vencAñoTarjetaRegMed" placeholder="Año">
+                                  </div>
+                                </div>
+                                <div class="col-md-4">
+                                  <div class="form-group">
+                                    <label class="Flama-normal s15" for="seguridadTarjetaRegMed">Seguridad</label>
+                                    <div class="input-group">
+                                      <input type="password" class="form-control" id="seguridadTarjetaRegMed" name="seguridadTarjetaRegMed">
+                                      <span class="input-group-addon glyphicon">
+                                        <a tabindex="0" role="button" data-toggle="popover" title="Codigo de seguridad:" data-placement="bottom" data-container="body" data-content="El numero de seguridad se encuentra al reverso de tu tarjeta.">
+                                          <span class="glyphicon-question-sign"></span>
+                                        </a>
+                                      </span>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-5">
+                              <div class="form-group">
+                                <label class="Flama-normal s15" for="nombreTarjetaRegMed">Nombre del titular</label>
+                                <input type="text" class="form-control" id="nombreTarjetaRegMed" name="nombreTarjetaRegMed" placeholder="Tal como aparece en la tarjeta">
+                              </div>
+                            </div>
+                            <div class="col-md-2">
+                              <div class="form-group">
+                                <label>
+                                  <br>
+                                </label>
+                                <input type="button" id="registraTarjeta" name="registraTarjeta" value="Pagar" class="btn btn-warning btn-block Flama-normal s15" onclick="saveStepTwo()">
+                              </div>
+                            </div>
+                            <div class="col-md-5 secureStamp">
+                              <div class="row">
+                                <div class="col-md-12">
+                                  <p>
+                                    <span class="glyphicon glyphicon-lock"></span>
+                                    <strong>Este es un sitio seguro</strong>
+                                    <br>
+                                    <small>Utilizamos conexiones seguras para proteger su información.</small>
+                                  </p>
+                                </div>
+                              </div>
+                              <div class="securedImgs row">
+                                <div class="col-md-3">
+                                  <img alt="verisign" src="/img/verisign.png">
+                                </div>
+                                <div class="col-md-2">
+                                  <img alt="ssl" src="/img/ssl.png">
+                                </div>
+                                <div class="col-md-7">
+                                  <img alt="newchannel" src="/img/newchannel-350x61.png">
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <hr class="separator3" >
+                      <div id="paypalOpt" style="margin-top:5px">
+                        <label class="bigLabel Flama-normal">
+                          <input type="radio" name="optionsRadios" id="paypalOptReg" value="paypal"> PayPal
+                        </label>
+                        <div id="paypalOptBox" class="regBox">
+                          <div class="row">
+                            <div class="col-md-5">
+                              <div class="form-group">
+                                <label class="Flama-normal s15" for="paypalUser">Usuario de PayPal</label>
+                                <input type="text" class="form-control" id="paypalUser" name="paypalUser" placeholder="Usuario">
+                              </div>
+                            </div>
+                            <div class="col-md-5">
+                              <div class="form-group">
+                                <label class="Flama-normal s15" for="paypalPass">Constraseña</label>
+                                <input type="passwrod" class="form-control" id="paypalPass" name="paypalPass" placeholder="Contraseña">
+                              </div>
+                            </div>
+                            <div class="col-md-2">
+                              <label>
+                                <br>
+                              </label>
+                              <input type="button" id="paypalLogin" name="paypalLogin" value="PayPal Login" class="btn btn-warning btn-block Flama-normal s15">
+                            </div>
+                          </div>
+                          <div class="row">
+                            <div class="col-md-12">
+                              <a href="#">¿Olvidaste tu Usuario o Contraseña de Paypal? Haz click aquí.</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>.
+
+              </div>
+              </div>`
+            });
+
+            $('#tarjetaOptReg').change(function(){
+              $('#paypalOptBox').find('input').not(':input[type=button], :input[type=submit]').prop('value','');
+              $('#tarjOptBox').find('input').prop('disabled',false);
+              $('#paypalOptBox').find('input').prop('disabled',true);
+              $('#tarjOptBox').find('input').first().focus();
+            });
+
+            $('#paypalOptReg').change(function(){
+              $('#tarjOptBox').find('input').not(':input[type=button], :input[type=submit]').prop('value','');
+              $('#tarjOptBox').find('input').prop('disabled',true);
+              $('#paypalOptBox').find('input').prop('disabled',false);
+              $('#paypalOptBox').find('input').first().focus();
+            });
+
+            setTimeout(function(){
+              $('#tarjetaOptReg').change();
+            },500);
+          }
+        }
+      },
+      error: function( error ){
+        console.log('AJAX ERROR: ' +JSON.stringify(error));
+      }
+    });
+}
+
+function manejadorDeErrores(error){
+  var codigoError = '';
+  var descripcionError = '';
+  var solucion = '';
+  var box = false;
+  var accion = `<button onclick="$('.bootbox').last().modal('hide');if($('.bootbox')){ setTimeout(function(){$('body').addClass('modal-open');},300)}" class="btn btn-md btn-warning" style="margin-top:20px;margin-bottom:20px;">Aceptar</button>`;
+    switch (error) {
+      case 1:
+        codigoError = 'GEN0001';
+        descripcionError = 'Sesión cerrada de manera inesperada.';
+        solucion = '<span class="s15">Actualiza la página para solucionar este problema.</span>';
+        accion = `<div class="col-md-12" style="color:white"><div class="row text-center"><img src="http://i55.tinypic.com/33ksub8.jpg" width="50%" style="margin-top:10px;"></div></div><button onclick="location.reload()" class="btn btn-md btn-warning" style="margin-top:20px;margin-bottom:20px;">Actualizar <span class="glyphicon glyphicon-refresh"></span></button>`;
+        //No sesión
+        break;
+      case 101:
+        codigoError = 'MED0001';
+        descripcionError = 'La CURP proporcionada ya se encuentra registrada.';
+        solucion = '<span class="s15">Verifique que la CURP ingresada sea correcta, de ser así comuniquese con Intermed al número 01800123123.</span>';
+      break;
+      case 102:
+        codigoError = 'MED0002';
+        descripcionError = 'La cédula proporcionada ya se encuentra registrada.';
+        solucion = '<span class="s15">Verifique que la CEDULA ingresada sea correcta, de ser así comuniquese con Intermed al número 01800123123.</span>';
+        break;
+      default:
+        console.log('Error desconocido: [code:' + error+']');
+    }
+
+  var backdrop = true;
+
+  if ($('.bootbox').length>0){
+    backdrop = false;
+  }
+
+  $('.modal-body').css('padding',0);
+  box = bootbox.dialog({
+    backdrop: backdrop,
+    closeButton: true,
+    size:'small',
+    message: `
+    <div style="background-color:#172c3b;padding:5px;margin:-15px;" >
+
+    <div class="divBodyBootbox">
+      <center>
+      <div class="col-md-12" style="color:white">
+        <div class="row">
+        <h3 class="s20">Oh, oh, algo salió mal.</h3>
+        </div>
+      </div>
+      <div class="col-md-12" style="margin-top:10px">
+        <div class="row">
+          <div class="well  well-sm" style="background-color: rgba(0, 0, 0, 0.2);border-color: rgba(0, 0, 0, 0.3)">
+            <small>Error: `+codigoError+`</small><br/>
+            <small>Descripción: `+ descripcionError +`</small>
+          </div>
+          <br/>
+          `+solucion+`
+        </div>
+      </div>
+      `+
+      accion
+      +`</center>
+    </div>
+    </div>`
   });
 }

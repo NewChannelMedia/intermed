@@ -122,12 +122,16 @@ else {
 
     if ( $( '#registroCompleto' ) && $( '#registroCompleto' ).val() === "0" && $( '#inicio' ).val() === "1" ) {
       if ( $( '#tipoUsuario' ).val() === "M" ) {
-        informacionRegistroMedico();
+        registroMedicoDatosPersonales();
       }
     }
 
     if ( location.pathname.substring( 0, 7 ) === '/perfil' ) {
       cargarFavCol( $( '#usuarioPerfil' ).val() );
+    }
+
+    if ( location.pathname.substring( 0, 19 ) === '/nuevoperfilmedicos' ) {
+      cargarListaEspCol( $( '#usuarioPerfil' ).val() );
     }
 
     /* validaciones al registro */
@@ -151,103 +155,53 @@ else {
   } );
 }
 
-function informacionRegistroMedico() {
-  $.ajax( {
-    async: true,
-    url: '/informacionRegistroMedico',
-    type: 'POST',
-    dataType: "json",
-    cache: false,
-    success: function ( data ) {
-      $( "#step1" ).hide();
-      $( "#step2" ).hide();
-      $( "#step3" ).hide();
-      var continuar = true;
-      //PASO 1 de 3 (falta fecha de nacimiento)
-      if ( data.DatosGenerale && document.getElementById( 'nombreRegMed' )) {
-        document.getElementById( 'nombreRegMed' ).value = data.DatosGenerale.nombre;
-        document.getElementById( 'apePatRegMed' ).value = data.DatosGenerale.apellidoP;
-        document.getElementById( 'apeMatRegMed' ).value = data.DatosGenerale.apellidoM;
-      }
-      else continuar = false;
-      if ( data.Biometrico ) {
-        if ( data.Biometrico.genero == "F" && document.getElementById( "sexF" )) document.getElementById( "sexF" ).checked = true;
-        else if ( data.Biometrico.genero == "M" && document.getElementById( "sexM" )) document.getElementById( "sexM" ).checked = true;
-      }
-      else continuar = false;
-      if ( data.Medico && data.Medico.curp && document.getElementById( 'curpRegMed' )) {
-        document.getElementById( 'curpRegMed' ).value = data.Medico.curp;
-        document.getElementById( 'cedulaRegMed' ).value = data.Medico.cedula;
-      }
-      else continuar = false;
-      i = 0;
-
-      //Pasar al paso 2 de 3 (Datos de págo)
-      if ( continuar ) {
-        goToNextStep( i++ );
-      }
-
-      if ( data.Medico.pago == 0 ) {
-        continuar = false;
-      }
-
-      //Pasar al paso 3 de 3 (Datos de facturación)
-      if ( continuar ) {
-        goToNextStep( i++ );
-      }
-
-      if ( data.DatosFacturacion && document.getElementById( 'nomRSocialFact' )) {
-        document.getElementById( 'nomRSocialFact' ).value = data.DatosFacturacion.razonSocial;
-        document.getElementById( 'rfcFact' ).value = data.DatosFacturacion.RFC;
-        if ( data.DatosFacturacion.Direccion ) {
-          document.getElementById( 'calleFact' ).value = data.DatosFacturacion.Direccion.calle;
-          document.getElementById( 'numeroFact' ).value = data.DatosFacturacion.Direccion.numero;
-          if ( data.DatosFacturacion.Direccion.Localidad ) {
-            document.getElementById( 'slc_estados' ).value = data.DatosFacturacion.Direccion.Localidad.estado_id;
-            obtenerCiudades();
-            setTimeout( function () {
-              document.getElementById( 'slc_ciudades' ).value = data.DatosFacturacion.Direccion.Localidad.ciudad_id;
-              obtenerColonias();
-              setTimeout( function () {
-                document.getElementById( 'slc_colonias' ).value = data.DatosFacturacion.Direccion.Localidad.id;
-                document.getElementById( 'nmb_cp' ).value = data.DatosFacturacion.Direccion.Localidad.CP;
-              }, 1000 );
-            }, 1000 );
-
-          }
-          else continuar = false;
-        }
-        else continuar = false;
-      }
-      else continuar = false;
-
-      actualizarSesion();
-      $( "#RegMedModal" ).modal( "show" );
-
-    },
-    error: function ( jqXHR, textStatus, err ) {
-      console.error( 'AJAX ERROR: ' + err );
-    }
-  } );
-}
-
 function saveStepOne() {
-  $.ajax( {
-    url: '/regMedPasoUno',
-    type: 'POST',
-    dataType: "json",
-    cache: false,
-    data: $( '#regMedStepOne' ).serialize(),
-    success: function ( data ) {
-      if ( data.result === "success" ) {
-        actualizarSesion();
-        goToNextStep( 0 );
+  var nombreRegMed = $('#nombreRegMed').val();
+  var apePatRegMed= $('#apePatRegMed').val();
+  var apeMatRegMed = $('#apeMatRegMed').val();
+  var gender = $('input[name=gender]').val();
+  var curpRegMed = $('#curpRegMed').val();
+  var cedulaRegMed = $('#cedulaRegMed').val();
+  if (nombreRegMed != "" && apePatRegMed != "" && gender != "" && curpRegMed != "" && cedulaRegMed != ""){
+    $.ajax( {
+      url: '/regMedPasoUno',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: $( '#regMedStepOne' ).serialize(),
+      success: function ( data ) {
+        if ( data.success) {
+          actualizarSesion();
+          bootbox.hideAll();
+          registroMedicoDatosPago();
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      },
+      error: function ( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: (registro 166) : ' + err );
       }
-    },
-    error: function ( jqXHR, textStatus, err ) {
-      console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    } );
+  } else {
+    var error = ''
+    if (nombreRegMed == ""){
+      error = "su nombre";
+    } else if (apePatRegMed == ""){
+      error = "su apellido paterno";
+    } else if (gender == ""){
+      error = "su género";
+    } else if (curpRegMed == ""){
+      error = "su CURP";
+    } else {
+      error = "su cédula";
     }
-  } );
+    bootbox.alert({
+      message: "Es necesario indicar " + error + " para el registro.",
+      title: "No se puede guardar la información."
+    });
+  }
 }
 
 function saveStepTwo() {
@@ -259,26 +213,7 @@ function saveStepTwo() {
     success: function ( data ) {
       if ( data.result === "success" ) {
         actualizarSesion();
-        goToNextStep( 1 );
-      }
-    },
-    error: function ( jqXHR, textStatus, err ) {
-      console.error( 'AJAX ERROR: (registro 166) : ' + err );
-    }
-  } );
-}
-
-function saveStepTree() {
-  $.ajax( {
-    url: '/regMedPasoTres',
-    type: 'POST',
-    dataType: "json",
-    cache: false,
-    data: $( '#regMedStepThree' ).serialize(),
-    success: function ( data ) {
-      if ( data.result === "success" ) {
-        actualizarSesion();
-        $( "#RegMedModal" ).modal( "hide" );
+        bootbox.hideAll();
       }
     },
     error: function ( jqXHR, textStatus, err ) {
@@ -518,50 +453,6 @@ function regMedValid() {
 	*/
 	return true;
 }
-
-function obtenerCiudades() {
-  document.getElementById( 'slc_ciudades' ).innerHTML = '<option value="">Ciudad</option>';
-  $.ajax( {
-    url: '/obtenerCiudades',
-    type: 'POST',
-    dataType: "json",
-    cache: false,
-    data: {
-      'estado_id': document.getElementById( 'slc_estados' ).value
-    },
-    success: function ( data ) {
-      data.ciudades.forEach( function ( record ) {
-        document.getElementById( 'slc_ciudades' ).innerHTML += '<option value="' + record.id + '">' + record.ciudad + '</option>';
-      } );
-    },
-    error: function ( jqXHR, textStatus, err ) {
-      console.error( 'AJAX ERROR: ' + err );
-    }
-  } );
-}
-
-function obtenerColonias() {
-  document.getElementById( 'slc_colonias' ).innerHTML = '<option value="">Colonia</option>';
-  $.ajax( {
-    url: '/obtenerLocalidades',
-    type: 'POST',
-    dataType: "json",
-    cache: false,
-    data: {
-      'estado_id': document.getElementById( 'slc_estados' ).value,
-      'ciudad_id': document.getElementById( 'slc_ciudades' ).value
-    },
-    success: function ( data ) {
-      data.localidades.forEach( function ( record ) {
-        document.getElementById( 'slc_colonias' ).innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
-      } );
-    },
-    error: function ( jqXHR, textStatus, err ) {
-      console.error( 'AJAX ERROR: ' + err );
-    }
-  } );
-}
-
 
 function obtenerCP() {
   document.getElementById( 'nmb_cp' ).value = '';
@@ -1427,9 +1318,9 @@ function SetCoordinates( c ) {
   }
 };
 
-$( document ).ready( function MakeWizard() {
+function MakeWizard() {
   $( "#RegMedModal" ).formToWizard()
-} );
+}
 
 // formToWizard
 ( function ( $ ) {
@@ -1550,7 +1441,8 @@ function agregarFavoritos( medico ) {
     },
     cache: false,
     success: function ( data ) {
-      if ( data.result == 'success' ) {
+      console.log('Agregar a favoritos: ' + JSON.stringify(data));
+      if ( data.success ) {
         if ( $( '#tipoUsuario' ).val() === "P" ) {
           if ( medicoID ) {
             $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Elimina de favoritos');
@@ -1569,7 +1461,9 @@ function agregarFavoritos( medico ) {
         cargarFavCol( $( '#usuarioPerfil' ).val() );
       }
       else {
-        alert( 'Error al guardar medico favorito' );
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
       }
     },
     error: function ( jqXHR, textStatus, err ) {
@@ -1599,7 +1493,8 @@ function eliminarFavoritos( medico, paciente_id , notificacion_id) {
     },
     cache: false,
     success: function ( data ) {
-      if ( data.result == 'success' ) {
+      console.log('Eliminar favoritos: ' + JSON.stringify(data));
+      if ( data.success ) {
         if ( $( '#tipoUsuario' ).val() === "P" ) {
           if ( medicoID ) {
             $( '#addFavoriteContact' ).html( '<span class="glyphicon h67-medcond s30">+</span> Agrega a favoritos' );
@@ -1618,7 +1513,9 @@ function eliminarFavoritos( medico, paciente_id , notificacion_id) {
         }
       }
       else {
-        alert( 'Error al guardar medico favorito' );
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
       }
     },
     error: function ( jqXHR, textStatus, err ) {
@@ -1651,6 +1548,12 @@ function cargarFavCol( usuario ) {
         }*/
         for ( var p in data ) {
           if ( data[ p ].medico_id ) {
+            var especialidad = '';
+            data[p].Medico.MedicoEspecialidads.forEach(function(esp){
+              if (especialidad=="" && esp.subEsp == 0){
+                especialidad = esp.Especialidad.especialidad;
+              }
+            });
             $( "#FavColPanel .contList" ).append(
               "<li class='media contList-profile' id='"+ data[ p ].Medico.Usuario.id +"'>" +
               "<div class='media-left contList-profilePic'>" +
@@ -1658,7 +1561,7 @@ function cargarFavCol( usuario ) {
               "</div>" +
               "<div class='media-body contList-profileBody'> " +
               "<a class='contList-profileName' href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'> Dr. " + data[ p ].Medico.Usuario.DatosGenerale.nombre + " " + data[ p ].Medico.Usuario.DatosGenerale.apellidoP + " " + data[ p ].Medico.Usuario.DatosGenerale.apellidoM + "</a><br>" +
-              "<a class='contList-profileEsp' href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'> " + data[ p ].Medico.Usuario.Especialidad + "</a>" +
+              "<a class='contList-profileEsp' href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'> " + especialidad + "</a>" +
               "</div>" +
               "<div class='media-right contList-profileAction'>" +
               "<a id ='"+data[ p ].Medico.id+"' href ='#' data-target='#recomendar' data-toggle='modal' class='recomendar contList-profileActionLink Flama-bold s15'>Recomendar</a>" +
@@ -1954,24 +1857,29 @@ function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
 }
 
 
-function obtenerCiudades() {
-    if (document.getElementById('slc_ciudades')){
-        if ($('#slc_ciudades option').length == 1) {
-            $('#slc_ciudades option').remove();
+function obtenerCiudades(post) {
+    if (!post){
+      post = '';
+    }
+    div = 'slc_ciudades'+post;
+    if (document.getElementById(div)){
+        if ($('#'+div+' option').length == 1) {
+            $('#'+div+' option').remove();
         };
 
-        document.getElementById('slc_ciudades').innerHTML = '<option value="">Ciudad</option>';
+        document.getElementById(div).innerHTML = '<option value=""></option>';
+        document.getElementById('slc_colonias'+post).innerHTML = '<option value=""></option>';
         $.ajax({
             url: '/obtenerCiudades',
             type: 'POST',
             dataType: "json",
             cache: false,
             data: {
-                'estado_id': document.getElementById('slc_estados').value
+                'estado_id': $('#slc_estados'+post).val()
             },
             success: function (data) {
                 data.municipio.forEach(function (record) {
-                    document.getElementById('slc_ciudades').innerHTML += '<option value="' + record.id + '">' + record.municipio + '</option>';
+                    document.getElementById(div).innerHTML += '<option value="' + record.id + '">' + record.municipio + '</option>';
                 });
                 //AsignarCiudad();
             },
@@ -1984,28 +1892,30 @@ function obtenerCiudades() {
     }
 }
 
-function obtenerColonias() {
-  if (document.getElementById('slc_colonias')){
-
-      if ($('#slc_colonias option').length != 1) {
-          $('#slc_colonias option').remove();
+function obtenerColonias(post) {
+  if (!post){
+    post = '';
+  }
+  div = 'slc_colonias'+post;
+  if ($('#'+div)){
+      if ($('#'+div+' option').length != 1) {
+          $('#'+div+' option').remove();
       };
 
-      document.getElementById('slc_colonias').innerHTML = '<option value="">Colonia</option>';
+      $('#'+div).html('<option value=""></option>');
       $.ajax({
           url: '/obtenerLocalidades',
           type: 'POST',
           dataType: "json",
           cache: false,
           data: {
-              'estado_id': document.getElementById('slc_estados').value,
-              'municipio_id': document.getElementById('slc_ciudades').value
+              'estado_id': $('#slc_estados'+post).val(),
+              'municipio_id': $('#slc_ciudades'+post).val()
           },
           success: function (data) {
               data.municipios.forEach(function (record) {
-                  document.getElementById('slc_colonias').innerHTML += '<option value="' + record.id + '">' + record.localidad + '</option>';
+                $('#'+div).append('<option value="' + record.id + '">' + record.localidad + '</option>');
               });
-              //AsignarColonia();
           },
           error: function (jqXHR, textStatus, err) {
               console.error('AJAX ERROR: ' + err);
@@ -2029,9 +1939,9 @@ function regUbicacion() {
     calle1Ubi = $('#calle1Ubi').val();
     calle2Ubi = $('#calle2Ubi').val();
 
-    slc_estados = $('#slc_estados').val();
-    slc_ciudades = $('#slc_ciudades').val();
-    slc_colonias = $('#slc_colonias').val();
+    slc_estados = $('#slc_estados_mapa').val();
+    slc_ciudades = $('#slc_ciudades_mapa').val();
+    slc_colonias = $('#slc_colonias_mapa').val();
     cpUbi = $('#cpUbi').val();
     idDireccion = $('#idDireccion').val();
     latitud = $('#latitud').val();
@@ -2115,15 +2025,16 @@ function regUbicacion() {
             data: UbicData,
             type: 'POST',
             success: function (data) {
-              $('#idDireccion').val(data.ubicacion_id);
-              $('#btnEliminar').removeClass('hidden');
-              $('#btnGuardarSalir').addClass('hidden');
-              $('#btnGuardar').val('Editar');
-              $('#btnGuardar').parent().parent().addClass('pull-right');
-              //Telefonos
-              $('#addFon').val('Añadir');
-              $('#tipoTelefono').prop('selectedIndex', 0);
-              $('#tipoTelefono').change();
+              if (data.success){
+                $('#idDireccion').val(data.ubicacion_id);
+                $('#btnEliminar').removeClass('hidden');
+                $('#btnGuardarSalir').addClass('hidden');
+                $('#btnGuardar').val('Editar');
+                $('#btnGuardar').parent().parent().addClass('pull-right');
+                //Telefonos
+                $('#addFon').val('Añadir');
+                $('#tipoTelefono').prop('selectedIndex', 0);
+                $('#tipoTelefono').change();
 
                 $('#btnGuardar').val('Editar');
                 $("#frmRegUbi :input").prop('disabled', true);
@@ -2131,9 +2042,13 @@ function regUbicacion() {
                 $("#frmRegUbi :button").prop('disabled', false);
                 $("#frmRegUbi #btnGuardarSalir").addClass('hidden');
                 mapa.marker.setOptions({draggable: false,animation:null});
-
-              cargarTelefonos();
-              actualizarDirecciones();
+                cargarTelefonos();
+                actualizarDirecciones();
+              } else {
+                if (data.error){
+                  manejadorDeErrores(data.error);
+                }
+              }
             },
             error: function (err) {
                 console.error('AJAX ERROR: (registro 166) : ' + JSON.stringify(err));
@@ -2686,7 +2601,6 @@ $(function(){
 
   $('#btnEditaUbi').on('click',function(){
     var ubicacion_id = $('.csslider > input:checked').prop('value');
-    console.log('UBI: ' + ubicacion_id);
     agregarUbicacion(ubicacion_id);
   });
 });
@@ -2717,6 +2631,7 @@ $(document).ready(function(){
     $(window).scroll(sticky_relocate);
     sticky_relocate();
   });
+
   $('.logros-slider').bxSlider({
     slideWidth: 250,
     minSlides: 1,
@@ -2730,7 +2645,7 @@ $(document).ready(function(){
 
 }
 
-function actualizarDirecciones(){
+function actualizarDirecciones(salir){
   $.ajax( {
     async: false,
     url: '/ubicaciones/traer',
@@ -2738,13 +2653,13 @@ function actualizarDirecciones(){
     dataType: "json",
     cache: false,
     success: function ( data ) {
-      if (data){
-        if (data.length> 0 && $('#editUbi').html() != ""){
+      if (data.success){
+        if (data.result.length> 0 && $('#editUbi').html() != ""){
           $('#editUbi').html('<button class="btn btn-primary btn-xs" id="btnEditaUbi"><span class="glyphicon glyphicon-pencil"></span></button>');
         }
         var contenido = '';
         var contador = 0;
-        data.forEach(function(record){
+        data.result.forEach(function(record){
           var checked = '';
           if (contador == 0){
             checked = 'checked="checked"';
@@ -2753,7 +2668,7 @@ function actualizarDirecciones(){
         });
         contenido+= '<ul>';
         var contador = 0;
-        data.forEach(function(record){
+        data.result.forEach(function(record){
           var interior = '';
           if (record.numeroInt){
             interior = ' interior ' + record.numeroInt;
@@ -2798,13 +2713,13 @@ function actualizarDirecciones(){
             });
         contenido+= '</ul><div class="arrows">';
         var contador = 0;
-        data.forEach(function(record){
+        data.result.forEach(function(record){
           contenido+= '<label for="slides_'+ ++contador +'"></label>';
         });
         contenido+= '<label for="slides_1" class="goto-first"></label><label for="slides_'+ contador +'" class="goto-last"></label></div>';
         contenido+= '<div class="navigation"><div class="row"><div class="col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">';
         var contador = 0;
-        data.forEach(function(record){
+        data.result.forEach(function(record){
           contenido+= '<label for="slides_'+ ++contador +'">'+ contador +'&nbsp;</label>';
         });
         contenido+= '</div></div></div>';
@@ -2816,6 +2731,13 @@ function actualizarDirecciones(){
           console.log('UBI: ' + ubicacion_id);
           agregarUbicacion(ubicacion_id);
         });
+        if (salir){
+          bootbox.hideAll();
+        }
+      } else {
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
       }
     },
     error: function ( jqXHR, textStatus, err ) {
@@ -2992,8 +2914,7 @@ function eliminarUbicacion(){
             cache: false,
             success: function ( data ) {
               if (data.success){
-                actualizarDirecciones();
-                bootbox.hideAll();
+                actualizarDirecciones(true);
               }
             },
             error: function (err){
@@ -3064,7 +2985,7 @@ function cargarTelefonos(){
   }
 }
 
-function agregarExperiencia(){
+function agregarExpertoEn(){
   var addExp = $('#addExp').val();
   if (addExp && addExp != ""){
     $('#sortableExpertoEn').append(`
@@ -3085,12 +3006,12 @@ function agregarExperiencia(){
   $('#addExp').focus();
 }
 
-function guardarExperiencia(){
+function guardarExpertoEn(){
   var expertoEn = {};
   var parent;
   var lastparent;
   var last = 0;
-  $('.menuDiv').each(function(){
+  $('#sortableExpertoEn .menuDiv').each(function(){
     if ($(this).parent().parent().prop('id') === "sortableExpertoEn"){
       lastparent = last;
       parent = '';
@@ -3128,18 +3049,18 @@ function guardarExperiencia(){
     },
     success: function ( data ) {
       if (data.success){
-        traerExpertoEn();
+        setTimeout(function(){
+          traerExpertoEn();
+        },500);
       }
     },
     error: function ( jqXHR, textStatus, err ) {
       console.error( 'AJAX ERROR: ' + err );
     }
   } );
-
 }
 
 function traerExpertoEn(){
-
   $.ajax( {
     async: false,
     url: '/medicos/expertoTraer',
@@ -3178,7 +3099,6 @@ function traerExpertoEn(){
       console.error( 'AJAX ERROR: ' + err );
     }
   } );
-
 }
 
 /**
@@ -3412,6 +3332,7 @@ function updateServices( con, des, pre, dur){
 }
 function loadDatosGenerales(){
   $.post("/loadDatosGenerales",function(data){
+    $('#usuarioUrlFotoPerfil').prop('src',data.urlFotoPerfil);
     $("#editMail").attr('value',data.correo);
     $("#editNom").attr('value',data.DatosGenerale.nombre);
     $("#editApeP").attr('value',data.DatosGenerale.apellidoP);
@@ -3606,4 +3527,550 @@ function addTelefon(){
       }
     });
   });
+}
+
+function agregarClinica(){
+  var addClin = $('#addClin').val();
+  if (addClin && addClin != ""){
+    $('#sortableClinica').append(`
+      <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
+      <div class="menuDiv">
+        <span>
+          <span data-id="2" class="itemTitle">`+ addClin +`</span>
+          <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
+          <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
+        </span>
+      </div>
+      </li>`);
+      $('#addClin').val('');
+  } else {
+    //Input de agregar clinica vacio
+  }
+  $('#addClin').focus();
+}
+
+
+function agregarAseguradora(){
+  var addAseg = $('#addAseg').val();
+  if (addAseg && addAseg != ""){
+    $('#sortableAseguradora').append(`
+      <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
+      <div class="menuDiv">
+        <span>
+          <span data-id="2" class="itemTitle">`+ addAseg +`</span>
+          <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
+          <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
+        </span>
+      </div>
+      </li>`);
+      $('#addAseg').val('');
+  } else {
+    //Input de agregar clinica vacio
+  }
+  $('#addAseg').focus();
+}
+
+function cargarExpertoEn(){
+  $.ajax( {
+    async: false,
+    url: '/medicos/expertoTraer',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      if (data.success){
+        var listaNueva = '';
+        if (data.result){
+          var sub = false;
+          var ol = false;
+          var li = false;
+          data.result.forEach(function(rec){
+            if (!rec.padre_id){
+              if (ol){
+                listaNueva += '</ol>';
+                ol = false;
+              }
+              if (li){
+                listaNueva += '</li>';
+              }
+              li = true;
+              listaNueva += `<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
+              <div class="menuDiv">
+                <span>
+                  <span data-id="2" class="itemTitle">`+ rec.expertoen +`</span>
+                  <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
+                  <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
+                </span>
+              </div>`;
+            } else {
+              if (!ol){
+                listaNueva += '<ol>';
+                ol = true;
+              }
+              listaNueva += `<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
+              <div class="menuDiv">
+                <span>
+                  <span data-id="2" class="itemTitle">`+ rec.expertoen +`</span>
+                  <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
+                  <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
+                </span>
+              </div>
+              </li>`;
+            }
+          });
+          if (sub){
+            listaNueva += '</li></ol>';
+          }
+        }
+        $('#sortableExpertoEn').html(listaNueva);
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+function cargarClinicas(){
+  $.ajax( {
+    async: false,
+    url: '/medicos/clinicasTraer',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      if (data.success){
+        var listaNueva = '';
+        if (data.result){
+          console.log('CLINICAS: ' + JSON.stringify(data));
+          var sub = false;
+          data.result.forEach(function(rec){
+            listaNueva += `<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
+            <div class="menuDiv">
+              <span>
+                <span data-id="2" class="itemTitle">`+ rec.clinica +`</span>
+                <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
+                <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
+              </span>
+            </div>
+            </li>`;
+          });
+        }
+        $('#sortableClinica').html(listaNueva);
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  });
+}
+
+function cargarAseguradoras(){
+  $.ajax( {
+    async: false,
+    url: '/medicos/aseguradorasTraer',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      if (data.success){
+        var listaNueva = '';
+        if (data.result){
+          console.log('ASEGURADORAS: ' + JSON.stringify(data));
+          var sub = false;
+          data.result.forEach(function(rec){
+            listaNueva += `<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
+            <div class="menuDiv">
+              <span>
+                <span data-id="2" class="itemTitle">`+ rec.aseguradora +`</span>
+                <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
+                <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
+              </span>
+            </div>
+            </li>`;
+          });
+        }
+        $('#sortableAseguradora').html(listaNueva);
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  });
+}
+
+
+function guardarClinicas(){
+  var clinicas = [];
+  var last = 0;
+  $('#sortableClinica .menuDiv').each(function(){
+    clinicas.push({
+      num: last,
+      val: $(this).find('.itemTitle').text()
+    });
+    last++;
+  });
+  $.ajax( {
+    async: false,
+    url: '/medicos/clinicasActualizar',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'clinicas': clinicas
+    },
+    success: function ( data ) {
+      if (data.success){
+        setTimeout(function(){
+          traerClinicas();
+        },500);
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+
+function guardarAseguradoras(){
+  var aseguradoras = [];
+  var last = 0;
+  $('#sortableAseguradora .menuDiv').each(function(){
+    aseguradoras.push({
+      num: last,
+      val: $(this).find('.itemTitle').text()
+    });
+    last++;
+  });
+  $.ajax( {
+    async: false,
+    url: '/medicos/aseguradorasActualizar',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'aseguradoras': aseguradoras
+    },
+    success: function ( data ) {
+      if (data.success){
+        setTimeout(function(){
+          traerAseguradoras();
+        },500);
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+function traerClinicas(){
+    $.ajax( {
+      async: false,
+      url: '/medicos/clinicasTraer',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      success: function ( data ) {
+        if (data.success){
+          var listaNueva = '<ul>';
+          if (data.result){
+            var sub = false;
+            data.result.forEach(function(rec){
+              listaNueva += '<li>'+ rec.clinica +'</li>';
+            });
+          }
+          listaNueva += '</ul>';
+          $('#divClinicas').html(listaNueva);
+        }
+      },
+      error: function ( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: ' + err );
+      }
+    } );
+}
+
+function traerAseguradoras(){
+    $.ajax( {
+      async: false,
+      url: '/medicos/aseguradorasTraer',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      success: function ( data ) {
+        if (data.success){
+          var listaNueva = '<ul>';
+          if (data.result){
+            var sub = false;
+            data.result.forEach(function(rec){
+              listaNueva += '<li>'+ rec.aseguradora +'</li>';
+            });
+          }
+          listaNueva += '</ul>';
+          $('#divAseg').html(listaNueva);
+        }
+      },
+      error: function ( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: ' + err );
+      }
+    } );
+  }
+
+//Registrar Ubicacion
+function guardarUbicacionPaciente() {
+    var latitud = '', longitud = '';
+    var slc_estados='',slc_ciudades='',slc_colonias = '';
+    latitud = $('#latitud').val();
+    longitud = $('#longitud').val();
+    slc_estados = $('#slc_estados_mapa').val();
+    slc_ciudades = $('#slc_ciudades_mapa').val();
+    slc_colonias = $('#slc_colonias_mapa').val();
+
+    UbicData = {
+      latitud: latitud,
+      longitud: longitud,
+      municipio_id: slc_ciudades,
+      principal: 1
+    }
+
+    if (latitud != '' && longitud != '' && slc_estados != '' && slc_ciudades != ''){
+      if (slc_colonias>0){
+        UbicData['localidad_id'] = slc_colonias;
+      }
+
+      $.ajax({
+          url: '/registrarubicacionPaciente',
+          type: 'POST',
+          dataType: "json",
+          cache: false,
+          data: UbicData,
+          type: 'POST',
+          success: function (data) {
+            if (data.success){
+              bootbox.alert({
+                message: "Tu ubicación ha sido guardada.",
+                title: "Ubicación guardada"
+              });
+            }
+          },
+          error: function (err) {
+              console.error('AJAX ERROR: (registro 166) : ' + JSON.stringify(err));
+          }
+      });
+    } else {
+      var mensaje = '';
+      if (latitud == '' || longitud == ''){
+        mensaje = 'la posición de su ubicación';
+      } else if (slc_estados == ''){
+        mensaje = 'el estado';
+      } else {
+        mensaje = 'el municipio o ciudad';
+      }
+      bootbox.alert({
+        message: "Es necesario indicar " + mensaje + " para el registro de su dirección.",
+        title: "No se puede guardar la ubicación"
+      });
+    }
+}
+
+function verificarCurpCedula(){
+  var curp = $('#curpRegMed').val();
+  var cedula = $('#cedulaRegMed').val();
+}
+
+
+function cargarListaEspCol( usuario ) {
+  $.ajax( {
+    async: false,
+    url: '/cargarListaEspCol',
+    type: 'POST',
+    data: {
+      usuario: usuario
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      $('#especialidadesList').html('');
+      $('#tipoFiltro').html('una especialidad');
+      if ( data.success ) {
+        var contenido = '';
+        var primero = '';
+        data.result.forEach(function(esp){
+          if (primero == ""){
+            primero = esp.id;
+          }
+          contenido += `<li>
+            <a onclick="cargarListaColegasByEsp('`+usuario+`','`+ esp.id +`')">`+ esp.especialidad +` <span class="badge pull-right">`+ esp.total +` </span></a>
+          </li>`;
+        });
+        $('#especialidadesList').html(contenido);
+        if (primero != ""){
+          cargarListaColegasByEsp(usuario,primero);
+        }
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+function cargarListaColegasByEsp(usuario_id,especialidad_id){
+  $.ajax( {
+    async: false,
+    url: '/cargarListaColegasByEsp',
+    type: 'POST',
+    data: {
+      usuario_id: usuario_id,
+      especialidad_id: especialidad_id
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      $('#listaColegas').html('');
+      if ( data.success ) {
+        var contenido = '';
+        contenido += '<div id="'+ data.especialidad.especialidad +'" class="row" ><h1 class="h67-medcond">'+data.especialidad.especialidad+'</h1>';
+        data.result.forEach(function(res){
+          var especialidad= '';
+          res.Medico.MedicoEspecialidads.forEach(function(esp){
+            if (especialidad != ""){
+              especialidad += ', ';
+            }
+            especialidad += esp.Especialidad.especialidad;
+          });
+          contenido += `
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div >
+                <a class="pPic" href="/perfil/`+ res.usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>`+ res.DatosGenerale.nombre +`</span>&nbsp;<span>`+ res.DatosGenerale.apellidoP +` `+ res.DatosGenerale.apellidoM +`</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span class="colEsp">`+ especialidad +`</span>
+                </div>
+                <a class="h67-medcondobl" href="/perfil/`+ res.usuarioUrl +`">Ver Perfil</a>
+              </div>
+            </div>
+          </div>`
+        })
+        contenido += '</div>';
+        $('#listaColegas').html(contenido);
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+
+function cargarListaAlfCol( usuario ) {
+  $.ajax( {
+    async: false,
+    url: '/cargarListaAlfCol',
+    type: 'POST',
+    data: {
+      usuario: usuario
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+        $('#especialidadesList').html('');
+        $('#tipoFiltro').html('una letra');
+        if ( data.success ) {
+          var contenido = '';
+          var primero = '';
+          data.result.forEach(function(rec){
+            if (primero == ""){
+              primero = rec.Letra;
+            }
+            contenido += `<li>
+              <a onclick="cargarListaColegasByAlf('`+usuario+`','`+ rec.Letra +`')">`+ rec.Letra +` <span class="badge pull-right">`+ rec.Total +` </span></a>
+            </li>`;
+          });
+          $('#especialidadesList').html(contenido);
+          if (primero != ""){
+            cargarListaColegasByAlf(usuario,primero);
+          }
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+function cargarListaColegasByAlf(usuario_id,letra){
+  $.ajax( {
+    async: false,
+    url: '/cargarListaColegasByAlf',
+    type: 'POST',
+    data: {
+      usuario_id: usuario_id,
+      letra: letra
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      $('#listaColegas').html('');
+      if ( data.success ) {
+        var contenido = '';
+        contenido += '<div id="'+ letra +'" class="row" ><h1 class="h67-medcond">'+letra+'</h1>';
+        data.result.forEach(function(res){
+          var especialidad= '';
+          if (res.Medico.MedicoEspecialidads){
+            res.Medico.MedicoEspecialidads.forEach(function(esp){
+              if (especialidad != ""){
+                especialidad += ', ';
+              }
+              especialidad += esp.Especialidad.especialidad;
+            });
+          }
+          contenido += `
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div >
+                <a class="pPic" href="/perfil/`+ res.usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>`+ res.DatosGenerale.nombre +`</span>&nbsp;<span>`+ res.DatosGenerale.apellidoP +` `+ res.DatosGenerale.apellidoM +`</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span class="colEsp">`+ especialidad +`</span>
+                </div>
+                <a class="h67-medcondobl" href="/perfil/`+ res.usuarioUrl +`">Ver Perfil</a>
+              </div>
+            </div>
+          </div>`
+        })
+        contenido += '</div>';
+        $('#listaColegas').html(contenido);
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
 }

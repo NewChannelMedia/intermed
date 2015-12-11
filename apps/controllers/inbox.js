@@ -5,54 +5,64 @@ exports.index = function ( object, req, res ) {
 }
 
 exports.enviar = function( req ){
+  var visto = 0;
+  if (req.usuario_id == req.info.para){
+    visto = 1;
+  }
   models.Inbox.create(
     {
       usuario_id_de: req.usuario_id,
       usuario_id_para: req.info.para,
-      mensaje: req.info.mensaje
+      mensaje: req.info.mensaje,
+      visto: visto
     }
   ).then(function(inbox){
     if (inbox){
-      var tipoNotId = '';
-      models.Usuario.findOne({
-        where: {
-          id: req.info.para
-        },
-        attributes: [ 'tipoUsuario' ]
-      }).then(function(usuario){
-        if (usuario){
-          if (usuario.tipoUsuario == "P"){
-            tipoNotId = 101;
-          } else if (usuario.tipoUsuario == "M"){
-            tipoNotId = 102;
-          }
-          if (tipoNotId > 0){
-              models.Notificacion.update( {
-                visto: 1
-              }, {
-                where: {
-                  usuario_id:  req.usuario_id.toString(),
-                  visto: 0,
-                  data: req.info.para,
-                  tipoNotificacion_id: {$between: [100, 200]}
-                }
-              }).then(function(result){
-                if (result){
-                  req.socket.emit('conversacionLeida');
-                }
-              });
-              models.Notificacion.create( {
-                usuario_id: req.info.para,
-                tipoNotificacion_id: tipoNotId,
-                data: req.usuario_id.toString()
-              });
-          }
-        }
-      });
-      req.SocketsConectados.forEach(function(socket){
-        req.socket.broadcast.to(socket).emit('nuevoInbox',{de: req.usuario_id, mensaje: req.info.mensaje});
-      });
-      req.socket.emit('inboxEnviado',{success:true});
+      if (visto === 0){
+        //Crear notificacion
+          var tipoNotId = '';
+          models.Usuario.findOne({
+            where: {
+              id: req.info.para
+            },
+            attributes: [ 'tipoUsuario' ]
+          }).then(function(usuario){
+            if (usuario){
+              if (usuario.tipoUsuario == "P"){
+                tipoNotId = 101;
+              } else if (usuario.tipoUsuario == "M"){
+                tipoNotId = 102;
+              }
+              if (tipoNotId > 0){
+                  models.Notificacion.update( {
+                    visto: 1
+                  }, {
+                    where: {
+                      usuario_id:  req.usuario_id.toString(),
+                      visto: 0,
+                      data: req.info.para,
+                      tipoNotificacion_id: {$between: [100, 200]}
+                    }
+                  }).then(function(result){
+                    if (result){
+                      req.socket.emit('conversacionLeida');
+                    }
+                  });
+                  models.Notificacion.create( {
+                    usuario_id: req.info.para,
+                    tipoNotificacion_id: tipoNotId,
+                    data: req.usuario_id.toString()
+                  });
+              }
+            }
+          });
+          req.SocketsConectados.forEach(function(socket){
+            req.socket.broadcast.to(socket).emit('nuevoInbox',{de: req.usuario_id, mensaje: req.info.mensaje});
+          });
+          req.socket.emit('inboxEnviado',{success:true});
+      } else {
+        req.socket.emit('inboxEnviado',{success:true});
+      }
     } else {
       req.socket.emit('inboxEnviado',{success:false});
     }
@@ -295,7 +305,7 @@ exports.crearConversacion = function(req){
       attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
       } ]
   }).then( function ( usuario ) {
-    req.socket.emit('crearConversacion',usuario);
+    req.socket.emit('crearConversacion',usuario, req.append);
   });
 }
 

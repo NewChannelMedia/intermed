@@ -45,7 +45,7 @@ $(document).ready(function(){
   var location = window.location.href;
   location = location.split("/");
   if (parseInt(location[location.length-1]) > 0){
-    if (socket.emit('obtenerUsuarioId',location[location.length-1]));
+    socket.emit('obtenerUsuarioId',location[location.length-1]);
   }
 
   $('#InboxMsg').css('background-color','#EEE');
@@ -53,7 +53,7 @@ $(document).ready(function(){
   $('#inboxInputText').prop('disabled',true);
   $('#inboxBtnEnviar').prop('disabled',true);
 
-  $('#InboxMsg').css('height',($(window).height() - document.getElementById('inboxInput').offsetHeight - document.getElementById('navPlatform').offsetHeight - 130));
+  $('#InboxMsg').css('height',($(window).height() - document.getElementById('inboxInput').offsetHeight - document.getElementById('mainNav').offsetHeight - 130));
   $('#InboxMsg').css('overflow','auto');
   $('#contactList').css('height',$('#InboxMsg').css('height'));
   $('#contactList').css('overflow','auto');

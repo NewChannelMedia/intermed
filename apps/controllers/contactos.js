@@ -93,21 +93,22 @@ module.exports = {
             });
           }
 
-          res.send( {
-            result: 'success'
+          res.status(200).send( {
+            success: true
           } );
         }
         else {
           res.send( {
-            result: 'error'
+            success: false,
+            error: 0
           } );
         }
       } );
     }
     else {
-      res.send( {
-        result: 'error',
-        error: 'Necesitas iniciar sesión'
+      res.status(200).send( {
+        success: false,
+        error: 1
       } );
     }
   },
@@ -180,8 +181,8 @@ module.exports = {
       models.MedicoFavorito.destroy( {
         where: condiciones
       } ).then( function ( result ) {
-        res.send( {
-          result: 'success'
+        res.status(200).send( {
+          success: true
         } );
       } );
 
@@ -200,9 +201,9 @@ module.exports = {
       }
     }
     else {
-      res.send( {
-        result: 'error',
-        error: 'Necesitas iniciar sesión'
+      res.status(200).send( {
+        success: false,
+        error: 1
       } );
     }
   },
@@ -228,6 +229,12 @@ module.exports = {
               include: [ {
                 model: models.DatosGenerales
                     } ]
+            },
+            {
+              model: models.MedicoEspecialidad,
+              include: [ {
+                model: models.Especialidad
+                    } ]
             }
           ]
         },
@@ -251,7 +258,6 @@ module.exports = {
   },
 
   aceptarInvitacion: function ( object, req, res ) {
-    console.log('OBJECT: ' + JSON.stringify(object));
     if ( req.session.passport.user ) {
       var condiciones = [];
       if (object.pacienteID){
@@ -669,7 +675,7 @@ module.exports = {
       var usuario_id = req.session.passport.user.id;
       models.Usuario.findOne({
         where:{id:usuario_id},
-        attributes:['correo'],
+        attributes:['urlFotoPerfil'],
         include:[{
           model:models.DatosGenerales,
           attributes:['nombre','apellidoP','apellidoM']
@@ -800,5 +806,192 @@ module.exports = {
         res.send(creado);
       });
     }
+  },
+
+  cargarListaEspCol: function ( object, req, res ) {
+    if ( object.usuario == '' && req.session.passport.user ) {
+      object.usuario = req.session.passport.user.id;
+    }
+    models.Especialidad.findAll({
+      group: ['especialidad'],
+      order: ['especialidad'],
+      attributes: ['id','especialidad',[models.Sequelize.fn('COUNT', models.Sequelize.col('especialidad')), 'total']],
+      include: [
+        {
+          model: models.MedicoEspecialidad,
+          attributes: [ 'id' ],
+          include: [
+            {
+              model: models.Medico,
+              attributes: [ 'id'],
+              include: [ {
+                model: models.MedicoFavorito,
+                where: {
+                  usuario_id: object.usuario,
+                  aprobado: 1,
+                  mutuo: 1
+                }
+              } ]
+            }
+          ]
+        }
+      ]
+    }).then(function (result){
+      res.status(200).send({'success':true,'result':result});
+    });
+  },
+
+  cargarListaColegasByEsp: function (object, req, res){
+    if ( object.usuario_id == '' && req.session.passport.user ) {
+      object.usuario_id = req.session.passport.user.id;
+    }
+
+    models.Usuario.findAll({
+      attributes:['id','usuarioUrl','urlFotoPerfil'],
+      include: [
+        {
+          model: models.DatosGenerales,
+          attributes:['nombre','apellidoP','apellidoM']
+        },
+        {
+          model: models.Medico,
+          attributes: [ 'id'],
+          include: [ {
+            model: models.MedicoFavorito,
+            where: {
+              usuario_id: object.usuario_id,
+              aprobado: 1,
+              mutuo: 1
+            }
+          }, {
+            model: models.MedicoEspecialidad,
+            attributes: ['id'],
+            where: {
+              subEsp: 0,
+              especialidad_id: object.especialidad_id
+            },
+            include: [{
+              model: models.Especialidad,
+              attributes: ['especialidad']
+            }]
+          }]
+        }
+      ]
+    }).then(function (result){
+      models.Especialidad.findOne({
+        where:{
+          id: object.especialidad_id
+        }
+      }).then(function(esp){
+        result = JSON.parse(JSON.stringify(result));
+        var total = 0;
+        result.forEach(function(usuario){
+          models.MedicoEspecialidad.findAll({
+            attributes: ['id'],
+            where: {
+              subEsp: 0,
+              medico_id: usuario.Medico.id
+            },
+            include: [{
+              model: models.Especialidad,
+              attributes: ['especialidad']
+            }]
+          }).then(function(resultesp){
+            total++;
+            usuario.Medico.MedicoEspecialidads = resultesp;
+            if (total == result.length){
+              res.status(200).send({'success':true,'result':result,'especialidad':esp});
+            }
+          });
+        });
+      })
+    });
+  },
+
+  cargarListaAlfCol: function ( object, req, res ) {
+    if ( object.usuario == '' && req.session.passport.user ) {
+      object.usuario = req.session.passport.user.id;
+    }
+    models.DatosGenerales.findAll({
+      attributes: [[models.Sequelize.fn('COUNT', models.Sequelize.col('apellidoP')), 'Total'],[models.Sequelize.fn('SUBSTRING', models.Sequelize.col('apellidoP'),1,1), 'Letra']],
+      group: [models.Sequelize.fn('SUBSTRING', models.Sequelize.col('apellidoP'),1,1), 'Letra'],
+      order: [models.Sequelize.fn('SUBSTRING', models.Sequelize.col('apellidoP'),1,1), 'Letra'],
+      include:[
+        {
+          model: models.Usuario,
+          attributes:['id'],
+          include:[
+            {
+              model: models.Medico,
+              attributes: [ 'id'],
+              include: [ {
+                model: models.MedicoFavorito,
+                attributes: ['id'],
+                where: {
+                  usuario_id: object.usuario,
+                  aprobado: 1,
+                  mutuo: 1
+                }
+              } ]
+            }
+          ]
+        }
+      ]
+    }).then(function(result){
+      res.status(200).send({'success':true,'result':result});
+    });
+  },
+
+  cargarListaColegasByAlf: function (object, req, res){
+    if ( object.usuario_id == '' && req.session.passport.user ) {
+      object.usuario_id = req.session.passport.user.id;
+    }
+
+    models.Usuario.findAll({
+      attributes:['id','usuarioUrl','urlFotoPerfil'],
+      include: [
+        {
+          model: models.DatosGenerales,
+          attributes:['nombre','apellidoP','apellidoM'],
+          where:{
+            apellidoP: { $like: object.letra +'%'}
+          }
+        },
+        {
+          model: models.Medico,
+          attributes: [ 'id'],
+          include: [ {
+            model: models.MedicoFavorito,
+            where: {
+              usuario_id: object.usuario_id,
+              aprobado: 1,
+              mutuo: 1
+            }
+          }]
+        }
+      ]
+    }).then(function (result){
+      result = JSON.parse(JSON.stringify(result));
+      var total = 0;
+      result.forEach(function(usuario){
+        models.MedicoEspecialidad.findAll({
+          attributes: ['id'],
+          where: {
+            subEsp: 0,
+            medico_id: usuario.Medico.id
+          },
+          include: [{
+            model: models.Especialidad,
+            attributes: ['especialidad']
+          }]
+        }).then(function(resultesp){
+          total++;
+          usuario.Medico.MedicoEspecialidads = resultesp;
+          if (total == result.length){
+            res.status(200).send({'success':true,'result':result});
+          }
+        });
+      });
+    });
   }
 }

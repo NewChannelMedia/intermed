@@ -66,18 +66,24 @@ exports.obtieneLocalidades = function (object, req, res) {
       id: object.municipio_id
     }
   }).then(function(municipio){
-    models.Localidad.findAll({
-      where:{
-        estado_id:object.estado_id,
-        municipio_ant_id: municipio.municipio_id
-      },
-      order:['localidad'],
-      attributes:['id','localidad']
-    }).then( function(municipios){
-      res.send({
-          'municipios': municipios
+    if (municipio){
+      models.Localidad.findAll({
+        where:{
+          estado_id:object.estado_id,
+          municipio_ant_id: municipio.municipio_id
+        },
+        order:['localidad'],
+        attributes:['id','localidad']
+      }).then( function(municipios){
+        res.send({
+            'municipios': municipios
+        });
       });
-    });
+    } else {
+      res.send({
+          'success': false
+      });
+    }
   });
 };
 
@@ -116,7 +122,6 @@ exports.nuevaUbicacion = function (objects, req, res) {
 };
 
 exports.registrarUbicacion = function (objects, req, res) {
-  console.log(JSON.stringify(objects.principal));
   if (req.session.passport.user){
     if (objects.principal == 1){
       models.Direccion.update({
@@ -129,7 +134,6 @@ exports.registrarUbicacion = function (objects, req, res) {
       });
     }
     if (objects.idDireccion=='') {
-        console.log('Crear ubicación');
         models.Direccion.create({
             calle: objects.calleUbi,
             numero: objects.numeroUbi,
@@ -170,12 +174,11 @@ exports.registrarUbicacion = function (objects, req, res) {
               }
             }
             res.status(200).json({
-                ok: true,
+                success: true,
                 ubicacion_id: datos.id
             });
         });
     } else {
-        console.log('Actualizar ubicación');
         models.Direccion.update({
             calle: objects.calleUbi,
             numero: objects.numeroUbi,
@@ -254,15 +257,16 @@ exports.registrarUbicacion = function (objects, req, res) {
               }
             }
             res.status(200).json({
-                ok: true,
+                success: true,
                 ubicacion_id: objects.idDireccion
             });
 
         });
     }
   } else {
-      res.status(500).json({
-          error: 0
+      res.status(200).json({
+          success: false,
+          error: 1
       });
   }
 };
@@ -494,10 +498,10 @@ exports.obtieneUbicacion = function(object, req, res) {
           }],
           order: [['principal','DESC']]
     }).then(function(datos) {
-          res.send(datos);
+          res.status(200).json({success:true,result: datos});
     });
   } else {
-        res.status(500).json({error: 0});
+        res.status(200).json({success:false,error: 1});
   }
 }
 
@@ -514,4 +518,21 @@ exports.eliminaUbicacion = function(object, req, res){
         res.status(200).json({success: true,result: result});
     });
   });
+}
+
+exports.registrarubicacionPaciente = function (object, req, res){
+  if (req.session.passport.user){
+    object['usuario_id'] =req.session.passport.user.id;
+    models.Direccion.destroy({
+      where: {
+        usuario_id: req.session.passport.user.id
+      }
+    }).then(function(){
+      models.Direccion.create(object).then(function(result){
+          res.status(200).json({success: true,result: result});
+      });
+    });
+  } else {
+      res.status(200).json({success: false});
+  }
 }

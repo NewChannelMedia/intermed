@@ -30,19 +30,113 @@
   </head>
 
   <body>
+    <!-- interno -->
+    <!-- empieza nav superior -->
     {{#unless name}}
-      <input type="hidden" id="inicio" value="{{valSession 'inicio'}}">
-      <input type="hidden" id="registroCompleto" value="{{valSession 'registroCompleto'}}">
-      <input type="hidden" id="tipoUsuario" value="{{valSession 'tipoUsuario'}}">
-      <input type="hidden" id="usuarioPerfil" value="{{#if usuario.id}}{{usuario.id}}{{else}}{{valSession 'id'}}{{/if}}">
+    <input type="hidden" id="inicio" value="{{valSession 'inicio'}}">
+    <input type="hidden" id="registroCompleto" value="{{valSession 'registroCompleto'}}">
+    <input type="hidden" id="tipoUsuario" value="{{valSession 'tipoUsuario'}}">
+    <input type="hidden" id="usuarioPerfil" value="{{#if usuario.id}}{{usuario.id}}{{else}}{{valSession 'id'}}{{/if}}">
     {{/unless}}
+    <nav id="mainNav" class="navbar navigator navbar-static-top">
+      <section class="navigator-container container-fluid">
+        <div class="navigator-inner row">
+          <div id="logo-section" class="navigator-inner-section col-lg-3 col-md-3 col-sm-4 col-xs-9">
+            <div class="navbar-header navigator-inner-section-cell">
+              <a href="/" class="navbar-brand nav-logo white no-transform">
+                <img class="logoIntermed" src="img/logos/logo1.png" />
+              </a>
+            </div>
+          </div>
+          <button type="button" class="navbar-toggle collapsed btn-menu col-xs-3" data-toggle="collapse" data-target="#collapse-menu" aria-expanded="false">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="glyphicon glyphicon-menu-hamburger"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="collapse-menu">
+            <div id="search-section" class="navigator-inner-section col-lg-5 col-md-4 col-sm-1 col-xs-12 hidden-sm">
+              <div class="input-group navbar-search navigator-inner-section-cell col-md-10 col-md-offset-1 h65-medium">
+                <input type="text" class="form-control" id="buscadorInterno" name="" placeholder="Search for people, places or things" required="">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="button">
+                    <span class="glyphicon glyphicon-search"></span>
+                  </button>
+                </span>
+              </div>
+            </div>
+
+            {{#unless name}}
+            <img class="hidden invisible" src="{{valSession 'fotoPerfil'}}" id='fotoPerfilMini' width="30px"/>
+            <div id="menu-section" class="navigator-inner-section col-lg-4 col-md-5 col-sm-8 col-xs-12">
+              <div class="navigator-inner-section-cell">
+                <ul class="nav nav-pills nav-justified navigator-inner-section-menu h57-cond s20">
+                  <li>
+                    <a href="{{base_url}}perfil/{{valSession 'usuarioUrl'}}">Perfil</a>
+                  </li>
+                  {{#ifTipoMedico}}
+                  <li>
+                    <a href="#">Oficina</a>
+                  </li>
+                  {{/ifTipoMedico}}
+                  <li>
+                    <a href="#">Agenda</a>
+                  </li>
+                  <li>
+                    <a id="notificationIcon" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="cargarListaInbox()">
+                        Mensajes
+                        <span id="totalInbox" class="badge" style="position:absolute; margin-top:-38px; right:0px"></span>
+                    </a>
+
+                    <ul class="dropdown-menu notificationDropdown media-list" style="left:auto;right:0;margin-right:0px;">
+                      <div  id="notificacionesInboxList" style="max-height:300px;overflow-y: scroll;">
+
+                      </div>
+                      <div style="padding:10px;background-color:#DDD;margin-bottom:-5px;margin-top:10px;">
+                        <a href="{{base_url}}inbox" class="text-center" style="text-align:center">Ver más</a>
+                      </div>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="/logout"><span class="glyphicon glyphicon-log-out"></span></a>
+                  </li>
+                  <li class="visible-sm dropdown navigator-dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                      Buscar
+                    </a>
+                    <div class="dropdown-menu dropdown-form panel navigator-dropdown-panel">
+
+                      <form method="POST" action="http://localhost:3000/buscar" class="form-inline" onsubmit="return false;">
+                        <div class="input-group navbar-search navigator-inner-section-cell h65-medium">
+                          <input type="text" class="form-control input-lg ui-autocomplete-input" id="buscadorInternoDropDown" name="" placeholder="Search for people, plaasdfasdfce or things" required="" style="width:300px" autocomplete="off">
+                          <span class="input-group-btn">
+                            <button class="btn btn-default btn-lg" type="button">
+                              <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                          </span>
+                        </div>
+                      </form>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {{/unless}}
+          </div>
+        </div>
+      </section>
+    </nav>
 
     {{{body}}}
-  </body>
+
+  </body><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+
   <script src="js/bootstrap.min.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/FontUtils.js"></script>
   <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  <script src="js/notificaciones.js"></script>
   <script src="js/jquery.Jcrop.js"></script>
   <script src="js/jquery.SimpleCropper.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?libraries=drawing,places&components=country:‌​MX&sensor=true&key=AIzaSyCBOC0Cq0T10nAmZNLkVMVBzU6MLd3DfKs"></script>
@@ -53,4 +147,6 @@
   <script src="js/bootbox.min.js"></script>
   <script src="js/bootboxDialogs.js"></script>
   <script src="js/jquery.bxslider.js"></script>
+
+  <script src="js/buscadorInterno.js"></script>
 </html>

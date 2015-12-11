@@ -72,8 +72,6 @@ var InboxListLoaded = [];
 function socketManejadores() {
 
   socket.on( 'inbox', function ( total ) {
-    //socket.emit( 'verNotificacionesInbox' );
-    //$('#totalInbox').html('');
     if ( total > 0 ) {
       $( '#totalInbox' ).html( total );
     }
@@ -90,7 +88,7 @@ function socketManejadores() {
       if ( record.visto === 0 ) {
         visto = ' style="background-color:#EEEEEE" ';
       }
-      $( '#notificacionesInboxList' ).append( '<li class="media" ' + visto + ' id="vistaPrev_'+record.usuario.id+'"><div class="media-left"><a href="' + base_url + 'inbox/' + record.usuario.usuarioUrl + '"><img class="media-object img-circle" src="' + record.usuario.urlFotoPerfil + '" style="width: 40px;height:40px"></a></div><div class="media-body"><a href="' + base_url + 'inbox/' + record.usuario.usuarioUrl + '">' + record.usuario.DatosGenerale.nombre + ' ' + record.usuario.DatosGenerale.apellidoP + ' ' + record.usuario.DatosGenerale.apellidoM + '</a><br><div class="text-left msg" style="margin-top:-5px;">' + record.mensaje + '</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" ><span class="fecha">' + formattedDate( record.fecha ) + ' </span><span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>' );
+      $( '#notificacionesInboxList' ).append( '<li class="media" ' + visto + ' id="vistaPrev_'+record.usuario.id+'"><div class="media-left"><a href="' + base_url + 'inbox/' + record.usuario.usuarioUrl + '"><img class="media-object img-circle" src="' + record.usuario.urlFotoPerfil + '" style="width: 40px;height:40px"></a></div><div class="media-body"><a href="' + base_url + 'inbox/' + record.usuario.usuarioUrl + '" style="color:black">' + record.usuario.DatosGenerale.nombre + ' ' + record.usuario.DatosGenerale.apellidoP + ' ' + record.usuario.DatosGenerale.apellidoM + '</a><br><div class="text-left msg" style="margin-top:5px;">' + record.mensaje + '</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" ><span class="fecha">' + formattedDate( record.fecha ) + ' </span><span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>' );
     } );
     if ( data.length > 0 ) {
       loadInboxList = true;
@@ -173,17 +171,32 @@ function socketManejadores() {
         });
       }
     }
-
     socket.emit( 'inbox' );
   } );
 
-  socket.on( 'crearConversacion', function ( usuario ) {
+  socket.on( 'crearConversacion', function ( usuario , append) {
+    var id= usuario.id;
     var fecha = getDateTime( true );
     $( '#InboxListaContactos' ).prepend( '<tr id="' + usuario.id + '" ><td class="nombreContacto noleido" onclick="cargarInbox(this)"><img src="' + usuario.urlFotoPerfil + '" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> ' + usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM + '</span><br/><input type="hidden" class="time" value="' + fecha + '"><small class="pull-right text-right" style="font-size:70%"><span class="timeFormated">' + formattedDate( fecha ) + '</span> <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>' );
+
+      console.log('Append:'+append)
+    if (append){
+      $( '.nombreContacto' ).removeClass( 'seleccionado' );
+      $( '#chat' ).html( '' );
+      $( '#InboxContact' ).html( $( '#InboxListaContactos' ).find( 'tr#' + id ).find( 'span.name' ).html() );
+      $( '#InboxListaContactos' ).find( 'tr#' + id ).find( 'td' ).removeClass( 'noleido' );
+      $( '#InboxListaContactos' ).find( 'tr#' + id ).find( 'td' ).addClass( 'seleccionado' );
+      $( '#InboxMsg' ).css( 'background-color', '#FFF' );
+      $( '#inboxInputText' ).prop( 'disabled', false );
+      $( '#inboxBtnEnviar' ).prop( 'disabled', false );
+      cargarMensajes( id );
+    }
   } );
 
   socket.on( 'obtenerUsuarioId', function ( id ) {
-    if ( $( '#InboxListaContactos' ).find( 'tr#' + id ).length > 0 ) {
+    if ( $( '#InboxListaContactos' ).find( 'tr#' + id ).length <= 0) {
+      socket.emit( 'crearConversacion', id ,true);
+    } else {
       $( '.nombreContacto' ).removeClass( 'seleccionado' );
       $( '#chat' ).html( '' );
       $( '#InboxContact' ).html( $( '#InboxListaContactos' ).find( 'tr#' + id ).find( 'span.name' ).html() );
@@ -528,7 +541,7 @@ function getDateTime( format ) {
 
 $( document ).ready( function () {
   var chat = document.getElementById( "notificacionesInboxList" );
-  if ( chat.addEventListener ) {
+  if (chat.addEventListener ) {
     // IE9, Chrome, Safari, Opera
     chat.addEventListener( "mousewheel", cargarInboxListCondicional, false );
     // Firefox

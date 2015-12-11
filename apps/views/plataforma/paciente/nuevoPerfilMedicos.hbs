@@ -1,69 +1,3 @@
-<!-- interno -->
-<!-- empieza nav superior -->
-<nav id="" class="navbar navigator navbar-static-top">
-  <section class="navigator-container container-fluid">
-    <div class="navigator-inner row">
-      <div id="logo-section" class="navigator-inner-section col-lg-3 col-md-3 col-sm-4 col-xs-10">
-        <div class="navbar-header navigator-inner-section-cell">
-          <a href="/" class="navbar-brand nav-logo white no-transform">
-            <img class="logoIntermed" src="img/logos/logo1.png" />
-          </a>
-        </div>
-      </div>
-      <button type="button" class="navbar-toggle collapsed btn-menu col-xs-2" data-toggle="collapse" data-target="#collapse-menu" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="glyphicon glyphicon-menu-hamburger"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="collapse-menu">
-        <div id="search-section" class="navigator-inner-section col-lg-5 col-md-4 col-sm-1 col-xs-12 hidden-sm">
-          <div class="input-group navbar-search navigator-inner-section-cell col-md-10 col-md-offset-1 h65-medium">
-            <input type="text" class="form-control" id="" name="" placeholder="Search for people, places or things" required="">
-            <span class="input-group-btn">
-              <button class="btn btn-default" type="button">
-                <span class="glyphicon glyphicon-search"></span>
-              </button>
-            </span>
-          </div>
-        </div>
-
-        <div id="menu-section" class="navigator-inner-section col-lg-4 col-md-5 col-sm-8 col-xs-12">
-          <div class="navigator-inner-section-cell">
-            <ul class="nav nav-pills nav-justified navigator-inner-section-menu h57-cond s20">
-              <li>
-                <a href="#">Perfil</a>
-              </li>
-              <li>
-                <a href="#">Oficina</a>
-              </li>
-              <li>
-                <a href="#">Agenda</a>
-              </li>
-              <li>
-                <a href="#">Mensajes</a>
-              </li>
-              <li class="visible-sm dropdown navigator-dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                  Buscar
-                </a>
-                <div class="dropdown-menu dropdown-form panel navigator-dropdown-panel">
-                  <div class="panel-body input-group navbar-search navigator-inner-section-cell h65-medium">
-                    <input type="text" class="form-control input-lg" id="" name="" placeholder="Search for people, places or things">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default btn-lg" type="button">
-                        <span class="glyphicon glyphicon-search"></span>
-                      </button>
-                    </span>
-                  </div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</nav>
-
 <div id="sticky-anchor"></div>
 <nav class="nav-menu sticky h67-medcond">
   <div class="container-fluid nav-menu-container">
@@ -183,69 +117,18 @@
                     {{#if usuario.DatosGenerale}}
                       {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
                     {{/if}}
-                  </h2>
-                <h4 class="profile-location">
-                  {{#if usuario.direccion}}
-                      {{usuario.direccion.Municipio.municipio}}, {{usuario.direccion.Municipio.Estado.estado}}, MX.
-                  {{/if}}</h4>
-                <ul class="list-inline profile-esp">
-                  {{#each usuario.especialidades}}
-                    {{#unless subEsp}}
-                      <li>{{Especialidad.especialidad}}</li>
-                    {{/unless}}
-                  {{/each}}
-                </ul>
-                <ul class="list-inline profile-subesp">
-                  {{#set "subEspPrint"}}{{/set}}
-                  {{#each usuario.especialidades}}
-                    {{#if subEsp}}
-                      {{#ifSessionVal "subEspPrint"}}
-                        {{#unset "subEspPrint"}}{{/unset}}
-                        <li>
-                          <small>Subespecialidad: </small>
-                        </li>
-                      {{/ifSessionVal}}
-                    {{/if}}
-                    {{#if subEsp}}
-                      <li>
-                        <small>{{Especialidad.especialidad}}</small>
-                      </li>
-                    {{/if}}
-                  {{/each}}
-                </ul>
+                </h2>
               {{else}}
                 <h2 class="profile-name" style="text-transform:capitalize;">
-                {{#ifSession "name"}}
-                  Dr. {{valSession "name"}}
-                  {{else}}
-                  Aun no tenemos tu nombre registrado, continúa tu registro <a onclick="informacionRegistroMedico()">aquí</a>.
-                {{/ifSession}}</h2>
+                {{valSession "name"}}
                 <h4 class="profile-location">
                   {{#ifSession "municipio"}}
                     {{valSession "municipio"}}, {{valSession "estado"}}. MX
-                  {{/ifSession}}</h4>
-                <ul class="list-inline profile-esp">
-                  {{#eachValSession "especialidades"}}
-                    {{#unless subEsp}}
-                    <li>
-                      {{Especialidad.especialidad}}
-                    </li>
-                    {{/unless}}
-                  {{/eachValSession}}
-                </ul>
-                <ul class="list-inline profile-subesp">
-                  {{#ifsubEsp}}
-                    <li>
-                      Subespecialidad:
-                    </li>
-                    {{#eachValSession "especialidades"}}
-                      {{#if subEsp}}
-                      <li>
-                        <small>{{Especialidad.especialidad}}</small>
-                      </li>
-                      {{/if}}
-                    {{/eachValSession}}
-                  {{/ifsubEsp}}
+                  {{/ifSession}}
+                </h4>
+
+                <ul class="media-right profileExtraNav list-inline">
+                  <li class="active"><a href="#" onclick="cargarInfoSesion();editaPerfBoot();">Edita tu perfil</a></li>
                 </ul>
               {{/if}}
             </div>

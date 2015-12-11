@@ -86,7 +86,10 @@ var intermed = require( '../apps/controllers/Intermed' );
  *	function encargada de tener listo todo
  */
 var iniciar = function () {
+
   app.all( '*', function ( req, res, next ) {
+    var revivirSesion = false;
+    rutas.routeLife( 'main', 'main', hps );
     if ( req.session.passport.user ) {
       hps.varSession( req.session.passport.user );
       res.cookie( 'intermed_sesion', {
@@ -98,10 +101,17 @@ var iniciar = function () {
     else {
       hps.varSession([]);
       //Eliminar cookie
-      res.clearCookie( 'intermed_sesion' );
+      if (req.cookies['intermed_sesion'] && req.method == "GET"){
+        //Revivir sesión si existe usuario con ['intermed_sesion']['id'] y ['intermed_sesion']['usuarioUrl']
+        if (req.cookies['intermed_sesion']['id'] && req.cookies['intermed_sesion']['usuario']){
+          revivirSesion = true;
+          intermed.callController( 'usuarios', 'revivirSesion', {id:req.cookies['intermed_sesion']['id'],usuarioUrl:req.cookies['intermed_sesion']['usuario']}, req, res );
+        }
+      }
     }
-    rutas.routeLife( 'main', 'main', hps );
-    next();
+    if (!revivirSesion){
+      next();
+    }
   } );
 
   //LogIn
@@ -1203,7 +1213,7 @@ var iniciar = function () {
     if (!req.session.passport.user){
       res.redirect( '/' );
     }else {
-      rutas.routeLife( 'plataforma', 'plataforma', hps );
+      rutas.routeLife( 'plataforma2', 'plataforma', hps );
       intermed.callController('inbox','index', req.body, req, res);
     }
   });
@@ -1212,14 +1222,14 @@ var iniciar = function () {
     if (!req.session.passport.user){
       res.redirect( '/' );
     }else {
-      rutas.routeLife( 'plataforma', 'plataforma', hps );
+      rutas.routeLife( 'plataforma2', 'plataforma', hps );
       intermed.callController('inbox','index', req.body, req, res);
     }
   });
 
   app.post('/inbox/enviar', function (req, res){
       if (!req.session.passport.user){
-        res.send({'success':false,'error':0});
+        res.send({'success':false,'error':1});
       }else {
         intermed.callController('inbox','enviar', req.body, req, res);
       }
@@ -1227,7 +1237,7 @@ var iniciar = function () {
 
   app.post('/inbox/cargartodos', function (req, res){
       if (!req.session.passport.user){
-        res.send({'success':false,'error':0});
+        res.send({'success':false,'error':1});
       }else {
         intermed.callController('inbox','cargartodos', req.body, req, res);
       }
@@ -1235,7 +1245,7 @@ var iniciar = function () {
 
   app.post('/inbox/cargarMensajesPorUsuario', function (req, res){
       if (!req.session.passport.user){
-        res.send({'success':false,'error':0});
+        res.send({'success':false,'error':1});
       }else {
         intermed.callController('inbox','cargarMensajesPorUsuario', req.body, req, res);
       }
@@ -1243,7 +1253,7 @@ var iniciar = function () {
 
   app.post('/inbox/cargarMensajesPorUsuarioAnteriores', function(req, res){
       if (!req.session.passport.user){
-        res.send({'success':false,'error':0});
+        res.send({'success':false,'error':1});
       }else {
         intermed.callController('inbox','cargarMensajesPorUsuarioAnteriores', req.body, req, res);
       }
@@ -1353,7 +1363,7 @@ var iniciar = function () {
 
     app.post('/notificaciones/configurarNotificacion', function(req, res){
         if (!req.session.passport.user){
-          res.send({'success':false,'error':0});
+          res.send({'success':false,'error':1});
         }else {
           intermed.callController('notificaciones','configurarNotificacion', req.body, req, res);
         }
@@ -1473,6 +1483,50 @@ var iniciar = function () {
     });
     app.post('/deleteFon',function( req, res ){
       intermed.callController('contactos','deleteFon',req, res);
+    });
+
+    app.post('/medicos/aseguradorasTraer', function (req, res){
+      intermed.callController( 'medicos', 'medicoAseguradorasTraer', req.body, req, res );
+    });
+
+    app.post('/medicos/clinicasTraer', function (req, res){
+      intermed.callController( 'medicos', 'medicoClinicasTraer', req.body, req, res );
+    });
+
+    app.post('/medicos/clinicasActualizar',function (req, res){
+      intermed.callController( 'medicos', 'medicoClinicasActualizar', req.body, req, res );
+    });
+
+    app.post('/medicos/aseguradorasActualizar',function (req, res){
+      intermed.callController( 'medicos', 'medicoAseguradorasActualizar', req.body, req, res );
+    });
+
+    app.post('/paciente/cargarUbicacion',function (req, res){
+      intermed.callController('pacientes','cargarUbicacion',req.body,req, res);
+    });
+
+    app.post('/registrarubicacionPaciente',function(req,res){
+      intermed.callController('ubicacion','registrarubicacionPaciente',req.body,req, res);
+    });
+
+    app.post( '/cargarListaEspCol', function ( req, res ) {
+      intermed.callController( 'contactos', 'cargarListaEspCol', {
+        usuario: req.body.usuario
+      }, req, res );
+    } );
+
+    app.post('/cargarListaColegasByEsp', function (req, res){
+      intermed.callController( 'contactos', 'cargarListaColegasByEsp', req.body, req, res );
+    });
+
+    app.post('/cargarListaAlfCol', function (req, res){
+      intermed.callController( 'contactos', 'cargarListaAlfCol', {
+        usuario: req.body.usuario
+      }, req, res );
+    });
+
+    app.post('/cargarListaColegasByAlf', function (req, res){
+      intermed.callController( 'contactos', 'cargarListaColegasByAlf', req.body, req, res );
     });
 }
 

@@ -897,14 +897,14 @@ footer a:visited {
 }
 
 .separator2 {
-  border: 5px solid #fbad18;
+  border: 5px solid #1E6488;
   margin: 10px 0;
 }
 
 .separator3 {
   width: 80%;
   float: right;
-  border: 8px solid #fbad18;
+  border: 8px solid #1E6488;
   margin: 10px 0;
 }
 
@@ -960,26 +960,26 @@ footer a:visited {
   margin-bottom: 0;
   padding: 10px 15px;
   color: #fff;
-  background-color: #009cde;
+  background-color: #5D9AB7;
 }
 
 .msgPrecio .trngl {
   position: absolute;
-  top: 12px;
-  left: -25px;
-  width: 20px;
-  height: 20px;
+  top: 6px;
+  left: -29px;
+  width: 27px;
+  height: 27px;
   -webkit-transform: rotate(45deg);
   -ms-transform: rotate(45deg);
   transform: rotate(45deg);
-  background-color: #009cde;
+  background-color: #5D9AB7;
 }
 
 .topMsgReg h4 {
   margin: 0;
   padding: 10px 15px;
   color: #fff;
-  background-color: #fbad18;
+  background-color: #1E6488;
 }
 
 .topMsgReg .msgSuccess {
@@ -1758,11 +1758,27 @@ div::-webkit-scrollbar-thumb:window-inactive {
   color: #969ba2;
 }
 
+.ui-autocomplete{
+  padding: 0px;
+  list-style-type: none;
+}
+
+.ui-autocomplete li{
+  padding: 10px;
+  background-color: white;
+  color:black;
+}
+
+.ui-autocomplete a{
+  text-decoration: none;
+  color:black;
+}
+
 .ui-autocomplete-category{
   padding-top: 5px;
   padding-bottom: 5px;
   font-weight: bold;
-  background-color: #EEE;
+  background-color: #EEE!important;
   padding-left: 10px;
 }
 
@@ -2113,4 +2129,80 @@ li.error{
 
 .tabBootBox {
   padding: 15px 0;
+}
+
+
+.sortable .placeholder {
+  outline: 1px dashed #4183C4;
+}
+
+.sortable .mjs-nestedSortable-error {
+  outline: 1px dashed #A92D2D;
+}
+
+#sortableExpertoEnCont>ol,
+#sortableAseguradoraCont>ol,
+#sortableClinicaCont>ol{
+  padding-left:0px;
+  max-width: 100%;
+}
+
+ol.sortable,ol.sortable ol {
+  list-style-type: none;
+}
+
+.sortable li div {
+  border: 1px solid #d4d4d4;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  cursor: move;
+  border-color: rgba(0,0,0,0.3);
+  margin: 0;
+  margin-top:3px;
+  padding: 3px;
+}
+
+.sortable li.mjs-nestedSortable-collapsed.mjs-nestedSortable-hovering div {
+  border-color: #999;
+}
+
+.sortable li.mjs-nestedSortable-collapsed > ol {
+  display: none;
+}
+
+.sortable span.ui-icon {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+}
+
+.sortable .menuDiv {
+  background: rgba(0,0,0,0.2);
+  margin:1px;
+  padding-top:2px;
+  padding-bottom:2px;
+  padding-left: 20px!important;
+}
+
+.sortable .menuDiv .glyphicon{
+  font-size:80%;
+}
+
+.sortable .menuEdit {
+  background: #FFF;
+}
+
+.sortable .itemTitle {
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.sortable .deleteMenu {
+  float: right;
+  cursor: pointer;
+}
+
+.colEsp {
+  font-size: 80%;
 }

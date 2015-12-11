@@ -314,11 +314,11 @@ module.exports = {
             { model: models.Direccion}
           ]
         }).then(function(medico) {
-                //Rendereando index y pasando los registros a la vista
-                res.render('actualizar', {
-                  layout: null,
-                  medico: medico
-                });
+            //Rendereando index y pasando los registros a la vista
+            res.render('actualizar', {
+              layout: null,
+              medico: medico
+            });
         });
     },
 
@@ -341,7 +341,7 @@ module.exports = {
   },
 
   informacionRegistro: function ( object, req, res ) {
-    if ( req.session.passport ) {
+    if (req.session.passport && req.session.passport.user) {
       models.Usuario.findOne( {
         where: {
           id: req.session.passport.user.id
@@ -365,49 +365,73 @@ module.exports = {
           } ]
                 } ]
       } ).then( function ( usuario ) {
-        res.send( usuario );
+        res.send( {success:true,result: usuario} );
       } );
     }
     else {
-      res.send( {
-        'response': 'error'
-      } );
+      res.status( 200 )
+          .send({success:false,error:1});
     }
   },
 
   regMedPasoUno: function ( object, req, res ) {
     if ( req.session.passport.user && req.session.passport.user.tipoUsuario === "M" ) {
       var usuario_id = req.session.passport.user.id;
-      models.DatosGenerales.upsert( {
-        nombre: object[ 'nombreRegMed' ],
-        apellidoP: object[ 'apePatRegMed' ],
-        apellidoM: object[ 'apeMatRegMed' ],
-        usuario_id: usuario_id
-      } ).then( function ( result ) {
-        models.Biometrico.upsert( {
-          genero: object[ 'gender' ],
-          usuario_id: usuario_id
-        } ).then( function ( result ) {
-          models.Medico.findOne( {
-            where: {
-              usuario_id: usuario_id
-            }
-          } ).then( function ( medico ) {
-            medico.update( {
-              curp: object[ 'curpRegMed' ],
-              cedula: object[ 'cedulaRegMed' ]
-            } ).then( function ( result ) {
-              res.send( {
-                'result': 'success'
-              } );
+      models.Medico.findOne({where: {
+          usuario_id: {$ne: req.session.passport.user.id},
+          curp: object[ 'curpRegMed' ]
+        }}).then(function(medicoCurp){
+          if (!medicoCurp){
+            models.Medico.findOne({where: {
+                usuario_id: {$ne: req.session.passport.user.id},
+                cedula: object[ 'cedulaRegMed' ]
+              }}).then(function(medicoCedula){
+                if (!medicoCedula){
+                  models.DatosGenerales.upsert( {
+                    nombre: object[ 'nombreRegMed' ],
+                    apellidoP: object[ 'apePatRegMed' ],
+                    apellidoM: object[ 'apeMatRegMed' ],
+                    usuario_id: usuario_id
+                  } ).then( function ( result ) {
+                    models.Biometrico.upsert( {
+                      genero: object[ 'gender' ],
+                      usuario_id: usuario_id
+                    } ).then( function ( result ) {
+                      models.Medico.findOne( {
+                        where: {
+                          usuario_id: usuario_id
+                        }
+                      } ).then( function ( medico ) {
+                        medico.update( {
+                          curp: object[ 'curpRegMed' ],
+                          cedula: object[ 'cedulaRegMed' ]
+                        } ).then( function ( result ) {
+                          res.send( {
+                            'success': true
+                          } );
+                        } );
+                      } )
+                    } )
+                  } );
+                } else {
+                  res.status(200).send( {
+                    'success': false,
+                    'error': 102
+                  } );
+                }
+              });
+          } else {
+            res.status(200).send( {
+              'success': false,
+              'error': 101
             } );
-          } )
-        } )
-      } )
+          }
+        })
     }
     else {
-      res.send( {
-        'result': 'error'
+      res.status(200).send( {
+        'success': false,
+        error: 1
       } );
     }
   },
@@ -787,5 +811,89 @@ module.exports = {
     } else {
       res.status(200).json({'success':false});
     }
+  },
+
+  medicoAseguradorasTraer: function (object, req, res){
+      if (req.session.passport.user){
+        models.Medico.findOne({
+          where: { usuario_id : req.session.passport.user.id},
+          attributes: ['id']
+        }).then(function(medico){
+          models.MedicoAseguradora.findAll({
+            where: { medico_id: medico.id},
+            order: [['orden','ASC']]
+          }).then(function(expertoEn){
+            res.status(200).json({'success':true, 'result':expertoEn});
+          });
+        });
+      } else {
+        res.status(200).json({'success':false});
+      }
+  },
+
+  medicoClinicasTraer: function (object, req, res){
+      if (req.session.passport.user){
+        models.Medico.findOne({
+          where: { usuario_id : req.session.passport.user.id},
+          attributes: ['id']
+        }).then(function(medico){
+          models.MedicoClinica.findAll({
+            where: { medico_id: medico.id},
+            order: [['orden','ASC']]
+          }).then(function(expertoEn){
+            res.status(200).json({'success':true, 'result':expertoEn});
+          });
+        });
+      } else {
+        res.status(200).json({'success':false});
+      }
+  },
+
+  medicoClinicasActualizar: function (object, req, res){
+      if (req.session.passport.user){
+        models.Medico.findOne({
+          where: { usuario_id : req.session.passport.user.id},
+          attributes: ['id']
+        }).then(function(medico){
+          models.MedicoClinica.destroy({
+            where: { medico_id: medico.id}
+          }).then(function(result){
+            object.clinicas.forEach(function(rec){
+              models.MedicoClinica.create({
+                medico_id: medico.id,
+                clinica: rec.val,
+                orden: rec.num
+              });
+            });
+            res.status(200).json({'success':true});
+          });
+        });
+      } else {
+        res.status(200).json({'success':false});
+      }
+  },
+
+  medicoAseguradorasActualizar: function (object, req, res){
+      if (req.session.passport.user){
+        models.Medico.findOne({
+          where: { usuario_id : req.session.passport.user.id},
+          attributes: ['id']
+        }).then(function(medico){
+          models.MedicoAseguradora.destroy({
+            where: { medico_id: medico.id}
+          }).then(function(result){
+            object.aseguradoras.forEach(function(rec){
+              models.MedicoAseguradora.create({
+                medico_id: medico.id,
+                aseguradora: rec.val,
+                orden: rec.num
+              });
+            });
+            res.status(200).json({'success':true});
+          });
+        });
+      } else {
+        res.status(200).json({'success':false});
+      }
   }
 }
