@@ -1,5 +1,4 @@
 function agregarUbicacion(ubicacion_id){
-  console.log('Ubicacion_id: ' + ubicacion_id);
   var id = '', nombre = '', principal = '', calle = '', numero = '', interior = '';
   var callea = '', calleb = '', estado = '', municipio = '', localidad = '', cp = '';
   var latitud = '', longitud = '';
@@ -1551,7 +1550,6 @@ function registroMedicoDatosPersonales(){
     dataType: "json",
     cache: false,
     success: function ( data ) {
-      console.log('Result: ' + JSON.stringify(data));
       if (data.success ){
         if ( data.result.DatosGenerale) {
           nombre = data.result.DatosGenerale.nombre;
@@ -1736,7 +1734,6 @@ function registroMedicoDatosPago(){
     dataType: "json",
     cache: false,
     success: function ( data ) {
-      console.log('Result: ' + JSON.stringify(data));
       if (data.success ){
           if ( data.result.Medico.pago == 0 ) {
             continuar = false;
