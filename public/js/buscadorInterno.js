@@ -42,7 +42,6 @@ function replaceChars(cadena){
 
 $(document).ready(function(){
   if ($( "#buscadorInterno" ).length > 0){
-
     var autocompleteInicial = [];
 
     var oficina = [
@@ -78,18 +77,22 @@ $(document).ready(function(){
       delay: 0,
       minLength: 0,
       source: function( request, response ) {
-        console.log('Test');
         request.term = replaceChars(request.term);
         var busqueda = request.term.split(" ");
         busqueda = $.grep(busqueda, function(v, k){
             return $.inArray(v ,busqueda) === k;
         });
+        var pacientes = 0;
+        if ($('#tipoBusquedaPaciente').is(':checked')){
+          pacientes = 1;
+        }
         $.ajax({
           url: "/buscadorInterno",
           dataType: "json",
           method: 'POST',
           data: {
-            busqueda: busqueda
+            busqueda: busqueda,
+            pacientes: pacientes
           },
           success: function( data ) {
             var allUsers = [];
@@ -107,7 +110,9 @@ $(document).ready(function(){
               user = newUser;
               allUsers.push(newUser);
             })
-            allUsers = oficina.concat(allUsers);
+            if (!$('#tipoBusquedaPaciente').is(':checked')){
+              allUsers = oficina.concat(allUsers);
+            }
             response(customFilter(allUsers,request.term));
           }
         });
@@ -166,18 +171,22 @@ $(document).ready(function(){
         delay: 0,
         minLength: 0,
         source: function( request, response ) {
-          console.log('Test');
           request.term = replaceChars(request.term);
           var busqueda = request.term.split(" ");
           busqueda = $.grep(busqueda, function(v, k){
               return $.inArray(v ,busqueda) === k;
           });
+          var pacientes = 0;
+          if ($('#tipoBusquedaPaciente').is(':checked')){
+            pacientes = 1;
+          }
           $.ajax({
             url: "/buscadorInterno",
             dataType: "json",
             method: 'POST',
             data: {
-              busqueda: busqueda
+              busqueda: busqueda,
+              pacientes: pacientes
             },
             success: function( data ) {
               var allUsers = [];
@@ -194,8 +203,10 @@ $(document).ready(function(){
                 newUser['label']  = newUser['name'];
                 user = newUser;
                 allUsers.push(newUser);
-              })
-              allUsers = oficina.concat(allUsers);
+              });
+              if (!$('#tipoBusquedaPaciente').is(':checked')){
+                allUsers = oficina.concat(allUsers);
+              }
               response(customFilter(allUsers,request.term));
             }
           });
