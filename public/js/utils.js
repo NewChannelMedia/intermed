@@ -4221,7 +4221,9 @@ function searchingData(){
   function loadEspecialidades(){
     // carga los datos de medicoEspecialidades
     var html = "";
+    var html3 = "";
     var contador = 1;
+    var contador2 = 1;
     //carga todas las especialidades
     $.post('/todasEspecialidades',function(p){
       var html2 = "";
@@ -4233,24 +4235,37 @@ function searchingData(){
     });
     $.post('/loadEspecialidades', function(data){
       $.each(data.MedicoEspecialidads, function( i, item ){
-        html += '<tr style="color:white;">'
-          html += '<td ><center>'+contador+'</center></td>';
-          if( item.subEsp == 0 ){
+        if( item.subEsp == 0 ){
+          html += '<tr style="color:white;">'
+            html += '<td ><center>'+contador+'</center></td>';
             html += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
-            html += '<td><center>--x--</center></td>';
-          }else{
-            html += '<td><center>--x--</center></td>';
-            html += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
-          }
-          html += '<td><center>';
-            html += '<button type="button" onclick="deleteEsp(\'#mDelete-'+i+'\');" oculto="'+item.id+'" class="btn btn-danger" id="mDelete-'+i+'">';
-              html += '<span class="glyphicon glyphicon-remove-sign"></span>';
-            html += '</button>';
-          html += '</center></td>';
-        html += '</tr>';
-        contador++;
+            html += '<td><center>';
+              html += '<button type="button" onclick="deleteEsp(\'#mDelete-'+i+'\');" oculto="'+item.id+'" class="btn btn-danger" id="mDelete-'+i+'">';
+                html += '<span class="glyphicon glyphicon-remove-sign"></span>';
+              html += '</button>';
+            html += '</center></td>';
+          html += '</tr>';
+          contador++;
+        }
       });
       $("#tableEspecialidades").html(html);
+    });
+    $.post('/loadEspecialidades', function(data){
+      $.each(data.MedicoEspecialidads, function( i, item){
+        if( item.subEsp == 1 ){
+          html3 += '<tr style="color:white;">'
+            html3 += '<td ><center>'+contador2+'</center></td>';
+            html3 += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
+            html3 += '<td><center>';
+              html3 += '<button type="button" onclick="deleteSubEsp(\'#mDeletes-'+i+'\');" oculto="'+item.id+'" class="btn btn-warning" id="mDeletes-'+i+'">';
+                html3 += '<span class="glyphicon glyphicon-remove-sign"></span>';
+              html3 += '</button>';
+            html3 += '</center></td>';
+          html3 += '</tr>';
+          contador2++;
+        }
+      });
+      $("#tableSubEspecialidades").html(html3);
     });
   }
   function loadPadecimientos(){
@@ -4331,18 +4346,16 @@ function searchingData(){
       medico_id = data.id;
     }).done(function(){
       var especial = $("#autoEspecialidad option:selected").val();
-      var check;
+      var checado;
       if( $("#subEspEdit").is(":checked") ){
-        console.log("si esta checado");
-        check = 1;
+        checado = 1;
       }else{
-        console.log("no esta checado");
-        check = 0;
+        checado = 0;
       }
       // se inserta una nueva especialidad
       $.post('/editEspecialidades',{
         especialidad:especial,
-        supEsp:check,
+        checado:checado,
         medico_id: medico_id
       },function( data ){
         if( data != null ){
@@ -4367,6 +4380,22 @@ function searchingData(){
       }
     });
   }
+  //<-------------- Fecha Lunes 14-12-2015 ------------------>
+    function deleteSubEsp(id){
+      var id = $(id).attr('oculto');
+      bootbox.confirm('¿Estas seguro de eliminar esto? ', function(result){
+        if( result ){
+          $.post('/deleteSubEsp',{id:id}, function( data ){
+            if( data == "OK" ){
+              loadEspecialidades();
+            }else{
+              console.log("Error al eliminar la sub-Especialidad");
+            }
+          });
+        }
+      });
+    }
+  //<-------------- FECHA LUNES ----------------------------->
   function traePadecimientos(){
     $.post('/traePadecimientos',function( data ){
       var html = "";

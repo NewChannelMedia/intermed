@@ -996,10 +996,9 @@ module.exports = {
   editEspecialidades: function( req, res ){
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
-        console.log("lo que quieras " + req.body.subEsp);
         models.MedicoEspecialidad.create({
         especialidad_id: parseInt(req.body.especialidad),
-        supEsp: parseInt(req.body.supEsp),
+        subEsp: parseInt(req.body.checado),
         medico_id: parseInt(req.body.medico_id)
       }).then(function(creado){
         res.send(creado);
@@ -1017,6 +1016,20 @@ module.exports = {
           }else{
             res.sendStatus(404);
           }
+      });
+    }
+  },
+  deleteSubEsp: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.MedicoEspecialidad.destroy({
+        where:{id:req.body.id}
+      }).then(function(destruido){
+        if( destruido == 1 ){
+          res.sendStatus(200);
+        }else{
+          res.sendStatus(404);
+        }
       });
     }
   },
