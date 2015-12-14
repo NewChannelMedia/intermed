@@ -132,6 +132,9 @@ else {
 
     if ( location.pathname.substring( 0, 19 ) === '/nuevoperfilmedicos' ) {
       cargarListaEspCol( $( '#usuarioPerfil' ).val() );
+      if ($('#listaAmistades')){
+        cargarListaAlfAmi( $( '#usuarioPerfil' ).val() );
+      }
     }
 
     /* validaciones al registro */
@@ -173,7 +176,7 @@ function saveStepOne() {
         if ( data.success) {
           actualizarSesion();
           bootbox.hideAll();
-          registroMedicoDatosPago();
+          //registroMedicoDatosPago();
         } else {
           if (data.error){
             manejadorDeErrores(data.error);
@@ -2640,6 +2643,7 @@ $(document).ready(function(){
   });
 })
 
+MostrarUbicaciones();
 
 
 }
@@ -3891,6 +3895,7 @@ function cargarListaEspCol( usuario ) {
     cache: false,
     success: function ( data ) {
       $('#especialidadesList').html('');
+      $('#listaColegas').html('');
       $('#tipoFiltro').html('una especialidad');
       if ( data.success ) {
         var contenido = '';
@@ -3988,6 +3993,7 @@ function cargarListaAlfCol( usuario ) {
     cache: false,
     success: function ( data ) {
         $('#especialidadesList').html('');
+        $('#listaColegas').html('');
         $('#tipoFiltro').html('una letra');
         if ( data.success ) {
           var contenido = '';
@@ -4431,3 +4437,94 @@ function searchingData(){
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
+
+
+function cargarListaAlfAmi( usuario ) {
+  $.ajax( {
+    async: false,
+    url: '/cargarListaAlfAmi',
+    type: 'POST',
+    data: {
+      usuario: usuario
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+        $('#LetrasList').html('');
+        $('#listaAmistades').html('');
+        $('#tipoFiltroAm').html('una letra');
+        if ( data.success ) {
+          var contenido = '';
+          var primero = '';
+          data.result.forEach(function(rec){
+            if (primero == ""){
+              primero = rec.Letra;
+            }
+            contenido += `<li>
+              <a onclick="cargarListaColegasByAlf('`+usuario+`','`+ rec.Letra +`')">`+ rec.Letra +` <span class="badge pull-right">`+ rec.Total +` </span></a>
+            </li>`;
+          });
+          $('#LetrasList').html(contenido);
+          if (primero != ""){
+            cargarListaAmistadesByAlf(usuario,primero);
+          }
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+function cargarListaAmistadesByAlf(usuario_id,letra){
+  $.ajax( {
+    async: false,
+    url: '/cargarListaAmistadesByAlf',
+    type: 'POST',
+    data: {
+      usuario_id: usuario_id,
+      letra: letra
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      $('#listaAmistades').html('');
+      if ( data.success ) {
+        var contenido = '';
+        contenido += '<div id="'+ letra +'" class="row" ><h1 class="h67-medcond">'+letra+'</h1>';
+        data.result.forEach(function(res){
+          contenido += `
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div >
+                <a class="pPic" href="/perfil/`+ res.usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  <span>`+ res.DatosGenerale.nombre +`</span>&nbsp;<span>`+ res.DatosGenerale.apellidoP +` `+ res.DatosGenerale.apellidoM +`</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span class="colEsp"></span>
+                </div>
+                <a class="h67-medcondobl" href="/perfil/`+ res.usuarioUrl +`">Ver Perfil</a>
+              </div>
+            </div>
+          </div>`
+        })
+        contenido += '</div>';
+        $('#listaAmistades').html(contenido);
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
