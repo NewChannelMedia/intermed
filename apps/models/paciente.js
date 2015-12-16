@@ -22,6 +22,7 @@ module.exports = function ( sequelize, DataTypes ) {
         Paciente.hasMany( models.PacientePadecimiento );
         Paciente.hasMany( models.PacienteAlergia );
         Paciente.hasMany( models.ContactoEmergencia );
+        Paciente.hasMany(models.MedicoFavorito)
 
         Paciente.belongsTo( models.Usuario, {
           onDelete: "CASCADE",

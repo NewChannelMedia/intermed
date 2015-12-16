@@ -721,7 +721,7 @@ function loginModal(){
     bootbox.hideAll();
   },
     size:'medium',
-    backdrop:false,
+    backdrop:true,
     message: `
       <div class="" id="logInicio">
         <form method="POST" action="/auth/correo">
@@ -808,6 +808,7 @@ function registro(){
     bootbox.hideAll();
   },
     size:'large',
+    backdrop: true,
     closeButton:true,
     message: `
       <div id="CatRegModal">
@@ -1574,7 +1575,7 @@ function registroMedicoDatosPersonales(){
         else continuar = false;
 
           if (continuar){
-            registroMedicoDatosPago();
+            //registroMedicoDatosPago();
           } else {
             $('.modal-body').css('padding',0);
             bootbox.dialog({

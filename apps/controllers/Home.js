@@ -201,7 +201,11 @@ module.exports = {
                           var prueba = "";
                           plataform2.plataform2(req,res, function(response){
                             medico['MedicoAseguradoras'] = aseguradora;
-                            res.render( tipoUsuario + '/nuevoPerfilMedicos', {
+                            var vista = '/nuevoPerfilMedicos';
+                            if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
+                              var vista = '/vistaPerfilNoRegistrado';
+                            }
+                            res.render( tipoUsuario + vista, {
                               medico: medico,
                               estados: estados,
                               usuario:{Direccions: JSON.parse(JSON.stringify(direccion))},
@@ -212,13 +216,14 @@ module.exports = {
                     });
                   });
           } else {
-            plataform2.plataform2(req,res, function(response){
-              res.render( tipoUsuario + '/nuevoPerfilMedicos', {
-                estados: estados,
-                usuario:{Direccions: JSON.parse(JSON.stringify(direccion))},
-                keywords: response
-              } );
-            });
+            var vista = '/nuevoPerfilMedicos';
+            if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
+              var vista = '/vistaPerfilNoRegistrado';
+            }
+            res.render( tipoUsuario + vista, {
+              estados: estados,
+              usuario:{Direccions: JSON.parse(JSON.stringify(direccion))}
+            } );
           }
         })
         if ( !usuario ) req.session.passport.user.logueado = "1";
@@ -459,6 +464,7 @@ module.exports = {
       });
     }
 }
+
 function armarPerfil( usuario, req, res ) {
   usuario = JSON.parse( JSON.stringify( usuario ) );
   var especialidades = [];
@@ -582,24 +588,27 @@ function armarPerfilNuevo( usuario, req, res ) {
                   }).then(function(aseguradora){
                     plataform2.plataform2( req, res, function(response){
                       medico['MedicoAseguradoras'] = aseguradora;
-                        usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
-                        res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
-                          usuario: usuario,
-                          medico: medico,
-                          keywords: response
-                        } );
-                    });
+                      usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
+                      var vista = '/nuevoPerfilMedicos';
+                      if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
+                        var vista = '/vistaPerfilNoRegistrado';
+                      }
+                      res.render( tipoUsuario.toLowerCase() + vista, {
+                        usuario: usuario,
+                        medico: medico
+                      } );
                   });
               });
           });
     } else {
-      plataform2.plataform2(req, res, function(response){
-        usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
-        res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
-          usuario: usuario,
-          keywords: response
-        } );
-      });
+      usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
+      var vista = '/nuevoPerfilMedicos';
+      if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
+        var vista = '/vistaPerfilNoRegistrado';
+      }
+      res.render( tipoUsuario.toLowerCase() + vista, {
+        usuario: usuario
+      } );
     }
   });
 }

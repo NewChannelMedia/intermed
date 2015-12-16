@@ -73,7 +73,7 @@
               </div>
             </form>
 
-            {{#unless name}}
+            {{#ifSession "id"}}
             <img class="hidden invisible" src="{{valSession 'fotoPerfil'}}" id='fotoPerfilMini' width="30px"/>
             <div id="menu-section" class="navigator-inner-section col-lg-4 col-md-5 col-sm-8 col-xs-12">
               <div class="navigator-inner-section-cell">
@@ -129,12 +129,11 @@
               </div>
             </div>
 
-            {{/unless}}
+            {{/ifSession}}
           </div>
         </div>
       </section>
     </nav>
-
     {{{body}}}
 
   </body><script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
