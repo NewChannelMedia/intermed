@@ -12,6 +12,7 @@ var models = require( '../models' );
 var http = require( 'http' ),
   fs = require( 'fs' );
 var objecto;
+var plataform2 = require( './plataforma.js' );
 module.exports = {
   /**
    *	En el siguiente metodo es el que se encargara del envio
@@ -146,7 +147,6 @@ module.exports = {
   //perfil nuevo
   nuevoPerfilMedicos: function ( object, req, res ) {
     usuario = object.usuario;
-
     if ( ( req.session.passport.user && ( !usuario ) ) || ( req.session.passport.user && usuario == req.session.passport.user.usuarioUrl ) ) {
       var tipoUsuario = '';
       if ( req.session.passport.user.tipoUsuario == 'M' ) tipoUsuario = 'medico';
@@ -198,20 +198,27 @@ module.exports = {
                           where: {medico_id: req.session.passport.user.Medico_id},
                           order: [['orden','ASC']]
                         }).then(function(aseguradora){
+                          var prueba = "";
+                          plataform2.plataform2(req,res, function(response){
                             medico['MedicoAseguradoras'] = aseguradora;
                             res.render( tipoUsuario + '/nuevoPerfilMedicos', {
                               medico: medico,
                               estados: estados,
-                              usuario:{Direccions: JSON.parse(JSON.stringify(direccion))}
+                              usuario:{Direccions: JSON.parse(JSON.stringify(direccion))},
+                              keywords: response
                             } );
+                          });
                         });
                     });
                   });
           } else {
-            res.render( tipoUsuario + '/nuevoPerfilMedicos', {
-              estados: estados,
-              usuario:{Direccions: JSON.parse(JSON.stringify(direccion))}
-            } );
+            plataform2.plataform2(req,res, function(response){
+              res.render( tipoUsuario + '/nuevoPerfilMedicos', {
+                estados: estados,
+                usuario:{Direccions: JSON.parse(JSON.stringify(direccion))},
+                keywords: response
+              } );
+            });
           }
         })
         if ( !usuario ) req.session.passport.user.logueado = "1";
@@ -452,8 +459,6 @@ module.exports = {
       });
     }
 }
-
-
 function armarPerfil( usuario, req, res ) {
   usuario = JSON.parse( JSON.stringify( usuario ) );
   var especialidades = [];
@@ -575,21 +580,26 @@ function armarPerfilNuevo( usuario, req, res ) {
                     where: {medico_id: result.id},
                     order: [['orden','ASC']]
                   }).then(function(aseguradora){
+                    plataform2.plataform2( req, res, function(response){
                       medico['MedicoAseguradoras'] = aseguradora;
-
                         usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
                         res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
                           usuario: usuario,
-                          medico: medico
+                          medico: medico,
+                          keywords: response
                         } );
+                    });
                   });
               });
           });
     } else {
-      usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
-      res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
-        usuario: usuario
-      } );
+      plataform2.plataform2(req, res, function(response){
+        usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
+        res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
+          usuario: usuario,
+          keywords: response
+        } );
+      });
     }
   });
 }

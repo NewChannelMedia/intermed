@@ -18,7 +18,7 @@ module.exports = function ( sequelize, DataTypes ) {
   }, {
     classMethods: {
       associate: function ( models ) {
-
+        Palabras.belongsTo( models.Usuario )
       }
     },
     timestamps: false,
