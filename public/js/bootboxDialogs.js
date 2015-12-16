@@ -644,7 +644,7 @@ function recomendacionesBoot(){
       </div><br /><br /><br />
       <div id=“recomienda” class=“col-md-12”>
          <div class="form-group has-feedback" id="buscador">
-             <label class="control-label"for="buscadorRecomendados" style="color:white">Busca entre tus contactos para que les recomiendes al Dr.<span class="hidden"id="pacienteIdOculto"></span></label>
+             <label class="control-label"for="buscadorRecomendados" style="color:white">Busca entre tus contactos para que les recomiendes al Dr.<span class="hidden" id="pacienteIdOculto"></span></label>
              <input type="text" class="form-control" id="buscadorRecomendados" placeholder="Buscar contacto...">
              <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
          </div>
