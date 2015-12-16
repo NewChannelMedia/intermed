@@ -4431,3 +4431,53 @@ function searchingData(){
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
+
+function CargarExtraBusqueda(){
+  var tipo = $('#tipoBusqueda').prop('value');
+  var cont = '';
+  if (tipo == 1){
+    //Buscar médicos
+    cont += `
+    <div class="col-md-3">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Especialidad">
+      </div>
+    </div>`;
+    cont += `
+    <div class="col-md-3">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Pacecimiento">
+      </div>
+    </div>`;
+    cont += `
+    <div class="col-md-3">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Institución">
+      </div>
+    </div>`;
+    cont += `
+    <div class="col-md-3">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Aseguradora">
+      </div>
+    </div>`;
+  } else if (tipo == 2){
+    //Buscar instituciones
+    cont += `
+    <div class="col-md-6">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Especialidad">
+      </div>
+    </div>`;
+    cont += `
+    <div class="col-md-6">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Aseguradora">
+      </div>
+    </div>`;
+  }
+  $('#extraSearch').html(cont);
+  var height = $('#buscadorFixed').height();
+  height += $('#mainNav').height();
+  $('#buscadorResultado').css('margin-top',height+'px');
+}

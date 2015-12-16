@@ -114,6 +114,9 @@ $(document).ready(function(){
               allUsers = oficina.concat(allUsers);
             }
             response(customFilter(allUsers,request.term));
+            if ($('#mapSearchDiv')){
+              $('ul.ui-autocomplete').css('position','fixed');
+            }
           }
         });
       },

@@ -461,9 +461,7 @@ function cargarMapaPaciente(){
       async: false,
       success: function (data) {
         if (data.success){
-          console.log('data: ' + JSON.stringify(data));
           if (data.result){
-            console.log('data: ' + JSON.stringify(data));
             $('#idDireccion').val(data.result.id);
             $('#idEstado').val(data.result.Municipio.estado_id);
             $('#idMunicipio').val(data.result.municipio_id);
@@ -482,3 +480,29 @@ function cargarMapaPaciente(){
       }
   });
 }
+
+var MapaSearch = null;
+
+$(function(){
+  if($('#mapSearchDiv')){
+    var mapProp = {
+        center:new google.maps.LatLng(21.94304553343818, -101.766357421875),
+        zoom: 4,
+        draggable: true,
+        scrollwheel: true,
+        mapTypeId:google.maps.MapTypeId.ROADMAP
+    };
+
+    MapaSearch=new google.maps.Map(document.getElementById("mapSearchDiv"),mapProp);
+
+    $('#mainNav').removeClass('navbar-static-top');
+    $('#mainNav').addClass('navbar-fixed-top');
+    CargarExtraBusqueda();
+    $( window ).resize(function() {
+      $('#buscadorFixed').css('margin-top',$('#mainNav').height()+'px');
+      var height = $('#buscadorFixed').height();
+      height += $('#mainNav').height();
+      $('#buscadorResultado').css('margin-top',height+'px');
+    });
+  }
+});
