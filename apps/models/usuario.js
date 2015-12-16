@@ -58,6 +58,7 @@ module.exports = function ( sequelize, DataTypes ) {
         Usuario.hasMany( models.MedicoFavorito )
         Usuario.hasMany( models.Notificacion );
         Usuario.hasMany( models.ConfNotUsu );
+        Usuario.hasMany( models.Palabras );
       }
     },
     timestamps: false, //elimina los campos de crated_at, update_at y remove_at
