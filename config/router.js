@@ -1601,6 +1601,11 @@ var iniciar = function () {
       app.post('/deletePalabra', function( req, res ){
         intermed.callController('medicos','deletePalabra',req, res);
       });
+      //<---------- FECHA LUNEs 14-15-2015 -------------->
+        app.post('/deleteSubEsp', function( req, res ){
+          intermed.callController('medicos','deleteSubEsp', req, res );
+        });
+      //<---------- FIN FECHA LUNES --------------------->
     //<-------------- FIN EDICION MEDICO PERFIL --------------->
 }
 
