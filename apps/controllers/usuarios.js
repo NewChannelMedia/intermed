@@ -330,10 +330,10 @@ var enviarCorreoConfirmacion = function ( usuario ) {
     subject: 'Activa tu cuenta',
     name: usuario.nombre,
     correo: usuario.correo,
-    token: usuario.token
+    token: usuario.token,
+    enlace: 'localhost:3000/activar/' + usuario.token,
   };
-  correoUser = usuario.correo;
-  mail.mailer( datos, 'confirmar' ); //se envia el correo
+  mail.send( datos, 'confirmar' ); //se envia el correo
 }
 
 exports.actualizarSesion = function ( object, req, res ) {
@@ -701,38 +701,40 @@ exports.activarCuenta = function ( object, req, res ) {
 };
 
 exports.invitar = function ( object, req, res ) {
-  if ( object.nombre && object.correo && object.mensaje ) {
-    models.Invitacion.create( {
-      usuario_id: req.session.passport.user.id,
-      nombre: object.nombre,
-      correo: object.correo,
-      mensaje: object.mensaje
-    } ).then( function ( invitacion ) {
-      var tokens = String( cryptomaniacs.doEncriptToken( invitacion.id, '' ) );
-      invitacion.update( {
-        token: tokens
-      } ).then( function ( result ) {
-        var datos = {
-          to: object.correo,
-          subject: 'Te invito a usar Intermed',
-          nombre: object.nombre,
-          nombreSesion: req.session.passport.user.name,
-          enlace: 'localhost:3000/invitacion/' + tokens,
-          mensaje: object.mensaje
-        };
-        var result = mail.mailer( datos, 'invitar' ); //se envia el correo
-        setTimeout( function () {
-          res.send( {
-            result: 'success'
-          } );
-        }, 1000 );
+  if (req.session.passport.user){
+    if ( object.nombre && object.correo && object.mensaje ) {
+      models.Invitacion.create( {
+        usuario_id: req.session.passport.user.id,
+        nombre: object.nombre,
+        correo: object.correo,
+        mensaje: object.mensaje
+      } ).then( function ( invitacion ) {
+        var tokens = String( cryptomaniacs.doEncriptToken( invitacion.id, '' ) );
+        invitacion.update( {
+          token: tokens
+        } ).then( function ( result ) {
+          var datos = {
+            to: object.correo,
+            subject: 'Te invito a usar Intermed',
+            nombre: object.nombre,
+            nombreSesion: req.session.passport.user.name,
+            enlace: 'localhost:3000/invitacion/' + tokens,
+            mensaje: object.mensaje
+          };
+          mail.send( datos, 'invitar',res );
+        } );
       } );
-    } );
-  }
-  else {
+    }
+    else {
+      res.send( {
+        success: false,
+        error: 'información incompleta'
+      } );
+    }
+  }else{
     res.send( {
-      result: 'error',
-      error: 'información incompleta'
+      success: false,
+      error: 1
     } );
   }
 };
