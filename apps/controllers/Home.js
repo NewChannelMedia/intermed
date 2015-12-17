@@ -551,45 +551,53 @@ function armarPerfilNuevo( usuario, req, res ) {
   }
 
   var tipoUsuario = 'Paciente';
-  if ( usuario.tipoUsuario == 'M' ) tipoUsuario = 'Medico';
+  if ( usuario.tipoUsuario == 'M' )
+    tipoUsuario = 'Medico';
 
   models[ tipoUsuario ].findOne( {
     where: {
       usuario_id: usuario.id
     }
   } ).then( function ( result ) {
-    if (usuario.tipoUsuario == 'M'){
-        var medico = {};
-        models.MedicoExpertoEn.findAll({
-            where: {medico_id: result.id},
-            order: [['orden','ASC']]
-          }).then(function(expertoEn){
-            medico['MedicoExpertoEns'] = expertoEn;
+    if ( usuario.tipoUsuario == 'M' ) {
+      var medico = {};
+      models.MedicoExpertoEn.findAll( {
+        where: {
+          medico_id: result.id
+        },
+        order: [ [ 'orden', 'ASC' ] ]
+      } ).then( function ( expertoEn ) {
+        medico[ 'MedicoExpertoEns' ] = expertoEn;
 
-            models.MedicoClinica.findAll({
-                where: {medico_id: result.id},
-                order: [['orden','ASC']]
-              }).then(function(clinica){
-                  medico['MedicoClinicas'] = clinica;
-                  models.MedicoAseguradora.findAll({
-                    where: {medico_id: result.id},
-                    order: [['orden','ASC']]
-                  }).then(function(aseguradora){
-                      medico['MedicoAseguradoras'] = aseguradora;
+        models.MedicoClinica.findAll( {
+          where: {
+            medico_id: result.id
+          },
+          order: [ [ 'orden', 'ASC' ] ]
+        } ).then( function ( clinica ) {
+          medico[ 'MedicoClinicas' ] = clinica;
+          models.MedicoAseguradora.findAll( {
+            where: {
+              medico_id: result.id
+            },
+            order: [ [ 'orden', 'ASC' ] ]
+          } ).then( function ( aseguradora ) {
+            medico[ 'MedicoAseguradoras' ] = aseguradora;
 
-                        usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
-                        res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
-                          usuario: usuario,
-                          medico: medico
-                        } );
-                  });
-              });
-          });
-    } else {
+            usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
+            res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
+              usuario: usuario,
+              medico: medico
+            } );
+          } );
+        } );
+      } );
+    }
+    else {
       usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
       res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
         usuario: usuario
       } );
     }
-  });
+  } );
 }
