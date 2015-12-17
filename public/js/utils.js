@@ -4086,7 +4086,7 @@ $(document).ready(function(){
   //carga los estados y se llena el select con la siguiente consulta
   var html = "";
   $.post('/cargaEstados',function(data){
-    html += '<option value="0">--Estados--</option>';
+    html += '<option value="0">Estado</option>';
     $.each(data, function(i, item){
       html += '<option value="'+item.id+'">'+item.estado+'</option>';
     });
@@ -4098,18 +4098,14 @@ $(document).ready(function(){
 function cargarCiudades(id){
   var idABuscar = $(id).val();// se saca el value del select de estados
   // se hace la consulta se manda como parametro el id que se obtuvo de seleccionar el estado
-  var html2 = "";
-  if( idABuscar != 0 ){
-    html2 += '<opton value="0">--Municipio--</option>';
-    $.post('/cargarCiudades',{id:idABuscar}, function(data){
-      $.each(data,function(i, item){
-        html2 += '<option value="'+item.id+'">'+item.municipio+'</option>';
-      });
-      $("#selectCiudad").html(html2);
+  $.post('/cargarCiudades',{id:idABuscar}, function(data){
+    var cont = '<option value="0">Municipio/Ciudad</option>';
+    $.each(data,function(i, item){
+      cont += '<option value="'+item.id+'">'+item.municipio+'</option>';
     });
-  }else{
-    bootbox.alert('Seleccione un estado primero por favor.',function(){});
-  }
+    $("#selectCiudad").html(cont);
+  });
+
 }
 function cargaEspecialidades(){
   var html3 = "";
