@@ -4143,71 +4143,99 @@ function searchingData(){
     padecimiento: padecimiento,
     nombre: nombre
   },function(data){
+    var contenido = '';
     $.each(data, function( i, item ){
       var nombreCompleto = item.DatosGenerale.nombre+' '+item.DatosGenerale.apellidoP+' '+item.DatosGenerale.apellidoM;
-      var medicoEspecialidad = "";
-        html5 += '<ul class="media-list" id="agregando">';
-        html5 += '<li class="media result">';
-          html5 += '<div class="media-left">';
-            html5 += '<div class="media-enclosure">';
-              html5 += '<a href="#">';
-                html5 += '<img class="media-object" src="'+item.urlFotoPerfil+'" alt=""/>';
-              html5 += '</a>';
-            html5 += '</div>';
-          html5 += '</div>';
-          html5 += '<div class="media-body">';
-            html5 += '<div class="col-md-8">';
-              html5 += '<h4 class="media-heading">';
-                html5 += '<span class="label label-topDr">Top Doctor</span>Dr. '+nombreCompleto;
-              html5 += '</h4>';
-              $.each(item.Medico.MedicoEspecialidads, function(a, pipi ){
-                medicoEspecialidad += pipi.subEsp;
-                if( medicoEspecialidad == 1 ){
-                  html5 += '<ul class="list-unstyled list-inline">';
-                    html5 += '<li><strong>Sub especialidades</strong>&nbsp;'+pipi.Especialidad.especialidad+'</li>';
-                  html5 += '</ul>';
-                }else if( medicoEspecialidad == 0 ){
-                  html5 += '<ul class="list-unstyled list-inline">';
-                    html5 += '<li><strong>Especialidades</strong>&nbsp;'+pipi.Especialidad.especialidad+'</li>';
-                  html5 += '</ul>';
-                }
-              });
-              $.each(item.Medico.Padecimientos, function(d, dat ){
-                html5 += '<ul class="list-unstyled list-inline">';
-                  html5 += '<li>';
-                    html5 += '<small><strong>Padecimientos:</strong>'+dat.padecimiento+'</small>';
-                  html5 += '</li>';
-                html5 += '</ul>';
-              });
-              $.each(item.Direccions, function( i, item ){
-                console.log("ITEM: "+JSON.stringify(item));
-                html5 += '<ul class="list-unstyled list-inline">';
-                  html5 += '<li>';
-                    html5 += '<button class="btn btn-warning">';
-                      html5 += '<span class="glyphicon glyphicon-map-marker"></span>';
-                    html5 += '</button>';
-                    html5 += '<a href="#">';
-                      html5 += '<strong>nombre de la calle</strong>';
-                      html5 += '<small>&nbsp;'+item.calle+'&nbsp;#'+item.numero+'&nbsp;'+item.Municipio.municipio+'&nbsp;'+item.Municipio.Estado.estado+'</small>';
-                    html5 += '</a>';
-                  html5 += '</li>';
-                html5 += '</ul>';
-              });
-            html5 += '</div>';
-            html5 += '<div class="resultOptions col-md-4">';
-              html5 += '<ul class="list-unstyled">';
-                html5 += '<li> Costo de la consulta<strong> $1,230</strong><li>';
-                html5 += '<li><a>Agrega a tus favoritos</a></li>';
-                html5 += '<li><a>Ver teléfono</a></li>';
-                html5 += '<li><a>Envía mensaje</a></li>';
-                html5 += '<li><a>Visita su perfil</a></li>';
-              html5 += '</ul>';
-            html5 += '</div>';
-          html5 += '</div>';
-        html5 += '</li>';
-      html5 += '</ul>';
+
+      contenido += `
+        <li class="media result" id="medico_id_`+ item.Medico.id +`">
+          <div class="media-left">
+            <div class="media-enclosure">
+              <a href="#">
+                <img class="media-object img-rounded" src="`+ item.urlFotoPerfil +`" alt="">
+              </a>
+            </div>
+          </div>
+          <div class="media-body">
+            <div class="col-md-8">
+              <h4 class="media-heading">
+                <span class="label label-topDr">Top Doctor</span> Dr.`+ nombreCompleto +`.
+              </h4>
+              <ul class="list-unstyled list-inline">`;
+
+        $.each(item.Medico.MedicoEspecialidads, function(a, esp ){
+          if (esp.subEsp == 0){
+            contenido += `<li><strong>`+esp.Especialidad.especialidad+`</strong></li> `;
+          }
+        });
+
+        contenido += `</ul><ul class="list-unstyled list-inline">`;
+
+        $.each(item.Medico.MedicoEspecialidads, function(a, esp ){
+          if (esp.subEsp == 1){
+            contenido += `<li><strong>`+esp.Especialidad.especialidad+`</strong></li> `;
+          }
+        });
+
+        contenido += `</ul><ul class="list-inline">`;
+
+
+        $.each(item.Medico.Padecimientos, function(a, pad ){
+          if (esp.subEsp == 1){
+            contenido += `<li><small>`+pad.padecimiento+`</small></li> `;
+          }
+        });
+
+        contenido += `</ul><ul class="list-unstyled list-ubicaciones">`;
+
+        $.each(item.Direccions, function( i, itemDir ){
+          contenido += `<li>
+              <div id="dir_`+itemDir.id+`" class="direccion hidden">
+                <div class="top_dr">1</div>
+                <div class="direccion_id">`+itemDir.id+`</div>
+                <div class="latitud">`+itemDir.latitud+`</div>
+                <div class="longitud">`+itemDir.longitud+`</div>
+                <div class="medico_id">`+item.Medico.id+`</div>
+                <div class="nombre">`+itemDir.nombre+`</div>
+                <div class="imagen">`+item.urlFotoPerfil +`</div>
+                <div class="doctor">Dr. `+nombreCompleto+`</div>
+                <div class="direccion">`+itemDir.calle+` #`+itemDir.numero+`<br/>`+itemDir.Municipio.municipio+`, `+itemDir.Municipio.Estado.estado+`</div>
+                <div class="usuarioUrl">`+item.usuarioUrl+`</div>
+              </div>
+              <a onclick="centrarEnMapa('`+itemDir.latitud+`','`+itemDir.longitud+`','`+item.Medico.id+`','`+itemDir.id+`')">
+                <button class="btn btn-warning">
+                  <span class="glyphicon glyphicon-map-marker"></span>
+                </button>
+                <strong>`+itemDir.nombre+`</strong>
+                <small>`+itemDir.calle+` #`+itemDir.numero+`, `+itemDir.Municipio.municipio+`,`+itemDir.Municipio.Estado.estado+`<span class="glyphicon glyphicon-zoom-in"></span></small>
+              </a>
+            </li>`;
+        });
+
+      contenido += `</ul></div>
+            <div class="resultOptions col-md-4">
+              <ul class="list-unstyled">
+                <li>
+                  Costo de consulta:
+                  <strong> $1,230</strong>
+                </li>
+                <li>
+                  <a>Agrega a tus favoritos</a>
+                </li>
+                <li>
+                  <a>Envía mensaje</a>
+                </li>
+                <li>
+                  <a>Visita su perfíl</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </li>
+      `;
     });
-    $("#medResults").html(html5);
+    $("#buscadorResultado").html(contenido);
+    mapSearchDiv();
   });
 }
 //<------------- FIN DE LAS FUNCIONES ---------------------------->

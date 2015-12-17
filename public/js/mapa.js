@@ -485,6 +485,12 @@ var MapaSearch = null;
 var markersSearch = [];
 $(function(){
   if($('#mapSearchDiv')){
+    mapSearchDiv();
+  }
+});
+
+function mapSearchDiv(){
+
     var mapProp = {
         center:new google.maps.LatLng(21.94304553343818, -101.766357421875),
         zoom: 15,
@@ -571,8 +577,7 @@ $(function(){
       $('#buscadorResultado').css('margin-top',height+'px');
     });
     $( window ).resize();
-  }
-});
+}
 
 function centrarEnMapa(latitud,longitud,medico_id,direccion_id){
   $('.result').removeClass('seleccionado');
