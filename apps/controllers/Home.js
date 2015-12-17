@@ -147,6 +147,8 @@ module.exports = {
   //perfil nuevo
   nuevoPerfilMedicos: function ( object, req, res ) {
     usuario = object.usuario;
+    var uUrl = "";
+    var uTipo = "";
     if ( ( req.session.passport.user && ( !usuario ) ) || ( req.session.passport.user && usuario == req.session.passport.user.usuarioUrl ) ) {
       var tipoUsuario = '';
       if ( req.session.passport.user.tipoUsuario == 'M' ) tipoUsuario = 'medico';
@@ -180,7 +182,11 @@ module.exports = {
               {
                   model: models.Telefono
               }],
-              order: [['principal', 'DESC']]
+              order: [['principal', 'DESC']],
+              include:[{
+                model: models.Usuario,
+                attributes:['usuarioUrl','tipoUsuario']
+              }]
         }).then(function (direccion) {
           if (req.session.passport.user.Medico_id){
             var medico = {};
@@ -199,7 +205,7 @@ module.exports = {
                           order: [['orden','ASC']]
                         }).then(function(aseguradora){
                           var prueba = "";
-                          plataform2.plataform2(req,res, function(response){
+                          plataform2.plataform2(usuario,req,res, function(response){
                             medico['MedicoAseguradoras'] = aseguradora;
                             res.render( tipoUsuario + '/nuevoPerfilMedicos', {
                               medico: medico,
@@ -212,13 +218,10 @@ module.exports = {
                     });
                   });
           } else {
-            plataform2.plataform2(req,res, function(response){
               res.render( tipoUsuario + '/nuevoPerfilMedicos', {
                 estados: estados,
-                usuario:{Direccions: JSON.parse(JSON.stringify(direccion))},
-                keywords: response
+                usuario:{Direccions: JSON.parse(JSON.stringify(direccion))}
               } );
-            });
           }
         })
         if ( !usuario ) req.session.passport.user.logueado = "1";
@@ -580,7 +583,7 @@ function armarPerfilNuevo( usuario, req, res ) {
                     where: {medico_id: result.id},
                     order: [['orden','ASC']]
                   }).then(function(aseguradora){
-                    plataform2.plataform2( req, res, function(response){
+                    plataform2.plataform2(usuario.usuarioUrl, req, res, function(response){
                       medico['MedicoAseguradoras'] = aseguradora;
                         usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
                         res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
@@ -593,13 +596,10 @@ function armarPerfilNuevo( usuario, req, res ) {
               });
           });
     } else {
-      plataform2.plataform2(req, res, function(response){
-        usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
-        res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
-          usuario: usuario,
-          keywords: response
-        } );
-      });
+      usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
+      res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
+        usuario: usuario
+      } );
     }
   });
 }
