@@ -45,22 +45,22 @@ module.exports = {
           }]
         }).then(function(usuario){
           if( usuario.Direccions[0] ){
-            concatenando2+= usuario.Direccions[0].Municipio.Estado.estado+','+usuario.Direccions[0].Municipio.municipio+','+usuario.Direccions[0].nombre+',';
+            concatenando2+= usuario.Direccions[0].Municipio.Estado.estado+', '+usuario.Direccions[0].Municipio.municipio+', '+usuario.Direccions[0].nombre+', ';
           }
           for( var i in usuario.Medico.MedicoEspecialidads ){
-            conca += usuario.Medico.MedicoEspecialidads[i].Especialidad.especialidad+',';
+            conca += usuario.Medico.MedicoEspecialidads[i].Especialidad.especialidad+', ';
           }
           for( var i in usuario.Medico.Padecimientos ){
-            c += usuario.Medico.Padecimientos[i].padecimiento+',';
+            c += usuario.Medico.Padecimientos[i].padecimiento+', ';
           }
           for( var i in usuario.CatalogoServicios ){
-            catalogo += usuario.CatalogoServicios[i].concepto+',';
+            catalogo += usuario.CatalogoServicios[i].concepto+', ';
           }
           if( usuario.DatosGenerale ){
-            name += usuario.DatosGenerale.nombre+" "+usuario.DatosGenerale.apellidoP+" "+usuario.DatosGenerale.apellidoM+',';
+            name += usuario.DatosGenerale.nombre+" "+usuario.DatosGenerale.apellidoP+" "+usuario.DatosGenerale.apellidoM+', ';
           }
           for( var i in usuario.Palabras ){
-            palabra += usuario.Palabras[i].palabra+',';
+            palabra += usuario.Palabras[i].palabra+', ';
           }
           todo = name+concatenando2+conca+c+palabra+catalogo;
           callback(todo);
