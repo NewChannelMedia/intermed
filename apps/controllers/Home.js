@@ -188,6 +188,7 @@ module.exports = {
                 attributes:['usuarioUrl','tipoUsuario']
               }]
         }).then(function (direccion) {
+          console.log("Esto es 1:");
           if (req.session.passport.user.Medico_id){
             var medico = {};
             models.MedicoExpertoEn.findAll({
@@ -597,7 +598,8 @@ function armarPerfilNuevo( usuario, req, res ) {
                       }
                       res.render( tipoUsuario.toLowerCase() + vista, {
                         usuario: usuario,
-                        medico: medico
+                        medico: medico,
+                        keywords: response
                       } );
                   });
               });

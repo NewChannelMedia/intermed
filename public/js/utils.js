@@ -2643,9 +2643,9 @@ $(document).ready(function(){
     moveSlides: 1,
     slideMargin: 50,
   });
-})
+  MostrarUbicaciones();
+});
 
-MostrarUbicaciones();
 
 
 }
