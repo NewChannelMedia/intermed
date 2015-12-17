@@ -71,7 +71,7 @@
       <div role="tabpanel" class="tab-pane fade in active " id="medResults">
         <ul class="media-list">
           {{#each usuarios}}
-            <li class="media result">
+            <li class="media result" id="medico_id_{{Medico.id}}">
               <div class="media-left">
                 <div class="media-enclosure">
                   <a href="#">
@@ -112,15 +112,28 @@
                   <ul class="list-unstyled list-ubicaciones">
                     {{#each Direccions }}
                       <li>
-                        <button class="btn btn-warning">
-                          <span class="glyphicon glyphicon-map-marker"></span>
-                        </button>
-                        <a href= {{ubicacionGM}}>
+                        <div id="dir_{{id}}" class="direccion hidden">
+                          <div class="top_dr">1</div>
+                          <div class="direccion_id">{{id}}</div>
+                          <div class="latitud">{{latitud}}</div>
+                          <div class="longitud">{{longitud}}</div>
+                          <div class="medico_id">{{../Medico.id}}</div>
+                          <div class="nombre">{{nombre}}</div>
+                          <div class="imagen">{{../urlFotoPerfil}}</div>
+                          <div class="doctor">Dr. {{../DatosGenerale.nombre}} {{../DatosGenerale.apellidoP}} {{../DatosGenerale.apellidoM}}</div>
+                          <div class="direccion">{{calle}} #{{numero}}<br/>{{Municipio.municipio}}, {{Municipio.Estado.estado}}</div>
+                          <div class="usuarioUrl">{{../usuarioUrl}}</div>
+                        </div>
+                        <a onclick="centrarEnMapa('{{latitud}}','{{longitud}}','{{../Medico.id}}','{{id}}')">
+                          <button class="btn btn-warning">
+                            <span class="glyphicon glyphicon-map-marker"></span>
+                          </button>
                           <strong>{{nombre}}</strong>
-                          <small>Calle :{{calle}} #{{numero}} Estado :{{Estado.estado}}, Ciudad :{{Ciudad.ciudad}}</small>
+                          <small>{{calle}} #{{numero}}, {{Municipio.municipio}}, {{Municipio.Estado.estado}} <span class="glyphicon glyphicon-zoom-in"></span></small>
                         </a>
                       </li>
                     {{/each}}
+
                     <!-- Cada <li> en esta parte debe mostrar una ubicación en la que trabaja el Medico -->
                   </ul>
                 </div>

@@ -422,13 +422,16 @@ module.exports = {
           attributes: [ 'id', 'nombre', 'apellidoP', 'apellidoM' ]
                 }, {
           model: models.Direccion,
-          attributes: [ 'id','calle', 'numero', 'nombre' ],
+          attributes: [ 'id','calle', 'numero', 'nombre' ,'latitud','longitud'],
           include:[{
             model: models.Municipio,
-            attributes:['municipio']
+            attributes:['municipio'],
+            include: [{
+              model: models.Estado
+            }]
           }]
                 }],
-        attributes: [ 'id', 'urlFotoPerfil' ]
+        attributes: [ 'id', 'urlFotoPerfil','usuarioUrl' ]
       } ).then( function ( usuarios ) {
         res.render( 'searchMedic', {
           usuarios: usuarios

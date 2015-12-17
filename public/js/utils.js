@@ -4514,6 +4514,7 @@ function CargarExtraBusqueda(){
     </div>`;
   }
   $('#extraSearch').html(cont);
+  $('#buscadorFixed').css('top',$('#mainNav').height()+'px');
   var height = $('#buscadorFixed').height();
   height += $('#mainNav').height();
   $('#buscadorResultado').css('margin-top',height+'px');
