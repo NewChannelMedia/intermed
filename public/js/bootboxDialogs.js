@@ -644,7 +644,7 @@ function recomendacionesBoot(){
       </div><br /><br /><br />
       <div id=“recomienda” class=“col-md-12”>
          <div class="form-group has-feedback" id="buscador">
-             <label class="control-label"for="buscadorRecomendados" style="color:white">Busca entre tus contactos para que les recomiendes al Dr.<span class="hidden"id="pacienteIdOculto"></span></label>
+             <label class="control-label"for="buscadorRecomendados" style="color:white">Busca entre tus contactos para que les recomiendes al Dr.<span class="hidden" id="pacienteIdOculto"></span></label>
              <input type="text" class="form-control" id="buscadorRecomendados" placeholder="Buscar contacto...">
              <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
          </div>
@@ -721,7 +721,7 @@ function loginModal(){
     bootbox.hideAll();
   },
     size:'medium',
-    backdrop:false,
+    backdrop:true,
     message: `
       <div class="" id="logInicio">
         <form method="POST" action="/auth/correo">
@@ -808,6 +808,7 @@ function registro(){
     bootbox.hideAll();
   },
     size:'large',
+    backdrop: true,
     closeButton:true,
     message: `
       <div id="CatRegModal">
@@ -1574,7 +1575,7 @@ function registroMedicoDatosPersonales(){
         else continuar = false;
 
           if (continuar){
-            registroMedicoDatosPago();
+            //registroMedicoDatosPago();
           } else {
             $('.modal-body').css('padding',0);
             bootbox.dialog({
@@ -1999,144 +2000,158 @@ function editMedicoPerfil(){
   size:'large',
   closeButton:true,
   message: `
-  <div class="" id="tabMedicoPerfil" style="background-color:#172c3b; padding:5px;">
-    <ul class="nav nav-tabs menuBootbox">
-      <li role="presentation" class="active" >
-        <a href="#general" aria-control="general" role="tab" data-toggle="tab">
-          <span class="glyphicon glyphicon-th">&nbsp;Generales</span>
-        </a>
-      </li>
-      <li role="presentation" >
-        <a href="#padecimiento" aria-control="padecimiento" role="tab" data-toggle="tab">
-          <span class="glyphicon glyphicon-plus-sign">&nbsp;Padecimientos</span>
-        </a>
-      </li>
-    </ul>
-    <div class="tab-content tabBootBox">
-      <div class="tab-pane active" role="tabpanel" id="general">
+    <div class="" id="tabMedicoPerfil" style="background-color:#172c3b; padding:5px;">
+      <ul class="nav nav-tabs menuBootbox">
+        <li role="presentation" class="active" >
+          <a href="#general" aria-control="general" role="tab" data-toggle="tab">
+            <span class="glyphicon glyphicon-th">&nbsp;Generales</span>
+          </a>
+        </li>
+        <li role="presentation" >
+          <a href="#padecimiento" aria-control="padecimiento" role="tab" data-toggle="tab">
+            <span class="glyphicon glyphicon-plus-sign">&nbsp;Padecimientos</span>
+          </a>
+        </li>
+      </ul>
+      <div class="tab-content tabBootBox">
+        <div class="tab-pane active" role="tabpanel" id="general">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-md-4">
+                  <img id="imgPerfilMedic" src="" width="200" height="200" class="img-rounded">
+                </div>
+                <div class="col-lg-8 input-group">
+                  <input type="text" id="editNombreMed" class="form-control" placeholder="Nombre" />
+                  <span class="input-group-btn">
+                    <button id="editMedNombre" class="btn btn-danger" type="button" onclick="editGenerales(1)">
+                      <span class="glyphicon glyphicon-wrench"></span>
+                    </button>
+                  </span>
+                </div>
+                <div class="col-lg-8 input-group">
+                  <input type="text" id="editApellidoPMed" class="form-control" placeholder="Apellido paterno" />
+                  <span class="input-group-btn">
+                    <button id="editMedApellidoP" class="btn btn-danger" type="button" onclick="editGenerales(2)">
+                      <span class="glyphicon glyphicon-wrench"></span>
+                    </button>
+                  </span>
+                </div>
+                <div class="col-lg-8 input-group">
+                  <input type="text" id="editApellidoMMed" class="form-control" placeholder="Apellido materno" />
+                  <span class="input-group-btn">
+                    <button id="editMedApellidoM" class="btn btn-danger" type="button" onclick="editGenerales(3)">
+                      <span class="glyphicon glyphicon-wrench"></span>
+                    </button>
+                  </span>
+                </div>
+                <div class="col-md-12 hidden" id="divEditGeneral">
+                  <h4 id="tipoUpdate" style="color:green;"></h4>
+                </div>
+              </div>
+            </div>
+          <hr>
           <div class="container-fluid">
             <div class="row">
-              <div class="col-md-4">
-                <img id="imgPerfilMedic" src="" width="200" height="200" class="img-rounded">
-              </div>
-              <div class="col-lg-8 input-group">
-                <input type="text" id="editNombreMed" class="form-control" placeholder="Nombre" />
-                <span class="input-group-btn">
-                  <button id="editMedNombre" class="btn btn-danger" type="button" onclick="editGenerales(1)">
-                    <span class="glyphicon glyphicon-wrench"></span>
+              <h4 style="color:white;">Especialidades</h4>
+              <!-- AUTOCOMPLETE -->
+                <div class="col-md-4 form-group">
+                  <select id="autoEspecialidad" class="form-control"></select>
+                </div>
+                <div class="col-md-4 checkbox form-group">
+                  <label style="color:white;">
+                    <input type="checkbox" id="subEspEdit" name="subEsp" value="0"/>¿Es sub especialidad?
+                  </label>
+                </div>
+                <div class="col-md-4 form-group">
+                  <button id="addEspecialidadMedic" onclick="editEspecialidades();" class="btn btn-success form-control" type="button">
+                    <span class="glyphicon glyphicon-floppy-disk" style="color:white;"></span>
                   </button>
-                </span>
+                </div>
+              <!-- FIN DEL AUTOCOMPLETE -->
+            </div>
+          </div>
+          <hr>
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-6">
+                  <!-- TABlA PARA EL CONTENIDO DONDE PODRA ELIMINAR -->
+                    <table class="table table-condensed">
+                      <thead style="color:white;">
+                        <th><center>#</center></th>
+                        <th><center><span class="glyphicon glyphicon-leaf">&nbsp;Especialidad</span></center></th>
+                        <th><center><span class="glyphicon glyphicon-warning-sign">&nbsp;Eliminar</span></center></th>
+                      </thead>
+                      <tbody id="tableEspecialidades" style="color:white;">
+                      </tbody>
+                    </table>
+                  <!-- FIN DE LA TABLA -->
               </div>
-              <div class="col-lg-8 input-group">
-                <input type="text" id="editApellidoPMed" class="form-control" placeholder="Apellido paterno" />
-                <span class="input-group-btn">
-                  <button id="editMedApellidoP" class="btn btn-danger" type="button" onclick="editGenerales(2)">
-                    <span class="glyphicon glyphicon-wrench"></span>
-                  </button>
-                </span>
-              </div>
-              <div class="col-lg-8 input-group">
-                <input type="text" id="editApellidoMMed" class="form-control" placeholder="Apellido materno" />
-                <span class="input-group-btn">
-                  <button id="editMedApellidoM" class="btn btn-danger" type="button" onclick="editGenerales(3)">
-                    <span class="glyphicon glyphicon-wrench"></span>
-                  </button>
-                </span>
-              </div>
-              <div class="col-md-12 hidden" id="divEditGeneral">
-                <h4 id="tipoUpdate" style="color:green;"></h4>
+              <div class="col-md-6">
+                <!-- TABLA PARA EL CONTENIDO DE SUBESPECIALIDADES -->
+                  <table class="table table-condensed">
+                    <thead style="color:white;">
+                      <th><center>#</center></th>
+                      <th><center><span class="glyphicon glyphicon-heart-empty">&nbsp;Sub especialidad</span></center></th>
+                      <th><center><span class="glyphicon glyphicon-warning-sign">&nbsp;Eliminar</span></center></th>
+                    </thead>
+                    <tbody id="tableSubEspecialidades" style="color:white;">
+                    </tbody>
+                  </table>
+                <!-- FIN DE TABLA PARA EL CONTENIDO DE SUBESPECIALIDADES -->
               </div>
             </div>
           </div>
-        <hr>
-        <div class="container-fluid">
-          <div class="row">
-            <h4 style="color:white;">Especialidades</h4>
-            <!-- AUTOCOMPLETE -->
-              <div class="col-md-4 form-group">
-                <select id="autoEspecialidad" class="form-control"></select>
-              </div>
-              <div class="col-md-4 checkbox form-group">
-                <label style="color:white;">
-                  <input type="checkbox" id="subEspEdit" name="subEsp" value="0"/>¿Es sub especialidad?
-                </label>
-              </div>
-              <div class="col-md-4 form-group">
-                <button id="addEspecialidadMedic" onclick="editEspecialidades();" class="btn btn-success form-control" type="button">
-                  <span class="glyphicon glyphicon-floppy-disk" style="color:white;"></span>
-                </button>
-              </div>
-            <!-- FIN DEL AUTOCOMPLETE -->
-          </div>
         </div>
-        <hr>
-        <div class="container-fluid">
-          <div class="row">
-            <!-- TABlA PARA EL CONTENIDO DONDE PODRA ELIMINAR -->
-              <table class="table table-condensed">
-                <thead style="color:white;">
-                  <th><center>#</center></th>
-                  <th><center><span class="glyphicon glyphicon-leaf">&nbsp;Especialidad</span></center></th>
-                  <th><center><span class="glyphicon glyphicon-heart-empty">&nbsp;Sub especialidad</span></center></th>
-                  <th><center><span class="glyphicon glyphicon-warning-sign">&nbsp;Eliminar</span></center></th>
-                </thead>
-                <tbody id="tableEspecialidades" style="color:white;">
-                </tbody>
-              </table>
-            <!-- FIN DE LA TABLA -->
-          </div>
-        </div>
-      </div>
-      <div class="tab-pane" role="tabpanel" id="padecimiento">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-6 ">
-              <h4 style="color:white;">Padecimiento</h4>
-              <div class="input-group">
-                <select class="form-control" id="editPadeMedic"></select>
-                <span class="input-group-btn">
-                  <button id="padeEditMedic" onclick="editPadecimientos();" class="btn btn-success" type="button">
-                    <span class="lyphicon glyphicon-plus"></span>
-                  </button>
-                </span>
+        <div class="tab-pane" role="tabpanel" id="padecimiento">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-6 ">
+                <h4 style="color:white;">Padecimiento</h4>
+                <div class="input-group">
+                  <select class="form-control" id="editPadeMedic"></select>
+                  <span class="input-group-btn">
+                    <button id="padeEditMedic" onclick="editPadecimientos();" class="btn btn-success" type="button">
+                      <span class="lyphicon glyphicon-plus"></span>
+                    </button>
+                  </span>
+                </div>
+                <hr>
+                <table class="table table-condensed">
+                  <thead style="color:white;">
+                    <th><center>#</center></th>
+                    <th><center><span class="glyphicon glyphicon-heart-empty">&nbsp;Padecimiento</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-trash">&nbsp;Eliminar</span></center></th>
+                  </thead>
+                  <tbody id="tablePadecimientos" style="color:white;">
+                  </tbody>
+                </table>
               </div>
-              <hr>
-              <table class="table table-condensed">
-                <thead style="color:white;">
-                  <th><center>#</center></th>
-                  <th><center><span class="glyphicon glyphicon-heart-empty">&nbsp;Padecimiento</span></center></th>
-                  <th><center><span class="glyphicon glyphicon-trash">&nbsp;Eliminar</span></center></th>
-                </thead>
-                <tbody id="tablePadecimientos" style="color:white;">
-                </tbody>
-              </table>
-            </div>
-            <div class="col-md-6">
-              <h4 style="color:white;">Palabras clave</h4>
-              <div class="input-group">
-                <input type="text" class="form-control" id="autoPalabras" placeholder="Palabras clave"/>
-                <span class="input-group-btn">
-                  <button id="palabrasEdit" onclick="editPalabrasClave();" class="btn btn-success form-control" type="button">
-                    <span class="glyphicon glyphicon-plus"></span>
-                  </button>
-                </span>
+              <div class="col-md-6">
+                <h4 style="color:white;">Palabras clave</h4>
+                <div class="input-group">
+                  <input type="text" class="form-control" id="autoPalabras" placeholder="Palabras clave"/>
+                  <span class="input-group-btn">
+                    <button id="palabrasEdit" onclick="editPalabrasClave();" class="btn btn-success form-control" type="button">
+                      <span class="glyphicon glyphicon-plus"></span>
+                    </button>
+                  </span>
+                </div>
+                <hr>
+                <table class="table table-condensed">
+                  <thead style="color:white;">
+                    <th><center>#</center></th>
+                    <th><center><span class="glyphicon glyphicon-pushpin">&nbsp;Palabras clave</span></center></th>
+                    <th><center><span class="glyphicon glyphicon-trash">&nbsp;Eliminar</span></center></th>
+                  </thead>
+                  <tbody id="tablePalabras" style="color:white;">
+                  </tbody>
+                </table>
               </div>
-              <hr>
-              <table class="table table-condensed">
-                <thead style="color:white;">
-                  <th><center>#</center></th>
-                  <th><center><span class="glyphicon glyphicon-pushpin">&nbsp;Palabras clave</span></center></th>
-                  <th><center><span class="glyphicon glyphicon-trash">&nbsp;Eliminar</span></center></th>
-                </thead>
-                <tbody id="tablePalabras" style="color:white;">
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div><!-- PRINCIPAL -->
+    </div><!-- PRINCIPAL -->
   `
   });
   loadGenerales();

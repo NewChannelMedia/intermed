@@ -1,0 +1,13 @@
+User-agent: *
+
+Disallow: /apps
+
+Disallow: /config
+
+Disallow: /garage
+
+Disallow: /node_modules
+
+Disallow: /public
+
+Allow: /apps/views

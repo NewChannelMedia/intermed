@@ -1525,8 +1525,18 @@ var iniciar = function () {
       }, req, res );
     });
 
+    app.post('/cargarListaAlfAmi', function (req, res){
+      intermed.callController( 'contactos', 'cargarListaAlfAmi', {
+        usuario: req.body.usuario
+      }, req, res );
+    });
+
     app.post('/cargarListaColegasByAlf', function (req, res){
       intermed.callController( 'contactos', 'cargarListaColegasByAlf', req.body, req, res );
+    });
+
+    app.post('/cargarListaAmistadesByAlf', function (req, res){
+      intermed.callController( 'contactos', 'cargarListaAmistadesByAlf', req.body, req, res );
     });
     // boton de busqueda en searchMedic
     app.post('/cargaEstados',function(req, res){
@@ -1601,6 +1611,11 @@ var iniciar = function () {
       app.post('/deletePalabra', function( req, res ){
         intermed.callController('medicos','deletePalabra',req, res);
       });
+      //<---------- FECHA LUNEs 14-15-2015 -------------->
+        app.post('/deleteSubEsp', function( req, res ){
+          intermed.callController('medicos','deleteSubEsp', req, res );
+        });
+      //<---------- FIN FECHA LUNES --------------------->
     //<-------------- FIN EDICION MEDICO PERFIL --------------->
 }
 

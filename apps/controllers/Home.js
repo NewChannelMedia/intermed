@@ -12,6 +12,7 @@ var models = require( '../models' );
 var http = require( 'http' ),
   fs = require( 'fs' );
 var objecto;
+var plataform2 = require( './plataforma.js' );
 module.exports = {
   /**
    *	En el siguiente metodo es el que se encargara del envio
@@ -146,7 +147,6 @@ module.exports = {
   //perfil nuevo
   nuevoPerfilMedicos: function ( object, req, res ) {
     usuario = object.usuario;
-
     if ( ( req.session.passport.user && ( !usuario ) ) || ( req.session.passport.user && usuario == req.session.passport.user.usuarioUrl ) ) {
       var tipoUsuario = '';
       if ( req.session.passport.user.tipoUsuario == 'M' ) tipoUsuario = 'medico';
@@ -198,17 +198,29 @@ module.exports = {
                           where: {medico_id: req.session.passport.user.Medico_id},
                           order: [['orden','ASC']]
                         }).then(function(aseguradora){
+                          var prueba = "";
+                          plataform2.plataform2(req,res, function(response){
                             medico['MedicoAseguradoras'] = aseguradora;
-                            res.render( tipoUsuario + '/nuevoPerfilMedicos', {
+                            var vista = '/nuevoPerfilMedicos';
+                            if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
+                              var vista = '/vistaPerfilNoRegistrado';
+                            }
+                            res.render( tipoUsuario + vista, {
                               medico: medico,
                               estados: estados,
-                              usuario:{Direccions: JSON.parse(JSON.stringify(direccion))}
+                              usuario:{Direccions: JSON.parse(JSON.stringify(direccion))},
+                              keywords: response
                             } );
+                          });
                         });
                     });
                   });
           } else {
-            res.render( tipoUsuario + '/nuevoPerfilMedicos', {
+            var vista = '/nuevoPerfilMedicos';
+            if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
+              var vista = '/vistaPerfilNoRegistrado';
+            }
+            res.render( tipoUsuario + vista, {
               estados: estados,
               usuario:{Direccions: JSON.parse(JSON.stringify(direccion))}
             } );
@@ -453,7 +465,6 @@ module.exports = {
     }
 }
 
-
 function armarPerfil( usuario, req, res ) {
   usuario = JSON.parse( JSON.stringify( usuario ) );
   var especialidades = [];
@@ -569,33 +580,37 @@ function armarPerfilNuevo( usuario, req, res ) {
       } ).then( function ( expertoEn ) {
         medico[ 'MedicoExpertoEns' ] = expertoEn;
 
-        models.MedicoClinica.findAll( {
-          where: {
-            medico_id: result.id
-          },
-          order: [ [ 'orden', 'ASC' ] ]
-        } ).then( function ( clinica ) {
-          medico[ 'MedicoClinicas' ] = clinica;
-          models.MedicoAseguradora.findAll( {
-            where: {
-              medico_id: result.id
-            },
-            order: [ [ 'orden', 'ASC' ] ]
-          } ).then( function ( aseguradora ) {
-            medico[ 'MedicoAseguradoras' ] = aseguradora;
-
-            usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
-            res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
-              usuario: usuario,
-              medico: medico
-            } );
-          } );
-        } );
-      } );
-    }
-    else {
+            models.MedicoClinica.findAll({
+                where: {medico_id: result.id},
+                order: [['orden','ASC']]
+              }).then(function(clinica){
+                  medico['MedicoClinicas'] = clinica;
+                  models.MedicoAseguradora.findAll({
+                    where: {medico_id: result.id},
+                    order: [['orden','ASC']]
+                  }).then(function(aseguradora){
+                    plataform2.plataform2( req, res, function(response){
+                      medico['MedicoAseguradoras'] = aseguradora;
+                      usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
+                      var vista = '/nuevoPerfilMedicos';
+                      if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
+                        var vista = '/vistaPerfilNoRegistrado';
+                      }
+                      res.render( tipoUsuario.toLowerCase() + vista, {
+                        usuario: usuario,
+                        medico: medico
+                      } );
+                  });
+              });
+          });
+        });
+    } else {
       usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
-      res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
+      var vista = '/nuevoPerfilMedicos';
+      if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
+        var vista = '/vistaPerfilNoRegistrado';
+      }
+      res.render( tipoUsuario.toLowerCase() + vista, {
         usuario: usuario
       } );
     }

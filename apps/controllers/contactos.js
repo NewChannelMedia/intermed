@@ -410,15 +410,38 @@ module.exports = {
     }
   },
   enviaCorreoRecomendados: function( req, res){
-    var object ={
-      nombre:'correo de recomendacion',
-      subject:'Recomendaciones',
-      to:req.body.toMail,
-      enlace:req.body.enlace,
-      mensaje:req.body.mensaje,
-      usuario:req.body.usuario
-    };
-    mail.recomendacion(object,res,'recomendar');
+    models.Usuario.findOne({
+      where: {
+        usuarioUrl: req.body.enlace
+      },
+      include:[
+        {
+          model: models.DatosGenerales
+        }
+      ]
+    }).then(function(usuario){
+      var urlFotoPerfil = '', nombre ='', especialidad = '', municipio = '', estado = '';
+      if (usuario){
+        urlFotoPerfil = usuario.urlFotoPerfil;
+        if (usuario.DatosGenerale){
+          nombre = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM;
+        }
+      }
+      var object ={
+        nombre:'correo de recomendacion',
+        subject:'Recomendaciones',
+        to:req.body.toMail,
+        enlace:req.body.enlace,
+        mensaje:req.body.mensaje,
+        usuario:req.body.usuario,
+        medfotoPerfil: global.base_url + urlFotoPerfil,
+        mednombre: nombre,
+        medespecialidad: especialidad,
+        medmunicipio: municipio,
+        medestado: estado
+      };
+      mail.send(object,'recomendar',res);
+    });
   },
   medicoRecomendado: function( req, res ){
     var d = new Date();
@@ -993,6 +1016,74 @@ module.exports = {
           }
         });
       });
+    });
+  },
+
+
+  cargarListaAlfAmi: function ( object, req, res ) {
+    if ( object.usuario == '' && req.session.passport.user ) {
+      object.usuario = req.session.passport.user.id;
+    }
+    models.DatosGenerales.findAll({
+      attributes: [[models.Sequelize.fn('COUNT', models.Sequelize.col('apellidoP')), 'Total'],[models.Sequelize.fn('SUBSTRING', models.Sequelize.col('apellidoP'),1,1), 'Letra']],
+      group: [models.Sequelize.fn('SUBSTRING', models.Sequelize.col('apellidoP'),1,1), 'Letra'],
+      order: [models.Sequelize.fn('SUBSTRING', models.Sequelize.col('apellidoP'),1,1), 'Letra'],
+      include:[
+        {
+          model: models.Usuario,
+          attributes:['id'],
+          include:[
+            {
+              model: models.Paciente,
+              attributes: [ 'id'],
+              include: [ {
+                model: models.MedicoFavorito,
+                attributes: ['id'],
+                where: {
+                  usuario_id: object.usuario,
+                  aprobado: 1,
+                  mutuo: 1
+                }
+              } ]
+            }
+          ]
+        }
+      ]
+    }).then(function(result){
+      res.status(200).send({'success':true,'result':result});
+    });
+  },
+
+  cargarListaAmistadesByAlf: function (object, req, res){
+    if ( object.usuario_id == '' && req.session.passport.user ) {
+      object.usuario_id = req.session.passport.user.id;
+    }
+
+    models.Usuario.findAll({
+      attributes:['id','usuarioUrl','urlFotoPerfil'],
+      include: [
+        {
+          model: models.DatosGenerales,
+          attributes:['nombre','apellidoP','apellidoM'],
+          where:{
+            apellidoP: { $like: object.letra +'%'}
+          }
+        },
+        {
+          model: models.Paciente,
+          attributes: [ 'id'],
+          include: [ {
+            model: models.MedicoFavorito,
+            where: {
+              usuario_id: object.usuario_id,
+              aprobado: 1,
+              mutuo: 1
+            }
+          }]
+        }
+      ]
+    }).then(function (result){
+      res.status(200).send({'success':true,'result':result});
     });
   }
 }

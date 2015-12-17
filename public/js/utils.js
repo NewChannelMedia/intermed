@@ -132,6 +132,9 @@ else {
 
     if ( location.pathname.substring( 0, 19 ) === '/nuevoperfilmedicos' ) {
       cargarListaEspCol( $( '#usuarioPerfil' ).val() );
+      if ($('#listaAmistades')){
+        cargarListaAlfAmi( $( '#usuarioPerfil' ).val() );
+      }
     }
 
     /* validaciones al registro */
@@ -173,7 +176,7 @@ function saveStepOne() {
         if ( data.success) {
           actualizarSesion();
           bootbox.hideAll();
-          registroMedicoDatosPago();
+          //registroMedicoDatosPago();
         } else {
           if (data.error){
             manejadorDeErrores(data.error);
@@ -1563,7 +1566,7 @@ function cargarFavCol( usuario ) {
               "<a class='contList-profileEsp' href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'> " + especialidad + "</a>" +
               "</div>" +
               "<div class='media-right contList-profileAction'>" +
-              "<a id='"+data[p].Medico.Usuario.id+"' href ='#' data-target='#recomendar' data-toggle='modal' class='recomendar contList-profileActionLink Flama-bold s15'>Recomendar</a>" +
+              "<a id='"+data[p].Medico.Usuario.id+"' class='recomendar contList-profileActionLink Flama-bold s15'>Recomendar</a>" +
               "<a id='"+data[p].Medico.Usuario.id+"' href='#' data-target='#pedir' data-toggle='modal' class='Pedir contList-profileActionLink Flama-bold s15'><smal>Pedir Recomendacion</smal></a>"+
               "</div>" +
               "</li>"
@@ -1609,18 +1612,18 @@ var uId ="";
     $( '.recomendar.contList-profileActionLink' ).click(function(){
       //se manda a llamar al bootbox
       recomendacionesBoot();
-      id += $( this ).attr('id');
+      id = $( this ).attr('id');
       $("#pacienteIdOculto").text(id);
       var medico_id="";
       var di = "";
       //console.log("ID: "+id);
       $.post('/medicosContacto',{idMedico:id},function(data){
-        for( var i in data ){
-          medico_id = data[ i ].id;
-          di = data[ i ].Usuario.id;
-          if( data[ i ].Usuario ){
-            usuarioRL += data[ i ].Usuario.usuarioUrl;
-            var nombreCompleto = data[ i ].Usuario.DatosGenerale.nombre+' '+data[ i ].Usuario.DatosGenerale.apellidoP+' '+data[ i ].Usuario.DatosGenerale.apellidoM;
+        if (data){
+          medico_id = data.id;
+          di = data.Usuario.id;
+          if( data.Usuario ){
+            usuarioRL += data.Usuario.usuarioUrl;
+            var nombreCompleto = ' ' +data.Usuario.DatosGenerale.nombre+' '+data.Usuario.DatosGenerale.apellidoP+' '+data.Usuario.DatosGenerale.apellidoM;
             $("#doctorSpan").text(nombreCompleto);
           }
         }
@@ -1768,8 +1771,10 @@ function enviarInvitacion( nombre, correo, mensaje ) {
     dataType: "json",
     cache: false,
     success: function ( data ) {
-      if ( !data.result == 'success' ) {
-        alert( 'Error al enviar la invitación' );
+      if ( data.success ) {
+        bootbox.hideAll();
+      } else {
+        manejadorDeErrores(data.error);
       }
     },
     error: function ( jqXHR, textStatus, err ) {
@@ -2640,6 +2645,7 @@ $(document).ready(function(){
   });
 })
 
+MostrarUbicaciones();
 
 
 }
@@ -3891,6 +3897,7 @@ function cargarListaEspCol( usuario ) {
     cache: false,
     success: function ( data ) {
       $('#especialidadesList').html('');
+      $('#listaColegas').html('');
       $('#tipoFiltro').html('una especialidad');
       if ( data.success ) {
         var contenido = '';
@@ -3988,6 +3995,7 @@ function cargarListaAlfCol( usuario ) {
     cache: false,
     success: function ( data ) {
         $('#especialidadesList').html('');
+        $('#listaColegas').html('');
         $('#tipoFiltro').html('una letra');
         if ( data.success ) {
           var contenido = '';
@@ -4221,7 +4229,9 @@ function searchingData(){
   function loadEspecialidades(){
     // carga los datos de medicoEspecialidades
     var html = "";
+    var html3 = "";
     var contador = 1;
+    var contador2 = 1;
     //carga todas las especialidades
     $.post('/todasEspecialidades',function(p){
       var html2 = "";
@@ -4233,24 +4243,37 @@ function searchingData(){
     });
     $.post('/loadEspecialidades', function(data){
       $.each(data.MedicoEspecialidads, function( i, item ){
-        html += '<tr style="color:white;">'
-          html += '<td ><center>'+contador+'</center></td>';
-          if( item.subEsp == 0 ){
+        if( item.subEsp == 0 ){
+          html += '<tr style="color:white;">'
+            html += '<td ><center>'+contador+'</center></td>';
             html += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
-            html += '<td><center>--x--</center></td>';
-          }else{
-            html += '<td><center>--x--</center></td>';
-            html += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
-          }
-          html += '<td><center>';
-            html += '<button type="button" onclick="deleteEsp(\'#mDelete-'+i+'\');" oculto="'+item.id+'" class="btn btn-danger" id="mDelete-'+i+'">';
-              html += '<span class="glyphicon glyphicon-remove-sign"></span>';
-            html += '</button>';
-          html += '</center></td>';
-        html += '</tr>';
-        contador++;
+            html += '<td><center>';
+              html += '<button type="button" onclick="deleteEsp(\'#mDelete-'+i+'\');" oculto="'+item.id+'" class="btn btn-danger" id="mDelete-'+i+'">';
+                html += '<span class="glyphicon glyphicon-remove-sign"></span>';
+              html += '</button>';
+            html += '</center></td>';
+          html += '</tr>';
+          contador++;
+        }
       });
       $("#tableEspecialidades").html(html);
+    });
+    $.post('/loadEspecialidades', function(data){
+      $.each(data.MedicoEspecialidads, function( i, item){
+        if( item.subEsp == 1 ){
+          html3 += '<tr style="color:white;">'
+            html3 += '<td ><center>'+contador2+'</center></td>';
+            html3 += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
+            html3 += '<td><center>';
+              html3 += '<button type="button" onclick="deleteSubEsp(\'#mDeletes-'+i+'\');" oculto="'+item.id+'" class="btn btn-warning" id="mDeletes-'+i+'">';
+                html3 += '<span class="glyphicon glyphicon-remove-sign"></span>';
+              html3 += '</button>';
+            html3 += '</center></td>';
+          html3 += '</tr>';
+          contador2++;
+        }
+      });
+      $("#tableSubEspecialidades").html(html3);
     });
   }
   function loadPadecimientos(){
@@ -4331,18 +4354,16 @@ function searchingData(){
       medico_id = data.id;
     }).done(function(){
       var especial = $("#autoEspecialidad option:selected").val();
-      var check;
+      var checado;
       if( $("#subEspEdit").is(":checked") ){
-        console.log("si esta checado");
-        check = 1;
+        checado = 1;
       }else{
-        console.log("no esta checado");
-        check = 0;
+        checado = 0;
       }
       // se inserta una nueva especialidad
       $.post('/editEspecialidades',{
         especialidad:especial,
-        supEsp:check,
+        checado:checado,
         medico_id: medico_id
       },function( data ){
         if( data != null ){
@@ -4367,6 +4388,22 @@ function searchingData(){
       }
     });
   }
+  //<-------------- Fecha Lunes 14-12-2015 ------------------>
+    function deleteSubEsp(id){
+      var id = $(id).attr('oculto');
+      bootbox.confirm('¿Estas seguro de eliminar esto? ', function(result){
+        if( result ){
+          $.post('/deleteSubEsp',{id:id}, function( data ){
+            if( data == "OK" ){
+              loadEspecialidades();
+            }else{
+              console.log("Error al eliminar la sub-Especialidad");
+            }
+          });
+        }
+      });
+    }
+  //<-------------- FECHA LUNES ----------------------------->
   function traePadecimientos(){
     $.post('/traePadecimientos',function( data ){
       var html = "";
@@ -4480,4 +4517,95 @@ function CargarExtraBusqueda(){
   var height = $('#buscadorFixed').height();
   height += $('#mainNav').height();
   $('#buscadorResultado').css('margin-top',height+'px');
+}
+
+
+function cargarListaAlfAmi( usuario ) {
+  $.ajax( {
+    async: false,
+    url: '/cargarListaAlfAmi',
+    type: 'POST',
+    data: {
+      usuario: usuario
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+        $('#LetrasList').html('');
+        $('#listaAmistades').html('');
+        $('#tipoFiltroAm').html('una letra');
+        if ( data.success ) {
+          var contenido = '';
+          var primero = '';
+          data.result.forEach(function(rec){
+            if (primero == ""){
+              primero = rec.Letra;
+            }
+            contenido += `<li>
+              <a onclick="cargarListaColegasByAlf('`+usuario+`','`+ rec.Letra +`')">`+ rec.Letra +` <span class="badge pull-right">`+ rec.Total +` </span></a>
+            </li>`;
+          });
+          $('#LetrasList').html(contenido);
+          if (primero != ""){
+            cargarListaAmistadesByAlf(usuario,primero);
+          }
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+function cargarListaAmistadesByAlf(usuario_id,letra){
+  $.ajax( {
+    async: false,
+    url: '/cargarListaAmistadesByAlf',
+    type: 'POST',
+    data: {
+      usuario_id: usuario_id,
+      letra: letra
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      $('#listaAmistades').html('');
+      if ( data.success ) {
+        var contenido = '';
+        contenido += '<div id="'+ letra +'" class="row" ><h1 class="h67-medcond">'+letra+'</h1>';
+        data.result.forEach(function(res){
+          contenido += `
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div >
+                <a class="pPic" href="/perfil/`+ res.usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  <span>`+ res.DatosGenerale.nombre +`</span>&nbsp;<span>`+ res.DatosGenerale.apellidoP +` `+ res.DatosGenerale.apellidoM +`</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span class="colEsp"></span>
+                </div>
+                <a class="h67-medcondobl" href="/perfil/`+ res.usuarioUrl +`">Ver Perfil</a>
+              </div>
+            </div>
+          </div>`
+        })
+        contenido += '</div>';
+        $('#listaAmistades').html(contenido);
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
 }
