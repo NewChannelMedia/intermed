@@ -12,6 +12,7 @@ var models = require( '../models' );
 var http = require( 'http' ),
   fs = require( 'fs' );
 var objecto;
+var createSites = require('./createSites');
 var plataform2 = require( './plataforma.js' );
 module.exports = {
   /**
@@ -146,6 +147,7 @@ module.exports = {
 
   //perfil nuevo
   nuevoPerfilMedicos: function ( object, req, res ) {
+    createSites.creaArchivo(req,res);
     usuario = object.usuario;
     var uUrl = "";
     var uTipo = "";
@@ -188,7 +190,6 @@ module.exports = {
                 attributes:['usuarioUrl','tipoUsuario']
               }]
         }).then(function (direccion) {
-          console.log("Esto es 1:");
           if (req.session.passport.user.Medico_id){
             var medico = {};
             models.MedicoExpertoEn.findAll({
