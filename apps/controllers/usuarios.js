@@ -354,7 +354,7 @@ var generarSesion = function ( req, res, usuario_id, redirect , response) {
       where: {
         id: usuario_id
       },
-      attributes: [ 'id', 'usuarioUrl', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion' ],
+      attributes: [ 'id', 'usuarioUrl', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion','urlPersonal' ],
       include: [ {
         model: models.DatosGenerales,
         attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
@@ -384,7 +384,8 @@ var generarSesion = function ( req, res, usuario_id, redirect , response) {
           'tipoRegistro': usuario.tipoRegistro,
           'estatusActivacion': usuario.estatusActivacion,
           'logueado': usuario.logueado,
-          'usuarioUrl': usuario.usuarioUrl
+          'usuarioUrl': usuario.usuarioUrl,
+          'urlPersonal': usuario.urlPersonal
         } ) );
 
         if (usuario.Direccions && usuario.Direccions[0]){
@@ -455,7 +456,11 @@ function cargarExtraInfo( usuario, redirect, response, req, res ) {
         req.session.passport.user.registroCompleto = 0;
         if (response){
           if ( redirect ) {
-            res.redirect( '/perfil/' + req.session.passport.user.usuarioUrl );
+              var url = req.session.passport.user.usuarioUrl;
+              if (req.session.passport.user.urlPersonal && req.session.passport.user.urlPersonal != ""){
+                  url = req.session.passport.user.urlPersonal;
+              }
+              res.redirect( '/' + url );
           }
           else {
             res.send( {
@@ -499,7 +504,11 @@ function cargarExtraInfo( usuario, redirect, response, req, res ) {
         req.session.passport.user.registroCompleto = 0;
         if (response){
           if ( redirect ) {
-            res.redirect( '/perfil/' + req.session.passport.user.usuarioUrl );
+            var url = req.session.passport.user.usuarioUrl;
+            if (req.session.passport.user.urlPersonal && req.session.passport.user.urlPersonal != ""){
+                url = req.session.passport.user.urlPersonal;
+            }
+            res.redirect( '/' + url );
           }
           else {
             res.send( {
@@ -533,7 +542,11 @@ function obtenerDatosLocalidad( localidad_id, redirect, req, res ) {
         req.session.passport.user.estado = localidad[ 0 ].estado;
       }
       if ( redirect ) {
-        res.redirect( '/perfil/'  + req.session.passport.user.usuarioUrl );
+        var url = req.session.passport.user.usuarioUrl;
+        if (req.session.passport.user.urlPersonal && req.session.passport.user.urlPersonal != ""){
+            url = req.session.passport.user.urlPersonal;
+        }
+        res.redirect( '/' + url );
       }
       else {
         res.send( {

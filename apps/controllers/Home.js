@@ -149,7 +149,7 @@ module.exports = {
     usuario = object.usuario;
     var uUrl = "";
     var uTipo = "";
-    if ( ( req.session.passport.user && ( !usuario ) ) || ( req.session.passport.user && usuario == req.session.passport.user.usuarioUrl ) ) {
+    if ( ( req.session.passport.user && ( !usuario ) ) || ( req.session.passport.user && usuario == req.session.passport.user.usuarioUrl ) || ( req.session.passport.user && usuario == req.session.passport.user.urlPersonal ) ) {
       var tipoUsuario = '';
       if ( req.session.passport.user.tipoUsuario == 'M' ) tipoUsuario = 'medico';
       else if ( req.session.passport.user.tipoUsuario == 'P' ) tipoUsuario = 'paciente';
@@ -188,7 +188,6 @@ module.exports = {
                 attributes:['usuarioUrl','tipoUsuario']
               }]
         }).then(function (direccion) {
-          console.log("Esto es 1:");
           if (req.session.passport.user.Medico_id){
             var medico = {};
             models.MedicoExpertoEn.findAll({
@@ -206,12 +205,9 @@ module.exports = {
                           order: [['orden','ASC']]
                         }).then(function(aseguradora){
                           var prueba = "";
-                          plataform2.plataform2(usuario,req,res, function(response){
+                          plataform2.plataform2(req.session.passport.user.usuarioUrl,req,res, function(response){
                             medico['MedicoAseguradoras'] = aseguradora;
                             var vista = '/nuevoPerfilMedicos';
-                            if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
-                              var vista = '/vistaPerfilNoRegistrado';
-                            }
                             res.render( tipoUsuario + vista, {
                               medico: medico,
                               estados: estados,
@@ -235,9 +231,11 @@ module.exports = {
     else if ( usuario ) {
       //Perfil de otro usuario
       models.Usuario.findOne( {
-        where: {
+        where: models.Sequelize.or({
+          urlPersonal: usuario
+        },{
           usuarioUrl: usuario
-        },
+        }),
         include: [ {
           model: models.DatosGenerales,
           attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
