@@ -181,12 +181,11 @@ module.exports = {
               },
               {
                   model: models.Telefono
-              }],
-              order: [['principal', 'DESC']],
-              include:[{
+              },{
                 model: models.Usuario,
                 attributes:['usuarioUrl','tipoUsuario']
-              }]
+              }],
+              order: [['principal', 'DESC']]
         }).then(function (direccion) {
           if (req.session.passport.user.Medico_id){
             var medico = {};

@@ -2632,7 +2632,25 @@ $(function() {
   });
 });
 
-if ( location.pathname.indexOf('/nuevoPerfilMedicos/') == 0 ) {
+//if ( location.pathname.indexOf('/nuevoPerfilMedicos/') == 0 ) {
+if ($('#stickyNav').length>0){
+  $(document).ready(function(){
+    $(function () {
+      $(window).scroll(sticky_relocate);
+      sticky_relocate();
+    });
+
+    $('.logros-slider').bxSlider({
+      slideWidth: 250,
+      minSlides: 1,
+      maxSlides: 5,
+      moveSlides: 1,
+      slideMargin: 50,
+    });
+    MostrarUbicaciones();
+  });
+}
+
 $(document).ready(function(){
   $(function () {
     $(window).scroll(sticky_relocate);
@@ -2648,10 +2666,6 @@ $(document).ready(function(){
   });
   MostrarUbicaciones();
 });
-
-
-
-}
 
 function actualizarDirecciones(salir){
   $.ajax( {
