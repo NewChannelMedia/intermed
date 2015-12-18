@@ -2651,22 +2651,6 @@ if ($('#stickyNav').length>0){
   });
 }
 
-$(document).ready(function(){
-  $(function () {
-    $(window).scroll(sticky_relocate);
-    sticky_relocate();
-  });
-
-  $('.logros-slider').bxSlider({
-    slideWidth: 250,
-    minSlides: 1,
-    maxSlides: 5,
-    moveSlides: 1,
-    slideMargin: 50,
-  });
-  MostrarUbicaciones();
-});
-
 function actualizarDirecciones(salir){
   $.ajax( {
     async: false,

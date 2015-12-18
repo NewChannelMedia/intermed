@@ -44,7 +44,18 @@ module.exports = {
     if( nombre == "" ){
       condicionNombre = "";
     }else if( nombre != "" ){
-      condicionNombre = { nombre:{ $like: "%"+nombre+"%"} }
+      condicionNombre = [];
+
+      var nombres = nombre.split(' ');
+      nombres.forEach(function(nombre){
+        condicionNombre.push(models.Sequelize.or({
+          nombre:{$like: '%'+nombre+'%'}
+        },{
+          apellidoP:{$like: '%'+nombre+'%'}
+        },{
+          apellidoM:{$like: '%'+nombre+'%'}
+        }));
+      });
     }
     if( especialidad == 0 ){
       condicionEspecialidad = "";
@@ -105,7 +116,8 @@ module.exports = {
           attributes:['id','municipio'],
           include:[{
             model: models.Estado,
-            attributes:['id','estado']
+            attributes:['id','estado'],
+            where: condicionEstado
           }]
         }]
       }]

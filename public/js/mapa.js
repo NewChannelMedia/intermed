@@ -484,8 +484,8 @@ function cargarMapaPaciente(){
 var MapaSearch = null;
 var markersSearch = [];
 $(function(){
-  if($('#mapSearchDiv')){
-    if ($('#buscadorResultado').text().replace(" ","").length<=1){
+  if($('#buscadorResultado')){
+    if ($('#buscadorResultado').length > 0 && $('#buscadorResultado').text().replace(" ","").length<=1){
       //Cargar consulta por ajax post
       searchingData();
     } else {
