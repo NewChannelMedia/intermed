@@ -4436,7 +4436,11 @@ if ( location.pathname.indexOf( '/nuevoperfilmedicos/' ) == 0 ) {
     $('#sections').trigger( 'next' );*/
 
     /*$('#profile .float.up').scrollTo($('$ubicaciones'), 800);*/
-    $( '#profile .float.bottom' ).scrollTo( $( '#ubicaciones' ), 800 );
+    var top = $('#stickyNav').height();
+    $( '#profile .float.bottom' ).scrollTo( '#ubicaciones', 800, {offset: {top:-60, left:0} } );
+
+    /*$(document).scrollTo('#medico_id_'+medico_id, 500, {offset: function() { return {top:-(height+5)}; }});*/
+
 
     $( '#ubicaciones .float.up' ).scrollTo( $( '#profile' ), 800 );
     $( '#ubicaciones .float.bottom' ).scrollTo( $( '#info' ), 800 );
@@ -4463,15 +4467,16 @@ if ( location.pathname.indexOf( '/nuevoperfilmedicos/' ) == 0 ) {
     $( '#colegas' ).css( 'min-height', _winheight );
     $( '#curriculum' ).css( 'min-height', _winheight );
     $( '#comentarios' ).css( 'min-height', _winheight );
+    */
 
     if ( $( window ).width() < 992 ) {
       console.log( "aqui quiero que entre" );
       var _smheight = $( window ).height();
-      $( '#perfil' ).css( 'min-height', _smheight );
-      $( '#ubicacion' ).css( 'min-height', _smheight );
-      $( '#info' ).css( 'min-height', _smheight );
+      $( '#perfil' ).css( 'min-height', _smheight - $('#stickyNav').height() - $('#mainNav').height() );
+      $( '#ubicaciones' ).css( 'min-height', _smheight - $('#stickyNav').height() );
+      $( '#info' ).css( 'min-height', _smheight - $('#stickyNav').height() );
     }
-
+    /*
     if($(window).width() < 992) {
       var _sheight = _winheight - 60;
       //$('#screen').css('top', '120px');
