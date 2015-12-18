@@ -4143,7 +4143,10 @@ function searchingData(){
     padecimiento: padecimiento,
     nombre: nombre
   },function(data){
-    var contenido = '';
+    var contenido = `<div class="container-fluid">
+      <div class="row">
+        <div role="tabpanel" class="tab-pane fade in active " id="medResults">
+          <ul class="media-list">`;
     $.each(data, function( i, item ){
       var nombreCompleto = item.DatosGenerale.nombre+' '+item.DatosGenerale.apellidoP+' '+item.DatosGenerale.apellidoM;
 
@@ -4189,6 +4192,7 @@ function searchingData(){
         contenido += `</ul><ul class="list-unstyled list-ubicaciones">`;
 
         $.each(item.Direccions, function( i, itemDir ){
+          console.log('itemDir: ' + JSON.stringify(itemDir));
           contenido += `<li>
               <div id="dir_`+itemDir.id+`" class="direccion hidden">
                 <div class="top_dr">1</div>
@@ -4202,7 +4206,7 @@ function searchingData(){
                 <div class="direccion">`+itemDir.calle+` #`+itemDir.numero+`<br/>`+itemDir.Municipio.municipio+`, `+itemDir.Municipio.Estado.estado+`</div>
                 <div class="usuarioUrl">`+item.usuarioUrl+`</div>
               </div>
-              <a onclick="centrarEnMapa('`+itemDir.latitud+`','`+itemDir.longitud+`','`+item.Medico.id+`','`+itemDir.id+`')">
+              <a onclick="centrarEnMapa('`+itemDir.latitud+`','`+itemDir.longitud+`','`+item.Medico.id+`','`+itemDir.id+`',true)">
                 <button class="btn btn-warning">
                   <span class="glyphicon glyphicon-map-marker"></span>
                 </button>
@@ -4234,6 +4238,7 @@ function searchingData(){
         </li>
       `;
     });
+    contenido += '</ul></div></div></div>';
     $("#buscadorResultado").html(contenido);
     mapSearchDiv();
   });

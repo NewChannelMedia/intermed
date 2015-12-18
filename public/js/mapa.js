@@ -485,9 +485,17 @@ var MapaSearch = null;
 var markersSearch = [];
 $(function(){
   if($('#mapSearchDiv')){
-    mapSearchDiv();
+    if ($('#buscadorResultado').text().replace(" ","").length<=1){
+      //Cargar consulta por ajax post
+      searchingData();
+    } else {
+      //Busqueda hecha desde formulario post
+      mapSearchDiv();
+    }
   }
 });
+
+var noScroll = false;
 
 function mapSearchDiv(){
 
@@ -506,6 +514,44 @@ function mapSearchDiv(){
     google.maps.event.addListenerOnce(MapaSearch, 'idle', function(){
 
       var total = 0;
+      var totallat =0; totallng = 0;
+      var maxlat =0, minlat = 0,minlng = 0, maxlng =0 ;
+      $('.direccion').each(function(){
+        var latitud = $(this).find('.latitud').text();
+        var longitud = $(this).find('.longitud').text();
+        if (maxlat === 0){
+          maxlat = latitud;
+          minlat = latitud;
+          minlng = longitud;
+          maxlng = longitud;
+        }
+        if (maxlat<latitud){
+          maxlat = latitud;
+        }
+        if (minlat>latitud){
+          minlat = latitud;
+        }
+        if (maxlng<longitud){
+          maxlng = longitud;
+        }
+        if (minlng>longitud){
+          minlng = longitud;
+        }
+        total++;
+      });
+
+      totallat = maxlat-minlat;
+      totallng = maxlng-minlng;
+      console.log('lan: ' + totallat);
+      console.log('lng: ' + totallng);
+      var pos = new google.maps.LatLng(totallat, totallng);
+
+      MapaSearch.setCenter(pos);
+
+      if (total===0){
+        MapaSearch.setOptions({zoom: 4});
+      }
+
       $('.direccion').each(function(){
         var id = $(this).find('.direccion_id').text();
         var nombre = $(this).find('.nombre').text();
@@ -520,13 +566,7 @@ function mapSearchDiv(){
         var top_dr = $(this).find('.top_dr').text();
 
         if (latitud && longitud){
-          total = total+1;
           var pos = new google.maps.LatLng(latitud, longitud);
-
-          if (total == 1){
-            //Centrar mapa
-            MapaSearch.setCenter(pos);
-          }
 
           while (!(MapaSearch.getBounds().contains(pos))){
             MapaSearch.setOptions({zoom: parseInt(MapaSearch.get('zoom'))-1});
@@ -555,19 +595,17 @@ function mapSearchDiv(){
               info.close();
             });
 
-            $(document).scrollTo('#medico_id_'+medico_id, 1000, {offset: function() { return {top:-(height+5)}; }});
+            if (!noScroll) $(document).scrollTo('#medico_id_'+medico_id, 500, {offset: function() { return {top:-(height+5)}; }});
             $('.result').removeClass('seleccionado');
             $('#medico_id_'+medico_id).addClass('seleccionado');
 
             MapaSearch.setCenter(pos);
             infowindow.open(MapaSearch, marker);
+            noScroll = false;
           });
           markersSearch[id] = marker;
         }
       });
-      if (total===0){
-        MapaSearch.setOptions({zoom: 4});
-      }
     });
 
     $('#mainNav').removeClass('navbar-static-top');
@@ -579,7 +617,8 @@ function mapSearchDiv(){
     $( window ).resize();
 }
 
-function centrarEnMapa(latitud,longitud,medico_id,direccion_id){
+function centrarEnMapa(latitud,longitud,medico_id,direccion_id, noScr){
+  if (noScr) noScroll = true;
   $('.result').removeClass('seleccionado');
   $('#medico_id_'+medico_id).addClass('seleccionado');
 
@@ -591,5 +630,6 @@ function centrarEnMapa(latitud,longitud,medico_id,direccion_id){
 
     var pos = new google.maps.LatLng(latitud, longitud);
     MapaSearch.setCenter(pos);
+    MapaSearch.setZoom(11);
   }
 }
