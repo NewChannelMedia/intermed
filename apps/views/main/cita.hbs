@@ -91,10 +91,8 @@ $(document).ready(function () {
     });
 
     $('#lstUbicacion').change(function(){
-      //$('#calendar').fullCalendar('refetchEvents');
       $('#calendar').fullCalendar('destroy');
       generarCalendario();
-      //alert($('#lstUbicacion').val());
       $('#calendar').fullCalendar('refetchEvents');
     });
 });
@@ -111,13 +109,7 @@ function generarCalendario()
       slotLabelFormat: 'h:mm a',
       businessHours: true,
       slotLabelInterval : duracionServicio.substring(0, 5),
-      /*businessHours: {
-            start: '06:00',
-            end: '22:59',
-            dow: [ 1, 2, 3, 4, 5, 6, 7 ]
-      },*/
       slotDuration: '00:30',
-      //columnFormat: 'dddd',
       header: {
           center: false,
           right: false,
@@ -138,15 +130,22 @@ function generarCalendario()
       eventLimit: true,
       overlap: false,
       slotEventOverlap: false,
+      timezone:  "UTC",
       dayClick: function (date, allDay, jsEvent, view) {
-        quitaEventos();
+        //quitaEventos();
         var horas = duracionServicio.split(":");
         var fecha = new moment(date);
+        var fechaInicial = new Date(date)
         var final = fecha.add(horas[0], 'h');
         var final = final.add(horas[1], 'm');
 
-        if ( validaEvento(date, final)) {
-          if ( validaAgenda(date, final)) {
+        fecha = new Date(date)
+        fecha.setHours(fecha.getHours()  +  6);
+
+        if ( validaEvento(fecha, final)) {
+          var validacionAgenda =  validaAgenda(fecha, final);
+
+          if ( validacionAgenda == 1 ) {
               eventData = {
                   title:   $('#lstServicio option:selected').text(),
                   start: date ,
@@ -156,11 +155,14 @@ function generarCalendario()
                   durationEditable: false,
                   editable: false
               };
-
-                $('#calendar').fullCalendar('renderEvent', eventData, true);
-                $('#calendar').fullCalendar('unselect');
-          } else {
+              $('#calendar').fullCalendar('renderEvent', eventData, true);
+              $('#calendar').fullCalendar('unselect');
+          } else  if ( validacionAgenda == 2 ) {
+            alert('No puede generar una cita con fecha anterior a la actual !');
+          } else  if ( validacionAgenda == 3 ) {
             alert('Existe una cita con ese horario !');
+          } else  if ( validacionAgenda == 4 ) {
+              alert('No puede generar dos citas el mismo dia !');
           }
         }
         else {
@@ -168,17 +170,21 @@ function generarCalendario()
         }
       },
       eventClick: function (event, jsEvent, view) {
-        if (event.id != null && event.id.substring(0,4) != 'cita')
+        if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada')
         {
-            if  (cancelaCita(event._id))
+            var r = confirm("Esta seguro de cancelar la cita ?");
+            if  ( r == true)
             {
-              console.log('cancelando')
-              $('#calendar').fullCalendar('removeEvents', event._id);
+                if  (cancelaCita(event._id))
+                {
+                  console.log('cancelando ' + event._id)
+
+                }
             }
         }
       },
       eventMouseover: function (event, jsEvent, view) {
-        if (event.id != null && event.id.substring(0,4) != 'cita') {
+        if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
           $(this).append('<span id=\"' + event._id + '\">Clic para eliminar</span>');
         }
       },
@@ -209,24 +215,39 @@ function quitaEventos() {
 function validaAgenda(inicioEvento, finEvento) {
   var h = $('#calendar').fullCalendar('clientEvents');
   var evento;
-  var valido = false;
+  var valido = 1;
+  var fecha  =  new Date();
 
-  for (i = 0; i <= h.length-1; i++) {
-      evento = h[i];
-
-      if ((evento.rendering != 'background') && (evento.id.substring(0,4) == 'cita'))
-      {
-          if ( ((inicioEvento < evento.start ) &&  ( finEvento <= evento.start )) || (inicioEvento >= evento.end ) )
+  if  ( inicioEvento < fecha )
+  {
+    valido  = 2;
+  }
+  else
+  {
+      for (i = 0; i <= h.length-1; i++) {
+          evento = h[i];
+          // Citas de otros pacientes
+          if ((evento.rendering != 'background') && (evento.id.substring(0,4) == 'cita'))
           {
-            valido = true;
-//            break;
-          } else {
-            valido = false;
-            break;
+              if ( !((inicioEvento < evento.start ) &&  ( finEvento <= evento.start )) || (inicioEvento >= evento.end ) )
+              {
+                valido = 3;
+                break;
+              }
           }
-      }
-  };
 
+          // Citas del mismo paciente
+          if ((evento.rendering != 'background') && (evento.id.substring(0,4) != 'cita')  &&  (evento.title != 'Cancelada'))
+          {
+            var fechaEv =  new Date(evento.start);
+            if  (  fechaEv.getDay() == inicioEvento.getDay())
+            {
+                valido = 4;
+                break;
+            }
+          }
+      };
+  }
   return valido;
 }
 
@@ -271,6 +292,7 @@ function obtenerHorarios() {
           {
               inicio.hours(evento.start._d.getUTCHours());
               inicio.minute(evento.start._d.getUTCMinutes());
+              //inicio.days(evento.start._d.getUTCMinutes());
 
               fin.hours(evento.end._d.getUTCHours());
               fin.minute(evento.end._d.getUTCMinutes());
@@ -279,10 +301,12 @@ function obtenerHorarios() {
               inicio = inicio.subtract(6, 'hours');
 
               var horario = {
-                  inicio: inicio.format('YYYY-M-D') + " "  + inicio.format('HH:mm'),
-                  fin: fin.format('YYYY-M-D') + " "  + fin.format('HH:mm'),
+                  inicio: evento.start.format('YYYY-M-D') + " "  + inicio.format('HH:mm'),
+                  fin: evento.end.format('YYYY-M-D') + " "  + fin.format('HH:mm'),
               };
               objhorarios.push(horario);
+
+              console.log('horarios' +   evento.start)
           }
         }
     };
@@ -305,7 +329,8 @@ function cancelaCita(id) {
         alert(data.error.message);
         return false;
       } else {
-        alert('La cita ha sido cancelada !');
+        $('#calendar').fullCalendar('removeEvents');
+        $('#calendar').fullCalendar('refetchEvents');
         return true;
       }
     },

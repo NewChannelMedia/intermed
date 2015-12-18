@@ -113,44 +113,24 @@ function generarCalendario()
       overlap: false,
       slotEventOverlap: false,
       dayClick: function (date, allDay, jsEvent, view) {
-        quitaEventos();
-        var horas = duracionServicio.split(":");
-        var fecha = new moment(date);
-        var final = fecha.add(horas[0], 'h');
-        var final = final.add(horas[1], 'm');
-
-        if ( validaEvento(date, final)) {
-          if ( validaAgenda(date, final)) {
-              eventData = {
-                  title:   $('#lstServicio option:selected').text(),
-                  start: date ,
-                  end: final, //date.format('DMYYYY') +  " " +  duracion,
-                  color : '#578',
-                  overlap: false,
-                  durationEditable: false,
-                  editable: false
-              };
-
-                $('#calendar').fullCalendar('renderEvent', eventData, true);
-                $('#calendar').fullCalendar('unselect');
-          } else {
-            alert('Existe una cita con ese horario !');
-          }
-        }
-        else {
-          alert('La cita excede el tiempo disponible del médico !');
-        }
+        revertFunc();
+        $('#calendar').fullCalendar('unselect');
       },
       eventClick: function (event, jsEvent, view) {
-        //if (event.id != null && event.id.substring(0,4) != 'cita') {
+        //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
+        var r = confirm("Esta seguro de cancelar la cita ?");
+        if  ( r == true)
+        {
             if  (cancelaCita(event._id))
             {
               $('#calendar').fullCalendar('removeEvents', event._id);
+              $('#calendar').fullCalendar('unselect');
             }
+        }
         //}
       },
       eventMouseover: function (event, jsEvent, view) {
-        //if (event.id != null && event.id.substring(0,4) != 'cita') {
+        //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
           $(this).append('<span id=\"' + event._id + '\">Clic para cancelar</span>');
         //}
       },
@@ -176,52 +156,6 @@ function quitaEventos() {
          }
       }
   };
-}
-
-function validaAgenda(inicioEvento, finEvento) {
-  var h = $('#calendar').fullCalendar('clientEvents');
-  var evento;
-  var valido = false;
-
-  for (i = 0; i <= h.length-1; i++) {
-      evento = h[i];
-
-      if ((evento.rendering != 'background') && (evento.id.substring(0,4) == 'cita'))
-      {
-          if ( ((inicioEvento < evento.start ) &&  ( finEvento <= evento.start )) || (inicioEvento >= evento.end ) )
-          {
-            valido = true;
-//            break;
-          } else {
-            valido = false;
-            break;
-          }
-      }
-  };
-
-  return valido;
-}
-
-function validaEvento(inicioEvento, finEvento) {
-  var h = $('#calendar').fullCalendar('clientEvents');
-  var evento;
-  var valido = false;
-
-  //console.log(h.length);
-  for (i = 0; i <= h.length-1; i++) {
-      evento = h[i];
-
-      if (evento.rendering == 'background')
-      {
-            if (( inicioEvento >= evento.start ) &&  ( finEvento <= evento.end ))
-            {
-              valido = true;
-              break;
-            }
-      }
-  };
-
-  return valido;
 }
 
 function obtenerHorarios() {

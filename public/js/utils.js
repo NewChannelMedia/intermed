@@ -493,6 +493,8 @@ function registrarCita() {
 		success: function( data ) {
 			if ( data.error == null ) {
 	         alert("Se ha guardado su cita !");
+           $('#calendar').fullCalendar('removeEvents');
+           $('#calendar').fullCalendar('refetchEvents');
 			}
 			else {
 				alert(data.error.message);

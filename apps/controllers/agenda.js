@@ -22,6 +22,7 @@ exports.agregaCita = function(object, req, res) {
   var fechaFinNotificacion = new Date(object.fechaFin);
   fechaNotificacion.setMinutes(fechaNotificacion.getMinutes() + 30);
   fechaFinNotificacion.setMinutes(fechaNotificacion.getDay() + 7);
+  //console.log(object.fecha)
 
   models.Agenda.create({
       fechaHoraInicio:  object.fecha,
@@ -37,7 +38,18 @@ exports.agregaCita = function(object, req, res) {
           inicio: fechaNotificacion,
           fin: fechaFinNotificacion,
           data : datos.id.toString(),
-          tipoNotificacion_id : 1,  // cambiar el tipo de notificacion
+          tipoNotificacion_id : 21,
+          usuario_id : object.paciente_id
+      }).catch(function(err) {
+          //console.log(err);
+          //res.status(500).json({error: err});
+      });
+      fechaNotificacion = new Date(object.fechaInicio);
+      models.Notificacion.create({
+          inicio: Date.now(),
+          fin: fechaNotificacion,
+          data : datos.id.toString(),
+          tipoNotificacion_id : 25,
           usuario_id : object.medico_id
       }).catch(function(err) {
           //console.log(err);
@@ -77,9 +89,9 @@ exports.cancelaCitaMedico = function(object, req, res) {
       models.Notificacion.create({
           inicio: fecha,
           fin: fechaFin,
-          data : object.usuario_id.toString(),
-          tipoNotificacion_id : 2,  // cambiar el tipo de notificacion
-          usuario_id : object.usuario_id.toString()
+          data : object.paciente_id.toString(),
+          tipoNotificacion_id : 22,
+          usuario_id : object.paciente_id.toString()
       }).then(function(datos) {
 
       }).catch(function(err) {
@@ -103,8 +115,8 @@ exports.rechazarCita = function(object, req, res) {
           inicio: fecha,
           fin: fechaFin,
           data : object.paciente_id.toString(),
-          tipoNotificacion_id : 2,  // cambiar el tipo de notificacion
-          usuario_id : 1
+          tipoNotificacion_id : 23,
+          usuario_id : object.usuario_id
       }).then(function(datos) {
 
       }).catch(function(err) {
@@ -128,13 +140,13 @@ exports.cancelaCita = function(object, req, res) {
           inicio: fecha,
           fin: fechaFin,
           data : object.paciente_id.toString(),
-          tipoNotificacion_id : 2,  // cambiar el tipo de notificacion
+          tipoNotificacion_id : 24,
           usuario_id : object.usuario_id.toString()
       }).then(function(datos) {
 
       }).catch(function(err) {
           console.log(err);
-          res.status(500).json({error: err});
+          //res.status(500).json({error: err});
       });
       res.status(200).json({ok: true});
   }).catch(function(err) {
@@ -396,10 +408,8 @@ exports.borraServicio = function(object, req, res) {
   });
 };
 
-
 // Obtiene horarios por direccion
 exports.seleccionaHorarios = function(object, req, res) {
-
   var resultado = [];
   models.Horarios.findAll({
      where :  { direccion_id: object.id }
@@ -411,32 +421,32 @@ exports.seleccionaHorarios = function(object, req, res) {
     for (i = 0; i <= datos.length - 1; i++) {
         switch (datos[i].dia) {
             case 0: //domingo
-                horaInicio = '2015-12-06 ' + datos[i].horaInicio;
-                horaFin = '2015-12-06 ' + datos[i].horaFin;
-                break;
-            case 1: //lunes
-                horaInicio = '2015-12-07 ' + datos[i].horaInicio;
-                horaFin = '2015-12-07 ' + datos[i].horaFin;
-                break;
-            case 2: //martes
-                horaInicio = '2015-12-08 ' + datos[i].horaInicio;
-                horaFin = '2015-12-08 ' + datos[i].horaFin;
-                break;
-            case 3: //miercoles
-                horaInicio = '2015-12-09 ' + datos[i].horaInicio;
-                horaFin = '2015-12-09 ' + datos[i].horaFin;
-                break;
-            case 4: //jueves
-                horaInicio = '2015-12-10 ' + datos[i].horaInicio;
-                horaFin = '2015-12-10 ' + datos[i].horaFin;
-                break;
-            case 5: //viernes
-                horaInicio = '2015-12-11 ' + datos[i].horaInicio;
-                horaFin = '2015-12-12 ' + datos[i].horaFin;
-                break;
-            case 6: //sabado
                 horaInicio = '2015-12-13 ' + datos[i].horaInicio;
                 horaFin = '2015-12-13 ' + datos[i].horaFin;
+                break;
+            case 1: //lunes
+                horaInicio = '2015-12-14 ' + datos[i].horaInicio;
+                horaFin = '2015-12-14 ' + datos[i].horaFin;
+                break;
+            case 2: //martes
+                horaInicio = '2015-12-15 ' + datos[i].horaInicio;
+                horaFin = '2015-12-15 ' + datos[i].horaFin;
+                break;
+            case 3: //miercoles
+                horaInicio = '2015-12-16 ' + datos[i].horaInicio;
+                horaFin = '2015-12-16 ' + datos[i].horaFin;
+                break;
+            case 4: //jueves
+                horaInicio = '2015-12-17 ' + datos[i].horaInicio;
+                horaFin = '2015-12-17 ' + datos[i].horaFin;
+                break;
+            case 5: //viernes
+                horaInicio = '2015-12-18 ' + datos[i].horaInicio;
+                horaFin = '2015-12-18 ' + datos[i].horaFin;
+                break;
+            case 6: //sabado
+                horaInicio = '2015-12-20 ' + datos[i].horaInicio;
+                horaFin = '2015-12-20 ' + datos[i].horaFin;
                 break;
         };
 
@@ -462,23 +472,37 @@ exports.seleccionaHorarios = function(object, req, res) {
       for (i = 0; i <= datos.length - 1; i++) {
       //  console.log(object.paciente_id + ' ' + datos[i].paciente_id)
         if (datos[i].paciente_id == object.paciente_id) {
-          var horario = {
-              id: datos[i].id.toString(),
-              title:   datos[i].servicio_id,
+          if (datos[i].status != 0 ) {
+            var horario = {
+                id: datos[i].id.toString(),
+                title:   'Cita',
+                start: datos[i].fechaHoraInicio,
+                end: datos[i].fechaHoraFin,
+                //color : '#000',
+                editable: false,
+                durationEditable: false,
+                overlap: false,
+                slotEventOverlap: false,
+                //constraint: 'businessHours',
+                //rendering: 'background',
+            };
+          }  else {
+            var horario = {
+              id: 'Cita_' +  datos[i].id,
+              title: 'Cancelada',
               start: datos[i].fechaHoraInicio,
               end: datos[i].fechaHoraFin,
-              //color : '#000',
+              color : '#000',
               editable: false,
               durationEditable: false,
               overlap: false,
               slotEventOverlap: false,
-              //constraint: 'businessHours',
-              //rendering: 'background',
-          };
+            };
+          }
         }
         else {
           var horario = {
-              id: 'cita_' +  datos[i].id,
+              id: 'Cita_' +  datos[i].id,
               title: 'No disponible',
               start: datos[i].fechaHoraInicio,
               end: datos[i].fechaHoraFin,
@@ -487,8 +511,6 @@ exports.seleccionaHorarios = function(object, req, res) {
               durationEditable: false,
               overlap: false,
               slotEventOverlap: false,
-              //constraint: 'businessHours',
-              //rendering: 'background',
           };
         }
         resultado.push(horario);
@@ -528,32 +550,32 @@ exports.seleccionaAgendaMedico  =  function(object, req, res)
       for (i = 0; i <= datos.length - 1; i++) {
           switch (datos[i].dia) {
               case 0: //domingo
-                  horaInicio = '2015-12-06 ' + datos[i].horaInicio;
-                  horaFin = '2015-12-06 ' + datos[i].horaFin;
-                  break;
-              case 1: //lunes
-                  horaInicio = '2015-12-07 ' + datos[i].horaInicio;
-                  horaFin = '2015-12-07 ' + datos[i].horaFin;
-                  break;
-              case 2: //martes
-                  horaInicio = '2015-12-08 ' + datos[i].horaInicio;
-                  horaFin = '2015-12-08 ' + datos[i].horaFin;
-                  break;
-              case 3: //miercoles
-                  horaInicio = '2015-12-09 ' + datos[i].horaInicio;
-                  horaFin = '2015-12-09 ' + datos[i].horaFin;
-                  break;
-              case 4: //jueves
-                  horaInicio = '2015-12-10 ' + datos[i].horaInicio;
-                  horaFin = '2015-12-10 ' + datos[i].horaFin;
-                  break;
-              case 5: //viernes
-                  horaInicio = '2015-12-11 ' + datos[i].horaInicio;
-                  horaFin = '2015-12-12 ' + datos[i].horaFin;
-                  break;
-              case 6: //sabado
                   horaInicio = '2015-12-13 ' + datos[i].horaInicio;
                   horaFin = '2015-12-13 ' + datos[i].horaFin;
+                  break;
+              case 1: //lunes
+                  horaInicio = '2015-12-14 ' + datos[i].horaInicio;
+                  horaFin = '2015-12-14 ' + datos[i].horaFin;
+                  break;
+              case 2: //martes
+                  horaInicio = '2015-12-15 ' + datos[i].horaInicio;
+                  horaFin = '2015-12-15 ' + datos[i].horaFin;
+                  break;
+              case 3: //miercoles
+                  horaInicio = '2015-12-16 ' + datos[i].horaInicio;
+                  horaFin = '2015-12-16 ' + datos[i].horaFin;
+                  break;
+              case 4: //jueves
+                  horaInicio = '2015-12-17 ' + datos[i].horaInicio;
+                  horaFin = '2015-12-17 ' + datos[i].horaFin;
+                  break;
+              case 5: //viernes
+                  horaInicio = '2015-12-18 ' + datos[i].horaInicio;
+                  horaFin = '2015-12-18 ' + datos[i].horaFin;
+                  break;
+              case 6: //sabado
+                  horaInicio = '2015-12-19 ' + datos[i].horaInicio;
+                  horaFin = '2015-12-19 ' + datos[i].horaFin;
                   break;
           };
 
@@ -584,7 +606,7 @@ exports.seleccionaAgendaMedico  =  function(object, req, res)
                 title: 'Cita',
                 start: datos[i].fechaHoraInicio,
                 end: datos[i].fechaHoraFin,
-                color : '#000',
+//                color : '#000',
                 editable: false,
                 durationEditable: false,
                 overlap: false,
@@ -604,7 +626,7 @@ exports.seleccionaAgendaMedico  =  function(object, req, res)
                 overlap: false,
                 slotEventOverlap: false,
                 //constraint: 'businessHours',
-                //rendering: 'background',
+                rendering: 'background',
             }
           }
 
