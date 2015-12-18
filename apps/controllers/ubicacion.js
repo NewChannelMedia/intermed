@@ -272,7 +272,7 @@ exports.registrarUbicacion = function (objects, req, res) {
 };
 
 exports.horarios = function (objects, req, res) {
-    var id = 48;
+    var id = 1;
     var resultado = [];
     models.Horarios.findAll({
         where: {
@@ -326,7 +326,7 @@ exports.horarios = function (objects, req, res) {
 
         res.render('horarios', {
             title: 'Horarios',
-            direccion_id: 48,
+            direccion_id: id,
             horarios: JSON.stringify(resultado)
         });
     });
@@ -339,7 +339,7 @@ exports.registrarHorarios = function (objects, req, res) {
 
     models.Horarios.destroy({
         where: {
-            direccion_id: 48
+            direccion_id: 1
         }
     }).then(function () {
         continuarRegistro = true;

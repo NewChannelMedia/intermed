@@ -9,7 +9,6 @@ $(document).ready(function () {
     //inicializar calendario
     $('#calendar').fullCalendar({
         // put your options and callbacks here
-
         defaultView: 'agendaWeek',
         height: 350,
         allDaySlot: false,
@@ -51,7 +50,7 @@ $(document).ready(function () {
                     end: end
                 };
 
-                $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true              
+                $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
             }
             $('#calendar').fullCalendar('unselect');
 
@@ -63,7 +62,7 @@ $(document).ready(function () {
             if (confirm('Desea eliminar el evento?')) {
                 $('#calendar').fullCalendar('removeEvents', event._id);
             }
-            
+
 
         },
         eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {

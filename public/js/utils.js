@@ -419,6 +419,7 @@ function addMedico( record, tipo ) {
 function registrarCita() {
 	var horarios = obtenerHorarios();
 	$("#fecha").val(horarios[0].inicio);
+  $("#fechaFin").val(horarios[0].fin);
 
 	$.ajax({
 		url: '/agregaCita',
@@ -430,6 +431,8 @@ function registrarCita() {
 		success: function( data ) {
 			if ( data.error == null ) {
 	         alert("Se ha guardado su cita !");
+           $('#calendar').fullCalendar('removeEvents');
+           $('#calendar').fullCalendar('refetchEvents');
 			}
 			else {
 				alert(data.error.message);
