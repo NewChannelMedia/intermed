@@ -1667,6 +1667,9 @@ function error404(){
     rutas.routeLife( 'plataforma2', '', hps );
     res.render('pagina404');
   });
+  app.post('*',function(req,res){
+    res.status(404).send('Página no encontrada');
+  });
 }
 
 var io = serv.server( app, 3000 );
