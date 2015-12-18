@@ -1628,38 +1628,38 @@ var iniciar = function () {
     app.post( '/cancelaCitaMedico', function ( req, res ) {
       intermed.callController( 'agenda', 'cancelaCitaMedico', req.body, req, res );
     });
+}
 
-    /*RUTA PERFIL (DEJAR SIEMPRE AL FINAL)*/
-    /*Dejando al final se evita que cada que se entre al router se haga una consulta para ver si se trata de un usuario*/
-    app.get( '/:usuario', function ( req, res ,next) {
-      var usuario = '';
-      if ( req.params.usuario ) usuario = req.params.usuario;
-      if (usuario != ""){
-        models.Usuario.findOne({
-          where: models.Sequelize.or(
-            {
-              usuarioUrl: usuario
-            },
-            {
-              urlPersonal: usuario
-            }
-          )
-        }).then(function(us){
-          app.use( '/'+usuario, express.static( __dirname + '/../public' ) );
-          if (us){
-            rutas.routeLife( 'plataforma2', 'plataforma', hps );
-            intermed.callController( 'Home', 'nuevoPerfilMedicos', {usuario: usuario}, req, res );
-          }else{
-            next();
+function manejarPerfiles(){
+  /*RUTA PERFIL (DEJAR SIEMPRE AL FINAL)*/
+  /*Dejando al final se evita que cada que se entre al router se haga una consulta para ver si se trata de un usuario*/
+  app.get( '/:usuario', function ( req, res ,next) {
+    var usuario = '';
+    if ( req.params.usuario ) usuario = req.params.usuario;
+    if (usuario != ""){
+      models.Usuario.findOne({
+        where: models.Sequelize.or(
+          {
+            usuarioUrl: usuario
+          },
+          {
+            urlPersonal: usuario
           }
-        });
-      } else {
-        next();
-      }
-    } );
-    /*FIN RUTA PERFIL USUARIO*/
-
-    error404(); //Dejar al final
+        )
+      }).then(function(us){
+        app.use( '/'+usuario, express.static( __dirname + '/../public' ) );
+        if (us){
+          rutas.routeLife( 'plataforma2', 'plataforma', hps );
+          intermed.callController( 'Home', 'nuevoPerfilMedicos', {usuario: usuario}, req, res );
+        }else{
+          next();
+        }
+      });
+    } else {
+      next();
+    }
+  } );
+  /*FIN RUTA PERFIL USUARIO*/
 }
 
 function error404(){
@@ -1678,3 +1678,5 @@ socket.io( io, bundle, ioPassport );
 
 //se exporta para que otro js lo pueda utilizar
 exports.iniciar = iniciar;
+exports.manejarPerfiles = manejarPerfiles;
+exports.error404 = error404;

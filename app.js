@@ -15,3 +15,5 @@ var arranca = require('./config/router');
 
 // se arranca el servidor
 arranca.iniciar();
+arranca.manejarPerfiles();
+arranca.error404();
