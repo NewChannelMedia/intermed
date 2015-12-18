@@ -1658,6 +1658,15 @@ var iniciar = function () {
       }
     } );
     /*FIN RUTA PERFIL USUARIO*/
+
+    error404(); //Dejar al final
+}
+
+function error404(){
+  app.get('*', function(req, res){
+    rutas.routeLife( 'plataforma2', '', hps );
+    res.render('pagina404');
+  });
 }
 
 var io = serv.server( app, 3000 );
