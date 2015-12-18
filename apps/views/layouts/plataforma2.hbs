@@ -79,7 +79,7 @@
               <div class="navigator-inner-section-cell">
                 <ul class="nav nav-pills nav-justified navigator-inner-section-menu h57-cond s20">
                   <li>
-                    <a href="{{base_url}}perfil/{{valSession 'usuarioUrl'}}">Perfil</a>
+                    <a href="{{base_url}}{{#ifSessionValNN 'urlPersonal'}}{{valSession 'urlPersonal'}}{{else}}{{valSession 'usuarioUrl'}}{{/ifSessionValNN}}">Perfil</a>
                   </li>
                   {{#ifTipoMedico}}
                   <li>

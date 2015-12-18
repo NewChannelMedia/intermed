@@ -120,10 +120,18 @@ function numLast(){
   return session.Last+1;
 }
 
+function ifSessionValNN( input, options ) {
+  if (session[ input ] && session[ input ] != "" )
+    return options.fn( true );
+  else
+    return options.inverse( false );
+}
+
 exports.varSession = varSession;
 exports.valSession = valSession;
 exports.ifSession = ifSession;
 exports.ifSessionVal = ifSessionVal;
+exports.ifSessionValNN = ifSessionValNN;
 exports.unlessSessionVal = unlessSessionVal;
 exports.ifID = ifID;
 exports.ifTipoMedico = ifTipoMedico;

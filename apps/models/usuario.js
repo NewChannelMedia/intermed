@@ -13,6 +13,9 @@ module.exports = function ( sequelize, DataTypes ) {
     usuarioUrl: {
       type: DataTypes.STRING
     },
+    urlPersonal: {
+      type: DataTypes.STRING
+    },
     fbId: {
       type: DataTypes.STRING
     },

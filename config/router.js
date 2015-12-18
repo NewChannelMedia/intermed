@@ -174,20 +174,6 @@ var iniciar = function () {
     rutas.routeLife( 'plataforma', 'plataforma/pacientes', hps );
     intermed.callController( 'Home', 'perfilPacientes', '', req, res );
   } );
-  //perfil nuevo
-  app.get( '/nuevoPerfilMedicos', function ( req, res ) {
-    rutas.routeLife( 'plataforma2', 'plataforma', hps );
-    intermed.callController( 'Home', 'nuevoPerfilMedicos', '', req, res );
-  } );
-
-
-  app.get( '/nuevoPerfilMedicos/:usuario', function ( req, res ) {
-    var usuario = '';
-    if ( req.params.usuario ) usuario = req.params.usuario;
-    rutas.routeLife( 'plataforma2', 'plataforma', hps );
-    intermed.callController( 'Home', 'nuevoPerfilMedicos', {usuario: usuario}, req, res );
-  } );
-
 
   app.get( '/auth/facebook/request/:tipo', function ( req, res, next ) {
     req.session.tipo = '';
@@ -1642,8 +1628,48 @@ var iniciar = function () {
     app.post( '/cancelaCitaMedico', function ( req, res ) {
       intermed.callController( 'agenda', 'cancelaCitaMedico', req.body, req, res );
     });
+}
 
+function manejarPerfiles(){
+  /*RUTA PERFIL (DEJAR SIEMPRE AL FINAL)*/
+  /*Dejando al final se evita que cada que se entre al router se haga una consulta para ver si se trata de un usuario*/
+  app.get( '/:usuario', function ( req, res ,next) {
+    var usuario = '';
+    if ( req.params.usuario ) usuario = req.params.usuario;
+    if (usuario != ""){
+      models.Usuario.findOne({
+        where: models.Sequelize.or(
+          {
+            usuarioUrl: usuario
+          },
+          {
+            urlPersonal: usuario
+          }
+        )
+      }).then(function(us){
+        app.use( '/'+usuario, express.static( __dirname + '/../public' ) );
+        if (us){
+          rutas.routeLife( 'plataforma2', 'plataforma', hps );
+          intermed.callController( 'Home', 'nuevoPerfilMedicos', {usuario: usuario}, req, res );
+        }else{
+          next();
+        }
+      });
+    } else {
+      next();
+    }
+  } );
+  /*FIN RUTA PERFIL USUARIO*/
+}
 
+function error404(){
+  app.get('*', function(req, res){
+    rutas.routeLife( 'plataforma2', '', hps );
+    res.render('pagina404');
+  });
+  app.post('*',function(req,res){
+    res.status(404).send('Página no encontrada');
+  });
 }
 
 var io = serv.server( app, 3000 );
@@ -1652,3 +1678,5 @@ socket.io( io, bundle, ioPassport );
 
 //se exporta para que otro js lo pueda utilizar
 exports.iniciar = iniciar;
+exports.manejarPerfiles = manejarPerfiles;
+exports.error404 = error404;
