@@ -4089,7 +4089,7 @@ $(document).ready(function(){
   //carga los estados y se llena el select con la siguiente consulta
   var html = "";
   $.post('/cargaEstados',function(data){
-    html += '<option value="0">--Estados--</option>';
+    html += '<option value="0">Estado</option>';
     $.each(data, function(i, item){
       html += '<option value="'+item.id+'">'+item.estado+'</option>';
     });
@@ -4101,18 +4101,14 @@ $(document).ready(function(){
 function cargarCiudades(id){
   var idABuscar = $(id).val();// se saca el value del select de estados
   // se hace la consulta se manda como parametro el id que se obtuvo de seleccionar el estado
-  var html2 = "";
-  if( idABuscar != 0 ){
-    html2 += '<opton value="0">--Municipio--</option>';
-    $.post('/cargarCiudades',{id:idABuscar}, function(data){
-      $.each(data,function(i, item){
-        html2 += '<option value="'+item.id+'">'+item.municipio+'</option>';
-      });
-      $("#selectCiudad").html(html2);
+  $.post('/cargarCiudades',{id:idABuscar}, function(data){
+    var cont = '<option value="0">Municipio/Ciudad</option>';
+    $.each(data,function(i, item){
+      cont += '<option value="'+item.id+'">'+item.municipio+'</option>';
     });
-  }else{
-    bootbox.alert('Seleccione un estado primero por favor.',function(){});
-  }
+    $("#selectCiudad").html(cont);
+  });
+
 }
 function cargaEspecialidades(){
   var html3 = "";
@@ -4150,71 +4146,104 @@ function searchingData(){
     padecimiento: padecimiento,
     nombre: nombre
   },function(data){
+    var contenido = `<div class="container-fluid">
+      <div class="row">
+        <div role="tabpanel" class="tab-pane fade in active " id="medResults">
+          <ul class="media-list">`;
     $.each(data, function( i, item ){
       var nombreCompleto = item.DatosGenerale.nombre+' '+item.DatosGenerale.apellidoP+' '+item.DatosGenerale.apellidoM;
-      var medicoEspecialidad = "";
-        html5 += '<ul class="media-list" id="agregando">';
-        html5 += '<li class="media result">';
-          html5 += '<div class="media-left">';
-            html5 += '<div class="media-enclosure">';
-              html5 += '<a href="#">';
-                html5 += '<img class="media-object" src="'+item.urlFotoPerfil+'" alt=""/>';
-              html5 += '</a>';
-            html5 += '</div>';
-          html5 += '</div>';
-          html5 += '<div class="media-body">';
-            html5 += '<div class="col-md-8">';
-              html5 += '<h4 class="media-heading">';
-                html5 += '<span class="label label-topDr">Top Doctor</span>Dr. '+nombreCompleto;
-              html5 += '</h4>';
-              $.each(item.Medico.MedicoEspecialidads, function(a, pipi ){
-                medicoEspecialidad += pipi.subEsp;
-                if( medicoEspecialidad == 1 ){
-                  html5 += '<ul class="list-unstyled list-inline">';
-                    html5 += '<li><strong>Sub especialidades</strong>&nbsp;'+pipi.Especialidad.especialidad+'</li>';
-                  html5 += '</ul>';
-                }else if( medicoEspecialidad == 0 ){
-                  html5 += '<ul class="list-unstyled list-inline">';
-                    html5 += '<li><strong>Especialidades</strong>&nbsp;'+pipi.Especialidad.especialidad+'</li>';
-                  html5 += '</ul>';
-                }
-              });
-              $.each(item.Medico.Padecimientos, function(d, dat ){
-                html5 += '<ul class="list-unstyled list-inline">';
-                  html5 += '<li>';
-                    html5 += '<small><strong>Padecimientos:</strong>'+dat.padecimiento+'</small>';
-                  html5 += '</li>';
-                html5 += '</ul>';
-              });
-              $.each(item.Direccions, function( i, item ){
-                console.log("ITEM: "+JSON.stringify(item));
-                html5 += '<ul class="list-unstyled list-inline">';
-                  html5 += '<li>';
-                    html5 += '<button class="btn btn-warning">';
-                      html5 += '<span class="glyphicon glyphicon-map-marker"></span>';
-                    html5 += '</button>';
-                    html5 += '<a href="#">';
-                      html5 += '<strong>nombre de la calle</strong>';
-                      html5 += '<small>&nbsp;'+item.calle+'&nbsp;#'+item.numero+'&nbsp;'+item.Municipio.municipio+'&nbsp;'+item.Municipio.Estado.estado+'</small>';
-                    html5 += '</a>';
-                  html5 += '</li>';
-                html5 += '</ul>';
-              });
-            html5 += '</div>';
-            html5 += '<div class="resultOptions col-md-4">';
-              html5 += '<ul class="list-unstyled">';
-                html5 += '<li> Costo de la consulta<strong> $1,230</strong><li>';
-                html5 += '<li><a>Agrega a tus favoritos</a></li>';
-                html5 += '<li><a>Ver teléfono</a></li>';
-                html5 += '<li><a>Envía mensaje</a></li>';
-                html5 += '<li><a>Visita su perfil</a></li>';
-              html5 += '</ul>';
-            html5 += '</div>';
-          html5 += '</div>';
-        html5 += '</li>';
-      html5 += '</ul>';
+
+      contenido += `
+        <li class="media result" id="medico_id_`+ item.Medico.id +`">
+          <div class="media-left">
+            <div class="media-enclosure">
+              <a href="#">
+                <img class="media-object img-rounded" src="`+ item.urlFotoPerfil +`" alt="">
+              </a>
+            </div>
+          </div>
+          <div class="media-body">
+            <div class="col-md-8">
+              <h4 class="media-heading">
+                <span class="label label-topDr">Top Doctor</span> Dr.`+ nombreCompleto +`.
+              </h4>
+              <ul class="list-unstyled list-inline">`;
+
+        $.each(item.Medico.MedicoEspecialidads, function(a, esp ){
+          if (esp.subEsp == 0){
+            contenido += `<li><strong>`+esp.Especialidad.especialidad+`</strong></li> `;
+          }
+        });
+
+        contenido += `</ul><ul class="list-unstyled list-inline">`;
+
+        $.each(item.Medico.MedicoEspecialidads, function(a, esp ){
+          if (esp.subEsp == 1){
+            contenido += `<li><strong>`+esp.Especialidad.especialidad+`</strong></li> `;
+          }
+        });
+
+        contenido += `</ul><ul class="list-inline">`;
+
+
+        $.each(item.Medico.Padecimientos, function(a, pad ){
+          if (esp.subEsp == 1){
+            contenido += `<li><small>`+pad.padecimiento+`</small></li> `;
+          }
+        });
+
+        contenido += `</ul><ul class="list-unstyled list-ubicaciones">`;
+
+        $.each(item.Direccions, function( i, itemDir ){
+          console.log('itemDir: ' + JSON.stringify(itemDir));
+          contenido += `<li>
+              <div id="dir_`+itemDir.id+`" class="direccion hidden">
+                <div class="top_dr">1</div>
+                <div class="direccion_id">`+itemDir.id+`</div>
+                <div class="latitud">`+itemDir.latitud+`</div>
+                <div class="longitud">`+itemDir.longitud+`</div>
+                <div class="medico_id">`+item.Medico.id+`</div>
+                <div class="nombre">`+itemDir.nombre+`</div>
+                <div class="imagen">`+item.urlFotoPerfil +`</div>
+                <div class="doctor">Dr. `+nombreCompleto+`</div>
+                <div class="direccion">`+itemDir.calle+` #`+itemDir.numero+`<br/>`+itemDir.Municipio.municipio+`, `+itemDir.Municipio.Estado.estado+`</div>
+                <div class="usuarioUrl">`+item.usuarioUrl+`</div>
+              </div>
+              <a onclick="centrarEnMapa('`+itemDir.latitud+`','`+itemDir.longitud+`','`+item.Medico.id+`','`+itemDir.id+`',true)">
+                <button class="btn btn-warning">
+                  <span class="glyphicon glyphicon-map-marker"></span>
+                </button>
+                <strong>`+itemDir.nombre+`</strong>
+                <small>`+itemDir.calle+` #`+itemDir.numero+`, `+itemDir.Municipio.municipio+`,`+itemDir.Municipio.Estado.estado+`<span class="glyphicon glyphicon-zoom-in"></span></small>
+              </a>
+            </li>`;
+        });
+
+      contenido += `</ul></div>
+            <div class="resultOptions col-md-4">
+              <ul class="list-unstyled">
+                <li>
+                  Costo de consulta:
+                  <strong> $1,230</strong>
+                </li>
+                <li>
+                  <a>Agrega a tus favoritos</a>
+                </li>
+                <li>
+                  <a>Envía mensaje</a>
+                </li>
+                <li>
+                  <a>Visita su perfíl</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </li>
+      `;
     });
-    $("#medResults").html(html5);
+    contenido += '</ul></div></div></div>';
+    $("#buscadorResultado").html(contenido);
+    mapSearchDiv();
   });
 }
 //<------------- FIN DE LAS FUNCIONES ---------------------------->
@@ -4471,6 +4500,121 @@ function searchingData(){
 $(function () {
   $('[data-toggle="tooltip"]').tooltip()
 })
+
+function CargarExtraBusqueda(){
+  var tipo = $('#tipoBusqueda').prop('value');
+  var cont = '';
+  if (tipo == 1){
+    //Buscar médicos
+    cont += `
+    <div class="col-md-3">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Especialidad" id="espInput">
+      </div>
+    </div>`;
+    cont += `
+    <div class="col-md-3">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Pacecimiento">
+      </div>
+    </div>`;
+    cont += `
+    <div class="col-md-3">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Institución">
+      </div>
+    </div>`;
+    cont += `
+    <div class="col-md-3">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Aseguradora">
+      </div>
+    </div>`;
+  } else if (tipo == 2){
+    //Buscar instituciones
+    cont += `
+    <div class="col-md-6">
+      <div class="form-group">
+        <div class="form-control" placeholder="Especialidad"></div>
+      </div>
+    </div>`;
+    cont += `
+    <div class="col-md-6">
+      <div class="form-group">
+        <input type="text" class="form-control" placeholder="Aseguradora">
+      </div>
+    </div>`;
+  }
+  $('#extraSearch').html(cont);
+  $('#buscadorFixed').css('top',$('#mainNav').height()+'px');
+  var height = $('#buscadorFixed').height();
+  height += $('#mainNav').height();
+  $('#buscadorResultado').css('margin-top',height+'px');
+
+
+    var availableTags = [
+      "ActionScript",
+      "AppleScript",
+      "Asp",
+      "BASIC",
+      "C",
+      "C++",
+      "Clojure",
+      "COBOL",
+      "ColdFusion",
+      "Erlang",
+      "Fortran",
+      "Groovy",
+      "Haskell",
+      "Java",
+      "JavaScript",
+      "Lisp",
+      "Perl",
+      "PHP",
+      "Python",
+      "Ruby",
+      "Scala",
+      "Scheme"
+    ];
+    function split( val ) {
+      return val.split( /,\s*/ );
+    }
+    function extractLast( term ) {
+      return split( term ).pop();
+    }
+
+    $( "#espInput" )
+      // don't navigate away from the field on tab when selecting an item
+      .bind( "keydown", function( event ) {
+        if ( event.keyCode === $.ui.keyCode.TAB &&
+            $( this ).autocomplete( "instance" ).menu.active ) {
+          event.preventDefault();
+        }
+      })
+      .autocomplete({
+        minLength: 0,
+        source: function( request, response ) {
+          // delegate back to autocomplete, but extract the last term
+          response( $.ui.autocomplete.filter(
+            availableTags, extractLast( request.term ) ) );
+        },
+        focus: function() {
+          // prevent value inserted on focus
+          return false;
+        },
+        select: function( event, ui ) {
+          var terms = split( this.value );
+          // remove the current input
+          terms.pop();
+          // add the selected item
+          terms.push( ui.item.value );
+          // add placeholder to get the comma-and-space at the end
+          terms.push( "" );
+          this.value = terms.join( ", " );
+          return false;
+        }
+      });
+}
 
 
 function cargarListaAlfAmi( usuario ) {

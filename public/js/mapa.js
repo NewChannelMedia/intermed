@@ -461,9 +461,7 @@ function cargarMapaPaciente(){
       async: false,
       success: function (data) {
         if (data.success){
-          console.log('data: ' + JSON.stringify(data));
           if (data.result){
-            console.log('data: ' + JSON.stringify(data));
             $('#idDireccion').val(data.result.id);
             $('#idEstado').val(data.result.Municipio.estado_id);
             $('#idMunicipio').val(data.result.municipio_id);
@@ -481,4 +479,157 @@ function cargarMapaPaciente(){
           var success = false;
       }
   });
+}
+
+var MapaSearch = null;
+var markersSearch = [];
+$(function(){
+  if($('#mapSearchDiv')){
+    if ($('#buscadorResultado').text().replace(" ","").length<=1){
+      //Cargar consulta por ajax post
+      searchingData();
+    } else {
+      //Busqueda hecha desde formulario post
+      mapSearchDiv();
+    }
+  }
+});
+
+var noScroll = false;
+
+function mapSearchDiv(){
+
+    var mapProp = {
+        center:new google.maps.LatLng(21.94304553343818, -101.766357421875),
+        zoom: 15,
+        draggable: true,
+        scrollwheel: true,
+        mapTypeId:google.maps.MapTypeId.ROADMAP
+    };
+
+    MapaSearch=new google.maps.Map(document.getElementById("mapSearchDiv"),mapProp);
+    var height = $('#buscadorFixed').height();
+    height += $('#mainNav').height();
+
+    google.maps.event.addListenerOnce(MapaSearch, 'idle', function(){
+
+      var total = 0;
+      var totallat =0; totallng = 0;
+      var maxlat =0, minlat = 0,minlng = 0, maxlng =0 ;
+      $('.direccion').each(function(){
+        var latitud = $(this).find('.latitud').text();
+        var longitud = $(this).find('.longitud').text();
+        if (maxlat === 0){
+          maxlat = latitud;
+          minlat = latitud;
+          minlng = longitud;
+          maxlng = longitud;
+        }
+        if (maxlat<latitud){
+          maxlat = latitud;
+        }
+        if (minlat>latitud){
+          minlat = latitud;
+        }
+        if (maxlng<longitud){
+          maxlng = longitud;
+        }
+        if (minlng>longitud){
+          minlng = longitud;
+        }
+        total++;
+      });
+
+      totallat = maxlat-minlat;
+      totallng = maxlng-minlng;
+      console.log('lan: ' + totallat);
+      console.log('lng: ' + totallng);
+      var pos = new google.maps.LatLng(totallat, totallng);
+
+      MapaSearch.setCenter(pos);
+
+      if (total===0){
+        MapaSearch.setOptions({zoom: 4});
+      }
+
+      $('.direccion').each(function(){
+        var id = $(this).find('.direccion_id').text();
+        var nombre = $(this).find('.nombre').text();
+        var imagen = $(this).find('.imagen').text();
+        var latitud = $(this).find('.latitud').text();
+        var longitud = $(this).find('.longitud').text();
+        var principal = $(this).find('.principal').text();
+        var direccion = $(this).find('.direccion').html();
+        var doctor = $(this).find('.doctor').text();
+        var medico_id = $(this).find('.medico_id').text();
+        var usuarioUrl = $(this).find('.usuarioUrl').text();
+        var top_dr = $(this).find('.top_dr').text();
+
+        if (latitud && longitud){
+          var pos = new google.maps.LatLng(latitud, longitud);
+
+          while (!(MapaSearch.getBounds().contains(pos))){
+            MapaSearch.setOptions({zoom: parseInt(MapaSearch.get('zoom'))-1});
+          }
+
+          var marker = new google.maps.Marker({
+              position: pos,
+              map: MapaSearch,
+              draggable: false
+          });
+
+          if (top_dr == 1){
+            marker.setIcon('img/marker.png');
+          }
+
+          var contentString = '<div style="width:50px; float:left"><a href="'+ base_url +'nuevoPerfilMedicos/'+usuarioUrl+'"><img src="'+imagen+'" style="width:100%;margin-top:10px"><br/><center>Perfil</center></a></div><div style="float:left;margin-left:10px;"><h4>'+doctor+'</h4><h5>'+nombre+'</h5><p>'+direccion+'</p></div>';
+
+          var infowindow = new google.maps.InfoWindow({
+            content: contentString
+          });
+
+          infoWindows.push(infowindow);
+
+          marker.addListener('click', function() {
+            infoWindows.forEach(function(info){
+              info.close();
+            });
+
+            if (!noScroll) $(document).scrollTo('#medico_id_'+medico_id, 500, {offset: function() { return {top:-(height+5)}; }});
+            $('.result').removeClass('seleccionado');
+            $('#medico_id_'+medico_id).addClass('seleccionado');
+
+            MapaSearch.setCenter(pos);
+            infowindow.open(MapaSearch, marker);
+            noScroll = false;
+          });
+          markersSearch[id] = marker;
+        }
+      });
+    });
+
+    $('#mainNav').removeClass('navbar-static-top');
+    $('#mainNav').addClass('navbar-fixed-top');
+    $( window ).resize(function() {
+      $('#buscadorFixed').css('top',$('#mainNav').height()+'px');
+      $('#buscadorResultado').css('margin-top',height+'px');
+    });
+    $( window ).resize();
+}
+
+function centrarEnMapa(latitud,longitud,medico_id,direccion_id, noScr){
+  if (noScr) noScroll = true;
+  $('.result').removeClass('seleccionado');
+  $('#medico_id_'+medico_id).addClass('seleccionado');
+
+  if (MapaSearch){
+    infoWindows.forEach(function(info){
+      info.close();
+    });
+    google.maps.event.trigger(markersSearch[direccion_id], 'click');
+
+    var pos = new google.maps.LatLng(latitud, longitud);
+    MapaSearch.setCenter(pos);
+    MapaSearch.setZoom(11);
+  }
 }

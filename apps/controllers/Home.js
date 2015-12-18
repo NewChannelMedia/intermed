@@ -423,13 +423,16 @@ module.exports = {
           attributes: [ 'id', 'nombre', 'apellidoP', 'apellidoM' ]
                 }, {
           model: models.Direccion,
-          attributes: [ 'id','calle', 'numero', 'nombre' ],
+          attributes: [ 'id','calle', 'numero', 'nombre' ,'latitud','longitud'],
           include:[{
             model: models.Municipio,
-            attributes:['municipio']
+            attributes:['municipio'],
+            include: [{
+              model: models.Estado
+            }]
           }]
                 }],
-        attributes: [ 'id', 'urlFotoPerfil' ]
+        attributes: [ 'id', 'urlFotoPerfil','usuarioUrl' ]
       } ).then( function ( usuarios ) {
         res.render( 'searchMedic', {
           usuarios: usuarios
@@ -565,20 +568,23 @@ function armarPerfilNuevo( usuario, req, res ) {
   }
 
   var tipoUsuario = 'Paciente';
-  if ( usuario.tipoUsuario == 'M' ) tipoUsuario = 'Medico';
+  if ( usuario.tipoUsuario == 'M' )
+    tipoUsuario = 'Medico';
 
   models[ tipoUsuario ].findOne( {
     where: {
       usuario_id: usuario.id
     }
   } ).then( function ( result ) {
-    if (usuario.tipoUsuario == 'M'){
-        var medico = {};
-        models.MedicoExpertoEn.findAll({
-            where: {medico_id: result.id},
-            order: [['orden','ASC']]
-          }).then(function(expertoEn){
-            medico['MedicoExpertoEns'] = expertoEn;
+    if ( usuario.tipoUsuario == 'M' ) {
+      var medico = {};
+      models.MedicoExpertoEn.findAll( {
+        where: {
+          medico_id: result.id
+        },
+        order: [ [ 'orden', 'ASC' ] ]
+      } ).then( function ( expertoEn ) {
+        medico[ 'MedicoExpertoEns' ] = expertoEn;
 
             models.MedicoClinica.findAll({
                 where: {medico_id: result.id},
@@ -611,5 +617,5 @@ function armarPerfilNuevo( usuario, req, res ) {
         usuario: usuario
       } );
     }
-  });
+  } );
 }

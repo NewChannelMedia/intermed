@@ -565,14 +565,16 @@ function getDateTime( format ) {
 
 $( document ).ready( function () {
   var chat = document.getElementById( "notificacionesInboxList" );
-  if (chat.addEventListener ) {
-    // IE9, Chrome, Safari, Opera
-    chat.addEventListener( "mousewheel", cargarInboxListCondicional, false );
-    // Firefox
-    chat.addEventListener( "DOMMouseScroll", cargarInboxListCondicional, false );
+  if(chat){
+    if (chat.addEventListener ) {
+      // IE9, Chrome, Safari, Opera
+      chat.addEventListener( "mousewheel", cargarInboxListCondicional, false );
+      // Firefox
+      chat.addEventListener( "DOMMouseScroll", cargarInboxListCondicional, false );
+    }
+    // IE 6/7/8
+    else chat.attachEvent( "onmousewheel", cargarInboxListCondicional );    
   }
-  // IE 6/7/8
-  else chat.attachEvent( "onmousewheel", cargarInboxListCondicional );
 } );
 
 if ( window.location.href.indexOf( "/notificaciones/configuracion" ) > 0 ) {

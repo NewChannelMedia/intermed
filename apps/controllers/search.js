@@ -98,7 +98,7 @@ module.exports = {
         attributes:['nombre','apellidoP','apellidoM']
       },{
         model: models.Direccion,
-        attributes:['calle','numero','nombre'],
+        attributes:['id','calle','numero','nombre','latitud','longitud'],
         include:[{
           model: models.Municipio,
           where: condicionMunicipio,

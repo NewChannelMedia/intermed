@@ -5,11 +5,25 @@
     float:right;
 }
 
-#mapUbiDiv{
+#mapUbiDiv, #mapSearchDiv{
   min-height: 300px;
   height: 100%;
   width: 100%!important;
   float:right;
+}
+
+#buscadorFixed{
+  width: 100%;
+  position: fixed;
+  top: 100px;
+}
+
+#buscadorResultado{
+  margin-top: 470px;
+}
+
+#searchbox{
+  height: 100px!important;
 }
 
 #autocomplete_searchField {
@@ -21,4 +35,10 @@ hr.style-white {
     border: 0;
     height: 2px;
     background: #FFF;
+}
+
+.selectprimary{
+  background-color: #375467;
+  border-color:#375467;
+  color: white;
 }

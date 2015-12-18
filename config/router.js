@@ -130,13 +130,13 @@ var iniciar = function () {
   } );
 
   // get y post de searchMedic
-  app.get( '/searchMedic', function ( req, res ) {
-    rutas.routeLife( 'interno', 'interno', hps );
+  app.get( '/buscar', function ( req, res ) {
+    rutas.routeLife( 'plataforma2', 'interno', hps );
     intermed.callController( 'Home', 'vacio', '', req, res );
   } );
-  app.post( '/searchMedic', function ( req, res ) {
+  app.post( '/buscar', function ( req, res ) {
     var busqueda = JSON.parse( JSON.stringify( req.body ) );
-    rutas.routeLife( 'interno', 'interno', hps );
+    rutas.routeLife( 'plataforma2', 'interno', hps );
     intermed.callController( 'Home', 'searching', busqueda, req, res );
   } );
   //Registro

@@ -2206,3 +2206,25 @@ ol.sortable,ol.sortable ol {
 .colEsp {
   font-size: 80%;
 }
+
+#buscadorFixed{
+  background-color: #84AAC1;
+  z-index: 3000;
+}
+
+#buscadorResultado{
+  margin-top: 0px;
+  background-color: #EDEDED;
+}
+
+#buscadorResultado .result{
+  margin-top: 0px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+#buscadorResultado .result.seleccionado{
+  background-color: rgba(0,0,0,0.1);
+}
