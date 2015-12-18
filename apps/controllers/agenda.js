@@ -421,8 +421,8 @@ exports.seleccionaHorarios = function(object, req, res) {
     for (i = 0; i <= datos.length - 1; i++) {
         switch (datos[i].dia) {
             case 0: //domingo
-                horaInicio = '2015-12-13 ' + datos[i].horaInicio;
-                horaFin = '2015-12-13 ' + datos[i].horaFin;
+                horaInicio = '2015-12-20 ' + datos[i].horaInicio;
+                horaFin = '2015-12-20 ' + datos[i].horaFin;
                 break;
             case 1: //lunes
                 horaInicio = '2015-12-14 ' + datos[i].horaInicio;
@@ -445,8 +445,8 @@ exports.seleccionaHorarios = function(object, req, res) {
                 horaFin = '2015-12-18 ' + datos[i].horaFin;
                 break;
             case 6: //sabado
-                horaInicio = '2015-12-20 ' + datos[i].horaInicio;
-                horaFin = '2015-12-20 ' + datos[i].horaFin;
+                horaInicio = '2015-12-19 ' + datos[i].horaInicio;
+                horaFin = '2015-12-19 ' + datos[i].horaFin;
                 break;
         };
 
@@ -550,8 +550,8 @@ exports.seleccionaAgendaMedico  =  function(object, req, res)
       for (i = 0; i <= datos.length - 1; i++) {
           switch (datos[i].dia) {
               case 0: //domingo
-                  horaInicio = '2015-12-13 ' + datos[i].horaInicio;
-                  horaFin = '2015-12-13 ' + datos[i].horaFin;
+                  horaInicio = '2015-12-20 ' + datos[i].horaInicio;
+                  horaFin = '2015-12-20 ' + datos[i].horaFin;
                   break;
               case 1: //lunes
                   horaInicio = '2015-12-14 ' + datos[i].horaInicio;
