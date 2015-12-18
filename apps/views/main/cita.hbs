@@ -170,7 +170,7 @@ function generarCalendario()
         }
       },
       eventClick: function (event, jsEvent, view) {
-        if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada')
+        if (event.id != null && event.id.substring(0,4) != 'cita' && (event.title != 'Cancelada' && event.title != 'No disponible'))
         {
             var r = confirm("Esta seguro de cancelar la cita ?");
             if  ( r == true)
@@ -184,12 +184,15 @@ function generarCalendario()
         }
       },
       eventMouseover: function (event, jsEvent, view) {
-        if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
+        console.log(event.title);
+        if (event.id != null && event.id.substring(0,4) != 'cita' && (event.title != 'Cancelada' && event.title != 'No disponible')) {
           $(this).append('<span id=\"' + event._id + '\">Clic para eliminar</span>');
         }
       },
       eventMouseout: function (event, jsEvent, view) {
+        if (event.id != null && event.id.substring(0,4) != 'cita' && (event.title != 'Cancelada' && event.title != 'No disponible')) {
           $('#' + event._id).remove();
+        }
       },
       eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
         revertFunc();
@@ -256,7 +259,6 @@ function validaEvento(inicioEvento, finEvento) {
   var evento;
   var valido = false;
 
-  //console.log(h.length);
   for (i = 0; i <= h.length-1; i++) {
       evento = h[i];
 
