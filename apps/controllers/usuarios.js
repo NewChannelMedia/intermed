@@ -932,3 +932,7 @@ exports.informacionUsuario = function (object, req, res){
       }
   });
 }
+
+,
+
+    

@@ -8,13 +8,16 @@ module.exports = function(sequelize, DataTypes) {
     token: {type: DataTypes.STRING , unique:true},
     tokenMaestro: {type: DataTypes.STRING},
     usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true},
-    calificacion:  {type : DataTypes.DECIMAL},
-    pago: {type: DataTypes.INTEGER}
+    calificacion:  {type : DataTypes.DECIMAL},  
+    activo: {type: DataTypes.INTEGER}
   }, {
     classMethods: {
       associate: function(models) {
         Medico.hasOne(models.Hospital)
         Medico.hasOne(models.CalificacionCita)
+
+       // Medico.hasOne(models.UsuarioCargo)
+
         Medico.hasMany(models.ComentariosMedicos)
         Medico.hasMany(models.Aseguradora)
         Medico.hasMany(models.CalificacionMedico)
