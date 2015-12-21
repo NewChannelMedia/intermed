@@ -418,37 +418,23 @@ exports.seleccionaHorarios = function(object, req, res) {
     var horaInicio;
     var horaFin;
 
+    var today = new Date();
+    var fechaHorario=today;
+    var inicioSemana  = (today.getDate() - today.getDay());
+
     for (i = 0; i <= datos.length - 1; i++) {
-        switch (datos[i].dia) {
-            case 0: //domingo
-                horaInicio = '2015-12-20 ' + datos[i].horaInicio;
-                horaFin = '2015-12-20 ' + datos[i].horaFin;
-                break;
-            case 1: //lunes
-                horaInicio = '2015-12-14 ' + datos[i].horaInicio;
-                horaFin = '2015-12-14 ' + datos[i].horaFin;
-                break;
-            case 2: //martes
-                horaInicio = '2015-12-15 ' + datos[i].horaInicio;
-                horaFin = '2015-12-15 ' + datos[i].horaFin;
-                break;
-            case 3: //miercoles
-                horaInicio = '2015-12-16 ' + datos[i].horaInicio;
-                horaFin = '2015-12-16 ' + datos[i].horaFin;
-                break;
-            case 4: //jueves
-                horaInicio = '2015-12-17 ' + datos[i].horaInicio;
-                horaFin = '2015-12-17 ' + datos[i].horaFin;
-                break;
-            case 5: //viernes
-                horaInicio = '2015-12-18 ' + datos[i].horaInicio;
-                horaFin = '2015-12-18 ' + datos[i].horaFin;
-                break;
-            case 6: //sabado
-                horaInicio = '2015-12-19 ' + datos[i].horaInicio;
-                horaFin = '2015-12-19 ' + datos[i].horaFin;
-                break;
-        };
+
+        if (datos[i].dia > 0 )
+        {
+          fechaHorario.setDate( inicioSemana + datos[i].dia);
+        }
+        else {
+          fechaHorario.setDate( inicioSemana + 7);
+        }
+
+        horaInicio = fechaHorario.getFullYear() + '-' + (fechaHorario.getMonth() + 1) + '-' + fechaHorario.getDate() + ' ' +  datos[i].horaInicio;  //  '2015-12-13 ' + datos[i].horaInicio;
+        horaFin = fechaHorario.getFullYear() + '-' + (fechaHorario.getMonth() +  1) + '-' + fechaHorario.getDate() + ' ' +  datos[i].horaFin;  //  '2015-12-13 ' + datos[i].horaInicio;
+        //console.log(fechaHorario +  '-' + fechaHorario.getDate() + ' - ' + ' ' + datos[i].dia)
 
         var horario = {
             //id: 'businessHours_' +  datos[i].id,
@@ -547,37 +533,22 @@ exports.seleccionaAgendaMedico  =  function(object, req, res)
       var horaInicio;
       var horaFin;
 
+      var today = new Date();
+      var fechaHorario=today;
+      var inicioSemana  = (today.getDate() - today.getDay());
+
       for (i = 0; i <= datos.length - 1; i++) {
-          switch (datos[i].dia) {
-              case 0: //domingo
-                  horaInicio = '2015-12-20 ' + datos[i].horaInicio;
-                  horaFin = '2015-12-20 ' + datos[i].horaFin;
-                  break;
-              case 1: //lunes
-                  horaInicio = '2015-12-14 ' + datos[i].horaInicio;
-                  horaFin = '2015-12-14 ' + datos[i].horaFin;
-                  break;
-              case 2: //martes
-                  horaInicio = '2015-12-15 ' + datos[i].horaInicio;
-                  horaFin = '2015-12-15 ' + datos[i].horaFin;
-                  break;
-              case 3: //miercoles
-                  horaInicio = '2015-12-16 ' + datos[i].horaInicio;
-                  horaFin = '2015-12-16 ' + datos[i].horaFin;
-                  break;
-              case 4: //jueves
-                  horaInicio = '2015-12-17 ' + datos[i].horaInicio;
-                  horaFin = '2015-12-17 ' + datos[i].horaFin;
-                  break;
-              case 5: //viernes
-                  horaInicio = '2015-12-18 ' + datos[i].horaInicio;
-                  horaFin = '2015-12-18 ' + datos[i].horaFin;
-                  break;
-              case 6: //sabado
-                  horaInicio = '2015-12-19 ' + datos[i].horaInicio;
-                  horaFin = '2015-12-19 ' + datos[i].horaFin;
-                  break;
-          };
+
+        if (datos[i].dia > 0 )
+        {
+          fechaHorario.setDate( inicioSemana + datos[i].dia);
+        }
+        else {
+          fechaHorario.setDate( inicioSemana + 7);
+        }
+
+        horaInicio = fechaHorario.getFullYear() + '-' + (fechaHorario.getMonth() + 1) + '-' + fechaHorario.getDate() + ' ' +  datos[i].horaInicio;  //  '2015-12-13 ' + datos[i].horaInicio;
+        horaFin = fechaHorario.getFullYear() + '-' + (fechaHorario.getMonth() +  1) + '-' + fechaHorario.getDate() + ' ' +  datos[i].horaFin;  //  '2015-12-13 ' + datos[i].horaInicio;
 
           var horario = {
               //id: 'businessHours_' +  datos[i].id,
