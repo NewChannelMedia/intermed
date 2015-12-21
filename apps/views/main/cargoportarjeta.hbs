@@ -8,8 +8,9 @@
                 <div class="panel-body">
                     <h4>{{title}}</h4>
                     
-                    <form action="cargoportarjeta" method="POST" id="card-form" name="card-form">
+                    <form action="registrarusuariotarjeta" method="POST" id="card-form" name="card-form">
                         <span class="card-errors"></span>
+                        <input type="hidden" id="usuario_id" name="usuario_id" value="{{usuario_id}}" />
                         <div class="form-row">
                             <label>
                                 <span>Nombre del tarjetahabiente</span>
@@ -36,7 +37,7 @@
                             <span>/</span>
                             <input type="text" size="4" data-conekta="card[exp_year]" value="2019" />
                         </div>
-                        <button type="submit" id="enviar" name="enviar" >¡Pagar ahora!</button>
+                        <button type="submit" id="enviar" name="enviar">¡Pagar ahora!</button>
                     </form>
                     
                 </div>

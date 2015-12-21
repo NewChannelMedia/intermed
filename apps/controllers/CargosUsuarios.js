@@ -1,7 +1,12 @@
-﻿
-var models = require('../models');
+﻿var models = require('../models');
 
 var montoCobro = 1000;
+
+//Conekta
+var conekta = require('conekta');
+conekta.api_key = "key_KP2rs6xsxH3r6jy9y7vhWg";
+conekta.api_version = '1.0.0';
+conekta.locale = 'es'
 
 //Listado de usuarios que estan activos y su fecha de primer descuento es actual o mayor a la fecha del servidor
 exports.ProcesarCargosClientes = function (object, req, res) {
@@ -10,102 +15,153 @@ exports.ProcesarCargosClientes = function (object, req, res) {
     //Obtener listado de clientes que tienen fecha de primer descuento menor o igual a la fecha actual
     //Descartar los cientes que no estan activos
     //Descartar los clientes que tienen fecha de pago        
+    console.log('inicia');
+
     models.Medico.findAll({
-        where: { activo: 1 },
-        include: [
-            {
-                model: models.UsuarioCargo,
-                where: {
-                    fechaprimerdescuento: { $lte: fechaActual } //<= fecha actual
-                }
-            }
-        ]
+        where: {
+            activo: 1,
+            fechaprimerdescuento: { $lte: fechaActual } //<= fecha actual
+        },
+        attributes: ['id']
     })
-    //    where: {
-    //        fechaprimerdescuento: { $lte: fechaActual } //<= fecha actual
-    //    },
-    //    include: [
-    //      {
-    //          model: models.Medico,
-    
-    //      }]
-    //})
     .then(function (datos) {
         datos.forEach(function (registro) {
-            console.log(registro.id);
+            RealizarCargo(registro.id);
         });
     }).catch(function (err) {
         console.log(err);
     });
-
-    //UsuariosCargoListado();
-
-    ////Obtener Usuarios para procesar cargos
-    //if (RegistrarCliente(req.body.conektaTokenId, cliente)==true) {
-    //    if (RegistrarPlan(plan)==true) {
-    //        RegistrarRelacionClientePlan(cliente, plan);
-    //    }
-    //}
-
-};
-
-
-function RealizarCargo(object, req, res) {
-    //var cliente = null;
-    //var plan = null;
-
-    UsuariosCargoListado();
-
-    ////Obtener Usuarios para procesar cargos
-    //if (RegistrarCliente(req.body.conektaTokenId, cliente)==true) {
-    //    if (RegistrarPlan(plan)==true) {
-    //        RegistrarRelacionClientePlan(cliente, plan);
-    //    }
-    //}
-
-};
-
-
-function ListadoParaCargos() {
-    //modelsCargos.usuariosCargos.findAll()
-    //.then(function (datos) {        
-    //    datos.forEach(function (registro) {
-    //        console.log(registro.idUsuariosCargos);
-    //    }); 
-    //}).catch(function (err) {
-    //    console.log(err);        
-    //});
-
-
 }
 
 
-function UsuariosCargoListado() {
+function RealizarCargo(idUsuario) {
+    var idUsuarioProveedor = null;
+    var plan = null;
 
-    var listado = ListadoParaCargos();
-    //listado.forEach(function (registro) {
-    //    console.log(registro.id);
-    //});    
-}
+    models.UsuarioCargo.findOne({
+        where: {
+            medico_id: idUsuario
+        }
+    })
+    .then(function (datos) {
+        //Validar que usaurio tiene registrada tarjeta
+        console.log(datos.idUsuarioProveedor == null);
+        if (datos.idUsuarioProveedor == 'NULL') {
+            MensajeUsuarioSinTarjetaRegistrada(idUsuario);
+        } else {
+            console.log('Ejecutar cargo');
+        }
 
-function RegistrarCliente(tokenid, cliente) {
-    console.log('registrar cliente');
-
-    //Registrar Tarjeta Usuario
-    conekta.Customer.create({
-        "name": "Carlos Patiño",
-        "email": "carlosandres1978@gmail.com",
-        "phone": "55-5555-5555",
-        "cards": [tokenid]
-    }, function (clienteRegistrado) {
-        console.log('cliente registrado');
-        console.log(clienteRegistrado);
-        cliente = clienteRegistrado;
-        return true;
-    }, function (err) {
-        console.log(err.message_to_purchaser);
-        return false;
+    }).catch(function (err) {
+        console.log(err);
     });
+}
+
+function MensajeUsuarioSinTarjetaRegistrada(idUsuario) {
+    console.log('usuario sin tarjeta registrada');
+}
+
+//function BuscarUsuario(idUsuario) {
+//    conekta.Customer.find('cus_k2D9DxlqdVTagmEd400001', function (customer) {
+//        customer.update({
+//            "name": "Logan",
+//            "email": "logan@x-men.org"
+//        }, function (res) {
+//            console.log(res.toObject());
+//        }, function (err) {
+
+//        });
+//    }, function (err) {
+
+//    });
+
+//}
+
+exports.RegistrarUsuarioEnProveedor = function (object, req, res) {
+    console.log('registrar cliente tarjeta');
+
+    models.Usuario.findOne({
+        where: {
+            id: object.usuario_id
+        },
+        attributes: ['correo'],
+        include: [
+         {
+             model: models.DatosGenerales,
+             attributes: ['nombre', 'apellidoP', 'apellidoM']
+         },
+         //{
+         //    model: models.Telefono,
+         //    attributes: ['nombre', 'apellidoP', 'apellidoM']
+         //},
+         {
+             model: models.DatosFacturacion,
+             attributes: ['RFC', 'razonSocial'],
+             include: [
+                 {
+                     model: models.Direccion,
+                     attributes: ['calle', 'numero'],
+                     include: [
+                         {
+                             model: models.Localidad,
+                             attributes: ['localidad', 'cp'],
+                             include: [
+                                 {
+                                     model: models.Municipio,
+                                     attributes: ['municipio'],
+                                 },
+                                 {
+                                     model: models.Estado,
+                                     attributes: ['estado'],
+                                 }
+                             ]
+                         }
+                     ]
+                 }
+             ]
+         }
+        ]
+    })
+     .then(function (datos) {     
+         //Registrar Usuario con proveedor         
+         conekta.Customer.create({
+             "name": datos.DatosGenerale.nombre + ' ' + datos.DatosGenerale.apellidoP + ' ' + datos.DatosGenerale.apellidoM,
+             "email": datos.correo,
+             //"phone": "55-5555-5555",
+             "cards": [object.conektaTokenId],
+             "billing_address": {
+                 "tax_id": datos.DatosFacturacion.RFC,
+                 "company_name": datos.DatosFacturacion.razonSocial,
+                 "street1": datos.DatosFacturacion.Direccion.calle + ' ' + datos.DatosFacturacion.Direccion.numero,
+                 "street2": datos.DatosFacturacion.Direccion.numero +' A' ,
+                 "street3": datos.DatosFacturacion.Direccion.Localidad.localidad,
+                 "city": datos.DatosFacturacion.Direccion.Localidad.Municipio.municipio,
+                 "state": datos.DatosFacturacion.Direccion.Localidad.Estado.estado,
+                 "zip": datos.DatosFacturacion.Direccion.Localidad.cp
+             }
+         }, function (resultado) {
+             console.log('cliente registrado');
+             console.log(resultado);
+             //UsuarioGuardarIdProveedor(object.usuario_id, resultado.id);
+             UsuarioGuardarIdProveedor(object.usuario_id, 'AAAA');
+             res.render('registrado', {
+                 title: 'Registrado'                 
+             });
+         }, function (err) {
+             console.log(err.message_to_purchaser);
+         });
+     }).catch(function (err) {
+         console.log(err);
+     });
+}
+
+
+function UsuarioGuardarIdProveedor(idUsuario, idUsuarioProveedor) {
+    models.UsuarioCargo.update({
+         idUsuarioProveedor: idUsuarioProveedor
+     }, {
+         where: { medico_id: idUsuario }
+     })
 }
 
 //Registrar plan de cobro a cliente
@@ -128,7 +184,7 @@ function RegistrarPlan(plan) {
 }
 
 //Registrar Relacion de client con plan de cobro
-function RegistrarRelacionClientePlan(cliente, plan) {
+function RegistrarRelacionUsuarioPlan(cliente, plan) {
     cliente.createSubscription({
         "plan_id": plan.id
     }, function (subscription) {

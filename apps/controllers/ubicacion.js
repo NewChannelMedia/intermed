@@ -8,9 +8,8 @@ exports.index = function (req, res) {
 
 exports.mostrar = function (req, res) {
     models.Especialidades.findAll().then(function (datos) {
-        res.render('especialidades/mostrar', {
-            title: 'Especialidades',
-            datos: datos
+        res.render('registrado', {
+            title: 'REgistrado'            
         });
     });
 };
