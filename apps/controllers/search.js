@@ -121,7 +121,7 @@ module.exports = {
       }
     }
 
-    var limit = 3;
+    var limit = 2;
     var offset = limit * (pagina-1);
 
     if (medico){

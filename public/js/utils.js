@@ -4169,15 +4169,22 @@ function searchingData(){
     nombre: nombre
   },function(data){
     if ($('#buscPag').html() == "" && data.countmedicos>1){
-      var paginador = '<li class="preview" onclick="buscadorPreview()" style="visibility:hidden"><a aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
-      for (var i = 1; i<= data.countmedicos; i++){
+      $('#maxNumPag').val(data.countmedicos);
+      var limit = 5;
+      if (data.countmedicos<5){
+        limit = data.countmedicos;
+      }
+      var paginador = '<li class="first" onclick="buscadorFirst()" style="visibility:hidden"><a aria-label="Previous"><span aria-hidden="true" class="glyphicon glyphicon-backward"></span></a></li>';
+      paginador += '<li class="preview" onclick="buscadorPreview()" style="visibility:hidden"><a aria-label="Previous"><span aria-hidden="true" class="glyphicon glyphicon-triangle-left"></span></a></li>';
+      for (var i = 1; i<= limit; i++){
         clase = '';
         if (pagina == i){
           clase = 'class="active"'
         }
         paginador += '<li id="paginador_'+i+'" '+clase+' onclick="buscarPaginador('+i+')"><a>'+i+'</a></li>';
       }
-      paginador += '<li class="next"><a aria-label="Next" onclick="buscadorNext()"><span aria-hidden="true">»</span></a></li>';
+      paginador += '<li class="next"><a aria-label="Next" onclick="buscadorNext()"><span aria-hidden="true" class="glyphicon glyphicon-triangle-right"></span></a></li>';
+      paginador += '<li class="last"><a aria-label="Next" onclick="buscadorLast()"><span aria-hidden="true" class="glyphicon glyphicon-forward"></span></a></li>';
       $('#buscPag').html(paginador);
     }
     var contenido = `<div class="container-fluid">
@@ -4192,7 +4199,7 @@ function searchingData(){
           <div class="media-left">
             <div class="media-enclosure">
               <a href="#">
-                <img class="media-object img-rounded" src="`+ item.urlFotoPerfil +`" alt="">
+                <img class="media-object imgBusqueda" src="`+ item.urlFotoPerfil +`" alt="">
               </a>
             </div>
           </div>
@@ -4834,16 +4841,52 @@ function ajustarPantallaBusqueda(){
 }
 
 function buscarPaginador(id){
+  var last_id = $('#maxNumPag').val();
+  if (id == $('ul.pagination>li').not('.next').not('.last').last().find('a').text()){
+    if (id < last_id){
+      var varli = '<li id="paginador_'+(id+1)+'" onclick="buscarPaginador('+(id+1)+')"><a>'+(id+1)+'</a></li>';
+      $('ul.pagination>li').not('.last').not('.next').last().after(varli);
+      $('ul.pagination>li').not('.first').not('.preview').first().remove();
+    }
+  } else if (id == $('ul.pagination>li').not('.first').not('.preview').first().find('a').text() && id > 1){
+    var varli = '<li id="paginador_'+(id-1)+'" onclick="buscarPaginador('+(id-1)+')"><a>'+(id-1)+'</a></li>';
+    $('ul.pagination>li').not('.first').not('.preview').first().before(varli);
+    $('ul.pagination>li').not('.last').not('.next').last().remove();
+  }
+
+  if ($('ul.pagination>li#paginador_'+id).length== 0){
+    if ( id === 1){
+      var varli = '';
+      $('ul.pagination>li').not('.first').not('.preview').not('.next').not('.last').not(':first').remove();
+      for (var i = 1;i<=5;i++){
+        varli += '<li id="paginador_'+i+'" onclick="buscarPaginador('+i+')"><a>'+i+'</a></li>';
+      }
+      $('ul.pagination>li').not('.next').not('.last').last().after(varli);
+      $('ul.pagination>li').not('.first').not('.preview').first().remove();
+    } else {
+      var varli = '';
+      $('ul.pagination>li').not('.first').not('.preview').not('.next').not('.last').not(':first').remove();
+      for (var i = last_id-5;i<=last_id;i++){
+        varli += '<li id="paginador_'+i+'" onclick="buscarPaginador('+i+')"><a>'+i+'</a></li>';
+      }
+      $('ul.pagination>li').not('.next').not('.last').last().after(varli);
+      $('ul.pagination>li').not('.first').not('.preview').first().remove();
+    }
+  }
+
   if (id == 1){
     $('ul.pagination>li.preview').css('visibility','hidden');
+    $('ul.pagination>li.first').css('visibility','hidden');
   } else {
     $('ul.pagination>li.preview').css('visibility','visible');
+    $('ul.pagination>li.first').css('visibility','visible');
   }
-  var last_id = $('ul.pagination>li').not('.next').last().find('a').text();
-  if (id == last_id){
+  if (parseInt(id) == parseInt(last_id)){
     $('ul.pagination>li.next').css('visibility','hidden');
+    $('ul.pagination>li.last').css('visibility','hidden');
   } else {
     $('ul.pagination>li.next').css('visibility','visible');
+    $('ul.pagination>li.last').css('visibility','visible');
   }
   $('ul.pagination>li').removeClass('active');
   $('ul.pagination>li#paginador_'+id).addClass('active');
@@ -4852,27 +4895,18 @@ function buscarPaginador(id){
 
 function buscadorPreview(){
   var id = $('ul.pagination>li.active').find('a').text();
-  if (id == 2){
-    $('ul.pagination>li.Previous').css('visibility','hidden');
-    buscarPaginador(id-1);
-  }else if(id>2){
-    $('ul.pagination>li.Previous').css('visibility','visible');
-    buscarPaginador(id-1);
-  }
+  buscarPaginador(id-1);
 }
 
 function buscadorNext(){
-  var last_id = $('ul.pagination>li').not('.next').last().find('a').text();
   var id = $('ul.pagination>li.active').find('a').text();
-  console.log('LAST_ID: ' + last_id);
-  console.log('ID: ' + (parseInt(id)+1));
-  if (id == last_id){
-    console.log('Disabled');
-    $('ul.pagination>li.next').css('visibility','hidden');
-    buscarPaginador((parseInt(id)+1));
-  }else if(id<6){
-    console.log('no Disabled');
-    $('ul.pagination>li.next').css('visibility','visible');
-    buscarPaginador((parseInt(id)+1));
-  }
+  buscarPaginador((parseInt(id)+1));
+}
+
+function buscadorFirst(){
+  buscarPaginador(1);
+}
+
+function buscadorLast(){
+  buscarPaginador($('#maxNumPag').val());
 }
