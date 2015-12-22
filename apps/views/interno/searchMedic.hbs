@@ -33,6 +33,9 @@
             <div class="form-group">
               <select class="form-control" id="selectEstados" onChange="cargarCiudades('#selectEstados');" name="estado">
                 <option value="0">Estado</option>
+                {{#each estado}}
+                  <option value="{{id}}">{{estado}}</option>
+                {{/each}}
               </select>
             </div>
           </div>
@@ -40,14 +43,25 @@
             <div class="form-group">
               <select class="form-control" id="selectCiudad" name="ciudad">
                 <option value="0">Municipio/Ciudad</option>
+                {{#each render.municipios}}
+                  <option value="{{id}}">{{municipio}}</option>
+                {{/each}}
               </select>
             </div>
           </div>
           <div class="col-md-5">
             <div class="form-group">
-              <input type="text" class="form-control" id="nombreMed" name="nombreMed">
+              <input type="text" class="form-control" id="nombreMed" name="nombreMed" value="{{render.nombre}} {{render.apellido}}">
             </div>
           </div>
+          {{#if render.estado}}
+            <script type="text/javascript">
+              $('#selectEstados').prop('value',{{render.estado}});
+              {{#if render.municipio}}
+                $('#selectCiudad').prop('value',{{render.municipio}});
+              {{/if}}
+            </script>
+          {{/if}}
           <div class="col-md-12">
             <div class="row"  id="extraSearch"  style="padding-bottom:0px!important">
             </div>
@@ -57,7 +71,7 @@
 
       <div class="col-md-1" style="padding-bottom:0px!important;margin-top:10px">
         <div class="form-group">
-          <button type="button" onclick="searchingData();" class="btn btn-primary btn-md btn-block" id="btnSearch" ><span class='glyphicon glyphicon-search'></span></button>
+          <button type="button" onclick="buscarInsMed();" class="btn btn-primary btn-md btn-block" id="btnSearch" ><span class='glyphicon glyphicon-search'></span></button>
         </div>
       </div>
     </div>
@@ -65,100 +79,10 @@
 </section>
 
 
-<section id="buscadorResultado" class="Flama">{{#if usuarios}}
-  <div class="container-fluid">
-    <div class="row">
-      <div role="tabpanel" class="tab-pane fade in active " id="medResults">
-        <ul class="media-list">
-          {{#each usuarios}}
-            <li class="media result" id="medico_id_{{Medico.id}}">
-              <div class="media-left">
-                <div class="media-enclosure">
-                  <a href="#">
-                    <img class="media-object img-rounded" src= {{urlFotoPerfil}} alt="">
-                  </a>
-                </div>
-              </div>
-              <div class="media-body">
-                <div class="col-md-8">
-                  <h4 class="media-heading">
-                    <span class="label label-topDr">Top Doctor</span> Dr.{{DatosGenerale.nombre}} {{DatosGenerale.apellidoP}} {{DatosGenerale.apellidoM}}.
-                  </h4>
-                  <ul class="list-unstyled list-inline">
-                    {{#each Medico.MedicoEspecialidads}}
-                      {{#unless subEsp}}
-                        <li>
-                          <strong>{{Especialidad.especialidad}}</strong>
-                        </li>
-                      {{/unless}}
-                    {{/each}}
-                  </ul>
-                  <ul class="list-unstyled list-inline">
-                    {{#each Medico.MedicoEspecialidads}}
-                      {{#if subEsp}}
-                        <li>
-                          {{Especialidad.especialidad}}
-                        </li>
-                      {{/if}}
-                    {{/each}}
-                  </ul>
-                  <ul class="list-inline">
-                    {{#each Medico.Padecimientos}}
-                      <li>
-                        <small>{{padecimiento}}</small>
-                      </li>
-                    {{/each}}
-                  </ul>
-                  <ul class="list-unstyled list-ubicaciones">
-                    {{#each Direccions }}
-                      <li>
-                        <div id="dir_{{id}}" class="direccion hidden">
-                          <div class="top_dr">1</div>
-                          <div class="direccion_id">{{id}}</div>
-                          <div class="latitud">{{latitud}}</div>
-                          <div class="longitud">{{longitud}}</div>
-                          <div class="medico_id">{{../Medico.id}}</div>
-                          <div class="nombre">{{nombre}}</div>
-                          <div class="imagen">{{../urlFotoPerfil}}</div>
-                          <div class="doctor">Dr. {{../DatosGenerale.nombre}} {{../DatosGenerale.apellidoP}} {{../DatosGenerale.apellidoM}}</div>
-                          <div class="direccion">{{calle}} #{{numero}}<br/>{{Municipio.municipio}}, {{Municipio.Estado.estado}}</div>
-                          <div class="usuarioUrl">{{../usuarioUrl}}</div>
-                        </div>
-                        <a onclick="centrarEnMapa('{{latitud}}','{{longitud}}','{{../Medico.id}}','{{id}}')">
-                          <button class="btn btn-warning">
-                            <span class="glyphicon glyphicon-map-marker"></span>
-                          </button>
-                          <strong>{{nombre}}</strong>
-                          <small>{{calle}} #{{numero}}, {{Municipio.municipio}}, {{Municipio.Estado.estado}} <span class="glyphicon glyphicon-zoom-in"></span></small>
-                        </a>
-                      </li>
-                    {{/each}}
-
-                    <!-- Cada <li> en esta parte debe mostrar una ubicación en la que trabaja el Medico -->
-                  </ul>
-                </div>
-                <div class="resultOptions col-md-4">
-                  <ul class="list-unstyled">
-                    <li>
-                      Costo de consulta:
-                      <strong> $1,230</strong>
-                    </li>
-                    <li>
-                      <a>Agrega a tus favoritos</a>
-                    </li>
-                    <li>
-                      <a>Envía mensaje</a>
-                    </li>
-                    <li>
-                      <a>Visita su perfíl</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </li>
-          {{/each}}
-        </ul>
-      </div>
-    </div>
-  </div>{{/if}}
+<section id="buscadorResultado" class="Flama"></section>
+<section id="buscadorPaginator">
+  <div class="container-fluid text-center">
+    <ul class="pagination pagination-sm" id="buscPag">
+    </ul>
+  </div>
 </section>

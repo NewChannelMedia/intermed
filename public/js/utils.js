@@ -4083,19 +4083,7 @@ function cargarListaColegasByAlf(usuario_id,letra){
   } );
 }
 //<-------------- funciones para la busqueda de la pantalla searchMedic -------------->
-$(document).ready(function(){
-  //carga los estados y se llena el select con la siguiente consulta
-  var html = "";
-  $.post('/cargaEstados',function(data){
-    html += '<option value="0">Estado</option>';
-    $.each(data, function(i, item){
-      html += '<option value="'+item.id+'">'+item.estado+'</option>';
-    });
-    $("#selectEstados").html(html);
-  });
-  cargaEspecialidades();
-  cargaPadecimiento();
-});
+
 function cargarCiudades(id){
   var idABuscar = $(id).val();// se saca el value del select de estados
   // se hace la consulta se manda como parametro el id que se obtuvo de seleccionar el estado
@@ -4106,7 +4094,6 @@ function cargarCiudades(id){
     });
     $("#selectCiudad").html(cont);
   });
-
 }
 function cargaEspecialidades(){
   var html3 = "";
@@ -4129,11 +4116,21 @@ function cargaPadecimiento(){
     $("#selectPadecimiento").html(html4);
   });
 }
+
+function buscarInsMed(){
+  $('#buscPag').html('');
+  searchingData();
+}
+
 function searchingData(){
+  var pagina = 1;
   var tipoBusqueda = $('#tipoBusqueda').val();
   var estado = $("#selectEstados").val();
   var ciudad = $("#selectCiudad").val();
   var especialidad = [];
+  if ($('ul.pagination>li.active').length>0){
+    pagina = $('ul.pagination>li.active').find('a').text();
+  }
   $('.inputEspecialidad').each(function(){
     if ($(this).text()){
       especialidad.push($(this).text());
@@ -4161,6 +4158,7 @@ function searchingData(){
   var html5 = "";
   $("#medResults").html('');
   $.post('/findData',{
+    pagina: pagina,
     tipoBusqueda: tipoBusqueda,
     estado: estado,
     municipio: ciudad,
@@ -4170,11 +4168,23 @@ function searchingData(){
     aseguradora: aseguradora,
     nombre: nombre
   },function(data){
+    if ($('#buscPag').html() == "" && data.countmedicos>1){
+      var paginador = '<li class="preview" onclick="buscadorPreview()" style="visibility:hidden"><a aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+      for (var i = 1; i<= data.countmedicos; i++){
+        clase = '';
+        if (pagina == i){
+          clase = 'class="active"'
+        }
+        paginador += '<li id="paginador_'+i+'" '+clase+' onclick="buscarPaginador('+i+')"><a>'+i+'</a></li>';
+      }
+      paginador += '<li class="next"><a aria-label="Next" onclick="buscadorNext()"><span aria-hidden="true">»</span></a></li>';
+      $('#buscPag').html(paginador);
+    }
     var contenido = `<div class="container-fluid">
       <div class="row">
         <div role="tabpanel" class="tab-pane fade in active " id="medResults">
           <ul class="media-list">`;
-    $.each(data, function( i, item ){
+    $.each(data.medicos, function( i, item ){
       var nombreCompleto = item.DatosGenerale.nombre+' '+item.DatosGenerale.apellidoP+' '+item.DatosGenerale.apellidoM;
 
       contenido += `
@@ -4217,7 +4227,6 @@ function searchingData(){
         contenido += `</ul><ul class="list-unstyled list-ubicaciones">`;
 
         $.each(item.Direccions, function( i, itemDir ){
-          console.log('itemDir: ' + JSON.stringify(itemDir));
           contenido += `<li>
               <div id="dir_`+itemDir.id+`" class="direccion hidden">
                 <div class="top_dr">1</div>
@@ -4822,4 +4831,48 @@ function ajustarPantallaBusqueda(){
   height += $('#mainNav').height();
   $('#buscadorFixed').css('top',$('#mainNav').height()+'px');
   $('#buscadorResultado').css('margin-top',height+'px');
+}
+
+function buscarPaginador(id){
+  if (id == 1){
+    $('ul.pagination>li.preview').css('visibility','hidden');
+  } else {
+    $('ul.pagination>li.preview').css('visibility','visible');
+  }
+  var last_id = $('ul.pagination>li').not('.next').last().find('a').text();
+  if (id == last_id){
+    $('ul.pagination>li.next').css('visibility','hidden');
+  } else {
+    $('ul.pagination>li.next').css('visibility','visible');
+  }
+  $('ul.pagination>li').removeClass('active');
+  $('ul.pagination>li#paginador_'+id).addClass('active');
+  searchingData();
+}
+
+function buscadorPreview(){
+  var id = $('ul.pagination>li.active').find('a').text();
+  if (id == 2){
+    $('ul.pagination>li.Previous').css('visibility','hidden');
+    buscarPaginador(id-1);
+  }else if(id>2){
+    $('ul.pagination>li.Previous').css('visibility','visible');
+    buscarPaginador(id-1);
+  }
+}
+
+function buscadorNext(){
+  var last_id = $('ul.pagination>li').not('.next').last().find('a').text();
+  var id = $('ul.pagination>li.active').find('a').text();
+  console.log('LAST_ID: ' + last_id);
+  console.log('ID: ' + (parseInt(id)+1));
+  if (id == last_id){
+    console.log('Disabled');
+    $('ul.pagination>li.next').css('visibility','hidden');
+    buscarPaginador((parseInt(id)+1));
+  }else if(id<6){
+    console.log('no Disabled');
+    $('ul.pagination>li.next').css('visibility','visible');
+    buscarPaginador((parseInt(id)+1));
+  }
 }

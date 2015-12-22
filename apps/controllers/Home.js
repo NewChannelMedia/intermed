@@ -317,23 +317,12 @@ module.exports = {
     } );
   },
   vacio: function ( object, req, res ) {
-    models.Especialidad.findAll( {
-      attributes: [ 'id', 'especialidad' ]
-    } ).then( function ( especia ) {
-      models.Padecimiento.findAll( {
-        attributes: [ 'id', 'padecimiento' ]
-      } ).then( function ( padeci ) {
-        models.Estado.findAll( {
-          attributes: [ 'id', 'estado' ]
-        } ).then( function ( estado ) {
-          models.Ciudad.findAll( {} ).then( function ( ciudad ) {
-            res.render( 'searchMedic', {
-              especia: especia,
-              padecimiento: padeci,
-              estado: estado,
-              ciudad: ciudad
-            } );
-          } );
+    models.Estado.findAll( {
+      attributes: [ 'id', 'estado' ]
+    } ).then( function ( estado ) {
+      models.Ciudad.findAll( {} ).then( function ( ciudad ) {
+        res.render( 'searchMedic', {
+          estado: estado
         } );
       } );
     } );
@@ -395,6 +384,7 @@ module.exports = {
       var condicionCiudad = ( object.ciudad != '0' ) ? {
         ciudad_id: object.ciudad
       } : condicionCiudad = '';
+      /*
       models.Usuario.findAll( {
         where: {
           tipoUsuario: 'M'
@@ -434,6 +424,35 @@ module.exports = {
         res.render( 'searchMedic', {
           usuarios: usuarios
         } );
+      } );
+      */
+      var render = {};
+      render.nombre = object.nombreMedico;
+      render.apellido = object.apellidoMedico;
+      render.estado = object.estado;
+      render.municipio = object.ciudad;
+
+      models.Estado.findAll( {
+        attributes: [ 'id', 'estado' ]
+      } ).then( function ( estado ) {
+        if (render.estado>0){
+          models.Municipio.findAll({
+            where: {
+              estado_id: render.estado
+            }
+          }).then(function(municipios){
+            render.municipios = municipios;
+            res.render( 'searchMedic', {
+              estado: estado,
+              render: render
+            } );
+          })
+        } else {
+          res.render( 'searchMedic', {
+            estado: estado,
+            render: render
+          } );
+        }
       } );
     }, //fin del metodo searching
     homeEspecialidades: function( req, res ){

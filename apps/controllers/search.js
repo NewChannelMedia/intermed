@@ -31,6 +31,7 @@ module.exports = {
     });
   },
   findData: function( req, res ){
+    var pagina = req.body.pagina;
     var tipoBusqueda = req.body.tipoBusqueda;
     var medico = false;
     var institucion = false;
@@ -63,22 +64,20 @@ module.exports = {
       condicionNombre = [];
       var nombres = nombre.split(' ');
       nombres.forEach(function(nombre){
-        condicionNombre.push(models.Sequelize.or({
-          nombre:{$like: nombre+'%'}
-        },{
-          nombre:{$like: '% '+nombre+'%'}
-        },{
-          apellidoP:{$like:  nombre+'%'}
-        },{
-          apellidoP:{$like: '% '+nombre+'%'}
-        },{
-          apellidoM:{$like: nombre+'%'}
-        },{
-          apellidoM:{$like: '% '+nombre+'%'}
-        }));
+        condicionNombre.push(models.sequelize.or(
+            models.sequelize.or(
+              {nombre: {$like: '% ' + nombre +'%'}},
+              {nombre: {$like: nombre +'%'}}
+            ),models.sequelize.or(
+              {apellidoP: {$like: '% ' + nombre +'%'}},
+              {apellidoP: {$like: nombre +'%'}}
+            ),models.sequelize.or(
+              {apellidoM: {$like: '% ' + nombre +'%'}},
+              {apellidoM: {$like: nombre +'%'}}
+            )
+          ));
       });
     }
-
     if(especialidad && especialidad.length>0){
       condicionEspecialidad = {
         especialidad: {
@@ -87,13 +86,13 @@ module.exports = {
       }
     }
 
-    if( estado >= 1 ){
-      condicionEstado = { id: estado };
-    }
-
     if( municipio >= 1 ){
       condicionMunicipio = {
         id: municipio,
+        estado_id: estado
+      };
+    } else if (estado>=1){
+      condicionMunicipio = {
         estado_id: estado
       };
     }
@@ -122,60 +121,62 @@ module.exports = {
       }
     }
 
+    var limit = 3;
+    var offset = limit * (pagina-1);
+
     if (medico){
-      models.Usuario.findAll({
-        where:{tipoUsuario:'M'},
-        attributes:['usuarioUrl','urlFotoPerfil'],
-        include:[{
-          model: models.Medico,
+      if (pagina == 1){
+        models.Usuario.findAll({
+          where:{tipoUsuario:'M'},
           attributes:['id'],
           include:[{
-            model: models.Padecimiento,
-            where: condicionPadecimiento
-          },{
-            model: models.MedicoEspecialidad,
-            attributes:['id','subEsp'],
+            model: models.Medico,
+            attributes:['id'],
             include:[{
-              model: models.Especialidad,
-              attributes:['id','especialidad'],
-              where: condicionEspecialidad
+              model: models.Padecimiento,
+              where: condicionPadecimiento
+            },{
+              model: models.MedicoEspecialidad,
+              attributes:['id'],
+              include:[{
+                model: models.Especialidad,
+                attributes:['id'],
+                where: condicionEspecialidad
+              }]
+            },{
+              model: models.MedicoAseguradora,
+              attributes: ['id'],
+              where: condicionAseguradora
+            },{
+              model: models.MedicoClinica,
+              attributes:['id'],
+              where: condicionInstitucion
             }]
           },{
-            model: models.MedicoAseguradora,
-            attributes: ['aseguradora'],
-            where: condicionAseguradora
+            model: models.DatosGenerales,
+            where: condicionNombre,
+            attributes:['id']
           },{
-            model: models.MedicoClinica,
-            attributes:['id','clinica'],
-            where: condicionInstitucion
-          }]
-        },{
-          model: models.DatosGenerales,
-          where:condicionNombre,
-          attributes:['nombre','apellidoP','apellidoM']
-        },{
-          model: models.Direccion,
-          attributes:['id','calle','numero','nombre','latitud','longitud'],
-          include:[{
-            model: models.Municipio,
-            where: condicionMunicipio,
-            attributes:['id','municipio'],
+            model: models.Direccion,
+            attributes:['id'],
             include:[{
-              model: models.Estado,
-              attributes:['id','estado'],
-              where: condicionEstado
+              model: models.Municipio,
+              where: condicionMunicipio,
+              attributes:['id'],
+              include:[{
+                model: models.Estado,
+                attributes:['id']
+              }]
             }]
           }]
-        }]
-      }).then(function(usuarios){
-        if (institucion){
-          buscarInstituciones(res,usuarios,condicionNombre,condicionEstado,condicionMunicipio,condicionEspecialidad,condicionPadecimiento);
-        }else{
-          res.send(usuarios);
-        }
-      });
+        }).then(function(count){
+          buscarMedicos( res,limit,offset, count.length,institucion, condicionNombre, condicionMunicipio,condicionEspecialidad, condicionPadecimiento, condicionAseguradora, condicionInstitucion);
+        });
+      } else {
+        buscarMedicos( res,limit,offset, '',institucion, condicionNombre, condicionMunicipio,condicionEspecialidad, condicionPadecimiento, condicionAseguradora, condicionInstitucion);
+      }
     } else {
-
+      buscarInstituciones(res,{},condicionNombre,condicionMunicipio,condicionEspecialidad,condicionPadecimiento);
     }
   },
 
@@ -220,7 +221,65 @@ module.exports = {
   }
 }
 
-function buscarInstituciones(res, usuarios, condicionNombre, condicionEstado, condicionMunicipio, condicionEspecialidad, condicionPadecimiento){
+function buscarInstituciones(res, usuarios, condicionNombre, condicionMunicipio, condicionEspecialidad, condicionPadecimiento){
   console.log('Falta buscar instituciones');
   res.send(usuarios);
+}
+
+function buscarMedicos( res,limit,offset, count,institucion, condicionNombre, condicionMunicipio,condicionEspecialidad, condicionPadecimiento, condicionAseguradora, condicionInstitucion){
+  models.Usuario.findAll({
+    where:{tipoUsuario:'M'},
+    attributes:['usuarioUrl','urlFotoPerfil'],
+    limit: limit,
+    offset: offset,
+    include:[{
+      model: models.Medico,
+      attributes:['id'],
+      include:[{
+        model: models.Padecimiento,
+        where: condicionPadecimiento
+      },{
+        model: models.MedicoEspecialidad,
+        attributes:['id','subEsp'],
+        include:[{
+          model: models.Especialidad,
+          attributes:['id','especialidad'],
+          where: condicionEspecialidad
+        }]
+      },{
+        model: models.MedicoAseguradora,
+        attributes: ['aseguradora'],
+        where: condicionAseguradora
+      },{
+        model: models.MedicoClinica,
+        attributes:['id','clinica'],
+        where: condicionInstitucion
+      }]
+    },{
+      model: models.DatosGenerales,
+      where:condicionNombre,
+      attributes:['nombre','apellidoP','apellidoM']
+    },{
+      model: models.Direccion,
+      attributes:['id','calle','numero','nombre','latitud','longitud'],
+      include:[{
+        model: models.Municipio,
+        where: condicionMunicipio,
+        attributes:['id','municipio'],
+        include:[{
+          model: models.Estado,
+          attributes:['id','estado']
+        }]
+      }]
+    }]
+  }).then(function(usuarios){
+    result = {};
+    result.medicos = usuarios;
+    result.countmedicos = Math.ceil(count/limit);
+    if (institucion){
+      buscarInstituciones(res,result,condicionNombre,condicionMunicipio,condicionEspecialidad,condicionPadecimiento);
+    }else{
+      res.send(result);
+    }
+  });
 }
