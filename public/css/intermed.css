@@ -707,8 +707,13 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
   background-color: #5288ac;
 }
 
-#buscador #sel-busqueda.form-control {
+#buscador #sel-busqueda.form-control,
+#buscador #tipoBusqueda {
   background-color: #328ecb;
+}
+
+#buscador .autocompleteInput{
+  background-color: transparent;
 }
 
 #buscador input::-webkit-input-placeholder,

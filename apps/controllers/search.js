@@ -229,7 +229,7 @@ function buscarInstituciones(res, usuarios, condicionNombre, condicionMunicipio,
 function buscarMedicos( res,limit,offset, count,institucion, condicionNombre, condicionMunicipio,condicionEspecialidad, condicionPadecimiento, condicionAseguradora, condicionInstitucion){
   models.Usuario.findAll({
     where:{tipoUsuario:'M'},
-    attributes:['usuarioUrl','urlFotoPerfil'],
+    attributes:['usuarioUrl','urlFotoPerfil','urlPersonal'],
     limit: limit,
     offset: offset,
     include:[{

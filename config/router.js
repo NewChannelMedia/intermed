@@ -135,8 +135,8 @@ var iniciar = function () {
     intermed.callController( 'Home', 'vacio', '', req, res );
   } );
   app.post( '/buscar', function ( req, res ) {
-    var busqueda = JSON.parse( JSON.stringify( req.body ) );
     rutas.routeLife( 'plataforma2', 'interno', hps );
+    var busqueda = JSON.parse( JSON.stringify( req.body ) );
     intermed.callController( 'Home', 'searching', busqueda, req, res );
   } );
   //Registro

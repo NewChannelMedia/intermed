@@ -4127,10 +4127,10 @@ function searchingData(){
   var tipoBusqueda = $('#tipoBusqueda').val();
   var estado = $("#selectEstados").val();
   var ciudad = $("#selectCiudad").val();
-  var especialidad = [];
   if ($('ul.pagination>li.active').length>0){
     pagina = $('ul.pagination>li.active').find('a').text();
   }
+  var especialidad = [];
   $('.inputEspecialidad').each(function(){
     if ($(this).text()){
       especialidad.push($(this).text());
@@ -4187,98 +4187,82 @@ function searchingData(){
       paginador += '<li class="last"><a aria-label="Next" onclick="buscadorLast()"><span aria-hidden="true">&raquo;</span></a></li>';
       $('#buscPag').html(paginador);
     }
-    var contenido = `<div class="container-fluid">
-      <div class="row">
-        <div role="tabpanel" class="tab-pane fade in active " id="medResults">
-          <ul class="media-list">`;
-    $.each(data.medicos, function( i, item ){
-      var nombreCompleto = item.DatosGenerale.nombre+' '+item.DatosGenerale.apellidoP+' '+item.DatosGenerale.apellidoM;
+    var contenido = '<div class="container-fluid">' +
+      '<div class="row">' +
+        '<div role="tabpanel" class="tab-pane fade in active " id="medResults">' +
+          '<ul class="media-list">';
+    if(data.medicos){
+      $.each(data.medicos, function( i, item ){
+        var nombreCompleto = item.DatosGenerale.nombre+' '+item.DatosGenerale.apellidoP+' '+item.DatosGenerale.apellidoM;
 
-      contenido += `
-        <li class="media result" id="medico_id_`+ item.Medico.id +`">
-          <div class="media-left">
-            <div class="media-enclosure">
-              <a href="#">
-                <img class="media-object imgBusqueda" src="`+ item.urlFotoPerfil +`" alt="">
-              </a>
-            </div>
-          </div>
-          <div class="media-body">
-            <div class="col-md-8">
-              <h4 class="media-heading">
-                <span class="label label-topDr">Top Doctor</span> Dr.`+ nombreCompleto +`.
-              </h4>
-              <ul class="list-unstyled list-inline">`;
+        contenido += '<li class="media result" id="medico_id_'+ item.Medico.id +'">' +
+            '<div class="media-left"><div class="media-enclosure"><a href="#">'+
+                  '<img class="media-object imgBusqueda" src="`+ item.urlFotoPerfil +`" alt="">'+
+                '</a></div></div>' +
+            '<div class="media-body"><div class="col-md-8"><h4 class="media-heading">'+
+                  '<span class="label label-topDr">Top Doctor</span> Dr. '+ nombreCompleto +'.'+
+                '</h4><ul class="list-unstyled list-inline">';
 
-        $.each(item.Medico.MedicoEspecialidads, function(a, esp ){
-          if (esp.subEsp == 0){
-            contenido += `<li><strong>`+esp.Especialidad.especialidad+`</strong></li> `;
+          $.each(item.Medico.MedicoEspecialidads, function(a, esp ){
+            if (esp.subEsp == 0){
+              contenido += '<li><strong>' +esp.Especialidad.especialidad+'</strong></li>';
+            }
+          });
+
+          contenido += '</ul><ul class="list-unstyled list-inline">';
+
+          $.each(item.Medico.MedicoEspecialidads, function(a, esp ){
+            if (esp.subEsp == 1){
+              contenido += '<li><strong>'+esp.Especialidad.especialidad+'</strong></li>';
+            }
+          });
+
+          contenido += '</ul><ul class="list-inline">';
+
+
+          $.each(item.Medico.Padecimientos, function(a, pad ){
+            contenido +='<li><small>'+pad.padecimiento+'</small></li>';
+          });
+
+          contenido += '</ul><ul class="list-unstyled list-ubicaciones">';
+
+          var usu = item.usuarioUrl;
+          if (item.urlPersonal && item.urlPersonal.length>0){
+          usu = item.urlPersonal;
           }
-        });
 
-        contenido += `</ul><ul class="list-unstyled list-inline">`;
+          $.each(item.Direccions, function( i, itemDir ){
+            contenido += '<li><div id="dir_'+itemDir.id+'" class="direccion hidden">'+
+                  '<div class="top_dr">1</div>'+
+                  '<div class="direccion_id">'+itemDir.id+'</div>'+
+                  '<div class="latitud">'+itemDir.latitud+'</div>'+
+                  '<div class="longitud">'+itemDir.longitud+'</div>'+
+                  '<div class="medico_id">'+item.Medico.id+'</div>'+
+                  '<div class="nombre">'+itemDir.nombre+'</div>'+
+                  '<div class="imagen">'+item.urlFotoPerfil +'</div>'+
+                  '<div class="doctor">Dr. '+nombreCompleto+'</div>'+
+                  '<div class="direccion">'+itemDir.calle+' #'+itemDir.numero+'<br/>'+itemDir.Municipio.municipio+', '+itemDir.Municipio.Estado.estado+'</div>'+
+                  '<div class="usuarioUrl">'+usu+'</div>'+
+                '</div>'+
+                '<a onclick="centrarEnMapa(\''+itemDir.latitud+'\',\''+itemDir.longitud+'\',\''+item.Medico.id+'\',\''+itemDir.id+'\',true)">'+
+                  '<button class="btn btn-warning">'+
+                    '<span class="glyphicon glyphicon-map-marker"></span>'+
+                  '</button>'+
+                  '<strong>'+itemDir.nombre+'</strong>'+
+                  '<small>'+itemDir.calle+' #'+itemDir.numero+', '+itemDir.Municipio.municipio+','+itemDir.Municipio.Estado.estado+'<span class="glyphicon glyphicon-zoom-in"></span></small>'+
+                '</a>'+
+              '</li>';
+          });
 
-        $.each(item.Medico.MedicoEspecialidads, function(a, esp ){
-          if (esp.subEsp == 1){
-            contenido += `<li><strong>`+esp.Especialidad.especialidad+`</strong></li> `;
-          }
-        });
-
-        contenido += `</ul><ul class="list-inline">`;
-
-
-        $.each(item.Medico.Padecimientos, function(a, pad ){
-          contenido += `<li><small>`+pad.padecimiento+`</small></li> `;
-        });
-
-        contenido += `</ul><ul class="list-unstyled list-ubicaciones">`;
-
-        $.each(item.Direccions, function( i, itemDir ){
-          contenido += `<li>
-              <div id="dir_`+itemDir.id+`" class="direccion hidden">
-                <div class="top_dr">1</div>
-                <div class="direccion_id">`+itemDir.id+`</div>
-                <div class="latitud">`+itemDir.latitud+`</div>
-                <div class="longitud">`+itemDir.longitud+`</div>
-                <div class="medico_id">`+item.Medico.id+`</div>
-                <div class="nombre">`+itemDir.nombre+`</div>
-                <div class="imagen">`+item.urlFotoPerfil +`</div>
-                <div class="doctor">Dr. `+nombreCompleto+`</div>
-                <div class="direccion">`+itemDir.calle+` #`+itemDir.numero+`<br/>`+itemDir.Municipio.municipio+`, `+itemDir.Municipio.Estado.estado+`</div>
-                <div class="usuarioUrl">`+item.usuarioUrl+`</div>
-              </div>
-              <a onclick="centrarEnMapa('`+itemDir.latitud+`','`+itemDir.longitud+`','`+item.Medico.id+`','`+itemDir.id+`',true)">
-                <button class="btn btn-warning">
-                  <span class="glyphicon glyphicon-map-marker"></span>
-                </button>
-                <strong>`+itemDir.nombre+`</strong>
-                <small>`+itemDir.calle+` #`+itemDir.numero+`, `+itemDir.Municipio.municipio+`,`+itemDir.Municipio.Estado.estado+`<span class="glyphicon glyphicon-zoom-in"></span></small>
-              </a>
-            </li>`;
-        });
-
-      contenido += `</ul></div>
-            <div class="resultOptions col-md-4">
-              <ul class="list-unstyled">
-                <li>
-                  Costo de consulta:
-                  <strong> $1,230</strong>
-                </li>
-                <li>
-                  <a>Agrega a tus favoritos</a>
-                </li>
-                <li>
-                  <a>Envía mensaje</a>
-                </li>
-                <li>
-                  <a>Visita su perfíl</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </li>
-      `;
-    });
+        contenido += '</ul></div><div class="resultOptions col-md-4">'+
+                '<ul class="list-unstyled">'+
+                  '<li>Costo de consulta:<strong> $1,230</strong></li>'+
+                  '<li><a>Agrega a tus favoritos</a></li>'+
+                  '<li><a>Envía mensaje</a></li>'+
+                  '<li><a href="'+base_url+usu+'">Visita su perfíl</a></li>'+
+                '</ul></div></div></li>';
+      });
+    }
     contenido += '</ul></div></div></div>';
     $("#buscadorResultado").html(contenido);
     mapSearchDiv();
@@ -4548,7 +4532,8 @@ function CargarExtraBusqueda(){
     <div class="col-md-3">
       <div class="form-group">
         <div class="form-control" placeholder="Especialidad" style="height:auto!important;padding:2px">
-          <input id="inputEspecialidad" class="autocompleteInput" placeholder="Especialidad" >
+          <input type="hidden" id="hiddenEspecialidad" name="hiddenEspecialidad">
+          <input id="inputEspecialidad" class="autocompleteInput" placeholder="Especialidad" name="inputEspecialidad">
         </div>
       </div>
     </div>`;
@@ -4556,7 +4541,8 @@ function CargarExtraBusqueda(){
     <div class="col-md-3">
       <div class="form-group">
         <div class="form-control" style="height:auto!important;padding:2px">
-          <input id="inputPadecimiento" class="autocompleteInput" placeholder="Pacecimiento"  >
+        <input type="hidden" id="hiddenPadecimiento" name="hiddenPadecimiento">
+        <input id="inputPadecimiento" class="autocompleteInput" placeholder="Pacecimiento" name="inputPadecimiento" >
         </div>
       </div>
     </div>`;
@@ -4564,7 +4550,8 @@ function CargarExtraBusqueda(){
     <div class="col-md-3">
       <div class="form-group">
         <div class="form-control" style="height:auto!important;padding:2px">
-          <input id="inputInstitucion" class="autocompleteInput" placeholder="Institución"  >
+        <input type="hidden" id="hiddenInstitucion" name="hiddenInstitucion">
+        <input id="inputInstitucion" class="autocompleteInput" placeholder="Institución"  name="inputInstitucion">
         </div>
       </div>
     </div>`;
@@ -4572,7 +4559,8 @@ function CargarExtraBusqueda(){
     <div class="col-md-3">
       <div class="form-group">
         <div class="form-control" style="height:auto!important;padding:2px">
-          <input id="inputAseguradora" class="autocompleteInput" placeholder="Aseguradora"  >
+        <input type="hidden" id="hiddenAseguradora" name="hiddenAseguradora">
+        <input id="inputAseguradora" class="autocompleteInput" placeholder="Aseguradora" name="inputAseguradora">
         </div>
       </div>
     </div>`;
@@ -4584,24 +4572,28 @@ function CargarExtraBusqueda(){
   } else if (tipo == 2){
     //Buscar instituciones
     cont += `
-    <div class="col-md-3">
+    <div class="col-md-6">
       <div class="form-group">
         <div class="form-control" placeholder="Especialidad" style="height:auto!important;padding:2px">
-          <input id="inputEspecialidad" class="autocompleteInput" placeholder="Especialidad" >
+        <input type="hidden" id="hiddenEspecialidad" name="hiddenEspecialidad">
+        <input id="inputEspecialidad" class="autocompleteInput" placeholder="Especialidad" name="inputPadecimiento" >
         </div>
       </div>
     </div>`;
     cont += `
-    <div class="col-md-3">
+    <div class="col-md-6">
       <div class="form-group">
         <div class="form-control" style="height:auto!important;padding:2px">
-          <input id="inputPadecimiento" class="autocompleteInput" placeholder="Pacecimiento"  >
+        <input type="hidden" id="hiddenPadecimiento" name="hiddenPadecimiento">
+        <input id="inputPadecimiento" class="autocompleteInput" placeholder="Pacecimiento" name="inputPadecimiento" >
         </div>
       </div>
     </div>`;
     $('#extraSearch').html(cont);
     autoCompleteEsp('inputEspecialidad');
     autoCompletePad('inputPadecimiento');
+  } else {
+    $('#extraSearch').html(cont);
   }
   $('#buscadorFixed').css('top',$('#mainNav').height()+'px');
   var height = $('#buscadorFixed').height();
@@ -4788,9 +4780,6 @@ function extractLast( term ) {
 }
 
 function InputAutoComplete(inputId, availableTags){
-    console.log('availableTags: ' + inputId);
-    console.log('availableTags: ' + JSON.stringify(availableTags));
-
     $('#'+inputId)
       // don't navigate away from the field on tab when selecting an item
       .bind( "keydown", function( event ) {
@@ -4909,4 +4898,73 @@ function buscadorFirst(){
 
 function buscadorLast(){
   buscarPaginador($('#maxNumPag').val());
+}
+
+function iniciarBusqueda(){
+  if ($('#hiddenEspecialidad').length>0){
+    var especialidad = '';
+    $('.inputEspecialidad').each(function(){
+      if ($(this).text()){
+        if (especialidad != ""){
+          especialidad+='-.-';
+        }
+        especialidad += $(this).text();
+      }
+    });
+    $('#hiddenEspecialidad').prop('value',especialidad);
+  }
+  if ($('#hiddenPadecimiento').length>0){
+    var padecimiento = '';
+    $('.inputPadecimiento').each(function(){
+      if ($(this).text()){
+        if (padecimiento != ""){
+          padecimiento+='-.-';
+        }
+        padecimiento += $(this).text();
+      }
+    });
+
+    $('#hiddenPadecimiento').val(padecimiento);
+  }
+
+  if ($('#hiddenInstitucion').length>0){
+    var institucion = '';
+    $('.inputInstitucion').each(function(){
+      if ($(this).text()){
+        if (institucion != ""){
+          institucion+='-.-';
+        }
+        institucion += $(this).text();
+      }
+    });
+    $('#hiddenInstitucion').val(institucion);
+  }
+
+  if ($('#hiddenAseguradora').length>0){
+    var aseguradora = '';
+    $('.inputAseguradora').each(function(){
+      if ($(this).text()){
+        if (aseguradora != ""){
+          aseguradora+='-.-';
+        }
+        aseguradora += $(this).text();
+      }
+    });
+    $('#hiddenAseguradora').val(aseguradora);
+  }
+}
+
+function agregarBusqueda(inputId,Valores){
+  Valores = Valores.split('-.-');
+  Valores.forEach(function(val){
+    if (val != ""){
+      $('#'+inputId).parent().append(`
+        <div class="input-group-btn" style="padding:1px;display:initial">
+          <label class="btn-xs btn-warning" style="margin-top:2px">
+            <span class="`+inputId+`">`+ val +`</span>
+            <span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%" ></span>
+          </label>
+        </div>`);
+    }
+  });
 }

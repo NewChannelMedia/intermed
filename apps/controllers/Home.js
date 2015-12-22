@@ -340,97 +340,15 @@ module.exports = {
    *
    */
   searching: function (  object, req, res ) {
-      // se hace la busqueda respecto al parametro que se manda por post del primer select
-      var condicionNombre;
-      if ( object.nombreMedico != '' && object.apellidoMedico != '' ) {
-        // los dos campos con datos
-        condicionNombre = {
-          nombre: {
-            $like: "%" + object.nombreMedico + "%"
-          },
-          apellidoP: {
-            $like: "%" + object.apellidoMedico + "%"
-          }
-        };
-      }
-      else if ( object.nombreMedico != '' && object.apellidoMedico == '' ) {
-        // solo el input nombre tiene información
-        condicionNombre = {
-          nombre: {
-            $like: "%" + object.nombreMedico + "%"
-          }
-        };
-      }
-      else if ( object.nombreMedico == '' && object.apellidoMedico != '' ) {
-        //el input apellido medico viene con informacion
-        condicionNombre = {
-          apellidoP: {
-            $like: "%" + object.apellidoMedico + "%"
-          }
-        };
-      }
-      else if ( object.nombreMedico == '' && object.apellidoMedico == '' ) {
-        condicionNombre = '';
-      }
-      var condicionEspecia = ( object.especialidad != '0' ) ? {
-        especialidad_id: object.especialidad
-      } : condicionEspecia = '';
-      var condicionPadecimiento = ( object.padecimiento != '0' ) ? condicionPadecimiento = {
-        id: object.padecimiento
-      } : condicionPadecimiento = '';
-      var condicionEstado = ( object.estado != '0' ) ? {
-        estado_id: object.estado
-      } : condicionEstado = '';
-      var condicionCiudad = ( object.ciudad != '0' ) ? {
-        ciudad_id: object.ciudad
-      } : condicionCiudad = '';
-      /*
-      models.Usuario.findAll( {
-        where: {
-          tipoUsuario: 'M'
-        },
-        include: [ {
-          model: models.Medico,
-          attributes: [ 'id', 'cedula' ],
-          include: [ {
-            model: models.Padecimiento,
-            where: condicionPadecimiento,
-            attributes: [ 'id', 'padecimiento' ]
-                    }, {
-            model: models.MedicoEspecialidad,
-            where: condicionEspecia,
-            attributes: [ 'id', 'subEsp' ],
-            include: [ {
-              model: models.Especialidad
-                        } ]
-                    } ]
-                }, {
-          model: models.DatosGenerales,
-          where: condicionNombre,
-          attributes: [ 'id', 'nombre', 'apellidoP', 'apellidoM' ]
-                }, {
-          model: models.Direccion,
-          attributes: [ 'id','calle', 'numero', 'nombre' ,'latitud','longitud'],
-          include:[{
-            model: models.Municipio,
-            attributes:['municipio'],
-            include: [{
-              model: models.Estado
-            }]
-          }]
-                }],
-        attributes: [ 'id', 'urlFotoPerfil','usuarioUrl' ]
-      } ).then( function ( usuarios ) {
-        res.render( 'searchMedic', {
-          usuarios: usuarios
-        } );
-      } );
-      */
       var render = {};
-      render.nombre = object.nombreMedico;
-      render.apellido = object.apellidoMedico;
-      render.estado = object.estado;
-      render.municipio = object.ciudad;
+      render.nombre = object.nombreMed;
+      render.estado = object.selectEstado;
+      render.municipio = object.selectCiudad;
+      render.tipoBusqueda = object.tipoBusqueda;
+      render.inputEspecialidad = object.hiddenEspecialidad;
+      render.inputPadecimiento = object.hiddenPadecimiento;
+      render.inputInstitucion = object.hiddenInstitucion;
+      render.inputAseguradora = object.hiddenAseguradora;
 
       models.Estado.findAll( {
         attributes: [ 'id', 'estado' ]

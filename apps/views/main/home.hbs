@@ -99,96 +99,59 @@
   <section id="buscador" class="container">
     <!-- empieza buscador -->
     <div id="panel-buscador" class="panel">
-      <div class="panel-body">
-        <form method="POST" action="/buscar" id="buscaMedico" >
-          <!-- Form principal -->
-          <input type="hidden" value="homeAlone" name="local" />
-          <h4>Buscar</h4>
-          <div class="criterio col-md-2">
-            <div class="row">
-              <div class="col-md-12">
+      <div class="panel-body" style="height:auto!important">
+        <form action="/buscar" id="buscaMedico" method="POST" onsubmit="return iniciarBusqueda()">
+          <div class="col-md-10">
+            <div class="row" style="padding-bottom:0px!important">
+              <div class="col-md-3">
                 <div class="form-group">
-                  <select id="sel-busqueda" name="seleccionador" class="form-control">
-                    <option value="medico">Medico</option>
-                    <option value="especialidad">Especialidad</option>
-                    <option value="padecimiento">Padecimiento</option>
+                  <select class="form-control selectprimary" onchange="CargarExtraBusqueda()" id="tipoBusqueda" name="tipoBusqueda">
+                    <option value="0">Médicos/Instituciones</option>
+                    <option value="1">Médicos</option>
+                    <option value="2">Instituciones</option>
                   </select>
                 </div>
               </div>
-            </div>
-          </div>
-          <div class="parametros col-md-8">
-            <div class="row">
-              <div class="">
-                <div class="col-md-4 esp box">
-                  <div class="form-group">
-                    <select class="form-control" id="especialidad" name="especialidad">
-                      <option value="0">Especialidades</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-4 pad box">
-                  <div class="form-group">
-                    <select class="form-control" id="padecimientoHome" name="padecimiento">
-                      <option value="0">Padecimiento</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-4 esp pad box">
-                  <div class="form-group">
-                    <select class="form-control" id="Estado" name="estado">
-                      <option value="0">Estado</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-4 esp pad box">
-                  <div class="form-group">
-                    <select class="form-control" id="Ciudad" name="ciudad">
-                      <option value="0">Ciudad</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-6 med box">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="nombreMed" name="nombreMedico" placeholder="Nombres">
-                  </div>
-                </div>
-                <div class="col-md-6 med box">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="apellidoMed" name="apellidoMedico" placeholder="Apellidos">
-                  </div>
+
+              <div class="col-md-2">
+                <div class="form-group">
+                  <select class="form-control" id="selectEstado" name="selectEstado" onChange="cargarCiudades('#selectEstado');">
+                    <option value="0">Estado</option>
+                    {{#each estado}}
+                      <option value="{{id}}">{{estado}}</option>
+                    {{/each}}
+                  </select>
                 </div>
               </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <select class="form-control" id="selectCiudad" name="selectCiudad">
+                    <option value="0">Municipio/Ciudad</option>
+                    {{#each render.municipios}}
+                      <option value="{{id}}">{{municipio}}</option>
+                    {{/each}}
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="nombreMed" name="nombreMed" value="{{render.nombre}} {{render.apellido}}">
+                </div>
+              </div>
+              {{#if render.estado}}
+                <script type="text/javascript">
+                  $('#selectEstados').prop('value',{{render.estado}});
+                  {{#if render.municipio}}
+                    $('#selectCiudad').prop('value',{{render.municipio}});
+                  {{/if}}
+                </script>
+              {{/if}}
               <div class="col-md-12">
-                <ul class="list-inline">
-                  <li>
-                    <label>Añade a tu busqueda: </label>
-                  </li>
-                  <li>
-                    <div class="checkbox">
-                      <label>
-                        <input type="checkbox" name="hospital" value="hospital"> Hospital
-                      </label>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="checkbox">
-                      <label>
-                        <input type="checkbox" name="aseguradora" value="aseguradora"> Aseguradora
-                      </label>
-                    </div>
-                  </li>
-                  <li>
-                    <div class="checkbox">
-                      <label>
-                        <input type="checkbox" name="costo" value="costo"> Costo
-                      </label>
-                    </div>
-                  </li>
-                </ul>
+                <div class="row"  id="extraSearch"  style="padding-bottom:0px!important">
+                </div>
               </div>
-            </div>
           </div>
+        </div>
           <div class="col-md-2">
             <div class="row">
               <div class="col-md-12">

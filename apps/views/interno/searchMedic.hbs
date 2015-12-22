@@ -27,6 +27,18 @@
                 <option value="2">Instituciones</option>
               </select>
             </div>
+            {{#if render.tipoBusqueda}}
+            <script type="text/javascript">
+              $('#tipoBusqueda').prop('value',{{render.tipoBusqueda}});
+              $(function(){
+                CargarExtraBusqueda();
+                agregarBusqueda('inputEspecialidad',"{{render.inputEspecialidad}}");
+                agregarBusqueda('inputPadecimiento',"{{render.inputPadecimiento}}");
+                agregarBusqueda('inputInstitucion',"{{render.inputInstitucion}}");
+                agregarBusqueda('inputAseguradora',"{{render.inputAseguradora}}");
+              });
+            </script>
+            {{/if}}
           </div>
 
           <div class="col-md-2">
