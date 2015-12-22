@@ -3542,7 +3542,7 @@ function agregarClinica(){
     $('#sortableClinica').append('<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">'+
       '<div class="menuDiv">'+
         '<span>'+
-          '<span data-id="2" class="itemTitle">`+ addClin +`</span>'+
+          '<span data-id="2" class="itemTitle">'+ addClin +'</span>'+
           '<span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">'+
           '<span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>'+
         '</span>'+
@@ -4130,18 +4130,44 @@ function cargaPadecimiento(){
   });
 }
 function searchingData(){
+  var tipoBusqueda = $('#tipoBusqueda').val();
   var estado = $("#selectEstados").val();
   var ciudad = $("#selectCiudad").val();
-  var especialidad = $("#selectEspecialidad").val();
-  var padecimiento = $("#selectPadecimiento").val();
+  var especialidad = [];
+  $('.inputEspecialidad').each(function(){
+    if ($(this).text()){
+      especialidad.push($(this).text());
+    }
+  });
+  var padecimiento = [];
+  $('.inputPadecimiento').each(function(){
+    if ($(this).text()){
+      padecimiento.push($(this).text());
+    }
+  });
+  var institucion = [];
+  $('.inputInstitucion').each(function(){
+    if ($(this).text()){
+      institucion.push($(this).text());
+    }
+  });
+  var aseguradora = [];
+  $('.inputAseguradora').each(function(){
+    if ($(this).text()){
+      aseguradora.push($(this).text());
+    }
+  });
   var nombre = $("#nombreMed").val();
   var html5 = "";
   $("#medResults").html('');
   $.post('/findData',{
+    tipoBusqueda: tipoBusqueda,
     estado: estado,
     municipio: ciudad,
     especialidad: especialidad,
     padecimiento: padecimiento,
+    institucion: institucion,
+    aseguradora: aseguradora,
     nombre: nombre
   },function(data){
     var contenido = `<div class="container-fluid">
@@ -4185,9 +4211,7 @@ function searchingData(){
 
 
         $.each(item.Medico.Padecimientos, function(a, pad ){
-          if (esp.subEsp == 1){
-            contenido += `<li><small>`+pad.padecimiento+`</small></li> `;
-          }
+          contenido += `<li><small>`+pad.padecimiento+`</small></li> `;
         });
 
         contenido += `</ul><ul class="list-unstyled list-ubicaciones">`;
@@ -4507,111 +4531,66 @@ function CargarExtraBusqueda(){
     cont += `
     <div class="col-md-3">
       <div class="form-group">
-        <input type="text" class="form-control" placeholder="Especialidad" id="espInput">
+        <div class="form-control" placeholder="Especialidad" style="height:auto!important;padding:2px">
+          <input id="inputEspecialidad" class="autocompleteInput" placeholder="Especialidad" >
+        </div>
       </div>
     </div>`;
     cont += `
     <div class="col-md-3">
       <div class="form-group">
-        <input type="text" class="form-control" placeholder="Pacecimiento">
+        <div class="form-control" style="height:auto!important;padding:2px">
+          <input id="inputPadecimiento" class="autocompleteInput" placeholder="Pacecimiento"  >
+        </div>
       </div>
     </div>`;
     cont += `
     <div class="col-md-3">
       <div class="form-group">
-        <input type="text" class="form-control" placeholder="Institución">
+        <div class="form-control" style="height:auto!important;padding:2px">
+          <input id="inputInstitucion" class="autocompleteInput" placeholder="Institución"  >
+        </div>
       </div>
     </div>`;
     cont += `
     <div class="col-md-3">
       <div class="form-group">
-        <input type="text" class="form-control" placeholder="Aseguradora">
+        <div class="form-control" style="height:auto!important;padding:2px">
+          <input id="inputAseguradora" class="autocompleteInput" placeholder="Aseguradora"  >
+        </div>
       </div>
     </div>`;
+    $('#extraSearch').html(cont);
+    autoCompleteEsp('inputEspecialidad');
+    autoCompletePad('inputPadecimiento');
+    autoCompleteInst('inputInstitucion');
+    autoCompleteAseg('inputAseguradora');
   } else if (tipo == 2){
     //Buscar instituciones
     cont += `
-    <div class="col-md-6">
+    <div class="col-md-3">
       <div class="form-group">
-        <div class="form-control" placeholder="Especialidad"></div>
+        <div class="form-control" placeholder="Especialidad" style="height:auto!important;padding:2px">
+          <input id="inputEspecialidad" class="autocompleteInput" placeholder="Especialidad" >
+        </div>
       </div>
     </div>`;
     cont += `
-    <div class="col-md-6">
+    <div class="col-md-3">
       <div class="form-group">
-        <input type="text" class="form-control" placeholder="Aseguradora">
+        <div class="form-control" style="height:auto!important;padding:2px">
+          <input id="inputPadecimiento" class="autocompleteInput" placeholder="Pacecimiento"  >
+        </div>
       </div>
     </div>`;
+    $('#extraSearch').html(cont);
+    autoCompleteEsp('inputEspecialidad');
+    autoCompletePad('inputPadecimiento');
   }
-  $('#extraSearch').html(cont);
   $('#buscadorFixed').css('top',$('#mainNav').height()+'px');
   var height = $('#buscadorFixed').height();
   height += $('#mainNav').height();
   $('#buscadorResultado').css('margin-top',height+'px');
-
-
-    var availableTags = [
-      "ActionScript",
-      "AppleScript",
-      "Asp",
-      "BASIC",
-      "C",
-      "C++",
-      "Clojure",
-      "COBOL",
-      "ColdFusion",
-      "Erlang",
-      "Fortran",
-      "Groovy",
-      "Haskell",
-      "Java",
-      "JavaScript",
-      "Lisp",
-      "Perl",
-      "PHP",
-      "Python",
-      "Ruby",
-      "Scala",
-      "Scheme"
-    ];
-    function split( val ) {
-      return val.split( /,\s*/ );
-    }
-    function extractLast( term ) {
-      return split( term ).pop();
-    }
-
-    $( "#espInput" )
-      // don't navigate away from the field on tab when selecting an item
-      .bind( "keydown", function( event ) {
-        if ( event.keyCode === $.ui.keyCode.TAB &&
-            $( this ).autocomplete( "instance" ).menu.active ) {
-          event.preventDefault();
-        }
-      })
-      .autocomplete({
-        minLength: 0,
-        source: function( request, response ) {
-          // delegate back to autocomplete, but extract the last term
-          response( $.ui.autocomplete.filter(
-            availableTags, extractLast( request.term ) ) );
-        },
-        focus: function() {
-          // prevent value inserted on focus
-          return false;
-        },
-        select: function( event, ui ) {
-          var terms = split( this.value );
-          // remove the current input
-          terms.pop();
-          // add the selected item
-          terms.push( ui.item.value );
-          // add placeholder to get the comma-and-space at the end
-          terms.push( "" );
-          this.value = terms.join( ", " );
-          return false;
-        }
-      });
 }
 
 
@@ -4703,4 +4682,144 @@ function cargarListaAmistadesByAlf(usuario_id,letra){
       console.error( 'AJAX ERROR: ' + err );
     }
   } );
+}
+
+function autoCompleteEsp(inputId){
+    $.ajax({
+      async: false,
+      url: '/cargarEspecialidades',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      success: function ( data ) {
+        var availableTags = [];
+        data.forEach(function(esp){
+          availableTags.push(esp.especialidad);
+        });
+        InputAutoComplete(inputId,availableTags);
+      },
+      error: function (err){
+        console.log('Ajax error: ' + JSON.stringify(err));
+      }
+    });
+}
+
+function autoCompletePad(inputId){
+    $.ajax({
+      async: false,
+      url: '/cargarPadecimientos',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      success: function ( data ) {
+        var availableTags = [];
+        data.forEach(function(pad){
+          availableTags.push(pad.padecimiento);
+        });
+        InputAutoComplete(inputId,availableTags);
+      },
+      error: function (err){
+        console.log('Ajax error: ' + JSON.stringify(err));
+      }
+    });
+}
+
+function autoCompleteInst(inputId){
+    $.ajax({
+      async: false,
+      url: '/cargarInstituciones',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      success: function ( data ) {
+        var availableTags = [];
+        data.forEach(function(inst){
+          availableTags.push(inst.clinica);
+        });
+        InputAutoComplete(inputId,availableTags);
+      },
+      error: function (err){
+        console.log('Ajax error: ' + JSON.stringify(err));
+      }
+    });
+}
+
+function autoCompleteAseg(inputId){
+    $.ajax({
+      async: false,
+      url: '/cargarAseguradoras',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      success: function ( data ) {
+        var availableTags = [];
+        data.forEach(function(as){
+          availableTags.push(as.aseguradora);
+        });
+        InputAutoComplete(inputId,availableTags);
+      },
+      error: function (err){
+        console.log('Ajax error: ' + JSON.stringify(err));
+      }
+    });
+}
+
+function split( val ) {
+  return val.split( /,\s*/ );
+}
+function extractLast( term ) {
+  return split( term ).pop();
+}
+
+function InputAutoComplete(inputId, availableTags){
+    console.log('availableTags: ' + inputId);
+    console.log('availableTags: ' + JSON.stringify(availableTags));
+
+    $('#'+inputId)
+      // don't navigate away from the field on tab when selecting an item
+      .bind( "keydown", function( event ) {
+        if ( event.keyCode === $.ui.keyCode.TAB &&
+            $( this ).autocomplete( "instance" ).menu.active ) {
+          event.preventDefault();
+        }
+      })
+      .autocomplete({
+        minLength: 0,
+        source: function( request, response ) {
+          // delegate back to autocomplete, but extract the last term
+          response( $.ui.autocomplete.filter(
+            availableTags, extractLast( request.term ) ) );
+        },
+        select: function( event, ui ) {
+          var agregar = true;
+          $('.'+inputId).each(function(){
+            if ($(this).text() == ui.item.value){
+              agregar = false;
+            }
+          });
+          if (agregar){
+          $(this).parent().append(`
+            <div class="input-group-btn" style="padding:1px;display:initial">
+              <label class="btn-xs btn-warning" style="margin-top:2px">
+                <span class="`+inputId+`">`+ ui.item.value +`</span>
+                <span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%" ></span>
+              </label>
+            </div>`);
+          }
+          this.value = '';
+          ajustarPantallaBusqueda();
+          return false;
+        },
+        messages: {
+            noResults: '',
+            results: function() {return '';}
+        }
+      });
+}
+
+function ajustarPantallaBusqueda(){
+  var height = $('#buscadorFixed').height();
+  height += $('#mainNav').height();
+  $('#buscadorFixed').css('top',$('#mainNav').height()+'px');
+  $('#buscadorResultado').css('margin-top',height+'px');
 }

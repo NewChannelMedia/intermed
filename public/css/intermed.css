@@ -2232,3 +2232,24 @@ ol.sortable,ol.sortable ol {
 .error-template {padding: 40px 15px;text-align: center;}
 .error-actions {margin-top:15px;margin-bottom:15px;}
 .error-actions .btn { margin-right:10px; }
+
+.autocompleteInput{
+  display: flex;
+  border: none;
+}
+
+.autocompleteInput:focus{
+  border: none;
+  width: 100%;
+}
+.autocompleteInput:active{
+  border: none;
+}
+
+.ui-helper-hidden-accessible{
+  display: none;
+}
+
+.ui-state-focus{
+  background-color: #DADADA!important;
+}

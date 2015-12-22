@@ -31,98 +31,196 @@ module.exports = {
     });
   },
   findData: function( req, res ){
-    var especialidad = parseInt(req.body.especialidad);
+    var tipoBusqueda = req.body.tipoBusqueda;
+    var medico = false;
+    var institucion = false;
+    var nombre = req.body.nombre;
+    var aseguradora = req.body.aseguradora;
+    var institucion = req.body.institucion;
+    var especialidad = req.body.especialidad
     var estado = parseInt(req.body.estado);
     var municipio = parseInt(req.body.municipio);
-    var padecimiento = parseInt(req.body.padecimiento);
-    var nombre = req.body.nombre;
-    var condicionNombre;
-    var condicionEspecialidad;
-    var condicionEstado;
-    var condicionMunicipio;
-    var condicionPadecimiento;
-    if( nombre == "" ){
-      condicionNombre = "";
-    }else if( nombre != "" ){
-      condicionNombre = [];
+    var padecimiento = req.body.padecimiento;
 
+    var condicionNombre = '';
+    var condicionEspecialidad = '';
+    var condicionEstado = '';
+    var condicionMunicipio = '';
+    var condicionPadecimiento = '';
+    var condicionAseguradora = '';
+    var condicionInstitucion = '';
+
+    if (tipoBusqueda == 0){
+      medico = true;
+      institucion = true;
+    } else if (tipoBusqueda == 1){
+      medico = true;
+    } else if (tipoBusqueda == 2){
+      institucion = true;
+    }
+
+    if( nombre != "" ){
+      condicionNombre = [];
       var nombres = nombre.split(' ');
       nombres.forEach(function(nombre){
         condicionNombre.push(models.Sequelize.or({
-          nombre:{$like: '%'+nombre+'%'}
+          nombre:{$like: nombre+'%'}
         },{
-          apellidoP:{$like: '%'+nombre+'%'}
+          nombre:{$like: '% '+nombre+'%'}
         },{
-          apellidoM:{$like: '%'+nombre+'%'}
+          apellidoP:{$like:  nombre+'%'}
+        },{
+          apellidoP:{$like: '% '+nombre+'%'}
+        },{
+          apellidoM:{$like: nombre+'%'}
+        },{
+          apellidoM:{$like: '% '+nombre+'%'}
         }));
       });
     }
-    if( especialidad == 0 ){
-      condicionEspecialidad = "";
-    }else if( especialidad >= 1 ){
-      condicionEspecialidad = { especialidad_id: especialidad};
+
+    if(especialidad && especialidad.length>0){
+      condicionEspecialidad = {
+        especialidad: {
+          $in: especialidad
+        }
+      }
     }
-    if( estado == 0 ){
-      condicionEstado = "";
-    }else if( estado >= 1 ){
+
+    if( estado >= 1 ){
       condicionEstado = { id: estado };
     }
-    if( municipio == 0 ){
-      condicionMunicipio = "";
-    }else if( municipio >= 1 ){
+
+    if( municipio >= 1 ){
       condicionMunicipio = {
         id: municipio,
         estado_id: estado
       };
     }
-    if( padecimiento == 0 ){
-      condicionPadecimiento = "";
-    }else if( padecimiento >= 1 ){
-      condicionPadecimiento = { id: padecimiento };
+
+    if(padecimiento && padecimiento.length > 0){
+      condicionPadecimiento = {
+        padecimiento: {
+          $in: padecimiento
+        }
+      }
     }
-    console.log("Nombre: "+JSON.stringify(condicionNombre));
-    console.log("Especialidad: "+JSON.stringify(condicionEspecialidad));
-    console.log("Estado: "+JSON.stringify(condicionEstado));
-    console.log("Municipio: "+JSON.stringify(condicionMunicipio));
-    console.log("Padecimiento: "+JSON.stringify(condicionPadecimiento));
-    models.Usuario.findAll({
-      where:{tipoUsuario:'M'},
-      attributes:['usuarioUrl','urlFotoPerfil'],
-      include:[{
-        model: models.Medico,
-        attributes:['id'],
+
+    if(aseguradora && aseguradora.length > 0){
+      condicionAseguradora = {
+        aseguradora: {
+          $in: aseguradora
+        }
+      }
+    }
+
+    if(institucion && institucion.length > 0){
+      condicionInstitucion = {
+        clinica: {
+          $in: institucion
+        }
+      }
+    }
+
+    if (medico){
+      models.Usuario.findAll({
+        where:{tipoUsuario:'M'},
+        attributes:['usuarioUrl','urlFotoPerfil'],
         include:[{
-          model: models.Padecimiento,
-          where:condicionPadecimiento
+          model: models.Medico,
+          attributes:['id'],
+          include:[{
+            model: models.Padecimiento,
+            where: condicionPadecimiento
+          },{
+            model: models.MedicoEspecialidad,
+            attributes:['id','subEsp'],
+            include:[{
+              model: models.Especialidad,
+              attributes:['id','especialidad'],
+              where: condicionEspecialidad
+            }]
+          },{
+            model: models.MedicoAseguradora,
+            attributes: ['aseguradora'],
+            where: condicionAseguradora
+          },{
+            model: models.MedicoClinica,
+            attributes:['id','clinica'],
+            where: condicionInstitucion
+          }]
         },{
-          model: models.MedicoEspecialidad,
-          where: condicionEspecialidad,
-          attributes:['id','subEsp'],
+          model: models.DatosGenerales,
+          where:condicionNombre,
+          attributes:['nombre','apellidoP','apellidoM']
+        },{
+          model: models.Direccion,
+          attributes:['id','calle','numero','nombre','latitud','longitud'],
           include:[{
-            model: models.Especialidad,
-            attributes:['id','especialidad']
+            model: models.Municipio,
+            where: condicionMunicipio,
+            attributes:['id','municipio'],
+            include:[{
+              model: models.Estado,
+              attributes:['id','estado'],
+              where: condicionEstado
+            }]
           }]
         }]
-      },{
-        model: models.DatosGenerales,
-        where:condicionNombre,
-        attributes:['nombre','apellidoP','apellidoM']
-      },{
-        model: models.Direccion,
-        attributes:['id','calle','numero','nombre','latitud','longitud'],
-        include:[{
-          model: models.Municipio,
-          where: condicionMunicipio,
-          attributes:['id','municipio'],
-          include:[{
-            model: models.Estado,
-            attributes:['id','estado'],
-            where: condicionEstado
-          }]
-        }]
-      }]
-    }).then(function(usuarios){
-      res.send(usuarios);
+      }).then(function(usuarios){
+        if (institucion){
+          buscarInstituciones(res,usuarios,condicionNombre,condicionEstado,condicionMunicipio,condicionEspecialidad,condicionPadecimiento);
+        }else{
+          res.send(usuarios);
+        }
+      });
+    } else {
+
+    }
+  },
+
+  cargarEspecialidades: function (object, req, res){
+    models.Especialidad.findAll({
+      order: [['especialidad','ASC']]
+    }).then(function(especialidades){
+      res.status(200).send(especialidades);
     });
+  },
+
+  cargarPadecimientos: function (object, req, res){
+    models.Padecimiento.findAll({
+      order: [['padecimiento','ASC']],
+      group: 'padecimiento'
+    }).then(function(padecimientos){
+      res.status(200).send(padecimientos);
+    });
+  },
+
+  cargarInstituciones: function (object, req, res){
+    models.MedicoClinica.findAll({
+      order: [['clinica','ASC']],
+      group: 'clinica'
+    }).then(function(HospitalesYClinicas){
+      res.status(200).send(HospitalesYClinicas);
+    });
+  },
+
+  cargarAseguradoras: function (object, req, res){
+    models.MedicoAseguradora.findAll({
+      order: [['aseguradora','ASC']],
+      group: 'aseguradora'
+    }).then(function(aseguradoras){
+      res.status(200).send(aseguradoras);
+    });
+  },
+
+  buscarInstituciones: function (res, usuarios, condicionNombre, condicionEstado, condicionMunicipio, condicionEspecialidad, condicionPadecimiento){
+    console.log('Falta buscar instituciones');
+    res.send(usuarios);
   }
+}
+
+function buscarInstituciones(res, usuarios, condicionNombre, condicionEstado, condicionMunicipio, condicionEspecialidad, condicionPadecimiento){
+  console.log('Falta buscar instituciones');
+  res.send(usuarios);
 }
