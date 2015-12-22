@@ -4174,8 +4174,8 @@ function searchingData(){
       if (data.countmedicos<5){
         limit = data.countmedicos;
       }
-      var paginador = '<li class="first" onclick="buscadorFirst()" style="visibility:hidden"><a aria-label="Previous"><span aria-hidden="true" class="glyphicon glyphicon-backward"></span></a></li>';
-      paginador += '<li class="preview" onclick="buscadorPreview()" style="visibility:hidden"><a aria-label="Previous"><span aria-hidden="true" class="glyphicon glyphicon-triangle-left"></span></a></li>';
+      var paginador = '<li class="first" onclick="buscadorFirst()" style="visibility:hidden"><a aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
+      paginador += '<li class="preview" onclick="buscadorPreview()" style="visibility:hidden"><a aria-label="Previous"><span aria-hidden="true">&lsaquo;</span></a></li>';
       for (var i = 1; i<= limit; i++){
         clase = '';
         if (pagina == i){
@@ -4183,8 +4183,8 @@ function searchingData(){
         }
         paginador += '<li id="paginador_'+i+'" '+clase+' onclick="buscarPaginador('+i+')"><a>'+i+'</a></li>';
       }
-      paginador += '<li class="next"><a aria-label="Next" onclick="buscadorNext()"><span aria-hidden="true" class="glyphicon glyphicon-triangle-right"></span></a></li>';
-      paginador += '<li class="last"><a aria-label="Next" onclick="buscadorLast()"><span aria-hidden="true" class="glyphicon glyphicon-forward"></span></a></li>';
+      paginador += '<li class="next"><a aria-label="Next" onclick="buscadorNext()"><span aria-hidden="true">&rsaquo;</span></a></li>';
+      paginador += '<li class="last"><a aria-label="Next" onclick="buscadorLast()"><span aria-hidden="true">&raquo;</span></a></li>';
       $('#buscPag').html(paginador);
     }
     var contenido = `<div class="container-fluid">
