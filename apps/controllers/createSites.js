@@ -2,8 +2,7 @@
  var models = require('../models');
  module.exports ={
    creaArchivo: function( req, res ){
-     creaIndex('sitemapindex.xml');
-     creaSite('sitemap.xml');
+     existFile('sitemapindex','sitemap');
    }
  }
  /**
@@ -16,69 +15,27 @@
  **/
 
   /**
-  * funcion para crear el sitemapindex
-  * @param name nombre que llevara el archivo
-  * @return message if success
-  **/
-  function creaIndex(name){
-    if( fs.openSync(name,'w') ){
-      console.log("Index creado");
-    }else{
-      console.log("Fallo en la creacion del index");
-    }
-  }
-  /**
-  * funcion para la creacion del sitemap
-  * @param name nombre que llevara el archivo
-  * @return message if success
-  */
-  function creaSite(name){
-    if( fs.openSync(name, 'w') ){
-      console.log("Sitemap creado");
-    }else{
-      console.log("Fallo en la creacion del sitemap");
-    }
-  }
-  /**
   * La siguiente funcion determina si alguno de los archivos ya existe, en caso de que asi sea
   * llamara a la funcion correspondiente: Ejem. Si el archivo ya existe, checara que contenga
   * valores registrados en caso de que no sea así se registraran, para que no se cree una copia
   * si alguno de los archivos no existe, lo va a crear y registrarle valores, e ir haceindo el correspondiente
   * registro. Si ninguno de los dos archivos no existe los va a crear y registrar sus correspondientes valores
-  * @param name nombre del primer archivo
-  * @param name2 nombre del segundo archivo
-  * @return boolean, en caso de ser verdadero que si existe retornara un true
+  * @param name nombre del primer archivo del indice
+  * @param name2 nombre del segundo archivo del sitemap
+  * @return boolean, en caso3 de ser verdadero que si existe retornara un true
   */
   function existFile( name, name2 ){
-    var primerIndex = false;
-    var segundoSite = false;
-    fs.exist(name, function( exist ){
-      if( exist ){
-        // se manda a llamar a la funcion que checara si esta vacio, y de asi hacerlo
-        // realizara su correspondiente tarea
-        // se pone a true la variable primerIndex
-        primerIndex = true;
-      }else{
-        //llama a la funcion para crear este archivo, y tambien manda a llamar la funcion encargada de llenar de
-        // valores el correspondiente archivo
-
+    fs.stat('./'+name, function( err, stats ){
+      if( err ){
+        fs.stat('./'+name2, function( erro, statss ){
+          if( erro ){
+            creaIndex(name);
+            creaSite(name2, 1);
+            registerSites(name,name2,1);
+          }
+        });
       }
     });
-    fs.exist(name2, function( exist ){
-      if( exist ){
-        // el archivo si existe, se manda a llama ra la funcion que se encargara de checar que el documento
-        // no este vacio, en caso de estarlo se llenara con su respectivo datos
-        segundoSite = true;
-      }else{
-        // en este else, si entra aqui quiere decir que el archivo no existe, y que se debe de llenar
-        // ademas de guardar la informacion en el archivo de sitemapindex
-      }
-    });
-    if( primerIndex && segundoSite ){
-      return true;
-    }else{
-      return false;
-    }
   }
   /**
   * Crear contenido en el sitemapindex
@@ -90,20 +47,49 @@
   * @param nameSi, nombre del site que se va a agregar
   * @param indice, numero con el cual se hara el registro del sitemap en el index
   **/
-  function registerSites( nameIndex, indice ){
+  function registerSites( name, nameIndex, indice ){
     var html = "";
     var d = new Date();
     var fechaCompleta = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+    var complete = nameIndex+indice+".xml";
+    var vComplete = name+".xml";
     html += '<?xml version="1.0" encoding="UTF-8"?>\n';
     html += '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
      html += '\t<sitemap>\n';
-       html += '\t\t<loc>'+'http://www.intermed.online/'+nameSi+indice+'.xml'+'</loc>\n';
+       html += '\t\t<loc>'+'http://www.intermed.online/'+complete+'</loc>\n';
        html += '\t\t<lastmod>'+fechaCompleta+'</lastmod>\n';
      html += '\t</sitemap>\n';
-     fs.writeFile( nameIndex, html, 'utf8', function( err ){
-       if( err )throw err;
-       console.log("Se agrego correctamente");
+     fs.writeFile( vComplete, html, 'utf8', function( err ){
+       if( err ){
+        console.log("Si existe");
+      }else{
+        console.log("Se agrego correctamente");
+      }
      });
+  }
+  /**
+  * funcion para crear el sitemapindex
+  * @param name nombre que llevara el archivo
+  * @return message if success
+  **/
+  function creaIndex(name){
+    if( fs.openSync(name+".xml",'w') ){
+      console.log("Index creado");
+    }else{
+      console.log("Fallo en la creacion del index");
+    }
+  }
+  /**
+  * funcion para la creacion del sitemap
+  * @param name nombre que llevara el archivo
+  * @return message if success
+  */
+  function creaSite(name, indice){
+    if( fs.openSync(name+indice+".xml", 'w') ){
+      console.log("Sitemap creado");
+    }else{
+      console.log("Fallo en la creacion del sitemap");
+    }
   }
   /**
   * Con la siguiente funcion se podrá registrar la informacion en los archivos
