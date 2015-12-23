@@ -32,6 +32,10 @@
             creaIndex(name);
             creaSite(name2, 1);
             registerSites(name,name2,1);
+            // se llena el sitemap con los valores
+            registerAllSites(name2,1);
+          }else{
+            registerAllSites(name2,1);
           }
         });
       }
@@ -62,8 +66,6 @@
      fs.writeFile( vComplete, html, 'utf8', function( err ){
        if( err ){
         console.log("Si existe");
-      }else{
-        console.log("Se agrego correctamente");
       }
      });
   }
@@ -73,9 +75,7 @@
   * @return message if success
   **/
   function creaIndex(name){
-    if( fs.openSync(name+".xml",'w') ){
-      console.log("Index creado");
-    }else{
+    if( !fs.openSync(name+".xml",'w') ){
       console.log("Fallo en la creacion del index");
     }
   }
@@ -85,9 +85,7 @@
   * @return message if success
   */
   function creaSite(name, indice){
-    if( fs.openSync(name+indice+".xml", 'w') ){
-      console.log("Sitemap creado");
-    }else{
+    if( !fs.openSync(name+indice+".xml", 'w') ){
       console.log("Fallo en la creacion del sitemap");
     }
   }
@@ -97,18 +95,20 @@
   * poderlos ir identificando.
   * @param name, nombre del archivo
   **/
-  function registerAllSites(name){
+  function registerAllSites(name, indice){
     var html = "";
     var id; // variable para guardar el ultimo id que se uso
+    var d = new Date();
     var bandera = false; // bandera para cuando sobre pase los 50 mil saber que eso paso, se pondrá en true
     var fechaCompleta = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+    var complete = name +indice+ ".xml";
     html += '<?xml version="1.0" encoding="UTF-8"?>\n';
     html += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
-    html += '</urlset>';
     // en esta parte el archivo ya debe de estar creado entonces se puede escribir sobre el
-    fs.writeFile( name , html, 'utf8', function( err ){
-      if( err )throw err;
-      console.log("Se han podido agregar perfectamente los datos al archivo");
+    fs.writeFile( complete , html, 'utf8', function( err ){
+      if( err ){
+        console.log("Error: al intentar escribir en este archivo: "+complete);
+      }
     });
       // se hace una consulta para traer todos los url de los usuarios medicos
       models.Usuario.findAll({
@@ -124,9 +124,9 @@
             // la etiqueta loc con la url personalizada en caso contrario se agregara solamente
             // la url por default
             if( usuario[i].urlPersonal && usuario[i].urlPersonal.length > 0 ){
-                updateSitemap(name, usuario[i].urlPersonal);
+                updateSitemap(complete, usuario[i].urlPersonal);
             }else{
-                updateSitemap( name, usuario[i].usuarioUrl );
+                updateSitemap( complete, usuario[i].usuarioUrl );
             }
           }else{
             // si sobre pasa los 50 mil registros, se va a crear otro archivo sitemap y se volvera a llenar con la nueva informacion
@@ -150,13 +150,13 @@
     //se va a ir maquetando la informacion en una variable para pasarla a la funcion
     // que va a ir agregando todo.
     var html = "";
+    var vComplete = addName+'.xml';
     html += '\t<sitemap>\n';
       html += '\t\t<loc>http://www.intermed.online/'+addName+'</loc>\n';
       html += '\t\t<lastmod>'+fecha+'</lastmod>\n';
     html += '\t</sitemap>';
     fs.appendFile(name,html, function( err ){
       if( err )throw err;
-      console.log("El "+name+" fue agregado exitosamente al archivo");
     });
   }
   /**
@@ -168,14 +168,18 @@
   function updateSitemap( name, valor ){
     // variable para poder maquedar el bloque
     var html = "";
-    html += '\t<url>';
+    var d = new Date();
+    var url = valor+".xml";
+    var fechaCompleta = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+    html += '\t<url>\n';
       html += '\t\t<loc>http://www.intermed.online/'+valor+'</loc>\n';
       html += '\t\t<lastmod>'+fechaCompleta+'</lastmod>\n';
       html += '\t\t<changefreq>weekly</changefreq>\n';
       html += '\t\t<priority>1.0</priority>\n';
-    html += '\t</url>';
-    fs.appendFile(name,valor, function( err ){
-      if( err )throw err;
-      console.log('se han agregado exitosamente los valores al archivo');
+    html += '\t</url>\n';
+    fs.appendFile(name, html, function( err ){
+      if( err ){
+        console.log("Archivo: "+name+' no se pude escribir');
+      }
     });
   }
