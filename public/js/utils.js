@@ -2655,42 +2655,41 @@ function actualizarDirecciones(salir){
             interior = ' interior ' + record.numeroInt;
           }
 
-          contenido += `
-              <li>
-                <div class="direccionLtLn hidden">
-                  <span class="principal">`+ record.principal +`</span>
-                  <span class="lat">`+record.latitud+`</span>
-                  <span class="long">`+ record.longitud +`</span>
-                  <span class="nombre">`+ record.nombre +`</span>
-                  <span class="direccion">
-                      <span>`+ record.calle +`</span>&nbsp;<span>#`+ record.numero + interior +`</span><br>
-                      `+ record.Localidad.TipoLocalidad.tipo +` <span>`+ record.Localidad.localidad +`</span><br>
-                      <span>`+ record.Municipio.municipio +`</span>, <pan>`+ record.Municipio.Estado.estado +`</pan>. CP: <span>`+ record.Localidad.CP +`</span>
-                  </span>
-                </div>
-                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 direccion-pagination-bg">
-                  <span class=90>`+ ++contador +`</span>
-                </div>
-                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
-                  <address class="whiteF Flama-bold">
-                    <strong><span>`+ record.nombre +`</span></strong><br>
-                    <span>`+ record.calle +`</span>&nbsp;<span>#`+ record.numero + interior +`</span><br>
-                    `+ record.Localidad.TipoLocalidad.tipo +` <span>`+ record.Localidad.localidad +`</span><br>
-                    <span>`+ record.Municipio.municipio +`</span>, <pan>`+ record.Municipio.Estado.estado +`</pan>. CP: <span>`+ record.Localidad.CP +`</span><br>`;
+          contenido += '<li>' +
+                '<div class="direccionLtLn hidden">' +
+                  '<span class="principal">' + record.principal + '</span>'+
+                  '<span class="lat">' + record.latitud + '</span>' +
+                  '<span class="long">' + record.longitud + '</span>' +
+                  '<span class="nombre">' + record.nombre + '</span>' +
+                  '<span class="direccion">' +
+                      '<span>' + record.calle + '</span>&nbsp;<span>#' + record.numero + interior + '</span><br>' +
+                      record.Localidad.TipoLocalidad.tipo + '<span>' + record.Localidad.localidad + '</span><br>' +
+                      '<span>' + record.Municipio.municipio + '</span>, <span>' + record.Municipio.Estado.estado + '</span>. CP: <span>' + record.Localidad.CP + '</span>' +
+                  '</span>' +
+                '</div>' +
+                '<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1 direccion-pagination-bg">' +
+                  '<span class=90>' + ++contador + '</span>' +
+                '</div>' +
+                '<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">' +
+                  '<address class="whiteF Flama-bold">' +
+                    '<strong><span>' + record.nombre + '</span></strong><br>' +
+                    '<span>' + record.calle + '</span>&nbsp;<span>#' + record.numero + interior + '</span><br>' +
+                    record.Localidad.TipoLocalidad.tipo + '<span>' + record.Localidad.localidad + '</span><br>' +
+                    '<span>' + record.Municipio.municipio + '</span>, <span>' + record.Municipio.Estado.estado + '</span>. CP: <span>'+ record.Localidad.CP + '</span><br>';
 
             if (record.Telefonos.length > 0){
-              contenido += `<br><strong>Teléfonos</strong><br>`;
+              contenido += '<br><strong>Teléfonos</strong><br>';
 
               record.Telefonos.forEach(function(tel){
                 var claveRegion = '';
                 if (tel.claveRegion){
                   claveRegion = tel.claveRegion +' ';
                 }
-                contenido += `<abbr title="Phone" style="text-transform: capitalize;">`+ tel.tipo +`:</abbr> `+ claveRegion + tel.numero + ' ' +  tel.ext +`<br>`;
+                contenido += '<abbr title="Phone" style="text-transform: capitalize;">'+ tel.tipo +':</abbr> '+ claveRegion + tel.numero + ' ' +  tel.ext +'<br>';
               });
             }
 
-            contenido += `</address></div></li>`;
+            contenido += '</address></div></li>';
             });
         contenido+= '</ul><div class="arrows">';
         var contador = 0;
@@ -2786,21 +2785,20 @@ function funcionesTelefonos(){
       idTemp++;
       var ext = '';
       if ($('#extTelefono') && $('#extTelefono').val()) ext = $('#extTelefono').val();
-      $('#divTelefonoAgregado').append(`
-        <div class="input-group-btn numeroTelefono">
-          <input type="hidden" class="idTelefono" value="">
-          <input type="hidden" class="idTempTelefono" value="`+idTemp+`">
-          <label class="btn btn-sm editar btnChk">
-            <input type="radio" autocomplete="off">
-            <span class="tipoTelefono hidden">`+$('#tipoTelefono').val()+`</span>
-            <span class="tipoTelefonoIcon"><span class="glyphicon `+ clase +`"></span></span>
-            <span class="numTelefono">`+ $('#numTelefono').val() +`</span>
-            <span class="extTelefono">`+ ext +`</span>
-          </label>
-          <button class="btn btn-sm borrar" disabled="true" onclick="eliminarTelefono(this)">
-            <span class="glyphicon glyphicon-remove"></span>
-          </button>
-        </div>`
+      $('#divTelefonoAgregado').append('<div class="input-group-btn numeroTelefono">'+
+        '<input type="hidden" class="idTelefono" value="">' +
+        '<input type="hidden" class="idTempTelefono" value="' + idTemp + '">' +
+          '<label class="btn btn-sm editar btnChk">' +
+            '<input type="radio" autocomplete="off">' +
+            '<span class="tipoTelefono hidden">' + $('#tipoTelefono').val() + '</span>' +
+            '<span class="tipoTelefonoIcon"><span class="glyphicon ' + clase + '"></span></span>' +
+            '<span class="numTelefono">' + $('#numTelefono').val() + '</span>' +
+            '<span class="extTelefono">' + ext + '</span>' +
+          '</label>' +
+          '<button class="btn btn-sm borrar" disabled="true" onclick="eliminarTelefono(this)">' +
+            '<span class="glyphicon glyphicon-remove"></span>' +
+          '</button>' +
+        '</div>'
       );
       funcionesTelefonos();
       $('#tipoTelefono').prop('selectedIndex', 0);
@@ -2940,21 +2938,20 @@ function cargarTelefonos(){
           } else {
             numTel += telefono.numero.replace(' ','-');
           }
-          $('#divTelefonoAgregado').append(`
-            <div class="input-group-btn numeroTelefono">
-              <input type="hidden" class="idTelefono" value="`+telefono.id+`">
-              <input type="hidden" class="idTempTelefono" value="">
-              <label class="btn btn-sm editar btnChk">
-                <input type="radio" autocomplete="off">
-                <span class="tipoTelefono hidden">`+telefono.tipo+`</span>
-                <span class="tipoTelefonoIcon"><span class="glyphicon `+ clase +`"></span></span>
-                <span class="numTelefono">`+ numTel +`</span>
-                <span class="extTelefono">`+ telefono.ext +`</span>
-              </label>
-              <button class="btn btn-sm borrar" disabled="true" onclick="eliminarTelefono(this)">
-                <span class="glyphicon glyphicon-remove"></span>
-              </button>
-            </div>`
+          $('#divTelefonoAgregado').append('<div class="input-group-btn numeroTelefono">' +
+            '<input type="hidden" class="idTelefono" value="' + telefono.id + '">' +
+            '<input type="hidden" class="idTempTelefono" value="">' +
+            '<label class="btn btn-sm editar btnChk">' +
+            '<input type="radio" autocomplete="off">' +
+            '<span class="tipoTelefono hidden">' + telefono.tipo + '</span>' +
+            '<span class="tipoTelefonoIcon"><span class="glyphicon ' + clase + '"></span></span>' +
+            '<span class="numTelefono">' + numTel + '</span>' +
+            '<span class="extTelefono">' + telefono.ext + '</span>' +
+            '</label>' +
+            '<button class="btn btn-sm borrar" disabled="true" onclick="eliminarTelefono(this)">' +
+            '<span class="glyphicon glyphicon-remove"></span>' +
+            '</button>' +
+            '</div>'
           );
         });
         funcionesTelefonos();
@@ -2969,16 +2966,15 @@ function cargarTelefonos(){
 function agregarExpertoEn(){
   var addExp = $('#addExp').val();
   if (addExp && addExp != ""){
-    $('#sortableExpertoEn').append(`
-      <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-      <div class="menuDiv">
-        <span>
-          <span data-id="2" class="itemTitle">`+ addExp +`</span>
-          <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-          <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-        </span>
-      </div>
-      </li>`);
+    $('#sortableExpertoEn').append('<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">' +
+      '<div class="menuDiv">' +
+        '<span>' +
+          '<span data-id="2" class="itemTitle">' + addExp + '</span>' +
+          '<span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">' +
+          '<span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>' +
+        '</span>' +
+      '</div>' +
+      '</li>');
       $('#addExp').val('');
 
   } else {
@@ -3532,16 +3528,15 @@ function agregarClinica(){
 function agregarAseguradora(){
   var addAseg = $('#addAseg').val();
   if (addAseg && addAseg != ""){
-    $('#sortableAseguradora').append(`
-      <li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-      <div class="menuDiv">
-        <span>
-          <span data-id="2" class="itemTitle">`+ addAseg +`</span>
-          <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-          <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-        </span>
-      </div>
-      </li>`);
+    $('#sortableAseguradora').append('<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">' +
+      '<div class="menuDiv">' +
+        '<span>' +
+          '<span data-id="2" class="itemTitle">' + addAseg + '</span>' +
+          '<span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">' +
+          '<span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>' +
+        '</span>' +
+      '</div>' +
+      '</li>');
       $('#addAseg').val('');
   } else {
     //Input de agregar clinica vacio
@@ -3573,28 +3568,28 @@ function cargarExpertoEn(){
                 listaNueva += '</li>';
               }
               li = true;
-              listaNueva += `<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-              <div class="menuDiv">
-                <span>
-                  <span data-id="2" class="itemTitle">`+ rec.expertoen +`</span>
-                  <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-                  <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-                </span>
-              </div>`;
+              listaNueva += '<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">' +
+              '<div class="menuDiv">' +
+                '<span>' +
+                  '<span data-id="2" class="itemTitle">' + rec.expertoen + '</span>' +
+                  '<span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">' +
+                  '<span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>' +
+                '</span>' +
+              '</div>';
             } else {
               if (!ol){
                 listaNueva += '<ol>';
                 ol = true;
               }
-              listaNueva += `<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-              <div class="menuDiv">
-                <span>
-                  <span data-id="2" class="itemTitle">`+ rec.expertoen +`</span>
-                  <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-                  <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-                </span>
-              </div>
-              </li>`;
+              listaNueva += '<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">' +
+              '<div class="menuDiv">' +
+                '<span>' +
+                  '<span data-id="2" class="itemTitle">'+ rec.expertoen +'</span>' +
+                  '<span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">' +
+                  '<span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>' +
+                '</span>' +
+              '</div>' +
+              '</li>';
             }
           });
           if (sub){
@@ -3624,15 +3619,15 @@ function cargarClinicas(){
           console.log('CLINICAS: ' + JSON.stringify(data));
           var sub = false;
           data.result.forEach(function(rec){
-            listaNueva += `<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-            <div class="menuDiv">
-              <span>
-                <span data-id="2" class="itemTitle">`+ rec.clinica +`</span>
-                <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-                <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-              </span>
-            </div>
-            </li>`;
+            listaNueva += '<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">' +
+            '<div class="menuDiv">' +
+              '<span>' +
+                '<span data-id="2" class="itemTitle">' + rec.clinica + '</span>'
+                '<span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">' +
+                '<span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>' +
+              '</span>' +
+            '</div>' +
+            '</li>';
           });
         }
         $('#sortableClinica').html(listaNueva);
@@ -3658,15 +3653,15 @@ function cargarAseguradoras(){
           console.log('ASEGURADORAS: ' + JSON.stringify(data));
           var sub = false;
           data.result.forEach(function(rec){
-            listaNueva += `<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">
-            <div class="menuDiv">
-              <span>
-                <span data-id="2" class="itemTitle">`+ rec.aseguradora +`</span>
-                <span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">
-                <span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>
-              </span>
-            </div>
-            </li>`;
+            listaNueva += '<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">'
+            '<div class="menuDiv">' +
+              '<span>' +
+                '<span data-id="2" class="itemTitle">' + rec.aseguradora + '</span>' +
+                '<span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">' +
+                '<span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>' +
+              '</span>' +
+            '</div>' +
+            '</li>';
           });
         }
         $('#sortableAseguradora').html(listaNueva);
@@ -3879,9 +3874,9 @@ function cargarListaEspCol( usuario ) {
           if (primero == ""){
             primero = esp.id;
           }
-          contenido += `<li>
-            <a onclick="cargarListaColegasByEsp('`+usuario+`','`+ esp.id +`')">`+ esp.especialidad +` <span class="badge pull-right">`+ esp.total +` </span></a>
-          </li>`;
+          contenido += '<li>' +
+          '<a onclick="cargarListaColegasByEsp(' + usuario + ',' + esp.id + ')">' + esp.especialidad + '<span class="badge pull-right">' + esp.total + '</span></a>' +
+          '</li>';
         });
         $('#especialidadesList').html(contenido);
         if (primero != ""){
@@ -3923,24 +3918,22 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id){
             }
             especialidad += esp.Especialidad.especialidad;
           });
-          contenido += `
-          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
-            <div class="thumbnail">
-              <div >
-                <a class="pPic" href="/perfil/`+ res.usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
-              </div>
-              <div class="caption">
-                <div class="nombre h77-boldcond">
-                  Dr.&nbsp;<span>`+ res.DatosGenerale.nombre +`</span>&nbsp;<span>`+ res.DatosGenerale.apellidoP +` `+ res.DatosGenerale.apellidoM +`</span>
-                </div>
-                <div class="esp h67-medcond">
-                  <span class="colEsp">`+ especialidad +`</span>
-                </div>
-                <a class="h67-medcondobl" href="/perfil/`+ res.usuarioUrl +`">Ver Perfil</a>
-              </div>
-            </div>
-          </div>`
-        })
+          contenido += '<div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">' +
+            '<div class="thumbnail">' +
+              '<div>' +
+                '<a class="pPic" href="/perfil/' + res.usuarioUrl + '"><img src="' + res.urlFotoPerfil + '" alt="..."></a>' +
+              '</div>' +
+              '<div class="caption">' +
+                '<div class="nombre h77-boldcond">' +
+                  'Dr.&nbsp;<span>'+ res.DatosGenerale.nombre +'</span>&nbsp;<span>'+ res.DatosGenerale.apellidoP +'&nbsp;'+ res.DatosGenerale.apellidoM +'</span>' +
+                '</div>' +
+                '<div class="esp h67-medcond">' +
+                  '<span class="colEsp">'+ especialidad +'</span>' +
+                '</div>' +
+                '<a class="h67-medcondobl" href="/perfil/'+ res.usuarioUrl +'">Ver Perfil</a>' +
+              '</div>' +
+            '</div>' +
+          '</div>'})
         contenido += '</div>';
         $('#listaColegas').html(contenido);
       }else{
@@ -3976,9 +3969,9 @@ function cargarListaAlfCol( usuario ) {
             if (primero == ""){
               primero = rec.Letra;
             }
-            contenido += `<li>
-              <a onclick="cargarListaColegasByAlf('`+usuario+`','`+ rec.Letra +`')">`+ rec.Letra +` <span class="badge pull-right">`+ rec.Total +` </span></a>
-            </li>`;
+            contenido += '`<li>' +
+              '<a onclick="cargarListaColegasByAlf(' + usuario + ',' + rec.Letra + ')">' + rec.Letra + '<span class="badge pull-right">' + rec.Total + '</span></a>' +
+            '</li>';
           });
           $('#especialidadesList').html(contenido);
           if (primero != ""){
@@ -4022,24 +4015,22 @@ function cargarListaColegasByAlf(usuario_id,letra){
               especialidad += esp.Especialidad.especialidad;
             });
           }
-          contenido += `
-          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
-            <div class="thumbnail">
-              <div >
-                <a class="pPic" href="/perfil/`+ res.usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
-              </div>
-              <div class="caption">
-                <div class="nombre h77-boldcond">
-                  Dr.&nbsp;<span>`+ res.DatosGenerale.nombre +`</span>&nbsp;<span>`+ res.DatosGenerale.apellidoP +` `+ res.DatosGenerale.apellidoM +`</span>
-                </div>
-                <div class="esp h67-medcond">
-                  <span class="colEsp">`+ especialidad +`</span>
-                </div>
-                <a class="h67-medcondobl" href="/perfil/`+ res.usuarioUrl +`">Ver Perfil</a>
-              </div>
-            </div>
-          </div>`
-        })
+          contenido += '<div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">' +
+            '<div class="thumbnail">' +
+              '<div >' +
+                '<a class="pPic" href="/perfil/' + res.usuarioUrl + '"><img src="' + res.urlFotoPerfil + '" alt="..."></a>' +
+              '</div>' +
+              '<div class="caption">' +
+                '<div class="nombre h77-boldcond">' +
+                  'Dr.&nbsp;<span>' + res.DatosGenerale.nombre + '</span>&nbsp;<span>' + res.DatosGenerale.apellidoP + '&nbsp;' + res.DatosGenerale.apellidoM + '</span>' +
+                '</div>' +
+                '<div class="esp h67-medcond">' +
+                  '<span class="colEsp">' + especialidad + '</span>' +
+                '</div>' +
+                '<a class="h67-medcondobl" href="/perfil/' + res.usuarioUrl + '">Ver Perfil</a>' +
+              '</div>' +
+            '</div>' +
+          '</div>'})
         contenido += '</div>';
         $('#listaColegas').html(contenido);
       }else{
@@ -4411,7 +4402,7 @@ function searchingData(){
 
 
 
-if ( location.pathname.indexOf( '/nuevoperfilmedicos/' ) == 0 ) {
+if ( location.pathname.indexOf( '/nuevoPerfilMedicos/' ) == 0 ) {
   $( document ).ready( function () {
     MostrarUbicaciones();
 
@@ -4435,28 +4426,132 @@ if ( location.pathname.indexOf( '/nuevoperfilmedicos/' ) == 0 ) {
     /*$('#sections').trigger( 'prev' );
     $('#sections').trigger( 'next' );*/
 
-    /*$('#profile .float.up').scrollTo($('$ubicaciones'), 800);*/
-    var top = $('#stickyNav').height();
-    $( '#profile .float.bottom' ).scrollTo( '#ubicaciones', 800, {offset: {top:-60, left:0} } );
+    /*$('#1bg-perfil .float.up').scrollTo($('$ubicaciones'), 800);*/
+    $( '#1bg-perfil .float.down' ).click( function(){
+      $(this).scrollTo( '#ubicaciones', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
 
-    /*$(document).scrollTo('#medico_id_'+medico_id, 500, {offset: function() { return {top:-(height+5)}; }});*/
+    })
 
+    $( '#2bg-ubicaciones .float.up' ).click( function(){
+      $(this).scrollTo( '#perfil', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
+      /*$(this).parent().addClass('hidden');
+      $('#1bg-perfil').removeClass('hidden');*/
+    })
+    $( '#2bg-ubicaciones .float.down' ).click( function(){
+      $(this).scrollTo( '#info', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
+      /*$(this).parent().addClass('hidden');
+      $('#3bg-info').removeClass('hidden');*/
+    })
 
-    $( '#ubicaciones .float.up' ).scrollTo( $( '#profile' ), 800 );
-    $( '#ubicaciones .float.bottom' ).scrollTo( $( '#info' ), 800 );
+    $( '#3bg-info .float.up' ).click( function(){
+      $(this).scrollTo( '#ubicaciones', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
+      /*$(this).parent().addClass('hidden');
+      $('#2bg-ubicaciones').removeClass('hidden');*/
+    })
+    $( '#3bg-info .float.down' ).click( function(){
+      $(this).scrollTo( '#colegas', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
+      /*$(this).parent().addClass('hidden');
+      $('#4bg-colegas').removeClass('hidden');*/
+    })
 
-    $( '#info .float.up' ).scrollTo( $( '#ubicaciones' ), 800 );
-    $( '#info .float.bottom' ).scrollTo( $( '#colegas' ), 800 );
+    $( '#4bg-colegas .float.up' ).click( function(){
+      $(this).scrollTo( '#info', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
+      /*$(this).parent().addClass('hidden');
+      $('#3bg-info').removeClass('hidden');*/
+    })
+    $( '#4bg-colegas .float.down' ).click( function(){
+      $(this).scrollTo( '#curriculum', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
+      /*$(this).parent().addClass('hidden');
+      $('#5bg-curriculum').removeClass('hidden');*/
+    })
 
-    $( '#colegas .float.up' ).scrollTo( $( '#info' ), 800 );
-    $( '#colegas .float.bottom' ).scrollTo( $( '#curriculum' ), 800 );
+    $( '#5bg-curriculum .float.up' ).click( function(){
+      $(this).scrollTo( '#colegas', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
+      /*$(this).parent().addClass('hidden');
+      $('#4bg-colegas').removeClass('hidden');*/
+    })
+    $( '#5bg-curriculum .float.down' ).click( function(){
+      $(this).scrollTo( '#comentarios', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
+      /*$(this).parent().addClass('hidden');
+      $('#6bg-comentarios').removeClass('hidden');*/
+    })
 
-    $( '#curriculum .float.up' ).scrollTo( $( '#curriculum' ), 800 );
-    $( '#curriculum .float.bottom' ).scrollTo( $( '#comentarios' ), 800 );
+    $( '#6bg-comentarios .float.up' ).click( function(){
+      $(this).scrollTo( '#curriculum', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
+      /*$(this).parent().addClass('hidden');
+      $('#5bg-curriculum').removeClass('hidden');*/
+    })
+    /*$('#6bg-comentarios .float.down').scrollTo($('$ubicaciones'), 800);*/
 
-    $( '#comentarios .float.up' ).scrollTo( $( '#curriculum' ), 800 );
-    /*$('#comentarios .float. bottom').scrollTo($('$ubicaciones'), 800);*/
+    $( window ).scroll( function() {
+      hidenavbuttons();
+    });
 
+    function hidenavbuttons() {
+      var h = $(window).height(),
+        halfHeight = Math.round(h / 2),
+        scrollTop = $(window).scrollTop(),
+        pOffset = $('#perfil').offset().top,
+        pX = pOffset - scrollTop,
+        uOffset = $('#ubicaciones').offset().top,
+        uX = uOffset - scrollTop,
+        iOffset = $('#info').offset().top,
+        iX = iOffset - scrollTop,
+        cOffset = $('#colegas').offset().top,
+        cX = cOffset - scrollTop,
+        cvOffset = $('#curriculum').offset().top,
+        cvX = cvOffset - scrollTop,
+        coOffset = $('#comentarios').offset().top,
+        coX = coOffset - scrollTop;
+      if ( pX >= 0 ) {
+        $('#1bg-perfil').removeClass('hidden');
+        $('#2bg-ubicaciones').addClass('hidden');
+        $('#3bg-info').addClass('hidden');
+        $('#4bg-colegas').addClass('hidden');
+        $('#5bg-curriculum').addClass('hidden');
+        $('#6bg-comentarios').addClass('hidden');
+      }
+      else if( uX <= halfHeight && uX >= 0 ) {
+        $('#1bg-perfil').addClass('hidden');
+        $('#2bg-ubicaciones').removeClass('hidden');
+        $('#3bg-info').addClass('hidden');
+        $('#4bg-colegas').addClass('hidden');
+        $('#5bg-curriculum').addClass('hidden');
+        $('#6bg-comentarios').addClass('hidden');
+      }
+      else if( iX <= halfHeight && iX >= 0 ) {
+        $('#1bg-perfil').addClass('hidden');
+        $('#2bg-ubicaciones').addClass('hidden');
+        $('#3bg-info').removeClass('hidden');
+        $('#4bg-colegas').addClass('hidden');
+        $('#5bg-curriculum').addClass('hidden');
+        $('#6bg-comentarios').addClass('hidden');
+      }
+      else if( cX <= halfHeight && cX >= 0 ) {
+        $('#1bg-perfil').addClass('hidden');
+        $('#2bg-ubicaciones').addClass('hidden');
+        $('#3bg-info').addClass('hidden');
+        $('#4bg-colegas').removeClass('hidden');
+        $('#5bg-curriculum').addClass('hidden');
+        $('#6bg-comentarios').addClass('hidden');
+      }
+      else if( cvX <= halfHeight && cvX >= 0 ) {
+        $('#1bg-perfil').addClass('hidden');
+        $('#2bg-ubicaciones').addClass('hidden');
+        $('#3bg-info').addClass('hidden');
+        $('#4bg-colegas').addClass('hidden');
+        $('#5bg-curriculum').removeClass('hidden');
+        $('#6bg-comentarios').addClass('hidden');
+      }
+      else if( coX <= halfHeight && coX >= 0 ) {
+        $('#1bg-perfil').addClass('hidden');
+        $('#2bg-ubicaciones').addClass('hidden');
+        $('#3bg-info').addClass('hidden');
+        $('#4bg-colegas').addClass('hidden');
+        $('#5bg-curriculum').addClass('hidden');
+        $('#6bg-comentarios').removeClass('hidden');
+      }
+    }
 
     /*var _winheight = $( window ).height();
     $( 'html' ).css( 'height', _winheight );
@@ -4469,13 +4564,14 @@ if ( location.pathname.indexOf( '/nuevoperfilmedicos/' ) == 0 ) {
     $( '#comentarios' ).css( 'min-height', _winheight );
     */
 
-    if ( $( window ).width() < 992 ) {
+    /*if ( $( window ).width() < 992 ) {
       console.log( "aqui quiero que entre" );
       var _smheight = $( window ).height();
       $( '#perfil' ).css( 'min-height', _smheight - $('#stickyNav').height() - $('#mainNav').height() );
       $( '#ubicaciones' ).css( 'min-height', _smheight - $('#stickyNav').height() );
       $( '#info' ).css( 'min-height', _smheight - $('#stickyNav').height() );
-    }
+    }*/
+
     /*
     if($(window).width() < 992) {
       var _sheight = _winheight - 60;

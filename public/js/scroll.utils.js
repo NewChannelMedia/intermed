@@ -164,7 +164,7 @@ jQuery(function( $ ){
 
 
 
-
+/*
 var $body = $('body');
 $('body a').click(function() {
   $body.stop(true);
@@ -210,7 +210,7 @@ $('#curriculum .float.up').click(function() {
 $('#comentarios .float.up').click(function() {
   event.preventDefault();
   $body.scrollTo($('#curriculum'), 1000, { offset:{ top:-60, left:0 } });
-});
+});*/
 
 
 
