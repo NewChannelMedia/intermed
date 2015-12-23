@@ -33,9 +33,9 @@
             creaSite(name2, 1);
             registerSites(name,name2,1);
             // se llena el sitemap con los valores
-            registerAllSites(name2,1);
+            registerAllSites(name2,name,1);
           }else{
-            registerAllSites(name2,1);
+            registerAllSites(name2,name,1);
           }
         });
       }
@@ -95,7 +95,7 @@
   * poderlos ir identificando.
   * @param name, nombre del archivo
   **/
-  function registerAllSites(name, indice){
+  function registerAllSites(name,name2, indice){
     var html = "";
     var id; // variable para guardar el ultimo id que se uso
     var d = new Date();
@@ -129,9 +129,13 @@
                 updateSitemap( complete, usuario[i].usuarioUrl );
             }
           }else{
-            // si sobre pasa los 50 mil registros, se va a crear otro archivo sitemap y se volvera a llenar con la nueva informacion
-            console.log("Ultimo id: "+id);
-            bandera = true;
+            //en este else, si entro excedio los 50 mil y el peso que debe de tener el archivo
+            // crea el nuevo sitemap
+            creaSite(name,(indice+1));
+            // actualiza el sitemapindex
+            updateIndex(name2,name,(indice+1));
+            // llena el nuevo sitemap
+            updateSitemap(name, usuario[i].usuarioUrl);
             // se rompe el for con un break
             break;
           }
