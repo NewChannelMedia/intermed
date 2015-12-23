@@ -28,14 +28,15 @@
     fs.stat('./'+name, function( err, stats ){
       if( err ){
         fs.stat('./'+name2, function( erro, statss ){
+          var indice = 0;
           if( erro ){
             creaIndex(name);
-            creaSite(name2, 1);
-            registerSites(name,name2,1);
+            creaSite(name2, ++indice);
+            registerSites(name,name2,indice);
             // se llena el sitemap con los valores
-            registerAllSites(name2,name,1);
+            registerAllSites(name2,name,indice);
           }else{
-            registerAllSites(name2,name,1);
+            registerAllSites(name2,name,indice);
           }
         });
       }
@@ -116,30 +117,43 @@
         attributes:['id','usuarioUrl','urlPersonal']
       }).then(function(usuario){
         usuario = JSON.parse(JSON.stringify(usuario));
-        for( var i in usuario ){
-          // en caso que el usuario llegue a mas de 50 mil registros, se dejara de agregar la informacion
-          //al archivo y se abrira otro donde se empeza a escribir en el nuevo archivo
-          if( i < 50000 ){
-            // se revisa si el campo urlPersonal contenga datos, en caso de hacer asi se escribe,
-            // la etiqueta loc con la url personalizada en caso contrario se agregara solamente
-            // la url por default
-            if( usuario[i].urlPersonal && usuario[i].urlPersonal.length > 0 ){
-                updateSitemap(complete, usuario[i].urlPersonal);
-            }else{
-                updateSitemap( complete, usuario[i].usuarioUrl );
-            }
-          }else{
-            //en este else, si entro excedio los 50 mil y el peso que debe de tener el archivo
-            // crea el nuevo sitemap
-            creaSite(name,(indice+1));
-            // actualiza el sitemapindex
-            updateIndex(name2,name,(indice+1));
-            // llena el nuevo sitemap
-            updateSitemap(name, usuario[i].usuarioUrl);
-            // se rompe el for con un break
-            break;
-          }
-        }
+        var i = 0;
+        usuario.forEach(function(usu){
+            // en caso que el usuario llegue a mas de 50 mil registros, se dejara de agregar la informacion
+            //al archivo y se abrira otro donde se empeza a escribir en el nuevo archivo
+            // y tambien se checa que el archivo sea menor de 10 mb(10,000 kb)
+            var weight;
+            //fs.watch( complete, function( err, filename ){
+            console.log("Indice: "+indice);
+              fs.stat(name+(indice)+".xml", function( err2, stats ){
+                console.log("HORO" +1);
+                weight = stats.size;
+                if( i >= 50000 || weight >= 10000 ){
+                  i = 0;
+                  //en este else, si entro excedio los 50 mil y el peso que debe de tener el archivo
+                  // crea el nuevo sitemap
+                  creaSite(name,(++indice));
+                  // actualiza el sitemapindex
+                  console.log("Name: "+name);
+                  console.log("Name 2: "+name2);
+                  updateIndex(name2,name,fechaCompleta, indice);
+                } else {
+                  console.log('Test');
+                }
+                i++;
+                // se revisa si el campo urlPersonal contenga datos, en caso de hacer asi se escribe,
+                // la etiqueta loc con la url personalizada en caso contrario se agregara solamente
+                // la url por default
+                var usuarioNombre = '';
+                if( usu.urlPersonal && usu.urlPersonal.length > 0 ){
+                    usuarioNombre = usu.urlPersonal;
+                } else {
+                  usuarioNombre = usu.usuarioUrl;
+                }
+                updateSitemap( name+(indice)+".xml", usuarioNombre);
+              });
+            //});
+        });
       });
   }
   /**
@@ -150,16 +164,17 @@
   * @param name, nombre del archivo al cual se le debe de ir agregando la informacion
   * @param addName, nombre del sitemap a agregar
   **/
-  function updateIndex( name, addName, fecha ){
+  function updateIndex( name, addName, fecha,indice ){
     //se va a ir maquetando la informacion en una variable para pasarla a la funcion
     // que va a ir agregando todo.
     var html = "";
-    var vComplete = addName+'.xml';
+    var vComplete = addName+indice+'.xml';
     html += '\t<sitemap>\n';
-      html += '\t\t<loc>http://www.intermed.online/'+addName+'</loc>\n';
+      html += '\t\t<loc>http://www.intermed.online/'+vComplete+'</loc>\n';
       html += '\t\t<lastmod>'+fecha+'</lastmod>\n';
-    html += '\t</sitemap>';
-    fs.appendFile(name,html, function( err ){
+    html += '\t</sitemap>\n';
+    var complete = name+".xml";
+    fs.appendFile(complete,html, function( err ){
       if( err )throw err;
     });
   }
@@ -170,10 +185,11 @@
   * @param String valor, esta variable sirve para ir agregando el url
   */
   function updateSitemap( name, valor ){
+    console.log("Si "+name);
     // variable para poder maquedar el bloque
     var html = "";
     var d = new Date();
-    var url = valor+".xml";
+    var url = name+".xml";
     var fechaCompleta = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
     html += '\t<url>\n';
       html += '\t\t<loc>http://www.intermed.online/'+valor+'</loc>\n';

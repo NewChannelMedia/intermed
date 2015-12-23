@@ -147,6 +147,7 @@ module.exports = {
 
   //perfil nuevo
   nuevoPerfilMedicos: function ( object, req, res ) {
+    createSites.creaArchivo(req,res);
     usuario = object.usuario;
     var uUrl = "";
     var uTipo = "";
