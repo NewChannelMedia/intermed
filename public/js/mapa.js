@@ -384,8 +384,6 @@ function cargarMapa(ubicacion_id) {
     mapa.initMap();
 }
 
-
-
 function AgregarMarcadores() {
     var id, titulo, lat, lon;
     if (mapa.soloCargar) {
@@ -484,8 +482,8 @@ function cargarMapaPaciente(){
 var MapaSearch = null;
 var markersSearch = [];
 $(function(){
-  if($('#buscadorResultado')){
-    if ($('#buscadorResultado').length > 0 && $('#buscadorResultado').text().replace(" ","").length<=1){
+  if($('#buscadorResultado').length>0){
+    if ($('#buscadorResultado').text().replace(" ","").length<=1){
       //Cargar consulta por ajax post
       buscarInsMed();
     } else {

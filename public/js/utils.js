@@ -978,6 +978,7 @@ function muestraMedico( id ) {
 }
 
 // script que muestra u oculta campos de la busqueda del home
+  /*
 if ( location.pathname === '/' ) {
   $( document ).ready( function () {
     $( "#sel-busqueda" ).change( function () {
@@ -1001,6 +1002,7 @@ if ( location.pathname === '/' ) {
     } ).change();
   } );
 }
+*/
 
 /* script para los intervalos del carousel
 $( document ).ready( function () {
@@ -2315,32 +2317,6 @@ function obtenerCPModal(tipo) {
     });
 }
 
-
-
-// script que muestra u oculta campos de la busqueda del home
-if ( location.pathname === '/' ) {
-	$( document ).ready( function() {
-		$( "#sel-busqueda" ).change( function() {
-			$( this ).find( "option:selected" ).each( function() {
-				if ( $( this ).attr( "value" ) == "especialidad" ) {
-					$( ".box" ).not( ".esp" ).hide();
-					$( ".esp" ).show();
-				}
-				else if ( $( this ).attr( "value" ) == "medico" ) {
-					$( ".box" ).not( ".med" ).hide();
-					$( ".med" ).show();
-				}
-				else if ( $( this ).attr( "value" ) == "padecimiento" ) {
-					$( ".box" ).not( ".pad" ).hide();
-					$( ".pad" ).show();
-				}
-				else {
-					$( ".box" ).hide();
-				}
-			} );
-		} ).change();
-	} );
-}
 /**
 * Pedir recomendacion a un medico, la siguiente parte del script
 * es para poder pedirle a cualquier medico una recomenacion
@@ -2626,7 +2602,7 @@ $(function(){
 $('#listaEspecialidades a').on('click', function(event) {
   event.preventDefault();
 });
-
+/*
 $(function() {
   $('nav a[href*=#]:not([href=#])').click(function() {
     event.preventDefault();
@@ -2641,7 +2617,7 @@ $(function() {
       }
     }
   });
-});
+});*/
 
 function actualizarDirecciones(salir){
   $.ajax( {
@@ -4967,12 +4943,12 @@ function registrarHorariosBot(salir){
 }
 
 $( document ).ready( function () {
-  console.log($( '#perfilMedico' ).length);
+  console.log('length: '+$( '#perfilMedico' ).length);
   if ( $( '#perfilMedico' ).length > 0 ) {
 
     console.log('cargo perfilMedico');
 
-    /*MostrarUbicaciones();*/
+    MostrarUbicaciones();
 
     $( function () {
       $( '[data-toggle="tooltip"]' ).tooltip()
