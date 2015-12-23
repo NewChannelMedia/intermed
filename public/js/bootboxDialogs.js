@@ -339,6 +339,28 @@ function agregarUbicacion(ubicacion_id){
       <h3 style="color:white">Horarios</h3>
       <p>Alta, modificacion y eliminación de horarios por ubicación.</p>
       <small>El id de la dirección se saca del input type=hidden con id: 'idDireccion', si esta vacio no deberia dejar agregar horarios ni servicios</small>
+
+
+          <div class="panel">
+              <div class="panel-body">
+                  <div id="horarios">
+                      <form method="POST" name="frmRegHorarios" id="frmRegHorarios">
+                          <input type="hidden" id="horariosUbi" name="horariosUbi" value="" />
+                          <div class="row">
+                              <div class="col-md-12"><div id='calendar'></div></div>
+                              <div class="col-md-6">
+                                  <div id="calendarTrash">
+                                      <img src="img/eliminar.png" />
+                                  </div>
+                              </div>
+                              <div class="col-md-6"><input type="button" class="btn btn-info btn-md btn-block" id="btnRegHorarios" value="Guardar Horarios" onclick="regHorarios()"></div>
+                          </div>
+                      </form>
+                  </div>
+              </div>
+          </div>
+
+      <br/><br/>
       <input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarHorariosBot();">
     </div>
 
@@ -375,6 +397,7 @@ function agregarUbicacion(ubicacion_id){
   if (btnGuardar == "Editar"){
     $('label.editar').unbind();
   }
+  iniciarCalendario();
 }
 }
 
