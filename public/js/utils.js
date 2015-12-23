@@ -2602,7 +2602,7 @@ var idEspecialidad = '';
   });
 //<------------------ FIN OSCAR ----------------------->
 
-function sticky_relocate() {
+/*function sticky_relocate() {
     var window_top = $(window).scrollTop();
     var div_top = $('#sticky-anchor').offset().top;
     if (window_top > div_top) {
@@ -2610,7 +2610,7 @@ function sticky_relocate() {
     } else {
         $('.sticky').removeClass('stick');
     }
-}
+}*/
 
 $(function(){
   $('#btnAgregaUbi').on('click',function(){
@@ -4967,9 +4967,12 @@ function registrarHorariosBot(salir){
 }
 
 $( document ).ready( function () {
+  console.log($( '#perfilMedico' ).length);
   if ( $( '#perfilMedico' ).length > 0 ) {
 
-    MostrarUbicaciones();
+    console.log('cargo perfilMedico');
+
+    /*MostrarUbicaciones();*/
 
     $( function () {
       $( '[data-toggle="tooltip"]' ).tooltip()
