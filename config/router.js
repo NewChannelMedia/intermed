@@ -53,7 +53,6 @@ app.use( '/perfil', express.static( __dirname + '/../public' ) );
 app.use( '/nuevoPerfilMedicos', express.static( __dirname + '/../public' ) );
 app.use( '/inbox', express.static( __dirname + '/../public' ) );
 app.use( '/notificaciones', express.static( __dirname + '/../public' ) );
-
 //<----------------------------------------------------------------------------->
 /**
  * function para cargar las rutas, como estatitcas los layouts
@@ -88,8 +87,8 @@ var intermed = require( '../apps/controllers/Intermed' );
 var iniciar = function () {
 
   app.all( '*', function ( req, res, next ) {
-    var revivirSesion = false;
     rutas.routeLife( 'main', 'main', hps );
+    var revivirSesion = false;
     if ( req.session.passport.user ) {
       hps.varSession( req.session.passport.user );
       res.cookie( 'intermed_sesion', {
@@ -122,10 +121,12 @@ var iniciar = function () {
 
   //LogOut
   app.get( '/logout', function ( req, res, next ) {
+    rutas.routeLife( 'main', 'main', hps );
     intermed.callController( 'usuarios', 'logout', {}, req, res )
   } );
   //Home
   app.get( '/', function ( req, res ) {
+    rutas.routeLife( 'main', 'main', hps );
     intermed.callController( 'Home', 'index', req.body, req, res )
   } );
 
@@ -135,8 +136,8 @@ var iniciar = function () {
     intermed.callController( 'Home', 'vacio', '', req, res );
   } );
   app.post( '/buscar', function ( req, res ) {
-    var busqueda = JSON.parse( JSON.stringify( req.body ) );
     rutas.routeLife( 'plataforma2', 'interno', hps );
+    var busqueda = JSON.parse( JSON.stringify( req.body ) );
     intermed.callController( 'Home', 'searching', busqueda, req, res );
   } );
   //Registro
@@ -1263,8 +1264,6 @@ var iniciar = function () {
 
     app.post('/registrarubicacion', function (req, res) {
         //if (req.session.passport.user) {
-
-
         intermed.callController('ubicacion', 'registrarUbicacion', req.body, req, res);
         //}
         //else {
@@ -1562,56 +1561,56 @@ var iniciar = function () {
       intermed.callController( 'buscadorInterno', 'buscar', req.body, req, res );
     });
     //<-------------- EDICION DE MEDICO PERFIL ---------------->
-      app.post('/loadGenerales', function( req, res ){
-        intermed.callController('medicos','loadGenerales', req, res );
-      });
-      app.post('/loadEspecialidades', function( req, res ){
-        intermed.callController('medicos','loadEspecialidades', req, res );
-      });
-      app.post('/loadPadecimientos', function( req, res ){
-        intermed.callController('medicos','loadPadecimientos', req, res );
-      });
-      app.post('/loadPalabras', function( req, res ){
-        intermed.callController('medicos','loadPalabras', req, res );
-      });
-      app.post('/mEditMedic', function( req, res ){
-        intermed.callController('medicos','mEditMedic', req, res );
-      });
-      app.post('/todasEspecialidades', function( req, res ){
-        intermed.callController('medicos','todasEspecialidades', req, res);
-      });
-      app.post('/sacaMedicoId', function( req, res ){
-        intermed.callController('medicos','sacaMedicoId',req,res);
-      });
-      app.post('/editEspecialidades', function( req, res ){
-        intermed.callController('medicos','editEspecialidades', req, res);
-      });
-      app.post('/deleteEsp', function( req, res ){
-        intermed.callController('medicos','deleteEsp', req, res );
-      });
-      app.post('/traePadecimientos', function( req, res ){
-        intermed.callController('medicos', 'traePadecimientos',req, res);
-      });
-      app.post('/editPadecimientos', function( req, res ){
-        intermed.callController('medicos','editPadecimientos', req, res);
-      });
-      app.post('/traerPalabras', function( req, res) {
-        intermed.callController('medicos','traerPalabras', req, res);
-      });
-      app.post('/editPalabrasClave', function( req, res){
-        intermed.callController('medicos','editPalabrasClave', req, res);
-      });
-      app.post('/deletePad', function( req, res ){
-        intermed.callController('medicos','deletePad',req, res);
-      });
-      app.post('/deletePalabra', function( req, res ){
-        intermed.callController('medicos','deletePalabra',req, res);
-      });
-      //<---------- FECHA LUNEs 14-15-2015 -------------->
-        app.post('/deleteSubEsp', function( req, res ){
-          intermed.callController('medicos','deleteSubEsp', req, res );
-        });
-      //<---------- FIN FECHA LUNES --------------------->
+    app.post('/loadGenerales', function( req, res ){
+      intermed.callController('medicos','loadGenerales', req, res );
+    });
+    app.post('/loadEspecialidades', function( req, res ){
+      intermed.callController('medicos','loadEspecialidades', req, res );
+    });
+    app.post('/loadPadecimientos', function( req, res ){
+      intermed.callController('medicos','loadPadecimientos', req, res );
+    });
+    app.post('/loadPalabras', function( req, res ){
+      intermed.callController('medicos','loadPalabras', req, res );
+    });
+    app.post('/mEditMedic', function( req, res ){
+      intermed.callController('medicos','mEditMedic', req, res );
+    });
+    app.post('/todasEspecialidades', function( req, res ){
+      intermed.callController('medicos','todasEspecialidades', req, res);
+    });
+    app.post('/sacaMedicoId', function( req, res ){
+      intermed.callController('medicos','sacaMedicoId',req,res);
+    });
+    app.post('/editEspecialidades', function( req, res ){
+      intermed.callController('medicos','editEspecialidades', req, res);
+    });
+    app.post('/deleteEsp', function( req, res ){
+      intermed.callController('medicos','deleteEsp', req, res );
+    });
+    app.post('/traePadecimientos', function( req, res ){
+      intermed.callController('medicos', 'traePadecimientos',req, res);
+    });
+    app.post('/editPadecimientos', function( req, res ){
+      intermed.callController('medicos','editPadecimientos', req, res);
+    });
+    app.post('/traerPalabras', function( req, res) {
+      intermed.callController('medicos','traerPalabras', req, res);
+    });
+    app.post('/editPalabrasClave', function( req, res){
+      intermed.callController('medicos','editPalabrasClave', req, res);
+    });
+    app.post('/deletePad', function( req, res ){
+      intermed.callController('medicos','deletePad',req, res);
+    });
+    app.post('/deletePalabra', function( req, res ){
+      intermed.callController('medicos','deletePalabra',req, res);
+    });
+    //<---------- FECHA LUNEs 14-15-2015 -------------->
+    app.post('/deleteSubEsp', function( req, res ){
+      intermed.callController('medicos','deleteSubEsp', req, res );
+    });
+    //<---------- FIN FECHA LUNES --------------------->
     //<-------------- FIN EDICION MEDICO PERFIL --------------->
 
     app.get('/agendaMedico/:id', function(req,res){
@@ -1628,12 +1627,28 @@ var iniciar = function () {
     app.post( '/cancelaCitaMedico', function ( req, res ) {
       intermed.callController( 'agenda', 'cancelaCitaMedico', req.body, req, res );
     });
+
+    app.post('/cargarEspecialidades', function (req, res){
+      intermed.callController('search','cargarEspecialidades',{},req, res);
+    });
+
+    app.post('/cargarPadecimientos', function(req, res){
+      intermed.callController('search','cargarPadecimientos',{},req, res);
+    });
+
+    app.post('/cargarInstituciones', function( req, res){
+      intermed.callController('search','cargarInstituciones',{},req, res);
+    });
+
+    app.post('/cargarAseguradoras', function( req, res){
+      intermed.callController('search','cargarAseguradoras',{},req, res);
+    });
 }
 
-function manejarPerfiles(){
+var manejarPerfiles = function(){
   /*RUTA PERFIL (DEJAR SIEMPRE AL FINAL)*/
   /*Dejando al final se evita que cada que se entre al router se haga una consulta para ver si se trata de un usuario*/
-  app.get( '/:usuario', function ( req, res ,next) {
+  app.get( '/:usuario', function ( req, res, next) {
     var usuario = '';
     if ( req.params.usuario ) usuario = req.params.usuario;
     if (usuario != ""){
@@ -1651,7 +1666,7 @@ function manejarPerfiles(){
         if (us){
           rutas.routeLife( 'plataforma2', 'plataforma', hps );
           intermed.callController( 'Home', 'nuevoPerfilMedicos', {usuario: usuario}, req, res );
-        }else{
+        } else {
           next();
         }
       });
@@ -1662,7 +1677,7 @@ function manejarPerfiles(){
   /*FIN RUTA PERFIL USUARIO*/
 }
 
-function error404(){
+var error404 = function(){
   app.get('*', function(req, res){
     rutas.routeLife( 'plataforma2', '', hps );
     res.render('pagina404');

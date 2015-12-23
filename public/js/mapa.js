@@ -484,10 +484,10 @@ function cargarMapaPaciente(){
 var MapaSearch = null;
 var markersSearch = [];
 $(function(){
-  if($('#mapSearchDiv')){
-    if ($('#buscadorResultado').text().replace(" ","").length<=1){
+  if($('#buscadorResultado')){
+    if ($('#buscadorResultado').length > 0 && $('#buscadorResultado').text().replace(" ","").length<=1){
       //Cargar consulta por ajax post
-      searchingData();
+      buscarInsMed();
     } else {
       //Busqueda hecha desde formulario post
       mapSearchDiv();
@@ -506,7 +506,6 @@ function mapSearchDiv(){
         scrollwheel: true,
         mapTypeId:google.maps.MapTypeId.ROADMAP
     };
-
     MapaSearch=new google.maps.Map(document.getElementById("mapSearchDiv"),mapProp);
     var height = $('#buscadorFixed').height();
     height += $('#mainNav').height();
@@ -542,70 +541,67 @@ function mapSearchDiv(){
 
       totallat = maxlat-minlat;
       totallng = maxlng-minlng;
-      console.log('lan: ' + totallat);
-      console.log('lng: ' + totallng);
       var pos = new google.maps.LatLng(totallat, totallng);
-
-      MapaSearch.setCenter(pos);
 
       if (total===0){
         MapaSearch.setOptions({zoom: 4});
-      }
+      } else {
+        MapaSearch.setCenter(pos);
+        $('.direccion').each(function(){
+          var id = $(this).find('.direccion_id').text();
+          var nombre = $(this).find('.nombre').text();
+          var imagen = $(this).find('.imagen').text();
+          var latitud = $(this).find('.latitud').text();
+          var longitud = $(this).find('.longitud').text();
+          var principal = $(this).find('.principal').text();
+          var direccion = $(this).find('.direccion').html();
+          var doctor = $(this).find('.doctor').text();
+          var medico_id = $(this).find('.medico_id').text();
+          var usuarioUrl = $(this).find('.usuarioUrl').text();
+          var top_dr = $(this).find('.top_dr').text();
 
-      $('.direccion').each(function(){
-        var id = $(this).find('.direccion_id').text();
-        var nombre = $(this).find('.nombre').text();
-        var imagen = $(this).find('.imagen').text();
-        var latitud = $(this).find('.latitud').text();
-        var longitud = $(this).find('.longitud').text();
-        var principal = $(this).find('.principal').text();
-        var direccion = $(this).find('.direccion').html();
-        var doctor = $(this).find('.doctor').text();
-        var medico_id = $(this).find('.medico_id').text();
-        var usuarioUrl = $(this).find('.usuarioUrl').text();
-        var top_dr = $(this).find('.top_dr').text();
+          if (latitud && longitud){
+            var pos = new google.maps.LatLng(latitud, longitud);
 
-        if (latitud && longitud){
-          var pos = new google.maps.LatLng(latitud, longitud);
+            while (!(MapaSearch.getBounds().contains(pos))){
+              MapaSearch.setOptions({zoom: parseInt(MapaSearch.get('zoom'))-1});
+            }
 
-          while (!(MapaSearch.getBounds().contains(pos))){
-            MapaSearch.setOptions({zoom: parseInt(MapaSearch.get('zoom'))-1});
-          }
-
-          var marker = new google.maps.Marker({
-              position: pos,
-              map: MapaSearch,
-              draggable: false
-          });
-
-          if (top_dr == 1){
-            marker.setIcon('img/marker.png');
-          }
-
-          var contentString = '<div style="width:50px; float:left"><a href="'+ base_url +'nuevoPerfilMedicos/'+usuarioUrl+'"><img src="'+imagen+'" style="width:100%;margin-top:10px"><br/><center>Perfil</center></a></div><div style="float:left;margin-left:10px;"><h4>'+doctor+'</h4><h5>'+nombre+'</h5><p>'+direccion+'</p></div>';
-
-          var infowindow = new google.maps.InfoWindow({
-            content: contentString
-          });
-
-          infoWindows.push(infowindow);
-
-          marker.addListener('click', function() {
-            infoWindows.forEach(function(info){
-              info.close();
+            var marker = new google.maps.Marker({
+                position: pos,
+                map: MapaSearch,
+                draggable: false
             });
 
-            if (!noScroll) $(document).scrollTo('#medico_id_'+medico_id, 500, {offset: function() { return {top:-(height+5)}; }});
-            $('.result').removeClass('seleccionado');
-            $('#medico_id_'+medico_id).addClass('seleccionado');
+            if (top_dr == 1){
+              marker.setIcon('img/marker.png');
+            }
 
-            MapaSearch.setCenter(pos);
-            infowindow.open(MapaSearch, marker);
-            noScroll = false;
-          });
-          markersSearch[id] = marker;
-        }
-      });
+            var contentString = '<div style="width:50px; float:left"><center><a href="'+ base_url +usuarioUrl+'"><img src="'+imagen+'" style="width:40px;height:40px;margin-top:10px"><br/>Perfil</a></center></div><div style="float:left;margin-left:10px;"><h4>'+doctor+'</h4><h5>'+nombre+'</h5><p>'+direccion+'</p></div>';
+
+            var infowindow = new google.maps.InfoWindow({
+              content: contentString
+            });
+
+            infoWindows.push(infowindow);
+
+            marker.addListener('click', function() {
+              infoWindows.forEach(function(info){
+                info.close();
+              });
+
+              if (!noScroll) $(document).scrollTo('#medico_id_'+medico_id, 500, {offset: function() { return {top:-(height+5)}; }});
+              $('.result').removeClass('seleccionado');
+              $('#medico_id_'+medico_id).addClass('seleccionado');
+
+              MapaSearch.setCenter(pos);
+              infowindow.open(MapaSearch, marker);
+              noScroll = false;
+            });
+            markersSearch[id] = marker;
+          }
+        });
+      }
     });
 
     $('#mainNav').removeClass('navbar-static-top');

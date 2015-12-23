@@ -707,8 +707,13 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
   background-color: #5288ac;
 }
 
-#buscador #sel-busqueda.form-control {
+#buscador #sel-busqueda.form-control,
+#buscador #tipoBusqueda {
   background-color: #328ecb;
+}
+
+#buscador .autocompleteInput{
+  background-color: transparent;
 }
 
 #buscador input::-webkit-input-placeholder,
@@ -2086,7 +2091,8 @@ li.error{
 .divBodyBootbox {
   padding:30px;
   background-color:#5D9AB7;
-  padding-bottom: 0px;
+  padding-top: 10px;
+  padding-bottom: 5px;
 }
 
 .divBodyBootbox .row {
@@ -2232,3 +2238,29 @@ ol.sortable,ol.sortable ol {
 .error-template {padding: 40px 15px;text-align: center;}
 .error-actions {margin-top:15px;margin-bottom:15px;}
 .error-actions .btn { margin-right:10px; }
+
+.autocompleteInput{
+  display: flex;
+  border: none;
+}
+
+.autocompleteInput:focus{
+  border: none;
+  width: 100%;
+}
+.autocompleteInput:active{
+  border: none;
+}
+
+.ui-helper-hidden-accessible{
+  display: none;
+}
+
+.ui-state-focus{
+  background-color: #DADADA!important;
+}
+
+.imgBusqueda{
+  width: 200px;
+  height: 200px;
+}
