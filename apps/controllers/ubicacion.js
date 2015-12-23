@@ -349,6 +349,7 @@ exports.registrarHorarios = function (objects, req, res) {
     });
 
     if (continuarRegistro) {
+        console.log('horariosUbi: ' + JSON.stringify(objects.horariosUbi));
         models.Horarios.bulkCreate(JSON.parse(objects.horariosUbi)).then(function () {
             continuarRegistro = true;
         }).catch(function (err) {

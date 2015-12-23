@@ -87,6 +87,7 @@ var intermed = require( '../apps/controllers/Intermed' );
 var iniciar = function () {
 
   app.all( '*', function ( req, res, next ) {
+    rutas.routeLife( 'main', 'main', hps );
     var revivirSesion = false;
     if ( req.session.passport.user ) {
       hps.varSession( req.session.passport.user );
@@ -1263,8 +1264,6 @@ var iniciar = function () {
 
     app.post('/registrarubicacion', function (req, res) {
         //if (req.session.passport.user) {
-
-
         intermed.callController('ubicacion', 'registrarUbicacion', req.body, req, res);
         //}
         //else {
