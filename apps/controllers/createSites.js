@@ -73,7 +73,7 @@
   /**
   * funcion para crear el sitemapindex
   * @param name nombre que llevara el archivo
-  * @return message if success
+  * @return message if not success
   **/
   function creaIndex(name){
     if( !fs.openSync(name+".xml",'w') ){
@@ -83,7 +83,7 @@
   /**
   * funcion para la creacion del sitemap
   * @param name nombre que llevara el archivo
-  * @return message if success
+  * @return message if not success
   */
   function creaSite(name, indice){
     if( !fs.openSync(name+indice+".xml", 'w') ){
@@ -114,7 +114,7 @@
       // se hace una consulta para traer todos los url de los usuarios medicos
       models.Usuario.findAll({
         where:{tipoUsuario:'M'},
-        attributes:['id','usuarioUrl','urlPersonal']
+        attributes:['usuarioUrl','urlPersonal']
       }).then(function(usuario){
         usuario = JSON.parse(JSON.stringify(usuario));
         var i = 0;
@@ -123,36 +123,30 @@
             //al archivo y se abrira otro donde se empeza a escribir en el nuevo archivo
             // y tambien se checa que el archivo sea menor de 10 mb(10,000 kb)
             var weight;
-            //fs.watch( complete, function( err, filename ){
-            console.log("Indice: "+indice);
-              fs.stat(name+(indice)+".xml", function( err2, stats ){
-                console.log("HORO" +1);
-                weight = stats.size;
-                if( i >= 50000 || weight >= 10000 ){
-                  i = 0;
-                  //en este else, si entro excedio los 50 mil y el peso que debe de tener el archivo
-                  // crea el nuevo sitemap
-                  creaSite(name,(++indice));
-                  // actualiza el sitemapindex
-                  console.log("Name: "+name);
-                  console.log("Name 2: "+name2);
-                  updateIndex(name2,name,fechaCompleta, indice);
-                } else {
-                  console.log('Test');
-                }
-                i++;
-                // se revisa si el campo urlPersonal contenga datos, en caso de hacer asi se escribe,
-                // la etiqueta loc con la url personalizada en caso contrario se agregara solamente
-                // la url por default
-                var usuarioNombre = '';
-                if( usu.urlPersonal && usu.urlPersonal.length > 0 ){
-                    usuarioNombre = usu.urlPersonal;
-                } else {
-                  usuarioNombre = usu.usuarioUrl;
-                }
-                updateSitemap( name+(indice)+".xml", usuarioNombre);
-              });
-            //});
+            fs.stat(name+(indice)+".xml", function( err2, stats ){
+              weight = stats.size;
+              if( i >= 50000 || weight >= 10000 ){
+                i = 0;
+                //en este else, si entro excedio los 50 mil y el peso que debe de tener el archivo
+                // crea el nuevo sitemap
+                creaSite(name,(++indice));
+                // actualiza el sitemapindex
+                updateIndex(name2,name,fechaCompleta, indice);
+              } else {
+                console.log('Test');
+              }
+              i++;
+              // se revisa si el campo urlPersonal contenga datos, en caso de hacer asi se escribe,
+              // la etiqueta loc con la url personalizada en caso contrario se agregara solamente
+              // la url por default
+              var usuarioNombre = '';
+              if( usu.urlPersonal && usu.urlPersonal.length > 0 ){
+                  usuarioNombre = usu.urlPersonal;
+              } else {
+                usuarioNombre = usu.usuarioUrl;
+              }
+              updateSitemap( name+(indice)+".xml", usuarioNombre);
+            });
         });
       });
   }
@@ -185,7 +179,6 @@
   * @param String valor, esta variable sirve para ir agregando el url
   */
   function updateSitemap( name, valor ){
-    console.log("Si "+name);
     // variable para poder maquedar el bloque
     var html = "";
     var d = new Date();
