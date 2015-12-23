@@ -66,8 +66,9 @@ function agregarUbicacion(ubicacion_id){
       </div>
 
       <ul class="nav nav-tabs menuBootbox">
-        <li class="active"><a data-toggle="tab" href="#divUbicacion">UBICACIONES</a></li>
-        <li><a data-toggle="tab" href="#divHorarios">HORARIOS</a></li>
+        <li class="active ubicaciones"><a data-toggle="tab" href="#divUbicacion">UBICACIONES</a></li>
+        <li class="servicios"><a data-toggle="tab" href="#divServicios">SERVICIOS</a></li>
+        <li class="horarios"><a data-toggle="tab" href="#divHorarios">HORARIOS</a></li>
       </ul>
 
       <div class="tab-content">
@@ -313,7 +314,7 @@ function agregarUbicacion(ubicacion_id){
                     </div>
                     <div class="col-md-6">
                       <div class="row" style="margin-left:2px">
-                        <input type="button" class="btn btn-save btn-block" value="Guardar y salir" onclick="regUbicacion();bootbox.hideAll();" id="btnGuardarSalir">
+                        <input type="button" class="btn btn-save btn-block" value="Guardar y salir" onclick="regUbicacion(true);" id="btnGuardarSalir">
                       </div>
                     </div>
                   </div>
@@ -334,11 +335,20 @@ function agregarUbicacion(ubicacion_id){
     </div>
 
 
-    <div id="divHorarios" class="tab-pane fade">
-      <h3>Menu 1</h3>
-      <p>Some content in menu 1.</p>
+    <div id="divHorarios" class="tab-pane fade divBodyBootbox">
+      <h3 style="color:white">Horarios</h3>
+      <p>Alta, modificacion y eliminación de horarios por ubicación.</p>
+      <small>El id de la dirección se saca del input type=hidden con id: 'idDireccion', si esta vacio no deberia dejar agregar horarios ni servicios</small>
+      <input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarHorariosBot();">
     </div>
 
+
+    <div id="divServicios" class="tab-pane fade divBodyBootbox">
+      <h3 style="color:white">Servicios</h3>
+      <p>Alta, modificacion y eliminación de servicios por ubicación.</p>
+      <small>El id de la dirección se saca del input type=hidden con id: 'idDireccion', si esta vacio no deberia dejar agregar horarios ni servicios</small><br/><br/>
+      <input type="button" class="btn btn-add btn-sm" value="Guardar y continuar" onclick="registrarServicios();">
+      <input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarServicios(true);">
     </div>
 
     </div>

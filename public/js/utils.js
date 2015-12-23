@@ -1932,7 +1932,7 @@ function obtenerColonias(post) {
 }
 
 //Registrar Ubicacion
-function regUbicacion() {
+function regUbicacion(salir) {
     var nombreUbi = '', principal = 0, calleUbi = '', numeroUbi = '', numeroIntUbi= '';
     var calle1Ubi='',calle2Ubi='',slc_estados = '', slc_ciudades = '', slc_colonias = '', cp = '';
     nombreUbi = $('#nombreUbi').val();
@@ -2051,6 +2051,17 @@ function regUbicacion() {
                 mapa.marker.setOptions({draggable: false,animation:null});
                 cargarTelefonos();
                 actualizarDirecciones();
+                if (salir){
+                  bootbox.hideAll();
+                } else {
+                  $('.menuBootbox').find('li.ubicaciones').removeClass('active');
+                  $('.menuBootbox').find('li.servicios').addClass('active');
+                  $('#divUbicacion').removeClass('in');
+                  $('#divUbicacion').removeClass('active');
+                  $('#divServicios').addClass('in');
+                  $('#divServicios').addClass('active');
+
+                }
               } else {
                 if (data.error){
                   manejadorDeErrores(data.error);
@@ -4967,4 +4978,21 @@ function agregarBusqueda(inputId,Valores){
         </div>`);
     }
   });
+}
+
+function registrarServicios(salir){
+  if (salir){
+    bootbox.hideAll();
+  } else {
+    $('.menuBootbox').find('li.servicios').removeClass('active');
+    $('.menuBootbox').find('li.horarios').addClass('active');
+    $('#divServicios').removeClass('in');
+    $('#divServicios').removeClass('active');
+    $('#divHorarios').addClass('in');
+    $('#divHorarios').addClass('active');
+  }
+}
+
+function registrarHorariosBot(salir){
+  bootbox.hideAll();
 }
