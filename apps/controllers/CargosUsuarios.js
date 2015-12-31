@@ -122,7 +122,7 @@ exports.RegistrarUsuarioEnProveedor = function (object, req, res) {
          }
         ]
     })
-     .then(function (datos) {     
+     .then(function (datos) {
          //Registrar Usuario con proveedor         
          conekta.Customer.create({
              "name": datos.DatosGenerale.nombre + ' ' + datos.DatosGenerale.apellidoP + ' ' + datos.DatosGenerale.apellidoM,
@@ -132,58 +132,188 @@ exports.RegistrarUsuarioEnProveedor = function (object, req, res) {
              "billing_address": {
                  "tax_id": datos.DatosFacturacion.RFC,
                  "company_name": datos.DatosFacturacion.razonSocial,
-                 "street1": datos.DatosFacturacion.Direccion.calle + ' ' + datos.DatosFacturacion.Direccion.numero,
-                 "street2": datos.DatosFacturacion.Direccion.numero +' A' ,
+                 "street1": datos.DatosFacturacion.Direccion.calle,
+                 "external_number": datos.DatosFacturacion.Direccion.numero,
                  "street3": datos.DatosFacturacion.Direccion.Localidad.localidad,
                  "city": datos.DatosFacturacion.Direccion.Localidad.Municipio.municipio,
                  "state": datos.DatosFacturacion.Direccion.Localidad.Estado.estado,
                  "zip": datos.DatosFacturacion.Direccion.Localidad.cp
              }
-         }, function (resultado) {
+         }, function (err, resultado) {
+             if (err) {
+                 console.log(err.message_to_purchaser);
+                 return;
+             }
+
+
              console.log('cliente registrado');
-             console.log(resultado);
-             //UsuarioGuardarIdProveedor(object.usuario_id, resultado.id);
-             UsuarioGuardarIdProveedor(object.usuario_id, 'AAAA');
+
+             UsuarioGuardarIdProveedor(object.usuario_id, resultado.toObject().id);
+             UsuarioGuardarIdTarjeta(object.usuario_id, resultado.toObject().cards[0].id);
+
              res.render('registrado', {
-                 title: 'Registrado'                 
+                 title: 'Registrado'
              });
-         }, function (err) {
-             console.log(err.message_to_purchaser);
          });
      }).catch(function (err) {
          console.log(err);
      });
 }
 
+//Suscripciones son una manera de realizar cargos a un cliente con una cantidad fija de manera recurrente. 
+//Puedes cambiar el plan, pausar, cancelar y reanudar una suscripción a tu gusto.
+function RegistrarSuscripcion(idUsuario, idUsuarioProveedor) {
+    cliente = conekta.Customer.find(idUsuarioProveedor);
+    cliente.createSubscription({});
+
+}
+
 
 function UsuarioGuardarIdProveedor(idUsuario, idUsuarioProveedor) {
     models.UsuarioCargo.update({
-         idUsuarioProveedor: idUsuarioProveedor
-     }, {
-         where: { medico_id: idUsuario }
-     })
+        idUsuarioProveedor: idUsuarioProveedor
+    }, {
+        where: { medico_id: idUsuario }
+    })
 }
 
-//Registrar plan de cobro a cliente
-function RegistrarPlan(plan) {
-    console.log('registrar plan de cobro');
-    conekta.Plan.create({
-        "id": "PlanMensual",
-        "name": "Plan Mensual",
-        "amount": montoCobro,
-        "currency": "MXN",
-        "interval": "month"
-    }, function (planRegistrado) {
-        console.log(plan);
-        plan = planRegistrado;
-        return true;
-    }, function (err) {
-        console.log(err.message_to_purchaser);
-        return false;
+function UsuarioGuardarIdTarjeta(idUsuario, idTarjetaProveedor) {
+    models.UsuarioTarjeta.create({
+        medico_id: idUsuario,
+        idTarjetaProveedor: idTarjetaProveedor
+    })
+}
+
+//Informacion para llenar registro de nuevo plan de cargos
+exports.PlanCargoDatosRegistro = function (object, req, res) {
+    models.IntervaloCargo.findAll({
+        attributes: ['id', 'nombre']
+    })
+    .then(function (intervalo) {
+        console.log(intervalo);
+
+        models.PlanDeCargo.findOne({
+            where: {
+                id: object.planId
+            }
+        }).then(function (plan) {
+            res.render('plandecargo', {
+                title: 'Plan de cargo',
+                plan: plan,
+                intervalo: intervalo
+            });
+        });
+    }).catch(function (err) {
+        console.log(err);
     });
 }
 
-//Registrar Relacion de client con plan de cobro
+//Planes son plantillas que te permiten crear suscripciones. 
+//Dentro del plan se define la cantidad y frecuencia con el cual se generaran los cobros recurrentes a los usuarios
+exports.PlanCargoRegistrar = function (object, req, res) {
+    models.IntervaloCargo.findOne({
+        where: { id: object.intervalocargo_id },
+    }).then(function (intervalo) {
+        if (object.idPlan == 0) {
+            PlanCargoCrear(object, intervalo.id, intervalo.descripcion);
+        } else {
+            PlanCargoActualizar();
+        }
+
+
+    }).catch(function (err) {
+        console.log('error al obtener el id del intervalo cargo');
+    });
+}
+
+function PlanCargoCrear(object, intervaloId, intervaloDescripcion) {
+    models.PlanDeCargo.create({
+        nombre: object.nombre,
+        monto: parseFloat(object.monto),
+        intervalocargo_id: intervaloId,
+        frecuencia: object.frecuencia,
+        periodoprueba: object.periodoprueba
+    }).then(function (plan) {
+        //registrar plan en conecta                  
+        conekta.Plan.create({
+            "id": plan.id + '_',
+            "name": plan.nombre,
+            "amount": plan.monto * 100,
+            "currency": "MXN",
+            "interval": intervaloDescripcion,
+            "frequency": plan.frecuencia,
+            "trial_period_days": plan.periodoprueba
+        }, function (err, res) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(res)
+                res.render('registrado', {
+                    title: 'Plan de cargo Registrado'
+                });
+            }
+        });
+    });
+}
+
+function PlanCargoActualizar(object, intervaloId, intervaloDescripcion) {
+    models.PlanDeCargo.update({
+        nombre: object.nombre,
+        monto: parseFloat(object.monto),
+        intervalocargo_id: intervaloId,
+        frecuencia: object.frecuencia,
+        periodoprueba: object.periodoprueba
+    },
+       {
+           where: {
+               id: object.planId
+           }
+       }
+    ).then(function (plan) {
+        //actualizar plan en conekta
+        conekta.Plan.find(object.planId + '_', function (plan) {
+            plan.update({
+                //"id": object.planId,
+                "name": object.name,
+                "amount": plan.monto * 100,
+                //"currency": "MXN",
+                "interval": intervaloDescripcion,
+                "frequency": plan.frecuencia,
+                "trial_period_days": plan.periodoprueba
+            }, function (err, res) {
+                if (err) {
+                    console.log(err);
+                }
+
+                console.log(res);
+            });
+        });
+
+
+
+        conekta.Plan.create({
+            "id": plan.id + '_',
+            "name": plan.nombre,
+            "amount": plan.monto * 100,
+            "currency": "MXN",
+            "interval": intervaloDescripcion,
+            "frequency": plan.frecuencia,
+            "trial_period_days": plan.periodoprueba
+        }, function (err, resultado) {
+            if (err) {
+                console.log(err);
+            } else {
+                res.render('registrado', {
+                    title: 'Plan de cargo Registrado'
+                });
+            }
+        });
+    }).catch(function (err) {
+        console.log('error al actualizar plan');
+    });
+}
+
+//Registrar Relacion de cliente con plan de cobro
 function RegistrarRelacionUsuarioPlan(cliente, plan) {
     cliente.createSubscription({
         "plan_id": plan.id
