@@ -1502,6 +1502,11 @@ var iniciar = function () {
     app.post('/registrarplancargo', function (req, res) {
         intermed.callController('CargosUsuarios', 'PlanCargoRegistrar', req.body, req, res);
     });
+
+    app.post('/eliminarplancargo', function (req, res) {
+        intermed.callController('CargosUsuarios', 'PlanCargoEliminar', req.body, req, res);
+    });
+
     //fin rutas cargos
 
 }

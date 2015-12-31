@@ -7,11 +7,7 @@ module.exports = function (sequelize, DataTypes) {
         descripcion: { type: DataTypes.STRING, allowNull: false }
     },
     {
-        classMethods: {
-            associate: function (models) {
-                IntervaloCargo.hasMany(models.PlanDeCargo)
-            }
-        },
+       
         timestamps: false,
         paranoid: true,
         underscored: true,

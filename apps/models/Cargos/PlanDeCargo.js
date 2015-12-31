@@ -9,7 +9,12 @@ module.exports = function (sequelize, DataTypes) {
         frecuencia: { type: DataTypes.INTEGER, allowNull: false },
         periodoprueba: { type: DataTypes.INTEGER, allowNull: false },
     },
-    {        
+    {
+        classMethods: {
+            associate: function (models) {
+                PlanDeCargo.belongsTo(models.IntervaloCargo, { foreignKey: 'intervalocargo_id' });
+            }
+        },
         timestamps: false,
         paranoid: true,
         underscored: true,
