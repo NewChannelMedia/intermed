@@ -37,6 +37,18 @@
                             <span>/</span>
                             <input type="text" size="4" data-conekta="card[exp_year]" value="2019" />
                         </div>
+                        <div class="form-row">
+                            <label>
+                                <span>Seleccionar plan de cargo</span>
+                                <select class="form-control" name="planid" id="planid" required="required">
+                                    <option value="0">Planes</option>
+                                    {{#each planes}}
+                                    <option value="{{id}}">{{nombre}}</option>
+                                    {{/each}}
+                                </select>
+                            </label>
+                        </div>
+
                         <button type="submit" id="enviar" name="enviar">¡Pagar ahora!</button>
                     </form>
                     

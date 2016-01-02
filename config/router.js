@@ -1483,11 +1483,8 @@ var iniciar = function () {
     });
 
 
-    app.get('/registrarusuariotarjeta', function (req, res) {        
-        res.render('cargoportarjeta', {
-            title: 'Pagos',
-            usuario_id: 1
-        });
+    app.get('/registrarusuariotarjeta', function (req, res) {
+        intermed.callController('CargosUsuarios', 'RegistrarUsuarioEnProveedorDatos', req.body, req, res);
     });
 
     app.post('/registrarusuariotarjeta', function (req, res) {        

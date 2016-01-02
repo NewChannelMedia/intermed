@@ -8,6 +8,7 @@ conekta.api_key = "key_KP2rs6xsxH3r6jy9y7vhWg";
 conekta.api_version = '1.0.0';
 conekta.locale = 'es'
 
+
 //Listado de usuarios que estan activos y su fecha de primer descuento es actual o mayor a la fecha del servidor
 exports.ProcesarCargosClientes = function (object, req, res) {
     var fechaActual = new Date();
@@ -77,6 +78,20 @@ function MensajeUsuarioSinTarjetaRegistrada(idUsuario) {
 
 //}
 
+//Informacion para registrar cargos de usuario
+exports.RegistrarUsuarioEnProveedorDatos = function (object, req, res) {
+    models.PlanDeCargo.findAll()
+    .then(function (planes) {
+        res.render('cargoportarjeta', {
+            title: 'Pagos',
+            usuario_id: 1,
+            planes: planes
+        });
+    }).catch(function (err) {
+        console.log(err);
+    });
+}
+
 exports.RegistrarUsuarioEnProveedor = function (object, req, res) {
     console.log('registrar cliente tarjeta');
 
@@ -143,31 +158,49 @@ exports.RegistrarUsuarioEnProveedor = function (object, req, res) {
              if (err) {
                  console.log(err.message_to_purchaser);
                  return;
+             } else {
+                 console.log('cliente registrado');
+                 var idUsuario=object.usuario_id;
+                 var idUsuarioProveedor=resultado.toObject().id;
+                 var idTarjetaProveedor = resultado.toObject().cards[0].id;
+                 var idPlan = object.planid;
+
+                 UsuarioRegistrarInformacionCargos(idUsuario, idUsuarioProveedor, idTarjetaProveedor, idPlan);
+                 
+
+                 res.render('registrado', {
+                     title: 'Registrado'
+                 });
              }
-
-
-             console.log('cliente registrado');
-
-             UsuarioGuardarIdProveedor(object.usuario_id, resultado.toObject().id);
-             UsuarioGuardarIdTarjeta(object.usuario_id, resultado.toObject().cards[0].id);
-
-             res.render('registrado', {
-                 title: 'Registrado'
-             });
          });
      }).catch(function (err) {
          console.log(err);
      });
 }
 
-//Suscripciones son una manera de realizar cargos a un cliente con una cantidad fija de manera recurrente. 
-//Puedes cambiar el plan, pausar, cancelar y reanudar una suscripción a tu gusto.
-function RegistrarSuscripcion(idUsuario, idUsuarioProveedor) {
-    cliente = conekta.Customer.find(idUsuarioProveedor);
-    cliente.createSubscription({});
-
+function UsuarioRegistrarInformacionCargos(idUsuario, idUsuarioProveedor, idTarjetaProveedor, idPlan) {
+    models.UsuarioCargo.findOne({
+        where: { id: idUsuario }
+    }).then(function (usuario) {
+        if (!usuario) {
+            models.UsuarioCargo.create({
+                medico_id: idUsuario
+            }).then(function (datos) {
+                UsuarioGuardarIdProveedor(idUsuario, idUsuarioProveedor);
+                UsuarioGuardarIdTarjeta(idUsuario, idTarjetaProveedor);
+                RegitrarSuscripcion(idUsuario, idUsuarioProveedor, idPlan);
+            }).catch(function (err) {
+                console.log(err);
+            });
+        } else {
+            UsuarioGuardarIdProveedor(idUsuario, idUsuarioProveedor);
+            UsuarioGuardarIdTarjeta(idUsuario, idTarjetaProveedor);
+            RegitrarSuscripcion(idUsuario, idUsuarioProveedor, idPlan);
+        }
+    }).catch(function (err) {
+        console.log(err);
+    });
 }
-
 
 function UsuarioGuardarIdProveedor(idUsuario, idUsuarioProveedor) {
     models.UsuarioCargo.update({
@@ -184,20 +217,52 @@ function UsuarioGuardarIdTarjeta(idUsuario, idTarjetaProveedor) {
     })
 }
 
+//Suscripciones son una manera de realizar cargos a un cliente con una cantidad fija de manera recurrente. 
+//Puedes cambiar el plan, pausar, cancelar y reanudar una suscripción a tu gusto.
+function RegitrarSuscripcion(idUsuario, idUsuarioProveedor, planid) {
+    models.PlanDeCargo.findOne({
+        where: { id: planid}
+    }).then(function (plan) {
+        customer = conekta.Customer.find(idUsuarioProveedor, function (err, customer) {
+
+            customer.createSubscription({
+                plan: plan.nombre.replace(' ', '') + '_' + plan.id
+            }, function (err, res) {
+                if (err) {
+                    console.log(err.message_to_purchaser);                    
+                } else {                    
+                    UsuarioGuardarIdPlan(idUsuario, planid);
+                }
+            });
+        });
+
+    }).catch(function (err) {
+        console.log('error al obtener el id del intervalo cargo');
+    });
+}
+
+function UsuarioGuardarIdPlan(idUsuario, planid) {
+    models.UsuarioCargo.update({
+        plandecargo_id: planid
+    }, {
+        where: { medico_id: idUsuario }
+    })
+}
+
 //Informacion para llenar registro de nuevo plan de cargos
 exports.PlanCargoDatosRegistro = function (object, req, res) {
     models.IntervaloCargo.findAll({
         attributes: ['id', 'nombre']
     })
     .then(function (intervalo) {
-        
+
         if (req.query.planId) {
             models.PlanDeCargo.findOne({
                 where: {
                     id: req.query.planId
                 }
             }).then(function (plan) {
-               
+
                 res.render('plandecargo', {
                     title: 'Plan de cargo',
                     plan: plan,
@@ -208,7 +273,7 @@ exports.PlanCargoDatosRegistro = function (object, req, res) {
             });
         } else {
             res.render('plandecargo', {
-                title: 'Plan de cargo',                
+                title: 'Plan de cargo',
                 intervalo: intervalo
             });
         }
@@ -220,31 +285,39 @@ exports.PlanCargoDatosRegistro = function (object, req, res) {
 //Planes son plantillas que te permiten crear suscripciones. 
 //Dentro del plan se define la cantidad y frecuencia con el cual se generaran los cobros recurrentes a los usuarios
 exports.PlanCargoRegistrar = function (object, req, res) {
+    var resultado = false;
+    var mensaje = "";
+
     models.IntervaloCargo.findOne({
-        where: { id: object.intervalocargo_id },
+        where: { id: object.intervalocargo_id }
     }).then(function (intervalo) {
+        console.log(intervalo.descripcion);
         if (object.idPlan == 0) {
-            PlanCargoCrear(object, intervalo.id, intervalo.descripcion);
-        } else {            
-            PlanCargoActualizar(object, intervalo.id, intervalo.descripcion);
+            PlanCargoCrear(object, intervalo.id, intervalo.descripcion);            
+        } else {
+            PlanCargoActualizar(object, intervalo.id, intervalo.descripcion);            
         }
+
+        res.render('registrado', {
+            title: mensaje
+        });
 
     }).catch(function (err) {
         console.log('error al obtener el id del intervalo cargo');
     });
 }
 
-function PlanCargoCrear(object, intervaloId, intervaloDescripcion) {
+function PlanCargoCrear(object, intervaloId, intervaloDescripcion) {    
     models.PlanDeCargo.create({
         nombre: object.nombre,
         monto: parseFloat(object.monto),
         intervalocargo_id: intervaloId,
         frecuencia: object.frecuencia,
         periodoprueba: object.periodoprueba
-    }).then(function (plan) {
-        //registrar plan en conecta                  
+    }).then(function (plan) {        
+        //registrar plan en conecta        
         conekta.Plan.create({
-            "id": plan.id + '_',
+            "id": plan.nombre.replace(' ','') + '_' + plan.id,
             "name": plan.nombre,
             "amount": plan.monto * 100,
             "currency": "MXN",
@@ -253,18 +326,15 @@ function PlanCargoCrear(object, intervaloId, intervaloDescripcion) {
             "trial_period_days": plan.periodoprueba
         }, function (err, res) {
             if (err) {
-                console.log(err);
+                console.log(err);                
             } else {
-                console.log(res)
-                res.render('registrado', {
-                    title: 'Plan de cargo Registrado'
-                });
+                console.log(res);                
             }
         });
-    });
+    });    
 }
 
-function PlanCargoActualizar(object, intervaloId, intervaloDescripcion) {    
+function PlanCargoActualizar(object, intervaloId, intervaloDescripcion) {
     models.PlanDeCargo.update({
         nombre: object.nombre,
         monto: parseFloat(object.monto),
@@ -279,33 +349,34 @@ function PlanCargoActualizar(object, intervaloId, intervaloDescripcion) {
        }
     ).then(function (datos) {
         //actualizar plan en conekta
-        console.log(datos);
+        console.log(object.nombre.replace(' ', '') + '_' + object.idPlan);
 
-        conekta.Plan.find(object.idPlan + '_', function (err, plan) {
+
+        conekta.Plan.find(object.nombre.replace(' ', '') + '_' + object.idPlan, function (err, plan) {
             if (err) {
-                console.log(err);
+                console.log(err);                
             } else {
                 plan.update({
                     //"id": object.planId,
-                    "name": object.nombre,
+                    //"name": object.nombre,
                     "amount": object.monto * 100,
                     //"currency": "MXN",
-                    "interval": intervaloDescripcion,
-                    "frequency": object.frecuencia,
-                    "trial_period_days": object.periodoprueba
+                    //"interval": intervaloDescripcion,
+                    //"frequency": object.frecuencia,
+                    //"trial_period_days": object.periodoprueba
                 }, function (err, res) {
                     if (err) {
                         console.log(err);
-                    } else {
-                        console.log('act c');
-                        console.log(res);
+                    } else {                        
+                        console.log(res);                        
                     }
                 })
-            }            
+            }
         });
 
     }).catch(function (err) {
         console.log('error al actualizar plan');
+        return false;
     });
 }
 
@@ -315,34 +386,20 @@ exports.PlanCargoEliminar = function (object, req, res) {
         where: { id: object.idPlanEliminar }
     }).then(function () {
         console.log('eliminar c');
-        conekta.Plan.find(object.idPlanEliminar + '_', function (err, plan) {
+        conekta.Plan.find(object.nombre.replace(' ', '') + '_' + object.id, function (err, plan) {
             if (err) {
                 console.log(err);
             } else {
                 plan.delete(function (err, res) {
                     if (err) {
                         console.log(err);
-                    } else {                        
+                    } else {
                         console.log(res);
                     }
                 })
             }
         });
-    }).catch(function (err) {        
+    }).catch(function (err) {
         console.log(err);
-    });
-}
-
-
-//Registrar Relacion de cliente con plan de cobro
-function RegistrarRelacionUsuarioPlan(cliente, plan) {
-    cliente.createSubscription({
-        "plan_id": plan.id
-    }, function (subscription) {
-        console.log(subscription);
-        return true;
-    }, function (err) {
-        console.error(err.message_to_purchaser);
-        return false;
     });
 }
