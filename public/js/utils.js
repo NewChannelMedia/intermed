@@ -2097,7 +2097,7 @@ function regUbicacion(salir) {
 function regHorarios() {
     if (regHorariosValid() == true) {
         //agregar horarios al control
-        $('#horariosUbi').val(JSON.stringify(obtenerHorarios()));
+        $('#horariosUbi').val(JSON.stringify(obtenerHorariosAgenda()));
 
         $.ajax({
             url: '/registrarhorarios',
@@ -4228,7 +4228,7 @@ function searchingData(){
     if(data.medicos){
       $.each(data.medicos, function( i, item ){
         if (!item.DatosGenerale.apellidoM) item.DatosGenerale.apellidoM = ' ';
-        var nombreCompleto = item.DatosGenerale.nombre+' '+item.DatosGenerale.apellidoP +item.DatosGenerale.apellidoM;
+        var nombreCompleto = item.DatosGenerale.nombre+' '+item.DatosGenerale.apellidoP + ' ' + item.DatosGenerale.apellidoM;
 
         var usuarioUrl = item.usuarioUrl;
         if (item.urlPersonal && item.urlPersonal != ""){

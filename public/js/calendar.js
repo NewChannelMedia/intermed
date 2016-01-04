@@ -94,7 +94,7 @@ $(document).ready(function () {
 });
 
 
-function obtenerHorarios() {
+function obtenerHorariosAgenda() {
     var objhorarios = [];
     var h = $('#divCalendario').fullCalendar('clientEvents');
     var evento;

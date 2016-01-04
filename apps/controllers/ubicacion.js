@@ -333,6 +333,7 @@ exports.horarios = function (objects, req, res) {
 };
 
 exports.registrarHorarios = function (objects, req, res) {
+  console.log('object: ' + JSON.stringify(objects.direccion_id));
     //eliminar registros anteriores
     if (req.session.passport && req.session.passport.user){
       models.Horarios.destroy({
