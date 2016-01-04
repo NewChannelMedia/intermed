@@ -844,6 +844,9 @@ module.exports = {
         {
           model: models.MedicoEspecialidad,
           attributes: [ 'id' ],
+          where: {
+            subEsp: 0
+          },
           include: [
             {
               model: models.Medico,

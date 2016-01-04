@@ -54,5 +54,66 @@ module.exports = {
         res.send(modificado);
       });
     }
+  },
+  traerServiciosPorMedico: function (object, req, res){
+    models.CatalogoServicios.findAll({
+      where:{ usuario_id:object.usuario_id},
+      attributes:['concepto'],
+      group: 'concepto',
+      order: [['concepto','ASC']]
+    }).then(function(resultado){
+        res.status(200).json({
+          success: true,
+          result: resultado
+        });
+    });
+  },
+  traerUbicacionesPorServicio: function (object, req, res){
+    models.Direccion.findAll({
+      where:{
+        usuario_id:object.usuario_id
+      },
+      order: [['principal','DESC'],[['nombre','ASC']]],
+      attributes:['id','nombre','calle','numero','numeroInt'],
+      include: [
+        {
+          model: models.CatalogoServicios,
+          where: {
+            concepto: object.servicio
+          },
+          attributes:['id','concepto','descripcion','precio','duracion'],
+        },
+        {
+          model: models.Localidad
+        },
+        {
+          model: models.Municipio,
+          include: [
+            { model: models.Estado }
+          ]
+        }
+      ]
+    }).then(function(resultado){
+        res.status(200).json({
+          success: true,
+          result: resultado
+        });
+    });
+  },
+  traerDetallesServicioUbicacion: function (object, req, res){
+    models.CatalogoServicios.findOne({
+      where: {
+        usuario_id:object.usuario_id,
+        concepto: object.servicio,
+        direccion_id: object.ubicacion
+      },
+      attributes:['id','concepto','descripcion','precio','duracion']
+
+    }).then(function(resultado){
+        res.status(200).json({
+          success: true,
+          result: resultado
+        });
+    });
   }
 }

@@ -23,41 +23,68 @@ exports.agregaCita = function(object, req, res) {
   fechaNotificacion.setMinutes(fechaNotificacion.getMinutes() + 30);
   fechaFinNotificacion.setMinutes(fechaNotificacion.getDay() + 7);
   //console.log(object.fecha)
-
   models.Agenda.create({
       fechaHoraInicio:  object.fecha,
       fechaHoraFin:  object.fechaFin,
       status: object.estatus,
-      direccion_id: object.lstUbicacion,
-      paciente_id : object.paciente_id,
-      servicio_id : object.lstServicio,
+      direccion_id: object.ubicacion_id,
+      paciente_id : req.session.passport.user.Paciente_id,
+      servicio_id : object.serviciocita_id,
       usuario_id : object.medico_id,
       status : true
   }).then(function(datos) {
+      models.Medico.findOne({
+        where:{
+          usuario_id: object.medico_id
+        }
+      }).then(function(result){
+        models.MedicoPaciente.findOne({
+            paciente_id: req.session.passport.user.Paciente_id,
+            medico_id: result.id
+        }).then(function(resultado){
+          console.log('Resultado: ' + JSON.stringify(resultado));
+          if (resultado.length == 0){
+            models.MedicoPaciente.create({
+                paciente_id: req.session.passport.user.Paciente_id,
+                medico_id: result.id
+            });
+          }
+        });
+
+        models.MedicoFavorito.findOne({
+          where: {
+            usuario_id: req.session.passport.user.id,
+            medico_id: result.id
+          }
+        }).then(function(resultado){
+          if (!resultado){
+            //Agregar como medico favorito
+              models.MedicoFavorito.create({
+                usuario_id: req.session.passport.user.id,
+                medico_id: result.id,
+                aprobado: 1,
+                mutuo: 1
+              });
+          }
+        })
+      });
+
+      //Agregar a pacientes que atiende el médico
+
       models.Notificacion.create({
-          inicio: fechaNotificacion,
-          fin: fechaFinNotificacion,
+          inicio: fechaNotificacion.toString(),
+          fin: fechaFinNotificacion.toString(),
           data : datos.id.toString(),
           tipoNotificacion_id : 21,
-          usuario_id : object.paciente_id
-      }).catch(function(err) {
-          //console.log(err);
-          //res.status(500).json({error: err});
+          usuario_id : req.session.passport.user.id
       });
-      fechaNotificacion = new Date(object.fechaInicio);
       models.Notificacion.create({
-          inicio: Date.now(),
-          fin: fechaNotificacion,
+          usuario_id : object.medico_id,
+          fin: (new Date(object.fechaInicio)).toString(),
           data : datos.id.toString(),
-          tipoNotificacion_id : 25,
-          usuario_id : object.medico_id
-      }).catch(function(err) {
-          //console.log(err);
-          //res.status(500).json({error: err});
+          tipoNotificacion_id : 25
       });
-      res.status(200).json({ok: true});
-  }).catch(function(err) {
-      res.status(500).json({error: err});
+      res.status(200).json({success: true});
   });
 };
 
@@ -83,22 +110,19 @@ exports.cancelaCitaMedico = function(object, req, res) {
       status: 0
     }, { where : {  id: id }
   }).then(function(datos) {
-      var fechaFin  = new Date();
-      var fecha  = new Date();
-      fechaFin.setMinutes(fechaFin.getDay() + 1);
-      models.Notificacion.create({
-          inicio: fecha,
-          fin: fechaFin,
-          data : object.paciente_id.toString(),
-          tipoNotificacion_id : 22,
-          usuario_id : object.paciente_id.toString()
-      }).then(function(datos) {
-
-      }).catch(function(err) {
-          console.log(err);
-          res.status(500).json({error: err});
+      models.Agenda.findOne({
+        where:{
+          id: id
+        }
+      }).then(function(cita){
+        models.Notificacion.create({
+            data : id,
+            tipoNotificacion_id : 22,
+            usuario_id : cita.paciente_id.toString()
+        }).then(function(datos) {
+          res.status(200).json({success: true});
+        });
       });
-      res.status(200).json({ok: true});
   }).catch(function(err) {
       console.log(err);
       res.status(500).json({error: err});
@@ -131,27 +155,20 @@ exports.rechazarCita = function(object, req, res) {
 }
 
 exports.cancelaCita = function(object, req, res) {
-  models.Agenda.destroy({ where : {  id: object.id }
-  }).then(function(datos) {
-      var fechaFin  = new Date();
-      var fecha  = new Date();
-      fechaFin.setMinutes(fechaFin.getDay() + 1);
-      models.Notificacion.create({
-          inicio: fecha,
-          fin: fechaFin,
-          data : object.paciente_id.toString(),
-          tipoNotificacion_id : 24,
-          usuario_id : object.usuario_id.toString()
-      }).then(function(datos) {
-
-      }).catch(function(err) {
-          console.log(err);
-          //res.status(500).json({error: err});
-      });
-      res.status(200).json({ok: true});
-  }).catch(function(err) {
-      console.log(err);
-      res.status(500).json({error: err});
+  var id = object.id.replace("cita_", "");
+  models.Agenda.findOne({where:{id:id}}
+  ).then(function(agenda){
+    var usuario_id = agenda.usuario_id;
+    models.Agenda.destroy({where:{id:id}
+    }).then(function(datos) {
+        models.Notificacion.create({
+            data : req.session.passport.user.Paciente_id.toString(),
+            tipoNotificacion_id : 24,
+            usuario_id : usuario_id
+        }).then(function(datos) {
+          res.status(200).json({success: true});
+        });
+    })
   });
 };
 
@@ -409,6 +426,7 @@ exports.borraServicio = function(object, req, res) {
 };
 
 // Obtiene horarios por direccion
+/*
 exports.seleccionaHorarios = function(object, req, res) {
   var resultado = [];
   models.Horarios.findAll({
@@ -521,7 +539,7 @@ exports.seleccionaHorarios = function(object, req, res) {
       res.status(500).json({error: err})
   });
 };
-
+*/
 
 // Obtiene horarios por usuario
 exports.seleccionaHorariosMedico = function(object, req, res) {
@@ -595,7 +613,7 @@ exports.seleccionaAgendaMedico  =  function(object, req, res)
       };
 
       models.Agenda.findAll({
-         where :  { usuario_id: object.id, status: true }
+         where :  { usuario_id: object.id}
       }).then(function(datos) {
 
         for (i = 0; i <= datos.length - 1; i++) {
@@ -644,5 +662,235 @@ exports.muestraAgendaMedico  =  function(object, req, res)
 {
     res.render( 'citaMedico', {
       id: object.id
+    });
+};
+
+exports.seleccionaHorarios = function(object, req, res) {
+  var resultado = [];
+  models.Horarios.findAll({
+     where :  { direccion_id: object.direccion_id }
+  }).then(function(datos) {
+
+    var horaInicio;
+    var horaFin;
+
+    var dia0 = object.inicio +' ';
+
+    var inicio = object.inicio.split('-');
+    var fin = object.fin.split('-');
+
+    var dia1 = '';
+    var dia2 = '';
+    var dia3 = '';
+    var dia4 = '';
+    var dia5 = '';
+    var dia6 = '';
+    if (fin[2]<inicio[2]){
+      //cambio de mes
+      var ultimo = parseInt(fin[2]);
+      if (ultimo > 1){
+        dia6 = fin[0] + '-' + fin[1] + '-' + ("0" + --ultimo).slice(-2) + ' ';
+        if (ultimo>1){
+          dia5 = fin[0] + '-' + fin[1] + '-' + ("0" + --ultimo).slice(-2) + ' ';
+          if (ultimo>1){
+            dia4 = fin[0] + '-' + fin[1] + '-' + ("0" + --ultimo).slice(-2) + ' ';
+            if (ultimo>1){
+              dia3 = fin[0] + '-' + fin[1] + '-' + ("0" + --ultimo).slice(-2) + ' ';
+              if (ultimo>1){
+                dia2 = fin[0] + '-' + fin[1] + '-' + ("0" + --ultimo).slice(-2) + ' ';
+                if (ultimo>1){
+                  dia1 = fin[0] + '-' + fin[1] + '-' + ("0" + --ultimo).slice(-2) + ' ';
+                } else {
+                  dia1 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+1)).slice(-2) + ' ';
+                }
+              } else {
+                  dia1 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+1)).slice(-2) + ' ';
+                  dia2 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+2)).slice(-2) + ' ';
+              }
+            } else {
+                dia1 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+1)).slice(-2) + ' ';
+                dia2 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+2)).slice(-2) + ' ';
+                dia3 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+3)).slice(-2) + ' ';
+            }
+          } else {
+              dia1 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+1)).slice(-2) + ' ';
+              dia2 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+2)).slice(-2) + ' ';
+              dia3 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+3)).slice(-2) + ' ';
+              dia4 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+4)).slice(-2) + ' ';
+          }
+        } else {
+            dia1 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+1)).slice(-2) + ' ';
+            dia2 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+2)).slice(-2) + ' ';
+            dia3 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+3)).slice(-2) + ' ';
+            dia4 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+4)).slice(-2) + ' ';
+            dia5 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+5)).slice(-2) + ' ';
+        }
+      } else {
+        dia1 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+1)).slice(-2) + ' ';
+        dia2 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+2)).slice(-2) + ' ';
+        dia3 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+3)).slice(-2) + ' ';
+        dia4 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+4)).slice(-2) + ' ';
+        dia5 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+5)).slice(-2) + ' ';
+        dia6 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+6)).slice(-2) + ' ';
+      }
+    } else {
+      dia1 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+1)).slice(-2) + ' ';
+      dia2 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+2)).slice(-2) + ' ';
+      dia3 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+3)).slice(-2) + ' ';
+      dia4 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+4)).slice(-2) + ' ';
+      dia5 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+5)).slice(-2) + ' ';
+      dia6 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+6)).slice(-2) + ' ';
+    }
+
+
+    for (i = 0; i <= datos.length - 1; i++) {
+        switch (datos[i].dia) {
+            case 0: //domingo
+                horaInicio = dia6 + datos[i].horaInicio;
+                horaFin = dia6 + datos[i].horaFin;
+                break;
+            case 1: //lunes
+                horaInicio = dia0 + datos[i].horaInicio;
+                horaFin = dia0 + datos[i].horaFin;
+                break;
+            case 2: //martes
+                horaInicio = dia1 + datos[i].horaInicio;
+                horaFin = dia1 + datos[i].horaFin;
+                break;
+            case 3: //miercoles
+                horaInicio = dia2 + datos[i].horaInicio;
+                horaFin = dia2 + datos[i].horaFin;
+                break;
+            case 4: //jueves
+                horaInicio = dia3 + datos[i].horaInicio;
+                horaFin = dia3 + datos[i].horaFin;
+                break;
+            case 5: //viernes
+                horaInicio = dia4 + datos[i].horaInicio;
+                horaFin = dia4 + datos[i].horaFin;
+                break;
+            case 6: //sabado
+                horaInicio = dia5 + datos[i].horaInicio;
+                horaFin = dia5 + datos[i].horaFin;
+                break;
+        };
+
+        var horario = {
+            //id: 'businessHours_' +  datos[i].id,
+            title: datos[i].horaInicio + ' - ' + datos[i].horaFin,
+            start: horaInicio,
+            end: horaFin,
+            color : '#578',
+            constraint: 'businessHours',
+            rendering: 'background',
+            overlap: false,
+            //constraint: 'businessHours'
+            //dow: [datos[i].dia]
+        };
+        resultado.push(horario);
+    };
+
+    models.Agenda.findAll({
+       where :  { direccion_id: object.direccion_id }
+    }).then(function(datos) {
+
+      for (i = 0; i <= datos.length - 1; i++) {
+      //  console.log(object.paciente_id + ' ' + datos[i].paciente_id)
+        if (datos[i].paciente_id == object.paciente_id) {
+          if (datos[i].status != 0 ) {
+            var horario = {
+                id: datos[i].id.toString(),
+                title:   'Cita',
+                start: datos[i].fechaHoraInicio,
+                end: datos[i].fechaHoraFin,
+                //color : '#000',
+                editable: false,
+                durationEditable: false,
+                overlap: false,
+                slotEventOverlap: false,
+                //constraint: 'businessHours',
+                //rendering: 'background',
+            };
+          }  else {
+            var horario = {
+              id: 'Cita_' +  datos[i].id,
+              title: 'Cancelada',
+              start: datos[i].fechaHoraInicio,
+              end: datos[i].fechaHoraFin,
+              color : '#000',
+              editable: false,
+              durationEditable: false,
+              overlap: false,
+              slotEventOverlap: false,
+            };
+          }
+        }
+        else {
+          var horario = {
+              id: 'Cita_' +  datos[i].id,
+              title: 'No disponible',
+              start: datos[i].fechaHoraInicio,
+              end: datos[i].fechaHoraFin,
+              color : '#000',
+              editable: false,
+              durationEditable: false,
+              overlap: false,
+              slotEventOverlap: false,
+          };
+        }
+        resultado.push(horario);
+      }
+      res.send(resultado);
+    });
+  });
+};
+
+
+
+
+
+exports.seleccionaAgendaPaciente  =  function(object, req, res)
+{
+    var resultado = [];
+    models.Agenda.findAll({
+       where :  { paciente_id: req.session.passport.user.Paciente_id}
+    }).then(function(datos) {
+
+      for (i = 0; i <= datos.length - 1; i++) {
+
+        if (datos[i].status == 1) {
+          var horario = {
+              id: 'cita_' +  datos[i].id,
+              title: 'Cita',
+              start: datos[i].fechaHoraInicio,
+              end: datos[i].fechaHoraFin,
+//                color : '#000',
+              editable: false,
+              durationEditable: false,
+              overlap: false,
+              slotEventOverlap: false,
+              //constraint: 'businessHours',
+              //rendering: 'background',
+          }
+        } else {
+          var horario = {
+              id: 'cita_' +  datos[i].id,
+              title: 'Cita',
+              start: datos[i].fechaHoraInicio,
+              end: datos[i].fechaHoraFin,
+              color : '#000',
+              editable: false,
+              durationEditable: false,
+              overlap: false,
+              slotEventOverlap: false,
+              //constraint: 'businessHours',
+              rendering: 'background',
+          }
+        }
+
+        resultado.push(horario);
+      }
+
+      res.send(resultado);
     });
 };

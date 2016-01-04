@@ -7,15 +7,17 @@ module.exports = function(sequelize, DataTypes) {
     descripcion: {type: DataTypes.STRING},
     precio: {type: DataTypes.DOUBLE},
     duracion: {type: DataTypes.TIME},
-    usuario_id: {type : DataTypes.BIGINT, allowNull:false}
+    usuario_id: {type : DataTypes.BIGINT, allowNull:false},
+    direccion_id: {type: DataTypes.BIGINT, allowNull:false}
   },{
     classMethods: {
       associate: function(models) {
-        CatalogoServicios.belongsTo(models.Usuario)
+        CatalogoServicios.belongsTo(models.Usuario);
+        CatalogoServicios.belongsTo(models.Direccion);
         CatalogoServicios.hasMany(models.Agenda, {foreignKey:{
           name: 'servicio_id',
           field: 'servicio_id'
-        }})
+        }});
       }
     },
     timestamps: false,

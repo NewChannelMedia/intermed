@@ -2264,3 +2264,37 @@ ol.sortable,ol.sortable ol {
   width: 200px;
   height: 200px;
 }
+
+#divCalendario {
+  margin-bottom: 15px;
+}
+
+#divCalendario .fc-body{
+  background-color: white;
+}
+
+#divCalendario thead{
+  background-color: #172c3b;
+  color: white;
+}
+#divCalendario td{
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.eventCalRemove{
+  font-size: 150%;
+  color: black;
+  margin-top: 5px;
+}
+
+.fc-time-grid-event{
+  text-align: center;
+  padding-top: 5px;
+}
+
+#divCalendarioPadre{
+  padding-top: 0px;
+  min-height: 355px;
+  height: auto;
+}

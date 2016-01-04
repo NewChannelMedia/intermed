@@ -111,9 +111,9 @@ function generarCalendario()
       slotLabelInterval : duracionServicio.substring(0, 5),
       slotDuration: '00:30',
       header: {
-          center: false,
-          right: false,
-          left: false
+          //center: false,
+          //right: false,
+          //left: false
       },
       events: {
         url: '/seleccionaHorarios/' +  $('#lstUbicacion').val() +  "/" + $('#paciente_id').val()
@@ -275,7 +275,7 @@ function validaEvento(inicioEvento, finEvento) {
   return valido;
 }
 
-function obtenerHorarios() {
+function obtenerHorariosCita() {
     var objhorarios = [];
     var h = $('#calendar').fullCalendar('clientEvents');
     var evento;

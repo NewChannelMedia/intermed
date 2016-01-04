@@ -205,7 +205,8 @@
                     {{/eachValSession}}
                   {{/ifsubEsp}}
                 </ul>
-                <a href="#" id="editaMedicoPerfil" onclick="editMedicoPerfil();">Edita tu perfil</a>
+                <a href="#" id="editaMedicoPerfil" onclick="editMedicoPerfil();">Edita tu perfil</a><br/>
+                <a onclick="verAgendaMedico()">Ve tu agenda</a>
                 {{/if}}
             </div>
           </div>
@@ -229,7 +230,7 @@
         <div class="header-options-row row">
           <div class="header-options-content">
             {{#ifTipoPaciente}}
-            <a href="#" class="first-option option">
+            <a class="first-option option" onclick="agendarCitaBootbox()">
               <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 hidden-xs">
                 <span class="option-icon glyphicon h67-medcond s90 center-block text-center">+</span>
               </div>

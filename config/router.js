@@ -1295,6 +1295,10 @@ var iniciar = function () {
         //}
     });
 
+    app.post('/horariosObtener', function (req, res){
+      intermed.callController('ubicacion', 'horariosObtener', req.body, req, res);
+    });
+
     app.get('/ubicacionobtener', function (req, res) {
         //if (req.session.passport.user) {
         intermed.callController('ubicacion', 'ubicacionObtener', req.body, req, res);
@@ -1613,9 +1617,22 @@ var iniciar = function () {
     //<---------- FIN FECHA LUNES --------------------->
     //<-------------- FIN EDICION MEDICO PERFIL --------------->
 
-    app.get('/agendaMedico/:id', function(req,res){
+    app.get('/agendaMedicoVer', function(req,res){
         //rutas.routeLife('main','main',hps);
-        intermed.callController('agenda', 'seleccionaAgendaMedico', {id: req.params.id}, req, res);
+        if (req.session.passport && req.session.passport.user){
+          intermed.callController('agenda', 'seleccionaAgendaMedico', {id: req.session.passport.user.id}, req, res);
+        } else {
+          res.status(200).json({success:false,error:1});
+        }
+    });
+
+    app.get('/agendaPacienteVer', function(req,res){
+        //rutas.routeLife('main','main',hps);
+        if (req.session.passport && req.session.passport.user){
+          intermed.callController('agenda', 'seleccionaAgendaPaciente', {id: req.session.passport.user.id}, req, res);
+        } else {
+          res.status(200).json({success:false,error:1});
+        }
     });
 
     app.get('/muestraAgendaMedico', function(req,res){
@@ -1642,6 +1659,22 @@ var iniciar = function () {
 
     app.post('/cargarAseguradoras', function( req, res){
       intermed.callController('search','cargarAseguradoras',{},req, res);
+    });
+
+    app.post('/traerServiciosPorMedico', function(req, res){
+      intermed.callController('catServicios','traerServiciosPorMedico',req.body, req, res);
+    });
+
+    app.post('/traerUbicacionesPorServicio', function(req,res){
+      intermed.callController('catServicios','traerUbicacionesPorServicio', req.body, req, res);
+    });
+
+    app.post('/traerDetallesServicioUbicacion', function (req, res){
+      intermed.callController('catServicios','traerDetallesServicioUbicacion',req.body, req, res);
+    });
+
+    app.post('/seleccionaHorarios', function(req, res) {
+      intermed.callController('agenda','seleccionaHorarios', req.body, req, res);
     });
 }
 

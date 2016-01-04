@@ -68,7 +68,7 @@ function agregarUbicacion(ubicacion_id){
       <ul class="nav nav-tabs menuBootbox">
         <li class="active ubicaciones"><a data-toggle="tab" href="#divUbicacion">UBICACIONES</a></li>
         <li class="servicios"><a data-toggle="tab" href="#divServicios">SERVICIOS</a></li>
-        <li class="horarios"><a data-toggle="tab" href="#divHorarios">HORARIOS</a></li>
+        <li class="horarios"><a data-toggle="tab" href="#divHorarios" onclick="iniciarDivCalendario()">HORARIOS</a></li>
       </ul>
 
       <div class="tab-content">
@@ -336,32 +336,21 @@ function agregarUbicacion(ubicacion_id){
 
 
     <div id="divHorarios" class="tab-pane fade divBodyBootbox">
-      <h3 style="color:white">Horarios</h3>
-      <p>Alta, modificacion y eliminación de horarios por ubicación.</p>
-      <small>El id de la dirección se saca del input type=hidden con id: 'idDireccion', si esta vacio no deberia dejar agregar horarios ni servicios</small>
-
-
-          <div class="panel">
-              <div class="panel-body">
-                  <div id="horarios">
-                      <form method="POST" name="frmRegHorarios" id="frmRegHorarios">
-                          <input type="hidden" id="horariosUbi" name="horariosUbi" value="" />
-                          <div class="row">
-                              <div class="col-md-12"><div id='calendar'></div></div>
-                              <div class="col-md-6">
-                                  <div id="calendarTrash">
-                                      <img src="img/eliminar.png" />
-                                  </div>
-                              </div>
-                              <div class="col-md-6"><input type="button" class="btn btn-info btn-md btn-block" id="btnRegHorarios" value="Guardar Horarios" onclick="regHorarios()"></div>
-                          </div>
-                      </form>
-                  </div>
+      <form method="POST" name="frmRegHorarios" id="frmRegHorarios" onsubmit="return false;">
+          <input type="hidden" id="horariosUbi" name="horariosUbi" value="" />
+          <input type="hidden" id="direccion_id" name="direccion_id" value="" />
+          <div class="row">
+              <div class="col-md-12" id="divCalendarioPadre"><div id="divCalendario"></div></div>
+              <div class="col-md-6">
+                  <button class="btn btn-danger btn-md" onclick="vaciarCalendario()">
+                      <span class="glyphicon glyphicon-trash"></span>
+                  </button>
               </div>
+              <div class="col-md-6"><input type="button" class="btn btn-save btn-md btn-block" id="btnRegHorarios" value="Guardar Horarios" onclick="regHorarios()"></div>
           </div>
-
+      </form>
+      <!--<input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarHorariosBot();">-->
       <br/><br/>
-      <input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarHorariosBot();">
     </div>
 
 
@@ -397,7 +386,6 @@ function agregarUbicacion(ubicacion_id){
   if (btnGuardar == "Editar"){
     $('label.editar').unbind();
   }
-  iniciarCalendario();
 }
 }
 
@@ -2192,4 +2180,167 @@ function editMedicoPerfil(){
   loadPadecimientos();
   loadPalabras();
   traePadecimientos();
+}
+
+function agendarCitaBootbox(){
+    bootbox.dialog({
+      backdrop: true,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      size:'large',
+      message: `
+      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;" >
+      <div class="divBodyBootbox" style="position:absolute">
+        <h2 class="s25" style="color:white" >AGENDAR UNA CITA.</h2>
+        <h3 class="s20" style="color:white" >Selecciona el servicio para el cual quieres generar la cita, seguido de eso se desplegaran las distintas ubicaciones donde el médico brinda el servicio.</h3>
+
+            <form method="POST" name="frmRegCita" id="frmRegCita">
+              <input type="hidden" id="id" name="id">
+              <input type="hidden" id="paciente_id" name="paciente_id" value="2">
+              <input type="hidden" id="medico_id" name="medico_id" value="1">
+              <input type="hidden" id="fecha" name="fecha" />
+              <input type="hidden" id="fechaFin" name="fechaFin" />
+              <input type="hidden" id="serviciocita_id" name="serviciocita_id" />
+              <div class=col-md-12">
+                <div class="col-md-2">
+                  <label for="servicio_id">Servicio: </label>
+                </div>
+                <div class="col-md-10">
+                  <select class="form-control" id="servicio_id" name="servicio_id" >
+                    <option value=""></option>
+                  </select>
+                </div>
+              </div>
+              <br/><br/><br/>
+
+              <div class=col-md-12" id="ubicaciones_select">
+                <div class="col-md-2">
+                  <label for="servicio_id">Ubicación: </label>
+                </div>
+                <div class="col-md-10">
+                  <select class="form-control" id="ubicacion_id" name="ubicacion_id" >
+                    <option value=""></option>
+                  </select>
+                </div>
+              </div>
+
+
+              <div class=col-md-12" id="cita_detalles">
+                <b>Costo del servicio: </b><span id="citaCosto"></span><br/>
+                <b>Duración: </b><span id="citaDuracion"></span>
+              </div>
+
+
+              <div class="col-md-12" id="divCalendarioPadre"><div id="divCalendario"></div></div>
+
+        </form>
+            <input type="button" class="btn btn-drop btn-sm pull-left" value="Cancelar" onclick="bootbox.hideAll();">
+            <input type="button" class="btn btn-save btn-sm pull-right" value="Agendar cita" onclick="registrarCita()"><br/><br/<br/><br/>
+
+      </div>
+
+      </div>`
+  });
+  traerServiciosPorMedico($('#usuarioPerfil').val());
+}
+
+
+function verAgendaMedico(){
+    bootbox.dialog({
+      backdrop: true,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      size:'large',
+      message: `
+      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;" >
+      <div class="divBodyBootbox" style="position:absolute">
+        <h2 class="s25" style="color:white" >TU AGENDA.</h2>
+        <h3 class="s20" style="color:white" >Da click en las citas para cancelarlas.</h3>
+
+
+
+          <form method="POST" name="frmRegCita" id="frmRegCita">
+            <input type="hidden" id="id" name="id">
+            <input type="hidden" id="paciente_id" name="paciente_id" value="1">
+            <input type="hidden" id="medico_id" name="medico_id" value="{{id}}">
+            <input type="hidden" id="fecha" name="fecha" />
+            <input type="hidden" id="fechaFin" name="fechaFin" />
+
+            <div class="col-md-12">
+              <div id='divCalendario'></div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+      </div>
+
+
+      </div>`
+  });
+
+
+    setTimeout(function(){
+      generarCalendarioMedico();
+    },500);
+
+
+}
+
+
+function verAgendaPaciente(){
+    bootbox.dialog({
+      backdrop: true,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      size:'large',
+      message: `
+      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;" >
+      <div class="divBodyBootbox" style="position:absolute">
+        <h2 class="s25" style="color:white" >TU AGENDA.</h2>
+        <h3 class="s20" style="color:white" >Da click en las citas para cancelarlas.</h3>
+
+
+
+          <form method="POST" name="frmRegCita" id="frmRegCita">
+            <input type="hidden" id="id" name="id">
+            <input type="hidden" id="paciente_id" name="paciente_id" value="1">
+            <input type="hidden" id="medico_id" name="medico_id" value="{{id}}">
+            <input type="hidden" id="fecha" name="fecha" />
+            <input type="hidden" id="fechaFin" name="fechaFin" />
+
+            <div class="col-md-12">
+              <div id='divCalendario'></div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+      </div>
+
+
+      </div>`
+  });
+
+
+    setTimeout(function(){
+      generarCalendarioPaciente();
+    },500);
+
+
 }

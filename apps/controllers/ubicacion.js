@@ -334,39 +334,25 @@ exports.horarios = function (objects, req, res) {
 
 exports.registrarHorarios = function (objects, req, res) {
     //eliminar registros anteriores
-    var continuarRegistro = true;
-    var mensajeError;
-
-    models.Horarios.destroy({
-        where: {
-            direccion_id: 1
-        }
-    }).then(function () {
-        continuarRegistro = true;
-    }).catch(function (err) {
-        continuarRegistro = false;
-        mensajeError = err;
-    });
-
-    if (continuarRegistro) {
-        console.log('horariosUbi: ' + JSON.stringify(objects.horariosUbi));
-        models.Horarios.bulkCreate(JSON.parse(objects.horariosUbi)).then(function () {
-            continuarRegistro = true;
-        }).catch(function (err) {
-            continuarRegistro = false;
-            mensajeError = err;
-        });
-        //
-        if (continuarRegistro) {
-            res.status(200).json({
-                ok: true
-            });
-        };
-    } else {
-        res.status(500).json({
-            error: err
-        });
-    };
+    if (req.session.passport && req.session.passport.user){
+      models.Horarios.destroy({
+          where: {
+              direccion_id: objects.direccion_id
+          }
+      }).then(function () {
+          models.Horarios.bulkCreate(JSON.parse(objects.horariosUbi)).then(
+            function () {
+              res.status(200).json({
+                  success: true
+              });
+            })
+      });
+    } else{
+      res.status(200).json({
+        success: false,
+        error: 1
+      });
+    }
 };
 
 exports.ubicacionObtener = function (objects, req, res) {
@@ -394,30 +380,60 @@ exports.ubicacionObtener = function (objects, req, res) {
 };
 
 exports.horariosObtener = function (objects, req, res) {
-    models.Horarios.findOne({
+    var resultado = [];
+    models.Horarios.findAll({
         where: {
-            usuario_id: 1
+            direccion_id: objects.direccion_id
         },
-        attributes: ['id', 'nombre', 'latitud', 'longitud', 'calle', 'numero'],
-        include: [
-          {
-              model: models.Municipio,
-              attributes: ['municipio'],
-              include: [{
-                  model: models.Estado,
-                  attributes: ['estado'],
-              }],
-          }]
+        attributes: ['dia', 'horaInicio', 'horaFin'],
     }).then(function (datos) {
-        res.render('ubicacionobtener', {
-            title: 'Direcciones',
-            usuario_id: 1,
-            direccion: datos
+
+        var horaInicio;
+        var horaFin;
+        //se usa hardcode en la fecha, la fecha debe de ser lunes
+        for (i = 0; i <= datos.length - 1; i++) {
+            switch (datos[i].dataValues.dia) {
+                case 0: //domingo
+                    horaInicio = '2015-11-08 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-08 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 1: //lunes
+                    horaInicio = '2015-11-02 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-02 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 2: //martes
+                    horaInicio = '2015-11-03 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-03 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 3: //miercoles
+                    horaInicio = '2015-11-04 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-04 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 4: //jueves
+                    horaInicio = '2015-11-05 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-05 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 5: //viernes
+                    horaInicio = '2015-11-06 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-06 ' + datos[i].dataValues.horaFin;
+                    break;
+                case 6: //sabado
+                    horaInicio = '2015-11-07 ' + datos[i].dataValues.horaInicio;
+                    horaFin = '2015-11-07 ' + datos[i].dataValues.horaFin;
+                    break;
+            };
+
+            var horario = {
+                start: horaInicio,
+                end: horaFin
+            };
+            resultado.push(horario);
+        };
+
+        res.status(200).json({
+            direccion_id: objects.direccion_id,
+            horarios: resultado
         });
-    }).catch(function (err) {
-        res.status(500).json({
-            error: err
-        })
     });
 };
 
