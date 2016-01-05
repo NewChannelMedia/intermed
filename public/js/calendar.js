@@ -216,10 +216,6 @@ function iniciarCalendario(eventos){
 }
 
 function iniciarCalendarioAgendarCita(){
-
-
-    eventos = JSON.parse(JSON.stringify(eventos));
-
     var valido = true;
     var duracionServicio =  $('#citaDuracion').html().substring(0, 5);
 
@@ -236,7 +232,7 @@ function iniciarCalendarioAgendarCita(){
         header: {
             //center: false,
             //right: false,
-            //left: false
+            left: false
         },
         //events: {url: '/seleccionaHorarios/' +  $('#ubicacion_id').val() +  "/" + $('#paciente_id').val()},
         events: function(start, end, timezone, callback) {
@@ -269,24 +265,22 @@ function iniciarCalendarioAgendarCita(){
         dayClick: function (date, allDay, jsEvent, view) {
           //quitaEventos();
           var horas = duracionServicio.split(":");
-          var fecha = new moment(date);
-          var fechaInicial = new Date(date)
-          var final = fecha.add(horas[0], 'h');
-          var final = fecha.add(horas[1], 'm');
+
+          inicio = new Date((new Date(date)).toUTCString().split(' GMT')[0]);
+          final = new moment(inicio);
+          final = final.add(horas[0], 'h').add(horas[1], 'm');
           final = new Date(final);
 
-          fecha = new Date(date)
-          fecha.setHours(fecha.getHours()  +  6);
-
-          if ( validaEvento(fecha.getTime(), final)) {
-            var validacionAgenda =  validaAgenda(fecha, final);
+          var mensaje = '';
+          if ( validaEvento(inicio, final)) {
+            var validacionAgenda =  validaAgenda(inicio, final);
             if ( validacionAgenda == 1 ) {
               $('#divCalendario').fullCalendar('removeEvents');
               $('#divCalendario').fullCalendar('refetchEvents');
                 eventData = {
                     title:   $('#servicio_id option:selected').text(),
                     start: date ,
-                    end: final, //date.format('DMYYYY') +  " " +  duracion,
+                    end: new moment(date).add(horas[0], 'h').add(horas[1], 'm'),
                     color : '#578',
                     overlap: false,
                     durationEditable: false,
@@ -296,45 +290,40 @@ function iniciarCalendarioAgendarCita(){
                 $('#divCalendario').fullCalendar('renderEvent', eventData, true);
                 $('#divCalendario').fullCalendar('unselect');
 
-            } else  if ( validacionAgenda == 2 ) {
-              alert('No puede generar una cita con fecha anterior a la actual !');
+            //} else  if ( validacionAgenda == 2 ) {
+            //  alert('No puede generar una cita con fecha anterior a la actual !');
             } else  if ( validacionAgenda == 3 ) {
-              alert('Existe una cita con ese horario !');
+              mensaje = 'Horario cancelado por el médico !';
             } else  if ( validacionAgenda == 4 ) {
-                alert('No puede generar dos citas el mismo dia !');
+              mensaje = 'El horario seleccionado interfiere con el horario de otra Cita';
+            } else  if ( validacionAgenda == 5 ) {
+              mensaje = 'No puede generar dos citas el mismo dia !';
             }
           }
-          else {
-            alert('La cita excede el tiempo disponible del médico !');
+          /*else {
+            mensaje = 'La cita excede el tiempo disponible del médico !';
+          }*/
+          if (mensaje != ""){
+             bootbox.alert({
+               backdrop: false,
+               closeButton: false,
+               onEscape: function () {
+                   bootbox.hideAll();
+               },
+               message: mensaje,
+               title: 'Mensaje de Intermed'
+             });
           }
         },
         eventClick: function (event, jsEvent, view) {
-          if (event.id != null && event.id.substring(0,4) != 'cita' && (event.title != 'Cancelada' && event.title != 'No disponible'))
+          if ((event.id != null && event.id.substring(0,4) != 'cita' && (event.title != 'Cancelada' && event.title != 'No disponible')) || (event.id == null))
           {
-              var r = confirm("Esta seguro de cancelar la cita ?");
-              if  ( r == true)
-              {
-                  if  (cancelaCita(event._id))
-                  {
-                    console.log('cancelando ' + event._id)
-
-                  }
-              }
-          } else if (event.id == null){
-            var r = confirm("Esta seguro de cancelar la cita ?");
-            if  ( r == true)
-            {
-                if  (cancelaCita(event._id))
-                {
-                  console.log('cancelando ' + event._id)
-                }
-            }
+            $('#divCalendario').fullCalendar('removeEvents');
+            $('#divCalendario').fullCalendar('refetchEvents');
           }
         },
         eventMouseover: function (event, jsEvent, view) {
-          if (event.id != null && event.id.substring(0,4) != 'cita' && (event.title != 'Cancelada' && event.title != 'No disponible')) {
-            $(this).append('<span id=\"' + event._id + '\">Clic para eliminar</span>');
-          } else if(event.id== null) {
+          if ((event.id != null && event.id.substring(0,4) != 'cita' && (event.title != 'Cancelada' && event.title != 'No disponible')) || (event.id== null)) {
             $(this).append('<span id=\"' + event._id + '\">Clic para eliminar</span>');
           }
         },
@@ -353,13 +342,16 @@ function iniciarCalendarioAgendarCita(){
 var cita = null;
 
 
-function validaAgenda(inicioEvento, finEvento) {
+function validaAgenda(inicio, fin) {
   var h = $('#divCalendario').fullCalendar('clientEvents');
   var evento;
   var valido = 1;
-  var fecha  =  new Date();
+  var fecha  =  formatearFecha(new Date());
 
-  if  ( inicioEvento < fecha )
+  inicio = formatearFecha(inicio);
+  fin = formatearFecha(fin);
+
+  if  ( inicio < fecha )
   {
     valido  = 2;
   }
@@ -367,24 +359,31 @@ function validaAgenda(inicioEvento, finEvento) {
   {
       for (i = 0; i <= h.length-1; i++) {
           evento = h[i];
-          // Citas de otros pacientes
-          if ((evento.rendering != 'background') && evento.id &&  (evento.id.substring(0,4) == 'cita'))
-          {
-              if ( !((inicioEvento < evento.start ) &&  ( finEvento <= evento.start )) || (inicioEvento >= evento.end ) )
+          if (evento.rendering != 'background' && evento.id){
+            var inicioEvento = formatearFecha(formatearTimestampAgenda(evento.start));
+            var finEvento = formatearFecha(formatearTimestampAgenda(evento.end));
+
+            //Citas propias
+            if (evento.title == "Cita"){
+              var inicioEvento = formatearFecha(formatearTimestampAgenda(evento.start));;
+              if  (inicioEvento.split(' ')[0] == inicio.split(' ')[0])
               {
+                  valido = 5;
+                  break;
+              }
+            //Citas de otras personas o canceladas
+            } else if ((inicio >= inicioEvento && inicio <= finEvento) || (fin >= inicioEvento && fin <= finEvento))
+            {
+              //Cita cancelada
+              if (evento.title == "Cancelada"){
+                //Cancelada
                 valido = 3;
                 break;
-              }
-          }
-
-          // Citas del mismo paciente
-          if ((evento.rendering != 'background') && evento.id && (evento.id.substring(0,4) != 'cita')  &&  (evento.title != 'Cancelada'))
-          {
-            var fechaEv =  new Date(evento.start);
-            if  (  fechaEv.getDay() == inicioEvento.getDay())
-            {
+              } else {
+                //Horario ocupado por otro paciente
                 valido = 4;
                 break;
+              }
             }
           }
       };
@@ -392,20 +391,38 @@ function validaAgenda(inicioEvento, finEvento) {
   return valido;
 }
 
+function formatearFecha(fecha){
+  fecha = new Date(fecha);
+  var año = fecha.getFullYear();
+  var mes = ("0" + (fecha.getMonth()+1)).slice(-2);
+  var dia = ("0" + fecha.getDate()).slice(-2);
+  var hora = ("0" + fecha.getHours()).slice(-2);
+  var minutos = ("0" + fecha.getMinutes()).slice(-2);
+  var segundos = ("0" + fecha.getSeconds()).slice(-2);
+  return año + '-' + mes + '-' + dia + ' ' + hora + ':' + minutos + ':' + segundos;
+}
+
+function formatearTimestampAgenda(timestamp){
+  var date = new Date(timestamp);
+  var iso = date.toISOString().split(':00.')[0].replace('T',' ');
+  return iso
+}
+
 function validaEvento(inicioEvento, finEvento) {
   var h = $('#divCalendario').fullCalendar('clientEvents');
   var evento;
   var valido = false;
 
-console.log(new Date(inicioEvento) + ' - ' + new Date(finEvento));
+  var inicio = formatearFecha(new Date(inicioEvento));
+  var fin = formatearFecha(new Date(finEvento));
   for (i = 0; i <= h.length-1; i++) {
       evento = h[i];
       if (evento.rendering == 'background')
       {
-          console.log('INICIO MAYO A START '+ (new Date(inicioEvento)) +' - ' + (new Date(evento.start))+ ':::'+ (new Date(inicioEvento) >= new Date(evento.start)));
-          if ((new Date(inicioEvento) >= new Date(evento.start)) && (new Date(finEvento) <= new Date(evento.end)))
+          var inicioEvento = formatearFecha(formatearTimestampAgenda(evento.start));
+          var finEvento = formatearFecha(formatearTimestampAgenda(evento.end));
+          if (inicio >= inicioEvento && fin <= finEvento)
           {
-            console.log('valido');
             valido = true;
             break;
           }
@@ -509,8 +526,8 @@ function cancelaCita(id) {
         slotDuration: '00:30',
         //columnFormat: 'dddd',
         header: {
-            center: false,
-            right: false,
+            //center: false,
+            //right: false,
             left: false
         },
         events: {
@@ -533,15 +550,28 @@ function cancelaCita(id) {
         },
         eventClick: function (event, jsEvent, view) {
           //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
-          var r = confirm("Esta seguro de cancelar la cita ?");
-          if  ( r == true)
-          {
-              if  (cancelaCita(event._id))
-              {
-                $('#divCalendario').fullCalendar('removeEvents', event._id);
-                $('#divCalendario').fullCalendar('unselect');
+          bootbox.confirm({
+            message: '¿Esta seguro de cancelar la cita?',
+            title: 'Mensaje de Intermed',
+            backdrop: false,
+            callback: function(result){
+              if (result){
+                if (cancelaCita(event._id))
+                {
+                  $('#divCalendario').fullCalendar('removeEvents', event._id);
+                  $('#divCalendario').fullCalendar('unselect');
+                }
               }
-          }
+            },
+            buttons: {
+              confirm: {
+                label: "Si"
+              },
+              cancel: {
+                label: "No"
+              }
+            }
+          });
           //}
         },
         eventMouseover: function (event, jsEvent, view) {
@@ -584,8 +614,8 @@ function cancelaCita(id) {
         slotDuration: '00:30',
         //columnFormat: 'dddd',
         header: {
-            center: false,
-            right: false,
+            //center: false,
+            //right: false,
             left: false
         },
         events: {
@@ -608,16 +638,28 @@ function cancelaCita(id) {
         },
         eventClick: function (event, jsEvent, view) {
           //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
-          var r = confirm("Esta seguro de cancelar la cita ?");
-          if  ( r == true)
-          {
-              if  (cancelaCitaPaciente(event._id))
-              {
-                $('#divCalendario').fullCalendar('removeEvents', event._id);
-                $('#divCalendario').fullCalendar('unselect');
+          bootbox.confirm({
+            message: '¿Esta seguro de cancelar la cita?',
+            title: 'Mensaje de Intermed',
+            backdrop: false,
+            callback: function(result){
+              if (result){
+                  if  (cancelaCitaPaciente(event._id))
+                  {
+                    $('#divCalendario').fullCalendar('removeEvents', event._id);
+                    $('#divCalendario').fullCalendar('unselect');
+                  }
               }
-          }
-          //}
+            },
+            buttons: {
+              confirm: {
+                label: "Si"
+              },
+              cancel: {
+                label: "No"
+              }
+            }
+          });
         },
         eventMouseover: function (event, jsEvent, view) {
           //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {

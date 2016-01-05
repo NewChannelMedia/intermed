@@ -2190,10 +2190,13 @@ function agendarCitaBootbox(){
       },
       size:'large',
       message: `
-      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;" >
-      <div class="divBodyBootbox" style="position:absolute">
-        <h2 class="s25" style="color:white" >AGENDAR UNA CITA.</h2>
+      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
+      <div class="col-md-12" style="color:white;position:relative">
+        <h2 class="s25 text-center" style="width:100%">AGENDAR UNA CITA.</h2>
         <h3 class="s20" style="color:white" >Selecciona el servicio para el cual quieres generar la cita, seguido de eso se desplegaran las distintas ubicaciones donde el médico brinda el servicio.</h3>
+      </div>
+      .
+      <div class="divBodyBootbox" style="position:relative">
 
             <form method="POST" name="frmRegCita" id="frmRegCita">
               <input type="hidden" id="id" name="id">
@@ -2226,18 +2229,18 @@ function agendarCitaBootbox(){
               </div>
 
 
-              <div class=col-md-12" id="cita_detalles">
+              <div class=col-md-12" id="cita_detalles" style="visibility:hidden">
                 <b>Costo del servicio: </b><span id="citaCosto"></span><br/>
                 <b>Duración: </b><span id="citaDuracion"></span>
               </div>
 
 
-              <div class="col-md-12" id="divCalendarioPadre"><div id="divCalendario"></div></div>
+              <div class="col-md-12" id="divCalendarioPadre"><div class="row"><div id="divCalendario"></div></div></div>
 
-        </form>
+            </form>
             <input type="button" class="btn btn-drop btn-sm pull-left" value="Cancelar" onclick="bootbox.hideAll();">
             <input type="button" class="btn btn-save btn-sm pull-right" value="Agendar cita" onclick="registrarCita()"><br/><br/<br/><br/>
-
+            <span style="color:#5D9AB7">.</span><br/><br/><br/>
       </div>
 
       </div>`
@@ -2254,13 +2257,13 @@ function verAgendaMedico(){
       },
       size:'large',
       message: `
-      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;" >
-      <div class="divBodyBootbox" style="position:absolute">
-        <h2 class="s25" style="color:white" >TU AGENDA.</h2>
+      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
+      <div class="col-md-12" style="color:white;position:relative">
+        <h2 class="s25" style="width:100%">TU AGENDA.</h2>
         <h3 class="s20" style="color:white" >Da click en las citas para cancelarlas.</h3>
-
-
-
+      </div>
+      .
+      <div class="divBodyBootbox" style="position:relative">
           <form method="POST" name="frmRegCita" id="frmRegCita">
             <input type="hidden" id="id" name="id">
             <input type="hidden" id="paciente_id" name="paciente_id" value="1">
@@ -2269,13 +2272,15 @@ function verAgendaMedico(){
             <input type="hidden" id="fechaFin" name="fechaFin" />
 
             <div class="col-md-12">
+              <div class="row">
               <div id='divCalendario'></div>
+              </div>
             </div>
 
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">
+                        <input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">
                     </div>
                 </div>
             </div>
@@ -2304,12 +2309,13 @@ function verAgendaPaciente(){
       },
       size:'large',
       message: `
-      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;" >
-      <div class="divBodyBootbox" style="position:absolute">
-        <h2 class="s25" style="color:white" >TU AGENDA.</h2>
+      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
+      <div class="col-md-12" style="color:white;position:relative">
+        <h2 class="s25" style="width:100%">TU AGENDA.</h2>
         <h3 class="s20" style="color:white" >Da click en las citas para cancelarlas.</h3>
-
-
+      </div>
+      .
+      <div class="divBodyBootbox" style="position:relative">
 
           <form method="POST" name="frmRegCita" id="frmRegCita">
             <input type="hidden" id="id" name="id">
@@ -2319,13 +2325,15 @@ function verAgendaPaciente(){
             <input type="hidden" id="fechaFin" name="fechaFin" />
 
             <div class="col-md-12">
+              <div class="row">
               <div id='divCalendario'></div>
+              </div>
             </div>
 
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">
+                        <input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">
                     </div>
                 </div>
             </div>
@@ -2341,6 +2349,417 @@ function verAgendaPaciente(){
     setTimeout(function(){
       generarCalendarioPaciente();
     },500);
+}
+
+function detalleCancelacionPaciente(data){
+  var data = data.split("|");
+
+  var imagenUrl = '';
+  var nombreUsuario = '';
+  var nombreUbicacion = '';
+  var nombreServicio = '';
+  var fecha = data[1].split('T')[0];
+  var hora = data[1].split('T')[1].split(':00.')[0];
+
+  $.ajax( {
+    async: false,
+    url: '/agenda/detallesCancelacion/paciente',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'paciente_id': data[0],
+      'direccion_id': data[3],
+      'servicio_id': data[4],
+    },
+    success: function ( data ) {
+      imagenUrl = data.usuario.urlFotoPerfil;
+      if (!data.usuario.DatosGenerale.apellidoM) data.usuario.DatosGenerale.apellidoM = '';
+      nombreUsuario = data.usuario.DatosGenerale.nombre  + ' ' + data.usuario.DatosGenerale.apellidoP + ' ' + data.usuario.DatosGenerale.apellidoM;
+      nombreUbicacion = data.ubicacion;
+      nombreServicio = data.servicio;
+    },
+    error: function (err){
+      console.log('AJAX Error: ' + JSON.stringify(err));
+    }
+  });
+//  alert(data.split("|")[0]);
+
+  bootbox.dialog({
+    backdrop: true,
+    onEscape: function () {
+        bootbox.hideAll();
+    },
+    className: "medium",
+    message: `
+    <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
+    <div class="col-md-12" style="color:white;position:relative">
+      <h2 class="s25 text-center" style="width:100%">CITA CANCELADA POR EL PACIENTE.</h2>
+    </div>
+    .
+    <div class="divBodyBootbox" style="position:relative">
+
+        <div class="col-md-12" style="margin-bottom:30px;margin-top:30px">
+          <div class="row">
+            <div class="col-md-4">
+            <img src="`+imagenUrl+`" style="margin-top:7px;width:100%">
+            </div>
+            <div class="col-md-8">
+            <span class="pull-right"><b>Fecha: </b>`+ fecha +`</span><br/>
+            <span class="pull-right"><b>Hora: </b>`+ hora +`</span><br/><br/>
+            <h4><b>Paciente: </b>`+nombreUsuario+`</h4><br/>
+            <b>Ubicacion: </b>`+nombreUbicacion+`<br/>
+            <b>Servicio: </b>`+nombreServicio+`<br/>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>`
+  });
+
+  $('.bootbox-close-button').css('z-index','1000');
+  $('.bootbox-close-button').css('position','relative');
+}
+
+function detalleCancelacionMedico(agenda_id){
+  var imagenUrl = '';
+  var nombreUsuario = '';
+  var nombreUbicacion = '';
+  var nombreServicio = '';
+  var fecha = '';
+  var hora = '';
+
+  $.ajax( {
+    async: false,
+    url: '/agenda/detallesCancelacion/medico',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'agenda_id': agenda_id
+    },
+    success: function ( data ) {
+      imagenUrl = data.result.Usuario.urlFotoPerfil;
+      if (!data.result.Usuario.DatosGenerale.apellidoM) data.result.Usuario.DatosGenerale.apellidoM = '';
+      nombreUsuario = 'Dr. ' + data.result.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Usuario.DatosGenerale.apellidoM;
+      nombreUbicacion = data.result.Direccion.nombre;
+      nombreServicio = data.result.CatalogoServicio.concepto;
+      fecha = data.result.fechaHoraInicio.split('T')[0];
+      hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+    },
+    error: function (err){
+      console.log('AJAX Error: ' + JSON.stringify(err));
+    }
+  });
+//  alert(data.split("|")[0]);
+
+  bootbox.dialog({
+    backdrop: true,
+    onEscape: function () {
+        bootbox.hideAll();
+    },
+    className: "medium",
+    message: `
+    <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
+    <div class="col-md-12" style="color:white;position:relative">
+      <h2 class="s25 text-center" style="width:100%">CITA CANCELADA POR EL MÉDICO.</h2>
+    </div>
+    .
+    <div class="divBodyBootbox" style="position:relative">
+
+        <div class="col-md-12" style="margin-bottom:30px;margin-top:30px">
+          <div class="row">
+            <div class="col-md-4">
+            <img src="`+imagenUrl+`" style="margin-top:7px;width:100%">
+            </div>
+            <div class="col-md-8">
+            <span class="pull-right"><b>Fecha: </b>`+ fecha +`</span><br/>
+            <span class="pull-right"><b>Hora: </b>`+ hora +`</span><br/><br/>
+            <h4><b>`+nombreUsuario+`</b></h4><br/>
+            <b>Ubicacion: </b>`+nombreUbicacion+`<br/>
+            <b>Servicio: </b>`+nombreServicio+`<br/>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>`
+  });
+
+  $('.bootbox-close-button').css('z-index','1000');
+  $('.bootbox-close-button').css('position','relative');
+}
+
+function detalleCita(agenda_id){
+  var imagenUrl = '';
+  var nombreUsuario = '';
+  var nombreUbicacion = '';
+  var nombreServicio = '';
+  var fecha = '';
+  var hora = '';
+
+  $.ajax( {
+    async: false,
+    url: '/agenda/detalleCita',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'agenda_id': agenda_id
+    },
+    success: function ( data ) {
+      console.log('Result: ' + JSON.stringify(data));
+      imagenUrl = data.result.Paciente.Usuario.urlFotoPerfil;
+      if (!data.result.Paciente.Usuario.DatosGenerale.apellidoM) data.result.Paciente.Usuario.DatosGenerale.apellidoM = '';
+      nombreUsuario = data.result.Paciente.Usuario.DatosGenerale.nombre  + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoM;
+      nombreUbicacion = data.result.Direccion.nombre;
+      nombreServicio = data.result.CatalogoServicio.concepto;
+      fecha = data.result.fechaHoraInicio.split('T')[0];
+      hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+    },
+    error: function (err){
+      console.log('AJAX Error: ' + JSON.stringify(err));
+    }
+  });
+//  alert(data.split("|")[0]);
+
+  bootbox.dialog({
+    backdrop: true,
+    onEscape: function () {
+        bootbox.hideAll();
+    },
+    className: "medium",
+    message: `
+    <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
+    <div class="col-md-12" style="color:white;position:relative">
+      <h2 class="s25 text-center" style="width:100%">NUEVA CITA AGENDADA.</h2>
+    </div>
+    .
+    <div class="divBodyBootbox" style="position:relative">
+
+        <div class="col-md-12" style="margin-bottom:30px;margin-top:30px">
+          <div class="row">
+            <div class="col-md-4">
+            <img src="`+imagenUrl+`" style="margin-top:7px;width:100%">
+            </div>
+            <div class="col-md-8">
+            <span class="pull-right"><b>Fecha: </b>`+ fecha +`</span><br/>
+            <span class="pull-right"><b>Hora: </b>`+ hora +`</span><br/><br/>
+            <h4><b>`+nombreUsuario+`</b></h4><br/>
+            <b>Ubicacion: </b>`+nombreUbicacion+`<br/>
+            <b>Servicio: </b>`+nombreServicio+`<br/>
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>`
+  });
+
+  $('.bootbox-close-button').css('z-index','1000');
+  $('.bootbox-close-button').css('position','relative');
+}
+
+function bootboxCalificarCita(agenda_id, notificacion_id){
+
+    var imagenUrl = '';
+    var nombreUsuario = '';
+    var nombreUbicacion = '';
+    var nombreServicio = '';
+    var fecha = '';
+    var hora = '';
+
+    $.ajax( {
+      async: false,
+      url: '/agenda/detallesCancelacion/medico',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        'agenda_id': agenda_id
+      },
+      success: function ( data ) {
+        imagenUrl = data.result.Usuario.urlFotoPerfil;
+        if (!data.result.Usuario.DatosGenerale.apellidoM) data.result.Usuario.DatosGenerale.apellidoM = '';
+        nombreUsuario = 'Dr. ' + data.result.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Usuario.DatosGenerale.apellidoM;
+        nombreUbicacion = data.result.Direccion.nombre;
+        nombreServicio = data.result.CatalogoServicio.concepto;
+        fecha = data.result.fechaHoraInicio.split('T')[0];
+        hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+  //  alert(data.split("|")[0]);
+
+    bootbox.dialog({
+      backdrop: true,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      className: "medium",
+      message: `
+      <style>span.Slider {height:120px; float:left; margin:15px}</style>
+
+      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
+      <div class="col-md-12" style="color:white;position:relative">
+        <h2 class="s25 text-center" style="width:100%">CALIFICA TU CITA</h2>
+      </div>
+      .
+      <div class="divBodyBootbox" style="position:relative">
+
+          <div class="col-md-12" style="margin-bottom:30px;margin-top:30px">
+            <div class="row">
+              <div class="col-md-2">
+                <img src="`+imagenUrl+`" style="width:100%;display:block;margin:0 auto 0 auto;" class="img-rounded">
+              </div>
+              <div class="col-md-10">
+                <span class="pull-right"><b>Fecha: </b>`+ fecha +` `+ hora +`</span>
+                <span class="pull-left"><h4><b>`+nombreUsuario+`</b></h4></span>
+              </div>
+              <div class="col-md-12" style="margin-top:20px">
+                <div class="row">
+                  <div class="col-md-7" style="margin-top:10px;font-weight:bold">Satisfacción general: </div>
+                  <div class="col-md-5"><input id="input-21d" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>
+                </div>
+                <hr class="hrblack" />
+                <div class="row">
+                  <div id="eq">
+                    <div class="col-md-3">
+                      <div class="row">
+                        <div class="col-md-12 text-center">
+                            <div class="Slider"></div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                        Higiene del lugar
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-3">
+                      <div class="row">
+                        <div class="col-md-12 text-center">
+                            <div class="Slider"></div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                        Puntualidad
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-3">
+                      <div class="row">
+                        <div class="col-md-12 text-center">
+                            <div class="Slider"></div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                        Instalaciones
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-3">
+                      <div class="row">
+                        <div class="col-md-12 text-center">
+                            <div class="Slider"></div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                        Trato personal
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-md-3 col-md-offset-6 pull-right">
+                  <div class="form-group">
+                      <input type="button" class="btn btn-warning btn-block" value="Calificar" onclick="bootbox.hideAll()">
+                  </div>
+              </div>
+              <div class="col-md-3 pull-left">
+                  <div class="form-group">
+                      <input type="button" class="btn btn-danger btn-block" value="Cerrar" onclick="bootbox.hideAll()">
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <!-- In <head> -->
+      <link href="css/nouislider.min.css" rel="stylesheet">
+
+      <!-- In <body> -->
+      <script src="js/nouislider.min.js"></script>
+      </div>
+
+      `
+    });
 
 
+    $('.bootbox-close-button').css('z-index','1000');
+    $('.bootbox-close-button').css('position','relative');
+    $('.star-rating.rating-xs rating-active').css('text-align','right');
+    $('.rating-gly-star').addClass('pull-right');
+
+
+    $("#input-21d").rating();
+
+    $('.clear-rating').css('display','none');
+    $('.caption').css('display','none');
+
+
+    var slider = document.getElementById('keypress');
+
+    $('div.Slider').each(function(){
+      noUiSlider.create($(this)[ 0 ], {
+      	start: 50,
+      	step: 10,
+  		  orientation: "vertical",
+      	range: {
+      		'min': 0,
+      		'max': 100
+      	}
+      });
+
+      $(this)[ 0 ].noUiSlider.on('update', function( values, handle ) {
+      	//alert(100-values[handle]);
+      });
+    });
 }

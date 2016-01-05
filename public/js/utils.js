@@ -5115,6 +5115,7 @@ function traerUbicacionesPorServicio(usuario_id){
 function traerDetallesServicioUbicacion(usuario_id){
   $('#citaCosto').html('');
   $('#citaDuracion').html('');
+  $('#cita_detalles').css('visibility','hidden');
     $.ajax({
         url: '/traerDetallesServicioUbicacion',
         type: 'POST',
@@ -5155,8 +5156,10 @@ function iniciarDivAgendaCita(direccion_id){
         $('#direccion_id').val(data.direccion_id);
         $("#divCalendario").remove();
         $("#divCalendarioPadre").html('<div id="divCalendario"></div>');
-        setTimeout(function(){iniciarCalendarioAgendarCita(data.horarios)},300);
-
+        setTimeout(function(){
+          iniciarCalendarioAgendarCita();
+          $('#cita_detalles').css('visibility','visible');
+        },300);
       },
       error: function (err){
         console.log('AJAX Error: ' + JSON.stringify(err));

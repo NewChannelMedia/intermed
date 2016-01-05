@@ -1676,6 +1676,18 @@ var iniciar = function () {
     app.post('/seleccionaHorarios', function(req, res) {
       intermed.callController('agenda','seleccionaHorarios', req.body, req, res);
     });
+
+    app.post('/agenda/detallesCancelacion/paciente', function (req, res){
+      intermed.callController('agenda','detallesCancelacionPaciente', req.body, req, res);
+    });
+
+    app.post('/agenda/detallesCancelacion/medico', function (req, res){
+      intermed.callController('agenda','detallesCancelacionMedico', req.body, req, res);
+    });
+
+    app.post('/agenda/detalleCita', function (req, res){
+      intermed.callController('agenda','detalleCita', req.body, req, res);
+    });
 }
 
 var manejarPerfiles = function(){

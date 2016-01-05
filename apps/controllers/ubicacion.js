@@ -386,7 +386,7 @@ exports.horariosObtener = function (objects, req, res) {
         where: {
             direccion_id: objects.direccion_id
         },
-        attributes: ['dia', 'horaInicio', 'horaFin'],
+        attributes: ['dia', 'horaInicio', 'horaFin']
     }).then(function (datos) {
 
         var horaInicio;

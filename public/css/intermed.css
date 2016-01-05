@@ -2294,7 +2294,52 @@ ol.sortable,ol.sortable ol {
 }
 
 #divCalendarioPadre{
-  padding-top: 0px;
-  min-height: 355px;
+  padding-top: 10px;
   height: auto;
+}
+
+.medium{
+  width: 50%;
+  padding: auto;
+  margin: auto;
+}
+
+#cita_detalles{
+  margin-top: 49px;
+  margin-left: 15px;
+  margin-bottom: -30px;
+}
+
+.star-rating.rating-xs.rating-active{
+  text-align: right;
+}
+
+hr.hrblack{
+  border: 0;
+  height: 1px;
+  background: #000;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+div.Slider{
+  height: 100px;
+  margin-left: 40%;
+  width: 8px;
+  background-color: #FAFAFA;
+}
+
+.noUi-vertical .noUi-handle {
+    left: -6px;
+    top: -17px;
+    width: 10px!important;
+    margin-left: 4px;
+    height: 14px!important;
+    margin-top: 10px;
+    background-color: red;
+    border-color: #7A7A7A;
+}
+
+.noUi-vertical .noUi-origin{
+  background-color: white;
 }

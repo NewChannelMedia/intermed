@@ -353,6 +353,7 @@ function socketManejadores() {
 
 function formatearNotificacion( record , element) {
   var not = '';
+  var tipo = '';
   if ( record.medico ) {
     tipo = 'medico';
   }
@@ -481,23 +482,23 @@ function formatearNotificacion( record , element) {
           break;
       case 21:
           //paciente calificación de cita
-          not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + 'Calificación de cita</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left"><a onclick="bootboxCalificarCita(\''+record.data+'\',\''+record.id+'\')">'+mediaObjectImagen+'</a></div><div class="media-body"><a onclick="bootboxCalificarCita(\''+record.data+'\',\''+record.id+'\')">Califica tu cita con el ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
           break;
       case 22:
           //medico cancelando cita
-          not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' Ha cancelado la cita</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left"><a  onclick="detalleCancelacionMedico(\''+ record.data +'\')">'+mediaObjectImagen+'</a></div><div class="media-body"><a  onclick="detalleCancelacionMedico(\''+ record.data +'\')">El ' + nombreCompleto + ' ha cancelado una cita que tenias programada.</a>' + mediaObjectFecha + '</div>';
           break;
       case 23:
           //paciente ha rechazado cambio de cita
-          not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' Ha rechazado la cita</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left"><a href="#" >'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" >' + nombreCompleto + ' Ha rechazado la cita</a>' + mediaObjectFecha + '</div>';
           break;
       case 24:
           //paciente cancelando cita
-          not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' El paciente ha cancelado la cita</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left" ><a onclick="detalleCancelacionPaciente(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body"><a onclick="detalleCancelacionPaciente(\''+record.data+'\')">El paciente ' + nombreCompleto + ' ha cancelado una cita.</a>' + mediaObjectFecha + '</div>';
           break;
       case 25:
           //medico tiene solicitud de cita
-          not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' El paciente ha generado una cita</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left"><a onclick="detalleCita(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body"><a onclick="detalleCita(\''+record.data+'\')">El paciente ' + nombreCompleto + ' ha generado una cita.</a>' + mediaObjectFecha + '</div>';
           break;
     }
     not += '</div>';
@@ -573,7 +574,7 @@ $( document ).ready( function () {
       chat.addEventListener( "DOMMouseScroll", cargarInboxListCondicional, false );
     }
     // IE 6/7/8
-    else chat.attachEvent( "onmousewheel", cargarInboxListCondicional );    
+    else chat.attachEvent( "onmousewheel", cargarInboxListCondicional );
   }
 } );
 

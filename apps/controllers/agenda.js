@@ -19,6 +19,7 @@ exports.generarCita = function(object, req, res) {
 
 exports.agregaCita = function(object, req, res) {
   var fechaNotificacion = new Date(object.fechaFin);
+  console.log('fechaNotificacion: ' + fechaNotificacion);
   var fechaFinNotificacion = new Date(object.fechaFin);
   fechaNotificacion.setMinutes(fechaNotificacion.getMinutes() + 30);
   fechaFinNotificacion.setMinutes(fechaNotificacion.getDay() + 7);
@@ -42,7 +43,6 @@ exports.agregaCita = function(object, req, res) {
             paciente_id: req.session.passport.user.Paciente_id,
             medico_id: result.id
         }).then(function(resultado){
-          console.log('Resultado: ' + JSON.stringify(resultado));
           if (resultado.length == 0){
             models.MedicoPaciente.create({
                 paciente_id: req.session.passport.user.Paciente_id,
@@ -71,19 +71,21 @@ exports.agregaCita = function(object, req, res) {
 
       //Agregar a pacientes que atiende el médico
 
+      console.log('notificacion paciente');
       models.Notificacion.create({
-          inicio: fechaNotificacion.toString(),
-          fin: fechaFinNotificacion.toString(),
+          inicio: formatearFecha(fechaNotificacion),
+          fin:  formatearFecha(fechaFinNotificacion),
           data : datos.id.toString(),
           tipoNotificacion_id : 21,
           usuario_id : req.session.passport.user.id
-      });
+      },{logging:console.log});
+      console.log('notificacion medico');
       models.Notificacion.create({
           usuario_id : object.medico_id,
-          fin: (new Date(object.fechaInicio)).toString(),
+          fin: formatearFecha(new Date(object.fecha)),
           data : datos.id.toString(),
           tipoNotificacion_id : 25
-      });
+      },{logging:console.log});
       res.status(200).json({success: true});
   });
 };
@@ -115,12 +117,25 @@ exports.cancelaCitaMedico = function(object, req, res) {
           id: id
         }
       }).then(function(cita){
-        models.Notificacion.create({
-            data : id,
-            tipoNotificacion_id : 22,
-            usuario_id : cita.paciente_id.toString()
-        }).then(function(datos) {
-          res.status(200).json({success: true});
+        models.Paciente.findOne({
+          where: {
+            id: cita.paciente_id.toString()
+          }
+        }).then(function(paciente){
+          models.Notificacion.destroy({
+            where:{
+              tipoNotificacion_id: {$in: [21,25]},
+              data: id
+            }
+          }).then(function(){
+            models.Notificacion.create({
+                data : id,
+                tipoNotificacion_id : 22,
+                usuario_id : paciente.usuario_id.toString()
+            }).then(function(datos) {
+              res.status(200).json({success: true});
+            });
+          });
         });
       });
   }).catch(function(err) {
@@ -158,11 +173,12 @@ exports.cancelaCita = function(object, req, res) {
   var id = object.id.replace("cita_", "");
   models.Agenda.findOne({where:{id:id}}
   ).then(function(agenda){
+    var infoAgenda = JSON.parse(JSON.stringify(agenda));
     var usuario_id = agenda.usuario_id;
     models.Agenda.destroy({where:{id:id}
     }).then(function(datos) {
         models.Notificacion.create({
-            data : req.session.passport.user.Paciente_id.toString(),
+            data : req.session.passport.user.Paciente_id+'|'+infoAgenda.fechaHoraInicio+'|'+infoAgenda.fechaHoraFin+'|'+infoAgenda.direccion_id+'|'+infoAgenda.servicio_id,
             tipoNotificacion_id : 24,
             usuario_id : usuario_id
         }).then(function(datos) {
@@ -791,16 +807,16 @@ exports.seleccionaHorarios = function(object, req, res) {
     };
 
     models.Agenda.findAll({
-       where :  { direccion_id: object.direccion_id }
+       where :  { direccion_id: object.direccion_id}
     }).then(function(datos) {
 
       for (i = 0; i <= datos.length - 1; i++) {
       //  console.log(object.paciente_id + ' ' + datos[i].paciente_id)
-        if (datos[i].paciente_id == object.paciente_id) {
+        if (datos[i].paciente_id == req.session.passport.user.Paciente_id) {
           if (datos[i].status != 0 ) {
             var horario = {
-                id: datos[i].id.toString(),
-                title:   'Cita',
+                id: 'cita_' +  datos[i].id,
+                title: 'Cita',
                 start: datos[i].fechaHoraInicio,
                 end: datos[i].fechaHoraFin,
                 //color : '#000',
@@ -813,7 +829,7 @@ exports.seleccionaHorarios = function(object, req, res) {
             };
           }  else {
             var horario = {
-              id: 'Cita_' +  datos[i].id,
+              id: 'cita_' +  datos[i].id,
               title: 'Cancelada',
               start: datos[i].fechaHoraInicio,
               end: datos[i].fechaHoraFin,
@@ -827,7 +843,7 @@ exports.seleccionaHorarios = function(object, req, res) {
         }
         else {
           var horario = {
-              id: 'Cita_' +  datos[i].id,
+              id: 'cita_' +  datos[i].id,
               title: 'No disponible',
               start: datos[i].fechaHoraInicio,
               end: datos[i].fechaHoraFin,
@@ -894,3 +910,99 @@ exports.seleccionaAgendaPaciente  =  function(object, req, res)
       res.send(resultado);
     });
 };
+
+exports.detallesCancelacionPaciente = function(object, req, res){
+  models.Usuario.findOne({
+    attributes: ['urlFotoPerfil'],
+    include: [
+      {
+        model: models.Paciente,
+        where: {
+          id: object.paciente_id
+        }
+      },{
+        model: models.DatosGenerales,
+        attributes: ['nombre','apellidoP','ApellidoM']
+      }
+    ]
+  }).then(function(usuario){
+    models.Direccion.findOne({
+      where: {
+        id: object.direccion_id
+      },
+      attributes: ['nombre']
+    }).then(function(ubicacion){
+      models.CatalogoServicios.findOne({
+        where:{
+          id: object.servicio_id
+        },
+        attributes: ['concepto']
+      }).then(function(servicio){
+        console.log('UBICACION: ' + JSON.stringify(ubicacion));
+        console.log('SERVICIO: ' + JSON.stringify(servicio));
+        res.status(200).json({
+          usuario: usuario,
+          ubicacion: ubicacion.nombre,
+          servicio: servicio.concepto
+        });
+      });
+    })
+  });
+};
+
+exports.detallesCancelacionMedico = function(object, req, res){
+  models.Agenda.findOne({
+    where:{
+      id: object.agenda_id
+    },
+    include:[{
+      model: models.Usuario,
+      include: [{
+        model: models.DatosGenerales
+      }]
+    },{
+      model: models.CatalogoServicios
+    },{
+      model: models.Direccion
+    }]
+  }).then(function(result){
+    res.status(200).json({
+      result: result
+    });
+  });
+};
+
+exports.detalleCita = function(object, req, res){
+  models.Agenda.findOne({
+    where:{
+      id: object.agenda_id
+    },
+    include:[{
+      model: models.Paciente,
+      include: [{
+        model: models.Usuario,
+        include: [{
+          model: models.DatosGenerales
+        }]
+      }]
+    },{
+      model: models.CatalogoServicios
+    },{
+      model: models.Direccion
+    }]
+  }).then(function(result){
+    res.status(200).json({
+      result: result
+    });
+  });
+};
+
+function formatearFecha(fecha){
+  var año = fecha.getFullYear();
+  var mes = ("0" + (fecha.getMonth()+1)).slice(-2);
+  var dia = ("0" + fecha.getDate()).slice(-2);
+  var hora = ("0" + fecha.getHours()).slice(-2);
+  var minutos = ("0" + fecha.getMinutes()).slice(-2);
+  var segundos = ("0" + fecha.getSeconds()).slice(-2);
+  return año + '-' + mes + '-' + dia + ' ' + hora + ':' + minutos + ':' + segundos;
+}
