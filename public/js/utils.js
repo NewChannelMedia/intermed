@@ -3132,15 +3132,19 @@ function addServices(concepto, descripcion,precio,duracion){
   var des = $(descripcion).val();
   var pre = $(precio).val();
   var dur = $(duracion+ " :selected").val();
+  var otroID = $("#idDireccion").val();
+  console.log("Entro aqui");
   //post para el envio de la informacion
   if( con != "" && des != "" && pre != "" && dur != "time" ){
     $.post('/addServices',{
       concepto:con,
       descripcion: des,
       precio: pre,
-      duracion: dur
+      duracion: dur,
+      otroID: otroID
     },function(data){
       if(data == true){
+        maquetaServices();
         $("#exitoAgregado").removeClass('hidden');
         $(concepto).html('');
         $(descripcion).html('');
@@ -3178,21 +3182,21 @@ function maquetaServices(){
         html += '<td>';
           html += '<center>';
             html += '<div class="form-group">';
-              html += '<input type="text" tipo="descripcion" class="form-control" id="decriptModifica'+i+'" value="'+item.descripcion+'" onfocus="editUbicacion(\''+des+'\')"/>';
+              html += '<input type="text" tipo="descripcion" oculto="'+item.id+'" class="form-control" id="decriptModifica'+i+'" value="'+item.descripcion+'" onfocus="editUbicacion(\''+des+'\')"/>';
             html += '</div>';
           html += '</center>';
         html += '</td>';
         html += '<td>';
           html += '<center>';
             html += '<div class="form-group">';
-              html += '<input type="text" tipo="precio" class="form-control" id="precModifica'+i+'" value="'+item.precio+'" onfocus="editUbicacion(\''+pre+'\');"/>';
+              html += '<input type="text" tipo="precio" oculto="'+item.id+'" class="form-control" id="precModifica'+i+'" value="'+item.precio+'" onfocus="editUbicacion(\''+pre+'\');"/>';
             html += '</div>';
           html += '</center>';
         html += '</td>';
         html += '<td>';
           html += '<center>';
             html += '<div class="form-group">';
-              html += '<select id="durModifica'+i+'">';
+              html += '<select id="durModifica'+i+'" oculto="'+item.id+'" tipo="duracion" onfocus="editUbicacion(\''+dur+'\')">';
                 html += '<option value="'+item.duracion+'">'+item.duracion+'</option>';
                 html += '<option value="00:30:00">30 minutos</option>';
                 html += '<option value="00:45:00">1 hora</option>';
@@ -3220,7 +3224,7 @@ function maquetaServices(){
         html += '<td>';
           html += '<center>';
           var idDelete = "#delete-"+i;
-            html += '<button type="button" id="delete-'+i+'" onclick="onDelete(\''+idDelete+'\')">';
+            html += '<button type="button" id="delete-'+i+'" oculto="'+item.id+'" onclick="onDelete(\''+idDelete+'\')">';
               html += '<span class="glyphicon glyphicon-remove-sign"></span>'
             html += '</button>';
           html += '</center>';
@@ -3299,17 +3303,19 @@ function deleteFunction(tr, id){
 }
 function updateServices( tipo, dato, di ){
   var id = di;
+  var otroID = $("#idDireccion").val();
   $.post('/updateServices',{
     id: id,
     tipo: tipo,
     valor: dato,
+    otroID: otroID
   }, function(data){
     if( data == 1 ){
       console.log("Modificado con exito: "+tipo);
     }else{
       console.log("No se pudo modificar: "+tipo);
     }
-  });
+  }).fail(function(e){console.log("Error: "+JSON.stringify(e))});
 }
 function loadDatosGenerales(){
   $.post("/loadDatosGenerales",function(data){
@@ -5108,28 +5114,24 @@ $( document ).ready( function () {
       var tipo = $(dato).attr('tipo');
       var id = $( this ).attr('oculto');
       switch( tipo ){
-        case "concepto":console.log("Tipo: "+tipo);
-          updateServices( tipo,cambio,id );
-        break;
-        case "descripcion":console.log("Tipo: "+tipo);
-          /*$.post('/descripcionEdit',{},function(data){
-
-          });*/
-        break;
-        case "precio":console.log("Tipo: "+tipo);
-          /*$.post('/precioEdit',{},function(data){
-
-          });*/
-        break;
-        case "duracion":console.log("Tipo: "+tipo);
-          /*$.post('/duracionEdit',{}, function(data){
-
-          });*/
-        break;
+        case "concepto":updateServices( tipo,cambio,id );break;
+        case "descripcion":updateServices( tipo,cambio,id );break;
+        case "precio":updateServices( tipo,cambio,id );break;
+        case "duracion":updateServices( tipo,cambio,id );break;
       }
     });
   }
   function onDelete(del){
-    console.log("Id of Delete: "+del);
+    var id = $(del).attr('oculto');
+    bootbox.confirm('¿Estas seguro de eliminar este servicio?', function(result){
+      if( result == true ){
+        // se manda un post con el id que se desea eliminar
+        $.post('/deleteServicio',{id:id},function(data){
+          maquetaServices();
+        }).fail(function(e){
+          maquetaServices();
+        });
+      }
+    });
   }
 //<-------------------- FIN MODIFICACIONES ---------------->

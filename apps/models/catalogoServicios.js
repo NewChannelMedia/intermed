@@ -7,7 +7,8 @@ module.exports = function(sequelize, DataTypes) {
     descripcion: {type: DataTypes.STRING},
     precio: {type: DataTypes.DOUBLE},
     duracion: {type: DataTypes.TIME},
-    usuario_id: {type : DataTypes.BIGINT, allowNull:false}
+    usuario_id: {type : DataTypes.BIGINT, allowNull:false},
+    direccion_id: {type: DataTypes.BIGINT}
   },{
     classMethods: {
       associate: function(models) {

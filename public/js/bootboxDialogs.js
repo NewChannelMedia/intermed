@@ -347,12 +347,12 @@ function agregarUbicacion(ubicacion_id){
       '<div class="container-fluid">'+
         '<div class="row">'+
           '<div class="col-md-12">'+
-            '<div class="col-lg-6">'+
+            '<div class="col-lg-12">'+
               '<h3 style="color:white">'+
                 '<span class="glyphicon glyphicon-plus">&nbsp;Servicios</span>'+
               '</h3>'+
             '</div>'+
-            '<div class="col-lg-6">'+
+            '<div class="col-lg-12">'+
               '<table class="table table-condensed">'+
                 '<thead>'+
                   '<td><center>Concepto</center></td>'+
@@ -424,12 +424,12 @@ function agregarUbicacion(ubicacion_id){
           '</div>'+
           '<hr style="color:white;" />'+
           '<div class="col-md-12">'+
-            '<div class="col-lg-6">'+
+            '<div class="col-lg-12">'+
               '<h3 style="color:white;">'+
                 '<span class="glyphicon glyphicon-pencil">&nbsp;Edita tus servicios</span>'+
               '</h3>'+
             '</div>'+
-            '<div class="col-lg-6">'+
+            '<div class="col-lg-12">'+
               '<table class="table table-condensed">'+
                 '<thead>'+
                   '<td><center>Concepto</center></td>'+
