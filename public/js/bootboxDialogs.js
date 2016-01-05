@@ -444,7 +444,6 @@ function agregarUbicacion(ubicacion_id){
           '</div>'+
         '</div>'+
       '</div>'+
-      '<small>El id de la dirección se saca del input type=hidden con id: "idDireccion", si esta vacio no deberia dejar agregar horarios ni servicios</small><br/><br/>'+
       '<input type="button" class="btn btn-add btn-sm" value="Guardar y continuar" onclick="registrarServicios();">'+
       '<input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarServicios(true);">'+
     '</div>'+
