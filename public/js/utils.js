@@ -3133,7 +3133,6 @@ function addServices(concepto, descripcion,precio,duracion){
   var pre = $(precio).val();
   var dur = $(duracion+ " :selected").val();
   var otroID = $("#idDireccion").val();
-  console.log("Entro aqui");
   //post para el envio de la informacion
   if( con != "" && des != "" && pre != "" && dur != "time" ){
     $.post('/addServices',{
