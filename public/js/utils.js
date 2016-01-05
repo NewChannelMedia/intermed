@@ -3170,29 +3170,22 @@ function maquetaServices(){
       html += '<tr>';
         html += '<td>';
           html += '<center>';
-            html += '<button type="button" onclick="updateServices(\''+con+'\',\''+des+'\',\''+pre+'\',\''+dur+'\')" class="btn btn-success">';
-              html += '<span style="color:white;" class="glyphicon glyphicon-pencil"></span>';
-            html += '</button>';
-          html += '</center>';
-        html += '</td>';
-        html += '<td>';
-          html += '<center>';
             html += '<div class="form-group">';
-              html += '<input type="text" oculto="'+item.id+'" class="form-control" id="conceptModifica'+i+'" value="'+item.concepto+'"/>';
+              html += '<input type="text" tipo="concepto" oculto="'+item.id+'" class="form-control" id="conceptModifica'+i+'" value="'+item.concepto+'" onfocus="editUbicacion(\''+con+'\')"/>';
             html += '</div>';
           html += '</center>';
         html += '</td>';
         html += '<td>';
           html += '<center>';
             html += '<div class="form-group">';
-              html += '<input type="text" class="form-control" id="decriptModifica'+i+'" value="'+item.descripcion+'"/>';
+              html += '<input type="text" tipo="descripcion" class="form-control" id="decriptModifica'+i+'" value="'+item.descripcion+'" onfocus="editUbicacion(\''+des+'\')"/>';
             html += '</div>';
           html += '</center>';
         html += '</td>';
         html += '<td>';
           html += '<center>';
             html += '<div class="form-group">';
-              html += '<input type="text" class="form-control" id="precModifica'+i+'" value="'+item.precio+'"/>';
+              html += '<input type="text" tipo="precio" class="form-control" id="precModifica'+i+'" value="'+item.precio+'" onfocus="editUbicacion(\''+pre+'\');"/>';
             html += '</div>';
           html += '</center>';
         html += '</td>';
@@ -3202,12 +3195,34 @@ function maquetaServices(){
               html += '<select id="durModifica'+i+'">';
                 html += '<option value="'+item.duracion+'">'+item.duracion+'</option>';
                 html += '<option value="00:30:00">30 minutos</option>';
-                html += '<option value="00:45:00">45 minutos</option>';
-                html += '<option value="01:00:00">1 hora</option>';
+                html += '<option value="00:45:00">1 hora</option>';
+                html += '<option value="01:30:00">1 hora y 30 minutos</option>';
                 html += '<option value="02:00:00">2 horas</option>';
+                html += '<option value="02:30:00">2 horas y 30 minutos</option>';
                 html += '<option value="03:00:00">3 horas</option>';
+                html += '<option value="03:30:00">3 horas y 30 minutos</option>';
+                html += '<option value="04:00:00">4 horas</option>';
+                html += '<option value="04:30:00">4 horas y 30 minutos</option>';
+                html += '<option value="05:00:00">5 horas</option>';
+                html += '<option value="05:30:00">5 horas y 30 minutos</option>';
+                html += '<option value="06:00:00">6 horas</option>';
+                html += '<option value="06:30:00">6 horas y 30 minutos</option>';
+                html += '<option value="07:00:00">7 horas</option>';
+                html += '<option value="07:30:00">7 horas y 30 minutos</option>';
+                html += '<option value="08:00:00">8 horas</option>';
+                html += '<option value="08:30:00">8 horas y 30 minutos</option>';
+                html += '<option value="09:00:00">9 horas</option>';
+                html +='<option value="09:30:00">9 horas y 30 minutos</option>';
               html += '</select>';
             html += '</div>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+          var idDelete = "#delete-"+i;
+            html += '<button type="button" id="delete-'+i+'" onclick="onDelete(\''+idDelete+'\')">';
+              html += '<span class="glyphicon glyphicon-remove-sign"></span>'
+            html += '</button>';
           html += '</center>';
         html += '</td>';
       html += '</tr>';
@@ -3282,23 +3297,17 @@ function deleteFunction(tr, id){
     }
   });
 }
-function updateServices( con, des, pre, dur){
-  var concepto = $(con).val();
-  var descripcion = $(des).val();
-  var precio = $(pre).val();
-  var duracion = $(dur+ " :selected").val();
-  var id = $(con).attr('oculto');
+function updateServices( tipo, dato, di ){
+  var id = di;
   $.post('/updateServices',{
     id: id,
-    concepto: concepto,
-    descripcion: descripcion,
-    precio: precio,
-    duracion: duracion
-  },function(data){
+    tipo: tipo,
+    valor: dato,
+  }, function(data){
     if( data == 1 ){
-      $("#exitoModificado").removeClass('hidden');
+      console.log("Modificado con exito: "+tipo);
     }else{
-      $("#exitoNoModificado").removeClass('hidden');
+      console.log("No se pudo modificar: "+tipo);
     }
   });
 }
@@ -5091,3 +5100,36 @@ $( document ).ready( function () {
   }
 } );
 //fin de Perfil Medicos
+//<-------------------- modificaciones -------------------->
+  function editUbicacion(dato){
+    var cambio = "";
+    $(dato).change(function(){
+      cambio = $(this).val();
+      var tipo = $(dato).attr('tipo');
+      var id = $( this ).attr('oculto');
+      switch( tipo ){
+        case "concepto":console.log("Tipo: "+tipo);
+          updateServices( tipo,cambio,id );
+        break;
+        case "descripcion":console.log("Tipo: "+tipo);
+          /*$.post('/descripcionEdit',{},function(data){
+
+          });*/
+        break;
+        case "precio":console.log("Tipo: "+tipo);
+          /*$.post('/precioEdit',{},function(data){
+
+          });*/
+        break;
+        case "duracion":console.log("Tipo: "+tipo);
+          /*$.post('/duracionEdit',{}, function(data){
+
+          });*/
+        break;
+      }
+    });
+  }
+  function onDelete(del){
+    console.log("Id of Delete: "+del);
+  }
+//<-------------------- FIN MODIFICACIONES ---------------->
