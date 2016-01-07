@@ -435,7 +435,8 @@ function registrarCita() {
                    bootbox.hideAll();
                },
                message:'Se ha guardado tu cita',
-               title: 'Mensaje de Intermed',
+               className: 'Intermed-Bootbox',
+               title: '<span class="title">Mensaje de Intermed</span>',
                callback: function(){
                 bootbox.hideAll();
                }
@@ -452,7 +453,8 @@ function registrarCita() {
   } else {
     bootbox.alert({
       message: 'Debes de seleccionar el horario y fecha para tu cita.',
-      title: 'Mensaje de Intermed'
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">Mensaje de Intermed</span>'
     });
   }
 }

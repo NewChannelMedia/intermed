@@ -311,7 +311,8 @@ function iniciarCalendarioAgendarCita(){
                    bootbox.hideAll();
                },
                message: mensaje,
-               title: 'Mensaje de Intermed'
+               className: 'Intermed-Bootbox',
+               title: '<span class="title">Mensaje de Intermed</span>'
              });
           }
         },
@@ -552,7 +553,8 @@ function cancelaCita(id) {
           //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
           bootbox.confirm({
             message: '¿Esta seguro de cancelar la cita?',
-            title: 'Mensaje de Intermed',
+            title: '<span class="title">Mensaje de Intermed</span>',
+            className: 'Intermed-Bootbox',
             backdrop: false,
             callback: function(result){
               if (result){
@@ -640,7 +642,8 @@ function cancelaCita(id) {
           //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
           bootbox.confirm({
             message: '¿Esta seguro de cancelar la cita?',
-            title: 'Mensaje de Intermed',
+            title: '<span class="title">Mensaje de Intermed</span><span class="subtitle">Subtitulo de prueba</span>',
+            className: 'Intermed-Bootbox',
             backdrop: false,
             callback: function(result){
               if (result){
@@ -745,8 +748,9 @@ function cancelaCita(id) {
            onEscape: function () {
                bootbox.hideAll();
            },
+           className: 'Intermed-Bootbox',
            message:'La cita ha sido cancelada.',
-           title: 'Mensaje de Intermed',
+           title: '<span class="title">Mensaje de Intermed</span>',
            callback: function(){
             $('#divCalendario').fullCalendar('removeEvents');
             $('#divCalendario').fullCalendar('refetchEvents');
@@ -784,8 +788,9 @@ function cancelaCita(id) {
            onEscape: function () {
                bootbox.hideAll();
            },
+           className: 'Intermed-Bootbox',
            message:'La cita ha sido cancelada.',
-           title: 'Mensaje de Intermed',
+           title: '<span class="title">Mensaje de Intermed</span>',
            callback: function(){
             $('#divCalendario').fullCalendar('removeEvents');
             $('#divCalendario').fullCalendar('refetchEvents');

@@ -2351,3 +2351,47 @@ div.Slider{
 .calificacionCriterios .tooltip{
   position: fixed;
 }
+
+
+.Intermed-Bootbox .modal-content{
+  background-color: #172c3b;
+  padding: 4px;
+  border-radius: 0px;
+}
+
+.Intermed-Bootbox .modal-header{
+  background-color: #172c3b;
+  border: none;
+  color: white;
+}
+
+.Intermed-Bootbox .modal-header .title{
+  width: 100%;
+  display: block;
+  font-size: 30px;
+}
+
+.Intermed-Bootbox .modal-header .subtitle{
+  width: 100%;
+  display: block;
+  font-size: 20px;
+  margin-top: 10px;
+}
+
+.Intermed-Bootbox .bootbox-close-button{
+  font-size: 180%;
+  color: white;
+}
+
+.Intermed-Bootbox .modal-body{
+  background-color: #5D9AB7;
+}
+
+.Intermed-Bootbox .modal-footer{
+  background-color: #5D9AB7;
+  border: none;
+}
+
+.Intermed-Bootbox .modal-footer button{
+  min-width: 100px;
+}
