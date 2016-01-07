@@ -139,22 +139,7 @@ else {
 
     /* validaciones al registro */
     validateForm( 'input-nombre', 'nombreMed' );
-    validateForm( 'input-apellido', 'ApellidoReg' );
-    validateForm( 'input-nombre', 'nombreReg' );
-    //validateForm('input-nombre','ApellidoReg');
-    validateForm( 'input-correo', 'correoReg' );
-    validateForm( 'input-password', 'contraseñaReg' );
-    validateForm( 'input-validPass', 'contraseña2Reg' );
-    validateForm( 'input-dia', 'diaNacReg' );
-    validateForm( 'input-mes', 'mesNacReg' );
-    validateForm( 'input-año', 'añoNacReg' );
-    validateForm( 'input-select', 'padecimiento' );
-    validateForm( 'input-select', 'especialidad' );
-    validateForm( 'input-select', 'slc_estado' );
-    validateForm( 'input-select', 'slc_ciudad' );
-    validateForm( 'input-checkbox', 'sexF' );
-    validateForm( 'input-checkbox', 'sexM' );
-
+    validateForm('input-select', 'selectEstado');
   } );
 }
 
@@ -1054,6 +1039,30 @@ function validateForm( tipoForm, nameForm ){
         comprobando = expreg.test( m ) ? true : false;
         mensaje = "nombre-error";
         break;
+      case "input-especialidad":
+        var m = $( "#" + nameForm ).val();
+        var expreg = new RegExp( /^[A-Za-z\s\xF1\xD1]([a-z ñáéíóú]{2,60})+$/i );
+        comprobando = expreg.test( m ) ? true : false;
+        mensaje = "especialidad-error";
+        break;
+      case "input-padecimiento":
+        var m = $( "#" + nameForm ).val();
+        var expreg = new RegExp( /^[A-Za-z\s\xF1\xD1]([a-z ñáéíóú]{2,60})+$/i );
+        comprobando = expreg.test( m ) ? true : false;
+        mensaje = "padecimiento-error";
+        break;
+      case "input-institucion":
+        var m = $( "#" + nameForm ).val();
+        var expreg = new RegExp( /^[A-Za-z\s\xF1\xD1]([a-z ñáéíóú]{2,60})+$/i );
+        comprobando = expreg.test( m ) ? true : false;
+        mensaje = "institucion-error";
+        break;
+      case "input-aseguradora":
+        var m = $( "#" + nameForm ).val();
+        var expreg = new RegExp( /^[A-Za-z\s\xF1\xD1]([a-z ñáéíóú]{2,60})+$/i );
+        comprobando = expreg.test( m ) ? true : false;
+        mensaje = "aseguradora-error";
+        break;
       case "input-apellido":
         var m = $( "#" + nameForm ).val();
         var expreg = new RegExp( /^[A-Za-z\s\xF1\xD1]([a-z ñáéíóú]{2,60})+$/i );
@@ -1066,6 +1075,12 @@ function validateForm( tipoForm, nameForm ){
         comprobando = expreg.test( correo ) ? true : false;
         mensaje = "mail-error";
         break;
+        case "input-confMail":
+          var correo = String( $( "#" + nameForm ).val() );
+          var expreg = new RegExp( /^(?:(?:[\w`~!#$%^&*\-=+;:{}'|,?\/]+(?:(?:\.(?:"(?:\\?[\w`~!#$%^&*\-=+;:{}'|,?\/\.()<>\[\] @]|\\"|\\\\)*"|[\w`~!#$%^&*\-=+;:{}'|,?\/]+))*\.[\w`~!#$%^&*\-=+;:{}'|,?\/]+)?)|(?:"(?:\\?[\w`~!#$%^&*\-=+;:{}'|,?\/\.()<>\[\] @]|\\"|\\\\)+"))@(?:[a-zA-Z\d\-]+(?:\.[a-zA-Z\d\-]+)*|\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\])$/gm );
+          comprobando = expreg.test( correo ) ? true : false;
+          mensaje = "conFmail-error";
+          break;
       case "input-password":
         password = $( "#" + nameForm ).val();
         dato = String( password );
@@ -1111,8 +1126,11 @@ function validateForm( tipoForm, nameForm ){
       case "input-checkbox":
         comprobando = ( $( this ).attr( 'checked' ) ) ? true : false;
         break;
-      case "input-select":
-        comprobando = ( $( this ).val() > 0 ) ? true : false;
+      case "input-select":console.log("Entro aqui");
+        var tamaño = $("#"+nameForm+" :selected").val();
+        comprobando = ( $( tamaño ).val() != 0 ) ? true : false;
+        console.log("Tamaño: "+tamaño);
+        mensaje = "select-error";
         break;
     }
     //carga del ajax
@@ -1129,6 +1147,44 @@ function validateForm( tipoForm, nameForm ){
               $( "#nameGroup" ).addClass( 'has-success has-feedback' );
               $( '#nameIcon' ).addClass( 'glyphicon glyphicon-ok form-control-feedback' );
               break;
+            case "especialidad-error":
+              $( "#aviso-error" ).remove();
+              $( "#especialidadGroup" ).removeClass( 'has-error has-feedback' );
+              $( '#especialidadIcon' ).removeClass( 'glyphicon glyphicon-remove form-control-feedback' );
+              $( "#especialidadGroup" ).addClass( 'has-success has-feedback' );
+              $( '#especialidadIcon' ).addClass( 'glyphicon glyphicon-ok form-control-feedback' );
+              break;
+            case "padecimiento-error":
+              $( "#aviso-error" ).remove();
+              $( "#padecimientoGroup" ).removeClass( 'has-error has-feedback' );
+              $( '#padecimientoIcon' ).removeClass( 'glyphicon glyphicon-remove form-control-feedback' );
+              $( "#padecimientoGroup" ).addClass( 'has-success has-feedback' );
+              $( '#padecimientoIcon' ).addClass( 'glyphicon glyphicon-ok form-control-feedback' );
+              break;
+            case "institucion-error":
+              $( "#aviso-error" ).remove();
+              $( "#institucionGroup" ).removeClass( 'has-error has-feedback' );
+              $( '#institucionIcon' ).removeClass( 'glyphicon glyphicon-remove form-control-feedback' );
+              $( "#institucionGroup" ).addClass( 'has-success has-feedback' );
+              $( '#institucionIcon' ).addClass( 'glyphicon glyphicon-ok form-control-feedback' );
+              break;
+            case "aseguradora-error":
+              $( "#aviso-error" ).remove();
+              $( "#aseguradoraGroup" ).removeClass( 'has-error has-feedback' );
+              $( '#aseguradoraIcon' ).removeClass( 'glyphicon glyphicon-remove form-control-feedback' );
+              $( "#aseguradoraGroup" ).addClass( 'has-success has-feedback' );
+              $( '#aseguradoraIcon' ).addClass( 'glyphicon glyphicon-ok form-control-feedback' );
+              break;
+            case "select-error":
+              $( "#aviso-error" ).remove();
+              $( "#selectGroup" ).removeClass( 'has-error has-feedback' );
+              $( '#selectIcon' ).removeClass( 'glyphicon glyphicon-remove form-control-feedback' );
+              $( "#selectGroup" ).addClass( 'has-success has-feedback' );
+              $( '#selectIcon' ).addClass( 'glyphicon glyphicon-ok form-control-feedback' );
+              break;
+            case "select-error":
+              $( "#aviso-error" ).remove();
+              break;
             case "apellido-error":
               $( "#aviso-error" ).remove();
               $( "#apellidoGroup" ).removeClass( 'has-error has-feedback' );
@@ -1142,6 +1198,13 @@ function validateForm( tipoForm, nameForm ){
               $( '#emailIcon' ).removeClass( 'glyphicon glyphicon-remove form-control-feedback' );
               $( "#emailGroup" ).addClass( 'has-success has-feedback' );
               $( '#emailIcon' ).addClass( 'glyphicon glyphicon-ok form-control-feedback' );
+              break;
+            case "conFmail-error":
+              $( "#aviso-error" ).remove();
+              $( "#emailGroup" ).removeClass( 'has-error has-feedback' );
+              $( '#conemailIcon' ).removeClass( 'glyphicon glyphicon-remove form-control-feedback' );
+              $( "#conemailGroup" ).addClass( 'has-success has-feedback' );
+              $( '#conemailIcon' ).addClass( 'glyphicon glyphicon-ok form-control-feedback' );
               break;
             case "pass-error":
               $( "#aviso-error" ).remove();
@@ -1186,6 +1249,31 @@ function validateForm( tipoForm, nameForm ){
               $( "#nameGroup" ).addClass( 'has-error has-feedback' );
               $( '#nameIcon' ).addClass( 'glyphicon glyphicon-remove form-control-feedback' );
               $( "#nombre-error" ).html( '<div id = "aviso-error"><small><b>Error: El campo que esta intentando llenar, numeros, ni caracteres como los siguientes !\"·$%&/=¿¡\'\'?%\"\\</b></small></div>' );
+              break;
+            case "padecimiento-error":
+              $( "#padecimientoGroup" ).addClass( 'has-error has-feedback' );
+              $( '#padecimientoIcon' ).addClass( 'glyphicon glyphicon-remove form-control-feedback' );
+              $( "#padecimiento-error" ).html( '<div id = "aviso-error"><small><b>Error: El campo que esta intentando llenar, numeros, ni caracteres como los siguientes !\"·$%&/=¿¡\'\'?%\"\\</b></small></div>' );
+              break;
+            case "especialidad-error":
+              $( "#especialidadGroup" ).addClass( 'has-error has-feedback' );
+              $( '#especialidadIcon' ).addClass( 'glyphicon glyphicon-remove form-control-feedback' );
+              $( "#especialidad-error" ).html( '<div id = "aviso-error"><small><b>Error: El campo que esta intentando llenar, numeros, ni caracteres como los siguientes !\"·$%&/=¿¡\'\'?%\"\\</b></small></div>' );
+              break;
+            case "institucion-error":
+              $( "#institucionGroup" ).addClass( 'has-error has-feedback' );
+              $( '#institucionIcon' ).addClass( 'glyphicon glyphicon-remove form-control-feedback' );
+              $( "#institucion-error" ).html( '<div id = "aviso-error"><small><b>Error: El campo que esta intentando llenar, numeros, ni caracteres como los siguientes !\"·$%&/=¿¡\'\'?%\"\\</b></small></div>' );
+              break;
+            case "aseguradora-error":
+              $( "#aseguradoraGroup" ).addClass( 'has-error has-feedback' );
+              $( '#aseguradoraIcon' ).addClass( 'glyphicon glyphicon-remove form-control-feedback' );
+              $( "#aseguradora-error" ).html( '<div id = "aviso-error"><small><b>Error: El campo que esta intentando llenar, numeros, ni caracteres como los siguientes !\"·$%&/=¿¡\'\'?%\"\\</b></small></div>' );
+              break;
+            case "select-error":
+              $( "#selectGroup" ).addClass( 'has-error has-feedback' );
+              $( '#selectIcon' ).addClass( 'glyphicon glyphicon-remove form-control-feedback' );
+              $( "#select-error" ).html( '<div id = "aviso-error"><small><b>Error: El campo que esta intentando llenar, numeros, ni caracteres como los siguientes !\"·$%&/=¿¡\'\'?%\"\\</b></small></div>' );
               break;
             case "apellido-error":
               $( "#apellidoGroup" ).addClass( 'has-error has-feedback' );
@@ -4484,70 +4572,94 @@ function CargarExtraBusqueda(){
   var cont = '';
   if (tipo == 1){
     //Buscar médicos
-    cont += `
-    <div class="col-md-3">
-      <div class="form-group">
-        <div class="form-control" placeholder="Especialidad" style="height:auto!important;padding:2px">
-          <input type="hidden" id="hiddenEspecialidad" name="hiddenEspecialidad">
-          <input id="inputEspecialidad" class="autocompleteInput" placeholder="Especialidad" name="inputEspecialidad">
-        </div>
-      </div>
-    </div>`;
-    cont += `
-    <div class="col-md-3">
-      <div class="form-group">
-        <div class="form-control" style="height:auto!important;padding:2px">
-        <input type="hidden" id="hiddenPadecimiento" name="hiddenPadecimiento">
-        <input id="inputPadecimiento" class="autocompleteInput" placeholder="Pacecimiento" name="inputPadecimiento" >
-        </div>
-      </div>
-    </div>`;
-    cont += `
-    <div class="col-md-3">
-      <div class="form-group">
-        <div class="form-control" style="height:auto!important;padding:2px">
-        <input type="hidden" id="hiddenInstitucion" name="hiddenInstitucion">
-        <input id="inputInstitucion" class="autocompleteInput" placeholder="Institución"  name="inputInstitucion">
-        </div>
-      </div>
-    </div>`;
-    cont += `
-    <div class="col-md-3">
-      <div class="form-group">
-        <div class="form-control" style="height:auto!important;padding:2px">
-        <input type="hidden" id="hiddenAseguradora" name="hiddenAseguradora">
-        <input id="inputAseguradora" class="autocompleteInput" placeholder="Aseguradora" name="inputAseguradora">
-        </div>
-      </div>
-    </div>`;
+    cont +=
+    '<div class="col-md-3">'+
+      '<div class="form-group" id="especialidadGroup">'+
+        '<div class="form-control" placeholder="Especialidad" style="height:auto!important;padding:2px">'+
+          '<input type="hidden" id="hiddenEspecialidad" name="hiddenEspecialidad">'+
+          '<input id="inputEspecialidad" class="autocompleteInput" placeholder="Especialidad" name="inputEspecialidad" aria-describedby="inputEspecialidadP">'+
+          '<span id = "especialidadIcon" class="" aria-hidden="true"></span>'+
+          '<span class="sr-only" id="inputEspecialidadP">(success)</span>'+
+          '<div id = "especialidad-error"></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+    cont +=
+    '<div class="col-md-3">'+
+      '<div class="form-group" id="padecimientoGroup">'+
+        '<div class="form-control" style="height:auto!important;padding:2px">'+
+        '<input type="hidden" id="hiddenPadecimiento" name="hiddenPadecimiento">'+
+        '<input id="inputPadecimiento" class="autocompleteInput" placeholder="Pacecimiento" name="inputPadecimiento" aria-describedby="inputPadecimientoP">'+
+        '<span id = "padecimientoIcon" class="" aria-hidden="true"></span>'+
+        '<span id="inputPadecimientoP" class="sr-only">(success)</span>'+
+        '<div id = "padecimiento-error"></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+    cont +=
+    '<div class="col-md-3">'+
+      '<div class="form-group" id="institucionGroup">'+
+        '<div class="form-control" style="height:auto!important;padding:2px">'+
+        '<input type="hidden" id="hiddenInstitucion" name="hiddenInstitucion">'+
+        '<input id="inputInstitucion" class="autocompleteInput" placeholder="Institución"  name="inputInstitucion" aria-describedby="inputInstitucionP">'+
+        '<span id = "institucionIcon" class="" aria-hidden="true"></span>'+
+        '<span class="sr-only" id="inputInstitucionP">(success)</span>'+
+        '<div id = "institucion-error"></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+    cont +=
+    '<div class="col-md-3">'+
+      '<div class="form-group" id="aseguradoraGroup">'+
+        '<div class="form-control" style="height:auto!important;padding:2px">'+
+        '<input type="hidden" id="hiddenAseguradora" name="hiddenAseguradora">'+
+        '<input id="inputAseguradora" class="autocompleteInput" placeholder="Aseguradora" name="inputAseguradora" aria-describedby="inputAseguradoraP">'+
+        '<span id = "aseguradoraIcon" class="" aria-hidden="true"></span>'+
+        '<span id="inputAseguradoraP" class="sr-only">(success)</span>'+
+        '<div id = "aseguradora-error"></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
     $('#extraSearch').html(cont);
     autoCompleteEsp('inputEspecialidad');
     autoCompletePad('inputPadecimiento');
     autoCompleteInst('inputInstitucion');
     autoCompleteAseg('inputAseguradora');
+    validateForm( 'input-especialidad', 'inputEspecialidad' );
+    validateForm( 'input-padecimiento', 'inputPadecimiento' );
+    validateForm( 'input-institucion', 'inputInstitucion' );
+    validateForm( 'input-aseguradora', 'inputAseguradora' );
   } else if (tipo == 2){
     //Buscar instituciones
-    cont += `
-    <div class="col-md-6">
-      <div class="form-group">
-        <div class="form-control" placeholder="Especialidad" style="height:auto!important;padding:2px">
-        <input type="hidden" id="hiddenEspecialidad" name="hiddenEspecialidad">
-        <input id="inputEspecialidad" class="autocompleteInput" placeholder="Especialidad" name="inputPadecimiento" >
-        </div>
-      </div>
-    </div>`;
-    cont += `
-    <div class="col-md-6">
-      <div class="form-group">
-        <div class="form-control" style="height:auto!important;padding:2px">
-        <input type="hidden" id="hiddenPadecimiento" name="hiddenPadecimiento">
-        <input id="inputPadecimiento" class="autocompleteInput" placeholder="Pacecimiento" name="inputPadecimiento" >
-        </div>
-      </div>
-    </div>`;
+    cont +=
+    '<div class="col-md-6">'+
+      '<div class="form-group" id="especialidadGroup">'+
+        '<div class="form-control" placeholder="Especialidad" style="height:auto!important;padding:2px">'+
+        '<input type="hidden" id="hiddenEspecialidad" name="hiddenEspecialidad">'+
+        '<input id="inputEspecialidad" class="autocompleteInput" placeholder="Especialidad" name="inputPadecimiento" aria-describedby="inputEspecialidadP">'+
+        '<span id = "especialidadIcon" class="" aria-hidden="true"></span>'+
+        '<span class="sr-only" id="inputEspecialidadP">(success)</span>'+
+        '<div id = "especialidad-error"></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+    cont +=
+    '<div class="col-md-6">'+
+      '<div class="form-group">'+
+        '<div class="form-control" style="height:auto!important;padding:2px">'+
+        '<input type="hidden" id="hiddenPadecimiento" name="hiddenPadecimiento">'+
+        '<input id="inputPadecimiento" class="autocompleteInput" placeholder="Pacecimiento" name="inputPadecimiento" aria-describedby="inputPadecimientoP">'+
+        '<span id = "padecimientoIcon" class="" aria-hidden="true"></span>'+
+        '<span id="inputPadecimientoP" class="sr-only">(success)</span>'+
+        '<div id = "padecimiento-error"></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
     $('#extraSearch').html(cont);
     autoCompleteEsp('inputEspecialidad');
     autoCompletePad('inputPadecimiento');
+    validateForm( 'input-especialidad', 'inputEspecialidad' );
+    validateForm( 'input-padecimiento', 'inputPadecimiento' );
   } else {
     $('#extraSearch').html(cont);
   }
