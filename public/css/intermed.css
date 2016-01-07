@@ -2311,7 +2311,7 @@ ol.sortable,ol.sortable ol {
 }
 
 .star-rating.rating-xs.rating-active{
-  text-align: right;
+  text-align: center;
 }
 
 hr.hrblack{
@@ -2342,4 +2342,12 @@ div.Slider{
 
 .noUi-vertical .noUi-origin{
   background-color: white;
+}
+
+.Slider.ui-slider.ui-slider-vertical{
+  background-color: red;
+}
+
+.calificacionCriterios .tooltip{
+  position: fixed;
 }

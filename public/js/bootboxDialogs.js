@@ -2623,110 +2623,112 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
       onEscape: function () {
           bootbox.hideAll();
       },
-      className: "medium",
       message: `
-      <style>span.Slider {height:120px; float:left; margin:15px}</style>
+      <style>
+      span.Slider {
+        float:left;
+      }
+      </style>
+      <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
 
       <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
-      <div class="col-md-12" style="color:white;position:relative">
+      <div class="col-md-12 col-sm-12 col-xs-12" style="color:white;position:relative">
         <h2 class="s25 text-center" style="width:100%">CALIFICA TU CITA</h2>
       </div>
       .
       <div class="divBodyBootbox" style="position:relative">
 
-          <div class="col-md-12" style="margin-bottom:30px;margin-top:30px">
+          <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom:15px;margin-top:20px">
             <div class="row">
-              <div class="col-md-2">
-                <img src="`+imagenUrl+`" style="width:100%;display:block;margin:0 auto 0 auto;" class="img-rounded">
+              <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:-15px;margin-bottom:5px;">
+                <h4><b>`+nombreUsuario+`</b></h4>
               </div>
-              <div class="col-md-10">
-                <span class="pull-right"><b>Fecha: </b>`+ fecha +` `+ hora +`</span>
-                <span class="pull-left"><h4><b>`+nombreUsuario+`</b></h4></span>
-              </div>
-              <div class="col-md-12" style="margin-top:20px">
-                <div class="row">
-                  <div class="col-md-7" style="margin-top:10px;font-weight:bold">Satisfacción general: </div>
-                  <div class="col-md-5"><input id="input-21d" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>
+
+              <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;">
+                <div class="col-md-6 col-sm-6 col-xs-6 col-md-offset-3 col-sm-offset-3 col-xs-offset-3">
+                  <img src="`+imagenUrl+`" style="width:100%;" class="img-thumbnail">
                 </div>
-                <hr class="hrblack" />
+              </div>
+
+              <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;"><small><b>Fecha: </b>`+ fecha +` `+ hora +`</small></div>
+
+              <div class="col-md-6 col-sm-6 col-xs-10 col-md-offset-3 col-sm-offset-3 col-xs-offset-1" style="margin-top:20px">
                 <div class="row">
-                  <div id="eq">
-                    <div class="col-md-3">
+                  <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción general: </div>
+                  <div class="col-md-12 col-sm-12 col-xs-12"><input id="input-21d" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>
+                </div>
+
+                <div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">
+                    <div class="col-md-3 col-sm-3 col-xs-3">
                       <div class="row">
-                        <div class="col-md-12 text-center">
-                            <div class="Slider"></div>
+                        <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">
+                            <span class="Slider" id="cal_higiene"></span>
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-12">
-                        Higiene del lugar
+                        <div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">
+                          <span class="glyphicon glyphicon-trash" ></span>
                         </div>
                       </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-sm-3 col-xs-3">
                       <div class="row">
-                        <div class="col-md-12 text-center">
-                            <div class="Slider"></div>
+                        <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">
+                            <span class="Slider" id="cal_puntualidad"></span>
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-12">
-                        Puntualidad
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="col-md-3">
-                      <div class="row">
-                        <div class="col-md-12 text-center">
-                            <div class="Slider"></div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-12">
-                        Instalaciones
+                        <div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">
+                          <span class="glyphicon glyphicon-time"></span>
                         </div>
                       </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-3 col-sm-3 col-xs-3">
                       <div class="row">
-                        <div class="col-md-12 text-center">
-                            <div class="Slider"></div>
+                        <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">
+                            <span class="Slider"  id="cal_instalaciones"></span>
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-12">
-                        Trato personal
+                        <div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">
+                          <span class="glyphicon glyphicon-home"></span>
                         </div>
                       </div>
                     </div>
 
-                  </div>
+                    <div class="col-md-3 col-sm-3 col-xs-3">
+                      <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">
+                            <span class="Slider"  id="cal_trato"></span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">
+                          <span class="glyphicon glyphicon-user"></span>
+                        </div>
+                      </div>
+                    </div>
+
+                </div>
+
+                <div class="row">
+                  <textarea class="form-control" placeholder="Comentarios (opcional)" style="resize: none;margin-top:5px" rows="4" id="calificacionComentario"></textarea>
                 </div>
               </div>
             </div>
           </div>
           <div class="row">
-              <div class="col-md-3 col-md-offset-6 pull-right">
+              <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="form-group">
-                      <input type="button" class="btn btn-warning btn-block" value="Calificar" onclick="bootbox.hideAll()">
-                  </div>
-              </div>
-              <div class="col-md-3 pull-left">
-                  <div class="form-group">
-                      <input type="button" class="btn btn-danger btn-block" value="Cerrar" onclick="bootbox.hideAll()">
+                      <input type="button" style="font-weight:bold" class="btn btn-warning btn-block" value="Calificar" onclick="calificarCita('`+agenda_id+`','`+notificacion_id+`');">
                   </div>
               </div>
           </div>
       </div>
 
-      <!-- In <head> -->
-      <link href="css/nouislider.min.css" rel="stylesheet">
-
-      <!-- In <body> -->
-      <script src="js/nouislider.min.js"></script>
       </div>
 
       `
@@ -2735,9 +2737,8 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
 
     $('.bootbox-close-button').css('z-index','1000');
     $('.bootbox-close-button').css('position','relative');
-    $('.star-rating.rating-xs rating-active').css('text-align','right');
-    $('.rating-gly-star').addClass('pull-right');
-
+    $('.bootbox-close-button').css('color','white');
+    $('.bootbox-close-button').css('font-size','180%');
 
     $("#input-21d").rating();
 
@@ -2745,21 +2746,29 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
     $('.caption').css('display','none');
 
 
-    var slider = document.getElementById('keypress');
 
-    $('div.Slider').each(function(){
-      noUiSlider.create($(this)[ 0 ], {
-      	start: 50,
-      	step: 10,
-  		  orientation: "vertical",
-      	range: {
-      		'min': 0,
-      		'max': 100
-      	}
-      });
+      $( "span.Slider" ).each(function() {
 
-      $(this)[ 0 ].noUiSlider.on('update', function( values, handle ) {
-      	//alert(100-values[handle]);
+        var id = $(this).prop('id');
+
+        $('#'+id ).slider({
+          value: 50,
+          min: -10,
+          max: 110,
+          step: 10,
+          animate: true,
+          orientation: "vertical",
+          slide: repositionTooltip,
+          start: function( e, ui ){
+            $('#'+id +" .ui-slider-handle:first").tooltip('show');
+            repositionTooltip(e,ui);
+          },
+          stop: function(){
+            $('#'+id +" .ui-slider-handle:first").tooltip('hide');
+          }
+        });
+
+        $('#'+id +" .ui-slider-handle:first").tooltip( {placement:"top",title: $('#'+id).slider("value"),trigger:"manual"});
+
       });
-    });
 }

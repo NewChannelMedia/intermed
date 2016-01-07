@@ -1688,6 +1688,10 @@ var iniciar = function () {
     app.post('/agenda/detalleCita', function (req, res){
       intermed.callController('agenda','detalleCita', req.body, req, res);
     });
+
+    app.post('/cita/calificar', function (req, res){
+      intermed.callController('agenda','calificarCita', req.body, req, res);
+    });
 }
 
 var manejarPerfiles = function(){

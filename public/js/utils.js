@@ -5166,3 +5166,104 @@ function iniciarDivAgendaCita(direccion_id){
       }
     });
 }
+
+function repositionTooltip( e, ui ){
+    if (ui.value < 0 || ui.value >100){
+      return false;
+    }
+    // If you're on Bootstrap 3.x change "tooltip" to "bs.tooltip"
+    // Props to @fd_tl in the comments for the tip!
+    var div = $(ui.handle).data("bs.tooltip").$tip[0];
+    $(div).css('position','fixed');
+
+    var id = $(div).closest('.Slider').prop('id');
+    var comp = '';
+    switch (id) {
+      case 'cal_higiene':
+          comp = "Higiene del lugar";
+          break;
+      case 'cal_puntualidad':
+          comp = "Puntualidad";
+          break;
+      case 'cal_instalaciones':
+          comp = "Instalaciones";
+          break;
+      case 'cal_trato':
+          comp = "Trato personal";
+          break;
+      }
+
+    var ant = $(div).find(".tooltip-inner").text().split('%')[0];
+    ant = ant.split(' ');
+    ant = ant[ant.length-1];
+
+    $(div).find(".tooltip-inner").text(comp + ' ' + ui.value + '%');
+
+    var tp = $(ui.handle).offset();
+
+    tp.left = tp.left - (parseInt($(div).find(".tooltip-inner").css('width'))/2) + 10;
+
+    if (parseInt(ant) > parseInt(ui.value)){
+      tp.top = parseFloat(tp.top) - 22 - (parseInt($(div).find(".tooltip-inner").css('height')) - 17);
+    } else if (parseInt(ant) < parseInt(ui.value)){
+      tp.top = parseFloat(tp.top) - 35 - (parseInt($(div).find(".tooltip-inner").css('height')) - 17);
+    } else {
+      tp.top = parseFloat(tp.top) - 30 - (parseInt($(div).find(".tooltip-inner").css('height')) - 17);
+    }
+    $(div).offset(tp);
+    $(div).find(".tooltip").css('background-color','red');
+    $(div).css('z-index','30000');
+}
+
+function calificarCita(agenda_id, notificacion_id){
+  console.log("---------CALIFICAR---------");
+  var agenda_id =  agenda_id;
+  var notificacion_id = notificacion_id;
+  var satisfaccionGeneral = ($("#input-21d").val()*2*10);
+  var higiene = $('#cal_higiene').slider("option", "value");
+  var puntualidad = $('#cal_puntualidad').slider("option", "value");
+  var instalaciones = $('#cal_instalaciones').slider("option", "value");
+  var tratoPersonal = $('#cal_trato').slider("option", "value");
+  var comentario = $('#calificacionComentario').val();
+  $.ajax({
+      url: '/cita/calificar',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        agenda_id: agenda_id,
+        notificacion_id: notificacion_id,
+        higieneLugar: higiene,
+        puntualidad: puntualidad,
+        instalaciones: instalaciones,
+        tratoPersonal: tratoPersonal,
+        satisfaccionGeneral: satisfaccionGeneral,
+        comentarios: comentario
+      },
+      type: 'POST',
+      success: function (data) {
+        if (data.success){
+          bootbox.hideAll();
+          bootbox.alert({
+            backdrop: true,
+            onEscape: function () {
+                bootbox.hideAll();
+            },
+            size: 'small',
+            message: `
+            <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
+            <div class="divBodyBootbox" style="position:relative" style="padding:30px">
+              <h3 style="color:white">Calificacion enviada</h3>
+              <input type="button" class="btn btn-warning btn-block" value="Ok" onclick="bootbox.hideAll()" style="margin-top:15px;">
+            </div>
+            </div>
+            `
+          });
+        }
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+  console.log("------------------");
+}

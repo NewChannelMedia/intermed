@@ -997,6 +997,57 @@ exports.detalleCita = function(object, req, res){
   });
 };
 
+exports.calificarCita = function(object, req, res){
+  models.Agenda.findOne({
+    where:{
+      id: object.agenda_id
+    },
+    attributes: ['usuario_id','paciente_id']
+  }).then(function(result){
+    models.Medico.findOne({
+      where: {
+        usuario_id: result.usuario_id
+      },
+      attributes: ['id']
+    }).then(function(medico){
+      var medico_id = medico.id;
+      var paciente_id = result.paciente_id;
+      models.CalificacionCita.destroy({
+        where: {
+          agenda_id: object.agenda_id
+        }
+      }).then(function(result){
+        models.CalificacionCita.create({
+          higieneLugar: object.higieneLugar,
+          puntualidad: object.puntualidad,
+          instalaciones: object.instalaciones,
+          tratoPersonal: object.tratoPersonal,
+          satisfaccionGeneral: object.satisfaccionGeneral,
+          comentarios: object.comentarios,
+          agenda_id: object.agenda_id,
+          medico_id: medico_id,
+          paciente_id: paciente_id
+        }).then(function(calificacion){
+          var success = false;
+          if (calificacion){
+            success = true;
+            //Eliminar notificacion
+            models.Notificacion.destroy({
+              where: {
+                id: object.notificacion_id
+              }
+            });
+          }
+          res.status(200).json({
+            success: success,
+            result: calificacion
+          });
+        });
+      });
+    });
+  });
+};
+
 function formatearFecha(fecha){
   var año = fecha.getFullYear();
   var mes = ("0" + (fecha.getMonth()+1)).slice(-2);
