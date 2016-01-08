@@ -5267,3 +5267,58 @@ function calificarCita(agenda_id, notificacion_id){
       }
     });
 }
+
+function recomendarMedico(){
+    //se manda a llamar al bootbox
+    recomendacionesBoot();
+    var usuario_id = $('#usuarioPerfil').val();
+    var medico_id = '';
+    var usuarioUrl = '';
+    var nombreCompleto = '';
+    $.post('/medicosContacto',{usuario_id:usuario_id},function(data){
+      if (data){
+        if( data.Medico ){
+          medico_id = data.Medico.id;
+          usuarioUrl = data.usuarioUrl;
+          if (data.DatosGenerale.apellidoM){
+            data.DatosGenerale.apellidoM = ' '+data.DatosGenerale.apellidoM
+          } else {
+            data.DatosGenerale.apellidoM = '';
+          }
+          nombreCompleto = data.DatosGenerale.nombre+' '+data.DatosGenerale.apellidoP + data.DatosGenerale.apellidoM;
+          $("#doctorSpan").text(nombreCompleto);
+        }
+      }
+    });
+    // con ajax se hace la peticion a la url la cual me mostrara la informacion en una tabla con
+    // la lista de mis contactos
+    $.post('/contactosRecomendados',function(data){
+      $('#recomendar').attr('valor','verdadero');
+      //Si nos dejan solitos nos amamos
+      var html = "";
+      var nombreTodo="";
+      $( "#recomendarA tbody" ).html('');
+      $( '#enviarRecomendaciones ul').html('');
+      $( '#doc' ).html('');
+      for( var i in data ){
+        nombreTodo = data[ i ].Paciente.Usuario.DatosGenerale.nombre+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoP+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoM;
+        var tr = "tr"+data[ i ].Paciente.id;
+        var mas = medico_id;
+        var otroMas = data[ i ].Paciente.usuario_id;
+        html +='<tr class="" id="'+tr+'" onclick="seleccionarUsuario(\''+i+'\',\''+tr+'\',\''+nombreTodo+'\',\''+mas+'\',\''+otroMas+'\',\''+usuario_id+'\')">';
+        html +='<td>';
+        html +='<img src="'+data[ i ].Paciente.Usuario.urlFotoPerfil+'" alt="" class="img-thumbnail">';
+        html +='</td>';
+        html +='<td id="paciente'+data[ i ].Paciente.id+'">';
+        html +='<p style="color:white">'+nombreTodo+'</p>';
+        html +='</td>';
+        html +='</tr>';
+        extraDato = nombreTodo;
+      }
+      $.post('/usuarioPrincipal',function(data){
+        uId = data.id;
+        $("#nombreOcultoPerfil").text(data.Usuario.DatosGenerale.nombre+' '+data.Usuario.DatosGenerale.apellidoP+' '+data.Usuario.DatosGenerale.apellidoM);
+      });
+      $( "#recomendarA tbody" ).append(html);
+    });
+}

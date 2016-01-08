@@ -18,7 +18,7 @@
         </div>
       </div>
     </div>
-
+    
     {{#if usuario.id}}
       <input type="hidden" id="MedicoId" value="{{usuario.Medico.id}}" />
       {{#if usuario.medFavCol}}
@@ -241,7 +241,7 @@
                 </div>
               </div>
             </a>
-            <a href="#" class="option">
+            <a class="option" onclick="recomendarMedico()">
               <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
                 <span class="option-icon glyphicon glyphicon-user s30 center-block text-center"></span>
               </div>
