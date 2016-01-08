@@ -19,7 +19,6 @@ exports.generarCita = function(object, req, res) {
 
 exports.agregaCita = function(object, req, res) {
   var fechaNotificacion = new Date(object.fechaFin);
-  console.log('fechaNotificacion: ' + fechaNotificacion);
   var fechaFinNotificacion = new Date(object.fechaFin);
   fechaNotificacion.setMinutes(fechaNotificacion.getMinutes() + 30);
   fechaFinNotificacion.setMinutes(fechaNotificacion.getDay() + 7);
@@ -39,16 +38,10 @@ exports.agregaCita = function(object, req, res) {
           usuario_id: object.medico_id
         }
       }).then(function(result){
-        models.MedicoPaciente.findOne({
-            paciente_id: req.session.passport.user.Paciente_id,
-            medico_id: result.id
-        }).then(function(resultado){
-          if (resultado.length == 0){
-            models.MedicoPaciente.create({
-                paciente_id: req.session.passport.user.Paciente_id,
-                medico_id: result.id
-            });
-          }
+        models.MedicoPaciente.findOrCreate({
+          where: {medico_id:result.id, paciente_id: req.session.passport.user.Paciente_id},
+          defaults:{medico_id:result.id, paciente_id: req.session.passport.user.Paciente_id},
+          logging:console.log
         });
 
         models.MedicoFavorito.findOne({
@@ -78,14 +71,14 @@ exports.agregaCita = function(object, req, res) {
           data : datos.id.toString(),
           tipoNotificacion_id : 21,
           usuario_id : req.session.passport.user.id
-      },{logging:console.log});
+      });
       console.log('notificacion medico');
       models.Notificacion.create({
           usuario_id : object.medico_id,
           fin: formatearFecha(new Date(object.fecha)),
           data : datos.id.toString(),
           tipoNotificacion_id : 25
-      },{logging:console.log});
+      });
       res.status(200).json({success: true});
   });
 };
@@ -441,122 +434,6 @@ exports.borraServicio = function(object, req, res) {
   });
 };
 
-// Obtiene horarios por direccion
-/*
-exports.seleccionaHorarios = function(object, req, res) {
-  var resultado = [];
-  models.Horarios.findAll({
-     where :  { direccion_id: object.id }
-  }).then(function(datos) {
-
-    var horaInicio;
-    var horaFin;
-
-    for (i = 0; i <= datos.length - 1; i++) {
-        switch (datos[i].dia) {
-            case 0: //domingo
-                horaInicio = '2015-12-20 ' + datos[i].horaInicio;
-                horaFin = '2015-12-20 ' + datos[i].horaFin;
-                break;
-            case 1: //lunes
-                horaInicio = '2015-12-14 ' + datos[i].horaInicio;
-                horaFin = '2015-12-14 ' + datos[i].horaFin;
-                break;
-            case 2: //martes
-                horaInicio = '2015-12-15 ' + datos[i].horaInicio;
-                horaFin = '2015-12-15 ' + datos[i].horaFin;
-                break;
-            case 3: //miercoles
-                horaInicio = '2015-12-16 ' + datos[i].horaInicio;
-                horaFin = '2015-12-16 ' + datos[i].horaFin;
-                break;
-            case 4: //jueves
-                horaInicio = '2015-12-17 ' + datos[i].horaInicio;
-                horaFin = '2015-12-17 ' + datos[i].horaFin;
-                break;
-            case 5: //viernes
-                horaInicio = '2015-12-18 ' + datos[i].horaInicio;
-                horaFin = '2015-12-18 ' + datos[i].horaFin;
-                break;
-            case 6: //sabado
-                horaInicio = '2015-12-19 ' + datos[i].horaInicio;
-                horaFin = '2015-12-19 ' + datos[i].horaFin;
-                break;
-        };
-
-        var horario = {
-            //id: 'businessHours_' +  datos[i].id,
-            title: datos[i].horaInicio + ' - ' + datos[i].horaFin,
-            start: horaInicio,
-            end: horaFin,
-            color : '#578',
-            constraint: 'businessHours',
-            rendering: 'background',
-            overlap: false,
-            //constraint: 'businessHours'
-            //dow: [datos[i].dia]
-        };
-        resultado.push(horario);
-    };
-
-    models.Agenda.findAll({
-       where :  { direccion_id: object.id }
-    }).then(function(datos) {
-
-      for (i = 0; i <= datos.length - 1; i++) {
-      //  console.log(object.paciente_id + ' ' + datos[i].paciente_id)
-        if (datos[i].paciente_id == object.paciente_id) {
-          if (datos[i].status != 0 ) {
-            var horario = {
-                id: datos[i].id.toString(),
-                title:   'Cita',
-                start: datos[i].fechaHoraInicio,
-                end: datos[i].fechaHoraFin,
-                //color : '#000',
-                editable: false,
-                durationEditable: false,
-                overlap: false,
-                slotEventOverlap: false,
-                //constraint: 'businessHours',
-                //rendering: 'background',
-            };
-          }  else {
-            var horario = {
-              id: 'Cita_' +  datos[i].id,
-              title: 'Cancelada',
-              start: datos[i].fechaHoraInicio,
-              end: datos[i].fechaHoraFin,
-              color : '#000',
-              editable: false,
-              durationEditable: false,
-              overlap: false,
-              slotEventOverlap: false,
-            };
-          }
-        }
-        else {
-          var horario = {
-              id: 'Cita_' +  datos[i].id,
-              title: 'No disponible',
-              start: datos[i].fechaHoraInicio,
-              end: datos[i].fechaHoraFin,
-              color : '#000',
-              editable: false,
-              durationEditable: false,
-              overlap: false,
-              slotEventOverlap: false,
-          };
-        }
-        resultado.push(horario);
-      }
-      res.send(resultado);
-    });
-  }).catch(function(err) {
-      res.status(500).json({error: err})
-  });
-};
-*/
-
 // Obtiene horarios por usuario
 exports.seleccionaHorariosMedico = function(object, req, res) {
   models.Direccion.findAll({
@@ -631,8 +508,15 @@ exports.seleccionaAgendaMedico  =  function(object, req, res)
       models.Agenda.findAll({
          where :  { usuario_id: object.id}
       }).then(function(datos) {
+        var fechaActual = formatearFecha(new Date());
 
         for (i = 0; i <= datos.length - 1; i++) {
+            var fechaEvento = formatearFecha(new Date(datos[i].fechaHoraInicio).toUTCString());
+
+            var color = '#5D9AB7';
+            if (fechaEvento <= fechaActual){
+              color = "#172c3b"
+            }
 
           if (datos[i].status == 1) {
             var horario = {
@@ -640,7 +524,7 @@ exports.seleccionaAgendaMedico  =  function(object, req, res)
                 title: 'Cita',
                 start: datos[i].fechaHoraInicio,
                 end: datos[i].fechaHoraFin,
-//                color : '#000',
+                color : color,
                 editable: false,
                 durationEditable: false,
                 overlap: false,
@@ -806,12 +690,21 @@ exports.seleccionaHorarios = function(object, req, res) {
         resultado.push(horario);
     };
 
+    var fechaActual = formatearFecha(new Date());
     models.Agenda.findAll({
-       where :  { direccion_id: object.direccion_id}
+       where :  { direccion_id: object.direccion_id,
+                  fechaHoraInicio: {
+                    $gte: fechaActual.split(' ')[0]
+                  }}
     }).then(function(datos) {
-
       for (i = 0; i <= datos.length - 1; i++) {
-      //  console.log(object.paciente_id + ' ' + datos[i].paciente_id)
+        var fechaEvento = formatearFecha(new Date(datos[i].fechaHoraInicio).toUTCString());
+
+        var color = '#5D9AB7';
+        if (fechaEvento <= fechaActual){
+          color = "#172c3b"
+        }
+
         if (datos[i].paciente_id == req.session.passport.user.Paciente_id) {
           if (datos[i].status != 0 ) {
             var horario = {
@@ -819,7 +712,7 @@ exports.seleccionaHorarios = function(object, req, res) {
                 title: 'Cita',
                 start: datos[i].fechaHoraInicio,
                 end: datos[i].fechaHoraFin,
-                //color : '#000',
+                color : color,
                 editable: false,
                 durationEditable: false,
                 overlap: false,
@@ -872,15 +765,23 @@ exports.seleccionaAgendaPaciente  =  function(object, req, res)
        where :  { paciente_id: req.session.passport.user.Paciente_id}
     }).then(function(datos) {
 
+      var fechaActual = formatearFecha(new Date());
       for (i = 0; i <= datos.length - 1; i++) {
 
         if (datos[i].status == 1) {
+          var fechaEvento = formatearFecha(new Date(datos[i].fechaHoraInicio).toUTCString());
+
+          var color = '#5D9AB7';
+          if (fechaEvento <= fechaActual){
+            color = "#172c3b"
+          }
+
           var horario = {
               id: 'cita_' +  datos[i].id,
               title: 'Cita',
               start: datos[i].fechaHoraInicio,
               end: datos[i].fechaHoraFin,
-//                color : '#000',
+              color : color,
               editable: false,
               durationEditable: false,
               overlap: false,
@@ -1049,6 +950,7 @@ exports.calificarCita = function(object, req, res){
 };
 
 function formatearFecha(fecha){
+  var fecha = new Date(fecha);
   var año = fecha.getFullYear();
   var mes = ("0" + (fecha.getMonth()+1)).slice(-2);
   var dia = ("0" + fecha.getDate()).slice(-2);

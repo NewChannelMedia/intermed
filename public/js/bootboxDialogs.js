@@ -58,11 +58,13 @@ function agregarUbicacion(ubicacion_id){
           bootbox.hideAll();
       },
       size:'large',
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">CONFIGURA TUS UBICACIONES Y HORARIOS DE ATENCIÓN.</span><span class="subtitle">Señala la ubicación en el mapa y registra el horario de atención correspondiente con cada una.</span>',
       message: `
       <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;" >
       <div class="col-md-12" style="color:white">
-        <h2 class="s25">CONFIGURA TUS UBICACIONES Y HORARIOS DE ATENCIÓN.</h2>
-        <h3 class="s20">Señala la ubicación en el mapa y registra el horario de atención correspondiente con cada una.</h3>
+        <span class="title">CONFIGURA TUS UBICACIONES Y HORARIOS DE ATENCIÓN.</span>
+        <span class="subtitle">Señala la ubicación en el mapa y registra el horario de atención correspondiente con cada una.</h3>
       </div>
 
       <ul class="nav nav-tabs menuBootbox">
@@ -406,6 +408,8 @@ function bootbox_modificaMedicoDetalles(tipo){
         bootbox.hideAll();
     },
     size:'large',
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">CONFIGURA TUS UBICACIONES Y HORARIOS DE ATENCIÓN.</span><span class="subtitle">Señala la ubicación en el mapa y registra el horario de atención correspondiente con cada una.</span>',
     message: `
     <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;">
       <div class="col-md-12" style="color:white;height:10px">
@@ -1296,8 +1300,9 @@ function cambioFotoPerfil(){
     onEscape: function () {
       bootbox.hideAll();
     },
-  backdrop: true,
-    size:'large',
+    backdrop: true,
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">CAMBIAR IMÁGEN DE PERFIL.</span><span class="subtitle">Selecciona el area a guardar.</span>',
     closeButton:false,
     message: `
     <div  id="CambiarFotoPerfil" name="CambiarFotoPerfil" >
@@ -1559,7 +1564,6 @@ function editaPerfBoot(){
 }
 
 function registroMedicoDatosPersonales(){
-
   var nombre = '', apellidop = '', apellidom = '';
   var curpRegMed = '', cedulaRegMed = '';
   var genderF = '', genderM = '';
@@ -1606,6 +1610,8 @@ function registroMedicoDatosPersonales(){
               onEscape: function () {
                   bootbox.hideAll();
               },
+              className: 'Intermed-Bootbox',
+              title: '<span class="title">Intermed® / <b>Registro Médicos</span>',
               message: `
               <div style="background-color:#172c3b;padding:5px;margin:-15px;" >
               <div class="col-md-12" style="color:white" >
@@ -1770,6 +1776,8 @@ function registroMedicoDatosPago(){
               onEscape: function () {
                   bootbox.hideAll();
               },
+              className: 'Intermed-Bootbox',
+              title: '<span class="title">Intermed® / <b>Registro Médicos</span>',
               size:'large',
               message: `
               <div style="background-color:#172c3b;padding:5px;margin:-15px;" >
@@ -1984,31 +1992,24 @@ function manejadorDeErrores(error){
     backdrop: backdrop,
     closeButton: true,
     size:'small',
-    message: `
-    <div style="background-color:#172c3b;padding:5px;margin:-15px;" >
-
-    <div class="divBodyBootbox">
-      <center>
-      <div class="col-md-12" style="color:white">
-        <div class="row">
-        <h3 class="s20">Oh, oh, algo salió mal.</h3>
-        </div>
-      </div>
-      <div class="col-md-12" style="margin-top:10px">
-        <div class="row">
-          <div class="well  well-sm" style="background-color: rgba(0, 0, 0, 0.2);border-color: rgba(0, 0, 0, 0.3)">
-            <small>Error: `+codigoError+`</small><br/>
-            <small>Descripción: `+ descripcionError +`</small>
-          </div>
-          <br/>
-          `+solucion+`
-        </div>
-      </div>
-      `+
-      accion
-      +`</center>
-    </div>
-    </div>`
+    className: 'Intermed-Bootbox',
+    message: '<center>' +
+      '<div class="col-md-12" style="color:white">' +
+        '<div class="row">' +
+        '<h3 class="s20">Oh, oh, algo salió mal.</h3>' +
+        '</div>' +
+      '</div>' +
+      '<div class="col-md-12" style="margin-top:10px">' +
+        '<div class="row">' +
+          '<div class="well  well-sm" style="background-color: rgba(0, 0, 0, 0.2);border-color: rgba(0, 0, 0, 0.3)">' +
+            '<small>Error: '+codigoError+'</small><br/>' +
+            '<small>Descripción: '+ descripcionError +'</small>' +
+          '</div>' +
+          '<br/>' +
+          +solucion+
+        '</div>' +
+      '</div>'+accion+
+    '</center>'
   });
 }
 function editMedicoPerfil(){
@@ -2189,61 +2190,52 @@ function agendarCitaBootbox(){
           bootbox.hideAll();
       },
       size:'large',
-      message: `
-      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
-      <div class="col-md-12" style="color:white;position:relative">
-        <h2 class="s25 text-center" style="width:100%">AGENDAR UNA CITA.</h2>
-        <h3 class="s20" style="color:white" >Selecciona el servicio para el cual quieres generar la cita, seguido de eso se desplegaran las distintas ubicaciones donde el médico brinda el servicio.</h3>
-      </div>
-      .
-      <div class="divBodyBootbox" style="position:relative">
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">AGENDAR UNA CITA.</span><span class="subtitle">Selecciona el servicio para el cual quieres generar la cita, seguido de eso se desplegaran las distintas ubicaciones donde el médico brinda el servicio.</span>',
+      message:
+            '<form method="POST" name="frmRegCita" id="frmRegCita">'+
+              '<input type="hidden" id="id" name="id">'+
+              '<input type="hidden" id="paciente_id" name="paciente_id" value="2">'+
+              '<input type="hidden" id="medico_id" name="medico_id" value="1">'+
+              '<input type="hidden" id="fecha" name="fecha" />'+
+              '<input type="hidden" id="fechaFin" name="fechaFin" />'+
+              '<input type="hidden" id="serviciocita_id" name="serviciocita_id" />'+
+              '<div class=col-md-12">'+
+                '<div class="col-md-2">'+
+                  '<label for="servicio_id">Servicio: </label>'+
+                '</div>'+
+                '<div class="col-md-10">'+
+                  '<select class="form-control" id="servicio_id" name="servicio_id" >'+
+                    '<option value=""></option>'+
+                  '</select>'+
+                '</div>'+
+              '</div>'+
+              '<br/><br/>'+
 
-            <form method="POST" name="frmRegCita" id="frmRegCita">
-              <input type="hidden" id="id" name="id">
-              <input type="hidden" id="paciente_id" name="paciente_id" value="2">
-              <input type="hidden" id="medico_id" name="medico_id" value="1">
-              <input type="hidden" id="fecha" name="fecha" />
-              <input type="hidden" id="fechaFin" name="fechaFin" />
-              <input type="hidden" id="serviciocita_id" name="serviciocita_id" />
-              <div class=col-md-12">
-                <div class="col-md-2">
-                  <label for="servicio_id">Servicio: </label>
-                </div>
-                <div class="col-md-10">
-                  <select class="form-control" id="servicio_id" name="servicio_id" >
-                    <option value=""></option>
-                  </select>
-                </div>
-              </div>
-              <br/><br/><br/>
-
-              <div class=col-md-12" id="ubicaciones_select">
-                <div class="col-md-2">
-                  <label for="servicio_id">Ubicación: </label>
-                </div>
-                <div class="col-md-10">
-                  <select class="form-control" id="ubicacion_id" name="ubicacion_id" >
-                    <option value=""></option>
-                  </select>
-                </div>
-              </div>
+              '<div class=col-md-12" id="ubicaciones_select">'+
+                '<div class="col-md-2">'+
+                  '<label for="servicio_id">Ubicación: </label>'+
+                '</div>'+
+                '<div class="col-md-10">'+
+                  '<select class="form-control" id="ubicacion_id" name="ubicacion_id" >'+
+                    '<option value=""></option>'+
+                  '</select>'+
+                '</div>'+
+              '</div>'+
 
 
-              <div class=col-md-12" id="cita_detalles" style="visibility:hidden">
-                <b>Costo del servicio: </b><span id="citaCosto"></span><br/>
-                <b>Duración: </b><span id="citaDuracion"></span>
-              </div>
+              '<div class=col-md-12" id="cita_detalles" style="visibility:hidden">'+
+                '<b>Costo del servicio: </b><span id="citaCosto"></span><br/>'+
+                '<b>Duración: </b><span id="citaDuracion"></span>'+
+              '</div>'+
 
 
-              <div class="col-md-12" id="divCalendarioPadre"><div class="row"><div id="divCalendario"></div></div></div>
+              '<div class="col-md-12" id="divCalendarioPadre"><div class="row"><div id="divCalendario"></div></div></div>'+
 
-            </form>
-            <input type="button" class="btn btn-drop btn-sm pull-left" value="Cancelar" onclick="bootbox.hideAll();">
-            <input type="button" class="btn btn-save btn-sm pull-right" value="Agendar cita" onclick="registrarCita()"><br/><br/<br/><br/>
-            <span style="color:#5D9AB7">.</span><br/><br/><br/>
-      </div>
-
-      </div>`
+            '</form>'+
+            '<input type="button" class="btn btn-drop btn-sm pull-left" value="Cancelar" onclick="bootbox.hideAll();">'+
+            '<input type="button" class="btn btn-save btn-sm pull-right" value="Agendar cita" onclick="registrarCita()"><br/><br/<br/><br/>'+
+            '<span style="color:#5D9AB7">.</span><br/><br/>'
   });
   traerServiciosPorMedico($('#usuarioPerfil').val());
 }
@@ -2256,40 +2248,29 @@ function verAgendaMedico(){
           bootbox.hideAll();
       },
       size:'large',
-      message: `
-      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
-      <div class="col-md-12" style="color:white;position:relative">
-        <h2 class="s25" style="width:100%">TU AGENDA.</h2>
-        <h3 class="s20" style="color:white" >Da click en las citas para cancelarlas.</h3>
-      </div>
-      .
-      <div class="divBodyBootbox" style="position:relative">
-          <form method="POST" name="frmRegCita" id="frmRegCita">
-            <input type="hidden" id="id" name="id">
-            <input type="hidden" id="paciente_id" name="paciente_id" value="1">
-            <input type="hidden" id="medico_id" name="medico_id" value="{{id}}">
-            <input type="hidden" id="fecha" name="fecha" />
-            <input type="hidden" id="fechaFin" name="fechaFin" />
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">TU AGENDA.</span><span class="subtitle">Da click en las citas para cancelarlas.</span>',
+      message: '<form method="POST" name="frmRegCita" id="frmRegCita">'+
+            '<input type="hidden" id="id" name="id">'+
+            '<input type="hidden" id="paciente_id" name="paciente_id" value="1">'+
+            '<input type="hidden" id="fecha" name="fecha" />'+
+            '<input type="hidden" id="fechaFin" name="fechaFin" />'+
 
-            <div class="col-md-12">
-              <div class="row">
-              <div id='divCalendario'></div>
-              </div>
-            </div>
+            '<div class="col-md-12">'+
+              '<div class="row">'+
+              '<div id="divCalendario"></div>'+
+              '</div>'+
+            '</div>'+
 
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">
-                    </div>
-                </div>
-            </div>
-        </div>
-        </form>
-      </div>
-
-
-      </div>`
+            '<div class="row">'+
+                '<div class="col-md-12">'+
+                    '<div class="form-group">'+
+                        '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">'+
+                    '</div>'+
+                '</div>'+
+            '</div>'+
+        '</div>'+
+        '</form>'
   });
 
 
@@ -2308,41 +2289,29 @@ function verAgendaPaciente(){
           bootbox.hideAll();
       },
       size:'large',
-      message: `
-      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
-      <div class="col-md-12" style="color:white;position:relative">
-        <h2 class="s25" style="width:100%">TU AGENDA.</h2>
-        <h3 class="s20" style="color:white" >Da click en las citas para cancelarlas.</h3>
-      </div>
-      .
-      <div class="divBodyBootbox" style="position:relative">
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">TU AGENDA.</span><span class="subtitle">Da click en las citas para cancelarlas.</span>',
+      message: '<form method="POST" name="frmRegCita" id="frmRegCita">'+
+            '<input type="hidden" id="id" name="id">'+
+            '<input type="hidden" id="paciente_id" name="paciente_id" value="1">'+
+            '<input type="hidden" id="fecha" name="fecha" />'+
+            '<input type="hidden" id="fechaFin" name="fechaFin" />'+
 
-          <form method="POST" name="frmRegCita" id="frmRegCita">
-            <input type="hidden" id="id" name="id">
-            <input type="hidden" id="paciente_id" name="paciente_id" value="1">
-            <input type="hidden" id="medico_id" name="medico_id" value="{{id}}">
-            <input type="hidden" id="fecha" name="fecha" />
-            <input type="hidden" id="fechaFin" name="fechaFin" />
+            '<div class="col-md-12">'+
+              '<div class="row">'+
+              '<div id="divCalendario"></div>'+
+              '</div>'+
+            '</div>'+
 
-            <div class="col-md-12">
-              <div class="row">
-              <div id='divCalendario'></div>
-              </div>
-            </div>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">
-                    </div>
-                </div>
-            </div>
-        </div>
-        </form>
-      </div>
-
-
-      </div>`
+            '<div class="row">'+
+                '<div class="col-md-12">'+
+                    '<div class="form-group">'+
+                        '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">'+
+                    '</div>'+
+                '</div>'+
+            '</div>'+
+        '</div>'+
+        '</form>'
   });
 
 
@@ -2390,44 +2359,31 @@ function detalleCancelacionPaciente(data){
     onEscape: function () {
         bootbox.hideAll();
     },
-    className: "medium",
-    message: `
-    <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
-    <div class="col-md-12" style="color:white;position:relative">
-      <h2 class="s25 text-center" style="width:100%">CITA CANCELADA POR EL PACIENTE.</h2>
-    </div>
-    .
-    <div class="divBodyBootbox" style="position:relative">
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">CITA CANCELADA POR EL PACIENTE.</span>',
+    message: '<div class="col-md-12" style="margin-bottom:30px;margin-top:30px">'+
+          '<div class="row">'+
+            '<div class="col-md-4">'+
+            '<img src="'+imagenUrl+'" style="margin-top:7px;width:100%">'+
+            '</div>'+
+            '<div class="col-md-8">'+
+            '<span class="pull-right"><b>Fecha: </b>'+ fecha +'</span><br/>'+
+            '<span class="pull-right"><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+            '<h4><b>Paciente: </b>'+nombreUsuario+'</h4><br/>'+
+            '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
+            '<b>Servicio: </b>'+nombreServicio+'<br/>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
 
-        <div class="col-md-12" style="margin-bottom:30px;margin-top:30px">
-          <div class="row">
-            <div class="col-md-4">
-            <img src="`+imagenUrl+`" style="margin-top:7px;width:100%">
-            </div>
-            <div class="col-md-8">
-            <span class="pull-right"><b>Fecha: </b>`+ fecha +`</span><br/>
-            <span class="pull-right"><b>Hora: </b>`+ hora +`</span><br/><br/>
-            <h4><b>Paciente: </b>`+nombreUsuario+`</h4><br/>
-            <b>Ubicacion: </b>`+nombreUbicacion+`<br/>
-            <b>Servicio: </b>`+nombreServicio+`<br/>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    </div>`
+        '<div class="row">'+
+            '<div class="col-md-12">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">'+
+                '</div>'+
+            '</div>'+
+        '</div>'
   });
-
-  $('.bootbox-close-button').css('z-index','1000');
-  $('.bootbox-close-button').css('position','relative');
 }
 
 function detalleCancelacionMedico(agenda_id){
@@ -2467,44 +2423,31 @@ function detalleCancelacionMedico(agenda_id){
     onEscape: function () {
         bootbox.hideAll();
     },
-    className: "medium",
-    message: `
-    <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
-    <div class="col-md-12" style="color:white;position:relative">
-      <h2 class="s25 text-center" style="width:100%">CITA CANCELADA POR EL MÉDICO.</h2>
-    </div>
-    .
-    <div class="divBodyBootbox" style="position:relative">
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">CITA CANCELADA POR EL MÉDICO.</span>',
+    message: '<div class="col-md-12" style="margin-bottom:30px;margin-top:30px">'+
+          '<div class="row">'+
+            '<div class="col-md-4">'+
+            '<img src="'+imagenUrl+'" style="margin-top:7px;width:100%">'+
+            '</div>'+
+            '<div class="col-md-8">'+
+            '<span class="pull-right"><b>Fecha: </b>'+ fecha +'</span><br/>'+
+            '<span class="pull-right"><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+            '<h4><b>'+nombreUsuario+'</b></h4><br/>'+
+            '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
+            '<b>Servicio: </b>'+nombreServicio+'<br/>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
 
-        <div class="col-md-12" style="margin-bottom:30px;margin-top:30px">
-          <div class="row">
-            <div class="col-md-4">
-            <img src="`+imagenUrl+`" style="margin-top:7px;width:100%">
-            </div>
-            <div class="col-md-8">
-            <span class="pull-right"><b>Fecha: </b>`+ fecha +`</span><br/>
-            <span class="pull-right"><b>Hora: </b>`+ hora +`</span><br/><br/>
-            <h4><b>`+nombreUsuario+`</b></h4><br/>
-            <b>Ubicacion: </b>`+nombreUbicacion+`<br/>
-            <b>Servicio: </b>`+nombreServicio+`<br/>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    </div>`
+        '<div class="row">'+
+            '<div class="col-md-12">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">'+
+                '</div>'+
+            '</div>'+
+        '</div>'
   });
-
-  $('.bootbox-close-button').css('z-index','1000');
-  $('.bootbox-close-button').css('position','relative');
 }
 
 function detalleCita(agenda_id){
@@ -2545,44 +2488,31 @@ function detalleCita(agenda_id){
     onEscape: function () {
         bootbox.hideAll();
     },
-    className: "medium",
-    message: `
-    <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
-    <div class="col-md-12" style="color:white;position:relative">
-      <h2 class="s25 text-center" style="width:100%">NUEVA CITA AGENDADA.</h2>
-    </div>
-    .
-    <div class="divBodyBootbox" style="position:relative">
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">NUEVA CITA AGENDADA.</span>',
+    message:'<div class="col-md-12" style="margin-bottom:30px;margin-top:30px">'+
+          '<div class="row">'+
+            '<div class="col-md-4">'+
+            '<img src="'+imagenUrl+'" style="margin-top:7px;width:100%">'+
+            '</div>'+
+            '<div class="col-md-8">'+
+            '<span class="pull-right"><b>Fecha: </b>'+ fecha +'</span><br/>'+
+            '<span class="pull-right"><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+            '<h4><b>'+nombreUsuario+'</b></h4><br/>'+
+            '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
+            '<b>Servicio: </b>'+nombreServicio+'<br/>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
 
-        <div class="col-md-12" style="margin-bottom:30px;margin-top:30px">
-          <div class="row">
-            <div class="col-md-4">
-            <img src="`+imagenUrl+`" style="margin-top:7px;width:100%">
-            </div>
-            <div class="col-md-8">
-            <span class="pull-right"><b>Fecha: </b>`+ fecha +`</span><br/>
-            <span class="pull-right"><b>Hora: </b>`+ hora +`</span><br/><br/>
-            <h4><b>`+nombreUsuario+`</b></h4><br/>
-            <b>Ubicacion: </b>`+nombreUbicacion+`<br/>
-            <b>Servicio: </b>`+nombreServicio+`<br/>
-            </div>
-          </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    </div>`
+        '<div class="row">'+
+            '<div class="col-md-12">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">'+
+                '</div>'+
+            '</div>'+
+        '</div>'
   });
-
-  $('.bootbox-close-button').css('z-index','1000');
-  $('.bootbox-close-button').css('position','relative');
 }
 
 function bootboxCalificarCita(agenda_id, notificacion_id){
@@ -2623,115 +2553,100 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
       onEscape: function () {
           bootbox.hideAll();
       },
-      message: `
-      <style>
-      span.Slider {
-        float:left;
-      }
-      </style>
-      <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">CALIFICA TU CITA.</span>',
+      message:
+      '<style>span.Slider {float:left;}</style>'+
+      '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">'+
 
+      '<div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom:15px;margin-top:20px">'+
+        '<div class="row">'+
+          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:-15px;margin-bottom:5px;">'+
+            '<h4><b>'+nombreUsuario+'</b></h4>'+
+          '</div>'+
 
-      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
-      <div class="col-md-12 col-sm-12 col-xs-12" style="color:white;position:relative">
-        <h2 class="s25 text-center" style="width:100%">CALIFICA TU CITA</h2>
-      </div>
-      .
-      <div class="divBodyBootbox" style="position:relative">
+          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;">'+
+            '<div class="col-md-6 col-sm-6 col-xs-6 col-md-offset-3 col-sm-offset-3 col-xs-offset-3">'+
+              '<img src="'+imagenUrl+'" style="width:100%;" class="img-thumbnail">'+
+            '</div>'+
+          '</div>'+
 
-          <div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom:15px;margin-top:20px">
-            <div class="row">
-              <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:-15px;margin-bottom:5px;">
-                <h4><b>`+nombreUsuario+`</b></h4>
-              </div>
+          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;"><small><b>Fecha: </b>'+ fecha +' '+ hora +'</small></div>'+
 
-              <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;">
-                <div class="col-md-6 col-sm-6 col-xs-6 col-md-offset-3 col-sm-offset-3 col-xs-offset-3">
-                  <img src="`+imagenUrl+`" style="width:100%;" class="img-thumbnail">
-                </div>
-              </div>
+          '<div class="col-md-6 col-sm-6 col-xs-10 col-md-offset-3 col-sm-offset-3 col-xs-offset-1" style="margin-top:20px">'+
+            '<div class="row">'+
+              '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción general: </div>'+
+              '<div class="col-md-12 col-sm-12 col-xs-12"><input id="input-21d" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>'+
+            '</div>'+
 
-              <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;"><small><b>Fecha: </b>`+ fecha +` `+ hora +`</small></div>
+            '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider" id="cal_higiene"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-trash" ></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
 
-              <div class="col-md-6 col-sm-6 col-xs-10 col-md-offset-3 col-sm-offset-3 col-xs-offset-1" style="margin-top:20px">
-                <div class="row">
-                  <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción general: </div>
-                  <div class="col-md-12 col-sm-12 col-xs-12"><input id="input-21d" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>
-                </div>
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider" id="cal_puntualidad"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-time"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
 
-                <div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">
-                    <div class="col-md-3 col-sm-3 col-xs-3">
-                      <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">
-                            <span class="Slider" id="cal_higiene"></span>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">
-                          <span class="glyphicon glyphicon-trash" ></span>
-                        </div>
-                      </div>
-                    </div>
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider"  id="cal_instalaciones"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-home"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
 
-                    <div class="col-md-3 col-sm-3 col-xs-3">
-                      <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">
-                            <span class="Slider" id="cal_puntualidad"></span>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">
-                          <span class="glyphicon glyphicon-time"></span>
-                        </div>
-                      </div>
-                    </div>
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider"  id="cal_trato"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-user"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
 
-                    <div class="col-md-3 col-sm-3 col-xs-3">
-                      <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">
-                            <span class="Slider"  id="cal_instalaciones"></span>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">
-                          <span class="glyphicon glyphicon-home"></span>
-                        </div>
-                      </div>
-                    </div>
+            '</div>'+
 
-                    <div class="col-md-3 col-sm-3 col-xs-3">
-                      <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">
-                            <span class="Slider"  id="cal_trato"></span>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">
-                          <span class="glyphicon glyphicon-user"></span>
-                        </div>
-                      </div>
-                    </div>
-
-                </div>
-
-                <div class="row">
-                  <textarea class="form-control" placeholder="Comentarios (opcional)" style="resize: none;margin-top:5px" rows="4" id="calificacionComentario"></textarea>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-              <div class="col-md-12 col-sm-12 col-xs-12">
-                  <div class="form-group">
-                      <input type="button" style="font-weight:bold" class="btn btn-warning btn-block" value="Calificar" onclick="calificarCita('`+agenda_id+`','`+notificacion_id+`');">
-                  </div>
-              </div>
-          </div>
-      </div>
-
-      </div>
-
-      `
+            '<div class="row">'+
+              '<textarea class="form-control" placeholder="Comentarios (opcional)" style="resize: none;margin-top:5px" rows="4" id="calificacionComentario"></textarea>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="row">'+
+          '<div class="col-md-12 col-sm-12 col-xs-12">'+
+              '<div class="form-group">'+
+                  '<input type="button" style="font-weight:bold" class="btn btn-warning btn-block" value="Calificar" onclick="calificarCita(\''+agenda_id+'\',\''+notificacion_id+'\');">'+
+              '</div>'+
+          '</div>'+
+      '</div>'
     });
 
 

@@ -281,7 +281,8 @@ function iniciarCalendarioAgendarCita(){
                     title:   $('#servicio_id option:selected').text(),
                     start: date ,
                     end: new moment(date).add(horas[0], 'h').add(horas[1], 'm'),
-                    color : '#578',
+                    color : '#FFBF00',
+                    textColor: '#000',
                     overlap: false,
                     durationEditable: false,
                     editable: false
@@ -551,35 +552,44 @@ function cancelaCita(id) {
         },
         eventClick: function (event, jsEvent, view) {
           //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
-          bootbox.confirm({
-            message: '¿Esta seguro de cancelar la cita?',
-            title: '<span class="title">Mensaje de Intermed</span>',
-            className: 'Intermed-Bootbox',
-            backdrop: false,
-            callback: function(result){
-              if (result){
-                if (cancelaCita(event._id))
-                {
-                  $('#divCalendario').fullCalendar('removeEvents', event._id);
-                  $('#divCalendario').fullCalendar('unselect');
+          if ($(this).find('span#'+event._id).length>0){
+            bootbox.confirm({
+              message: '¿Esta seguro de cancelar la cita?',
+              title: '<span class="title">Mensaje de Intermed</span>',
+              className: 'Intermed-Bootbox',
+              backdrop: false,
+              callback: function(result){
+                if (result){
+                  if (cancelaCita(event._id))
+                  {
+                    $('#divCalendario').fullCalendar('removeEvents', event._id);
+                    $('#divCalendario').fullCalendar('unselect');
+                  }
+                }
+              },
+              buttons: {
+                confirm: {
+                  label: "Si"
+                },
+                cancel: {
+                  label: "No"
                 }
               }
-            },
-            buttons: {
-              confirm: {
-                label: "Si"
-              },
-              cancel: {
-                label: "No"
-              }
-            }
-          });
+            });
+          }
           //}
         },
         eventMouseover: function (event, jsEvent, view) {
-          //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
+          var inicio = formatearTimestampAgenda(new Date(event.start));
+          var fechaActual = formatearFecha(new Date());
+          if (inicio > fechaActual){
             $(this).append('<span id=\"' + event._id + '\">Clic para cancelar</span>');
-          //}
+          }
+        },
+        eventMouseout: function (event, jsEvent, view) {
+          if ($('#' + event._id).length>0){
+            $('#' + event._id).remove();
+          }
         },
         eventMouseout: function (event, jsEvent, view) {
             $('#' + event._id).remove();
@@ -639,38 +649,43 @@ function cancelaCita(id) {
           $('#divCalendario').fullCalendar('unselect');
         },
         eventClick: function (event, jsEvent, view) {
-          //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
-          bootbox.confirm({
-            message: '¿Esta seguro de cancelar la cita?',
-            title: '<span class="title">Mensaje de Intermed</span><span class="subtitle">Subtitulo de prueba</span>',
-            className: 'Intermed-Bootbox',
-            backdrop: false,
-            callback: function(result){
-              if (result){
-                  if  (cancelaCitaPaciente(event._id))
-                  {
-                    $('#divCalendario').fullCalendar('removeEvents', event._id);
-                    $('#divCalendario').fullCalendar('unselect');
-                  }
-              }
-            },
-            buttons: {
-              confirm: {
-                label: "Si"
+          if ($(this).find('span#'+event._id).length>0){
+            bootbox.confirm({
+              message: '¿Esta seguro de cancelar la cita?',
+              title: '<span class="title">Mensaje de Intermed</span><span class="subtitle">Subtitulo de prueba</span>',
+              className: 'Intermed-Bootbox',
+              backdrop: false,
+              callback: function(result){
+                if (result){
+                    if  (cancelaCitaPaciente(event._id))
+                    {
+                      $('#divCalendario').fullCalendar('removeEvents', event._id);
+                      $('#divCalendario').fullCalendar('unselect');
+                    }
+                }
               },
-              cancel: {
-                label: "No"
+              buttons: {
+                confirm: {
+                  label: "Si"
+                },
+                cancel: {
+                  label: "No"
+                }
               }
-            }
-          });
+            });
+          }
         },
         eventMouseover: function (event, jsEvent, view) {
-          //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
+          var inicio = formatearTimestampAgenda(new Date(event.start));
+          var fechaActual = formatearFecha(new Date());
+          if (inicio > fechaActual){
             $(this).append('<span id=\"' + event._id + '\">Clic para cancelar</span>');
-          //}
+          }
         },
         eventMouseout: function (event, jsEvent, view) {
+          if ($('#' + event._id).length>0){
             $('#' + event._id).remove();
+          }
         },
         eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
           revertFunc();

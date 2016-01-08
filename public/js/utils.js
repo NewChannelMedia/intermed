@@ -5218,7 +5218,6 @@ function repositionTooltip( e, ui ){
 }
 
 function calificarCita(agenda_id, notificacion_id){
-  console.log("---------CALIFICAR---------");
   var agenda_id =  agenda_id;
   var notificacion_id = notificacion_id;
   var satisfaccionGeneral = ($("#input-21d").val()*2*10);
@@ -5267,5 +5266,4 @@ function calificarCita(agenda_id, notificacion_id){
         console.log('AJAX Error: ' + JSON.stringify(err));
       }
     });
-  console.log("------------------");
 }
