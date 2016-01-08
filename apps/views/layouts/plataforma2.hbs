@@ -85,10 +85,14 @@
                   <li>
                     <a href="#">Oficina</a>
                   </li>
-                  {{/ifTipoMedico}}
                   <li>
-                    <a href="#">Agenda</a>
+                    <a href="#" onclick="verAgendaMedico()">Agenda</a>
                   </li>
+                  {{else}}
+                  <li>
+                    <a href="#" onclick="verAgendaPaciente()">Agenda</a>
+                  </li>
+                  {{/ifTipoMedico}}
 
                   <li>
                     <a id="notificationIcon" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="mostrarNotificaciones()">
