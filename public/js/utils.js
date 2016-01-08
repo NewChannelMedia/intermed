@@ -4691,9 +4691,9 @@ function cargarListaAlfAmi( usuario ) {
             if (primero == ""){
               primero = rec.Letra;
             }
-            contenido += `<li>
-              <a onclick="cargarListaColegasByAlf('`+usuario+`','`+ rec.Letra +`')">`+ rec.Letra +` <span class="badge pull-right">`+ rec.Total +` </span></a>
-            </li>`;
+            contenido += '<li>'+
+              '<a onclick="cargarListaColegasByAlf('+usuario+','+ rec.Letra +')">'+ rec.Letra +' <span class="badge pull-right">'+ rec.Total +' </span></a>'+
+            '</li>';
           });
           $('#LetrasList').html(contenido);
           if (primero != ""){
@@ -4728,23 +4728,23 @@ function cargarListaAmistadesByAlf(usuario_id,letra){
         var contenido = '';
         contenido += '<div id="'+ letra +'" class="row" ><h1 class="h67-medcond">'+letra+'</h1>';
         data.result.forEach(function(res){
-          contenido += `
-          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
-            <div class="thumbnail">
-              <div >
-                <a class="pPic" href="/perfil/`+ res.usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
-              </div>
-              <div class="caption">
-                <div class="nombre h77-boldcond">
-                  <span>`+ res.DatosGenerale.nombre +`</span>&nbsp;<span>`+ res.DatosGenerale.apellidoP +` `+ res.DatosGenerale.apellidoM +`</span>
-                </div>
-                <div class="esp h67-medcond">
-                  <span class="colEsp"></span>
-                </div>
-                <a class="h67-medcondobl" href="/perfil/`+ res.usuarioUrl +`">Ver Perfil</a>
-              </div>
-            </div>
-          </div>`
+          contenido +=
+          '<div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">'+
+            '<div class="thumbnail">'+
+              '<div >'+
+                '<a class="pPic" href="/perfil/'+ res.usuarioUrl +'"><img src="'+ res.urlFotoPerfil +'" alt="..."></a>'+
+              '</div>'+
+              '<div class="caption">'+
+                '<div class="nombre h77-boldcond">'+
+                  '<span>'+ res.DatosGenerale.nombre +'</span>&nbsp;<span>'+ res.DatosGenerale.apellidoP +' '+ res.DatosGenerale.apellidoM +'</span>'+
+                '</div>'+
+                '<div class="esp h67-medcond">'+
+                  '<span class="colEsp"></span>'+
+                '</div>'+
+                '<a class="h67-medcondobl" href="/perfil/'+ res.usuarioUrl +'">Ver Perfil</a>'+
+              '</div>'+
+            '</div>'+
+          '</div>'
         })
         contenido += '</div>';
         $('#listaAmistades').html(contenido);
@@ -4871,13 +4871,13 @@ function InputAutoComplete(inputId, availableTags){
             }
           });
           if (agregar){
-          $(this).parent().append(`
-            <div class="input-group-btn" style="padding:1px;display:initial">
-              <label class="btn-xs btn-warning" style="margin-top:2px">
-                <span class="`+inputId+`">`+ ui.item.value +`</span>
-                <span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%" ></span>
-              </label>
-            </div>`);
+          $(this).parent().append(
+            '<div class="input-group-btn" style="padding:1px;display:initial">'+
+              '<label class="btn-xs btn-warning" style="margin-top:2px">'+
+                '<span class="`+inputId+`">`+ ui.item.value +`</span>'+
+                '<span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%" ></span>'+
+              '</label>'+
+            '</div>');
           }
           this.value = '';
           ajustarPantallaBusqueda();
@@ -5026,13 +5026,13 @@ function agregarBusqueda(inputId,Valores){
   Valores = Valores.split('-.-');
   Valores.forEach(function(val){
     if (val != ""){
-      $('#'+inputId).parent().append(`
-        <div class="input-group-btn" style="padding:1px;display:initial">
-          <label class="btn-xs btn-warning" style="margin-top:2px">
-            <span class="`+inputId+`">`+ val +`</span>
-            <span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%" ></span>
-          </label>
-        </div>`);
+      $('#'+inputId).parent().append(
+        '<div class="input-group-btn" style="padding:1px;display:initial">'+
+          '<label class="btn-xs btn-warning" style="margin-top:2px">'+
+            '<span class="`+inputId+`">'+ val +'</span>'+
+            '<span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%" ></span>'+
+          '</label>'+
+        '</div>');
     }
   });
 }
