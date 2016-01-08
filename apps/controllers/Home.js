@@ -486,7 +486,7 @@ function cargarInfoPerfilNuevo( usuario, condiciones, req, res ) {
       }).then(function(MedicoQueAtiende){
         if ( result ) {
           if (MedicoQueAtiende){
-            usuario.medAtiende = "1";
+            usuario.medPac = "1";
           }
           if ( result.aprobado == 1 && result.mutuo == 1 ) {
             usuario.medFavCol = result.id;
@@ -512,7 +512,7 @@ function cargarInfoPerfilNuevo( usuario, condiciones, req, res ) {
       }).then(function(MedicoQueAtiende){
         if ( result ) {
           if (MedicoQueAtiende){
-            usuario.medAtiende = "1";
+            usuario.medPac = "1";
           }
           if ( result.aprobado == 1 && result.mutuo == 1 ) {
             usuario.medFavCol = result.id;
