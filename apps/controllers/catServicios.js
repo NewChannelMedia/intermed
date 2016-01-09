@@ -19,7 +19,8 @@ module.exports = {
         descripcion: req.body.descripcion,
         precio: parseFloat(req.body.precio),
         duracion: req.body.duracion,
-        usuario_id: usuario_id
+        usuario_id: usuario_id,
+        direccion_id: parseInt(req.body.otroID)
       }).then(function(catalogo){
         if( catalogo != null ){
           res.send(true);
@@ -42,14 +43,17 @@ module.exports = {
   updateServices: function( req, res ){
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
-      var todo = {
-        concepto:req.body.concepto,
-        descripcion: req.body.descripcion,
-        precio: parseFloat(req.body.precio),
-        duracion: req.body.duracion
+      var todo;
+      var tipo = "";
+      tipo = req.body.tipo;
+      switch( tipo ){
+        case "concepto":todo = {concepto: req.body.valor};break;
+        case "descripcion":todo = { descripcion: req.body.valor }; break;
+        case "precio":todo = { precio: parseFloat( req.body.valor ) }; break;
+        case "duracion":todo = { duracion: req.body.valor }; break;
       }
       models.CatalogoServicios.update(todo,{
-        where:{id:req.body.id},
+        where:{id:req.body.id,direccion_id:req.body.otroID},
       }).then(function(modificado){
         res.send(modificado);
       });

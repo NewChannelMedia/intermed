@@ -3132,15 +3132,18 @@ function addServices(concepto, descripcion,precio,duracion){
   var des = $(descripcion).val();
   var pre = $(precio).val();
   var dur = $(duracion+ " :selected").val();
+  var otroID = $("#idDireccion").val();
   //post para el envio de la informacion
   if( con != "" && des != "" && pre != "" && dur != "time" ){
     $.post('/addServices',{
       concepto:con,
       descripcion: des,
       precio: pre,
-      duracion: dur
+      duracion: dur,
+      otroID: otroID
     },function(data){
       if(data == true){
+        maquetaServices();
         $("#exitoAgregado").removeClass('hidden');
         $(concepto).html('');
         $(descripcion).html('');
@@ -3170,44 +3173,59 @@ function maquetaServices(){
       html += '<tr>';
         html += '<td>';
           html += '<center>';
-            html += '<button type="button" onclick="updateServices(\''+con+'\',\''+des+'\',\''+pre+'\',\''+dur+'\')" class="btn btn-success">';
-              html += '<span style="color:white;" class="glyphicon glyphicon-pencil"></span>';
-            html += '</button>';
-          html += '</center>';
-        html += '</td>';
-        html += '<td>';
-          html += '<center>';
             html += '<div class="form-group">';
-              html += '<input type="text" oculto="'+item.id+'" class="form-control" id="conceptModifica'+i+'" value="'+item.concepto+'"/>';
+              html += '<input type="text" tipo="concepto" oculto="'+item.id+'" class="form-control" id="conceptModifica'+i+'" value="'+item.concepto+'" onfocus="editUbicacion(\''+con+'\')"/>';
             html += '</div>';
           html += '</center>';
         html += '</td>';
         html += '<td>';
           html += '<center>';
             html += '<div class="form-group">';
-              html += '<input type="text" class="form-control" id="decriptModifica'+i+'" value="'+item.descripcion+'"/>';
+              html += '<input type="text" tipo="descripcion" oculto="'+item.id+'" class="form-control" id="decriptModifica'+i+'" value="'+item.descripcion+'" onfocus="editUbicacion(\''+des+'\')"/>';
             html += '</div>';
           html += '</center>';
         html += '</td>';
         html += '<td>';
           html += '<center>';
             html += '<div class="form-group">';
-              html += '<input type="text" class="form-control" id="precModifica'+i+'" value="'+item.precio+'"/>';
+              html += '<input type="text" tipo="precio" oculto="'+item.id+'" class="form-control" id="precModifica'+i+'" value="'+item.precio+'" onfocus="editUbicacion(\''+pre+'\');"/>';
             html += '</div>';
           html += '</center>';
         html += '</td>';
         html += '<td>';
           html += '<center>';
             html += '<div class="form-group">';
-              html += '<select id="durModifica'+i+'">';
+              html += '<select id="durModifica'+i+'" oculto="'+item.id+'" tipo="duracion" onfocus="editUbicacion(\''+dur+'\')">';
                 html += '<option value="'+item.duracion+'">'+item.duracion+'</option>';
                 html += '<option value="00:30:00">30 minutos</option>';
-                html += '<option value="00:45:00">45 minutos</option>';
-                html += '<option value="01:00:00">1 hora</option>';
+                html += '<option value="00:45:00">1 hora</option>';
+                html += '<option value="01:30:00">1 hora y 30 minutos</option>';
                 html += '<option value="02:00:00">2 horas</option>';
+                html += '<option value="02:30:00">2 horas y 30 minutos</option>';
                 html += '<option value="03:00:00">3 horas</option>';
+                html += '<option value="03:30:00">3 horas y 30 minutos</option>';
+                html += '<option value="04:00:00">4 horas</option>';
+                html += '<option value="04:30:00">4 horas y 30 minutos</option>';
+                html += '<option value="05:00:00">5 horas</option>';
+                html += '<option value="05:30:00">5 horas y 30 minutos</option>';
+                html += '<option value="06:00:00">6 horas</option>';
+                html += '<option value="06:30:00">6 horas y 30 minutos</option>';
+                html += '<option value="07:00:00">7 horas</option>';
+                html += '<option value="07:30:00">7 horas y 30 minutos</option>';
+                html += '<option value="08:00:00">8 horas</option>';
+                html += '<option value="08:30:00">8 horas y 30 minutos</option>';
+                html += '<option value="09:00:00">9 horas</option>';
+                html +='<option value="09:30:00">9 horas y 30 minutos</option>';
               html += '</select>';
             html += '</div>';
+          html += '</center>';
+        html += '</td>';
+        html += '<td>';
+          html += '<center>';
+          var idDelete = "#delete-"+i;
+            html += '<button type="button" id="delete-'+i+'" oculto="'+item.id+'" onclick="onDelete(\''+idDelete+'\')">';
+              html += '<span class="glyphicon glyphicon-remove-sign"></span>'
+            html += '</button>';
           html += '</center>';
         html += '</td>';
       html += '</tr>';
@@ -3282,25 +3300,21 @@ function deleteFunction(tr, id){
     }
   });
 }
-function updateServices( con, des, pre, dur){
-  var concepto = $(con).val();
-  var descripcion = $(des).val();
-  var precio = $(pre).val();
-  var duracion = $(dur+ " :selected").val();
-  var id = $(con).attr('oculto');
+function updateServices( tipo, dato, di ){
+  var id = di;
+  var otroID = $("#idDireccion").val();
   $.post('/updateServices',{
     id: id,
-    concepto: concepto,
-    descripcion: descripcion,
-    precio: precio,
-    duracion: duracion
-  },function(data){
+    tipo: tipo,
+    valor: dato,
+    otroID: otroID
+  }, function(data){
     if( data == 1 ){
-      $("#exitoModificado").removeClass('hidden');
+      console.log("Modificado con exito: "+tipo);
     }else{
-      $("#exitoNoModificado").removeClass('hidden');
+      console.log("No se pudo modificar: "+tipo);
     }
-  });
+  }).fail(function(e){console.log("Error: "+JSON.stringify(e))});
 }
 function loadDatosGenerales(){
   $.post("/loadDatosGenerales",function(data){
@@ -5091,3 +5105,32 @@ $( document ).ready( function () {
   }
 } );
 //fin de Perfil Medicos
+//<-------------------- modificaciones -------------------->
+  function editUbicacion(dato){
+    var cambio = "";
+    $(dato).change(function(){
+      cambio = $(this).val();
+      var tipo = $(dato).attr('tipo');
+      var id = $( this ).attr('oculto');
+      switch( tipo ){
+        case "concepto":updateServices( tipo,cambio,id );break;
+        case "descripcion":updateServices( tipo,cambio,id );break;
+        case "precio":updateServices( tipo,cambio,id );break;
+        case "duracion":updateServices( tipo,cambio,id );break;
+      }
+    });
+  }
+  function onDelete(del){
+    var id = $(del).attr('oculto');
+    bootbox.confirm('¿Estas seguro de eliminar este servicio?', function(result){
+      if( result == true ){
+        // se manda un post con el id que se desea eliminar
+        $.post('/deleteServicio',{id:id},function(data){
+          maquetaServices();
+        }).fail(function(e){
+          maquetaServices();
+        });
+      }
+    });
+  }
+//<-------------------- FIN MODIFICACIONES ---------------->
