@@ -114,13 +114,16 @@
               </div>
 
               <div class="col-md-2">
-                <div class="form-group">
-                  <select class="form-control" id="selectEstado" name="selectEstado" onChange="cargarCiudades('#selectEstado');">
+                <div class="form-group" id="selectGroup">
+                  <select class="form-control" id="selectEstado" name="selectEstado" onChange="cargarCiudades('#selectEstado');" aria-describedby="selectEstadoP">
                     <option value="0">Estado</option>
                     {{#each estado}}
                       <option value="{{id}}">{{estado}}</option>
                     {{/each}}
                   </select>
+                  <span id = "selectIcon" class="" aria-hidden="true"></span>
+                  <span class="sr-only" id="selectEstadoP">(success)</span>
+                  <div id = "select-error"></div>
                 </div>
               </div>
               <div class="col-md-3">
@@ -134,8 +137,11 @@
                 </div>
               </div>
               <div class="col-md-4">
-                <div class="form-group">
-                  <input type="text" class="form-control" id="nombreMed" name="nombreMed" value="{{render.nombre}} {{render.apellido}}">
+                <div class="form-group" id="nameGroup">
+                  <input type="text" class="form-control" id="nombreMed" name="nombreMed" value="{{render.nombre}} {{render.apellido}}" aria-describedby="algo">
+                  <span id = "nameIcon" class="" aria-hidden="true"></span>
+                  <span id="algo" class="sr-only">(success)</span>
+                  <div id = "nombre-error"></div>
                 </div>
               </div>
               {{#if render.estado}}
