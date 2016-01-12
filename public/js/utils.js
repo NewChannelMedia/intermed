@@ -3987,6 +3987,9 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id){
             }
             especialidad += esp.Especialidad.especialidad;
           });
+          if (res.DatosGenerale.apellidoM == null){
+            res.DatosGenerale.apellidoM = '';
+          }
           contenido += `
           <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
             <div class="thumbnail">
@@ -4086,6 +4089,10 @@ function cargarListaColegasByAlf(usuario_id,letra){
               }
               especialidad += esp.Especialidad.especialidad;
             });
+          }
+
+          if (res.DatosGenerale.apellidoM == null){
+            res.DatosGenerale.apellidoM = '';
           }
           contenido += `
           <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
