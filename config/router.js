@@ -1645,7 +1645,7 @@ var iniciar = function () {
     });
 
     //rutas Para Cargos
-    app.get('/ProcesarCargosClientes', function (req, res) {        
+    app.get('/ProcesarCargosClientes', function (req, res) {
         intermed.callController('CargosUsuarios', 'FormularioCobro', req, res);
     });
 
@@ -1657,13 +1657,13 @@ var iniciar = function () {
         intermed.callController('CargosUsuarios', 'RegistrarUsuarioEnProveedorDatos', req.body, req, res);
     });
 
-    app.post('/registrarusuariotarjeta', function (req, res) {        
+    app.post('/registrarusuariotarjeta', function (req, res) {
         intermed.callController('CargosUsuarios', 'RegistrarUsuarioEnProveedor', req.body, req, res);
     });
 
     //Registrar plan de cargo
     app.get('/registrarplancargo', function (req, res) {
-        intermed.callController('CargosUsuarios', 'PlanCargoDatosRegistro', req.body, req, res);       
+        intermed.callController('CargosUsuarios', 'PlanCargoDatosRegistro', req.body, req, res);
     });
 
     app.post('/registrarplancargo', function (req, res) {
@@ -1711,6 +1711,19 @@ var manejarPerfiles = function(){
     }
   } );
   /*FIN RUTA PERFIL USUARIO*/
+
+  app.post('/agregaCargoRechazado', function (req, res) {
+      intermed.callController('CargosUsuarios', 'CargoRechazadoAgregar', req.body, req, res);
+  });
+
+  app.post('/CargoRechazadoSelecciona', function (req, res) {
+      intermed.callController('CargosUsuarios', 'CargoRechazadoSelecciona', req.body, req, res);
+  });
+
+  app.post('/EstatusCargoRechazadoSelecciona', function (req, res) {
+      intermed.callController('CargosUsuarios', 'EstatusCargoRechazadoSelecciona', req.body, req, res);
+  });
+
 }
 
 var error404 = function(){

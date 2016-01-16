@@ -224,7 +224,7 @@ exports.RegistrarUsuarioEnProveedor = function (object, req, res) {
         ]
     })
      .then(function (datos) {
-         //Registrar Usuario con proveedor         
+         //Registrar Usuario con proveedor
          conekta.Customer.create({
              "name": datos.DatosGenerale.nombre + ' ' + datos.DatosGenerale.apellidoP + ' ' + datos.DatosGenerale.apellidoM,
              "email": datos.correo,
@@ -302,7 +302,7 @@ function UsuarioGuardarIdTarjeta(idUsuario, idTarjetaProveedor) {
     })
 }
 
-//Suscripciones son una manera de realizar cargos a un cliente con una cantidad fija de manera recurrente. 
+//Suscripciones son una manera de realizar cargos a un cliente con una cantidad fija de manera recurrente.
 //Puedes cambiar el plan, pausar, cancelar y reanudar una suscripción a tu gusto.
 function RegitrarSuscripcion(idUsuario, idUsuarioProveedor, planid) {
     models.PlanDeCargo.findOne({
@@ -366,7 +366,7 @@ exports.PlanCargoDatosRegistro = function (object, req, res) {
     });
 }
 
-//Planes son plantillas que te permiten crear suscripciones. 
+//Planes son plantillas que te permiten crear suscripciones.
 //Dentro del plan se define la cantidad y frecuencia con el cual se generaran los cobros recurrentes a los usuarios
 exports.PlanCargoRegistrar = function (object, req, res) {
     models.IntervaloCargo.findOne({
@@ -384,7 +384,7 @@ exports.PlanCargoRegistrar = function (object, req, res) {
 }
 
 function PlanCargoCrear(res, object, intervaloId, intervaloDescripcion) {
-    //registrar plan en conecta        
+    //registrar plan en conecta
     conekta.Plan.create({
         //"id": plan.idpublico,
         "name": object.nombre,
@@ -393,7 +393,7 @@ function PlanCargoCrear(res, object, intervaloId, intervaloDescripcion) {
         "interval": intervaloDescripcion,
         "frequency": object.frecuencia,
         "trial_period_days": object.periodoprueba
-    }, function (err, planconekta) {        
+    }, function (err, planconekta) {
         if (planconekta) {
             models.PlanDeCargo.create({
                 nombre: object.nombre,
@@ -419,13 +419,13 @@ function PlanCargoCrear(res, object, intervaloId, intervaloDescripcion) {
     });
 }
 
-function PlanCargoActualizar(res, object, intervaloId, intervaloDescripcion) {    
+function PlanCargoActualizar(res, object, intervaloId, intervaloDescripcion) {
     models.PlanDeCargo.update({
         nombre: object.nombre,
         monto: parseFloat(object.monto),
         intervalocargo_id: intervaloId,
         frecuencia: object.frecuencia,
-        periodoprueba: object.periodoprueba        
+        periodoprueba: object.periodoprueba
     },
        {
            where: {
@@ -437,8 +437,8 @@ function PlanCargoActualizar(res, object, intervaloId, intervaloDescripcion) {
         models.PlanDeCargo.findOne({
             where: { id: object.idPlan },
             attributes: ['idproveedor']
-        }).then(function (plan) {            
-            //actualizar plan en conekta        
+        }).then(function (plan) {
+            //actualizar plan en conekta
             conekta.Plan.find(plan.idproveedor, function (err, plan) {
                 if (err) {
                     console.log(err);
@@ -462,9 +462,9 @@ function PlanCargoActualizar(res, object, intervaloId, intervaloDescripcion) {
                     })
                 }
             });
-        }).catch(function (err) {            
+        }).catch(function (err) {
             console.log(err);
-        });      
+        });
 
     }).catch(function (err) {
         console.log('error al actualizar plan');
@@ -493,5 +493,69 @@ exports.PlanCargoEliminar = function (object, req, res) {
         });
     }).catch(function (err) {
         console.log(err);
+    });
+}
+
+
+
+// Agregar cargos rechaados
+exports.CargoRechazadoAgregar = function (object, req, res) {
+    models.CargoRechazado.create({
+        usuario_id: object.usuario_id,
+        estatus_id: object.estatus_id,
+        fecha: fecha,
+        descripcion: object.descripcion,
+        diasSinCobro: object.diasSinCobro
+    }).then(function () {
+      res.status(200).json();
+    }).catch(function (err) {
+        console.log(err);
+        res.status(500).json();
+    });
+}
+
+// Selecciona cargos rechazados
+exports.CargoRechazadoSelecciona = function (object, req, res) {
+  models.CargoRechazado.findAll({
+      where :  { usuario_id: object.id },
+      include : [{ model : models.EstatusCargoRechazado}],
+      order: 'fecha DESC'
+  }).then(function(datos) {
+    res.send(datos);
+  }).catch(function(err) {
+      res.status(500).json({error: err})
+  });
+}
+
+// Agregar estatus cargos rechaados
+exports.EstatusCargoRechazadoAgregar = function (object, req, res) {
+  models.EstatusCargoRechazadoAgregar.findOne({
+    where: {
+        medico_id: idUsuario
+    }
+  }).then(function (datos) {
+    if  ( datos == null)
+    {
+      models.EstatusCargoRechazadoAgregar.create({
+          descripcion: object.descripcion
+      }).then(function (estatus) {
+        res.status(200).json();
+      }).catch(function (err) {
+          console.log(err);
+          res.status(500).json();
+      });
+    }
+  }).catch(function (err) {
+      console.log(err);
+  });
+}
+
+// Selecciona cargos rechazados
+exports.EstatusCargoRechazadoSelecciona = function (object, req, res) {
+    models.EstatusCargoRechazadoAgregar.findAll()
+    .then(function (datos) {
+      res.send(datos);
+    }).catch(function (err) {
+        res.status(500).json();
     });
 }
