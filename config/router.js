@@ -1478,10 +1478,13 @@ var iniciar = function () {
     });
 
     //rutas Para Cargos
-    app.get('/ProcesarCargosClientes', function (req, res) {
-        intermed.callController('CargosUsuarios', 'ProcesarCargosClientes', req.body, req, res);
+    app.get('/ProcesarCargosClientes', function (req, res) {        
+        intermed.callController('CargosUsuarios', 'FormularioCobro', req, res);
     });
 
+    app.post('/ProcesarCargosClientes', function (req, res) {
+        intermed.callController('CargosUsuarios', 'ProcesarCargosClientes', req.body, req, res);
+    });
 
     app.get('/registrarusuariotarjeta', function (req, res) {
         intermed.callController('CargosUsuarios', 'RegistrarUsuarioEnProveedorDatos', req.body, req, res);
@@ -1504,11 +1507,14 @@ var iniciar = function () {
         intermed.callController('CargosUsuarios', 'PlanCargoEliminar', req.body, req, res);
     });
 
+    app.post('/notificacionesproveedor', function (req, res) {
+        intermed.callController('CargosProcesos', 'RecibirNotificacion', req.body, req, res);
+    });
     //fin rutas cargos
 
 }
 
-var io = serv.server( app, 3000 );
+var io = serv.server( app, 80 );
 
 socket.io( io, bundle, ioPassport );
 
