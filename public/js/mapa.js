@@ -425,7 +425,7 @@ function AsignarColonia() {
 
 function SeleccionarValor(control, valor) {
     $("#" + control + ' option').each(function () {
-        if (ReemplezarAcentos($(this).text()) == ReemplezarAcentos(valor)) {
+        if (ReemplezarAcentos($(this).text()) == ReemplezarAcentos(valor)) {            
             $(this).attr("selected", true);
         }
 
