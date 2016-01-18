@@ -17,10 +17,10 @@ module.exports = function ( sequelize, DataTypes ) {
       type: DataTypes.STRING
     },
     inicio: {
-      type: DataTypes.DATE
+      type: DataTypes.STRING
     },
     fin: {
-      type: DataTypes.DATE
+      type: DataTypes.STRING
     },
     visto: {
       type: DataTypes.INTEGER

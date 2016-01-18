@@ -128,7 +128,9 @@ module.exports = {
       if (pagina == 1){
         models.Usuario.findAll({
           where:{tipoUsuario:'M'},
+          group: 'id',
           attributes:['id'],
+          limit: 1000,
           include:[{
             model: models.Medico,
             attributes:['id'],

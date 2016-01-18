@@ -391,22 +391,43 @@ module.exports = {
     }
   },
   medicosContacto: function( req, res ){
-    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
-      var usuario_id = req.session.passport.user.id;
-      models.Medico.findOne({
-        attributes:['id'],
-        include:[{
-          model: models.Usuario,
-          attributes:['id','usuarioUrl','urlFotoPerfil'],
+    if (req.body.idMedico){
+      if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+        var usuario_id = req.session.passport.user.id;
+        models.Medico.findOne({
+          attributes:['id'],
           include:[{
-            model: models.DatosGenerales,
-            where:{ id: req.body.idMedico },
-            attributes:['nombre','apellidoP','apellidoM']
+            model: models.Usuario,
+            attributes:['id','usuarioUrl','urlFotoPerfil'],
+            include:[{
+              model: models.DatosGenerales,
+              where:{ id: req.body.idMedico },
+              attributes:['nombre','apellidoP','apellidoM']
+            }]
           }]
-        }]
-      }).then(function(encontrado){
-        res.send(encontrado);
-      });
+        }).then(function(encontrado){
+          res.send(encontrado);
+        });
+      }
+    } else {
+      models.Usuario.findOne({
+        attributes:['id','usuarioUrl','urlFotoPerfil'],
+        include: [
+          {
+            model: models.DatosGenerales,
+            attributes:['nombre','apellidoP','apellidoM']
+          },
+          {
+            model: models.Medico,
+            attributes:['id']
+          }
+        ],
+        where: {
+          id: req.body.usuario_id
+        }
+      }).then(function(usuario){
+        res.send(usuario);
+      })
     }
   },
   enviaCorreoRecomendados: function( req, res){
@@ -444,19 +465,13 @@ module.exports = {
     });
   },
   medicoRecomendado: function( req, res ){
-    var d = new Date();
-    var strDate = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds();
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
       for( var i in req.body.objeto ){
         models.Notificacion.create({
             usuario_id:req.body.objectoId[ i ],
             tipoNotificacion_id:12,
-            data:req.session.passport.user.Paciente_id+"|"+req.body.objeto[ i ],
-            inicio:strDate,
-            fin:null,
-            visto:0,
-            recordatorio:null
+            data:req.session.passport.user.Paciente_id+"|"+req.body.objeto[ i ]
         }).then(function(creado){
           res.send(true);
         });
@@ -464,18 +479,12 @@ module.exports = {
     }
   },
   doctorRecomendado: function( req, res ){
-    var d = new Date();
-    var strDate = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds();
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
       models.Notificacion.create({
         usuario_id: req.body.medicoId,
         tipoNotificacion_id:13,
-        data:String(usuario_id),
-        inicio:strDate,
-        fin:null,
-        visto:0,
-        recordatorio:null
+        data:String(usuario_id)
       }).then(function(creado){
         res.send('ok');
       });
@@ -844,6 +853,9 @@ module.exports = {
         {
           model: models.MedicoEspecialidad,
           attributes: [ 'id' ],
+          where: {
+            subEsp: 0
+          },
           include: [
             {
               model: models.Medico,

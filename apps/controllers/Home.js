@@ -476,20 +476,74 @@ function cargarInfoPerfilNuevo( usuario, condiciones, req, res ) {
   models.MedicoFavorito.findOne( {
     where: condiciones
   } ).then( function ( result ) {
-    if ( result ) {
-      if ( result.aprobado == 1 && result.mutuo == 1 ) {
-        usuario.medFavCol = result.id;
-      }
-      else if ( result.aprobado == 1 && result.mutuo == 0 ) {
-        usuario.invitacionEnviada = "1";
-      }
-      else {
-        usuario.invitacionEspera = "1";
-      }
+    if (req.session.passport && req.session.passport.user && req.session.passport.user.Medico_id && usuario.Paciente){
+      //Checar si es un medico que atiende
+      models.MedicoPaciente.findOne({
+        where:{
+          medico_id: req.session.passport.user.Medico_id,
+          paciente_id: usuario.Paciente.id
+        }
+      }).then(function(MedicoQueAtiende){
+        if ( result ) {
+          if (MedicoQueAtiende){
+            usuario.medPac = "1";
+          }
+          if ( result.aprobado == 1 && result.mutuo == 1 ) {
+            usuario.medFavCol = result.id;
+          }
+          else if ( result.aprobado == 1 && result.mutuo == 0 ) {
+            usuario.invitacionEnviada = "1";
+          }
+          else {
+            usuario.invitacionEspera = "1";
+          }
+        } else {
+          usuario.noAmigos = "1";
+        }
+        armarPerfilNuevo( usuario, req, res );
+      });
+    } else if (req.session.passport && req.session.passport.user && req.session.passport.user.Paciente_id && usuario.Medico){
+      //Checar si es un medico que atiende
+      models.MedicoPaciente.findOne({
+        where:{
+          medico_id: usuario.Medico.id,
+          paciente_id: req.session.passport.user.Paciente_id
+        }
+      }).then(function(MedicoQueAtiende){
+        if ( result ) {
+          if (MedicoQueAtiende){
+            usuario.medPac = "1";
+          }
+          if ( result.aprobado == 1 && result.mutuo == 1 ) {
+            usuario.medFavCol = result.id;
+          }
+          else if ( result.aprobado == 1 && result.mutuo == 0 ) {
+            usuario.invitacionEnviada = "1";
+          }
+          else {
+            usuario.invitacionEspera = "1";
+          }
+        } else {
+          usuario.noAmigos = "1";
+        }
+        armarPerfilNuevo( usuario, req, res );
+      });
     } else {
-      usuario.noAmigos = "1";
+      if ( result ) {
+        if ( result.aprobado == 1 && result.mutuo == 1 ) {
+          usuario.medFavCol = result.id;
+        }
+        else if ( result.aprobado == 1 && result.mutuo == 0 ) {
+          usuario.invitacionEnviada = "1";
+        }
+        else {
+          usuario.invitacionEspera = "1";
+        }
+      } else {
+        usuario.noAmigos = "1";
+      }
+      armarPerfilNuevo( usuario, req, res );
     }
-    armarPerfilNuevo( usuario, req, res );
   } );
 }
 

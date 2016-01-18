@@ -48,6 +48,7 @@ module.exports = function ( sequelize, DataTypes ) {
         Usuario.hasOne( models.Paciente )
         Usuario.hasOne( models.DatosGenerales )
         Usuario.hasMany( models.Direccion )
+        Usuario.hasMany( models.Agenda )
         Usuario.hasOne( models.Biometrico )
           //Usuario.hasMany(models.Biometrico);
         Usuario.hasMany( models.ComentariosMedicos )

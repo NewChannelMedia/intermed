@@ -81,17 +81,38 @@
                   <li>
                     <a href="#">Oficina</a>
                   </li>
-                  {{/ifTipoMedico}}
                   <li>
-                    <a href="#">Agenda</a>
+                    <a href="#" onclick="verAgendaMedico()">Agenda</a>
                   </li>
+                  {{else}}
+                  <li>
+                    <a href="#" onclick="verAgendaPaciente()">Agenda</a>
+                  </li>
+                  {{/ifTipoMedico}}
+
+                  <li>
+                    <a id="notificationIcon" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="mostrarNotificaciones()">
+                      Not
+                      <span id="totalNotificaciones" class="badge" style="position:absolute; margin-top:-38px; right:0px"></span>
+                    </a>
+                    <ul class="dropdown-menu notificationDropdown media-list" style="left:auto;right:0;margin-right:0px;">
+                      <div  id="notificacinesList">
+
+                      </div>
+                      <div style="padding:10px;background-color:#DDD;margin-bottom:-5px;margin-top:10px;">
+                        <a href="{{base_url}}notificaciones" class="text-center" style="text-align:center">Ver todas</a>
+                      </div>
+                    </ul>
+                  </li>
+
                   <li>
                     <a id="notificationIcon" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="cargarListaInbox()">
                         Mensajes
                         <span id="totalInbox" class="badge" style="position:absolute; margin-top:-38px; right:0px"></span>
                     </a>
+
                     <ul class="dropdown-menu notificationDropdown media-list" style="left:auto;right:0;margin-right:0px;">
-                      <div id="notificacionesInboxList" style="max-height:300px;overflow-y: scroll;">
+                      <div  id="notificacionesInboxList" style="max-height:300px;overflow-y: scroll;">
 
                       </div>
                       <div style="padding:10px;background-color:#DDD;margin-bottom:-5px;margin-top:10px;">
@@ -100,9 +121,7 @@
                     </ul>
                   </li>
                   <li>
-                    <a href="/logout">
-                      <span class="glyphicon glyphicon-log-out"></span>
-                    </a>
+                    <a href="/logout"><span class="glyphicon glyphicon-log-out"></span></a>
                   </li>
                   <li class="visible-sm dropdown navigator-dropdown">
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
@@ -157,4 +176,11 @@
   <script src="js/scroll.utils.js"></script>
   <script src="js/FontUtils.js"></script>
   <script src="js/utils.js"></script>
+  <link href="css/fullcalendar.min.css" rel="stylesheet" />
+  <script src="js/moment.min.js"></script>
+  <script src="js/fullcalendar.js"></script>
+  <script src="js/calendar.js"></script>
+  <script src="js/lang/es.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/star-rating.css">
 </html>

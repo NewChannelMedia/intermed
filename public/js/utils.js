@@ -130,13 +130,6 @@ else {
       cargarFavCol( $( '#usuarioPerfil' ).val() );
     }
 
-    if ( location.pathname.substring( 0, 19 ) === '/nuevoperfilmedicos' ) {
-      cargarListaEspCol( $( '#usuarioPerfil' ).val() );
-      if ($('#listaAmistades')){
-        cargarListaAlfAmi( $( '#usuarioPerfil' ).val() );
-      }
-    }
-
     /* validaciones al registro */
     validateForm( 'input-nombre', 'nombreMed' );
     validateForm('input-select', 'selectEstado');
@@ -402,31 +395,53 @@ function addMedico( record, tipo ) {
 }
 
 function registrarCita() {
-	var horarios = obtenerHorarios();
-	$("#fecha").val(horarios[0].inicio);
-  $("#fechaFin").val(horarios[0].fin);
+	var horarios = obtenerHorariosCita();
+  if (horarios[0]){
+    console.log('horarios: ' + JSON.stringify(horarios));
+  	$("#fecha").val(horarios[0].inicio);
+    $("#fechaFin").val(horarios[0].fin);
+    $("#usuario_id").val(horarios[0].fin);
 
-	$.ajax({
-		url: '/agregaCita',
-		type: 'POST',
-		dataType: "json",
-		data: $('#frmRegCita').serialize(),
-		cache: false,
-		type: 'POST',
-		success: function( data ) {
-			if ( data.error == null ) {
-	         alert("Se ha guardado su cita !");
-           $('#calendar').fullCalendar('removeEvents');
-           $('#calendar').fullCalendar('refetchEvents');
-			}
-			else {
-				alert(data.error.message);
-			}
-		},
-		error: function( jqXHR, textStatus, err ) {
-			console.error( 'AJAX ERROR: (registro 166) : ' + err );
-		}
-	});
+  	$.ajax({
+  		url: '/agregaCita',
+  		type: 'POST',
+  		dataType: "json",
+  		data: $('#frmRegCita').serialize(),
+  		cache: false,
+  		type: 'POST',
+  		success: function( data ) {
+  			if ( data.error == null ) {
+            $('#divCalendario').fullCalendar('removeEvents');
+            $('#divCalendario').fullCalendar('refetchEvents');
+             bootbox.alert({
+               backdrop: false,
+               closeButton: false,
+               onEscape: function () {
+                   bootbox.hideAll();
+               },
+               message:'Se ha guardado tu cita',
+               className: 'Intermed-Bootbox',
+               title: '<span class="title">Mensaje de Intermed</span>',
+               callback: function(){
+                bootbox.hideAll();
+               }
+             });
+  			}
+  			else {
+  				alert(data.error.message);
+  			}
+  		},
+  		error: function( jqXHR, textStatus, err ) {
+  			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+  		}
+  	});
+  } else {
+    bootbox.alert({
+      message: 'Debes de seleccionar el horario y fecha para tu cita.',
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">Mensaje de Intermed</span>'
+    });
+  }
 }
 
 
@@ -2174,7 +2189,7 @@ function regUbicacion(salir) {
 function regHorarios() {
     if (regHorariosValid() == true) {
         //agregar horarios al control
-        $('#horariosUbi').val(JSON.stringify(obtenerHorarios()));
+        $('#horariosUbi').val(JSON.stringify(obtenerHorariosAgenda()));
 
         $.ajax({
             url: '/registrarhorarios',
@@ -2184,8 +2199,13 @@ function regHorarios() {
             data: $('#frmRegHorarios').serialize(),
             type: 'POST',
             success: function (data) {
-                document.getElementById("frmRegHorarios").reset();
-                alert('registro guradado');
+                if (data.success){
+                  bootbox.hideAll();
+                } else {
+                  if (data.error>0){
+                      manejadorDeErrores(data.error);
+                  }
+                }
             },
             error: function (jqXHR, textStatus, err) {
                 console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
@@ -3998,7 +4018,7 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id){
     url: '/cargarListaColegasByEsp',
     type: 'POST',
     data: {
-      usuario_id: usuario_id,
+      usuario_id: parseInt(usuario_id),
       especialidad_id: especialidad_id
     },
     dataType: "json",
@@ -4016,22 +4036,27 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id){
             }
             especialidad += esp.Especialidad.especialidad;
           });
-          contenido += '<div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">' +
-            '<div class="thumbnail">' +
-              '<div>' +
-                '<a class="pPic" href="/perfil/' + res.usuarioUrl + '"><img src="' + res.urlFotoPerfil + '" alt="..."></a>' +
-              '</div>' +
-              '<div class="caption">' +
-                '<div class="nombre h77-boldcond">' +
-                  'Dr.&nbsp;<span>'+ res.DatosGenerale.nombre +'</span>&nbsp;<span>'+ res.DatosGenerale.apellidoP +'&nbsp;'+ res.DatosGenerale.apellidoM +'</span>' +
-                '</div>' +
-                '<div class="esp h67-medcond">' +
-                  '<span class="colEsp">'+ especialidad +'</span>' +
-                '</div>' +
-                '<a class="h67-medcondobl" href="/perfil/'+ res.usuarioUrl +'">Ver Perfil</a>' +
-              '</div>' +
-            '</div>' +
-          '</div>'})
+          if (res.DatosGenerale.apellidoM == null){
+            res.DatosGenerale.apellidoM = '';
+          }
+          contenido += `
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div >
+                <a class="pPic" href="/perfil/`+ res.usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>`+ res.DatosGenerale.nombre +`</span>&nbsp;<span>`+ res.DatosGenerale.apellidoP +` `+ res.DatosGenerale.apellidoM +`</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span class="colEsp">`+ especialidad +`</span>
+                </div>
+                <a class="h67-medcondobl" href="/perfil/`+ res.usuarioUrl +`">Ver Perfil</a>
+              </div>
+            </div>
+          </div>`
+        })
         contenido += '</div>';
         $('#listaColegas').html(contenido);
       }else{
@@ -4114,22 +4139,28 @@ function cargarListaColegasByAlf(usuario_id,letra){
               especialidad += esp.Especialidad.especialidad;
             });
           }
-          contenido += '<div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">' +
-            '<div class="thumbnail">' +
-              '<div >' +
-                '<a class="pPic" href="/perfil/' + res.usuarioUrl + '"><img src="' + res.urlFotoPerfil + '" alt="..."></a>' +
-              '</div>' +
-              '<div class="caption">' +
-                '<div class="nombre h77-boldcond">' +
-                  'Dr.&nbsp;<span>' + res.DatosGenerale.nombre + '</span>&nbsp;<span>' + res.DatosGenerale.apellidoP + '&nbsp;' + res.DatosGenerale.apellidoM + '</span>' +
-                '</div>' +
-                '<div class="esp h67-medcond">' +
-                  '<span class="colEsp">' + especialidad + '</span>' +
-                '</div>' +
-                '<a class="h67-medcondobl" href="/perfil/' + res.usuarioUrl + '">Ver Perfil</a>' +
-              '</div>' +
-            '</div>' +
-          '</div>'})
+
+          if (res.DatosGenerale.apellidoM == null){
+            res.DatosGenerale.apellidoM = '';
+          }
+          contenido += `
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+            <div class="thumbnail">
+              <div >
+                <a class="pPic" href="/perfil/`+ res.usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
+              </div>
+              <div class="caption">
+                <div class="nombre h77-boldcond">
+                  Dr.&nbsp;<span>`+ res.DatosGenerale.nombre +`</span>&nbsp;<span>`+ res.DatosGenerale.apellidoP +` `+ res.DatosGenerale.apellidoM +`</span>
+                </div>
+                <div class="esp h67-medcond">
+                  <span class="colEsp">`+ especialidad +`</span>
+                </div>
+                <a class="h67-medcondobl" href="/perfil/`+ res.usuarioUrl +`">Ver Perfil</a>
+              </div>
+            </div>
+          </div>`
+        })
         contenido += '</div>';
         $('#listaColegas').html(contenido);
       }else{
@@ -4254,15 +4285,20 @@ function searchingData(){
           '<ul class="media-list">';
     if(data.medicos){
       $.each(data.medicos, function( i, item ){
-        var nombreCompleto = item.DatosGenerale.nombre+' '+item.DatosGenerale.apellidoP+' '+item.DatosGenerale.apellidoM;
+        if (!item.DatosGenerale.apellidoM) item.DatosGenerale.apellidoM = ' ';
+        var nombreCompleto = item.DatosGenerale.nombre+' '+item.DatosGenerale.apellidoP + ' ' + item.DatosGenerale.apellidoM;
 
+        var usuarioUrl = item.usuarioUrl;
+        if (item.urlPersonal && item.urlPersonal != ""){
+          usuarioUrl = item.urlPersonal;
+        }
         contenido += '<li class="media result" id="medico_id_'+ item.Medico.id +'">' +
-            '<div class="media-left"><div class="media-enclosure"><a href="#">'+
-                  '<img class="media-object imgBusqueda" src="`+ item.urlFotoPerfil +`" alt="">'+
+            '<div class="media-left"><div class="media-enclosure"><a href="/'+item.urlPersonal+'">'+
+                  '<img class="media-object imgBusqueda" src="'+ item.urlFotoPerfil +'" alt="">'+
                 '</a></div></div>' +
             '<div class="media-body"><div class="col-md-8"><h4 class="media-heading">'+
-                  '<span class="label label-topDr">Top Doctor</span> Dr. '+ nombreCompleto +'.'+
-                '</h4><ul class="list-unstyled list-inline">';
+                  '<span class="label label-topDr">Top Doctor</span> <a href="/'+item.urlPersonal+'">Dr. '+ nombreCompleto +'.'+
+                '</a></h4><ul class="list-unstyled list-inline">';
 
           $.each(item.Medico.MedicoEspecialidads, function(a, esp ){
             if (esp.subEsp == 0){
@@ -5066,6 +5102,302 @@ function registrarServicios(salir){
 
 function registrarHorariosBot(salir){
   bootbox.hideAll();
+}
+
+function iniciarDivCalendario(direccion_id){
+  if (!direccion_id){
+    direccion_id = $('#idDireccion').val();
+  }
+  $.ajax({
+      url: '/horariosObtener',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: { direccion_id: direccion_id},
+      type: 'POST',
+      success: function (data) {
+        $('#horariosUbi').val(data.horarios);
+        $('#direccion_id').val(data.direccion_id);
+        $("#divCalendario").remove();
+        $("#divCalendarioPadre").html('<div id="divCalendario"></div>');
+        setTimeout(function(){iniciarCalendario(data.horarios)},300);
+
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+}
+
+function vaciarCalendario(){
+  $('#horariosUbi').val([]);
+  $("#divCalendario").remove();
+  $("#divCalendarioPadre").html('<div id="divCalendario"></div>');
+  setTimeout(function(){iniciarCalendario([])},300);
+}
+
+function traerServiciosPorMedico(usuario_id){
+  $.ajax({
+      url: '/traerServiciosPorMedico',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: { usuario_id: usuario_id},
+      type: 'POST',
+      success: function (data) {
+        if (data.success){
+          if (data.result){
+            data.result.forEach(function(res){
+              $('#servicio_id').append('<option value="'+res.concepto+'">'+res.concepto+'</option>');
+            });
+            $('#servicio_id').on('change',function(){
+              traerUbicacionesPorServicio(usuario_id);
+            });
+          }
+        }
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+}
+
+function traerUbicacionesPorServicio(usuario_id){
+    var contenido = '<option value=""></option>';
+    $.ajax({
+        url: '/traerUbicacionesPorServicio',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: { usuario_id: usuario_id, servicio: $('#servicio_id').val()},
+        type: 'POST',
+        success: function (data) {
+          if (data.success){
+            if (data.result){
+              data.result.forEach(function(res){
+                contenido += '<option value="'+res.id+'">'+res.nombre+ ' (' + res.calle + ' ' + res.numero + ' ' + res.numeroInt + ' ' + res.Localidad.localidad + ', ' + res.Municipio.municipio + ', ' + res.Municipio.Estado.estado + ')</option>';
+              });
+            }
+          }
+          $('#ubicacion_id').html(contenido);
+          $('#ubicacion_id').on('change',function(){
+            traerDetallesServicioUbicacion(usuario_id);
+          });
+        },
+        error: function (err){
+          console.log('AJAX Error: ' + JSON.stringify(err));
+        }
+
+      });
+}
+
+function traerDetallesServicioUbicacion(usuario_id){
+  $('#citaCosto').html('');
+  $('#citaDuracion').html('');
+  $('#cita_detalles').css('visibility','hidden');
+    $.ajax({
+        url: '/traerDetallesServicioUbicacion',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: { usuario_id: usuario_id, servicio: $('#servicio_id').val(), ubicacion: $('#ubicacion_id').val()},
+        type: 'POST',
+        success: function (data) {
+          if (data.success){
+            if (data.result){
+              $('#citaCosto').html(data.result.precio);
+              $('#citaDuracion').html(data.result.duracion);
+              $('#serviciocita_id').val(data.result.id);
+              iniciarDivAgendaCita($('#ubicacion_id').val());
+            }
+          }
+        },
+        error: function (err){
+          console.log('AJAX Error: ' + JSON.stringify(err));
+        }
+      });
+}
+
+
+function iniciarDivAgendaCita(direccion_id){
+  if (!direccion_id){
+    direccion_id = $('#idDireccion').val();
+  }
+  $.ajax({
+      url: '/horariosObtener',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: { direccion_id: direccion_id},
+      type: 'POST',
+      success: function (data) {
+        $('#horariosUbi').val(data.horarios);
+        $('#direccion_id').val(data.direccion_id);
+        $("#divCalendario").remove();
+        $("#divCalendarioPadre").html('<div id="divCalendario"></div>');
+        setTimeout(function(){
+          iniciarCalendarioAgendarCita();
+          $('#cita_detalles').css('visibility','visible');
+        },300);
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+}
+
+function repositionTooltip( e, ui ){
+    if (ui.value < 0 || ui.value >100){
+      return false;
+    }
+    // If you're on Bootstrap 3.x change "tooltip" to "bs.tooltip"
+    // Props to @fd_tl in the comments for the tip!
+    var div = $(ui.handle).data("bs.tooltip").$tip[0];
+    $(div).css('position','fixed');
+
+    var id = $(div).closest('.Slider').prop('id');
+    var comp = '';
+    switch (id) {
+      case 'cal_higiene':
+          comp = "Higiene del lugar";
+          break;
+      case 'cal_puntualidad':
+          comp = "Puntualidad";
+          break;
+      case 'cal_instalaciones':
+          comp = "Instalaciones";
+          break;
+      case 'cal_trato':
+          comp = "Trato personal";
+          break;
+      }
+
+    var ant = $(div).find(".tooltip-inner").text().split('%')[0];
+    ant = ant.split(' ');
+    ant = ant[ant.length-1];
+
+    $(div).find(".tooltip-inner").text(comp + ' ' + ui.value + '%');
+
+    var tp = $(ui.handle).offset();
+
+    tp.left = tp.left - (parseInt($(div).find(".tooltip-inner").css('width'))/2) + 10;
+
+    if (parseInt(ant) > parseInt(ui.value)){
+      tp.top = parseFloat(tp.top) - 22 - (parseInt($(div).find(".tooltip-inner").css('height')) - 17);
+    } else if (parseInt(ant) < parseInt(ui.value)){
+      tp.top = parseFloat(tp.top) - 35 - (parseInt($(div).find(".tooltip-inner").css('height')) - 17);
+    } else {
+      tp.top = parseFloat(tp.top) - 30 - (parseInt($(div).find(".tooltip-inner").css('height')) - 17);
+    }
+    $(div).offset(tp);
+    $(div).find(".tooltip").css('background-color','red');
+    $(div).css('z-index','30000');
+}
+
+function calificarCita(agenda_id, notificacion_id){
+  var agenda_id =  agenda_id;
+  var notificacion_id = notificacion_id;
+  var satisfaccionGeneral = ($("#input-21d").val()*2*10);
+  var higiene = $('#cal_higiene').slider("option", "value");
+  var puntualidad = $('#cal_puntualidad').slider("option", "value");
+  var instalaciones = $('#cal_instalaciones').slider("option", "value");
+  var tratoPersonal = $('#cal_trato').slider("option", "value");
+  var comentario = $('#calificacionComentario').val();
+  $.ajax({
+      url: '/cita/calificar',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        agenda_id: agenda_id,
+        notificacion_id: notificacion_id,
+        higieneLugar: higiene,
+        puntualidad: puntualidad,
+        instalaciones: instalaciones,
+        tratoPersonal: tratoPersonal,
+        satisfaccionGeneral: satisfaccionGeneral,
+        comentarios: comentario
+      },
+      type: 'POST',
+      success: function (data) {
+        if (data.success){
+          bootbox.hideAll();
+          bootbox.alert({
+            backdrop: true,
+            onEscape: function () {
+                bootbox.hideAll();
+            },
+            size: 'small',
+            message: `
+            <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
+            <div class="divBodyBootbox" style="position:relative" style="padding:30px">
+              <h3 style="color:white">Calificacion enviada</h3>
+              <input type="button" class="btn btn-warning btn-block" value="Ok" onclick="bootbox.hideAll()" style="margin-top:15px;">
+            </div>
+            </div>
+            `
+          });
+        }
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+}
+
+function recomendarMedico(){
+    //se manda a llamar al bootbox
+    recomendacionesBoot();
+    var usuario_id = $('#usuarioPerfil').val();
+    var medico_id = '';
+    var usuarioUrl = '';
+    var nombreCompleto = '';
+    $.post('/medicosContacto',{usuario_id:usuario_id},function(data){
+      if (data){
+        if( data.Medico ){
+          medico_id = data.Medico.id;
+          usuarioUrl = data.usuarioUrl;
+          if (data.DatosGenerale.apellidoM){
+            data.DatosGenerale.apellidoM = ' '+data.DatosGenerale.apellidoM
+          } else {
+            data.DatosGenerale.apellidoM = '';
+          }
+          nombreCompleto = data.DatosGenerale.nombre+' '+data.DatosGenerale.apellidoP + data.DatosGenerale.apellidoM;
+          $("#doctorSpan").text(nombreCompleto);
+        }
+      }
+    });
+    // con ajax se hace la peticion a la url la cual me mostrara la informacion en una tabla con
+    // la lista de mis contactos
+    $.post('/contactosRecomendados',function(data){
+      $('#recomendar').attr('valor','verdadero');
+      //Si nos dejan solitos nos amamos
+      var html = "";
+      var nombreTodo="";
+      $( "#recomendarA tbody" ).html('');
+      $( '#enviarRecomendaciones ul').html('');
+      $( '#doc' ).html('');
+      for( var i in data ){
+        nombreTodo = data[ i ].Paciente.Usuario.DatosGenerale.nombre+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoP+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoM;
+        var tr = "tr"+data[ i ].Paciente.id;
+        var mas = medico_id;
+        var otroMas = data[ i ].Paciente.usuario_id;
+        html +='<tr class="" id="'+tr+'" onclick="seleccionarUsuario(\''+i+'\',\''+tr+'\',\''+nombreTodo+'\',\''+mas+'\',\''+otroMas+'\',\''+usuario_id+'\')">';
+        html +='<td>';
+        html +='<img src="'+data[ i ].Paciente.Usuario.urlFotoPerfil+'" alt="" class="img-thumbnail">';
+        html +='</td>';
+        html +='<td id="paciente'+data[ i ].Paciente.id+'">';
+        html +='<p style="color:white">'+nombreTodo+'</p>';
+        html +='</td>';
+        html +='</tr>';
+        extraDato = nombreTodo;
+      }
+      $.post('/usuarioPrincipal',function(data){
+        uId = data.id;
+        $("#nombreOcultoPerfil").text(data.Usuario.DatosGenerale.nombre+' '+data.Usuario.DatosGenerale.apellidoP+' '+data.Usuario.DatosGenerale.apellidoM);
+      });
+      $( "#recomendarA tbody" ).append(html);
+    });
 }
 
 $( document ).ready( function () {

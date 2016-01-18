@@ -980,7 +980,3 @@ exports.revivirSesion = function (object, req, res){
     generarSesion( req, res, usuario_id, false, false);
   });
 }
-
-,
-
-    
