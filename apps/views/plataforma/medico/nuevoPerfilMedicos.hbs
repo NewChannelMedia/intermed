@@ -255,7 +255,7 @@
             </a>
             {{/ifTipoPaciente}}
             {{#if usuario.medFavCol}}
-            <a href="#" class="option">
+            <a onclick="calificarServicioMedico()" class="option" >
               <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
                 <span class="option-icon glyphicon glyphicon-check s30 center-block text-center"></span>
               </div>
@@ -787,7 +787,7 @@
       <div class="container">
         <div class="center-block">
           {{#if usuario.medFavCol}}
-              <a class="btn btn-tranparent s20 h67-medcond logros-actions-action"><span class="glyphicon glyphicon-check"></span>&nbsp;CALIFICA EL SERVICIO DE ESTE MEDICO</a>
+              <a class="btn btn-tranparent s20 h67-medcond logros-actions-action" onclick="calificarServicioMedico()"><span class="glyphicon glyphicon-check"></span>&nbsp;CALIFICA EL SERVICIO DE ESTE MEDICO</a>
               <a class="btn btn-tranparent s20 h67-medcond logros-actions-action"><span class="glyphicon glyphicon-pencil"></span>&nbsp;DEJA UN COMENTARIO</a>
           {{else}}
             <a class="btn btn-tranparent s20 h67-medcond logros-actions-action"><span class="glyphicon glyphicon-book"></span>&nbsp;COMENTARIOS</a>

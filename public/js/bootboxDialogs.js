@@ -2687,3 +2687,178 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
 
       });
 }
+
+function calificarServicioMedico(){
+
+    var imagenUrl = '';
+    var nombreUsuario = '';
+    var nombreUbicacion = '';
+    var nombreServicio = '';
+    var fecha = '';
+    var hora = '';
+    var agenda_id = '';
+    var notificacion_id = '';
+    /*
+
+    $.ajax( {
+      async: false,
+      url: '/agenda/detallesCancelacion/medico',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        'agenda_id': agenda_id
+      },
+      success: function ( data ) {
+        imagenUrl = data.result.Usuario.urlFotoPerfil;
+        if (!data.result.Usuario.DatosGenerale.apellidoM) data.result.Usuario.DatosGenerale.apellidoM = '';
+        nombreUsuario = 'Dr. ' + data.result.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Usuario.DatosGenerale.apellidoM;
+        nombreUbicacion = data.result.Direccion.nombre;
+        nombreServicio = data.result.CatalogoServicio.concepto;
+        fecha = data.result.fechaHoraInicio.split('T')[0];
+        hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });*/
+
+    bootbox.dialog({
+      backdrop: true,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">CALIFICA SU SERVICIO.</span>',
+      message:
+      '<style>span.Slider {float:left;}</style>'+
+      '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">'+
+
+      '<div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom:15px;margin-top:20px">'+
+        '<div class="row">'+
+          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:-15px;margin-bottom:5px;">'+
+            '<h4><b>'+nombreUsuario+'</b></h4>'+
+          '</div>'+
+
+          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;">'+
+            '<div class="col-md-6 col-sm-6 col-xs-6 col-md-offset-3 col-sm-offset-3 col-xs-offset-3">'+
+              '<img src="'+imagenUrl+'" style="width:100%;" class="img-thumbnail">'+
+            '</div>'+
+          '</div>'+
+
+          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;"><small><b>Fecha: </b>'+ fecha +' '+ hora +'</small></div>'+
+
+          '<div class="col-md-6 col-sm-6 col-xs-10 col-md-offset-3 col-sm-offset-3 col-xs-offset-1" style="margin-top:20px">'+
+            '<div class="row">'+
+              '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción general: </div>'+
+              '<div class="col-md-12 col-sm-12 col-xs-12"><input id="input-21d" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>'+
+            '</div>'+
+
+            '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider" id="cal_higiene"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-trash" ></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider" id="cal_puntualidad"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-time"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider"  id="cal_instalaciones"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-home"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider"  id="cal_trato"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-user"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+            '</div>'+
+
+            '<div class="row">'+
+              '<textarea class="form-control" placeholder="Comentarios (opcional)" style="resize: none;margin-top:5px" rows="4" id="calificacionComentario"></textarea>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="row">'+
+          '<div class="col-md-12 col-sm-12 col-xs-12">'+
+              '<div class="form-group">'+
+                  '<input type="button" style="font-weight:bold" class="btn btn-warning btn-block" value="Calificar" onclick="calificarCita(\''+agenda_id+'\',\''+notificacion_id+'\');">'+
+              '</div>'+
+          '</div>'+
+      '</div>'
+    });
+
+
+    $('.bootbox-close-button').css('z-index','1000');
+    $('.bootbox-close-button').css('position','relative');
+    $('.bootbox-close-button').css('color','white');
+    $('.bootbox-close-button').css('font-size','180%');
+
+    $("#input-21d").rating();
+
+    $('.clear-rating').css('display','none');
+    $('.caption').css('display','none');
+
+
+
+      $( "span.Slider" ).each(function() {
+
+        var id = $(this).prop('id');
+
+        $('#'+id ).slider({
+          value: 50,
+          min: -10,
+          max: 110,
+          step: 10,
+          animate: true,
+          orientation: "vertical",
+          slide: repositionTooltip,
+          start: function( e, ui ){
+            $('#'+id +" .ui-slider-handle:first").tooltip('show');
+            repositionTooltip(e,ui);
+          },
+          stop: function(){
+            $('#'+id +" .ui-slider-handle:first").tooltip('hide');
+          }
+        });
+
+        $('#'+id +" .ui-slider-handle:first").tooltip( {placement:"top",title: $('#'+id).slider("value"),trigger:"manual"});
+
+      });
+}
