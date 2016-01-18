@@ -8,9 +8,10 @@ module.exports = function(sequelize, DataTypes) {
     token: {type: DataTypes.STRING , unique:true},
     tokenMaestro: {type: DataTypes.STRING},
     usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true},
-    calificacion:  {type : DataTypes.DECIMAL},  
+    calificacion:  {type : DataTypes.DECIMAL}
+    /*,  
     activo: { type: DataTypes.INTEGER },
-    fechaprimerdescuento: {type:DataTypes.DATE}
+    fechaprimerdescuento: {type:DataTypes.DATE}*/
   }, {
     classMethods: {
       associate: function(models) {
