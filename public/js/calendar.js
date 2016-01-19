@@ -504,7 +504,6 @@ function cancelaCita(id) {
 
   function generarCalendarioMedico()
   {
-
     var valido = true;
     var duracionServicio = '02:00';
     var precioServicio = 0;
@@ -553,6 +552,8 @@ function cancelaCita(id) {
         eventClick: function (event, jsEvent, view) {
           //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
           if ($(this).find('span#'+event._id).length>0){
+            detalleCitaMedico(event._id);
+            /*
             bootbox.confirm({
               message: '¿Esta seguro de cancelar la cita?',
               title: '<span class="title">Mensaje de Intermed</span>',
@@ -575,7 +576,7 @@ function cancelaCita(id) {
                   label: "No"
                 }
               }
-            });
+            });*/
           }
           //}
         },
@@ -757,12 +758,10 @@ function cancelaCita(id) {
       },
       success: function ( data ) {
         if  (data.success){
+        cerrarCurrentBootbox();
          bootbox.alert({
            backdrop: false,
            closeButton: false,
-           onEscape: function () {
-               bootbox.hideAll();
-           },
            className: 'Intermed-Bootbox',
            message:'La cita ha sido cancelada.',
            title: '<span class="title">Mensaje de Intermed</span>',
@@ -863,3 +862,32 @@ function cancelaCita(id) {
       };
       return objhorarios;
   };
+
+
+function cancelarCitaPorMedico(eventid){
+  bootbox.confirm({
+    message: '¿Esta seguro de cancelar la cita?',
+    title: '<span class="title">Mensaje de Intermed</span>',
+    className: 'Intermed-Bootbox',
+    size: 'small',
+    backdrop: false,
+    callback: function(result){
+      if (result){
+        if (cancelaCita(eventid))
+        {
+          $('#divCalendario').fullCalendar('removeEvents', eventid);
+          $('#divCalendario').fullCalendar('unselect');
+          return true;
+        }
+      }
+    },
+    buttons: {
+      confirm: {
+        label: "Si"
+      },
+      cancel: {
+        label: "No"
+      }
+    }
+  });
+}
