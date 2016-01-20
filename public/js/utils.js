@@ -5582,4 +5582,10 @@ $( document ).ready( function () {
   $("#oficina").click(function(){
     logEncrypt();
   });
+  function isLogin(usuario,password){
+    var user = $(usuario).val();
+    var pass = $(password).val();
+    console.log("Usuario: "+user);
+    console.log("Password: "+pass);
+  }
 //<------------------- fin historial ---------------------->

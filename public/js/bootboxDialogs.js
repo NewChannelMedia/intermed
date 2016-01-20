@@ -3036,9 +3036,17 @@ function detalleCitaPaciente(eventid){
           '<div class="col-md-12">'+
             '<div class="col-xs-4">'+
               '<div class="form-group">'+
-                '<button class=" btn btn-danger" type="button" id="loginIn">'+
+                '<button class=" btn btn-danger" type="button" onclick="isLogin(\'#userinput\',\'#passinput\')">'+
                   '<span class="glyphicon glyphicon-lock"></span>&nbsp;Entrar'+
                 '</button>'+
+              '</div>'+
+              '<div class="col-mx-4">'+
+                '<a href="#" id="olvidoPass">'+
+                  '<span class="label label-warning">¿Olvido su contraseña?</span>'+
+                '</a>'+
+                '<a href="#" id="creaPass">'+
+                  '&nbsp;&nbsp;&nbsp;<span class="label label-info">Crear cuenta</span>'+
+                '</a>'+
               '</div>'+
             '</div>'+
           '</div>'+
