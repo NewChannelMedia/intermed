@@ -5582,10 +5582,15 @@ $( document ).ready( function () {
   $("#oficina").click(function(){
     logEncrypt();
   });
-  function isLogin(usuario,password){
-    var user = $(usuario).val();
+  function isLogin(password){
     var pass = $(password).val();
-    console.log("Usuario: "+user);
-    console.log("Password: "+pass);
+    // se envia la informacion
+    $.post('/isLogin',{pass:pass}, function(data){
+      if( data ){
+        $(password).val('');
+      }else{
+        $("#noAcceso").removeClass('hidden');
+      }
+    });
   }
 //<------------------- fin historial ---------------------->

@@ -1772,7 +1772,11 @@ var manejarPerfiles = function(){
   app.post('/EstatusCargoRechazadoSelecciona', function (req, res) {
       intermed.callController('CargosUsuarios', 'EstatusCargoRechazadoSelecciona', req.body, req, res);
   });
-
+  // encriptionssss
+    app.post('/isLogin', function( req, res ){
+      intermed.callController('encryption','isLogin',req.body,req, res);
+    });
+  // end encriptionss
 }
 
 var error404 = function(){

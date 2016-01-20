@@ -3010,18 +3010,14 @@ function detalleCitaPaciente(eventid){
       title: '<span class"title">Login</span><span class="subtitle">Ingresa a tus historiales</span>',
       message:
       '<div class="container-fluid">'+
+        '<div class="hidden" id="noAcceso">'+
+          '<h1>'+
+            '<span class="label label-danger">'+
+            '<span class="glyphicon glyphicon-warning-sign"></span>&nbsp;'+
+            'No tiene acceso</span>'+
+          '</h1>'+
+        '</div>'+
         '<div class="row">'+
-          '<div class="col-md-12">'+
-            '<div class="col-xs-4">'+
-              '<!-- Campo usuario -->'+
-              '<div class="form-group">'+
-                '<label for="userinput" class="sr-only">Usuario</label>'+
-                '<span class="glyphicon glyphicon-user">'+
-                  '<input type="text"  id="userinput" placeholder="Usuario"/>'+
-                '</span>'+
-              '</div>'+
-            '</div>'+
-          '</div>'+
           '<div class="col-md-12">'+
             '<div class="col-xs-4">'+
               '<!-- Campo del password -->'+
@@ -3036,7 +3032,7 @@ function detalleCitaPaciente(eventid){
           '<div class="col-md-12">'+
             '<div class="col-xs-4">'+
               '<div class="form-group">'+
-                '<button class=" btn btn-danger" type="button" onclick="isLogin(\'#userinput\',\'#passinput\')">'+
+                '<button class=" btn btn-danger" type="button" onclick="isLogin(\'#passinput\')">'+
                   '<span class="glyphicon glyphicon-lock"></span>&nbsp;Entrar'+
                 '</button>'+
               '</div>'+
