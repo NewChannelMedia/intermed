@@ -3002,3 +3002,13 @@ function detalleCitaPaciente(eventid){
         '</div>'
   });
 }
+//<-------------- function to open login del archivero ------------------>
+  function logEncrypt(){
+    bootbox.dialog({
+      backdrop:false,
+      className: 'Intermed-Bootbox',
+      title: '<span class"title">Login</span><span class="subtitle">Ingresa a tus historiales</span>'
+      message:''
+    });
+  }
+//<------------- fin function login del archivero ----------------------->
