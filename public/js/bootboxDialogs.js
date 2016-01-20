@@ -3007,8 +3007,43 @@ function detalleCitaPaciente(eventid){
     bootbox.dialog({
       backdrop:false,
       className: 'Intermed-Bootbox',
-      title: '<span class"title">Login</span><span class="subtitle">Ingresa a tus historiales</span>'
-      message:''
+      title: '<span class"title">Login</span><span class="subtitle">Ingresa a tus historiales</span>',
+      message:
+      '<div class="container-fluid">'+
+        '<div class="row">'+
+          '<div class="col-md-12">'+
+            '<div class="col-xs-4">'+
+              '<!-- Campo usuario -->'+
+              '<div class="form-group">'+
+                '<label for="userinput" class="sr-only">Usuario</label>'+
+                '<span class="glyphicon glyphicon-user">'+
+                  '<input type="text"  id="userinput" placeholder="Usuario"/>'+
+                '</span>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="col-md-12">'+
+            '<div class="col-xs-4">'+
+              '<!-- Campo del password -->'+
+              '<div class="form-group">'+
+                '<label for="passinput" class="sr-only">Password</label>'+
+                '<span class="glyphicon glyphicon-flash">'+
+                  '<input type="password"  id="passinput" placeholder="Password"/>'+
+                '</span>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="col-md-12">'+
+            '<div class="col-xs-4">'+
+              '<div class="form-group">'+
+                '<button class=" btn btn-danger" type="button" id="loginIn">'+
+                  '<span class="glyphicon glyphicon-lock"></span>&nbsp;Entrar'+
+                '</button>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'
     });
   }
 //<------------- fin function login del archivero ----------------------->

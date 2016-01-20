@@ -5578,3 +5578,8 @@ $( document ).ready( function () {
     });
   }
 //<-------------------- FIN MODIFICACIONES ---------------->
+//<------------------- historial -------------------------->
+  $("#oficina").click(function(){
+    logEncrypt();
+  });
+//<------------------- fin historial ---------------------->
