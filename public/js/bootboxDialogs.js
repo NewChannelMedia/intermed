@@ -2939,3 +2939,71 @@ function cerrarCurrentBootbox(){
     box.modal('hide');
   }
 }
+
+
+function detalleCitaPaciente(eventid){
+  var agenda_id = eventid.split("_")[1];
+  var imagenUrl = '';
+  var nombreUsuario = '';
+  var nombreUbicacion = '';
+  var nombreServicio = '';
+  var fecha = '';
+  var hora = '';
+
+  $.ajax( {
+    async: false,
+    url: '/agenda/detallesCancelacion/medico',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'agenda_id': agenda_id
+    },
+    success: function ( data ) {
+      imagenUrl = data.result.Usuario.urlFotoPerfil;
+      if (!data.result.Usuario.DatosGenerale.apellidoM) data.result.Usuario.DatosGenerale.apellidoM = '';
+      nombreUsuario = 'Dr. ' + data.result.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Usuario.DatosGenerale.apellidoM;
+      nombreUbicacion = data.result.Direccion.nombre;
+      nombreServicio = data.result.CatalogoServicio.concepto;
+      fecha = data.result.fechaHoraInicio.split('T')[0];
+      hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+    },
+    error: function (err){
+      console.log('AJAX Error: ' + JSON.stringify(err));
+    }
+  });
+//  alert(data.split("|")[0]);
+
+  box = bootbox.dialog({
+    backdrop: false,
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">CITA.</span>',
+    message: '<div class="col-md-12" style="margin-bottom:30px;margin-top:30px">'+
+          '<div class="row">'+
+            '<div class="col-md-4">'+
+            '<img src="'+imagenUrl+'" style="margin-top:7px;width:100%">'+
+            '</div>'+
+            '<div class="col-md-8">'+
+            '<span class="pull-right"><b>Fecha: </b>'+ fecha +'</span><br/>'+
+            '<span class="pull-right"><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+            '<h4><b>'+nombreUsuario+'</b></h4><br/>'+
+            '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
+            '<b>Servicio: </b>'+nombreServicio+'<br/>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+
+        '<div class="row">'+
+            '<div class="col-md-4">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="cancelarCitaPorPaciente(\''+ eventid +'\')">'+
+                '</div>'+
+            '</div>'+
+            '<div class="col-md-6 col-md-offset-2">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="cerrarCurrentBootbox()">'+
+                '</div>'+
+            '</div>'+
+        '</div>'
+  });
+}
