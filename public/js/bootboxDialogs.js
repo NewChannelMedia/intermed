@@ -58,303 +58,291 @@ function agregarUbicacion(ubicacion_id){
           bootbox.hideAll();
       },
       size:'large',
-      message:
-      '<div class="" style="background-color:#172c3b;padding:5px;margin:-15px;" >'+
-      '<div class="col-md-12" style="color:white">'+
-        '<h2 class="s25">CONFIGURA TUS UBICACIONES Y HORARIOS DE ATENCIÓN.</h2>'+
-        '<h3 class="s20">Señala la ubicación en el mapa y registra el horario de atención correspondiente con cada una.</h3>'+
-      '</div>'+
-
-      '<ul class="nav nav-tabs menuBootbox">'+
-        '<li class="active ubicaciones"><a data-toggle="tab" href="#divUbicacion">UBICACIONES</a></li>'+
-        '<li class="servicios"><a data-toggle="tab" href="#divServicios">SERVICIOS</a></li>'+
-        '<li class="horarios"><a data-toggle="tab" href="#divHorarios">HORARIOS</a></li>'+
-      '</ul>'+
-
-      '<div class="tab-content">'+
-
-      '<div id="divUbicacion" class="tab-pane fade in active">'+
-          '<form method="POST" name="frmRegUb" id="frmRegUbi">'+
-              '<input type="hidden" id="idDireccion" name="idDireccion" value="`+id+`">'+
-              '<input type="hidden" id="idEstado" name="idDireccion" value="`+estado+`">'+
-              '<input type="hidden" id="idMunicipio" name="idDireccion" value="`+municipio+`">'+
-              '<input type="hidden" id="idLocalidad" name="idDireccion" value="`+localidad+`">'+
-              '<div class="row">'+
-                  '<div class="col-md-12">'+
-                    '<div class="row">'+
-
-                      '<div class="col-md-6">'+
-                          '<div class="row">'+
-                              '<div class="col-md-12">'+
-                                '<div class="row">'+
-                                  '<div class="form-group">'+
-                                    '<div class="row">'+
-                                      '<label class="col-md-12 control-label" for="textinput" style="color:white">Nombre de la ubicación:</label>'+
-                                      '<div class="col-md-7">'+
-                                      '<input id="nombreUbi" name="nombreUbi" type="text" placeholder="" class="form-control input-md" value="'+nombre+'">'+
-                                      '</div>'+
-                                      '<div class="col-md-5">'+
-                                        '<div class="row">'+
-                                          '<div class="checkbox">'+
-                                          '<label style="color:white;font-weight:bold">'+
-                                            '<input type="checkbox" id="principal" name="principal" value="" style="margin-top:0px" '+ principal +'>'+
-                                            'Ubicación principal.'+
-                                          '</label>'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                    '</div>'+
-                                  '</div>'+
-                                '</div>'+
-                              '</div>'+
-
-
-                              '<div class="col-md-12">'+
-                                '<div class="row">'+
-                                  '<div class="form-group">'+
-                                    '<div class="row">'+
-                                      '<div class="col-md-7">'+
-                                        '<div class="row">'+
-                                          '<label class="col-md-12 control-label" for="textinput" style="color:white">Calle o avenida:</label>'+
-                                          '<div class="col-md-12">'+
-                                          '<input id="calleUbi" name="calleUbi" type="text" placeholder="" class="form-control input-md" value="'+calle+'">'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                      '<div class="col-md-3">'+
-                                        '<div class="row">'+
-                                          '<div class="col-md-12">'+
-                                              '<label class="control-label" for="textinput" style="color:white">Número:</label>'+
-                                          '</div>'+
-                                          '<div class="col-md-12">'+
-                                              '<input id="numeroUbi" name="numeroUbi" type="text" placeholder="" class="form-control input-md" value="'+ numero +'">'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                      '<div class="col-md-2">'+
-                                        '<div class="row">'+
-                                          '<div class="col-md-12">'+
-                                              '<label class="control-label" for="textinput" style="color:white">Interior:</label>'+
-                                          '</div>'+
-                                          '<div class="col-md-12">'+
-                                              '<input id="numeroIntUbi" name="numeroIntUbi" type="text" placeholder="" class="form-control input-md" value="'+ interior+'">'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                    '</div>'+
-                                  '</div>'+
-                                '</div>'+
-                              '</div>'+
-
-
-
-                              '<div class="col-md-12">'+
-                                '<div class="row">'+
-                                  '<div class="form-group">'+
-                                    '<div class="row">'+
-                                      '<div class="col-md-6">'+
-                                        '<div class="row">'+
-                                          '<label class="col-md-12 control-label" for="textinput" style="color:white">Entre calles:</label>'+
-                                          '<div class="col-md-12">'+
-                                          '<input id="calle1Ubi" name="calle1Ubi" type="text" placeholder="" class="form-control input-md" value="'+callea+'">'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                      '<div class="col-md-6">'+
-                                        '<div class="row">'+
-                                          '<label class="col-md-12 control-label" for="textinput" style="color:white">Y:</label>'+
-                                          '<div class="col-md-12">'+
-                                          '<input id="calle2Ubi" name="calle2Ubi" type="text" placeholder="" class="form-control input-md" value="'+ calleb +'">'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                    '</div>'+
-                                  '</div>'+
-                                '</div>'+
-                              '</div>'+
-
-
-
-
-                              '<div class="col-md-12">'+
-                                '<div class="row">'+
-                                  '<div class="form-group">'+
-                                    '<div class="row">'+
-                                      '<div class="col-md-6">'+
-                                        '<div class="row">'+
-                                          '<label class="col-md-12 control-label" for="textinput" style="color:white">Estado:</label>'+
-                                          '<div class="col-md-12">'+
-                                          '<select id="slc_estados_mapa" name="slc_estados_mapa" type="text" placeholder="" class="form-control input-md" onChange="obtenerCiudades()">'+
-                                          '</select>'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                      '<div class="col-md-6">'+
-                                        '<div class="row">'+
-                                          '<label class="col-md-12 control-label" for="textinput" style="color:white">Municipio/ciudad:</label>'+
-                                          '<div class="col-md-12">'+
-                                          '<select id="slc_ciudades_mapa" name="slc_ciudades_mapa" type="text" placeholder="" class="form-control input-md" onChange="obtenerColonias()">'+
-                                          '</select>'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                    '</div>'+
-                                  '</div>'+
-                                '</div>'+
-                              '</div>'+
-
-
-
-                            '<div class="col-md-12">'+
-                              '<div class="row">'+
-                                '<div class="form-group">'+
-                                  '<div class="row">'+
-                                    '<div class="col-md-6">'+
-                                      '<div class="row">'+
-                                        '<label class="col-md-12 control-label" for="textinput" style="color:white">Localidad/colonia:</label>'+
-                                        '<div class="col-md-12">'+
-                                        '<select id="slc_colonias_mapa" name="slc_colonias_mapa" type="text" placeholder="" class="form-control input-md">'+
-                                        '</select>'+
-                                        '</div>'+
-                                      '</div>'+
-                                    '</div>'+
-                                    '<div class="col-md-6">'+
-                                      '<div class="row">'+
-                                        '<label class="col-md-12 control-label" for="textinput" style="color:white">CP:</label>'+
-                                        '<div class="col-md-12">'+
-                                        '<input id="cpUbi" name="cpUbi" type="text" placeholder="" class="form-control input-md" value="'+ cp +'">'+
-                                        '</div>'+
-                                      '</div>'+
-                                    '</div>'+
-                                  '</div>'+
-                                '</div>'+
-                              '</div>'+
-                            '</div>'+
-                        '</div>'+
-                    '</div>'+
-                    '<div class="col-md-6">'+
-                      '<div class="row">'+
-                          '<input type="hidden" id="latitud" name="latitud" value="'+latitud+'"/>'+
-                          '<input type="hidden" id="longitud" name="longitud" value="`+longitud+`"/>'+
-                          '<div id="searchDiv">'+
-                              '<input id="autocomplete_searchField" type="text" placeholder="Buscar Dirección">'+
-                          '</div>'+
-                          '<div id="direccion"></div>'+
-                          '<div id="mapDiv"></div>'+
-                      '</div>'+
-                    '</div>'+
-                '</div>'+
-            '</div>'+
-            '</div>'+
-            '<div class="row">'+
-            '<div class="col-md-12">'+
-              '<div class="row">'+
-                '<hr class="style-white"/>'+
-                '<div class="col-md-12">'+
-                  '<div class="row" class="text-center">'+
-                    '<span style="font-weight:bold;color:white;font-size:130%;text-align:center;padding:7px;"  class="col-md-12">'+
-                      'Teléfonos'+
-                    '</span>'+
-                  '</div>'+
-                '</div>'+
-              '</div>'+
-              '<div class="row">'+
-                '<div class="col-md-10 col-sm-10">'+
-                  '<div class="row">'+
-                    '<div class="form-group col-md-3 col-sm-3">'+
-                      '<div class="row">'+
-                        '<select class="form-control" id="tipoTelefono" >'+
-                          '<option value="celular">Celular</option>'+
-                          '<option value="oficina">Oficina</option>'+
-                          '<option value="localizador">Localizador</option>'+
-                        '</select>'+
-                      '</div>'+
-                    '</div>'+
-                    '<div class="form-group col-md-9 col-sm-9" id="divTelefono">'+
-                      '<div class="form-group">'+
-                        '<input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" onpaste="soloNumeros()" maxlength="12"  >'+
-                      '</div>'+
-                    '</div>'+
-                  '</div>'+
-                '</div>'+
-                '<div class="col-md-2 col-sm-2">'+
-                  '<div class="row">'+
-                  '<div class="form-group">'+
-                    '<input type="button" class="btn btn-warning btn-block" id="addFon" value="Añadir">'+
-                  '</div>'+
-                  '</div>'+
-                '</div>'+
-            '</div>'+
-            '<div class ="row">'+
-              '<div class="form-group col-md-12 col-sm-12 btn-group edit-btns text-center" id="divTelefonoAgregado" data-toggle="buttons"></div>'+
-            '</div>'+
-            '</div>'+
-            '<div class="row">'+
-              '<div id="fonAgregado" class="btn-group edit-btns text-center" data-toggle="buttons"></div>'+
-            '</div>'+
-
-            '<div class="col-md-12">'+
-              '<div class="row">'+
-              '<hr class="style-white"/>'+
-              '<span style="font-weight:bold;color:white;font-size:80%;">'+
-                'Al finalizar de agregar tus ubicaciones, pasa a la pestaña de "horarios" para organizar las horas de atención que se mostrarán en tu agenda de citas.'+
-              '</span>'+
-              '</div>'+
-            '</div>'+
-
-
-            '<div class="col-md-12" style="margin-top:15px;margin-bottom:30px">'+
-              '<div class="row">'+
-                '<div class="col-md-6 pull-right">'+
-                  '<div class="row">'+
-                    '<div class="col-md-6">'+
-                      '<div class="row">'+
-                      '<input type="button" class="btn btn-add btn-block" value="'+btnGuardar+'" onclick="regUbicacion()" id="btnGuardar">'+
-                      '</div>'+
-                    '</div>'+
-                    '<div class="col-md-6">'+
-                      '<div class="row" style="margin-left:2px">'+
-                        '<input type="button" class="btn btn-save btn-block" value="Guardar y salir" onclick="regUbicacion(true);" id="btnGuardarSalir">'+
-                      '</div>'+
-                    '</div>'+
-                  '</div>'+
-                '</div>'+
-                '<div class="col-md-6 pull-left">'+
-                  '<div class="row">'+
-                    '<div class="col-md-6">'+
-                      '<div class="row">'+
-                      '<input type="button" class="btn btn-drop btn-block" value="Eliminar" onclick="eliminarUbicacion()" id="btnEliminar">'+
-                      '</div>'+
-                    '</div>'+
-                  '</div>'+
-                  '</div>'+
-                '</div>'+
-              '</div>'+
-            '</div>'+
-        '</form>'+
-    '</div>'+
-
-
-    '<div id="divHorarios" class="tab-pane fade divBodyBootbox">'+
-      '<h3 style="color:white">Horarios</h3>'+
-      '<p>Alta, modificacion y eliminación de horarios por ubicación.</p>'+
-      '<small>El id de la dirección se saca del input type=hidden con id: \'idDireccion\', si esta vacio no deberia dejar agregar horarios ni servicios</small>'+
-      '<input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarHorariosBot();">'+
-    '</div>'+
-
-
-    '<div id="divServicios" class="tab-pane fade divBodyBootbox">'+
-      '<h3 style="color:white">Servicios</h3>'+
-      '<p>Alta, modificacion y eliminación de servicios por ubicación.</p>'+
-      '<small>El id de la dirección se saca del input type=hidden con id: \'idDireccion\', si esta vacio no deberia dejar agregar horarios ni servicios</small><br/><br/>'+
-      '<input type="button" class="btn btn-add btn-sm" value="Guardar y continuar" onclick="registrarServicios();">'+
-      '<input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarServicios(true);">'+
-    '</div>'+
-
-    '</div>'+
-    '</div>'
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">CONFIGURA TUS UBICACIONES Y HORARIOS DE ATENCIÓN.</span><span class="subtitle">Señala la ubicación en el mapa y registra el horario de atención correspondiente con cada una.</span>',
+      message: `
+      <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;" >
+      <div class="col-md-12" style="color:white">
+        <span class="title">CONFIGURA TUS UBICACIONES Y HORARIOS DE ATENCIÓN.</span>
+        <span class="subtitle">Señala la ubicación en el mapa y registra el horario de atención correspondiente con cada una.</h3>
+      </div>
+      <ul class="nav nav-tabs menuBootbox">
+        <li class="active ubicaciones"><a data-toggle="tab" href="#divUbicacion">UBICACIONES</a></li>
+        <li class="servicios"><a data-toggle="tab" href="#divServicios">SERVICIOS</a></li>
+        <li class="horarios"><a data-toggle="tab" href="#divHorarios" onclick="iniciarDivCalendario()">HORARIOS</a></li>
+      </ul>
+      <div class="tab-content">
+      <div id="divUbicacion" class="tab-pane fade in active">
+          <form method="POST" name="frmRegUb" id="frmRegUbi">
+              <input type="hidden" id="idDireccion" name="idDireccion" value="`+id+`">
+              <input type="hidden" id="idEstado" name="idDireccion" value="`+estado+`">
+              <input type="hidden" id="idMunicipio" name="idDireccion" value="`+municipio+`">
+              <input type="hidden" id="idLocalidad" name="idDireccion" value="`+localidad+`">
+              <div class="row">
+                  <div class="col-md-12">
+                    <div class="row">
+                      <div class="col-md-6">
+                          <div class="row">
+                              <div class="col-md-12">
+                                <div class="row">
+                                  <div class="form-group">
+                                    <div class="row">
+                                      <label class="col-md-12 control-label" for="textinput" style="color:white">Nombre de la ubicación:</label>
+                                      <div class="col-md-7">
+                                      <input id="nombreUbi" name="nombreUbi" type="text" placeholder="" class="form-control input-md" value="`+nombre+`">
+                                      </div>
+                                      <div class="col-md-5">
+                                        <div class="row">
+                                          <div class="checkbox">
+                                          <label style="color:white;font-weight:bold">
+                                            <input type="checkbox" id="principal" name="principal" value="" style="margin-top:0px" `+ principal +`>
+                                            Ubicación principal.
+                                          </label>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-12">
+                                <div class="row">
+                                  <div class="form-group">
+                                    <div class="row">
+                                      <div class="col-md-7">
+                                        <div class="row">
+                                          <label class="col-md-12 control-label" for="textinput" style="color:white">Calle o avenida:</label>
+                                          <div class="col-md-12">
+                                          <input id="calleUbi" name="calleUbi" type="text" placeholder="" class="form-control input-md" value="`+calle+`">
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="col-md-3">
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                              <label class="control-label" for="textinput" style="color:white">Número:</label>
+                                          </div>
+                                          <div class="col-md-12">
+                                              <input id="numeroUbi" name="numeroUbi" type="text" placeholder="" class="form-control input-md" value="`+ numero +`">
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="col-md-2">
+                                        <div class="row">
+                                          <div class="col-md-12">
+                                              <label class="control-label" for="textinput" style="color:white">Interior:</label>
+                                          </div>
+                                          <div class="col-md-12">
+                                              <input id="numeroIntUbi" name="numeroIntUbi" type="text" placeholder="" class="form-control input-md" value="`+ interior+`">
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-12">
+                                <div class="row">
+                                  <div class="form-group">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        <div class="row">
+                                          <label class="col-md-12 control-label" for="textinput" style="color:white">Entre calles:</label>
+                                          <div class="col-md-12">
+                                          <input id="calle1Ubi" name="calle1Ubi" type="text" placeholder="" class="form-control input-md" value="`+callea+`">
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div class="row">
+                                          <label class="col-md-12 control-label" for="textinput" style="color:white">Y:</label>
+                                          <div class="col-md-12">
+                                          <input id="calle2Ubi" name="calle2Ubi" type="text" placeholder="" class="form-control input-md" value="`+ calleb +`">
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="col-md-12">
+                                <div class="row">
+                                  <div class="form-group">
+                                    <div class="row">
+                                      <div class="col-md-6">
+                                        <div class="row">
+                                          <label class="col-md-12 control-label" for="textinput" style="color:white">Estado:</label>
+                                          <div class="col-md-12">
+                                          <select id="slc_estados_mapa" name="slc_estados_mapa" type="text" placeholder="" class="form-control input-md" onChange="obtenerCiudades()">
+                                          </select>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div class="col-md-6">
+                                        <div class="row">
+                                          <label class="col-md-12 control-label" for="textinput" style="color:white">Municipio/ciudad:</label>
+                                          <div class="col-md-12">
+                                          <select id="slc_ciudades_mapa" name="slc_ciudades_mapa" type="text" placeholder="" class="form-control input-md" onChange="obtenerColonias()">
+                                          </select>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            <div class="col-md-12">
+                              <div class="row">
+                                <div class="form-group">
+                                  <div class="row">
+                                    <div class="col-md-6">
+                                      <div class="row">
+                                        <label class="col-md-12 control-label" for="textinput" style="color:white">Localidad/colonia:</label>
+                                        <div class="col-md-12">
+                                        <select id="slc_colonias_mapa" name="slc_colonias_mapa" type="text" placeholder="" class="form-control input-md">
+                                        </select>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                      <div class="row">
+                                        <label class="col-md-12 control-label" for="textinput" style="color:white">CP:</label>
+                                        <div class="col-md-12">
+                                        <input id="cpUbi" name="cpUbi" type="text" placeholder="" class="form-control input-md" value="`+ cp +`">
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="row">
+                          <input type="hidden" id="latitud" name="latitud" value="`+latitud+`"/>
+                          <input type="hidden" id="longitud" name="longitud" value="`+longitud+`"/>
+                          <div id="searchDiv">
+                              <input id="autocomplete_searchField" type="text" placeholder="Buscar Dirección">
+                          </div>
+                          <div id="direccion"></div>
+                          <div id="mapDiv"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="row">
+            <div class="col-md-12">
+              <div class="row">
+                <hr class="style-white"/>
+                <div class="col-md-12">
+                  <div class="row" class="text-center">
+                    <span style="font-weight:bold;color:white;font-size:130%;text-align:center;padding:7px;"  class="col-md-12">
+                      Teléfonos
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-10 col-sm-10">
+                  <div class="row">
+                    <div class="form-group col-md-3 col-sm-3">
+                      <div class="row">
+                        <select class="form-control" id="tipoTelefono" >
+                          <option value="celular">Celular</option>
+                          <option value="oficina">Oficina</option>
+                          <option value="localizador">Localizador</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group col-md-9 col-sm-9" id="divTelefono">
+                      <div class="form-group">
+                        <input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" onpaste="soloNumeros()" maxlength="12"  >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-2 col-sm-2">
+                  <div class="row">
+                  <div class="form-group">
+                    <input type="button" class="btn btn-warning btn-block" id="addFon" value="Añadir">
+                  </div>
+                  </div>
+                </div>
+            </div>
+            <div class ="row">
+              <div class="form-group col-md-12 col-sm-12 btn-group edit-btns text-center" id="divTelefonoAgregado" data-toggle="buttons"></div>
+            </div>
+            </div>
+            <div class="row">
+              <div id="fonAgregado" class="btn-group edit-btns text-center" data-toggle="buttons"></div>
+            </div>
+            <div class="col-md-12">
+              <div class="row">
+              <hr class="style-white"/>
+              <span style="font-weight:bold;color:white;font-size:80%;">
+                Al finalizar de agregar tus ubicaciones, pasa a la pestaña de "horarios" para organizar las horas de atención que se mostrarán en tu agenda de citas.
+              </span>
+              </div>
+            </div>
+            <div class="col-md-12" style="margin-top:15px;margin-bottom:30px">
+              <div class="row">
+                <div class="col-md-6 pull-right">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="row">
+                      <input type="button" class="btn btn-add btn-block" value="`+btnGuardar+`" onclick="regUbicacion()" id="btnGuardar">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="row" style="margin-left:2px">
+                        <input type="button" class="btn btn-save btn-block" value="Guardar y salir" onclick="regUbicacion(true);" id="btnGuardarSalir">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 pull-left">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="row">
+                      <input type="button" class="btn btn-drop btn-block" value="Eliminar" onclick="eliminarUbicacion()" id="btnEliminar">
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </form>
+    </div>
+    <div id="divHorarios" class="tab-pane fade divBodyBootbox">
+      <form method="POST" name="frmRegHorarios" id="frmRegHorarios" onsubmit="return false;">
+          <input type="hidden" id="horariosUbi" name="horariosUbi" value="" />
+          <input type="hidden" id="direccion_id" name="direccion_id" value="" />
+          <div class="row">
+              <div class="col-md-12" id="divCalendarioPadre"><div id="divCalendario"></div></div>
+              <div class="col-md-6">
+                  <button class="btn btn-danger btn-md" onclick="vaciarCalendario()">
+                      <span class="glyphicon glyphicon-trash"></span>
+                  </button>
+              </div>
+              <div class="col-md-6"><input type="button" class="btn btn-save btn-md btn-block" id="btnRegHorarios" value="Guardar Horarios" onclick="regHorarios()"></div>
+          </div>
+      </form>
+      <!--<input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarHorariosBot();">-->
+      <br/><br/>
+    </div>
+    <div id="divServicios" class="tab-pane fade divBodyBootbox">
+      <h3 style="color:white">Servicios</h3>
+      <p>Alta, modificacion y eliminación de servicios por ubicación.</p>
+      <small>El id de la dirección se saca del input type=hidden con id: 'idDireccion', si esta vacio no deberia dejar agregar horarios ni servicios</small><br/><br/>
+      <input type="button" class="btn btn-add btn-sm" value="Guardar y continuar" onclick="registrarServicios();">
+      <input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarServicios(true);">
+    </div>
+    </div>
+    </div>`
   });
-  maquetaServices();
   if (btnGuardar == "Editar"){
     $("#frmRegUbi :input").prop('disabled', true);
     $("#frmRegUbi :button").prop('disabled', false);
@@ -2194,4 +2182,828 @@ function editMedicoPerfil(){
   loadPadecimientos();
   loadPalabras();
   traePadecimientos();
+}
+
+
+
+function agendarCitaBootbox(){
+    bootbox.dialog({
+      backdrop: true,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      size:'large',
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">AGENDAR UNA CITA.</span><span class="subtitle">Selecciona el servicio para el cual quieres generar la cita, seguido de eso se desplegaran las distintas ubicaciones donde el médico brinda el servicio.</span>',
+      message:
+            '<form method="POST" name="frmRegCita" id="frmRegCita">'+
+              '<input type="hidden" id="id" name="id">'+
+              '<input type="hidden" id="paciente_id" name="paciente_id" value="2">'+
+              '<input type="hidden" id="medico_id" name="medico_id" value="1">'+
+              '<input type="hidden" id="fecha" name="fecha" />'+
+              '<input type="hidden" id="fechaFin" name="fechaFin" />'+
+              '<input type="hidden" id="serviciocita_id" name="serviciocita_id" />'+
+              '<div class=col-md-12">'+
+                '<div class="col-md-2">'+
+                  '<label for="servicio_id">Servicio: </label>'+
+                '</div>'+
+                '<div class="col-md-10">'+
+                  '<select class="form-control" id="servicio_id" name="servicio_id" >'+
+                    '<option value=""></option>'+
+                  '</select>'+
+                '</div>'+
+              '</div>'+
+              '<br/><br/>'+
+
+              '<div class=col-md-12" id="ubicaciones_select">'+
+                '<div class="col-md-2">'+
+                  '<label for="servicio_id">Ubicación: </label>'+
+                '</div>'+
+                '<div class="col-md-10">'+
+                  '<select class="form-control" id="ubicacion_id" name="ubicacion_id" >'+
+                    '<option value=""></option>'+
+                  '</select>'+
+                '</div>'+
+              '</div>'+
+
+
+              '<div class=col-md-12" id="cita_detalles" style="visibility:hidden">'+
+                '<b>Costo del servicio: </b><span id="citaCosto"></span><br/>'+
+                '<b>Duración: </b><span id="citaDuracion"></span>'+
+              '</div>'+
+
+
+              '<div class="col-md-12" id="divCalendarioPadre"><div class="row"><div id="divCalendario"></div></div></div>'+
+
+            '</form>'+
+            '<input type="button" class="btn btn-drop btn-sm pull-left" value="Cancelar" onclick="bootbox.hideAll();">'+
+            '<input type="button" class="btn btn-save btn-sm pull-right" value="Agendar cita" onclick="registrarCita()"><br/><br/<br/><br/>'+
+            '<span style="color:#5D9AB7">.</span><br/><br/>'
+  });
+  traerServiciosPorMedico($('#usuarioPerfil').val());
+}
+
+
+function verAgendaMedico(){
+    bootbox.dialog({
+      backdrop: true,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      size:'large',
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">TU AGENDA.</span><span class="subtitle">Da click en las citas para cancelarlas.</span>',
+      message: '<form method="POST" name="frmRegCita" id="frmRegCita">'+
+            '<input type="hidden" id="id" name="id">'+
+            '<input type="hidden" id="paciente_id" name="paciente_id" value="1">'+
+            '<input type="hidden" id="fecha" name="fecha" />'+
+            '<input type="hidden" id="fechaFin" name="fechaFin" />'+
+
+            '<div class="col-md-12">'+
+              '<div class="row">'+
+              '<div id="divCalendario"></div>'+
+              '</div>'+
+            '</div>'+
+
+            '<div class="row">'+
+                '<div class="col-md-12">'+
+                    '<div class="form-group">'+
+                        '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">'+
+                    '</div>'+
+                '</div>'+
+            '</div>'+
+        '</div>'+
+        '</form>'
+  });
+
+
+    setTimeout(function(){
+      generarCalendarioMedico();
+    },500);
+
+
+}
+
+
+function verAgendaPaciente(){
+    bootbox.dialog({
+      backdrop: true,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      size:'large',
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">TU AGENDA.</span><span class="subtitle">Da click en las citas para cancelarlas.</span>',
+      message: '<form method="POST" name="frmRegCita" id="frmRegCita">'+
+            '<input type="hidden" id="id" name="id">'+
+            '<input type="hidden" id="paciente_id" name="paciente_id" value="1">'+
+            '<input type="hidden" id="fecha" name="fecha" />'+
+            '<input type="hidden" id="fechaFin" name="fechaFin" />'+
+
+            '<div class="col-md-12">'+
+              '<div class="row">'+
+              '<div id="divCalendario"></div>'+
+              '</div>'+
+            '</div>'+
+
+            '<div class="row">'+
+                '<div class="col-md-12">'+
+                    '<div class="form-group">'+
+                        '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">'+
+                    '</div>'+
+                '</div>'+
+            '</div>'+
+        '</div>'+
+        '</form>'
+  });
+
+
+    setTimeout(function(){
+      generarCalendarioPaciente();
+    },500);
+}
+
+function detalleCancelacionPaciente(data){
+  var data = data.split("|");
+
+  var imagenUrl = '';
+  var nombreUsuario = '';
+  var nombreUbicacion = '';
+  var nombreServicio = '';
+  var fecha = data[1].split('T')[0];
+  var hora = data[1].split('T')[1].split(':00.')[0];
+
+  $.ajax( {
+    async: false,
+    url: '/agenda/detallesCancelacion/paciente',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'paciente_id': data[0],
+      'direccion_id': data[3],
+      'servicio_id': data[4],
+    },
+    success: function ( data ) {
+      imagenUrl = data.usuario.urlFotoPerfil;
+      if (!data.usuario.DatosGenerale.apellidoM) data.usuario.DatosGenerale.apellidoM = '';
+      nombreUsuario = data.usuario.DatosGenerale.nombre  + ' ' + data.usuario.DatosGenerale.apellidoP + ' ' + data.usuario.DatosGenerale.apellidoM;
+      nombreUbicacion = data.ubicacion;
+      nombreServicio = data.servicio;
+    },
+    error: function (err){
+      console.log('AJAX Error: ' + JSON.stringify(err));
+    }
+  });
+//  alert(data.split("|")[0]);
+
+  bootbox.dialog({
+    backdrop: true,
+    onEscape: function () {
+        bootbox.hideAll();
+    },
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">CITA CANCELADA POR EL PACIENTE.</span>',
+    message: '<div class="col-md-12" style="margin-bottom:30px;margin-top:30px">'+
+          '<div class="row">'+
+            '<div class="col-md-4">'+
+            '<img src="'+imagenUrl+'" style="margin-top:7px;width:100%">'+
+            '</div>'+
+            '<div class="col-md-8">'+
+            '<span class="pull-right"><b>Fecha: </b>'+ fecha +'</span><br/>'+
+            '<span class="pull-right"><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+            '<h4><b>Paciente: </b>'+nombreUsuario+'</h4><br/>'+
+            '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
+            '<b>Servicio: </b>'+nombreServicio+'<br/>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+
+        '<div class="row">'+
+            '<div class="col-md-12">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">'+
+                '</div>'+
+            '</div>'+
+        '</div>'
+  });
+}
+
+function detalleCancelacionMedico(agenda_id){
+  var imagenUrl = '';
+  var nombreUsuario = '';
+  var nombreUbicacion = '';
+  var nombreServicio = '';
+  var fecha = '';
+  var hora = '';
+
+  $.ajax( {
+    async: false,
+    url: '/agenda/detallesCancelacion/medico',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'agenda_id': agenda_id
+    },
+    success: function ( data ) {
+      imagenUrl = data.result.Usuario.urlFotoPerfil;
+      if (!data.result.Usuario.DatosGenerale.apellidoM) data.result.Usuario.DatosGenerale.apellidoM = '';
+      nombreUsuario = 'Dr. ' + data.result.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Usuario.DatosGenerale.apellidoM;
+      nombreUbicacion = data.result.Direccion.nombre;
+      nombreServicio = data.result.CatalogoServicio.concepto;
+      fecha = data.result.fechaHoraInicio.split('T')[0];
+      hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+    },
+    error: function (err){
+      console.log('AJAX Error: ' + JSON.stringify(err));
+    }
+  });
+//  alert(data.split("|")[0]);
+
+  bootbox.dialog({
+    backdrop: true,
+    onEscape: function () {
+        bootbox.hideAll();
+    },
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">CITA CANCELADA POR EL MÉDICO.</span>',
+    message: '<div class="col-md-12" style="margin-bottom:30px;margin-top:30px">'+
+          '<div class="row">'+
+            '<div class="col-md-4">'+
+            '<img src="'+imagenUrl+'" style="margin-top:7px;width:100%">'+
+            '</div>'+
+            '<div class="col-md-8">'+
+            '<span class="pull-right"><b>Fecha: </b>'+ fecha +'</span><br/>'+
+            '<span class="pull-right"><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+            '<h4><b>'+nombreUsuario+'</b></h4><br/>'+
+            '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
+            '<b>Servicio: </b>'+nombreServicio+'<br/>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+
+        '<div class="row">'+
+            '<div class="col-md-12">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">'+
+                '</div>'+
+            '</div>'+
+        '</div>'
+  });
+}
+
+function detalleCita(agenda_id){
+  var imagenUrl = '';
+  var nombreUsuario = '';
+  var nombreUbicacion = '';
+  var nombreServicio = '';
+  var fecha = '';
+  var hora = '';
+
+  $.ajax( {
+    async: false,
+    url: '/agenda/detalleCita',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'agenda_id': agenda_id
+    },
+    success: function ( data ) {
+      console.log('Result: ' + JSON.stringify(data));
+      imagenUrl = data.result.Paciente.Usuario.urlFotoPerfil;
+      if (!data.result.Paciente.Usuario.DatosGenerale.apellidoM) data.result.Paciente.Usuario.DatosGenerale.apellidoM = '';
+      nombreUsuario = data.result.Paciente.Usuario.DatosGenerale.nombre  + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoM;
+      nombreUbicacion = data.result.Direccion.nombre;
+      nombreServicio = data.result.CatalogoServicio.concepto;
+      fecha = data.result.fechaHoraInicio.split('T')[0];
+      hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+    },
+    error: function (err){
+      console.log('AJAX Error: ' + JSON.stringify(err));
+    }
+  });
+//  alert(data.split("|")[0]);
+
+  bootbox.dialog({
+    backdrop: true,
+    onEscape: function () {
+        bootbox.hideAll();
+    },
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">NUEVA CITA AGENDADA.</span>',
+    message:'<div class="col-md-12" style="margin-bottom:30px;margin-top:30px">'+
+          '<div class="row">'+
+            '<div class="col-md-4">'+
+            '<img src="'+imagenUrl+'" style="margin-top:7px;width:100%">'+
+            '</div>'+
+            '<div class="col-md-8">'+
+            '<span class="pull-right"><b>Fecha: </b>'+ fecha +'</span><br/>'+
+            '<span class="pull-right"><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+            '<h4><b>'+nombreUsuario+'</b></h4><br/>'+
+            '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
+            '<b>Servicio: </b>'+nombreServicio+'<br/>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+
+        '<div class="row">'+
+            '<div class="col-md-12">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="bootbox.hideAll()">'+
+                '</div>'+
+            '</div>'+
+        '</div>'
+  });
+}
+
+function bootboxCalificarCita(agenda_id, notificacion_id){
+
+    var imagenUrl = '';
+    var nombreUsuario = '';
+    var nombreUbicacion = '';
+    var nombreServicio = '';
+    var fecha = '';
+    var hora = '';
+
+    $.ajax( {
+      async: false,
+      url: '/agenda/detallesCancelacion/medico',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        'agenda_id': agenda_id
+      },
+      success: function ( data ) {
+        imagenUrl = data.result.Usuario.urlFotoPerfil;
+        if (!data.result.Usuario.DatosGenerale.apellidoM) data.result.Usuario.DatosGenerale.apellidoM = '';
+        nombreUsuario = 'Dr. ' + data.result.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Usuario.DatosGenerale.apellidoM;
+        nombreUbicacion = data.result.Direccion.nombre;
+        nombreServicio = data.result.CatalogoServicio.concepto;
+        fecha = data.result.fechaHoraInicio.split('T')[0];
+        hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+  //  alert(data.split("|")[0]);
+
+    bootbox.dialog({
+      backdrop: true,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">CALIFICA TU CITA.</span>',
+      message:
+      '<style>span.Slider {float:left;}</style>'+
+      '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">'+
+
+      '<div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom:15px;margin-top:20px">'+
+        '<div class="row">'+
+          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:-15px;margin-bottom:5px;">'+
+            '<h4><b>'+nombreUsuario+'</b></h4>'+
+          '</div>'+
+
+          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;">'+
+            '<div class="col-md-6 col-sm-6 col-xs-6 col-md-offset-3 col-sm-offset-3 col-xs-offset-3">'+
+              '<img src="'+imagenUrl+'" style="width:100%;" class="img-thumbnail">'+
+            '</div>'+
+          '</div>'+
+
+          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;"><small><b>Fecha: </b>'+ fecha +' '+ hora +'</small></div>'+
+
+          '<div class="col-md-6 col-sm-6 col-xs-10 col-md-offset-3 col-sm-offset-3 col-xs-offset-1" style="margin-top:20px">'+
+            '<div class="row">'+
+              '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción general: </div>'+
+              '<div class="col-md-12 col-sm-12 col-xs-12"><input id="input-21d" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>'+
+            '</div>'+
+
+            '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider" id="cal_higiene"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-trash" ></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider" id="cal_puntualidad"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-time"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider"  id="cal_instalaciones"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-home"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider"  id="cal_trato"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-user"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+            '</div>'+
+
+            '<div class="row">'+
+              '<textarea class="form-control" placeholder="Comentarios (opcional)" style="resize: none;margin-top:5px" rows="4" id="calificacionComentario"></textarea>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="row">'+
+          '<div class="col-md-12 col-sm-12 col-xs-12">'+
+              '<div class="form-group">'+
+                  '<input type="button" style="font-weight:bold" class="btn btn-warning btn-block" value="Calificar" onclick="calificarCita(\''+agenda_id+'\',\''+notificacion_id+'\');">'+
+              '</div>'+
+          '</div>'+
+      '</div>'
+    });
+
+
+    $('.bootbox-close-button').css('z-index','1000');
+    $('.bootbox-close-button').css('position','relative');
+    $('.bootbox-close-button').css('color','white');
+    $('.bootbox-close-button').css('font-size','180%');
+
+    $("#input-21d").rating();
+
+    $('.clear-rating').css('display','none');
+    $('.caption').css('display','none');
+
+
+
+      $( "span.Slider" ).each(function() {
+
+        var id = $(this).prop('id');
+
+        $('#'+id ).slider({
+          value: 50,
+          min: -10,
+          max: 110,
+          step: 10,
+          animate: true,
+          orientation: "vertical",
+          slide: repositionTooltip,
+          start: function( e, ui ){
+            $('#'+id +" .ui-slider-handle:first").tooltip('show');
+            repositionTooltip(e,ui);
+          },
+          stop: function(){
+            $('#'+id +" .ui-slider-handle:first").tooltip('hide');
+          }
+        });
+
+        $('#'+id +" .ui-slider-handle:first").tooltip( {placement:"top",title: $('#'+id).slider("value"),trigger:"manual"});
+
+      });
+}
+
+function calificarServicioMedico(){
+
+    var imagenUrl = '';
+    var nombreUsuario = '';
+    var nombreUbicacion = '';
+    var nombreServicio = '';
+    var fecha = '';
+    var hora = '';
+    var agenda_id = '';
+    var notificacion_id = '';
+    /*
+    $.ajax( {
+      async: false,
+      url: '/agenda/detallesCancelacion/medico',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        'agenda_id': agenda_id
+      },
+      success: function ( data ) {
+        imagenUrl = data.result.Usuario.urlFotoPerfil;
+        if (!data.result.Usuario.DatosGenerale.apellidoM) data.result.Usuario.DatosGenerale.apellidoM = '';
+        nombreUsuario = 'Dr. ' + data.result.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Usuario.DatosGenerale.apellidoM;
+        nombreUbicacion = data.result.Direccion.nombre;
+        nombreServicio = data.result.CatalogoServicio.concepto;
+        fecha = data.result.fechaHoraInicio.split('T')[0];
+        hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });*/
+
+    bootbox.dialog({
+      backdrop: true,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">CALIFICA SU SERVICIO.</span>',
+      message:
+      '<style>span.Slider {float:left;}</style>'+
+      '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">'+
+
+      '<div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom:15px;margin-top:20px">'+
+        '<div class="row">'+
+          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:-15px;margin-bottom:5px;">'+
+            '<h4><b>'+nombreUsuario+'</b></h4>'+
+          '</div>'+
+
+          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;">'+
+            '<div class="col-md-6 col-sm-6 col-xs-6 col-md-offset-3 col-sm-offset-3 col-xs-offset-3">'+
+              '<img src="'+imagenUrl+'" style="width:100%;" class="img-thumbnail">'+
+            '</div>'+
+          '</div>'+
+
+          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;"><small><b>Fecha: </b>'+ fecha +' '+ hora +'</small></div>'+
+
+          '<div class="col-md-6 col-sm-6 col-xs-10 col-md-offset-3 col-sm-offset-3 col-xs-offset-1" style="margin-top:20px">'+
+            '<div class="row">'+
+              '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción general: </div>'+
+              '<div class="col-md-12 col-sm-12 col-xs-12"><input id="input-21d" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>'+
+            '</div>'+
+
+            '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider" id="cal_higiene"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-trash" ></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider" id="cal_puntualidad"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-time"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider"  id="cal_instalaciones"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-home"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider"  id="cal_trato"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-user"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+            '</div>'+
+
+            '<div class="row">'+
+              '<textarea class="form-control" placeholder="Comentarios (opcional)" style="resize: none;margin-top:5px" rows="4" id="calificacionComentario"></textarea>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="row">'+
+          '<div class="col-md-12 col-sm-12 col-xs-12">'+
+              '<div class="form-group">'+
+                  '<input type="button" style="font-weight:bold" class="btn btn-warning btn-block" value="Calificar" onclick="calificarCita(\''+agenda_id+'\',\''+notificacion_id+'\');">'+
+              '</div>'+
+          '</div>'+
+      '</div>'
+    });
+
+
+    $('.bootbox-close-button').css('z-index','1000');
+    $('.bootbox-close-button').css('position','relative');
+    $('.bootbox-close-button').css('color','white');
+    $('.bootbox-close-button').css('font-size','180%');
+
+    $("#input-21d").rating();
+
+    $('.clear-rating').css('display','none');
+    $('.caption').css('display','none');
+
+
+
+      $( "span.Slider" ).each(function() {
+
+        var id = $(this).prop('id');
+
+        $('#'+id ).slider({
+          value: 50,
+          min: -10,
+          max: 110,
+          step: 10,
+          animate: true,
+          orientation: "vertical",
+          slide: repositionTooltip,
+          start: function( e, ui ){
+            $('#'+id +" .ui-slider-handle:first").tooltip('show');
+            repositionTooltip(e,ui);
+          },
+          stop: function(){
+            $('#'+id +" .ui-slider-handle:first").tooltip('hide');
+          }
+        });
+
+        $('#'+id +" .ui-slider-handle:first").tooltip( {placement:"top",title: $('#'+id).slider("value"),trigger:"manual"});
+
+      });
+}
+
+var box;
+function detalleCitaMedico(eventid){
+  var agenda_id = eventid.split("_")[1];
+  var imagenUrl = '';
+  var nombreUsuario = '';
+  var nombreUbicacion = '';
+  var nombreServicio = '';
+  var fecha = '';
+  var hora = '';
+
+  $.ajax( {
+    async: false,
+    url: '/agenda/detalleCita',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'agenda_id': agenda_id
+    },
+    success: function ( data ) {
+      console.log('Result: ' + JSON.stringify(data));
+      imagenUrl = data.result.Paciente.Usuario.urlFotoPerfil;
+      if (!data.result.Paciente.Usuario.DatosGenerale.apellidoM) data.result.Paciente.Usuario.DatosGenerale.apellidoM = '';
+      nombreUsuario = data.result.Paciente.Usuario.DatosGenerale.nombre  + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoM;
+      nombreUbicacion = data.result.Direccion.nombre;
+      nombreServicio = data.result.CatalogoServicio.concepto;
+      fecha = data.result.fechaHoraInicio.split('T')[0];
+      hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+    },
+    error: function (err){
+      console.log('AJAX Error: ' + JSON.stringify(err));
+    }
+  });
+//  alert(data.split("|")[0]);
+
+  box = bootbox.dialog({
+    backdrop: false,
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">CITA AGENDADA</span>',
+    message:'<div class="col-md-12">'+
+          '<div class="row">'+
+            '<div class="col-md-4">'+
+            '<img src="'+imagenUrl+'" style="margin-top:7px;width:100%">'+
+            '</div>'+
+            '<div class="col-md-8">'+
+            '<span class="pull-right"><b>Fecha: </b>'+ fecha +'</span><br/>'+
+            '<span class="pull-right"><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+            '<h4><b>'+nombreUsuario+'</b></h4><br/>'+
+            '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
+            '<b>Servicio: </b>'+nombreServicio+'<br/>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+
+        '<div class="row">'+
+            '<div class="col-md-4">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="cancelarCitaPorMedico(\''+ eventid +'\')">'+
+                '</div>'+
+            '</div>'+
+            '<div class="col-md-6 col-md-offset-2">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="cerrarCurrentBootbox()">'+
+                '</div>'+
+            '</div>'+
+        '</div>'
+  });
+}
+
+function cerrarCurrentBootbox(){
+  if (box){
+    box.modal('hide');
+  }
+}
+
+
+function detalleCitaPaciente(eventid){
+  var agenda_id = eventid.split("_")[1];
+  var imagenUrl = '';
+  var nombreUsuario = '';
+  var nombreUbicacion = '';
+  var nombreServicio = '';
+  var fecha = '';
+  var hora = '';
+
+  $.ajax( {
+    async: false,
+    url: '/agenda/detallesCancelacion/medico',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'agenda_id': agenda_id
+    },
+    success: function ( data ) {
+      imagenUrl = data.result.Usuario.urlFotoPerfil;
+      if (!data.result.Usuario.DatosGenerale.apellidoM) data.result.Usuario.DatosGenerale.apellidoM = '';
+      nombreUsuario = 'Dr. ' + data.result.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Usuario.DatosGenerale.apellidoM;
+      nombreUbicacion = data.result.Direccion.nombre;
+      nombreServicio = data.result.CatalogoServicio.concepto;
+      fecha = data.result.fechaHoraInicio.split('T')[0];
+      hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+    },
+    error: function (err){
+      console.log('AJAX Error: ' + JSON.stringify(err));
+    }
+  });
+//  alert(data.split("|")[0]);
+
+  box = bootbox.dialog({
+    backdrop: false,
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">CITA.</span>',
+    message: '<div class="col-md-12" style="margin-bottom:30px;margin-top:30px">'+
+          '<div class="row">'+
+            '<div class="col-md-4">'+
+            '<img src="'+imagenUrl+'" style="margin-top:7px;width:100%">'+
+            '</div>'+
+            '<div class="col-md-8">'+
+            '<span class="pull-right"><b>Fecha: </b>'+ fecha +'</span><br/>'+
+            '<span class="pull-right"><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+            '<h4><b>'+nombreUsuario+'</b></h4><br/>'+
+            '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
+            '<b>Servicio: </b>'+nombreServicio+'<br/>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+
+        '<div class="row">'+
+            '<div class="col-md-4">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="cancelarCitaPorPaciente(\''+ eventid +'\')">'+
+                '</div>'+
+            '</div>'+
+            '<div class="col-md-6 col-md-offset-2">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="cerrarCurrentBootbox()">'+
+                '</div>'+
+            '</div>'+
+        '</div>'
+  });
 }
