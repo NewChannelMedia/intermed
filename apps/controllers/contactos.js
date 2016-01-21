@@ -792,6 +792,17 @@ module.exports = {
     if ( object.usuario == '' && req.session.passport.user ) {
       object.usuario = req.session.passport.user.id;
     }
+    var filtro = new Array();;
+    if (object.filtro && object.filtro != ""){
+      object.filtro = object.filtro.split(' ');
+      object.filtro.forEach(function(result){
+          filtro.push(models.sequelize.or(
+              {nombre: {$like: '%'+ result +'%'}},
+              {apellidoP: {$like: '%'+ result +'%'}},
+              {apellidoM: {$like: '%'+ result +'%'}}
+          ));
+      });
+    }
     models.Especialidad.findAll({
       group: ['especialidad'],
       order: ['especialidad'],
@@ -814,6 +825,13 @@ module.exports = {
                   aprobado: 1,
                   mutuo: 1
                 }
+              },{
+                model: models.Usuario,
+                attributes:['id'],
+                include:[{
+                  model:models.DatosGenerales,
+                  where: filtro
+                }]
               } ]
             }
           ]
@@ -828,13 +846,25 @@ module.exports = {
     if ( object.usuario_id == '' && req.session.passport.user ) {
       object.usuario_id = req.session.passport.user.id;
     }
+    var filtro = new Array();;
+    if (object.filtro && object.filtro != ""){
+      object.filtro = object.filtro.split(' ');
+      object.filtro.forEach(function(result){
+          filtro.push(models.sequelize.or(
+              {nombre: {$like: '%'+ result +'%'}},
+              {apellidoP: {$like: '%'+ result +'%'}},
+              {apellidoM: {$like: '%'+ result +'%'}}
+          ));
+      });
+    }
 
     models.Usuario.findAll({
       attributes:['id','usuarioUrl','urlFotoPerfil','urlPersonal'],
       include: [
         {
           model: models.DatosGenerales,
-          attributes:['nombre','apellidoP','apellidoM']
+          attributes:['nombre','apellidoP','apellidoM'],
+          where: filtro
         },
         {
           model: models.Medico,

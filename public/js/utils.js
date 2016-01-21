@@ -3948,12 +3948,14 @@ function verificarCurpCedula(){
 
 
 function cargarListaEspCol( usuario ) {
+  var filtro = $('#buscadorEspecialInput').val();
   $.ajax( {
     async: false,
     url: '/cargarListaEspCol',
     type: 'POST',
     data: {
-      usuario: usuario
+      usuario: usuario,
+      filtro: filtro
     },
     dataType: "json",
     cache: false,
@@ -3989,13 +3991,15 @@ function cargarListaEspCol( usuario ) {
 }
 
 function cargarListaColegasByEsp(usuario_id,especialidad_id){
+  var filtro = $('#buscadorEspecialInput').val();
   $.ajax( {
     async: false,
     url: '/cargarListaColegasByEsp',
     type: 'POST',
     data: {
       usuario_id: parseInt(usuario_id),
-      especialidad_id: especialidad_id
+      especialidad_id: especialidad_id,
+      filtro: filtro
     },
     dataType: "json",
     cache: false,
@@ -5489,7 +5493,6 @@ $( document ).ready( function () {
     }
 
     cargarListaEspCol( $( '#usuarioPerfil' ).val() );
-
   }
 } );
 //fin de Perfil Medicos
@@ -5568,4 +5571,13 @@ function calificarServMedico(){
         console.log('AJAX Error: ' + JSON.stringify(err));
       }
     });
+}
+
+function buscadorColegasEspecial(){
+  if ($('#buscadorEspecial').hasClass('hidden')){
+    $('#buscadorEspecial').removeClass('hidden');
+  } else {
+    $('#buscadorEspecial').addClass('hidden');
+    $('#buscadorEspecialInput').val('');
+  }
 }

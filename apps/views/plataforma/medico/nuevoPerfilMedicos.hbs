@@ -635,12 +635,24 @@
                   <li onclick="cargarListaAlfCol( $( '#usuarioPerfil' ).val() );">
                     <span class="glyphicon glyphicon-circle-arrow-right"></span> Ordenar por apellido
                   </li>
-                  <li onclick="cargarListaAlfCol( $( '#usuarioPerfil' ).val() );">
+                  <li onclick="buscadorColegasEspecial()">
                     <span class="glyphicon glyphicon-search"></span> Buscar
                   </li>
                 </ul>
               </div>
             </div>
+
+            <div class="row hidden" id="buscadorEspecial" style="background-color:#3c6b8a;padding:10px;">
+              <div clas="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="Busqueda..." id="buscadorEspecialInput" onchange="cargarListaEspCol( $( '#usuarioPerfil' ).val() );">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" onclick="cargarListaEspCol( $( '#usuarioPerfil' ).val() );"><span class="glyphicon glyphicon-search"></span></button>
+                  </span>
+                </div>
+              </div>
+            </div>
+
             <div id="FavColPanel">
               <div class="contList">
               </div>

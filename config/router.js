@@ -1510,9 +1510,7 @@ var iniciar = function () {
     });
 
     app.post( '/cargarListaEspCol', function ( req, res ) {
-      intermed.callController( 'contactos', 'cargarListaEspCol', {
-        usuario: req.body.usuario
-      }, req, res );
+      intermed.callController( 'contactos', 'cargarListaEspCol', req.body, req, res );
     } );
 
     app.post('/cargarListaColegasByEsp', function (req, res){
