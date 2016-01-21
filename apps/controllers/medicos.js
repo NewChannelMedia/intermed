@@ -1,5 +1,6 @@
 var models = require( '../models' );
 var cryptomaniacs = require( './encryption' );
+var mail = require( './emailSender' );
 
 /**
 Controlador de para médicos
@@ -7,7 +8,7 @@ Controlador de para médicos
 *	@version 0.0.0.0
 */
 
-module.exports = {
+var _this = module.exports = {
 
   obtieneMedicos: function ( object, req, res ) {
     middle.obtieneMedicos( function ( datos ) {
@@ -1093,6 +1094,211 @@ module.exports = {
         }else{
           res.sendStatus(404);
         }
+      });
+    }
+  },
+
+  calificar: function(object, req, res){
+    if (req.session.passport && req.session.passport.user){
+      models.Medico.findOne({
+        where: {
+          usuario_id: object.usuario_id
+        }
+      }).then(function(medico){
+        if (medico){
+          object.medico_id = medico.id;
+          object.usuario_id = req.session.passport.user.id;
+          models.CalificacionMedico.findOne({
+            where: {
+              medico_id: object.medico_id,
+              usuario_id: object.usuario_id
+            }
+          }).then(function(calificacion){
+            if (calificacion){
+              //Eliminar calificacion actual
+              models.CalificacionMedico.destroy({
+                where: {
+                  medico_id: object.medico_id,
+                  usuario_id: object.usuario_id
+                }
+              }).then(function(result){
+                _this.insertarCalificacionMedico(object, req, res, true);
+              });
+            } else {
+              _this.insertarCalificacionMedico(object,req, res, false);
+            }
+          });
+        } else {
+          //No existe el médico
+          res.status(200).json({error:1});
+        }
+      });
+    } else {
+      res.status(200).json({error:1});
+    }
+  },
+
+  insertarCalificacionMedico: function(object, req, res, modificacion){
+    models.CalificacionMedico.create(object).then(function(result){
+      var success = false;
+      if (result){
+        success = true;
+          models.Medico.findById(object.medico_id).then(function(medico){
+            var promedio = 0;
+            if (!modificacion){
+              promedio =  ((parseInt(object.efectividad) + parseInt(object.tratoPersonal) + parseInt(object.higiene) + parseInt(object.presentacion)) / 4);
+              if (medico.calificacion !=  null){
+                calificacion = medico.calificacion;
+                promedio = ((parseInt(calificacion) + promedio) / 2);
+              }
+              medico.update({calificacion :  promedio});
+            } else {
+              //Se debe de recalcular el promedio, porque el usuario modifico su calificación
+              models.CalificacionMedico.findAll({
+                where:{
+                  medico_id: object.medico_id,
+                  usuario_id: object.usuario_id
+                }
+              }).then(function(calificaciones){
+                calificaciones.forEach(function(cal){
+                    promedio +=  ((parseInt(cal.efectividad) + parseInt(cal.tratoPersonal) + parseInt(cal.higiene) + parseInt(cal.presentacion)) / 4);
+                });
+                promedio = promedio/calificaciones.length;
+                medico.update({calificacion :  promedio});
+              });
+            }
+          });
+      }
+      res.status(200).json({
+        success: success,
+        result: result
+      });
+    });
+  },
+
+  recomendar: function(object, req, res){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      models.Medico.findOne({
+        where:{
+          usuario_id: object.usuario_medico_id
+        },
+        include: [
+          {
+            model: models.Usuario,
+            attributes: ['urlFotoPerfil','urlPersonal','usuarioUrl'],
+            include:[
+              {
+                model: models.DatosGenerales,
+                attributes: ['nombre','apellidoP','apellidoM']
+              },
+              {
+                model: models.Direccion,
+                attributes: ['id'],
+                include: [{
+                  model: models.Municipio,
+                  include: [{
+                    model: models.Estado
+                  }]
+                }]
+              }
+            ]
+          },{
+            model: models.Especialidad
+          }
+        ]
+      }).then(function(medico){
+          if (medico){
+            if (object.usuarios_id){
+              var recomcount = 0;
+              models.Notificacion.create({
+                usuario_id: object.usuario_medico_id,
+                tipoNotificacion_id:13,
+                data:String(req.session.passport.user.id)
+              }).then(function(){
+                object.usuarios_id.forEach(function(usuario){
+                  models.Notificacion.create({
+                      usuario_id:usuario,
+                      tipoNotificacion_id:12,
+                      data:req.session.passport.user.Paciente_id+"|"+medico.id
+                  }).then(function(){
+                    recomcount++;
+                    if (recomcount == object.usuarios_id.length){
+                      _this.enviarCorreosRecomendacion(req,res,object,medico);
+                    }
+                  });
+                });
+              });
+          } else {
+            _this.enviarCorreosRecomendacion(req,res,object,medico);
+          }
+        }else{
+          //Error: el medico no existe
+          res.status(200).json({
+            success: false
+          });
+        }
+      });
+    } else {
+      //Enviar error de sesión no iniciada
+      res.status(200).json({
+        success: false,
+        error: 1
+      });
+    }
+  },
+
+  enviarCorreosRecomendacion: function (req,res,object,medico){
+    if (object.emails){
+      if (medico.Usuario.DatosGenerale.apellidoM == null){
+        medico.Usuario.DatosGenerale.apellidoM = '';
+      } else {
+        medico.Usuario.DatosGenerale.apellidoM = ' ' + medico.Usuario.DatosGenerale.apellidoM;
+      }
+      var mednombre = 'Dr(a). ' + medico.Usuario.DatosGenerale.nombre + ' ' + medico.Usuario.DatosGenerale.apellidoP + medico.Usuario.DatosGenerale.apellidoM;
+      var especialidad = '';
+
+      medico.Especialidads.forEach(function(esp){
+        if (especialidad != ""){
+          especialidad += ', ';
+        }
+        especialidad += esp.especialidad;
+      });
+
+      var municipio = '';
+      if (medico.Usuario.Direccions[0]){
+        municipio = medico.Usuario.Direccions[0].Municipio.municipio + ', ' +medico.Usuario.Direccions[0].Municipio.Estado.estado;
+      }
+
+      enlace = medico.Usuario.usuarioUrl;
+      if (medico.Usuario.urlPersonal != "" && medico.Usuario.urlPersonal != null){
+        enlace = medico.Usuario.urlPersonal;
+      }
+
+      var mailcont = 0;
+      object.emails.forEach(function(email){
+        var mailobject ={
+          nombre:'correo de recomendacion',
+          subject:'Recomendaciones',
+          to:email,
+          enlace:enlace,
+          mensaje:req.body.mensaje,
+          usuario:req.session.passport.user.name,
+          medfotoPerfil: global.base_url + medico.Usuario.urlFotoPerfil,
+          mednombre: mednombre,
+          medespecialidad: especialidad,
+          medubicacion: municipio
+        };
+        mail.send(mailobject,'recomendar');
+        mailcont++;
+        if (mailcont == object.emails.length){
+          res.status(200).json({
+            success: true
+          });
+        }
+      });
+    } else {
+      res.status(200).json({
+        success: true
       });
     }
   }

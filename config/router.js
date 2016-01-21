@@ -1161,9 +1161,10 @@ var iniciar = function () {
   app.post('/medicosContacto', function(req, res){
     intermed.callController('contactos','medicosContacto',req,res);
   });
-  app.post('/enviaCorreoRecomendados', function( req, res ){
-    intermed.callController('contactos','enviaCorreoRecomendados',req,res);
+  app.post('/medicos/recomendar', function( req, res ){
+    intermed.callController('medicos','recomendar', req.body ,req,res);
   });
+  /*
   app.post('/medicoRecomendado', function( req, res ){
     intermed.callController('contactos','medicoRecomendado',req,res);
   });
@@ -1175,7 +1176,7 @@ var iniciar = function () {
   });
   app.post('/doctorRecomendado', function( req, res ){
     intermed.callController('contactos','doctorRecomendado',req, res);
-  });
+  });*/
   // fin recomendaciones url
   app.post( '/buscadorInterno', function (req, res){
     intermed.callController( 'buscadorInterno', 'buscar', req.body, req, res );
@@ -1771,6 +1772,15 @@ var manejarPerfiles = function(){
 
   app.post('/EstatusCargoRechazadoSelecciona', function (req, res) {
       intermed.callController('CargosUsuarios', 'EstatusCargoRechazadoSelecciona', req.body, req, res);
+  });
+
+
+  app.post('/usuario/traer', function (req, res) {
+      intermed.callController('usuarios', 'traerDatosUsuario', req.body, req, res);
+  });
+
+  app.post('/medico/calificar', function (req, res){
+    intermed.callController('medicos','calificar', req.body, req, res);
   });
 
 }

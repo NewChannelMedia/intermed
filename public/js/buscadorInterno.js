@@ -254,7 +254,10 @@ function requestContactos(busqueda, medicos, pacientes){
               var newUser = new Array();
               var tipo = '';
               newUser['id'] = dat.Medico.Usuario.id;
-              newUser['name'] = 'Dr. ' + dat.Medico.Usuario.DatosGenerale.nombre + ' ' + dat.Medico.Usuario.DatosGenerale.apellidoP + ' ' + dat.Medico.Usuario.DatosGenerale.apellidoM;
+              if (dat.Medico.Usuario.DatosGenerale.apellidoM != null){
+                dat.Medico.Usuario.DatosGenerale.apellidoM = ' ' + dat.Medico.Usuario.DatosGenerale.apellidoM;
+              } else dat.Medico.Usuario.DatosGenerale.apellidoM = '';
+              newUser['name'] = 'Dr. ' + dat.Medico.Usuario.DatosGenerale.nombre + ' ' + dat.Medico.Usuario.DatosGenerale.apellidoP +dat.Medico.Usuario.DatosGenerale.apellidoM;
               newUser['value'] = newUser['name'];
               newUser['url']  = 'perfil/'+dat.Medico.Usuario.usuarioUrl;
               newUser['image']  = "<img src="+dat.Medico.Usuario.urlFotoPerfil+" style='width:20px'></img> ";
@@ -283,7 +286,10 @@ function requestContactos(busqueda, medicos, pacientes){
                 var newUser = new Array();
                 var tipo = '';
                 newUser['id'] = dat.Paciente.Usuario.id;
-                newUser['name'] = dat.Paciente.Usuario.DatosGenerale.nombre + ' ' + dat.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + dat.Paciente.Usuario.DatosGenerale.apellidoM;
+                if (dat.Paciente.Usuario.DatosGenerale.apellidoM != null){
+                  dat.Paciente.Usuario.DatosGenerale.apellidoM =  ' ' + dat.Paciente.Usuario.DatosGenerale.apellidoM;
+                } else dat.Paciente.Usuario.DatosGenerale.apellidoM = '';
+                newUser['name'] = dat.Paciente.Usuario.DatosGenerale.nombre + ' ' + dat.Paciente.Usuario.DatosGenerale.apellidoP + dat.Paciente.Usuario.DatosGenerale.apellidoM;
                 newUser['value'] = newUser['name'];
                 newUser['url']  = 'perfil/'+dat.Paciente.Usuario.usuarioUrl;
                 newUser['image']  = "<img src="+dat.Paciente.Usuario.urlFotoPerfil+" style='width:20px'></img> ";
@@ -335,44 +341,29 @@ function inputAutocompleteContact(input){
 }
 var i = 0;
 function recomiendaAuto( input ){
-  input.autocomplete({
+  $('#buscadorRecomendados').autocomplete({
     delay: 0,
     minLength: 0,
     source:function(request, response){
       response(customFilter(requestContactos(request.term,false,true),request.term));
     },
     select: function( event, ui){
-      var html2 ="";
-      var otro = "li"+i;
-      var dato = $('#buscadorRecomendados').val();
-      var medico_id;
-      var id = $("#pacienteIdOculto").text();
-      var di;
-      $.post('/medicosContacto',{idMedico:id},function(data){
-        for(var i in data){
-          medico_id = data[ i ].id;
-          di = data[ i ].Usuario.id;
-        }
-      });
-      $.post('/pacienteIDOculto',{dato:dato},function(data){
-        for(var i in data ){
-          html2 += '<li id="'+otro+'">';
-          html2 +="<p>";
-            html2 += "<div class='label label-primary'><span class='close-label glyphicon glyphicon-remove'>&nbsp;"
-              html2 +="<small>";
-                html2 +=$('#buscadorRecomendados').val();
-                html2 += "<span class='hidden' da='"+data[ i ].Paciente.usuario_id+"' di ='"+di+"'>";
-                  html2 += medico_id;
-                html2 += "</span>";
-              html2 +="</small>";
-            html2 += "</span></div>";
-          html2 +="</p>";
-          html2 +="</li>";
-          $( '#enviarRecomendaciones ul' ).append(html2);
-        }
-      }).fail(function(err){
-        console.error("Error: "+JSON.stringify(err));
-      });
+      /*
+      id, name, value, url, image, imageSrc, label
+      */
+      if (ui.item.name && $('#recom_'+ui.item.id).length== 0){
+        var cont = '';
+        cont += '<li id="recom_'+ui.item.id+'" class="recomendacion">';
+        cont +="<p>";
+          cont += "<div class='label label-primary'><span class='close-label glyphicon glyphicon-remove'>&nbsp;"
+            cont +="<small>";
+              cont += ui.item.name;
+            cont +="</small>";
+          cont += "</span></div>";
+        cont +="</p>";
+        cont +="</li>";
+        $( '#enviarRecomendaciones ul' ).append(cont);
+      }
       return false;
     },
     change: function(event, ui){

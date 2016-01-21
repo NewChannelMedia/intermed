@@ -473,6 +473,7 @@ function cargarInfoPerfil( usuario, condiciones, req, res ) {
 
 
 function cargarInfoPerfilNuevo( usuario, condiciones, req, res ) {
+  usuario = JSON.parse(JSON.stringify(usuario));
   models.MedicoFavorito.findOne( {
     where: condiciones
   } ).then( function ( result ) {

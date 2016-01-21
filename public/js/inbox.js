@@ -359,6 +359,11 @@ function cargarListaMensajes(){
             if (data[x].visto === 0){
               visto = 'noleido';
             }
+            if (data[x].usuario.DatosGenerale.apellidoM != null){
+              data[x].usuario.DatosGenerale.apellidoM = " " + data[x].usuario.DatosGenerale.apellidoM;
+            } else {
+              data[x].usuario.DatosGenerale.apellidoM = '';
+            }
             $('#InboxListaContactos').append('<tr id="'+ data[x].usuario.id +'" ><td class="nombreContacto '+ visto +'" onclick="cargarInbox(this)"><img src="'+ data[x].usuario.urlFotoPerfil +'" class="img-circle mini" width="50" height="50" /><span class="hidden-xs name"> '+ data[x].usuario.DatosGenerale.nombre + ' '+ data[x].usuario.DatosGenerale.apellidoP + data[x].usuario.DatosGenerale.apellidoM  +'</span><br/><input class="time" type="hidden" value="'+data[x].fecha+'"><small class="pull-right text-right" style="font-size:70%"><span class="timeFormated">' + formattedDate(data[x].fecha) +'</span> <span style="font-size: 80%" class="glyphicon glyphicon-time" ></span></small></td></tr>');
           }
         }

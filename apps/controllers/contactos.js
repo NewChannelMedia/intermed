@@ -430,40 +430,6 @@ module.exports = {
       })
     }
   },
-  enviaCorreoRecomendados: function( req, res){
-    models.Usuario.findOne({
-      where: {
-        usuarioUrl: req.body.enlace
-      },
-      include:[
-        {
-          model: models.DatosGenerales
-        }
-      ]
-    }).then(function(usuario){
-      var urlFotoPerfil = '', nombre ='', especialidad = '', municipio = '', estado = '';
-      if (usuario){
-        urlFotoPerfil = usuario.urlFotoPerfil;
-        if (usuario.DatosGenerale){
-          nombre = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM;
-        }
-      }
-      var object ={
-        nombre:'correo de recomendacion',
-        subject:'Recomendaciones',
-        to:req.body.toMail,
-        enlace:req.body.enlace,
-        mensaje:req.body.mensaje,
-        usuario:req.body.usuario,
-        medfotoPerfil: global.base_url + urlFotoPerfil,
-        mednombre: nombre,
-        medespecialidad: especialidad,
-        medmunicipio: municipio,
-        medestado: estado
-      };
-      mail.send(object,'recomendar',res);
-    });
-  },
   medicoRecomendado: function( req, res ){
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;

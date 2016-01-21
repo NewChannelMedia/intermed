@@ -1770,7 +1770,36 @@ var uId ="";
     });
   });
   //se carga el bootbox para que funcionen el boton de enviar
-  function enviarTodo(){
+  function enviarRecomendacion(){
+    var usuario_medico_id = $('#usuarioPerfil').val();
+    var usuarios_id = [];
+    var emails = $( "#correoEnviarRecomendado" ).val().split(',');
+
+    $( '#enviarRecomendaciones li.recomendacion' ).each(function(){
+      var id = $(this).prop('id').split('_')[1];
+      usuarios_id.push(id);
+    });
+
+    var mensaje =$("#mensajeRecomendar").val();
+
+    $.post('/medicos/recomendar',{
+      usuario_medico_id:usuario_medico_id,
+      usuarios_id:usuarios_id,
+      emails:emails,
+      mensaje:mensaje
+    },function(data,status){
+      if(data.success){
+        $('#enviarAtodos').prop('disabled',false);
+        $("#cargador").addClass('hidden');
+        $('.modal').modal('hide');
+        $('.modal').on('hidden.bs.modal',function(e){
+          $("#mensajeRecomendar").val('');
+          $( "#correoEnviarRecomendado" ).val('');
+        });
+      }
+    });
+
+    /*
     if( $( "#correoEnviarRecomendado" ).val() != ""){
       var to = $( "#correoEnviarRecomendado" ).val();
       var enlace = usuarioRL;
@@ -1810,7 +1839,7 @@ var uId ="";
           $("#buscadorRecomendados").val('');
         });
       }
-    });
+    });*/
   }
 function seleccionarUsuario(i, tr, nombre, mas, otroMas, di){
   var html2 ="";
@@ -2639,6 +2668,7 @@ var idEspecialidad = '';
   *
   **/
   $(document).ready(function(){
+    /*
     //Ajax para traer especialidades
     $.post('/homeEspecialidades', function(data){
       var html = "";
@@ -2683,6 +2713,7 @@ var idEspecialidad = '';
         }
       })
     });
+    */
   });
 //<------------------ FIN OSCAR ----------------------->
 
@@ -5270,6 +5301,18 @@ function repositionTooltip( e, ui ){
       case 'cal_trato':
           comp = "Trato personal";
           break;
+      case 'cal_tratoper':
+          comp = "Trato personal";
+          break;
+      case 'cal_pres':
+          comp = "Presentación";
+          break;
+      case 'cal_efect':
+          comp = "Efectividad";
+          break;
+      case 'cal_hig':
+          comp = "Higiene";
+          break;
       }
 
     var ant = $(div).find(".tooltip-inner").text().split('%')[0];
@@ -5345,66 +5388,11 @@ function calificarCita(agenda_id, notificacion_id){
     });
 }
 
-function recomendarMedico(){
-    //se manda a llamar al bootbox
-    recomendacionesBoot();
-    var usuario_id = $('#usuarioPerfil').val();
-    var medico_id = '';
-    var usuarioUrl = '';
-    var nombreCompleto = '';
-    $.post('/medicosContacto',{usuario_id:usuario_id},function(data){
-      if (data){
-        if( data.Medico ){
-          medico_id = data.Medico.id;
-          usuarioUrl = data.usuarioUrl;
-          if (data.DatosGenerale.apellidoM){
-            data.DatosGenerale.apellidoM = ' '+data.DatosGenerale.apellidoM
-          } else {
-            data.DatosGenerale.apellidoM = '';
-          }
-          nombreCompleto = data.DatosGenerale.nombre+' '+data.DatosGenerale.apellidoP + data.DatosGenerale.apellidoM;
-          $("#doctorSpan").text(nombreCompleto);
-        }
-      }
-    });
-    // con ajax se hace la peticion a la url la cual me mostrara la informacion en una tabla con
-    // la lista de mis contactos
-    $.post('/contactosRecomendados',function(data){
-      $('#recomendar').attr('valor','verdadero');
-      //Si nos dejan solitos nos amamos
-      var html = "";
-      var nombreTodo="";
-      $( "#recomendarA tbody" ).html('');
-      $( '#enviarRecomendaciones ul').html('');
-      $( '#doc' ).html('');
-      for( var i in data ){
-        nombreTodo = data[ i ].Paciente.Usuario.DatosGenerale.nombre+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoP+' '+data[ i ].Paciente.Usuario.DatosGenerale.apellidoM;
-        var tr = "tr"+data[ i ].Paciente.id;
-        var mas = medico_id;
-        var otroMas = data[ i ].Paciente.usuario_id;
-        html +='<tr class="" id="'+tr+'" onclick="seleccionarUsuario(\''+i+'\',\''+tr+'\',\''+nombreTodo+'\',\''+mas+'\',\''+otroMas+'\',\''+usuario_id+'\')">';
-        html +='<td>';
-        html +='<img src="'+data[ i ].Paciente.Usuario.urlFotoPerfil+'" alt="" class="img-thumbnail">';
-        html +='</td>';
-        html +='<td id="paciente'+data[ i ].Paciente.id+'">';
-        html +='<p style="color:white">'+nombreTodo+'</p>';
-        html +='</td>';
-        html +='</tr>';
-        extraDato = nombreTodo;
-      }
-      $.post('/usuarioPrincipal',function(data){
-        uId = data.id;
-        $("#nombreOcultoPerfil").text(data.Usuario.DatosGenerale.nombre+' '+data.Usuario.DatosGenerale.apellidoP+' '+data.Usuario.DatosGenerale.apellidoM);
-      });
-      $( "#recomendarA tbody" ).append(html);
-    });
-}
-
 $( document ).ready( function () {
-  console.log('length: '+$( '#perfilMedico' ).length);
+  //console.log('length: '+$( '#perfilMedico' ).length);
   if ( $( '#perfilMedico' ).length > 0 ) {
 
-    console.log('cargo perfilMedico');
+    //console.log('cargo perfilMedico');
 
     MostrarUbicaciones();
 
@@ -5578,3 +5566,50 @@ $( document ).ready( function () {
     });
   }
 //<-------------------- FIN MODIFICACIONES ---------------->
+
+function calificarServMedico(){
+  var agenda_id =  agenda_id;
+  var efectividad = $('#cal_efect').slider("option", "value");
+  var tratoPersonal = $('#cal_tratoper').slider("option", "value");
+  var presentacion = $('#cal_pres').slider("option", "value");
+  var higiene = $('#cal_hig').slider("option", "value");
+  $.ajax({
+      url: '/medico/calificar',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        usuario_id: $('#usuarioPerfil').val(),
+        efectividad: efectividad,
+        tratoPersonal: tratoPersonal,
+        presentacion: presentacion,
+        higiene: higiene
+      },
+      type: 'POST',
+      success: function (data) {
+        if (data.success){
+          bootbox.hideAll();
+          bootbox.alert({
+            backdrop: true,
+            onEscape: function () {
+                bootbox.hideAll();
+            },
+            size: 'small',
+            message: `
+            <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
+            <div class="divBodyBootbox" style="position:relative" style="padding:30px">
+              <h3 style="color:white">Calificacion enviada</h3>
+              <input type="button" class="btn btn-warning btn-block" value="Ok" onclick="bootbox.hideAll()" style="margin-top:15px;">
+            </div>
+            </div>
+            `
+          });
+        } else if(data.error){
+          manejadorDeErrores(data.error);
+        }
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+}

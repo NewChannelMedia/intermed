@@ -623,47 +623,68 @@ function bootbox_modificaMedicoDetalles(tipo){
 }
 //<--------------------- RECOMENDACIONES ------------------->
 function recomendacionesBoot(){
-  $('.modal-body').css('padding',0);
+  var nombreUsuario = '';
+
+  $.ajax( {
+    async: false,
+    url: '/usuario/traer',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'id': $('#usuarioPerfil').val()
+    },
+    success: function ( data ) {
+      if (!data.DatosGenerale.apellidoM) data.DatosGenerale.apellidoM = '';
+      nombreUsuario = 'Dr. ' + data.DatosGenerale.nombre  + ' ' + data.DatosGenerale.apellidoP + ' ' + data.DatosGenerale.apellidoM;
+    },
+    error: function (err){
+      console.log('AJAX Error: ' + JSON.stringify(err));
+    }
+  });
+
   bootbox.dialog({
     onEscape: function () {
         bootbox.hideAll();
     },
+    backdrop:true,
     closeButton:true,
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">Recomendar '+ nombreUsuario +' A:</span>',
     size:'large',
     message:
-    '<div class="clearfix" style="background-color:#172c3b;padding:5px" >'+
-      '<div class="col-md-12" style="color:white">'+
-        '<div class="hidden" id="cargador"><span class="three-quarters-loader">Enviando...</span></div>'+
-        '<h4 class=""><span id="nombreOcultoPerfil" class="hidden"></span>Recomendar Dr.<span id="doctorSpan"></span> A:</h4>'+
-      '</div><br /><br /><br />'+
       '<div id=“recomienda” class=“col-md-12”>'+
          '<div class="form-group has-feedback" id="buscador">'+
              '<label class="control-label"for="buscadorRecomendados" style="color:white">Busca entre tus contactos para que les recomiendes al Dr.<span class="hidden" id="pacienteIdOculto"></span></label>'+
              '<input type="text" class="form-control" id="buscadorRecomendados" placeholder="Buscar contacto...">'+
              '<span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>'+
          '</div>'+
-         '<div class="" id="contactosArecomendar">'+
-             '<table class="table table-condensed" id="recomendarA">'+
-               '<tbody></tbody>'+
-             '</table>'+
-         '</div>'+
          '<div class="" id="enviarRecomendaciones">'+
            '<ul class="list-inline"></ul>'+
          '</div>'+
       '</div>'+
-      '<div class="form-group" id="correoRecomendados">'+
+      '<div class="form-group">'+
          '<label class="control-label" for="correoEnviarRecomendado" style="color:white">Recomendar via correo:</label>'+
          '<input type="mail" class="form-control" id="correoEnviarRecomendado" placeholder="Correo:"/>'+
-         '<div class="" id="mensajeParaRecomendados">'+
-            '<textarea id="mensajeRecomendar" class="form-control" rows="3" placeholder="mensaje para los recomendados"></textarea>'+
-         '</div>'+
       '</div>'+
-      '<div class="pull-right">'+
-        '<button type="button" class="btn btn-default" onclick="bootbox.hideAll();">close</button>'+
-        '<button type="button" id="enviarAtodos" onclick="enviarTodo();bootbox.hideAll();" class="btn btn-primary">Recomendar</button>'+
+      '<div class="form-group">'+
+         '<textarea id="mensajeRecomendar" class="form-control" rows="3" placeholder="mensaje para los recomendados" style="resize: none;margin-top: -10px;"></textarea>'+
       '</div>'+
-    '</div><!— FIN DIV PRINCIPAL —>'
+
+      '<div class="row">'+
+          '<div class="col-md-4">'+
+              '<div class="form-group">'+
+                  '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="bootbox.hideAll();">'+
+              '</div>'+
+          '</div>'+
+          '<div class="col-md-6 col-md-offset-2">'+
+              '<div class="form-group">'+
+                  '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Enviar" onclick="enviarRecomendacion();">'+
+              '</div>'+
+          '</div>'+
+      '</div>'
   });
+  recomiendaAuto();
 }
 //<--------------------- FIN RECOMENDACIONES --------------->
 
@@ -2690,35 +2711,32 @@ function calificarServicioMedico(){
 
     var imagenUrl = '';
     var nombreUsuario = '';
+
     var nombreUbicacion = '';
     var nombreServicio = '';
     var fecha = '';
     var hora = '';
     var agenda_id = '';
     var notificacion_id = '';
-    /*
+
     $.ajax( {
       async: false,
-      url: '/agenda/detallesCancelacion/medico',
+      url: '/usuario/traer',
       type: 'POST',
       dataType: "json",
       cache: false,
       data: {
-        'agenda_id': agenda_id
+        'id': $('#usuarioPerfil').val()
       },
       success: function ( data ) {
-        imagenUrl = data.result.Usuario.urlFotoPerfil;
-        if (!data.result.Usuario.DatosGenerale.apellidoM) data.result.Usuario.DatosGenerale.apellidoM = '';
-        nombreUsuario = 'Dr. ' + data.result.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Usuario.DatosGenerale.apellidoM;
-        nombreUbicacion = data.result.Direccion.nombre;
-        nombreServicio = data.result.CatalogoServicio.concepto;
-        fecha = data.result.fechaHoraInicio.split('T')[0];
-        hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+        imagenUrl = data.urlFotoPerfil;
+        if (!data.DatosGenerale.apellidoM) data.DatosGenerale.apellidoM = '';
+        nombreUsuario = 'Dr. ' + data.DatosGenerale.nombre  + ' ' + data.DatosGenerale.apellidoP + ' ' + data.DatosGenerale.apellidoM;
       },
       error: function (err){
         console.log('AJAX Error: ' + JSON.stringify(err));
       }
-    });*/
+    });
 
     bootbox.dialog({
       backdrop: true,
@@ -2743,79 +2761,68 @@ function calificarServicioMedico(){
             '</div>'+
           '</div>'+
 
-          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;"><small><b>Fecha: </b>'+ fecha +' '+ hora +'</small></div>'+
-
           '<div class="col-md-6 col-sm-6 col-xs-10 col-md-offset-3 col-sm-offset-3 col-xs-offset-1" style="margin-top:20px">'+
-            '<div class="row">'+
-              '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción general: </div>'+
-              '<div class="col-md-12 col-sm-12 col-xs-12"><input id="input-21d" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>'+
-            '</div>'+
 
-            '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
-                '<div class="col-md-3 col-sm-3 col-xs-3">'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                        '<span class="Slider" id="cal_higiene"></span>'+
-                    '</div>'+
-                  '</div>'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
-                      '<span class="glyphicon glyphicon-trash" ></span>'+
-                    '</div>'+
+              '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                      '<span class="Slider"  id="cal_efect"></span>'+
                   '</div>'+
                 '</div>'+
-
-                '<div class="col-md-3 col-sm-3 col-xs-3">'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                        '<span class="Slider" id="cal_puntualidad"></span>'+
-                    '</div>'+
-                  '</div>'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
-                      '<span class="glyphicon glyphicon-time"></span>'+
-                    '</div>'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                    '<span class="glyphicon glyphicon-ok"></span>'+
                   '</div>'+
                 '</div>'+
+              '</div>'+
 
-                '<div class="col-md-3 col-sm-3 col-xs-3">'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                        '<span class="Slider"  id="cal_instalaciones"></span>'+
-                    '</div>'+
-                  '</div>'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
-                      '<span class="glyphicon glyphicon-home"></span>'+
-                    '</div>'+
+              '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                      '<span class="Slider"  id="cal_tratoper"></span>'+
                   '</div>'+
                 '</div>'+
-
-                '<div class="col-md-3 col-sm-3 col-xs-3">'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                        '<span class="Slider"  id="cal_trato"></span>'+
-                    '</div>'+
-                  '</div>'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
-                      '<span class="glyphicon glyphicon-user"></span>'+
-                    '</div>'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                    '<span class="glyphicon glyphicon-heart"></span>'+
                   '</div>'+
                 '</div>'+
+              '</div>'+
 
-            '</div>'+
+              '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                      '<span class="Slider"  id="cal_pres"></span>'+
+                  '</div>'+
+                '</div>'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                    '<span class="glyphicon glyphicon-user"></span>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
 
-            '<div class="row">'+
-              '<textarea class="form-control" placeholder="Comentarios (opcional)" style="resize: none;margin-top:5px" rows="4" id="calificacionComentario"></textarea>'+
-            '</div>'+
+              '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                      '<span class="Slider"  id="cal_hig"></span>'+
+                  '</div>'+
+                '</div>'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                    '<span class="glyphicon glyphicon-trash"></span>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+
           '</div>'+
+
         '</div>'+
       '</div>'+
       '<div class="row">'+
           '<div class="col-md-12 col-sm-12 col-xs-12">'+
               '<div class="form-group">'+
-                  '<input type="button" style="font-weight:bold" class="btn btn-warning btn-block" value="Calificar" onclick="calificarCita(\''+agenda_id+'\',\''+notificacion_id+'\');">'+
+                  '<input type="button" style="font-weight:bold" class="btn btn-warning btn-block" value="Calificar" onclick="calificarServMedico();">'+
               '</div>'+
           '</div>'+
       '</div>'
@@ -2827,7 +2834,7 @@ function calificarServicioMedico(){
     $('.bootbox-close-button').css('color','white');
     $('.bootbox-close-button').css('font-size','180%');
 
-    $("#input-21d").rating();
+    $(".rating").rating();
 
     $('.clear-rating').css('display','none');
     $('.caption').css('display','none');

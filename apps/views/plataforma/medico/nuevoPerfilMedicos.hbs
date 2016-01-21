@@ -281,59 +281,88 @@
             <div class="header-options-row row">
               <div class="header-options-content">
                 {{#ifTipoPaciente}}
-                <a class="first-option option" onclick="agendarCitaBootbox()">
-                  <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 hidden-xs">
-                    <span class="option-icon glyphicon h67-medcond s90 center-block text-center">+</span>
-                  </div>
-                  <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 hidden-sm">
-                    <div class="option-label">
-                      <span class="optn-lbl">Agenda una cita</span>
-                      <span class="optn-sb hidden-xs">Haz click aquí para agendar con este médico.</span>
+                  <a class="first-option option" onclick="agendarCitaBootbox()">
+                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 hidden-xs">
+                      <span class="option-icon glyphicon h67-medcond s90 center-block text-center">+</span>
                     </div>
-                  </div>
-                </a>
-                <a href="#" class="option">
-                  <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
-                    <span class="option-icon glyphicon glyphicon-user s30 center-block text-center"></span>
-                  </div>
-                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
-                    <div class="option-label">
-                      <span class="optn-lbl">
-                        <span class="option-icon glyphicon glyphicon-user hidden-xs">
-                        </span>&nbsp;Recomienda a un amigo
-                      </span>
+                    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 hidden-sm">
+                      <div class="option-label">
+                        <span class="optn-lbl">Agenda una cita</span>
+                        <span class="optn-sb hidden-xs">Haz click aquí para agendar con este médico.</span>
+                      </div>
                     </div>
-                  </div>
-                </a>
+                  </a>
+                  <a class="option" onclick="recomendacionesBoot();">
+                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                      <span class="option-icon glyphicon glyphicon-user s30 center-block text-center"></span>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                      <div class="option-label">
+                        <span class="optn-lbl">
+                          <span class="option-icon glyphicon glyphicon-user hidden-xs">
+                          </span>&nbsp;Recomienda a un amigo
+                        </span>
+                      </div>
+                    </div>
+                  </a>
+                  <a href="{{base_url}}inbox/{{usuario.usuarioUrl}}" class="option">
+                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                      <span class="option-icon glyphicon glyphicon-comment s30 center-block text-center"></span>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                      <div class="option-label">
+                        <span class="optn-lbl">
+                          <span class="option-icon glyphicon glyphicon-comment hidden-xs">
+                          </span>&nbsp;Envía un mensaje
+                        </span>
+                      </div>
+                    </div>
+                  </a>
+                  {{#if ../usuario.medPac}}
+                  <a class="option" onclick="calificarServicioMedico()">
+                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                      <span class="option-icon glyphicon glyphicon-check s30 center-block text-center"></span>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                      <div class="option-label">
+                        <span class="optn-lbl">
+                          <span class="option-icon glyphicon glyphicon-check hidden-xs">
+                          </span>&nbsp;Califica su servicio
+                        </span>
+                      </div>
+                    </div>
+                  </a>
+                  {{/if}}
+                {{else}}
+                  {{#if ../usuario.medFavCol}}
+                  <a class="option" onclick="calificarServicioMedico()">
+                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                      <span class="option-icon glyphicon glyphicon-check s30 center-block text-center"></span>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                      <div class="option-label">
+                        <span class="optn-lbl">
+                          <span class="option-icon glyphicon glyphicon-check hidden-xs">
+                          </span>&nbsp;Califica su servicio
+                        </span>
+                      </div>
+                    </div>
+                  </a>
+                  {{/if}}
+                  <a href="{{base_url}}inbox/{{usuario.usuarioUrl}}" class="option">
+                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                      <span class="option-icon glyphicon glyphicon-comment s30 center-block text-center"></span>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                      <div class="option-label">
+                        <span class="optn-lbl">
+                          <span class="option-icon glyphicon glyphicon-comment hidden-xs">
+                          </span>&nbsp;Envía un mensaje
+                        </span>
+                      </div>
+                    </div>
+                  </a>
                 {{/ifTipoPaciente}}
-                {{#if usuario.medFavCol}}
-                <a href="#" class="option">
-                  <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
-                    <span class="option-icon glyphicon glyphicon-check s30 center-block text-center"></span>
-                  </div>
-                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
-                    <div class="option-label">
-                      <span class="optn-lbl">
-                        <span class="option-icon glyphicon glyphicon-check hidden-xs">
-                        </span>&nbsp;Califica su servicio
-                      </span>
-                    </div>
-                  </div>
-                </a>
-                {{/if}}
-                <a href="{{base_url}}inbox/{{usuario.usuarioUrl}}" class="option">
-                  <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
-                    <span class="option-icon glyphicon glyphicon-comment s30 center-block text-center"></span>
-                  </div>
-                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
-                    <div class="option-label">
-                      <span class="optn-lbl">
-                        <span class="option-icon glyphicon glyphicon-comment hidden-xs">
-                        </span>&nbsp;Envía un mensaje
-                      </span>
-                    </div>
-                  </div>
-                </a>
               </div>
             </div>
           </div>
@@ -839,7 +868,7 @@
           <div class="container">
             <div class="center-block">
               {{#if usuario.medFavCol}}
-                  <a class="btn btn-tranparent s20 h67-medcond logros-actions-action"><span class="glyphicon glyphicon-check"></span>&nbsp;CALIFICA EL SERVICIO DE ESTE MEDICO</a>
+                  <a class="btn btn-tranparent s20 h67-medcond logros-actions-action" onclick="calificarServicioMedico()"><span class="glyphicon glyphicon-check"></span>&nbsp;CALIFICA EL SERVICIO DE ESTE MEDICO</a>
                   <a class="btn btn-tranparent s20 h67-medcond logros-actions-action"><span class="glyphicon glyphicon-pencil"></span>&nbsp;DEJA UN COMENTARIO</a>
               {{else}}
                 <a class="btn btn-tranparent s20 h67-medcond logros-actions-action"><span class="glyphicon glyphicon-book"></span>&nbsp;COMENTARIOS</a>
