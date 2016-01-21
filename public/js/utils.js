@@ -4083,7 +4083,7 @@ function cargarListaAlfCol( usuario ) {
             if (primero == ""){
               primero = rec.Letra;
             }
-            contenido += '`<li>' +
+            contenido += '<li>' +
               '<a onclick="cargarListaColegasByAlf(' + usuario + ',\'' + rec.Letra + '\',this)">' + rec.Letra + '<span class="badge pull-right">' + rec.Total + '</span></a>' +
             '</li>';
           });
@@ -5589,7 +5589,15 @@ function buscadorColegasEspecial(){
   if ($('#buscadorEspecial').hasClass('hidden')){
     $('#buscadorEspecial').removeClass('hidden');
   } else {
-    $('#buscadorEspecial').addClass('hidden');
     $('#buscadorEspecialInput').val('');
+    $('#buscadorEspecial').addClass('hidden');
+  }
+  cargarListaEspCol( $( '#usuarioPerfil' ).val() );
+}
+
+function ocultarBuscadorColegasEspecial(){
+  if (!$('#buscadorEspecial').hasClass('hidden')){
+    $('#buscadorEspecialInput').val('');
+    $('#buscadorEspecial').addClass('hidden');
   }
 }

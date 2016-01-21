@@ -450,7 +450,6 @@
                         {{/if}}
                         </span>
                         <button class="btn btn-primary btn-xs" id="btnAgregaUbi"><span class="glyphicon glyphicon-plus-sign"></span></button>
-                        <button class="btn btn-primary btn-xs" id="btnAgregaUbi" onclick="catServices();"><span class="glyphicon glyphicon-tasks"></span></button>
                       </div>
                     {{/if}}
                   </div>
@@ -629,13 +628,13 @@
             <div class="row">
               <div class="col-md-8 col-md-offset-2">
                 <ul class="list-inline text-center center-block">
-                  <li onclick="cargarListaEspCol( $( '#usuarioPerfil' ).val() );">
+                  <li onclick="ocultarBuscadorColegasEspecial();cargarListaEspCol( $( '#usuarioPerfil' ).val() );">
                     <span class="glyphicon glyphicon-circle-arrow-right"></span> Ordenar por especialidad
                   </li>
-                  <li onclick="cargarListaAlfCol( $( '#usuarioPerfil' ).val() );">
+                  <li onclick="ocultarBuscadorColegasEspecial();cargarListaAlfCol( $( '#usuarioPerfil' ).val() );">
                     <span class="glyphicon glyphicon-circle-arrow-right"></span> Ordenar por apellido
                   </li>
-                  <li onclick="buscadorColegasEspecial()">
+                  <li onclick="buscadorColegasEspecial();">
                     <span class="glyphicon glyphicon-search"></span> Buscar
                   </li>
                 </ul>
@@ -665,7 +664,7 @@
                   <span class="side-especialides-subheader h67-medcond" id="tipoFiltro"></span>
                 </p>
                 <hr class="sep">
-                <ul class="nav nav-pills nav-stacked h67-medcond" id="especialidadesList">
+                <ul class="nav nav-pills nav-stacked h67-medcond" id="especialidadesList" style="height: 500px;overflow-y: scroll;">
                 </ul>
               </div>
               <div id="listaColegas" class="col-lg-9 col-md-9 col-sm-8 col-xs-12 pull-right main-colegas" data-spy="scroll" data-target="#listaEspecialidades" data-offset="180">
