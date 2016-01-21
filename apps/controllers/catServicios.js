@@ -45,6 +45,7 @@ module.exports = {
       var usuario_id = req.session.passport.user.id;
       var todo;
       var tipo = "";
+      console.log("Hola servicio");
       tipo = req.body.tipo;
       switch( tipo ){
         case "concepto":todo = {concepto: req.body.valor};break;
