@@ -4015,11 +4015,15 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id){
           if (res.DatosGenerale.apellidoM == null){
             res.DatosGenerale.apellidoM = '';
           }
+          var usuarioUrl = res.usuarioUrl;
+          if (res.urlPersonal && res.urlPersonal != ""){
+            usuarioUrl = res.urlPersonal;
+          }
           contenido += `
           <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
             <div class="thumbnail">
               <div >
-                <a class="pPic" href="/perfil/`+ res.usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
+                <a class="pPic" href="/`+ usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
               </div>
               <div class="caption">
                 <div class="nombre h77-boldcond">
@@ -4028,7 +4032,7 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id){
                 <div class="esp h67-medcond">
                   <span class="colEsp">`+ especialidad +`</span>
                 </div>
-                <a class="h67-medcondobl" href="/perfil/`+ res.usuarioUrl +`">Ver Perfil</a>
+                <a class="h67-medcondobl" href="/`+ usuarioUrl +`">Ver Perfil</a>
               </div>
             </div>
           </div>`
@@ -4070,7 +4074,7 @@ function cargarListaAlfCol( usuario ) {
               primero = rec.Letra;
             }
             contenido += '`<li>' +
-              '<a onclick="cargarListaColegasByAlf(' + usuario + ',' + rec.Letra + ')">' + rec.Letra + '<span class="badge pull-right">' + rec.Total + '</span></a>' +
+              '<a onclick="cargarListaColegasByAlf(' + usuario + ',\'' + rec.Letra + '\')">' + rec.Letra + '<span class="badge pull-right">' + rec.Total + '</span></a>' +
             '</li>';
           });
           $('#especialidadesList').html(contenido);
@@ -4119,11 +4123,15 @@ function cargarListaColegasByAlf(usuario_id,letra){
           if (res.DatosGenerale.apellidoM == null){
             res.DatosGenerale.apellidoM = '';
           }
+          var usuarioUrl = res.usuarioUrl;
+          if (res.urlPersonal && res.urlPersonal != ""){
+            usuarioUrl = res.urlPersonal;
+          }
           contenido += `
           <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
             <div class="thumbnail">
               <div >
-                <a class="pPic" href="/perfil/`+ res.usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
+                <a class="pPic" href="/`+ usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
               </div>
               <div class="caption">
                 <div class="nombre h77-boldcond">
@@ -4132,7 +4140,7 @@ function cargarListaColegasByAlf(usuario_id,letra){
                 <div class="esp h67-medcond">
                   <span class="colEsp">`+ especialidad +`</span>
                 </div>
-                <a class="h67-medcondobl" href="/perfil/`+ res.usuarioUrl +`">Ver Perfil</a>
+                <a class="h67-medcondobl" href="/`+ usuarioUrl +`">Ver Perfil</a>
               </div>
             </div>
           </div>`
@@ -4717,8 +4725,9 @@ function cargarListaAlfAmi( usuario ) {
             if (primero == ""){
               primero = rec.Letra;
             }
+
             contenido += '<li>'+
-              '<a onclick="cargarListaColegasByAlf('+usuario+','+ rec.Letra +')">'+ rec.Letra +' <span class="badge pull-right">'+ rec.Total +' </span></a>'+
+              '<a onclick="cargarListaColegasByAlf('+usuario+',\"'+ rec.Letra +'\");alert('+rec.Letra+');">'+ rec.Letra +' <span class="badge pull-right">'+ rec.Total +' </span></a>'+
             '</li>';
           });
           $('#LetrasList').html(contenido);
@@ -5478,6 +5487,8 @@ $( document ).ready( function () {
         $( '.sticky' ).removeClass( 'stick' );
       }
     }
+
+    cargarListaEspCol( $( '#usuarioPerfil' ).val() );
 
   }
 } );

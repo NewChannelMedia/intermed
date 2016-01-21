@@ -830,7 +830,7 @@ module.exports = {
     }
 
     models.Usuario.findAll({
-      attributes:['id','usuarioUrl','urlFotoPerfil'],
+      attributes:['id','usuarioUrl','urlFotoPerfil','urlPersonal'],
       include: [
         {
           model: models.DatosGenerales,
@@ -931,7 +931,7 @@ module.exports = {
     }
 
     models.Usuario.findAll({
-      attributes:['id','usuarioUrl','urlFotoPerfil'],
+      attributes:['id','usuarioUrl','urlFotoPerfil','urlPersonal'],
       include: [
         {
           model: models.DatosGenerales,
