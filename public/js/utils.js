@@ -1789,58 +1789,11 @@ var uId ="";
       mensaje:mensaje
     },function(data,status){
       if(data.success){
-        $('#enviarAtodos').prop('disabled',false);
-        $("#cargador").addClass('hidden');
-        $('.modal').modal('hide');
-        $('.modal').on('hidden.bs.modal',function(e){
-          $("#mensajeRecomendar").val('');
-          $( "#correoEnviarRecomendado" ).val('');
-        });
+        bootbox.hideAll();
       }
     });
-
-    /*
-    if( $( "#correoEnviarRecomendado" ).val() != ""){
-      var to = $( "#correoEnviarRecomendado" ).val();
-      var enlace = usuarioRL;
-      var mensaje =$("#mensajeRecomendar").val();
-      usuario=$("#nombreOcultoPerfil").text();
-      $("#cargador").removeClass('hidden');
-      $('#enviarAtodos').prop('disabled',true);
-      $.post('/enviaCorreoRecomendados',{toMail:to,enlace:enlace,usuario:usuario,mensaje:mensaje},function(data,status){
-        if(data){
-          $('#enviarAtodos').prop('disabled',false);
-          $("#cargador").addClass('hidden');
-          $('.modal').modal('hide');
-          $('.modal').on('hidden.bs.modal',function(e){
-            $("#mensajeRecomendar").val('');
-            $( "#correoEnviarRecomendado" ).val('');
-          });
-        }
-      });
-    }
-    var obj = new Array();
-    var objId = new Array();
-    var medico;
-    var paciente;
-    $.each($("li div.label.label-primary small span.hidden"),function(count, valor){
-      obj.push($( this ).text());
-      medico = parseInt( $(this).attr('di'));
-      objId.push( $( this ).attr('da') );
-      paciente = parseInt( $(this).attr('da'));
-    });
-    $.post('/medicoRecomendado',{objeto:obj, objectoId:objId},function(data){
-      $.post('/doctorRecomendado',{medicoId:medico, paciente:paciente},function(dat){});
-      if(data){
-        $('.modal').modal('hide');
-        $('.modal').on('hidden.bs.modal',function(e){
-          $("#mensajeRecomendar").text('');
-          $( "#correoEnviarRecomendado" ).val('');
-          $("#buscadorRecomendados").val('');
-        });
-      }
-    });*/
   }
+
 function seleccionarUsuario(i, tr, nombre, mas, otroMas, di){
   var html2 ="";
   var otroId = 'li'+i;
