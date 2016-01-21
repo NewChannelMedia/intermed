@@ -2442,41 +2442,33 @@ var idEspecialidad = '';
     });
   });
   function enviandoPeticion(){
-    if( $("#especialidadesMedic option:selected").text() != "Especialidades" ){
-      var id = $("#idMedico").text();
-      var recomendacion = $("#especialidadesMedic option:selected").text();
-      $.each($("li div.label.label-success small span.hidden"),function(index, data){
-        idEspecialidad += "|"+$( this ).text();
-      });
-      $.post('/pedirRecomendacionMedico',{
-          idMedico:id,
-          idEspecialidad: idEspecialidad,
+    var especialidades_id = '';
+    $( '#tipoRecomendacionPedir ul li').each(function(){
+      especialidades_id += '|' + $(this).prop('id').split('_')[1];
+    });
+    if (especialidades_id != ""){
+      $.post('/medicos/pedirRecomendacion',{
+          idMedico:$('#usuarioPerfil').val(),
+          idEspecialidad: especialidades_id,
       },function(data){
-        if(data){
+        if (data.success){
+          bootbox.hideAll();
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
         }
       });
-    }else{
+    } else {
       alert("Seleccione una opcion");
     }
   }
   function cargando(ids){
     var id = $(ids).val();
-    var valor = $(ids+" option:selected").text();
-    console.log("ID: "+id+"\n"+"Valor: "+valor);
-    var html2 ="";
-     html2 += '<li>';
-       html2 +="<p>";
-         html2 += "<div class='label label-success'><span class='glyphicon glyphicon-remove'>&nbsp;"
-           html2 +="<small>";
-             html2 +=valor;
-             html2 += "<span class='hidden'>";
-               html2 += id;
-             html2 += "</span>";
-           html2 +="</small>";
-         html2 += "</span></div>";
-       html2 +="</p>";
-     html2 +="</li>";
-     $( '#tipoRecomendacionPedir ul' ).append(html2);
+    if ($('#liesp_'+id).length == 0){
+      var valor = $(ids+" option:selected").text();
+      $( '#tipoRecomendacionPedir ul' ).append('<li id="liesp_'+id+'"><div class="label label-warning"><span class="glyphicon glyphicon-remove">&nbsp;</span><span>'+valor+'</span></div></li>');
+    }
   }
   function presionando(hola){
     $(hola).modal('toggle');

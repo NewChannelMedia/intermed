@@ -535,25 +535,6 @@ module.exports = {
       });
     }
   },
-  pedirRecomendacionMedico: function( req, res ){
-    var d = new Date();
-    var strDate = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds();
-    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
-      var usuario_id = req.session.passport.user.id;
-      //for( var i in req.body.idEspecialidad ){
-        models.Notificacion.create({
-          usuario_id:req.body.idMedico,
-          tipoNotificacion_id:14,
-          data:req.session.passport.user.Paciente_id+req.body.idEspecialidad,
-          inicio:strDate,
-          visto:0,
-          recordatorio:null
-        }).then(function(creado){
-          res.send(true);
-        });
-      //}
-    }
-  },
   traerDatos: function( req, res ){
     if( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;

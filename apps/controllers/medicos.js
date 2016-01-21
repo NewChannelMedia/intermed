@@ -1301,5 +1301,26 @@ var _this = module.exports = {
         success: true
       });
     }
-  }
+  },
+
+
+  pedirRecomendacion: function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      models.Notificacion.create({
+        usuario_id:req.body.idMedico,
+        tipoNotificacion_id:14,
+        data:req.session.passport.user.Paciente_id+req.body.idEspecialidad
+      }).then(function(creado){
+        res.status(200).json({
+          success: true,
+          creado: creado
+        });
+      });
+    } else {
+      res.status(200).json({
+        success: false,
+        error: 1
+      });
+    }
+  },
 }

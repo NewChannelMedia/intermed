@@ -1377,8 +1377,8 @@ var iniciar = function () {
     });
   // <---------------- FIN OSCAR ESPECIALIDADES ------------------>
   // <---------------- PEDIR RECOMENDACION MEDICO ---------------->
-    app.post('/pedirRecomendacionMedico', function( req, res){
-      intermed.callController('contactos','pedirRecomendacionMedico',req, res);
+    app.post('/medicos/pedirRecomendacion', function( req, res){
+      intermed.callController('medicos','pedirRecomendacion',req, res);
     });
     app.post('/traerDatos', function( req, res ){
       intermed.callController('contactos','traerDatos', req, res);

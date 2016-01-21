@@ -690,39 +690,57 @@ function recomendacionesBoot(){
 
 //<--------------------- PEDIR RECOMENDACIONES ------------->
     function pedirRecomendacionesBoot(){
+      var nombreUsuario = '';
+
+      $.ajax( {
+        async: false,
+        url: '/usuario/traer',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        data: {
+          'id': $('#usuarioPerfil').val()
+        },
+        success: function ( data ) {
+          if (!data.DatosGenerale.apellidoM) data.DatosGenerale.apellidoM = '';
+          nombreUsuario = 'Dr. ' + data.DatosGenerale.nombre  + ' ' + data.DatosGenerale.apellidoP + ' ' + data.DatosGenerale.apellidoM;
+        },
+        error: function (err){
+          console.log('AJAX Error: ' + JSON.stringify(err));
+        }
+      });
+
       $('.modal-body').css('padding',0);
       bootbox.dialog({
         onEscape: function () {
-        bootbox.hideAll();
-      },
+          bootbox.hideAll();
+        },
+        className: 'Intermed-Bootbox',
+        title: '<span class="title">Pedir una Recomendación al ' + nombreUsuario + '</span>',
         size:'large',
         message:
-          '<div class="clearfix" id="pedir" style="background-color:#172c3b;padding:5px">'+
-            '<div class="col-md-12">'+
-              '<h4 class="modal-title">'+
-                '<span id="nombreOcultoPerfil" class="hidden"></span>'+
-                '<p style="color:white;">'+
-                  'Pedir una Recomendación al <span id="nombreDoctor"></span><span class="hidden" id="idMedico"></span>'+
-                '</p>'+
-              '</h4>'+
-            '</div><br /><br /><br />'+
-            '<div class="">'+
-              '<p style="color:white;">En esta ventana podrá elegir una especialidad para poder pedirle una recomendacion a su medico</p>'+
+        '<div class="col-md-12"><div class="row">'+
+          '<div class="form-group">'+
+            '<label for="especialidadesMedic" class="control-label" style="color:white;">Seleccione la(s) especialidad(es) que le interesan:</label>'+
+            '<select id="especialidadesMedic" onChange="cargando(\'#especialidadesMedic\');" class="form-control">'+
+            '</select>'+
+          '</div>'+
+          '<div class="" id="tipoRecomendacionPedir">'+
+            '<ul class="list-inline"></ul>'+
+          '</div>'+
+        '</div></div>'+
+        '<div class="row">'+
+            '<div class="col-md-4">'+
                 '<div class="form-group">'+
-                  '<label for="especialidadesMedic" class="col-sm-2 control-label"style="color:white;">Especialidad</label>'+
-                  '<select id="especialidadesMedic" onChange="cargando(\'#especialidadesMedic\');" class="form-control">'+
-                  '</select>'+
+                    '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="bootbox.hideAll();">'+
                 '</div>'+
-                '<div class="" id="tipoRecomendacionPedir">'+
-                  '<ul class="list-inline"></ul>'+
+            '</div>'+
+            '<div class="col-md-6 col-md-offset-2">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Pedir" onclick="enviandoPeticion();">'+
                 '</div>'+
-              '</div>'+
             '</div>'+
-            '<div class="pull-right">'+
-              '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>'+
-              '<button type="button" id="mandarPeticion" onclick="enviandoPeticion();bootbox.hideAll();" class="btn btn-primary" class="btn btn-primary">Pedir</button>'+
-            '</div>'+
-          '</div><!-- div principal final -->'
+        '</div>'
       });
     }
 //<------------------- FIN PEDIR RECOMENDACIONES ----------->
