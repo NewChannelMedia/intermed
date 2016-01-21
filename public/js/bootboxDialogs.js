@@ -60,284 +60,390 @@ function agregarUbicacion(ubicacion_id){
       size:'large',
       className: 'Intermed-Bootbox',
       title: '<span class="title">CONFIGURA TUS UBICACIONES Y HORARIOS DE ATENCIÓN.</span><span class="subtitle">Señala la ubicación en el mapa y registra el horario de atención correspondiente con cada una.</span>',
-      message: '<div class="" style="background-color:#172c3b;padding:5px;" >'+
+      message:
       '<ul class="nav nav-tabs menuBootbox">'+
         '<li class="active ubicaciones"><a data-toggle="tab" href="#divUbicacion">UBICACIONES</a></li>'+
         '<li class="servicios"><a data-toggle="tab" href="#divServicios">SERVICIOS</a></li>'+
         '<li class="horarios"><a data-toggle="tab" href="#divHorarios" onclick="iniciarDivCalendario()">HORARIOS</a></li>'+
       '</ul>'+
       '<div class="tab-content">'+
-      '<div id="divUbicacion" class="tab-pane fade in active">'+
-          '<form method="POST" name="frmRegUb" id="frmRegUbi">'+
-              '<input type="hidden" id="idDireccion" name="idDireccion" value="'+id+'">'+
-              '<input type="hidden" id="idEstado" name="idDireccion" value="'+estado+'">'+
-              '<input type="hidden" id="idMunicipio" name="idDireccion" value="'+municipio+'">'+
-              '<input type="hidden" id="idLocalidad" name="idDireccion" value="'+localidad+'">'+
+        '<div id="divUbicacion" class="tab-pane fade in active">'+
+            '<form method="POST" name="frmRegUb" id="frmRegUbi">'+
+                '<input type="hidden" id="idDireccion" name="idDireccion" value="'+id+'">'+
+                '<input type="hidden" id="idEstado" name="idDireccion" value="'+estado+'">'+
+                '<input type="hidden" id="idMunicipio" name="idDireccion" value="'+municipio+'">'+
+                '<input type="hidden" id="idLocalidad" name="idDireccion" value="'+localidad+'">'+
+                '<div class="row">'+
+                    '<div class="col-md-12">'+
+                      '<div class="row">'+
+                        '<div class="col-md-6">'+
+                            '<div class="row">'+
+                                '<div class="col-md-12">'+
+                                  '<div class="row">'+
+                                    '<div class="form-group">'+
+                                      '<div class="row">'+
+                                        '<label class="col-md-12 control-label" for="textinput" style="color:white">Nombre de la ubicación:</label>'+
+                                        '<div class="col-md-7">'+
+                                        '<input id="nombreUbi" name="nombreUbi" type="text" placeholder="" class="form-control input-md" value="'+nombre+'">'+
+                                        '</div>'+
+                                        '<div class="col-md-5">'+
+                                          '<div class="row">'+
+                                            '<div class="checkbox">'+
+                                            '<label style="color:white;font-weight:bold">'+
+                                              '<input type="checkbox" id="principal" name="principal" value="" style="margin-top:0px" '+ principal +'>'+
+                                              'Ubicación principal.'+
+                                            '</label>'+
+                                            '</div>'+
+                                          '</div>'+
+                                        '</div>'+
+                                      '</div>'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</div>'+
+                                '<div class="col-md-12">'+
+                                  '<div class="row">'+
+                                    '<div class="form-group">'+
+                                      '<div class="row">'+
+                                        '<div class="col-md-7">'+
+                                          '<div class="row">'+
+                                            '<label class="col-md-12 control-label" for="textinput" style="color:white">Calle o avenida:</label>'+
+                                            '<div class="col-md-12">'+
+                                            '<input id="calleUbi" name="calleUbi" type="text" placeholder="" class="form-control input-md" value="'+calle+'">'+
+                                            '</div>'+
+                                          '</div>'+
+                                        '</div>'+
+                                        '<div class="col-md-3">'+
+                                          '<div class="row">'+
+                                            '<div class="col-md-12">'+
+                                                '<label class="control-label" for="textinput" style="color:white">Número:</label>'+
+                                            '</div>'+
+                                            '<div class="col-md-12">'+
+                                                '<input id="numeroUbi" name="numeroUbi" type="text" placeholder="" class="form-control input-md" value="'+ numero +'">'+
+                                            '</div>'+
+                                          '</div>'+
+                                        '</div>'+
+                                        '<div class="col-md-2">'+
+                                          '<div class="row">'+
+                                            '<div class="col-md-12">'+
+                                                '<label class="control-label" for="textinput" style="color:white">Interior:</label>'+
+                                            '</div>'+
+                                            '<div class="col-md-12">'+
+                                                '<input id="numeroIntUbi" name="numeroIntUbi" type="text" placeholder="" class="form-control input-md" value="'+ interior+'">'+
+                                            '</div>'+
+                                          '</div>'+
+                                        '</div>'+
+                                      '</div>'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</div>'+
+                                '<div class="col-md-12">'+
+                                  '<div class="row">'+
+                                    '<div class="form-group">'+
+                                      '<div class="row">'+
+                                        '<div class="col-md-6">'+
+                                          '<div class="row">'+
+                                            '<label class="col-md-12 control-label" for="textinput" style="color:white">Entre calles:</label>'+
+                                            '<div class="col-md-12">'+
+                                            '<input id="calle1Ubi" name="calle1Ubi" type="text" placeholder="" class="form-control input-md" value="'+callea+'">'+
+                                            '</div>'+
+                                          '</div>'+
+                                        '</div>'+
+                                        '<div class="col-md-6">'+
+                                          '<div class="row">'+
+                                            '<label class="col-md-12 control-label" for="textinput" style="color:white">Y:</label>'+
+                                            '<div class="col-md-12">'+
+                                            '<input id="calle2Ubi" name="calle2Ubi" type="text" placeholder="" class="form-control input-md" value="'+ calleb +'">'+
+                                            '</div>'+
+                                          '</div>'+
+                                        '</div>'+
+                                      '</div>'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</div>'+
+                                '<div class="col-md-12">'+
+                                  '<div class="row">'+
+                                    '<div class="form-group">'+
+                                      '<div class="row">'+
+                                        '<div class="col-md-6">'+
+                                          '<div class="row">'+
+                                            '<label class="col-md-12 control-label" for="textinput" style="color:white">Estado:</label>'+
+                                            '<div class="col-md-12">'+
+                                            '<select id="slc_estados_mapa" name="slc_estados_mapa" type="text" placeholder="" class="form-control input-md" onChange="obtenerCiudades()">'+
+                                            '</select>'+
+                                            '</div>'+
+                                          '</div>'+
+                                        '</div>'+
+                                        '<div class="col-md-6">'+
+                                          '<div class="row">'+
+                                            '<label class="col-md-12 control-label" for="textinput" style="color:white">Municipio/ciudad:</label>'+
+                                            '<div class="col-md-12">'+
+                                            '<select id="slc_ciudades_mapa" name="slc_ciudades_mapa" type="text" placeholder="" class="form-control input-md" onChange="obtenerColonias()">'+
+                                            '</select>'+
+                                            '</div>'+
+                                          '</div>'+
+                                        '</div>'+
+                                      '</div>'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</div>'+
+                              '<div class="col-md-12">'+
+                                '<div class="row">'+
+                                  '<div class="form-group">'+
+                                    '<div class="row">'+
+                                      '<div class="col-md-6">'+
+                                        '<div class="row">'+
+                                          '<label class="col-md-12 control-label" for="textinput" style="color:white">Localidad/colonia:</label>'+
+                                          '<div class="col-md-12">'+
+                                          '<select id="slc_colonias_mapa" name="slc_colonias_mapa" type="text" placeholder="" class="form-control input-md">'+
+                                          '</select>'+
+                                          '</div>'+
+                                        '</div>'+
+                                      '</div>'+
+                                      '<div class="col-md-6">'+
+                                        '<div class="row">'+
+                                          '<label class="col-md-12 control-label" for="textinput" style="color:white">CP:</label>'+
+                                          '<div class="col-md-12">'+
+                                          '<input id="cpUbi" name="cpUbi" type="text" placeholder="" class="form-control input-md" value="'+ cp +'">'+
+                                          '</div>'+
+                                        '</div>'+
+                                      '</div>'+
+                                    '</div>'+
+                                  '</div>'+
+                                '</div>'+
+                              '</div>'+
+                          '</div>'+
+                      '</div>'+
+                      '<div class="col-md-6">'+
+                        '<div class="row">'+
+                            '<input type="hidden" id="latitud" name="latitud" value="'+latitud+'"/>'+
+                            '<input type="hidden" id="longitud" name="longitud" value="'+longitud+'"/>'+
+                            '<div id="searchDiv">'+
+                                '<input id="autocomplete_searchField" type="text" placeholder="Buscar Dirección">'+
+                            '</div>'+
+                            '<div id="direccion"></div>'+
+                            '<div id="mapDiv"></div>'+
+                        '</div>'+
+                      '</div>'+
+                  '</div>'+
+              '</div>'+
+              '</div>'+
+
+
               '<div class="row">'+
+              '<div class="col-md-12">'+
+                '<div class="row">'+
+                  '<hr class="style-white"/>'+
                   '<div class="col-md-12">'+
+                    '<div class="row" class="text-center">'+
+                      '<span style="font-weight:bold;color:white;font-size:130%;text-align:center;padding:7px;"  class="col-md-12">'+
+                        'Teléfonos'+
+                      '</span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+                '<div class="row">'+
+                  '<div class="col-md-10 col-sm-10">'+
+                    '<div class="row">'+
+                      '<div class="form-group col-md-3 col-sm-3">'+
+                        '<div class="row">'+
+                          '<select class="form-control" id="tipoTelefono" >'+
+                            '<option value="celular">Celular</option>'+
+                            '<option value="oficina">Oficina</option>'+
+                            '<option value="localizador">Localizador</option>'+
+                          '</select>'+
+                        '</div>'+
+                      '</div>'+
+                      '<div class="form-group col-md-9 col-sm-9" id="divTelefono">'+
+                        '<div class="form-group">'+
+                          '<input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" onpaste="soloNumeros()" maxlength="12"  >'+
+                        '</div>'+
+                      '</div>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="col-md-2 col-sm-2">'+
+                    '<div class="row">'+
+                    '<div class="form-group">'+
+                      '<input type="button" class="btn btn-warning btn-block" id="addFon" value="Añadir">'+
+                    '</div>'+
+                    '</div>'+
+                  '</div>'+
+              '</div>'+
+              '<div class ="row">'+
+                '<div class="form-group col-md-12 col-sm-12 btn-group edit-btns text-center" id="divTelefonoAgregado" data-toggle="buttons"></div>'+
+              '</div>'+
+              '</div>'+
+              '<div class="row">'+
+                '<div id="fonAgregado" class="btn-group edit-btns text-center" data-toggle="buttons"></div>'+
+              '</div>'+
+              '<div class="col-md-12">'+
+                '<div class="row">'+
+                '<hr class="style-white"/>'+
+                '<span style="font-weight:bold;color:white;font-size:80%;">'+
+                  'Al finalizar de agregar tus ubicaciones, pasa a la pestaña de "horarios" para organizar las horas de atención que se mostrarán en tu agenda de citas.'+
+                '</span>'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-md-12" style="margin-top:15px;margin-bottom:30px">'+
+                '<div class="row">'+
+                  '<div class="col-md-6 pull-right">'+
                     '<div class="row">'+
                       '<div class="col-md-6">'+
-                          '<div class="row">'+
-                              '<div class="col-md-12">'+
-                                '<div class="row">'+
-                                  '<div class="form-group">'+
-                                    '<div class="row">'+
-                                      '<label class="col-md-12 control-label" for="textinput" style="color:white">Nombre de la ubicación:</label>'+
-                                      '<div class="col-md-7">'+
-                                      '<input id="nombreUbi" name="nombreUbi" type="text" placeholder="" class="form-control input-md" value="'+nombre+'">'+
-                                      '</div>'+
-                                      '<div class="col-md-5">'+
-                                        '<div class="row">'+
-                                          '<div class="checkbox">'+
-                                          '<label style="color:white;font-weight:bold">'+
-                                            '<input type="checkbox" id="principal" name="principal" value="" style="margin-top:0px" '+ principal +'>'+
-                                            'Ubicación principal.'+
-                                          '</label>'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                    '</div>'+
-                                  '</div>'+
-                                '</div>'+
-                              '</div>'+
-                              '<div class="col-md-12">'+
-                                '<div class="row">'+
-                                  '<div class="form-group">'+
-                                    '<div class="row">'+
-                                      '<div class="col-md-7">'+
-                                        '<div class="row">'+
-                                          '<label class="col-md-12 control-label" for="textinput" style="color:white">Calle o avenida:</label>'+
-                                          '<div class="col-md-12">'+
-                                          '<input id="calleUbi" name="calleUbi" type="text" placeholder="" class="form-control input-md" value="'+calle+'">'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                      '<div class="col-md-3">'+
-                                        '<div class="row">'+
-                                          '<div class="col-md-12">'+
-                                              '<label class="control-label" for="textinput" style="color:white">Número:</label>'+
-                                          '</div>'+
-                                          '<div class="col-md-12">'+
-                                              '<input id="numeroUbi" name="numeroUbi" type="text" placeholder="" class="form-control input-md" value="'+ numero +'">'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                      '<div class="col-md-2">'+
-                                        '<div class="row">'+
-                                          '<div class="col-md-12">'+
-                                              '<label class="control-label" for="textinput" style="color:white">Interior:</label>'+
-                                          '</div>'+
-                                          '<div class="col-md-12">'+
-                                              '<input id="numeroIntUbi" name="numeroIntUbi" type="text" placeholder="" class="form-control input-md" value="'+ interior+'">'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                    '</div>'+
-                                  '</div>'+
-                                '</div>'+
-                              '</div>'+
-                              '<div class="col-md-12">'+
-                                '<div class="row">'+
-                                  '<div class="form-group">'+
-                                    '<div class="row">'+
-                                      '<div class="col-md-6">'+
-                                        '<div class="row">'+
-                                          '<label class="col-md-12 control-label" for="textinput" style="color:white">Entre calles:</label>'+
-                                          '<div class="col-md-12">'+
-                                          '<input id="calle1Ubi" name="calle1Ubi" type="text" placeholder="" class="form-control input-md" value="'+callea+'">'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                      '<div class="col-md-6">'+
-                                        '<div class="row">'+
-                                          '<label class="col-md-12 control-label" for="textinput" style="color:white">Y:</label>'+
-                                          '<div class="col-md-12">'+
-                                          '<input id="calle2Ubi" name="calle2Ubi" type="text" placeholder="" class="form-control input-md" value="'+ calleb +'">'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                    '</div>'+
-                                  '</div>'+
-                                '</div>'+
-                              '</div>'+
-                              '<div class="col-md-12">'+
-                                '<div class="row">'+
-                                  '<div class="form-group">'+
-                                    '<div class="row">'+
-                                      '<div class="col-md-6">'+
-                                        '<div class="row">'+
-                                          '<label class="col-md-12 control-label" for="textinput" style="color:white">Estado:</label>'+
-                                          '<div class="col-md-12">'+
-                                          '<select id="slc_estados_mapa" name="slc_estados_mapa" type="text" placeholder="" class="form-control input-md" onChange="obtenerCiudades()">'+
-                                          '</select>'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                      '<div class="col-md-6">'+
-                                        '<div class="row">'+
-                                          '<label class="col-md-12 control-label" for="textinput" style="color:white">Municipio/ciudad:</label>'+
-                                          '<div class="col-md-12">'+
-                                          '<select id="slc_ciudades_mapa" name="slc_ciudades_mapa" type="text" placeholder="" class="form-control input-md" onChange="obtenerColonias()">'+
-                                          '</select>'+
-                                          '</div>'+
-                                        '</div>'+
-                                      '</div>'+
-                                    '</div>'+
-                                  '</div>'+
-                                '</div>'+
-                              '</div>'+
-                            '<div class="col-md-12">'+
-                              '<div class="row">'+
-                                '<div class="form-group">'+
-                                  '<div class="row">'+
-                                    '<div class="col-md-6">'+
-                                      '<div class="row">'+
-                                        '<label class="col-md-12 control-label" for="textinput" style="color:white">Localidad/colonia:</label>'+
-                                        '<div class="col-md-12">'+
-                                        '<select id="slc_colonias_mapa" name="slc_colonias_mapa" type="text" placeholder="" class="form-control input-md">'+
-                                        '</select>'+
-                                        '</div>'+
-                                      '</div>'+
-                                    '</div>'+
-                                    '<div class="col-md-6">'+
-                                      '<div class="row">'+
-                                        '<label class="col-md-12 control-label" for="textinput" style="color:white">CP:</label>'+
-                                        '<div class="col-md-12">'+
-                                        '<input id="cpUbi" name="cpUbi" type="text" placeholder="" class="form-control input-md" value="'+ cp +'">'+
-                                        '</div>'+
-                                      '</div>'+
-                                    '</div>'+
-                                  '</div>'+
-                                '</div>'+
-                              '</div>'+
-                            '</div>'+
+                        '<div class="row">'+
+                        '<input type="button" class="btn btn-add btn-block" value="'+btnGuardar+'" onclick="regUbicacion()" id="btnGuardar">'+
                         '</div>'+
-                    '</div>'+
-                    '<div class="col-md-6">'+
-                      '<div class="row">'+
-                          '<input type="hidden" id="latitud" name="latitud" value="'+latitud+'"/>'+
-                          '<input type="hidden" id="longitud" name="longitud" value="'+longitud+'"/>'+
-                          '<div id="searchDiv">'+
-                              '<input id="autocomplete_searchField" type="text" placeholder="Buscar Dirección">'+
-                          '</div>'+
-                          '<div id="direccion"></div>'+
-                          '<div id="mapDiv"></div>'+
+                      '</div>'+
+                      '<div class="col-md-6">'+
+                        '<div class="row" style="margin-left:2px">'+
+                          '<input type="button" class="btn btn-save btn-block" value="Guardar y salir" onclick="regUbicacion(true);" id="btnGuardarSalir">'+
+                        '</div>'+
                       '</div>'+
                     '</div>'+
+                  '</div>'+
+                  '<div class="col-md-6 pull-left">'+
+                    '<div class="row">'+
+                      '<div class="col-md-6">'+
+                        '<div class="row">'+
+                        '<input type="button" class="btn btn-drop btn-block" value="Eliminar" onclick="eliminarUbicacion()" id="btnEliminar">'+
+                        '</div>'+
+                      '</div>'+
+                    '</div>'+
+                    '</div>'+
+                  '</div>'+
                 '</div>'+
-            '</div>'+
-            '</div>'+
+              '</div>'+
+          '</form>'+
+      '</div>'+
+
+
+      '<div id="divHorarios" class="tab-pane fade divBodyBootbox">'+
+        '<form method="POST" name="frmRegHorarios" id="frmRegHorarios" onsubmit="return false;">'+
+            '<input type="hidden" id="horariosUbi" name="horariosUbi" value="" />'+
+            '<input type="hidden" id="direccion_id" name="direccion_id" value="" />'+
             '<div class="row">'+
-            '<div class="col-md-12">'+
-              '<div class="row">'+
-                '<hr class="style-white"/>'+
-                '<div class="col-md-12">'+
-                  '<div class="row" class="text-center">'+
-                    '<span style="font-weight:bold;color:white;font-size:130%;text-align:center;padding:7px;"  class="col-md-12">'+
-                      'Teléfonos'+
-                    '</span>'+
-                  '</div>'+
+                '<div class="col-md-12" id="divCalendarioPadre"><div id="divCalendario"></div></div>'+
+                '<div class="col-md-6">'+
+                    '<button class="btn btn-danger btn-md" onclick="vaciarCalendario()">'+
+                        '<span class="glyphicon glyphicon-trash"></span>'+
+                    '</button>'+
                 '</div>'+
-              '</div>'+
-              '<div class="row">'+
-                '<div class="col-md-10 col-sm-10">'+
-                  '<div class="row">'+
-                    '<div class="form-group col-md-3 col-sm-3">'+
-                      '<div class="row">'+
-                        '<select class="form-control" id="tipoTelefono" >'+
-                          '<option value="celular">Celular</option>'+
-                          '<option value="oficina">Oficina</option>'+
-                          '<option value="localizador">Localizador</option>'+
-                        '</select>'+
-                      '</div>'+
-                    '</div>'+
-                    '<div class="form-group col-md-9 col-sm-9" id="divTelefono">'+
-                      '<div class="form-group">'+
-                        '<input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" onpaste="soloNumeros()" maxlength="12"  >'+
-                      '</div>'+
-                    '</div>'+
-                  '</div>'+
-                '</div>'+
-                '<div class="col-md-2 col-sm-2">'+
-                  '<div class="row">'+
-                  '<div class="form-group">'+
-                    '<input type="button" class="btn btn-warning btn-block" id="addFon" value="Añadir">'+
-                  '</div>'+
-                  '</div>'+
-                '</div>'+
-            '</div>'+
-            '<div class ="row">'+
-              '<div class="form-group col-md-12 col-sm-12 btn-group edit-btns text-center" id="divTelefonoAgregado" data-toggle="buttons"></div>'+
-            '</div>'+
-            '</div>'+
-            '<div class="row">'+
-              '<div id="fonAgregado" class="btn-group edit-btns text-center" data-toggle="buttons"></div>'+
-            '</div>'+
-            '<div class="col-md-12">'+
-              '<div class="row">'+
-              '<hr class="style-white"/>'+
-              '<span style="font-weight:bold;color:white;font-size:80%;">'+
-                'Al finalizar de agregar tus ubicaciones, pasa a la pestaña de "horarios" para organizar las horas de atención que se mostrarán en tu agenda de citas.'+
-              '</span>'+
-              '</div>'+
-            '</div>'+
-            '<div class="col-md-12" style="margin-top:15px;margin-bottom:30px">'+
-              '<div class="row">'+
-                '<div class="col-md-6 pull-right">'+
-                  '<div class="row">'+
-                    '<div class="col-md-6">'+
-                      '<div class="row">'+
-                      '<input type="button" class="btn btn-add btn-block" value="'+btnGuardar+'" onclick="regUbicacion()" id="btnGuardar">'+
-                      '</div>'+
-                    '</div>'+
-                    '<div class="col-md-6">'+
-                      '<div class="row" style="margin-left:2px">'+
-                        '<input type="button" class="btn btn-save btn-block" value="Guardar y salir" onclick="regUbicacion(true);" id="btnGuardarSalir">'+
-                      '</div>'+
-                    '</div>'+
-                  '</div>'+
-                '</div>'+
-                '<div class="col-md-6 pull-left">'+
-                  '<div class="row">'+
-                    '<div class="col-md-6">'+
-                      '<div class="row">'+
-                      '<input type="button" class="btn btn-drop btn-block" value="Eliminar" onclick="eliminarUbicacion()" id="btnEliminar">'+
-                      '</div>'+
-                    '</div>'+
-                  '</div>'+
-                  '</div>'+
-                '</div>'+
-              '</div>'+
+                '<div class="col-md-6"><input type="button" class="btn btn-save btn-md btn-block" id="btnRegHorarios" value="Guardar Horarios" onclick="regHorarios()"></div>'+
             '</div>'+
         '</form>'+
-    '</div>'+
-    '<div id="divHorarios" class="tab-pane fade divBodyBootbox">'+
-      '<form method="POST" name="frmRegHorarios" id="frmRegHorarios" onsubmit="return false;">'+
-          '<input type="hidden" id="horariosUbi" name="horariosUbi" value="" />'+
-          '<input type="hidden" id="direccion_id" name="direccion_id" value="" />'+
+        '<!--<input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarHorariosBot();">-->'+
+        '<br/><br/>'+
+      '</div>'+
+
+
+      '<div id="divServicios" class="tab-pane fade divBodyBootbox">'+
+        '<div class="container-fluid">'+
           '<div class="row">'+
-              '<div class="col-md-12" id="divCalendarioPadre"><div id="divCalendario"></div></div>'+
-              '<div class="col-md-6">'+
-                  '<button class="btn btn-danger btn-md" onclick="vaciarCalendario()">'+
-                      '<span class="glyphicon glyphicon-trash"></span>'+
-                  '</button>'+
+            '<div class="col-md-12">'+
+              '<div class="col-lg-12">'+
+                '<h3 style="color:white">'+
+                  '<span class="glyphicon glyphicon-plus">&nbsp;Servicios</span>'+
+                '</h3>'+
               '</div>'+
-              '<div class="col-md-6"><input type="button" class="btn btn-save btn-md btn-block" id="btnRegHorarios" value="Guardar Horarios" onclick="regHorarios()"></div>'+
+              '<div class="col-lg-12">'+
+                '<table class="table table-condensed">'+
+                  '<thead>'+
+                    '<td><center>Concepto</center></td>'+
+                    '<td><center>Descripcion</center></td>'+
+                    '<td><center>Precio</center></td>'+
+                    '<td><center>Duracion</center></td>'+
+                    '<td><center>Agregar</center></td>'+
+                  '</thead>'+
+                  '<tbody id="agregatuServices">'+
+                    '<td>'+
+                      '<center>'+
+                        '<div class="form-group">'+
+                          '<input type="text" class="form-control" id="conceptServ" />'+
+                        '</div>'+
+                      '</center>'+
+                    '</td>'+
+                    '<td>'+
+                      '<center>'+
+                        '<div class="form-group">'+
+                          '<input type="text" class="form-control" id="decriptServ" />'+
+                        '</div>'+
+                      '</center>'+
+                    '</td>'+
+                    '<td>'+
+                      '<center>'+
+                        '<div class="form-group">'+
+                          '<input type="text" class="form-control" id="precServ" />'+
+                        '</div>'+
+                      '</center>'+
+                    '</td>'+
+                    '<td>'+
+                      '<center>'+
+                        '<div class="form-group">'+
+                          '<select id="duraServ">'+
+                            '<option value="time">--Selecciona--</option>'+
+                            '<option value="00:30:00">30 minutos</option>'+
+                            '<option value="00:45:00">1 hora</option>'+
+                            '<option value="01:30:00">1 hora y 30 minutos</option>'+
+                            '<option value="02:00:00">2 horas</option>'+
+                            '<option value="02:30:00">2 horas y 30 minutos</option>'+
+                            '<option value="03:00:00">3 horas</option>'+
+                            '<option value="03:30:00">3 horas y 30 minutos</option>'+
+                            '<option value="04:00:00">4 horas</option>'+
+                            '<option value="04:30:00">4 horas y 30 minutos</option>'+
+                            '<option value="05:00:00">5 horas</option>'+
+                            '<option value="05:30:00">5 horas y 30 minutos</option>'+
+                            '<option value="06:00:00">6 horas</option>'+
+                            '<option value="06:30:00">6 horas y 30 minutos</option>'+
+                            '<option value="07:00:00">7 horas</option>'+
+                            '<option value="07:30:00">7 horas y 30 minutos</option>'+
+                            '<option value="08:00:00">8 horas</option>'+
+                            '<option value="08:30:00">8 horas y 30 minutos</option>'+
+                            '<option value="09:00:00">9 horas</option>'+
+                            '<option value="09:30:00">9 horas y 30 minutos</option>'+
+                          '</select>'+
+                        '</div>'+
+                      '</center>'+
+                    '</td>'+
+                    '<td>'+
+                      '<center>'+
+                        '<button type="button" onclick="addServices(\'#conceptServ\',\'#decriptServ\',\'#precServ\',\'#duraServ\');" class="btn btn-primary">'+
+                          '<span style="color:white;" class="glyphicon glyphicon-plus"></span>'+
+                        '</button>'+
+                      '</center>'+
+                    '</td>'+
+                  '</tbody>'+
+                '</table>'+
+              '</div>'+
+            '</div>'+
+            '<hr style="color:white;" />'+
+            '<div class="col-md-12">'+
+              '<div class="col-lg-12">'+
+                '<h3 style="color:white;">'+
+                  '<span class="glyphicon glyphicon-pencil">&nbsp;Edita tus servicios</span>'+
+                '</h3>'+
+              '</div>'+
+              '<div class="col-lg-12">'+
+                '<table class="table table-condensed">'+
+                  '<thead>'+
+                    '<td><center>Concepto</center></td>'+
+                    '<td><center>Descripcion</center></td>'+
+                    '<td><center>Precio</center></td>'+
+                    '<td><center>Duracion</center></td>'+
+                    '<td><center>Eliminar</center></td>'+
+                  '</thead>'+
+                  '<tbody id="modificatusServices"></tbody>'+
+                '</table>'+
+              '</div>'+
+            '</div>'+
           '</div>'+
-      '</form>'+
-      '<!--<input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarHorariosBot();">-->'+
-      '<br/><br/>'+
-    '</div>'+
-    '<div id="divServicios" class="tab-pane fade divBodyBootbox">'+
-      '<h3 style="color:white">Servicios</h3>'+
-      '<p>Alta, modificacion y eliminación de servicios por ubicación.</p>'+
-      '<small>El id de la dirección se saca del input type=hidden con id: "idDireccion", si esta vacio no deberia dejar agregar horarios ni servicios</small><br/><br/>'+
-      '<input type="button" class="btn btn-add btn-sm" value="Guardar y continuar" onclick="registrarServicios();">'+
-      '<input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarServicios(true);">'+
-    '</div>'+
-    '</div>'+
+        '</div>'+
+        '<input type="button" class="btn btn-add btn-sm" value="Guardar y continuar" onclick="registrarServicios();">'+
+        '<input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarServicios(true);">'+
+      '</div>'+
+
+
     '</div>'
   });
+
+  maquetaServices();
   if (btnGuardar == "Editar"){
     $("#frmRegUbi :input").prop('disabled', true);
     $("#frmRegUbi :button").prop('disabled', false);
@@ -894,7 +1000,7 @@ function regPaciente(){
     },
     backdrop: true,
     className: 'Intermed-Bootbox',
-    title: '<span class="title">Intermed&reg / <b>Registro Pacientes</b></span>',
+    title: '<span class="title FlamaBook-normal regHeader">Intermed&reg / <b>Registro Pacientes</b></span>',
     size:'large',
     closeButton:true,
     message:
@@ -1044,7 +1150,7 @@ function regMedico(){
     },
     backdrop: true,
     className: 'Intermed-Bootbox',
-    title: '<span class="title">Intermed&reg / <b>Registro Médicos</b></span>',
+    title: '<span class="title FlamaBook-normal regHeader">Intermed&reg / <b>Registro Médicos</b></span>',
     size:'large',
     closeButton:true,
     message:
@@ -1140,32 +1246,33 @@ function cambioFotoPerfil(){
     onEscape: function () {
       bootbox.hideAll();
     },
-  backdrop: true,
-    size:'large',
-    closeButton:false,
+    backdrop: true,
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">Selecciona el área a guardar:</span>',
+    size: 'large',
     message:
     '<div  id="CambiarFotoPerfil" name="CambiarFotoPerfil" >'+
       '<form>'+
-        '<div class="">'+
-          '<div class="">'+
-            '<div class="row">'+
-              '<div class="col-md-12">'+
-                '<div class="row" style="display: flex;align-items: center;justify-content: center;flex-direction: column;">'+
-                  '<h4 class="">Selecciona el area a guardar</h4>'+
-                  '<hr/>'+
-                  '<input type="hidden" value="" name="base64file" id="base64file">'+
-                  '<div class="col-md-12" id="contenedorFoto" class="text-center" style="width: auto;margin: auto"></div>'+
-                  '<canvas id="canvas" height="300" width="300" style="display: none"></canvas>'+
-                '</div>'+
-              '</div>'+
-            '</div>'+
-          '</div>'+
-          '<div class="">'+
-            '<input type="button" value="Guardar" class="btn btn-primary" id="btnCrop" onclick="guardarImagenPerfil();bootbox.hideAll();">'+
-            '<input type="button" value="Cancelar" class="btn btn-danger" onclick="bootbox.hideAll();">'+
+        '<div class="col-md-12">'+
+          '<div class="row" style="display: flex;align-items: center;justify-content: center;flex-direction: column;">'+
+            '<input type="hidden" value="" name="base64file" id="base64file">'+
+            '<div class="col-md-12" id="contenedorFoto" class="text-center" style="width: auto;margin: auto"></div>'+
+            '<canvas id="canvas" height="300" width="300" style="display: none"></canvas>'+
           '</div>'+
         '</div>'+
       '</form>'+
+  '</div>'+
+  '<div class="row">'+
+      '<div class="col-md-4">'+
+          '<div class="form-group">'+
+              '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="bootbox.hideAll();">'+
+          '</div>'+
+      '</div>'+
+      '<div class="col-md-6 col-md-offset-2">'+
+          '<div class="form-group">'+
+              '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Guardar" onclick="guardarImagenPerfil();bootbox.hideAll();">'+
+          '</div>'+
+      '</div>'+
   '</div>'
   });
 }
@@ -1176,11 +1283,13 @@ function editaPerfBoot(){
     onEscape: function () {
       bootbox.hideAll();
   },
+  className: 'Intermed-Bootbox',
+  title: '<span class="title">Edita tu perfil.</span>',
   backdrop: true,
   size:'large',
   closeButton:true,
   message:
-  '<div class="" id="tabPerfilModificar" style="background-color:#172c3b; padding:5px;">'+
+  '<div class="" id="tabPerfilModificar">'+
     '<ul class="nav nav-tabs menuBootbox">'+
       '<li role="presentation" class="active" onclick="loadDatosGenerales();">'+
         '<a href="#general" aria-control="general" role="tab" data-toggle="tab">'+
@@ -1448,12 +1557,9 @@ function registroMedicoDatosPersonales(){
               onEscape: function () {
                   bootbox.hideAll();
               },
+              className: 'Intermed-Bootbox',
+              title: '<span class="title FlamaBook-normal regHeader">Intermed® / <b>Registro Médicos</b></span>',
               message:
-              '<div style="background-color:#172c3b;padding:5px;margin:-15px;" >'+
-              '<div class="col-md-12" style="color:white" >'+
-                '<h2 class="s25"><h4 class="FlamaBook-normal s25 regHeader">Intermed® / <b>Registro Médicos</b> </h4></h2>'+
-              '</div>.'+
-
               '<div class="divBodyBootbox">'+
 
 
@@ -1613,12 +1719,9 @@ function registroMedicoDatosPago(){
                   bootbox.hideAll();
               },
               size:'large',
+              className: 'Intermed-Bootbox',
+              title: '<span class="title FlamaBook-normal regHeader">Intermed® / <b>Registro Médicos</b></span>',
               message:
-              '<div style="background-color:#172c3b;padding:5px;margin:-15px;" >'+
-              '<div class="col-md-12" style="color:white" >'+
-                '<h2 class="s25"><h4 class="FlamaBook-normal s25 regHeader">Intermed® / <b>Registro Médicos</b> </h4></h2>'+
-              '</div>.'+
-
               '<div class="divBodyBootbox">'+
                 '<div class="row topMsgReg">'+
                   '<div class="col-md-8">'+
@@ -1630,7 +1733,6 @@ function registroMedicoDatosPago(){
                     '</div>'+
                   '</div>'+
                 '</div>'+
-
 
                   '<div class="col-md-12">'+
                     '<form class="radio">'+
@@ -1757,7 +1859,6 @@ function registroMedicoDatosPago(){
                     '</form>'+
                   '</div>.'+
 
-              '</div>'+
               '</div>'
             });
 
@@ -1825,10 +1926,11 @@ function manejadorDeErrores(error){
   box = bootbox.dialog({
     backdrop: backdrop,
     closeButton: true,
+    className: 'Intermed-Bootbox',
+    title: '<span class="title"></span>',
     size:'small',
     message:
-    '<div style="background-color:#172c3b;padding:5px;margin:-15px;" >'+
-
+    '<style>.modal-header .close {margin-top: -17px;margin-right: -9px;}</style>'+
     '<div class="divBodyBootbox">'+
       '<center>'+
       '<div class="col-md-12" style="color:white">'+
@@ -1848,7 +1950,6 @@ function manejadorDeErrores(error){
       '</div>'+
       accion+
       '</center>'+
-    '</div>'+
     '</div>'
   });
 }
@@ -1859,10 +1960,11 @@ function editMedicoPerfil(){
       bootbox.hideAll();
   },
   className: 'Intermed-Bootbox',
-  title: '<span class="title">Edita tu perfil</span>',
+  title: '<span class="title"></span>',
   backdrop: true,
   size:'large',
   message:
+    '<style>.modal-header .close {margin-top: -17px;margin-right: -9px;}</style>'+
     '<ul class="nav nav-tabs menuBootbox" style="margin:-15px;margin-bottom:0px">'+
       '<li role="presentation" class="active" >'+
         '<a href="#general" aria-control="general" role="tab" data-toggle="tab">'+

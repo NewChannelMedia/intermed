@@ -222,7 +222,7 @@ function actualizarSesion() {
         $( '#fotoPerfilMini' ).attr( "src", fotoPerfil );
         $( '#fotoPerfil' ).attr( "src", fotoPerfil );
         if ( data.session.tipoUsuario === "M" ) {
-          if ( !data.session.name ) $( '#session_nombreUsuario' ).html( 'No tenemos registrado tu nombre, por favor continua con tu registro <a onclick="informacionRegistroMedico()">aquí</a>' );
+          if ( !data.session.name ) $( '#session_nombreUsuario' ).html( 'No tenemos registrado tu nombre, por favor continua con tu registro <a onclick="registroMedicoDatosPersonales()">aquí</a>' );
           else {
             if ( data.session.tipoUsuario == "M" ) $( '#session_nombreUsuario' ).html( 'Dr. ' + data.session.name )
             else $( '#session_nombreUsuario' ).html( data.session.name );
