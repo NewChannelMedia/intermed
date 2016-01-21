@@ -3971,7 +3971,7 @@ function cargarListaEspCol( usuario ) {
             primero = esp.id;
           }
           contenido += '<li>' +
-          '<a onclick="cargarListaColegasByEsp(' + usuario + ',' + esp.id + ')">' + esp.especialidad + '<span class="badge pull-right">' + esp.total + '</span></a>' +
+          '<a onclick="cargarListaColegasByEsp(' + usuario + ',' + esp.id + ',this)">' + esp.especialidad + '<span class="badge pull-right">' + esp.total + '</span></a>' +
           '</li>';
         });
         $('#especialidadesList').html(contenido);
@@ -3990,7 +3990,13 @@ function cargarListaEspCol( usuario ) {
   } );
 }
 
-function cargarListaColegasByEsp(usuario_id,especialidad_id){
+function cargarListaColegasByEsp(usuario_id,especialidad_id, element){
+  $('#especialidadesList li.active').removeClass('active');
+  if (element){
+    $(element).parent().addClass('active');
+  } else {
+    $('#especialidadesList li').first().addClass('active');
+  }
   var filtro = $('#buscadorEspecialInput').val();
   $.ajax( {
     async: false,
@@ -4078,7 +4084,7 @@ function cargarListaAlfCol( usuario ) {
               primero = rec.Letra;
             }
             contenido += '`<li>' +
-              '<a onclick="cargarListaColegasByAlf(' + usuario + ',\'' + rec.Letra + '\')">' + rec.Letra + '<span class="badge pull-right">' + rec.Total + '</span></a>' +
+              '<a onclick="cargarListaColegasByAlf(' + usuario + ',\'' + rec.Letra + '\',this)">' + rec.Letra + '<span class="badge pull-right">' + rec.Total + '</span></a>' +
             '</li>';
           });
           $('#especialidadesList').html(contenido);
@@ -4097,7 +4103,13 @@ function cargarListaAlfCol( usuario ) {
   } );
 }
 
-function cargarListaColegasByAlf(usuario_id,letra){
+function cargarListaColegasByAlf(usuario_id,letra,element){
+  $('#especialidadesList li.active').removeClass('active');
+  if (element){
+    $(element).parent().addClass('active');
+  } else {
+    $('#especialidadesList li').first().addClass('active');
+  }
   $.ajax( {
     async: false,
     url: '/cargarListaColegasByAlf',
