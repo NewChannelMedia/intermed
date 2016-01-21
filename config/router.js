@@ -1789,6 +1789,14 @@ var manejarPerfiles = function(){
     app.post('/changeValidPass', function( req, res ){
       intermed.callController( 'encryption', 'changeValidPass', req.body, req, res );
     });
+    //trae mail
+    app.post('/getMailSend', function( req, res ){
+      intermed.callController( 'encryption', 'getMailSend', req, res );
+    });
+    //mail send
+    app.post('/sendMailto', function( req, res ){
+      //envio del correo
+    });
   // fin inserta contraseña
 }
 

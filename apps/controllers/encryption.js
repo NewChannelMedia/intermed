@@ -102,6 +102,17 @@
       });
     }
   }
+  exports.getMailSend = function( req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Usuario.findOne({
+        where:{ id: usuario_id },
+        attributes:['correo']
+      }).then(function(correo){
+        res.send(correo);
+      });
+    }
+  }
   function generateEncrypted(pass){
     const password = crypto.createHmac('sha512',pass);
     password.update(pass);// se actualiza la cadena

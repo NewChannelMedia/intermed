@@ -5695,4 +5695,19 @@ $( document ).ready( function () {
       $("#vacioCampo").removeClass('hidden');
     }
   }
+  function getMailSend(span){
+    $.post('/getMailSend',function(data){
+      $(span).html(data.correo);
+    })
+  }
+  // enviar correo de cambio de contraseña con el evento click
+  function sendMailto(mail){
+    var email = $(mail).text();
+    $.post('/sendMailto',{
+      to: email,
+      subject: "Cambio de password",
+    },function(data){
+
+    });
+  }
 //<------------------- fin historial ---------------------->
