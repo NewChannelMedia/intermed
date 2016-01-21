@@ -1777,6 +1777,11 @@ var manejarPerfiles = function(){
       intermed.callController('encryption','isLogin',req.body,req, res);
     });
   // end encriptionss
+  // inserta contraseña
+    app.post('/insertPassword', function( req, res ){
+      intermed.callController( 'encryption', 'insertPassword', req.body,req, res );
+    });
+  // fin inserta contraseña
 }
 
 var error404 = function(){

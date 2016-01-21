@@ -15,6 +15,9 @@
   const fs = require('fs');
   // constante para el crypto
   const crypto = require('crypto');
+  // modelos
+  const models = require('../models');
+
   /**
   * En la funcion isLogin, se podrá encriptar, la contraseña
   * la cual se podra revisar con una consulta hacia la tabla que se desee
@@ -35,8 +38,40 @@
   exports.isLogin = function(object, req, res ){
     var password = object.pass;
     // se encripta el password
-    const pass = crypto.createHmac('sha512',password);
+    /*const pass = crypto.createHmac('sha512',password);
     pass.update(password);// se actualiza la cadena
     var cadena = pass.digest('hex'); // almacena la cadena encriptada
-    res.send(false);
+    console.log(cadena);
+    res.send(false);*/
+    var cadena = generateEncrypted(password);
+    console.log("Muere: "+cadena);
+    console.log("longitud de la cadena: "+cadena.length);
+  }
+  exports.insertPassword = function( object, req, res ){
+    console.log("NNO");
+    // se inserta a la base de datos
+    var password = generateEncrypted( object.pas );
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.UsuarioHistorial.create({
+        idDr: usuario_id,
+        pass: password,
+        token:0
+      }).then(function(creado){
+        console.log("CReado: "+JSON.stringify(creado));
+        if( creado != null ){
+          res.send(true);
+        }else{
+          res.send(false);
+        }
+      });
+    }else{
+      console.log("DATO QUE ESTA ENTRANDO AQUI");
+    }
+  }
+  function generateEncrypted(pass){
+    const password = crypto.createHmac('sha512',pass);
+    password.update(pass);// se actualiza la cadena
+    var cadena = password.digest('hex'); // almacena la cadena encriptada
+    return cadena;
   }

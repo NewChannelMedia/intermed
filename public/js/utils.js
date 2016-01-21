@@ -5593,4 +5593,26 @@ $( document ).ready( function () {
       }
     });
   }
+  function createPassword(){
+    bootbox.hideAll();
+    passwordCreate();
+  }
+  function sendContraseña(uno,dos){
+    var pass = $(uno).val();
+    var confirma = $(dos).val();
+    if( pass.length === confirma.length ){
+      if( pass === confirma ){
+        $("#noCoincidenCampos").addClass('hidden');
+        $.post('/insertPassword',{pas:confirma},function(data){
+
+        }).fail(function(e){
+          console.log("Error: "+JSON.stringify(e));
+        });
+      }else{
+        $("#noCoincidenCampos").removeClass('hidden');
+      }
+    }else{
+      $("#noCoincidenCampos").removeClass('hidden');
+    }
+  }
 //<------------------- fin historial ---------------------->

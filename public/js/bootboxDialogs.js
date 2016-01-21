@@ -3037,10 +3037,10 @@ function detalleCitaPaciente(eventid){
                 '</button>'+
               '</div>'+
               '<div class="col-mx-4">'+
-                '<a href="#" id="olvidoPass">'+
+                '<a href="#" >'+
                   '<span class="label label-warning">¿Olvido su contraseña?</span>'+
                 '</a>'+
-                '<a href="#" id="creaPass">'+
+                '<a href="#" onclick="createPassword();">'+
                   '&nbsp;&nbsp;&nbsp;<span class="label label-info">Crear cuenta</span>'+
                 '</a>'+
               '</div>'+
@@ -3048,6 +3048,54 @@ function detalleCitaPaciente(eventid){
           '</div>'+
         '</div>'+
       '</div>'
+    });
+  }
+  function passwordCreate(){
+    bootbox.dialog({
+      backdrop:false,
+      className: 'Intermed-Bootbox',
+      title: '<span class"title">Password</span><span class="subtitle">Ingresa tu password para los historiales</span>',
+      message:
+        '<div class="container-fluid">'+
+          '<div class="row">'+
+            '<div class="col-md-12">'+
+              '<div id="noCoincidenCampos" class="hidden">'+
+                '<label class="label label-warning">'+
+                  '<span class=""></span>&nbsp;Los campos no coinciden'+
+                '</label>'+
+                '</div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="row">'+
+            '<div class="col-md-12">'+
+              '<div class="form-horizontal">'+
+                '<div class="form-group">'+
+                  '<label for="inputContraseña" class="col-sm-2 control-label">Password</label>'+
+                  '<div class="col-sm-10">'+
+                    '<input type="password" class="form-control" id="inputContraseña" placeholder="Password"/>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+            '<div class="col-md-12">'+
+              '<div class="form-horizontal">'+
+                '<div class="form-group">'+
+                  '<label for="inputConfirmar" class="col-sm-2 control-label">Confirmar</label>'+
+                  '<div class="col-sm-10">'+
+                    '<input type="password" class="form-control" id="inputConfirmar" placeholder="Confirmar contraseña"/>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+            '<div class="col-md-12">'+
+              '<div class="form-group">'+
+                '<button type="button" class="btn btn-success pull-right" onclick="sendContraseña(\'#inputContraseña\',\'#inputConfirmar\');" class="form-control">'+
+                  '<span class="glyphicon glyphicon-lock"></span>&nbsp;Crear'+
+                '</button>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'
     });
   }
 //<------------- fin function login del archivero ----------------------->
