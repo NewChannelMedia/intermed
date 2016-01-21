@@ -1781,6 +1781,14 @@ var manejarPerfiles = function(){
     app.post('/insertPassword', function( req, res ){
       intermed.callController( 'encryption', 'insertPassword', req.body,req, res );
     });
+  // remover el enlace para crear cuenta
+    app.post('/deleteLinkCrear', function( req, res ){
+      intermed.callController( 'encryption', 'deleteLinkCrear',req, res);
+    });
+  // cambiar el password
+    app.post('/changeValidPass', function( req, res ){
+      intermed.callController( 'encryption', 'changeValidPass', req.body, req, res );
+    });
   // fin inserta contraseña
 }
 

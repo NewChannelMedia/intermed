@@ -3037,10 +3037,10 @@ function detalleCitaPaciente(eventid){
                 '</button>'+
               '</div>'+
               '<div class="col-mx-4">'+
-                '<a href="#" >'+
+                '<a href="#" onclick="updatePassword();">'+
                   '<span class="label label-warning">¿Olvido su contraseña?</span>'+
                 '</a>'+
-                '<a href="#" onclick="createPassword();">'+
+                '<a href="#" id="creaCuenta" class="hidden" onclick="createPassword();">'+
                   '&nbsp;&nbsp;&nbsp;<span class="label label-info">Crear cuenta</span>'+
                 '</a>'+
               '</div>'+
@@ -3049,6 +3049,7 @@ function detalleCitaPaciente(eventid){
         '</div>'+
       '</div>'
     });
+    deleteLinkCrear('#creaCuenta');
   }
   function passwordCreate(){
     bootbox.dialog({
@@ -3061,9 +3062,19 @@ function detalleCitaPaciente(eventid){
             '<div class="col-md-12">'+
               '<div id="noCoincidenCampos" class="hidden">'+
                 '<label class="label label-warning">'+
-                  '<span class=""></span>&nbsp;Los campos no coinciden'+
-                '</label>'+
+                  '<span class="glyphicon glyphicon-remove"></span>&nbsp;Los campos no coinciden o estan vacios'+
+                  '</label>'+
+               '</div>'+
+               '<div id="creado" class="hidden">'+
+                  '<label class="label label-warning">'+
+                    '<span class="glyphicon glyphicon-ok-sign"></span>&nbsp;Se ha creado su contraseña'+
+                  '</label>'+
                 '</div>'+
+                '<div id="Yacreado" class="hidden">'+
+                   '<label class="label label-warning">'+
+                     '<span class="glyphicon glyphicon-remove-sign"></span>&nbsp;Ya cuenta con una contraseña'+
+                   '</label>'+
+                 '</div>'+
             '</div>'+
           '</div>'+
           '<div class="row">'+
@@ -3093,6 +3104,91 @@ function detalleCitaPaciente(eventid){
                   '<span class="glyphicon glyphicon-lock"></span>&nbsp;Crear'+
                 '</button>'+
               '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'
+    });
+  }
+  function updatePassword(){
+    bootbox.hideAll();
+    bootbox.dialog({
+      backdrop:false,
+      className: 'Intermed-Bootbox',
+      title: '<span class"title">Password</span><span class="subtitle">Cambiar su password</span>',
+      message:
+        '<div class="container-fluid">'+
+          '<div class="row">'+
+            '<div class="col-md-12">'+
+              '<div class="hidden" id="vacioCampo">'+
+                '<h4>'+
+                  '<span class="label label-warning">'+
+                    '<span class="glyphicon glyphicon-ban-circle">&nbsp;'+
+                      'Ninguno de los dos campos puede estar vacio'+
+                    '</span>'+
+                  '</span>'+
+                '</h4>'+
+              '</div>'+
+              '<div class="hidden" id="bingo">'+
+                '<h4>'+
+                  '<span class="label label-success">'+
+                    '<span class="glyphicon glyphicon-ok-sign">&nbsp;'+
+                      'Actualizacion exitosa'+
+                    '</span>'+
+                  '</span>'+
+                '</h4>'+
+              '</div>'+
+              '<div class="hidden" id="menorDeSeis">'+
+                '<h4>'+
+                  '<span class="label label-warning">'+
+                    '<span class="glyphicon glyphicon-remove">&nbsp;'+
+                      'La contraseña debe de tener mas de 6 caracteres'+
+                    '</span>'+
+                  '</span>'+
+                '</h4>'+
+              '</div>'+
+              '<div class="hidden" id="mismaCantidad">'+
+                '<h4>'+
+                  '<span class="label label-info">'+
+                    '<span class="glyphicon glyphicon-remove-sign">&nbsp;'+
+                      'Los dos campos deben de contener la misma cantidad de caracteres'+
+                    '</span>'+
+                  '</span>'+
+                '</h4>'+
+              '</div>'+
+              '<div class="hidden" id="igualInfo">'+
+                '<h4>'+
+                  '<span class="label label-danger">'+
+                    '<span class="glyphicon glyphicon-remove-circle">&nbsp;'+
+                      'Deben de tener la misma informacion los dos campos'+
+                    '</span>'+
+                  '</span>'+
+                '</h4>'+
+              '</div>'+
+            '</div>'+
+            '<div class="col-md-12">'+
+              '<div class="form-horizontal">'+
+                '<div class="form-group">'+
+                  '<label for="changePass" class="col-sm-4 control-label"><span class="label label-info">Cambiar password</span></label>'+
+                  '<div class="col-sm-8">'+
+                    '<input type="password" class="form-control" id="changePass" placeholder="Password"/>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+            '<div class="col-md-12">'+
+              '<div class="form-horizontal">'+
+                '<div class="form-group">'+
+                  '<label for="confirmPassChange" class="col-sm-4 control-label"><span class="label label-info">Confirmar password</span></label>'+
+                  '<div class="col-sm-8">'+
+                    '<input type="password" class="form-control" id="confirmPassChange" placeholder="Confirmar password" />'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+            '<div class="col-md-12">'+
+              '<button class="pull-right btn btn-success" onclick="confirmChangePass(\'#changePass\',\'#confirmPassChange\')">'+
+                '<span class="glyphicon glyphicon-lock"></span>&nbsp;Cambiar'+
+              '</button>'+
             '</div>'+
           '</div>'+
         '</div>'

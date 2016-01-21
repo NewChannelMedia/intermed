@@ -77,7 +77,7 @@ fs
         return (file.indexOf(".") !== 0);
     })
     .forEach(function (file) {
-        var model = sequelizeCargos.import(path.join(__dirname + '/Historial', file));
+        var model = historial.import(path.join(__dirname + '/Historial', file));
         db[model.name] = model;
     });
 Object.keys( db ).forEach( function ( modelName ) {

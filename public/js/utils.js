@@ -5585,13 +5585,23 @@ $( document ).ready( function () {
   function isLogin(password){
     var pass = $(password).val();
     // se envia la informacion
-    $.post('/isLogin',{pass:pass}, function(data){
-      if( data ){
-        $(password).val('');
+    if( pass != '' ){
+      if( pass.length >= 6 ){
+        $.post('/isLogin',{pass:pass}, function(data){
+          if( data == true ){
+            $("#noAcceso").addClass('hidden');
+            $(password).val('');
+            console.log("REdireccionar");
+          }else{
+            $("#noAcceso").removeClass('hidden');
+          }
+        });
       }else{
-        $("#noAcceso").removeClass('hidden');
+        console.log("Debe de contener mas de 6 caracteres");
       }
-    });
+    }else{
+      console.log("Campo vacio");
+    }
   }
   function createPassword(){
     bootbox.hideAll();
@@ -5601,10 +5611,18 @@ $( document ).ready( function () {
     var pass = $(uno).val();
     var confirma = $(dos).val();
     if( pass.length === confirma.length ){
-      if( pass === confirma ){
+      if( (pass === confirma) && ( pass != '' &&  confirma != '' ) ){
         $("#noCoincidenCampos").addClass('hidden');
-        $.post('/insertPassword',{pas:confirma},function(data){
-
+        $.post('/insertPassword',{pas:confirma,modelo:'UsuarioHistorial'},function(data){
+          if( data ){
+            $("#Yacreado").addClass('hidden');
+            $("#creado").removeClass('hidden');
+            $(uno).val('');
+            $(dos).val('');
+          }else{
+            $("#creado").addClass('hidden');
+            $("#Yacreado").removeClass('hidden');
+          }
         }).fail(function(e){
           console.log("Error: "+JSON.stringify(e));
         });
@@ -5613,6 +5631,68 @@ $( document ).ready( function () {
       }
     }else{
       $("#noCoincidenCampos").removeClass('hidden');
+    }
+  }
+  // checa que ya tenga una contraseña si es asi quita el enlace de crear cuenta
+  function deleteLinkCrear(link){
+    $.post('/deleteLinkCrear',function(data){
+      if( data == true ){
+        $(link).addClass('hidden');
+      }else{
+        $(link).removeClass('hidden');
+      }
+    }).fail(function(e){
+      console.log("Fallo al hacer esta tarea");
+    });
+  }
+  // cambiar password
+  function confirmChangePass( password, confirm ){
+    var primero = $(password).val();
+    var segundo = $(confirm).val();
+    // validaciones
+    if( primero != '' && segundo != '' ){
+      if( primero.length >= 6 && segundo.length >= 6 ){
+        if( primero.length === segundo.length ){
+          if( primero === segundo ){
+            $("#vacioCampo").addClass('hidden');
+            $("#mismaCantidad").addClass('hidden');
+            $("#menorDeSeis").addClass('hidden');
+            $("#igualInfo").addClass('hidden');
+            // se hace la consulta
+            $.post('/changeValidPass',{pass:primero}, function(data){
+              if( data == true ){
+                $("#bingo").removeClass('hidden');
+                $(password).val('');
+                $(confirm).val('');
+              }
+            });
+          }else{
+            $("#vacioCampo").addClass('hidden');
+            $("#bingo").addClass('hidden');
+            $("#mismaCantidad").addClass('hidden');
+            $("#menorDeSeis").addClass('hidden');
+            $("#igualInfo").removeClass('hidden');
+          }
+        }else{
+          $("#vacioCampo").addClass('hidden');
+          $("#bingo").addClass('hidden');
+          $("#menorDeSeis").addClass('hidden');
+          $("#igualInfo").addClass('hidden');
+          $("#mismaCantidad").removeClass('hidden');
+        }
+      }else{
+        $("#vacioCampo").addClass('hidden');
+        $("#bingo").addClass('hidden');
+        $("#mismaCantidad").addClass('hidden');
+        $("#igualInfo").addClass('hidden');
+        $("#menorDeSeis").removeClass('hidden');
+      }
+    }else{
+      $("#bingo").addClass('hidden');
+      $("#menorDeSeis").addClass('hidden');
+      $("#igualInfo").addClass('hidden');
+      $("#mismaCantidad").addClass('hidden');
+      $("#vacioCampo").removeClass('hidden');
     }
   }
 //<------------------- fin historial ---------------------->

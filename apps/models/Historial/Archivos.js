@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function(sequelize, DataTypes){
-  var Archivo = sequelize.define('Archivo',{
+  var Archivos = sequelize.define('Archivos',{
     id:{type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
     url:{ type: DataTypes.STRING },
     idP:{ type : DataTypes.BIGINT }
@@ -16,5 +16,5 @@ module.exports = function(sequelize, DataTypes){
     freezeTableName: true,
     tableName: 'archivos'
   });
-  return Archivo;
+  return Archivos;
 }
