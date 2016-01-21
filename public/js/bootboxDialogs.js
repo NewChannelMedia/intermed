@@ -444,6 +444,7 @@ function agregarUbicacion(ubicacion_id){
   });
 
   maquetaServices();
+  
   if (btnGuardar == "Editar"){
     $("#frmRegUbi :input").prop('disabled', true);
     $("#frmRegUbi :button").prop('disabled', false);

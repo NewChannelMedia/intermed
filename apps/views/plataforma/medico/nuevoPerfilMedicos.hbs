@@ -641,13 +641,11 @@
               </div>
             </div>
 
-            <div class="row hidden" id="buscadorEspecial" style="background-color:#3c6b8a;padding:10px;">
+            <div class="row hidden" id="buscadorEspecial" style="background-color:#3c6b8a;padding:10px;padding-bottom: 0px;">
               <div clas="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Busqueda..." id="buscadorEspecialInput" onchange="cargarListaEspCol( $( '#usuarioPerfil' ).val() );">
-                  <span class="input-group-btn">
-                    <button class="btn btn-default" type="button" onclick="cargarListaEspCol( $( '#usuarioPerfil' ).val() );"><span class="glyphicon glyphicon-search"></span></button>
-                  </span>
+                <div class="form-group has-feedback" id="buscador">
+                  <input type="text" class="form-control ui-autocomplete-input" id="buscadorEspecialInput" placeholder="Buscar colega..." autocomplete="off"  onchange="cargarListaEspCol( $( '#usuarioPerfil' ).val() );">
+                  <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"  onclick="cargarListaEspCol( $( '#usuarioPerfil' ).val() );"></span>
                 </div>
               </div>
             </div>
@@ -664,7 +662,7 @@
                   <span class="side-especialides-subheader h67-medcond" id="tipoFiltro"></span>
                 </p>
                 <hr class="sep">
-                <ul class="nav nav-pills nav-stacked h67-medcond" id="especialidadesList" style="height: 500px;overflow-y: scroll;">
+                <ul class="nav nav-pills nav-stacked h67-medcond" id="especialidadesList">
                 </ul>
               </div>
               <div id="listaColegas" class="col-lg-9 col-md-9 col-sm-8 col-xs-12 pull-right main-colegas" data-spy="scroll" data-target="#listaEspecialidades" data-offset="180">

@@ -5505,6 +5505,10 @@ $( document ).ready( function () {
     }
 
     cargarListaEspCol( $( '#usuarioPerfil' ).val() );
+
+    $('#buscadorEspecial').on('input',function(e){
+     cargarListaEspCol( $( '#usuarioPerfil' ).val() );
+    });
   }
 } );
 //fin de Perfil Medicos
