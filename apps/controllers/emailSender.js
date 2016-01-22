@@ -61,7 +61,8 @@ function send( object, file ,res) {
     template: file,
     context: object
   };
-
+  console.log("OBJECTO: "+JSON.stringify(object));
+  console.log('Template: '+file);
   var transporter = nodemailer.createTransport( smtpTransport( datos ) );
   transporter.use( 'compile', hbs( options ) );
   // se hace la funcion para el envio de el correo

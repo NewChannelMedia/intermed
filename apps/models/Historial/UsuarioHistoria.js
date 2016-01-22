@@ -5,7 +5,7 @@ module.exports = function(sequelize, DataTypes){
     id:{type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
     idDr:{ type: DataTypes.BIGINT },
     pass:{ type: DataTypes.STRING },
-    token:{ type: DataTypes.BIGINT }
+    token:{ type: DataTypes.STRING }
   },{
     classMethods: {
       associate: function(models) {

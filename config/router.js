@@ -53,6 +53,7 @@ app.use( '/perfil', express.static( __dirname + '/../public' ) );
 app.use( '/nuevoPerfilMedicos', express.static( __dirname + '/../public' ) );
 app.use( '/inbox', express.static( __dirname + '/../public' ) );
 app.use( '/notificaciones', express.static( __dirname + '/../public' ) );
+app.use( '/cambiar', express.static( __dirname + '/../public' ) );
 //<----------------------------------------------------------------------------->
 /**
  * function para cargar las rutas, como estatitcas los layouts
@@ -1795,9 +1796,15 @@ var manejarPerfiles = function(){
     });
     //mail send
     app.post('/sendMailto', function( req, res ){
-      //envio del correo
+      intermed.callController( 'encryption', 'sendMailto', req.body, req, res );
     });
   // fin inserta contraseña
+  // get para el cambio del password
+  app.get( '/cambiar/:token', function ( req, res ) {
+    var tok = req.params.token;
+    rutas.routeLife( 'plataforma2', 'interno', hps );
+    intermed.callController( 'encryption', 'cambiar', {token: tok}, req, res );
+  });
 }
 
 var error404 = function(){

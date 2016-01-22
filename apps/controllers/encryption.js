@@ -15,6 +15,8 @@
   const crypto = require('crypto');
   // modelos
   const models = require('../models');
+  // constante para el envio de correo
+  const sendMail = require('./emailSender');
 
   /**
   * En la funcion isLogin, se podrá encriptar, la contraseña
@@ -53,12 +55,15 @@
     // se inserta a la base de datos
     var password = generateEncrypted( object.pas );
     var modelo = object.modelo;
+    var f = new Date();
+    var fecha = f.getFullYear()+'/'+f.getMonth()+'/'+f.getDate();
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
+      var token = usuario_id+fecha;
       models.UsuarioHistorial.create({
         idDr: usuario_id,
         pass: password,
-        token:0
+        token:generateEncrypted(token)
       }).then(function(creado){
         if( creado != null ){
           res.send(true);
@@ -112,6 +117,25 @@
         res.send(correo);
       });
     }
+  }
+  exports.sendMailto = function( object, req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      var f = new Date();
+      var fecha = f.getFullYear()+'/'+f.getMonth()+'/'+f.getDate();
+      var link = "localhost:3000/cambiar/"+String(doEncriptToken( usuario_id, fecha));
+      console.log("ENLACE "+link);
+      var objeto = {
+        to:object.to,
+        subject: object.subject,
+        token: doEncriptToken( usuario_id, fecha),
+        enlace: link
+      }
+      sendMail.send( objeto,'changePassword',res);
+    }
+  }
+  exports.cambiar = function( object, req, res ){
+    res.render('cambiarPass');
   }
   function generateEncrypted(pass){
     const password = crypto.createHmac('sha512',pass);
