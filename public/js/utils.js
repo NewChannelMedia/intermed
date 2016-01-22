@@ -5605,3 +5605,50 @@ function ocultarBuscadorColegasEspecial(){
     $('#buscadorEspecial').addClass('hidden');
   }
 }
+
+function dejarComentario(){
+  var titulo = $('#tituloComentario').val();
+  var comentario = $('#comentarioMedico').val();
+  var anonimo = 0;
+  if ($('#comentarioAnonimo').is(':checked')){
+    anonimo = 1;
+  }
+  $.ajax({
+      url: '/medico/dejarComentario',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        usuario_medico_id: $('#usuarioPerfil').val(),
+        titulo: titulo,
+        comentario: comentario,
+        anonimo: anonimo
+      },
+      type: 'POST',
+      success: function (data) {
+        if (data.success){
+          bootbox.hideAll();
+          bootbox.alert({
+            backdrop: true,
+            onEscape: function () {
+                bootbox.hideAll();
+            },
+            size: 'small',
+            message: `
+            <div class="" style="background-color:#172c3b;padding:5px;margin:-15px;position:absolute;width:100%" >
+            <div class="divBodyBootbox" style="position:relative" style="padding:30px">
+              <h3 style="color:white">Comentario enviado.</h3>
+              <input type="button" class="btn btn-warning btn-block" value="Ok" onclick="bootbox.hideAll()" style="margin-top:15px;">
+            </div>
+            </div>
+            `
+          });
+        } else if(data.error){
+          manejadorDeErrores(data.error);
+        }
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+}

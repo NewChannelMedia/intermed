@@ -7,11 +7,14 @@ module.exports = function ( sequelize, DataTypes ) {
       autoIncrement: true,
       primaryKey: true
     },
+    titulo: {
+      type: DataTypes.STRING
+    },
     comentario: {
       type: DataTypes.STRING
     },
     anonimo: {
-      type: DataTypes.BOOLEAN
+      type: DataTypes.INTEGER
     },
     medico_id: {
       type: DataTypes.BIGINT,
@@ -20,7 +23,8 @@ module.exports = function ( sequelize, DataTypes ) {
     usuario_id: {
       type: DataTypes.BIGINT,
       allowNull: false
-    }
+    },
+    fecha: {type: DataTypes.DATE}
   }, {
     classMethods: {
       associate: function ( models ) {

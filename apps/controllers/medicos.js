@@ -1323,4 +1323,64 @@ var _this = module.exports = {
       });
     }
   },
+
+  dejarComentario: function (object, req, res){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      models.Medico.findOne({
+        where: {
+          usuario_id: object.usuario_medico_id
+        }
+      }).then(function(medico){
+        if (medico){
+          models.ComentariosMedicos.create({
+            medico_id: medico.id,
+            usuario_id: req.session.passport.user.id,
+            titulo: object.titulo,
+            comentario: object.comentario,
+            anonimo: object.anonimo,
+            fecha: getDateTime(true)
+          }).then(function(result){
+            res.status(200).json({
+              success: true,
+              result: result
+            });
+          });
+        } else {
+          //error de que el medico no existe
+          res.status(200).json({
+            success: false,
+            error: 2
+          });
+        }
+      });
+    } else {
+      res.status(200).json({
+        success: false,
+        error: 1
+      });
+    }
+  }
+}
+
+
+
+function getDateTime( format ) {
+  var date = new Date();
+  var hour = date.getHours();
+  hour = ( hour < 10 ? "0" : "" ) + hour;
+  var min = date.getMinutes();
+  min = ( min < 10 ? "0" : "" ) + min;
+  var sec = date.getSeconds();
+  sec = ( sec < 10 ? "0" : "" ) + sec;
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  month = ( month < 10 ? "0" : "" ) + month;
+  var day = date.getDate();
+  day = ( day < 10 ? "0" : "" ) + day;
+  if ( format ) {
+    return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
+  }
+  else {
+    return year + month + day + hour + min + sec;
+  }
 }

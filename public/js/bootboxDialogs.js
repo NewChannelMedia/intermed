@@ -444,7 +444,7 @@ function agregarUbicacion(ubicacion_id){
   });
 
   maquetaServices();
-  
+
   if (btnGuardar == "Editar"){
     $("#frmRegUbi :input").prop('disabled', true);
     $("#frmRegUbi :button").prop('disabled', false);
@@ -2636,13 +2636,6 @@ function calificarServicioMedico(){
     var imagenUrl = '';
     var nombreUsuario = '';
 
-    var nombreUbicacion = '';
-    var nombreServicio = '';
-    var fecha = '';
-    var hora = '';
-    var agenda_id = '';
-    var notificacion_id = '';
-
     $.ajax( {
       async: false,
       url: '/usuario/traer',
@@ -2932,4 +2925,86 @@ function detalleCitaPaciente(eventid){
             '</div>'+
         '</div>'
   });
+}
+
+
+
+
+function dejarComentarioMedico(){
+
+    var imagenUrl = '';
+    var nombreUsuario = '';
+
+    $.ajax( {
+      async: false,
+      url: '/usuario/traer',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        'id': $('#usuarioPerfil').val()
+      },
+      success: function ( data ) {
+        imagenUrl = data.urlFotoPerfil;
+        if (!data.DatosGenerale.apellidoM) data.DatosGenerale.apellidoM = '';
+        nombreUsuario = 'Dr. ' + data.DatosGenerale.nombre  + ' ' + data.DatosGenerale.apellidoP + ' ' + data.DatosGenerale.apellidoM;
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+
+    bootbox.dialog({
+      backdrop: true,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">DEJAR COMENTARIO.</span>',
+      message:
+      '<div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom:15px;margin-top:20px">'+
+        '<div class="row">'+
+          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:-15px;margin-bottom:5px;">'+
+            '<h4><b>'+nombreUsuario+'</b></h4>'+
+          '</div>'+
+
+          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;">'+
+            '<div class="col-md-6 col-sm-6 col-xs-6 col-md-offset-3 col-sm-offset-3 col-xs-offset-3">'+
+              '<img src="'+imagenUrl+'" style="width:100%;" class="img-thumbnail">'+
+            '</div>'+
+          '</div>'+
+
+          '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:20px">'+
+              '<input type="text" id="tituloComentario" class="form-control" rows="3" placeholder="Titulo del comentario">'+
+          '</div>'+
+
+          '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:5px">'+
+              '<textarea id="comentarioMedico" class="form-control" rows="3" placeholder="Comentario..." style="resize: none;"></textarea>'+
+          '</div>'+
+
+          '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+            '<div style="font-weight: bold;padding:5px">'+
+              '<label>'+
+                '<input type="checkbox" id="comentarioAnonimo"> Comentario anónimo'+
+              '</label>'+
+            '</div>'+
+          '</div>'+
+
+        '</div>'+
+      '</div>'+
+      '<div class="row">'+
+        '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+          '<div class="col-md-6 col-sm-6 col-xs-12 pull-right">'+
+              '<div class="form-group">'+
+                  '<input type="button" style="font-weight:bold" class="btn btn-danger btn-block" value="Enviar" onclick="dejarComentario();">'+
+              '</div>'+
+          '</div>'+
+          '<div class="col-md-3 col-sm-3 col-xs-12 pull-left">'+
+              '<div class="form-group">'+
+                  '<input type="button" style="font-weight:bold" class="btn btn-warning btn-block" value="Cancelar" onclick="bootbox.hideAll();">'+
+              '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'
+    });
 }

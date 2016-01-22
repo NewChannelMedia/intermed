@@ -1781,6 +1781,10 @@ var manejarPerfiles = function(){
     intermed.callController('medicos','calificar', req.body, req, res);
   });
 
+  app.post('/medico/dejarComentario', function (req, res){
+    intermed.callController('medicos','dejarComentario', req.body, req, res);
+  });
+
 }
 
 var error404 = function(){
