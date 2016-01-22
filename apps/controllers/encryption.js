@@ -137,6 +137,10 @@
   exports.cambiar = function( object, req, res ){
     res.render('cambiarPass');
   }
+  // Solo renderiza la vista de historiales
+  exports.historiales = function( req, res ){
+    res.render('historiales');
+  }
   function generateEncrypted(pass){
     const password = crypto.createHmac('sha512',pass);
     password.update(pass);// se actualiza la cadena

@@ -5591,7 +5591,7 @@ $( document ).ready( function () {
           if( data == true ){
             $("#noAcceso").addClass('hidden');
             $(password).val('');
-            console.log("REdireccionar");
+            window.location = "/historiales";
           }else{
             $("#noAcceso").removeClass('hidden');
           }

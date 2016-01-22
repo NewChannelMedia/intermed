@@ -54,6 +54,7 @@ app.use( '/nuevoPerfilMedicos', express.static( __dirname + '/../public' ) );
 app.use( '/inbox', express.static( __dirname + '/../public' ) );
 app.use( '/notificaciones', express.static( __dirname + '/../public' ) );
 app.use( '/cambiar', express.static( __dirname + '/../public' ) );
+app.use( '/historiales', express.static( __dirname + '/../public' ) );
 //<----------------------------------------------------------------------------->
 /**
  * function para cargar las rutas, como estatitcas los layouts
@@ -1804,6 +1805,11 @@ var manejarPerfiles = function(){
     var tok = req.params.token;
     rutas.routeLife( 'plataforma2', 'interno', hps );
     intermed.callController( 'encryption', 'cambiar', {token: tok}, req, res );
+  });
+  //Vista de historiales
+  app.get('/historiales', function( req, res ){
+    rutas.routeLife( 'plataforma2', 'plataforma/medico', hps );
+    intermed.callController('encryption','historiales', req, res );
   });
 }
 
