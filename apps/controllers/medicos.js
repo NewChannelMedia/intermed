@@ -1337,8 +1337,7 @@ var _this = module.exports = {
             usuario_id: req.session.passport.user.id,
             titulo: object.titulo,
             comentario: object.comentario,
-            anonimo: object.anonimo,
-            fecha: getDateTime(true)
+            anonimo: object.anonimo
           }).then(function(result){
             res.status(200).json({
               success: true,
@@ -1359,28 +1358,174 @@ var _this = module.exports = {
         error: 1
       });
     }
-  }
-}
+  },
 
+  cargarComentarios: function(object, req, res){
+    if (object.usuario_id == ""){
+      if (req.session.passport && req.session.passport.user){
+        object.usuario_id = req.session.passport.user.id;
+      }
+    }
+    if (object.usuario_id != ""){
+      models.Medico.findOne({
+        where: {
+          usuario_id: object.usuario_id
+        }
+      }).then(function(medico){
+        if (medico){
+          models.ComentariosMedicos.findAll({
+            where:{
+              medico_id: medico.id
+            },
+            order:[['fecha','DESC']],
+            include: [{
+              model: models.Usuario,
+              attributes: ['id','usuarioUrl','urlFotoPerfil','urlPersonal'],
+              include: [{
+                model: models.DatosGenerales
+              },{
+                model: models.Direccion,
+                attributes:['id'],
+                include:[
+                  {
+                    model: models.Municipio,
+                    include :[{ model : models.Estado}]
+                  }
+                ]
+              }]
+            }]
+          }).then(function(result){
+            res.status(200).json({
+              success: true,
+              result: result
+            });
+          });
+        } else {
+          //error de que el medico no existe
+          res.status(200).json({
+            success: false,
+            error: 2
+          });
+        }
+      });
+    } else {
+      //Error: no usuario_id
+      res.status(200).json({
+        success: false,
+        error: 3
+      });
+    }
 
+  },
 
-function getDateTime( format ) {
-  var date = new Date();
-  var hour = date.getHours();
-  hour = ( hour < 10 ? "0" : "" ) + hour;
-  var min = date.getMinutes();
-  min = ( min < 10 ? "0" : "" ) + min;
-  var sec = date.getSeconds();
-  sec = ( sec < 10 ? "0" : "" ) + sec;
-  var year = date.getFullYear();
-  var month = date.getMonth() + 1;
-  month = ( month < 10 ? "0" : "" ) + month;
-  var day = date.getDate();
-  day = ( day < 10 ? "0" : "" ) + day;
-  if ( format ) {
-    return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
-  }
-  else {
-    return year + month + day + hour + min + sec;
+  agregarFormacionAcademica: function  (object, req, res){
+    if (req.session.passport && req.session.passport.user){
+        if (object.fechaFin == ""){
+          object.fechaFin = null;
+        }
+        if (object.fechaTitulo == ""){
+          object.fechaTitulo = null;
+        }
+        if (object.fechaFin == ""){
+          object.fechaFin = null;
+        }
+
+        models.Medico.findOne({
+          where: {
+            usuario_id: req.session.passport.user.id
+          }
+        }).then(function(medico){
+          models.MedicoFormacion.create( {
+            nivel: object.nivel,
+            especialidad: object.especialidad,
+            lugarDeEstudio: object.lugarDeEstudio,
+            fechaInicio: object.fechaInicio,
+            fechaFin: object.fechaFin,
+            fechaTitulo: object.fechaTitulo,
+            actual: object.actual,
+            medico_id: medico.id
+          } ).then( function ( datos ) {
+            res.status( 200 ).json( {
+              success: true,
+              result: datos
+            } );
+          } ).catch( function ( err ) {
+            res.status( 500 ).json( {
+              error: err
+            } );
+          } );
+        });
+    } else {
+      //Error: no usuario_id
+      res.status(200).json({
+        success: false,
+        error: 3
+      });
+    }
+  },
+
+  cargarFormacionAcademica: function (object, req, res){
+    if (req.session.passport && req.session.passport.user){
+        models.Medico.findOne({
+          where: {
+            usuario_id: req.session.passport.user.id
+          }
+        }).then(function(medico){
+          models.MedicoFormacion.findAll( {
+            where:{
+              medico_id: medico.id
+            },
+            order:[['fechaInicio','ASC']]
+          } ).then( function ( datos ) {
+            res.status( 200 ).json( {
+              success: true,
+              result: datos
+            } );
+          } ).catch( function ( err ) {
+            res.status( 500 ).json( {
+              error: err
+            } );
+          } );
+        });
+    } else {
+      //Error: no usuario_id
+      res.status(200).json({
+        success: false,
+        error: 3
+      });
+    }
+  },
+
+  cargarFormacionAcademicaByID: function (object, req, res){
+    if (req.session.passport && req.session.passport.user){
+        models.Medico.findOne({
+          where: {
+            usuario_id: req.session.passport.user.id
+          }
+        }).then(function(medico){
+          models.MedicoFormacion.findOne( {
+            where:{
+              medico_id: medico.id,
+              id: object.id
+            },
+            order:[['fechaInicio','ASC']]
+          } ).then( function ( datos ) {
+            res.status( 200 ).json( {
+              success: true,
+              result: datos
+            } );
+          } ).catch( function ( err ) {
+            res.status( 500 ).json( {
+              error: err
+            } );
+          } );
+        });
+    } else {
+      //Error: no usuario_id
+      res.status(200).json({
+        success: false,
+        error: 3
+      });
+    }
   }
 }

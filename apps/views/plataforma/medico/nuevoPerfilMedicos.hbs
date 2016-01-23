@@ -696,12 +696,14 @@
             <div class="cv-body-main-section col-lg-6 col-md-6 col-sm-6 col-xs-12">
               <div class="row">
                 <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12 ">
-                  <a href="#">
+                  {{#unless usuario.id}}
+                  <a onclick="BootboxFormacionAcademica()">
                     <div class="img-rounded info-left-icon">
                       <span class="glyphicon glyphicon-pencil icon"></span>
                     </div>
                     <span class="info-label s20 whiteF h67-medcond text-uppercase">Editar sección</span>
                   </a>
+                  {{/unless}}
                   <div class="media cv-header">
                     <div class="media-left cv-icon-cont">
                       <img class="cv-icon" src="img/plataforma/icons/formacion.png">
@@ -760,12 +762,14 @@
             <div class="cv-body-main-section col-lg-6 col-md-6 col-sm-6 col-xs-12">
               <div class="row">
                 <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
-                  <a href="#">
+                  {{#unless usuario.id}}
+                  <a onclick="BootboxExperienciaLaboral()">
                     <div class="img-rounded info-left-icon">
                       <span class="glyphicon glyphicon-pencil icon"></span>
                     </div>
                     <span class="info-label s20 whiteF h67-medcond text-uppercase">Editar sección</span>
                   </a>
+                  {{/unless}}
                   <div class="media cv-header">
                     <div class="media-left cv-icon-cont">
                       <img class="cv-icon" src="img/plataforma/icons/experiencia.png">
@@ -886,67 +890,12 @@
           </div>
         </div>
         <div class="row comentarios-row">
+
           <div class="container">
-            <div class="col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1">
-              <div class="media comment-container">
-                <div class="media-left">
-                  <img class="img-circle comment-img" style="width:150px;" src="img/plataforma/temp/profile-pics/pp1.jpg">
-                </div>
-                <article class="media-body">
-                  <div class="comment-title s30 h67-medcond">
-                    ¡Un gran médico!
-                  </div>
-                  <p class="s15 h67-medium">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                  </p>
-                  <p class="comment-autor s15 h75-bold">
-                    <span>Fulano de Tal</span>. <span>Guadalajara</span>, <span>Jal</span>.
-                  </p>
-                  <p class="comment-date s15 h67-medium text-info">
-                    20 de Noviembre de 2015
-                  </p>
-                </article>
-              </div>
-              <div class="media comment-container">
-                <div class="media-left">
-                  <img class="img-circle comment-img" style="width:150px;" src="img/plataforma/temp/profile-pics/pp2.jpg">
-                </div>
-                <article class="media-body">
-                  <div class="comment-title s30 h67-medcond">
-                    Muy agradecido
-                  </div>
-                  <p class="s15 h67-medium">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                  </p>
-                  <p class="comment-autor s15 h75-bold">
-                    <span>Perengano Mendiola</span>. <span>Guadalajara</span>, <span>Jal</span>.
-                  </p>
-                  <p class="comment-date s15 h67-medium text-info">
-                    20 de Noviembre de 2015
-                  </p>
-                </article>
-              </div>
-              <div class="media comment-container">
-                <div class="media-left">
-                  <img class="img-circle comment-img" style="width:150px;" src="img/plataforma/temp/profile-pics/pp3.jpg">
-                </div>
-                <article class="media-body">
-                  <div class="comment-title s30 h67-medcond">
-                    No lo recomiendo
-                  </div>
-                  <p class="s15 h67-medium">
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                  </p>
-                  <p class="comment-autor s15 h75-bold">
-                    <span>Gordolfo de la Colina</span>. <span>Guadalajara</span>, <span>Jal</span>.
-                  </p>
-                  <p class="comment-date s15 h67-medium text-info">
-                    20 de Noviembre de 2015
-                  </p>
-                </article>
-              </div>
+            <div class="col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1" id="comentariosMedico">
             </div>
           </div>
+
         </div>
       </div>
     </section>

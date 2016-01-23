@@ -4,6 +4,7 @@
  */
 var regTotalDoc = 0;
 var base_url = 'http://localhost:3000/';
+var default_urlFotoPerfil = '/garage/profilepics/dpp.png';
 if ( location.pathname === '/registro' ) {
   $( document ).ready( getAllDoctors() );
 }
@@ -119,12 +120,6 @@ else {
         document.getElementById( 'alertErrorM' ).innerHTML = '<div class="alert alert-danger" role="alert" >' + mensaje + '</div>';
       }
     } );
-
-    if ( $( '#registroCompleto' ) && $( '#registroCompleto' ).val() === "0" && $( '#inicio' ).val() === "1" ) {
-      if ( $( '#tipoUsuario' ).val() === "M" ) {
-        registroMedicoDatosPersonales();
-      }
-    }
 
     if ( location.pathname.substring( 0, 7 ) === '/perfil' ) {
       cargarFavCol( $( '#usuarioPerfil' ).val() );
@@ -5506,9 +5501,17 @@ $( document ).ready( function () {
 
     cargarListaEspCol( $( '#usuarioPerfil' ).val() );
 
+    cargarComentariosMedico();
+
     $('#buscadorEspecial').on('input',function(e){
      cargarListaEspCol( $( '#usuarioPerfil' ).val() );
     });
+
+    if ( $( '#registroCompleto' ) && $( '#registroCompleto' ).val() === "0" && $( '#inicio' ).val() === "1" ) {
+      if ( $( '#tipoUsuario' ).val() === "M" ) {
+        registroMedicoDatosPersonales();
+      }
+    }
   }
 } );
 //fin de Perfil Medicos
@@ -5627,6 +5630,7 @@ function dejarComentario(){
       type: 'POST',
       success: function (data) {
         if (data.success){
+          cargarComentariosMedico();
           bootbox.hideAll();
           bootbox.alert({
             backdrop: true,
@@ -5645,6 +5649,248 @@ function dejarComentario(){
           });
         } else if(data.error){
           manejadorDeErrores(data.error);
+        }
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+}
+
+function cargarComentariosMedico(){
+  var usuario_id = '';
+  if ($('#usuarioPerfil').length>0){
+    usuario_id = $('#usuarioPerfil').val();
+  }
+  $.ajax({
+      url: '/medico/cargarComentarios',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        usuario_id: usuario_id,
+      },
+      type: 'POST',
+      success: function (data) {
+        if (data.success){
+          var contenido = '';
+          data.result.forEach(function(res){
+            var nombre = "Anonimo";
+            if (res.anonimo == 0){
+              if (res.Usuario.DatosGenerale.apellidoM && res.Usuario.DatosGenerale.apellidoM!=""){
+                res.Usuario.DatosGenerale.apellidoM = ' ' + res.Usuario.DatosGenerale.apellidoM;
+              } else {
+                res.Usuario.DatosGenerale.apellidoM = '';
+              }
+              nombre = res.Usuario.DatosGenerale.nombre  + ' ' + res.Usuario.DatosGenerale.apellidoP + res.Usuario.DatosGenerale.apellidoM + '.';
+
+              if (res.Usuario.Direccions[0]){
+                nombre = nombre + ' '+ res.Usuario.Direccions[0].Municipio.municipio +', '+ res.Usuario.Direccions[0].Municipio.Estado.estado.substring(0, 3) +'.';
+              }
+
+            } else {
+              res.Usuario.urlFotoPerfil = default_urlFotoPerfil;
+            }
+            res.fecha = new Date(res.fecha).toLocaleDateString();
+            res.fecha = formatearFechaComentario(res.fecha.split(' ')[0]);
+
+            contenido += '<div class="media comment-container">';
+              contenido += '<div class="media-left"><img class="img-circle comment-img" style="width:150px;" src="'+res.Usuario.urlFotoPerfil+'"></div>';
+              contenido += '<article class="media-body">';
+                contenido += '<div class="comment-title s30 h67-medcond">'+res.titulo+'</div>';
+                contenido += '<p class="s15 h67-medium">'+res.comentario+'</p>';
+                contenido += '<p class="comment-autor s15 h75-bold"><span class="capitalize">'+ nombre +'</span></p>';
+                contenido += '<p class="comment-date s15 h67-medium text-info">'+res.fecha+'</p>';
+              contenido += '</article>';
+            contenido += '</div>';
+          });
+            $('#comentariosMedico').html(contenido);
+        }
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+}
+
+function formatearFechaComentario(fecha){
+  var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  fecha = fecha.split('/');
+  var mes = meses[parseInt(fecha[0])-1];
+  var dia = fecha[1];
+  var anio = fecha[2];
+  return parseInt(dia) + ' de ' + mes + ' de ' + anio ;
+}
+
+function CambiarVisible(anterior,nuevo, formacion_id){
+  if (formacion_id){
+    $('#formAcademica')[0].reset();
+    $('#divInicio').removeClass('col-md-10');
+    $('#divInicio').addClass('col-md-3');
+    $('#divFin').removeClass('hidden');
+    $('#divGrado').removeClass('hidden');
+    if (formacion_id>0 && !(formacion_id === true)){
+      //AJax para traer la informacion de la formacion_id
+      console.log('AJAX: formacion_id ' + formacion_id);
+      cargarFormacionAcademicaByID(formacion_id);
+    }
+  }
+
+  $('#'+anterior).removeClass('in');
+  $('#'+anterior).removeClass('active');
+  $('#'+nuevo).addClass('in');
+  $('#'+nuevo).addClass('active');
+}
+
+function agregarFormacionAcademica(){
+  var form = $('#formAcademica');
+  var institucion = form.find('#inputInstitucion').val();
+  var especialidad = form.find('#inputEspecialidad').val();
+  var inicio = form.find('#inputInicio').val();
+  var fin = form.find('#inputFin').val();
+  var actual = 0;
+  if (form.find('#inputActual').is(':checked')){
+    actual = 1;
+  }
+  var grado = form.find('#inputGrado').val();
+  var nivel = form.find('#inputNivel').val();
+  if (nivel > 0 && institucion != "" && especialidad != "" && inicio != ""){
+    var insertar = true;
+    if (!actual){
+      if (fin == ""){
+        insertar = false;
+      }
+    } else {
+      fin = '';
+      grado = '';
+    }
+
+    if (insertar){
+      $.ajax({
+          url: '/medico/formacionAcademica/agregar',
+          type: 'POST',
+          dataType: "json",
+          cache: false,
+          data: {
+            nivel:nivel,
+            lugarDeEstudio: institucion,
+            especialidad: especialidad,
+            fechaInicio: inicio,
+            fechaFin: fin,
+            actual: actual,
+            fechaTitulo: grado
+          },
+          type: 'POST',
+          success: function (data) {
+            if (data.success){
+              bootbox.hideAll();
+            } else {
+              if(data.error){
+                manejadorDeErrores(data.error);
+              }
+            }
+          },
+          error: function (err){
+            console.log('AJAX Error: ' + JSON.stringify(err));
+          }
+        });
+    } else {
+      //Faltan campos
+      alert('Faltan campos (A)');
+    }
+  }else {
+    //Faltan campos
+    alert('Faltan campos (B)');
+  }
+}
+
+function cambiarActual(element){
+  if ($(element).is(':checked')){
+    $('#divInicio').removeClass('col-md-3');
+    $('#divInicio').addClass('col-md-10');
+    $('#divFin').addClass('hidden');
+    $('#divGrado').addClass('hidden');
+  } else {
+    $('#divInicio').removeClass('col-md-10');
+    $('#divInicio').addClass('col-md-3');
+    $('#divFin').removeClass('hidden');
+    $('#divGrado').removeClass('hidden');
+  }
+}
+
+function cargarFormacionAcademica(){
+  $.ajax({
+      url: '/medico/formacionAcademica/cargar',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      type: 'POST',
+      success: function (data) {
+        if (data.success){
+          var contenido = '';
+          data.result.forEach(function(res){
+            var anioInicio = new Date(res.fechaInicio).toLocaleDateString().split(' ')[0].split('/')[2];
+            var anioFin = '';
+            if (res.fechaFin && res.fechaFin != ""){
+              anioFin = new Date(res.fechaFin).toLocaleDateString().split(' ')[0].split('/')[2];
+            }
+            var anioGrado = '';
+            if (res.fechaTitulo && res.fechaTitulo != ""){
+              anioGrado = new Date(res.fechaTitulo).toLocaleDateString().split(' ')[0].split('/')[2];
+            }
+
+            var clase = '';
+
+            if (res.actual == 1){
+              clase = " class='success' ";
+            }
+
+            contenido += '<tr ' + clase + '><td>'+res.lugarDeEstudio+'</td><td>'+res.especialidad+'</td><td>'+anioInicio+'</td>';
+            contenido += '<td>'+anioFin+'</td>';
+            contenido += '<td>'+anioGrado+'</td>';
+            contenido += '<td><a style="color:green"><span class="glyphicon glyphicon-pencil" onclick="CambiarVisible(\'divListaFormacion\',\'divAddFormacion\','+ res.id +');"></span></a></td>';
+            contenido += '<td><a style="color:red"><span class="glyphicon glyphicon-remove"></span></a></td></tr>';
+          });
+          $('#formacionAcademicaList').html(contenido);
+        }else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+}
+
+function cargarFormacionAcademicaByID(formacion_id){
+  $.ajax({
+      url: '/medico/formacionAcademica/cargarById',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      type: 'POST',
+      data: {id:formacion_id},
+      success: function (data) {
+        console.log('Data: ' + JSON.stringify(data));
+        if (data.success){
+          if (data.result){
+            $('#inputInstitucion').val(data.result.lugarDeEstudio);
+            $('#inputEspecialidad').val(data.result.especialidad);
+            var fechaInicio = new Date(new Date(data.result.fechaInicio).toLocaleDateString()).toISOString().split('T')[0];
+            $('#inputInicio').val(fechaInicio);
+            $('#fechaFin').val(data.result.fechaFin);
+            $('#inputInstitucion').val(data.result.lugarDeEstudio);
+            if (data.result.actual == 1){
+              $('#inputActual').attr('checked','true');
+            }
+            $('#inputNivel').val(data.result.nivel);
+          }
+        }else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
         }
       },
       error: function (err){

@@ -1785,6 +1785,21 @@ var manejarPerfiles = function(){
     intermed.callController('medicos','dejarComentario', req.body, req, res);
   });
 
+  app.post('/medico/cargarComentarios', function(req, res){
+    intermed.callController('medicos','cargarComentarios', req.body, req, res);
+  });
+
+  app.post('/medico/formacionAcademica/agregar', function(req, res){
+    intermed.callController('medicos','agregarFormacionAcademica', req.body, req, res);
+  });
+
+  app.post('/medico/formacionAcademica/cargar', function(req, res){
+    intermed.callController('medicos','cargarFormacionAcademica', req.body, req, res);
+  });
+
+  app.post('/medico/formacionAcademica/cargarById', function(req,res){
+    intermed.callController('medicos','cargarFormacionAcademicaByID', req.body, req, res);
+  });
 }
 
 var error404 = function(){
