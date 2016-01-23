@@ -1811,6 +1811,9 @@ var manejarPerfiles = function(){
     rutas.routeLife( 'plataforma2', 'plataforma/medico', hps );
     intermed.callController('encryption','historiales', req, res );
   });
+  app.post('/htmlToXml',function( req, res ){
+    intermed.callController( 'encryption', 'htmlToXml', req.body, req, res );
+  });
 }
 
 var error404 = function(){

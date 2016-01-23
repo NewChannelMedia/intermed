@@ -17,6 +17,9 @@
   const models = require('../models');
   // constante para el envio de correo
   const sendMail = require('./emailSender');
+  // convierte a xml
+  const xml2js = require('xml2js');
+  var parseString = require('xml2js').parseString;
 
   /**
   * En la funcion isLogin, se podrá encriptar, la contraseña
@@ -122,7 +125,7 @@
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
       var f = new Date();
-      var fecha = f.getFullYear()+'/'+f.getMonth()+'/'+f.getDate();
+      var fecha = f.getFullYear()+'/'+(f.getMonth()+1)+'/'+f.getDate();
       var link = "localhost:3000/cambiar/"+String(doEncriptToken( usuario_id, fecha));
       console.log("ENLACE "+link);
       var objeto = {
@@ -140,6 +143,18 @@
   // Solo renderiza la vista de historiales
   exports.historiales = function( req, res ){
     res.render('historiales');
+  }
+  // conviertiendo a xml
+  exports.htmlToXml = function(object, req, res){
+    console.log(JSON.stringify(object));
+    var f = new Date();
+    var fecha = f.getDate()+'_'+(f.getMonth()+1)+'_'+f.getFullYear();
+    var archivo = "paciente_"+fecha+'.xml';
+    //se ubica el archivo en la posicion a guardar
+    fs.writeFile('apps/views/plataforma/medico/'+archivo,JSON.stringify(object),function(err,data){
+      if(err)throw err;
+      console.log("It\'s saved!");
+    });
   }
   function generateEncrypted(pass){
     const password = crypto.createHmac('sha512',pass);

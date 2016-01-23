@@ -5710,4 +5710,54 @@ $( document ).ready( function () {
 
     });
   }
+  $("#agregarHistorial").click(function(){
+    var nombre = $("#nombreInputHistorial").val();
+    var apellidoP = $("#apellidoPHistorial").val();
+    var apellidoM = $("#apellidoMHistorial").val();
+    var dia = $("#diaHistorial").val();
+    var mes = $("#mesHistorial").val();
+    var año = $("#anioHistorial").val();
+    var sexo = $("#selectSex option:selected").val();
+    var cm = $("#cmHistorial").val();
+    var kg = $("#kgHistorial").val();
+    var correo = $("#mailHistorial").val();
+    var salud = $("#estadoHistorial").val();
+    var padecimiento = $("#padeHistorial").val();
+    var alergias = $("#alergiasHistorial").val();
+    var notas = $("#notaHistorial").val();
+    // se envia los inputs por post
+    $.post('/htmlToXml',{
+      nombre: nombre,
+      apellidoP: apellidoP,
+      apellidoM: apellidoM,
+      dia: dia,
+      mes: mes,
+      año: año,
+      sexo: sexo,
+      cm: cm,
+      kg: kg,
+      correo: correo,
+      salud: salud,
+      padecimiento:padecimiento,
+      alergias:alergias,
+      notas:notas
+    }, function(data){
+      if( data == true ){
+        $("#nombreInputHistorial").val('');
+        $("#apellidoPHistorial").val('');
+        $("#apellidoMHistorial").val('');
+        $("#diaHistorial").val('');
+        $("#mesHistorial").val('');
+        $("#anioHistorial").val('');
+        $("#selectSex:selected").val('');
+        $("#cmHistorial").val('');
+        $("#kgHistorial").val('');
+        $("#mailHistorial").val('');
+        $("#estadoHistorial").val('');
+        $("#padeHistorial").val('');
+        $("#alergiasHistorial").val('');
+        $("#notaHistorial").val('');
+      }
+    });
+  });
 //<------------------- fin historial ---------------------->
