@@ -1494,6 +1494,15 @@ var iniciar = function () {
         intermed.callController('CargosUsuarios', 'RegistrarUsuarioEnProveedor', req.body, req, res);
     });
 
+
+    app.get('/registrarnuevatarjeta', function (req, res) {
+        intermed.callController('CargosUsuarios', 'RegistrarNuevaTarjetaDatos', req.body, req, res);
+    });
+
+    app.post('/registrarnuevatarjeta', function (req, res) {
+        intermed.callController('CargosUsuarios', 'RegistrarNuevaTarjeta', req.body, req, res);
+    });
+
     //Registrar plan de cargo
     app.get('/registrarplancargo', function (req, res) {
         intermed.callController('CargosUsuarios', 'PlanCargoDatosRegistro', req.body, req, res);       

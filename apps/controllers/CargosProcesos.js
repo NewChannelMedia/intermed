@@ -1,7 +1,7 @@
 ﻿/// <reference path="HistoricoCargos.js" />
 //Procesar las notificaciones recibidas del proveedor
 var models = require('../models');
-var historicoCargos = require('HistoricoCargos');
+var historicoCargos = require('./HistoricoCargos');
 
 
 //Conekta
@@ -19,7 +19,7 @@ exports.RecibirNotificacion = function (object, req, res) {
     if (notificacion) {
         res.status(200).json({ ok: true });
 
-        console.log(notificacion);
+        //console.log(notificacion);
 
         switch (notificacion.type) {
             case 'charge.paid': //cuando un cargo ha sido pagado
@@ -39,7 +39,7 @@ exports.RecibirNotificacion = function (object, req, res) {
             case 'subscription.resumed': //cuando una suscripción pausada ha sido reanudada.                
             case 'subscription.canceled': //cuando una suscripción ha sido cancelada. Aparte de que tú o el cliente haya cancelado la suscripción, también se cancelará después de varios intentos de realizar el cobro al cliente.                
             case 'subscription.updated': //cuando una suscripción ha sido actualizada ya sea con un nuevo plan o tarjeta.
-                NotificacionGuardar(notificacion);
+                //NotificacionGuardar(notificacion);
                 break;            
             case 'plan.created':
             case 'plan.updated':
