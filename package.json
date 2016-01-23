@@ -38,6 +38,6 @@
     "sequelize": "3.5.1",
     "file-encryptor":"0.1.0",
     "uuid":"2.0.1",
-    "xml2js":"0.4.16"
+    "object-to-xml":"1.0.0"
   }
 }

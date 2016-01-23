@@ -18,8 +18,6 @@
   // constante para el envio de correo
   const sendMail = require('./emailSender');
   // convierte a xml
-  const xml2js = require('xml2js');
-  var parseString = require('xml2js').parseString;
 
   /**
   * En la funcion isLogin, se podrá encriptar, la contraseña
@@ -150,10 +148,42 @@
     var f = new Date();
     var fecha = f.getDate()+'_'+(f.getMonth()+1)+'_'+f.getFullYear();
     var archivo = "paciente_"+fecha+'.xml';
+    var o2x = require('object-to-xml');
+    var obj = {
+      '?xml version=\"1.0\" encoding=\"iso-8859-1\"?' : null,
+      datos:{
+        nombre: object.nombre,
+        apellidoP: object.apellidoP,
+        apellidoM: object.apellidoM
+      },
+      fecha:{
+        dia: object.dia,
+        mes: object.mes,
+        año: object.año
+      },
+      biometricos:{
+        sexo: object.sexo,
+        estatura: object.cm,
+        peso: object.kg
+      },
+      correo: object.correo,
+      salud:{
+        estado: object.salud
+      },
+      padecimiento:{
+        padecimientos:object.padecimiento
+      },
+      alergia:{
+        alergias:object.alergias
+      },
+      nota:{
+        notas: object.notas
+      }
+    }
     //se ubica el archivo en la posicion a guardar
-    fs.writeFile('apps/views/plataforma/medico/'+archivo,JSON.stringify(object),function(err,data){
+    fs.writeFile('apps/views/plataforma/medico/historiales/'+archivo,o2x(obj),function(err,data){
       if(err)throw err;
-      console.log("It\'s saved!");
+      res.send(true)
     });
   }
   function generateEncrypted(pass){
