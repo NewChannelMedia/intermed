@@ -144,7 +144,6 @@
   }
   // conviertiendo a xml
   exports.htmlToXml = function(object, req, res){
-    console.log(JSON.stringify(object));
     var f = new Date();
     var fecha = f.getDate()+'_'+(f.getMonth()+1)+'_'+f.getFullYear();
     var archivo = "paciente_"+fecha+'.xml';
