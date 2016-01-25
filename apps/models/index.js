@@ -17,7 +17,17 @@ var main = new Sequelize( 'intermed', 'root', '', {
   },
   logging: null
 } );
-
+// conexion a la nueva base de datos intermed.historia
+var historial = new Sequelize('intermed.historia','root','',{
+  host: 'localhost',
+  dialect: 'mysql',
+  pool:{
+    max: 5,
+    min: 0,
+    idle: 10000
+  },
+  logging: null
+});
 var inbox = new Sequelize( 'Intermed-Inbox', 'root', '', {
   host: 'localhost',
   dialect: 'mysql',
@@ -43,11 +53,11 @@ var sequelizeCargos = new Sequelize('intermed.cargos', 'root', '', {
 fs
   .readdirSync( __dirname )
   .filter( function ( file ) {
-      return (file.indexOf(".") !== 0) && (file !== "index.js") && (file !== "Cargos");
+      return (file.indexOf(".") !== 0) && (file !== "index.js") && (file !== "Cargos") && ( file !== "Historial");
   } )
-  .forEach(function (file) {    
+  .forEach(function (file) {
         var model = (file == 'inbox.js') ? inbox.import(path.join(__dirname, file)) : main.import(path.join(__dirname, file));
-        db[model.name] = model;      
+        db[model.name] = model;
   } );
 
 //Modelo de Intermed.Cargos
@@ -56,13 +66,22 @@ fs
   .filter(function (file) {
       return (file.indexOf(".") !== 0);
   })
-  .forEach(function (file) {      
+  .forEach(function (file) {
       var model = sequelizeCargos.import(path.join(__dirname + '/Cargos', file));
-      db[model.name] = model;      
+      db[model.name] = model;
   });
-
+  //Modelo de Intermed.historia
+  fs
+    .readdirSync(__dirname + '/Historial')
+    .filter(function (file) {
+        return (file.indexOf(".") !== 0);
+    })
+    .forEach(function (file) {
+        var model = historial.import(path.join(__dirname + '/Historial', file));
+        db[model.name] = model;
+    });
 Object.keys( db ).forEach( function ( modelName ) {
-    if ("associate" in db[modelName]) {        
+    if ("associate" in db[modelName]) {
     db[ modelName ].associate( db );
   }
 } );

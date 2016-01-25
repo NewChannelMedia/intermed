@@ -5914,3 +5914,186 @@ function cargarFormacionAcademicaByID(formacion_id){
       }
     });
 }
+//<------------------- historial -------------------------->
+  $("#oficina").click(function(){
+    logEncrypt();
+  });
+  function isLogin(password){
+    var pass = $(password).val();
+    // se envia la informacion
+    if( pass != '' ){
+      if( pass.length >= 6 ){
+        $.post('/isLogin',{pass:pass}, function(data){
+          if( data == true ){
+            $("#noAcceso").addClass('hidden');
+            $(password).val('');
+            window.location = "/historiales";
+          }else{
+            $("#noAcceso").removeClass('hidden');
+          }
+        });
+      }else{
+        console.log("Debe de contener mas de 6 caracteres");
+      }
+    }else{
+      console.log("Campo vacio");
+    }
+  }
+  function createPassword(){
+    bootbox.hideAll();
+    passwordCreate();
+  }
+  function sendContraseña(uno,dos){
+    var pass = $(uno).val();
+    var confirma = $(dos).val();
+    if( pass.length === confirma.length ){
+      if( (pass === confirma) && ( pass != '' &&  confirma != '' ) ){
+        $("#noCoincidenCampos").addClass('hidden');
+        $.post('/insertPassword',{pas:confirma,modelo:'UsuarioHistorial'},function(data){
+          if( data ){
+            $("#Yacreado").addClass('hidden');
+            $("#creado").removeClass('hidden');
+            $(uno).val('');
+            $(dos).val('');
+          }else{
+            $("#creado").addClass('hidden');
+            $("#Yacreado").removeClass('hidden');
+          }
+        }).fail(function(e){
+          console.log("Error: "+JSON.stringify(e));
+        });
+      }else{
+        $("#noCoincidenCampos").removeClass('hidden');
+      }
+    }else{
+      $("#noCoincidenCampos").removeClass('hidden');
+    }
+  }
+  // checa que ya tenga una contraseña si es asi quita el enlace de crear cuenta
+  function deleteLinkCrear(link){
+    $.post('/deleteLinkCrear',function(data){
+      if( data == true ){
+        $(link).addClass('hidden');
+      }else{
+        $(link).removeClass('hidden');
+      }
+    }).fail(function(e){
+      console.log("Fallo al hacer esta tarea");
+    });
+  }
+  // cambiar password
+  function confirmChangePass( password, confirm ){
+    var primero = $(password).val();
+    var segundo = $(confirm).val();
+    // validaciones
+    if( primero != '' && segundo != '' ){
+      if( primero.length >= 6 && segundo.length >= 6 ){
+        if( primero.length === segundo.length ){
+          if( primero === segundo ){
+            $("#vacioCampo").addClass('hidden');
+            $("#mismaCantidad").addClass('hidden');
+            $("#menorDeSeis").addClass('hidden');
+            $("#igualInfo").addClass('hidden');
+            // se hace la consulta
+            $.post('/changeValidPass',{pass:primero}, function(data){
+              if( data == true ){
+                $("#bingo").removeClass('hidden');
+                $(password).val('');
+                $(confirm).val('');
+              }
+            });
+          }else{
+            $("#vacioCampo").addClass('hidden');
+            $("#bingo").addClass('hidden');
+            $("#mismaCantidad").addClass('hidden');
+            $("#menorDeSeis").addClass('hidden');
+            $("#igualInfo").removeClass('hidden');
+          }
+        }else{
+          $("#vacioCampo").addClass('hidden');
+          $("#bingo").addClass('hidden');
+          $("#menorDeSeis").addClass('hidden');
+          $("#igualInfo").addClass('hidden');
+          $("#mismaCantidad").removeClass('hidden');
+        }
+      }else{
+        $("#vacioCampo").addClass('hidden');
+        $("#bingo").addClass('hidden');
+        $("#mismaCantidad").addClass('hidden');
+        $("#igualInfo").addClass('hidden');
+        $("#menorDeSeis").removeClass('hidden');
+      }
+    }else{
+      $("#bingo").addClass('hidden');
+      $("#menorDeSeis").addClass('hidden');
+      $("#igualInfo").addClass('hidden');
+      $("#mismaCantidad").addClass('hidden');
+      $("#vacioCampo").removeClass('hidden');
+    }
+  }
+  function getMailSend(span){
+    $.post('/getMailSend',function(data){
+      $(span).html(data.correo);
+    })
+  }
+  // enviar correo de cambio de contraseña con el evento click
+  function sendMailto(mail){
+    var email = $(mail).text();
+    $.post('/sendMailto',{
+      to: email,
+      subject: "Cambio de password",
+    },function(data){
+
+    });
+  }
+  $("#agregarHistorial").click(function(){
+    var nombre = $("#nombreInputHistorial").val();
+    var apellidoP = $("#apellidoPHistorial").val();
+    var apellidoM = $("#apellidoMHistorial").val();
+    var dia = $("#diaHistorial").val();
+    var mes = $("#mesHistorial").val();
+    var año = $("#anioHistorial").val();
+    var sexo = $("#selectSex option:selected").val();
+    var cm = $("#cmHistorial").val();
+    var kg = $("#kgHistorial").val();
+    var correo = $("#mailHistorial").val();
+    var salud = $("#estadoHistorial").val();
+    var padecimiento = $("#padeHistorial").val();
+    var alergias = $("#alergiasHistorial").val();
+    var notas = $("#notaHistorial").val();
+    // se envia los inputs por post
+    $.post('/htmlToXml',{
+      nombre: nombre,
+      apellidoP: apellidoP,
+      apellidoM: apellidoM,
+      dia: dia,
+      mes: mes,
+      año: año,
+      sexo: sexo,
+      cm: cm,
+      kg: kg,
+      correo: correo,
+      salud: salud,
+      padecimiento:padecimiento,
+      alergias:alergias,
+      notas:notas
+    }, function(data){
+      if( data == true ){
+        $("#nombreInputHistorial").val('');
+        $("#apellidoPHistorial").val('');
+        $("#apellidoMHistorial").val('');
+        $("#diaHistorial").val('');
+        $("#mesHistorial").val('');
+        $("#anioHistorial").val('');
+        $("#selectSex:selected").val('');
+        $("#cmHistorial").val('');
+        $("#kgHistorial").val('');
+        $("#mailHistorial").val('');
+        $("#estadoHistorial").val('');
+        $("#padeHistorial").val('');
+        $("#alergiasHistorial").val('');
+        $("#notaHistorial").val('');
+      }
+    });
+  });
+//<------------------- fin historial ---------------------->

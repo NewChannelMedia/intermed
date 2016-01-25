@@ -35,6 +35,9 @@
     "nodemailer": "1.4.0",
     "nodemailer-smtp-transport": "1.0.3",
     "nodemailser-express-handlebars": "1.0.0",
-    "sequelize": "3.5.1"
+    "sequelize": "3.5.1",
+    "file-encryptor":"0.1.0",
+    "uuid":"2.0.1",
+    "object-to-xml":"1.0.0"
   }
 }
