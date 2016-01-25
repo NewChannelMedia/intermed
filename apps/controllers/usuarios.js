@@ -979,4 +979,19 @@ exports.revivirSesion = function (object, req, res){
     }
     generarSesion( req, res, usuario_id, false, false);
   });
+},
+
+exports.traerDatosUsuario = function (object, req, res){
+  models.Usuario.findOne({
+    where: {
+      id: object.id
+    },
+    attributes:['id','urlPersonal','urlFotoPerfil','usuarioUrl'],
+    include:[{
+      model:models.DatosGenerales,
+      attributes:['nombre','apellidoP','apellidoM']
+    }]
+  }).then(function(usuario){
+    res.send(usuario);
+  });
 }

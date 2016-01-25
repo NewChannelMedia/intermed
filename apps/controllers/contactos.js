@@ -430,40 +430,6 @@ module.exports = {
       })
     }
   },
-  enviaCorreoRecomendados: function( req, res){
-    models.Usuario.findOne({
-      where: {
-        usuarioUrl: req.body.enlace
-      },
-      include:[
-        {
-          model: models.DatosGenerales
-        }
-      ]
-    }).then(function(usuario){
-      var urlFotoPerfil = '', nombre ='', especialidad = '', municipio = '', estado = '';
-      if (usuario){
-        urlFotoPerfil = usuario.urlFotoPerfil;
-        if (usuario.DatosGenerale){
-          nombre = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM;
-        }
-      }
-      var object ={
-        nombre:'correo de recomendacion',
-        subject:'Recomendaciones',
-        to:req.body.toMail,
-        enlace:req.body.enlace,
-        mensaje:req.body.mensaje,
-        usuario:req.body.usuario,
-        medfotoPerfil: global.base_url + urlFotoPerfil,
-        mednombre: nombre,
-        medespecialidad: especialidad,
-        medmunicipio: municipio,
-        medestado: estado
-      };
-      mail.send(object,'recomendar',res);
-    });
-  },
   medicoRecomendado: function( req, res ){
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
@@ -567,25 +533,6 @@ module.exports = {
       }).then(function(medico){
         res.send(medico);
       });
-    }
-  },
-  pedirRecomendacionMedico: function( req, res ){
-    var d = new Date();
-    var strDate = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()+" "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()+":"+d.getMilliseconds();
-    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
-      var usuario_id = req.session.passport.user.id;
-      //for( var i in req.body.idEspecialidad ){
-        models.Notificacion.create({
-          usuario_id:req.body.idMedico,
-          tipoNotificacion_id:14,
-          data:req.session.passport.user.Paciente_id+req.body.idEspecialidad,
-          inicio:strDate,
-          visto:0,
-          recordatorio:null
-        }).then(function(creado){
-          res.send(true);
-        });
-      //}
     }
   },
   traerDatos: function( req, res ){
@@ -845,6 +792,17 @@ module.exports = {
     if ( object.usuario == '' && req.session.passport.user ) {
       object.usuario = req.session.passport.user.id;
     }
+    var filtro = new Array();;
+    if (object.filtro && object.filtro != ""){
+      object.filtro = object.filtro.split(' ');
+      object.filtro.forEach(function(result){
+          filtro.push(models.sequelize.or(
+              {nombre: {$like: '%'+ result +'%'}},
+              {apellidoP: {$like: '%'+ result +'%'}},
+              {apellidoM: {$like: '%'+ result +'%'}}
+          ));
+      });
+    }
     models.Especialidad.findAll({
       group: ['especialidad'],
       order: ['especialidad'],
@@ -867,6 +825,13 @@ module.exports = {
                   aprobado: 1,
                   mutuo: 1
                 }
+              },{
+                model: models.Usuario,
+                attributes:['id'],
+                include:[{
+                  model:models.DatosGenerales,
+                  where: filtro
+                }]
               } ]
             }
           ]
@@ -881,13 +846,25 @@ module.exports = {
     if ( object.usuario_id == '' && req.session.passport.user ) {
       object.usuario_id = req.session.passport.user.id;
     }
+    var filtro = new Array();;
+    if (object.filtro && object.filtro != ""){
+      object.filtro = object.filtro.split(' ');
+      object.filtro.forEach(function(result){
+          filtro.push(models.sequelize.or(
+              {nombre: {$like: '%'+ result +'%'}},
+              {apellidoP: {$like: '%'+ result +'%'}},
+              {apellidoM: {$like: '%'+ result +'%'}}
+          ));
+      });
+    }
 
     models.Usuario.findAll({
-      attributes:['id','usuarioUrl','urlFotoPerfil'],
+      attributes:['id','usuarioUrl','urlFotoPerfil','urlPersonal'],
       include: [
         {
           model: models.DatosGenerales,
-          attributes:['nombre','apellidoP','apellidoM']
+          attributes:['nombre','apellidoP','apellidoM'],
+          where: filtro
         },
         {
           model: models.Medico,
@@ -984,7 +961,7 @@ module.exports = {
     }
 
     models.Usuario.findAll({
-      attributes:['id','usuarioUrl','urlFotoPerfil'],
+      attributes:['id','usuarioUrl','urlFotoPerfil','urlPersonal'],
       include: [
         {
           model: models.DatosGenerales,

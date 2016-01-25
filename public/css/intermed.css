@@ -2047,8 +2047,10 @@ li.error{
 
 .menuBootbox{
   padding:0px;
-  width: 100%;
+  /*width: 100%;*/
   display: block;
+  margin: -15px;
+  margin-bottom: 0px;
 }
 
 .menuBootbox li{
@@ -2076,6 +2078,15 @@ li.error{
   color:white!important;
   border: 0px!important;
   border-bottom: 0px!important;
+}
+
+.footerBootbox{
+  background-color: #172c3b;
+  margin-bottom: 0px;
+  color:gray;
+  padding: 5px;
+  margin-left: -15px;
+  margin-right: -15px;
 }
 
 #divUbicacion{
@@ -2368,7 +2379,7 @@ div.Slider{
 .Intermed-Bootbox .modal-header .title{
   width: 100%;
   display: block;
-  font-size: 30px;
+  font-size: 25px;
 }
 
 .Intermed-Bootbox .modal-header .subtitle{
