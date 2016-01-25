@@ -5723,8 +5723,8 @@ function formatearFechaComentario(fecha){
 }
 
 function CambiarVisible(anterior,nuevo, formacion_id){
+  $('#formAcademica')[0].reset();
   if (formacion_id){
-    $('#formAcademica')[0].reset();
     $('#divInicio').removeClass('col-md-10');
     $('#divInicio').addClass('col-md-3');
     $('#divFin').removeClass('hidden');
@@ -5752,6 +5752,10 @@ function agregarFormacionAcademica(){
   if (form.find('#inputActual').is(':checked')){
     actual = 1;
   }
+
+  var formacion_id = $('#formacion_id').val();
+  alert(formacion_id);
+
   var grado = form.find('#inputGrado').val();
   var nivel = form.find('#inputNivel').val();
   if (nivel > 0 && institucion != "" && especialidad != "" && inicio != ""){
@@ -5772,6 +5776,7 @@ function agregarFormacionAcademica(){
           dataType: "json",
           cache: false,
           data: {
+            formacion_id: formacion_id,
             nivel:nivel,
             lugarDeEstudio: institucion,
             especialidad: especialidad,
@@ -5782,8 +5787,10 @@ function agregarFormacionAcademica(){
           },
           type: 'POST',
           success: function (data) {
+            console.log('Result: ' + JSON.stringify(data));
             if (data.success){
               bootbox.hideAll();
+              cargarFormacionAcademica();
             } else {
               if(data.error){
                 manejadorDeErrores(data.error);
@@ -5810,6 +5817,9 @@ function cambiarActual(element){
     $('#divInicio').addClass('col-md-10');
     $('#divFin').addClass('hidden');
     $('#divGrado').addClass('hidden');
+
+    $('#inputFin').val('00/00/0000');
+    $('#inputGrado').val('00/00/0000');
   } else {
     $('#divInicio').removeClass('col-md-10');
     $('#divInicio').addClass('col-md-3');
@@ -5873,18 +5883,24 @@ function cargarFormacionAcademicaByID(formacion_id){
       type: 'POST',
       data: {id:formacion_id},
       success: function (data) {
-        console.log('Data: ' + JSON.stringify(data));
         if (data.success){
           if (data.result){
+            $('#formacion_id').val(formacion_id);
             $('#inputInstitucion').val(data.result.lugarDeEstudio);
             $('#inputEspecialidad').val(data.result.especialidad);
             var fechaInicio = new Date(new Date(data.result.fechaInicio).toLocaleDateString()).toISOString().split('T')[0];
+            var fechaFin = new Date(new Date(data.result.fechaFin).toLocaleDateString()).toISOString().split('T')[0];
+            var fechaTitulo = new Date(new Date(data.result.fechaTitulo).toLocaleDateString()).toISOString().split('T')[0];
             $('#inputInicio').val(fechaInicio);
-            $('#fechaFin').val(data.result.fechaFin);
+            $('#inputFin').val(fechaFin);
+            $('#inputGrado').val(fechaTitulo);
             $('#inputInstitucion').val(data.result.lugarDeEstudio);
-            if (data.result.actual == 1){
-              $('#inputActual').attr('checked','true');
+            if (data.result.actual === 1){
+              $('#inputActual').attr('checked',true);
+            }else {
+              $('#inputActual').attr('checked',false);
             }
+            $('#inputActual').change();
             $('#inputNivel').val(data.result.nivel);
           }
         }else {

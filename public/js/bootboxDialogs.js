@@ -3058,6 +3058,7 @@ function BootboxFormacionAcademica(){
             '</div>'+
 
             '<form id="formAcademica">'+
+              '<input type="hidden" id="formacion_id">'+
               '<div class="row">'+
                 '<div class="col-md-12">'+
                   '<div class="form-group">'+

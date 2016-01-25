@@ -1435,25 +1435,52 @@ var _this = module.exports = {
             usuario_id: req.session.passport.user.id
           }
         }).then(function(medico){
-          models.MedicoFormacion.create( {
-            nivel: object.nivel,
-            especialidad: object.especialidad,
-            lugarDeEstudio: object.lugarDeEstudio,
-            fechaInicio: object.fechaInicio,
-            fechaFin: object.fechaFin,
-            fechaTitulo: object.fechaTitulo,
-            actual: object.actual,
-            medico_id: medico.id
-          } ).then( function ( datos ) {
-            res.status( 200 ).json( {
-              success: true,
-              result: datos
+          console.log(JSON.stringify(object));
+          if (object.formacion_id != "" && parseInt(object.formacion_id)>0){
+            models.MedicoFormacion.update( {
+              nivel: object.nivel,
+              especialidad: object.especialidad,
+              lugarDeEstudio: object.lugarDeEstudio,
+              fechaInicio: object.fechaInicio,
+              fechaFin: object.fechaFin,
+              fechaTitulo: object.fechaTitulo,
+              actual: object.actual,
+              medico_id: medico.id
+            }, {
+              where: {
+                id: object.formacion_id
+              }
+            } ).then( function ( datos ) {
+              res.status( 200 ).json( {
+                success: true,
+                result: datos
+              } );
+            } ).catch( function ( err ) {
+              res.status( 500 ).json( {
+                error: err
+              } );
             } );
-          } ).catch( function ( err ) {
-            res.status( 500 ).json( {
-              error: err
+          } else {
+            models.MedicoFormacion.create( {
+              nivel: object.nivel,
+              especialidad: object.especialidad,
+              lugarDeEstudio: object.lugarDeEstudio,
+              fechaInicio: object.fechaInicio,
+              fechaFin: object.fechaFin,
+              fechaTitulo: object.fechaTitulo,
+              actual: object.actual,
+              medico_id: medico.id
+            } ).then( function ( datos ) {
+              res.status( 200 ).json( {
+                success: true,
+                result: datos
+              } );
+            } ).catch( function ( err ) {
+              res.status( 500 ).json( {
+                error: err
+              } );
             } );
-          } );
+          }
         });
     } else {
       //Error: no usuario_id
