@@ -27,6 +27,6 @@ module.exports = function (object){
   });
 
   app.post('/usuario/traer', function (req, res) {
-      intermed.callController('usuarios', 'traerDatosUsuario', req.body, req, res);
+    intermed.callController('usuarios', 'traerDatosUsuario', req.body, req, res);
   });
 }

@@ -9,27 +9,27 @@ module.exports = function (object){
   var url = object.url;
 
   app.get('/agendaMedicoVer', function(req,res){
-      //routeLife('main','main',hps);
-      if (req.session.passport && req.session.passport.user){
-        intermed.callController('agenda', 'seleccionaAgendaMedico', {id: req.session.passport.user.id}, req, res);
-      } else {
-        res.status(200).json({success:false,error:1});
-      }
+    //routeLife('main','main',hps);
+    if (req.session.passport && req.session.passport.user){
+      intermed.callController('agenda', 'seleccionaAgendaMedico', {id: req.session.passport.user.id}, req, res);
+    } else {
+      res.status(200).json({success:false,error:1});
+    }
   });
 
   app.get('/agendaPacienteVer', function(req,res){
-      //routeLife('main','main',hps);
-      if (req.session.passport && req.session.passport.user){
-        intermed.callController('agenda', 'seleccionaAgendaPaciente', {id: req.session.passport.user.id}, req, res);
-      } else {
-        res.status(200).json({success:false,error:1});
-      }
+    //routeLife('main','main',hps);
+    if (req.session.passport && req.session.passport.user){
+      intermed.callController('agenda', 'seleccionaAgendaPaciente', {id: req.session.passport.user.id}, req, res);
+    } else {
+      res.status(200).json({success:false,error:1});
+    }
   });
 
   app.get('/muestraAgendaMedico', function(req,res){
-      var datos =  { id : 1}
-      routeLife('main','main',hps);
-      intermed.callController('agenda','muestraAgendaMedico', datos, req, res);
+    var datos =  { id : 1}
+    routeLife('main','main',hps);
+    intermed.callController('agenda','muestraAgendaMedico', datos, req, res);
   });
 
   app.post( '/cancelaCitaMedico', function ( req, res ) {

@@ -9,26 +9,26 @@ module.exports = function (object){
   var url = object.url;
 
   app.post('/inbox/cargartodos', function (req, res){
-      if (!req.session.passport.user){
-        res.send({'success':false,'error':1});
-      }else {
-        intermed.callController('inbox','cargartodos', req.body, req, res);
-      }
+    if (!req.session.passport.user){
+      res.send({'success':false,'error':1});
+    }else {
+      intermed.callController('inbox','cargartodos', req.body, req, res);
+    }
   });
 
   app.post('/inbox/cargarMensajesPorUsuario', function (req, res){
-      if (!req.session.passport.user){
-        res.send({'success':false,'error':1});
-      }else {
-        intermed.callController('inbox','cargarMensajesPorUsuario', req.body, req, res);
-      }
+    if (!req.session.passport.user){
+      res.send({'success':false,'error':1});
+    }else {
+      intermed.callController('inbox','cargarMensajesPorUsuario', req.body, req, res);
+    }
   });
 
   app.post('/inbox/cargarMensajesPorUsuarioAnteriores', function(req, res){
-      if (!req.session.passport.user){
-        res.send({'success':false,'error':1});
-      }else {
-        intermed.callController('inbox','cargarMensajesPorUsuarioAnteriores', req.body, req, res);
-      }
+    if (!req.session.passport.user){
+      res.send({'success':false,'error':1});
+    }else {
+      intermed.callController('inbox','cargarMensajesPorUsuarioAnteriores', req.body, req, res);
+    }
   });
 }

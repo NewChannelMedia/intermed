@@ -20,11 +20,11 @@ module.exports = function (object){
   } );
 
   app.post('/notificaciones/configurarNotificacion', function(req, res){
-      if (!req.session.passport.user){
-        res.send({'success':false,'error':1});
-      }else {
-        intermed.callController('notificaciones','configurarNotificacion', req.body, req, res);
-      }
+    if (!req.session.passport.user){
+      res.send({'success':false,'error':1});
+    }else {
+      intermed.callController('notificaciones','configurarNotificacion', req.body, req, res);
+    }
   });
 
 }

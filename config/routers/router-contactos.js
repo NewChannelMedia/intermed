@@ -8,7 +8,6 @@ module.exports = function (object){
   var passport = object.passport;
   var url = object.url;
 
-
   app.post( '/agregarMedFav', function ( req, res ) {
     intermed.callController( 'contactos', 'agregarFav', req.body, req, res );
   } );

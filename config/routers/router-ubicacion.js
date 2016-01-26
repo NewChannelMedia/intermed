@@ -21,11 +21,11 @@ module.exports = function (object){
     intermed.callController( 'ubicacion', 'encontrarPorCP', req.body, req, res );
   } );
   app.post('/registrarubicacion', function (req, res) {
-      intermed.callController('ubicacion', 'registrarUbicacion', req.body, req, res);
+    intermed.callController('ubicacion', 'registrarUbicacion', req.body, req, res);
   });
 
   app.post('/registrarhorarios', function (req, res) {
-      intermed.callController('ubicacion', 'registrarHorarios', req.body, req, res);
+    intermed.callController('ubicacion', 'registrarHorarios', req.body, req, res);
   });
 
   app.post('/horariosObtener', function (req, res){

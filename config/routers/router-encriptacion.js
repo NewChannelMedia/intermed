@@ -9,30 +9,30 @@ module.exports = function (object){
   var url = object.url;
 
   // encriptionssss
-    app.post('/isLogin', function( req, res ){
-      intermed.callController('encryption','isLogin',req.body,req, res);
-    });
+  app.post('/isLogin', function( req, res ){
+    intermed.callController('encryption','isLogin',req.body,req, res);
+  });
   // end encriptionss
   // inserta contraseña
-    app.post('/insertPassword', function( req, res ){
-      intermed.callController( 'encryption', 'insertPassword', req.body,req, res );
-    });
+  app.post('/insertPassword', function( req, res ){
+    intermed.callController( 'encryption', 'insertPassword', req.body,req, res );
+  });
   // remover el enlace para crear cuenta
-    app.post('/deleteLinkCrear', function( req, res ){
-      intermed.callController( 'encryption', 'deleteLinkCrear',req, res);
-    });
+  app.post('/deleteLinkCrear', function( req, res ){
+    intermed.callController( 'encryption', 'deleteLinkCrear',req, res);
+  });
   // cambiar el password
-    app.post('/changeValidPass', function( req, res ){
-      intermed.callController( 'encryption', 'changeValidPass', req.body, req, res );
-    });
-    //trae mail
-    app.post('/getMailSend', function( req, res ){
-      intermed.callController( 'encryption', 'getMailSend', req, res );
-    });
-    //mail send
-    app.post('/sendMailto', function( req, res ){
-      intermed.callController( 'encryption', 'sendMailto', req.body, req, res );
-    });
+  app.post('/changeValidPass', function( req, res ){
+    intermed.callController( 'encryption', 'changeValidPass', req.body, req, res );
+  });
+  //trae mail
+  app.post('/getMailSend', function( req, res ){
+    intermed.callController( 'encryption', 'getMailSend', req, res );
+  });
+  //mail send
+  app.post('/sendMailto', function( req, res ){
+    intermed.callController( 'encryption', 'sendMailto', req.body, req, res );
+  });
   // fin inserta contraseña
   // get para el cambio del password
   app.get( '/cambiar/:token', function ( req, res ) {
