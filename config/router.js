@@ -78,6 +78,7 @@ require( './routers/router-sesion.js' )(routerObject);//Es el primero en cargar,
 require( './routers/_router-get.js' )(routerObject); //Contiene todas las rutas a cargar (render)
 require( './routers/router-buscador.js' )(routerObject);
 require( './routers/router-contactos.js' )(routerObject);
+require( './routers/router-agenda.js' )(routerObject);
 require( './routers/router-inbox.js' )(routerObject);
 require( './routers/router-medico.js' )(routerObject);
 require( './routers/router-notificaciones.js' )(routerObject);
