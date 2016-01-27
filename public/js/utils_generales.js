@@ -1454,6 +1454,9 @@ $( document ).ready( function () {
         registroMedicoDatosPersonales();
       }
     }
+  } else if ($( '#perfilPaciente' ).length > 0 ) {
+    cargarListaEspCol( $( '#usuarioPerfil' ).val() ,'P');
+    cargarCitasPaciente();
   }
 } );
 //fin de Perfil Medicos
@@ -1923,7 +1926,7 @@ function obtenerCPModal(tipo) {
         }
     });
 }
-function cargarListaEspCol( usuario ) {
+function cargarListaEspCol( usuario ,tipo) {
   var filtro = $('#buscadorEspecialInput').val();
   $.ajax( {
     async: false,
@@ -1947,12 +1950,12 @@ function cargarListaEspCol( usuario ) {
             primero = esp.id;
           }
           contenido += '<li>' +
-          '<a onclick="cargarListaColegasByEsp(' + usuario + ',' + esp.id + ',this)">' + esp.especialidad + '<span class="badge pull-right">' + esp.total + '</span></a>' +
+          '<a onclick="cargarListaColegasByEsp(' + usuario + ',' + esp.id + ',this,\''+tipo+'\')">' + esp.especialidad + '<span class="badge pull-right">' + esp.total + '</span></a>' +
           '</li>';
         });
         $('#especialidadesList').html(contenido);
         if (primero != ""){
-          cargarListaColegasByEsp(usuario,primero);
+          cargarListaColegasByEsp(usuario,primero,null,tipo);
         }
       }else{
         if (data.error){
@@ -1965,7 +1968,12 @@ function cargarListaEspCol( usuario ) {
     }
   } );
 }
-function cargarListaColegasByEsp(usuario_id,especialidad_id, element){
+function cargarListaColegasByEsp(usuario_id,especialidad_id, element,tipo){
+  var classDiv = 'class="col-lg-3 col-md-3 col-sm-4 col-xs-4"';
+  if (tipo && tipo == "P"){
+    classDiv = 'class="col-lg-3 col-md-6 col-sm-4 col-xs-6"';
+  }
+
   $('#especialidadesList li.active').removeClass('active');
   if (element){
     $(element).parent().addClass('active');
@@ -2004,23 +2012,137 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id, element){
           if (res.urlPersonal && res.urlPersonal != ""){
             usuarioUrl = res.urlPersonal;
           }
-          contenido += `
-          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
-            <div class="thumbnail">
-              <div >
-                <a class="pPic" href="/`+ usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
-              </div>
-              <div class="caption">
-                <div class="nombre h77-boldcond">
-                  Dr.&nbsp;<span>`+ res.DatosGenerale.nombre +`</span>&nbsp;<span>`+ res.DatosGenerale.apellidoP +` `+ res.DatosGenerale.apellidoM +`</span>
-                </div>
-                <div class="esp h67-medcond">
-                  <span class="colEsp">`+ especialidad +`</span>
-                </div>
-                <a class="h67-medcondobl" href="/`+ usuarioUrl +`">Ver Perfil</a>
-              </div>
-            </div>
-          </div>`
+          contenido +=  '<div '+classDiv+'>'+
+            '<div class="thumbnail">'+
+              '<div >'+
+                '<a class="pPic" href="/'+ usuarioUrl +'"><img src="'+ res.urlFotoPerfil +'" alt="..."></a>'+
+              '</div>'+
+              '<div class="caption">'+
+                '<div class="nombre h77-boldcond">'+
+                  'Dr.&nbsp;<span>'+ res.DatosGenerale.nombre +'</span>&nbsp;<span>'+ res.DatosGenerale.apellidoP +' '+ res.DatosGenerale.apellidoM +'</span>'+
+                '</div>'+
+                '<div class="esp h67-medcond">'+
+                  '<span class="colEsp">'+ especialidad +'</span>'+
+                '</div>'+
+                '<a class="h67-medcondobl" href="/'+ usuarioUrl +'">Ver Perfil</a>'+
+              '</div>'+
+            '</div>'+
+          '</div>'
+        })
+        contenido += '</div>';
+        $('#listaColegas').html(contenido);
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+function cargarListaAlfCol( usuario ,tipo) {
+  $.ajax( {
+    async: false,
+    url: '/cargarListaAlfCol',
+    type: 'POST',
+    data: {
+      usuario: usuario
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+        $('#especialidadesList').html('');
+        $('#listaColegas').html('');
+        $('#tipoFiltro').html('una letra');
+        if ( data.success ) {
+          var contenido = '';
+          var primero = '';
+          data.result.forEach(function(rec){
+            if (primero == ""){
+              primero = rec.Letra;
+            }
+            contenido += '<li>' +
+              '<a onclick="cargarListaColegasByAlf(' + usuario + ',\'' + rec.Letra + '\',this,\''+tipo+'\')">' + rec.Letra + '<span class="badge pull-right">' + rec.Total + '</span></a>' +
+            '</li>';
+          });
+          $('#especialidadesList').html(contenido);
+          if (primero != ""){
+            cargarListaColegasByAlf(usuario,primero,null,tipo);
+          }
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+function cargarListaColegasByAlf(usuario_id,letra,element,tipo){
+  var classDiv = 'class="col-lg-3 col-md-3 col-sm-4 col-xs-4"';
+  if (tipo && tipo == "P"){
+    classDiv = 'class="col-lg-3 col-md-6 col-sm-4 col-xs-6"';
+  }
+  $('#especialidadesList li.active').removeClass('active');
+  if (element){
+    $(element).parent().addClass('active');
+  } else {
+    $('#especialidadesList li').first().addClass('active');
+  }
+  $.ajax( {
+    async: false,
+    url: '/cargarListaColegasByAlf',
+    type: 'POST',
+    data: {
+      usuario_id: usuario_id,
+      letra: letra
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      $('#listaColegas').html('');
+      if ( data.success ) {
+        var contenido = '';
+        contenido += '<div id="'+ letra +'" class="row" ><h1 class="h67-medcond">'+letra+'</h1>';
+        data.result.forEach(function(res){
+          var especialidad= '';
+          if (res.Medico.MedicoEspecialidads){
+            res.Medico.MedicoEspecialidads.forEach(function(esp){
+              if (especialidad != ""){
+                especialidad += ', ';
+              }
+              especialidad += esp.Especialidad.especialidad;
+            });
+          }
+
+          if (res.DatosGenerale.apellidoM == null){
+            res.DatosGenerale.apellidoM = '';
+          }
+          var usuarioUrl = res.usuarioUrl;
+          if (res.urlPersonal && res.urlPersonal != ""){
+            usuarioUrl = res.urlPersonal;
+          }
+          contenido += '<div '+classDiv+'>'+
+            '<div class="thumbnail">'+
+              '<div >'+
+                '<a class="pPic" href="/'+ usuarioUrl +'"><img src="'+ res.urlFotoPerfil +'" alt="..."></a>'+
+              '</div>'+
+              '<div class="caption">'+
+                '<div class="nombre h77-boldcond">'+
+                  'Dr.&nbsp;<span>'+ res.DatosGenerale.nombre +'</span>&nbsp;<span>'+ res.DatosGenerale.apellidoP +' '+ res.DatosGenerale.apellidoM +'</span>'+
+                '</div>'+
+                '<div class="esp h67-medcond">'+
+                  '<span class="colEsp">'+ especialidad +'</span>'+
+                '</div>'+
+                '<a class="h67-medcondobl" href="/'+ usuarioUrl +'">Ver Perfil</a>'+
+              '</div>'+
+            '</div>'+
+          '</div>'
         })
         contenido += '</div>';
         $('#listaColegas').html(contenido);
@@ -2298,4 +2420,139 @@ function autoCompleteAseg(inputId){
         console.log('Ajax error: ' + JSON.stringify(err));
       }
     });
+}
+
+function cargarCitasPaciente(offset, element){
+    var limit = 4;
+    $('.citaPac').removeClass('hidden').removeClass('hidden').removeClass('active');
+
+    if (element){
+      $(element).parent().addClass('active');
+    }
+    if (offset === 0){
+      $('.citaPac.prev').addClass('hidden');
+    }
+    if ($('.citaPac').not('.next').last().text() == $(element).text()){
+      $('.citaPac.next').addClass('hidden');
+    }
+
+    if (!offset && offset !== 0){
+      //Calcular paginador
+      $.ajax({
+        async: false,
+        url: '/ag/private/count',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        success: function ( data ) {
+          var contenido = '';
+          var paginas = Math.ceil(parseInt(data.result)/limit);
+          if (paginas>1){
+              contenido = '<li class="citaPac prev hidden"><a style="border:none;background-color:rgba(0,0,0,0)" onclick="cargarCitasPacientePrev()">&laquo;</a></li>';
+              for (var i = 0; i < paginas; i++) {
+                var clase = '';
+                if (i == 0) clase = ' class="citaPac active" '; else clase = ' class="citaPac" ';
+                contenido += '<li '+ clase +'><a style="border:none;background-color:rgba(0,0,0,0)" onclick="cargarCitasPaciente('+parseInt(i)+',this)">'+(parseInt(i)+1)+'</a></li>';
+              }
+              contenido += '<li class="citaPac next"><a style="border:none;background-color:rgba(0,0,0,0)" onclick="cargarCitasPacienteNext()">&raquo;</a></li>';
+          }
+          $('#pagination_citasPaciente').html(contenido);
+        },
+        error: function (err){
+          console.log('Ajax error: ' + JSON.stringify(err));
+        }
+      });
+    }
+    if (!offset){
+      offset = 0;
+    }
+    offset = offset*limit;
+
+    $.ajax({
+      async: false,
+      url: '/ag/private/get',
+      type: 'POST',
+      dataType: "json",
+      data:{'limit':limit,'offset':offset},
+      cache: false,
+      success: function ( data ) {
+        if (data.success){
+          var contenido = '';
+          var meses = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+          data.result.forEach(function(res){
+            var date = new Date(res.fechaHoraInicio).toLocaleString();
+            var dia = parseInt(res.fechaHoraInicio.split('T')[0].split('-')[2]);
+            var mes = parseInt(res.fechaHoraInicio.split('T')[0].split('-')[1]);
+            var hora = parseInt(res.fechaHoraInicio.split('T')[1].split(':')[0]);
+            var minutos = res.fechaHoraInicio.split('T')[1].split(':')[1];
+            var T = 'AM';
+            if (hora >= 12){
+              T = 'PM';
+              if (hora>12){
+                hora = hora-12;
+              }
+            }
+            hora = hora + ':'+minutos+' ' + T;
+            mes = meses[mes-1];
+            if (res.Usuario.DatosGenerale.apellidoM && res.Usuario.DatosGenerale.apellidoM != ""){
+              res.Usuario.DatosGenerale.apellidoM = ' ' + res.Usuario.DatosGenerale.apellidoM;
+            } else {
+              res.Usuario.DatosGenerale.apellidoM = '';
+            }
+            var nombre = res.Usuario.DatosGenerale.nombre  + ' ' + res.Usuario.DatosGenerale.apellidoP + res.Usuario.DatosGenerale.apellidoM;
+            contenido += '<div class="media list-group-item" style="background-color:#CACACA;border: none;">';
+              contenido += '<div class="media-left text-center" style="padding: 10px;padding-top: 2px;padding-bottom: 2px;background-color:#FFF">';
+                contenido += '<h1 style="padding:2px;margin:0px;">'+ dia +'</h1>';
+                contenido += '<h3 style="padding:0px;margin:0px;">'+ mes +'</h3>';
+              contenido += '</div>';
+              contenido += '<div class="media-body text-left" style="padding: 10px;">';
+                contenido += '<h4 class="media-heading">'+ hora +'</h4>';
+                contenido += '<h5>'+ nombre +'</h5>';
+                contenido += '<a onclick="DetallesCitaPaciente('+ res.id +')">Ver detalles >></a>';
+              contenido += '</div>';
+            contenido += '</div>';
+          });
+          $('#div_citasPaciente').html(contenido);
+        } else if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      },
+      error: function (err){
+        console.log('Ajax error: ' + JSON.stringify(err));
+      }
+    });
+}
+
+function cargarCitasPacientePrev(){
+  var active = null;
+  $('.citaPac.active').each(function(){
+    active = $(this);
+  });
+  if (active){
+    var offset = active.text();
+    offset = parseInt(offset)-1;
+    $('.citaPac').each(function(){
+      if ($(this).text() == offset){
+        active = $(this).find('a').first();
+      }
+    });
+    cargarCitasPaciente((parseInt(offset)-1),active);
+  }
+}
+
+function cargarCitasPacienteNext(){
+  var active = null;
+  $('.citaPac.active').each(function(){
+    active = $(this);
+  });
+  if (active){
+    var offset = active.text();
+    offset = parseInt(offset)+1;
+    $('.citaPac').each(function(){
+      if ($(this).text() == offset){
+        active = $(this).find('a').first();
+      }
+    });
+    cargarCitasPaciente(offset-1,active);
+  }
 }

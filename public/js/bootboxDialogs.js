@@ -2138,8 +2138,7 @@ function agendarCitaBootbox(){
       message:
             '<form method="POST" name="frmRegCita" id="frmRegCita">'+
               '<input type="hidden" id="id" name="id">'+
-              '<input type="hidden" id="paciente_id" name="paciente_id" value="2">'+
-              '<input type="hidden" id="medico_id" name="medico_id" value="1">'+
+              '<input type="hidden" id="medico_id" name="medico_id" value="'+ $( '#usuarioPerfil' ).val() +'">'+
               '<input type="hidden" id="fecha" name="fecha" />'+
               '<input type="hidden" id="fechaFin" name="fechaFin" />'+
               '<input type="hidden" id="serviciocita_id" name="serviciocita_id" />'+
@@ -3302,3 +3301,37 @@ function BootboxExperienciaLaboral(){
     getMailSend('#validateEmail');
   }
 //<------------- fin function login del archivero ----------------------->
+
+function DetallesCitaPaciente(agenda_id){
+
+    var imagenUrl = '';
+    var nombreUsuario = '';
+    var nombreUbicacion = '';
+    var nombreServicio = '';
+    var fecha = '';
+    var hora = '';
+
+    $.ajax( {
+      async: false,
+      url: '/agenda/detalleCita',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        'agenda_id': agenda_id
+      },
+      success: function ( data ) {
+        console.log('Result: ' + JSON.stringify(data));
+        imagenUrl = data.result.Paciente.Usuario.urlFotoPerfil;
+        if (!data.result.Paciente.Usuario.DatosGenerale.apellidoM) data.result.Paciente.Usuario.DatosGenerale.apellidoM = '';
+        nombreUsuario = data.result.Paciente.Usuario.DatosGenerale.nombre  + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoM;
+        nombreUbicacion = data.result.Direccion.nombre;
+        nombreServicio = data.result.CatalogoServicio.concepto;
+        fecha = data.result.fechaHoraInicio.split('T')[0];
+        hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+}
