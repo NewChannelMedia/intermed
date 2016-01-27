@@ -755,39 +755,46 @@ function recomendacionesBoot(){
     },
     backdrop:true,
     closeButton:true,
-    className: 'Intermed-Bootbox',
-    title: '<span class="title">Recomendar '+ nombreUsuario +' A:</span>',
+    className: 'Intermed-Bootbox h65-medium',
+    title: '<span class="title">Recomendar al '+ nombreUsuario +'</span>',
     size:'large',
     message:
-      '<div id=“recomienda” class=“col-md-12”>'+
-         '<div class="form-group has-feedback" id="buscador">'+
-             '<label class="control-label"for="buscadorRecomendados" style="color:white">Busca entre tus contactos para que les recomiendes al Dr.<span class="hidden" id="pacienteIdOculto"></span></label>'+
-             '<input type="text" class="form-control" id="buscadorRecomendados" placeholder="Buscar contacto...">'+
-             '<span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>'+
-         '</div>'+
-         '<div class="" id="enviarRecomendaciones">'+
-           '<ul class="list-inline"></ul>'+
-         '</div>'+
-      '</div>'+
+      '<form method="POST" onsubmit="return agregarDestRecom();" id="destRec">'+
+        '<div class="form-group col-md-5">'+
+          '<input class="form-control" type="text" placeholder="Nombre" name="nombre" id="nombreRecomendacion" required="">'+
+        '</div>'+
+        '<div class="form-group col-md-6">'+
+          '<input class="form-control" type="email" placeholder="E-mail" name="email" id="correoRecomendacion" required="">'+
+        '</div>'+
+        '<div class="form-group col-md-1">'+
+          '<button class="btn btn-warning btn-block"><span class="glyphicon glyphicon-plus"></span></button>'+
+        '</div>'+
+
+        '<div class="col-md-2 white-c ag-bold s20" style="min-height:35px">'+
+          'Destinatarios:'+
+        '</div>'+
+        '<div class="form-group col-md-10"><div id="destRecomendacion" style="min-height: 30px;border-radius: 5px;"></div></div>'+
+      '</form>'+
+
       '<div class="form-group">'+
-         '<label class="control-label" for="correoEnviarRecomendado" style="color:white">Recomendar via correo:</label>'+
-         '<input type="mail" class="form-control" id="correoEnviarRecomendado" placeholder="Correo:"/>'+
-      '</div>'+
-      '<div class="form-group">'+
-         '<textarea id="mensajeRecomendar" class="form-control" rows="3" placeholder="mensaje para los recomendados" style="resize: none;margin-top: -10px;"></textarea>'+
-      '</div>'+
+        '<div class="form-group col-md-12">'+
+           '<textarea id="mensajeRecomendar" class="form-control" rows="3" placeholder="mensaje para los recomendados" style="resize: none;margin-top: -10px;"></textarea>'+
+        '</div>'+
+     '</div>'+
 
       '<div class="row">'+
-          '<div class="col-md-4">'+
-              '<div class="form-group">'+
-                  '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="bootbox.hideAll();">'+
-              '</div>'+
-          '</div>'+
-          '<div class="col-md-6 col-md-offset-2">'+
-              '<div class="form-group">'+
-                  '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Enviar" onclick="enviarRecomendacion();">'+
-              '</div>'+
-          '</div>'+
+        '<div class="form-group col-md-12">'+
+            '<div class="col-md-4">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="bootbox.hideAll();">'+
+                '</div>'+
+            '</div>'+
+            '<div class="col-md-6 col-md-offset-2">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Enviar" onclick="enviarRecomendacion();">'+
+                '</div>'+
+            '</div>'+
+        '</div>'+
       '</div>'
   });
   recomiendaAuto();

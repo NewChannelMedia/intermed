@@ -1208,29 +1208,7 @@ var _this = module.exports = {
         ]
       }).then(function(medico){
           if (medico){
-            if (object.usuarios_id){
-              var recomcount = 0;
-              models.Notificacion.create({
-                usuario_id: object.usuario_medico_id,
-                tipoNotificacion_id:13,
-                data:String(req.session.passport.user.id)
-              }).then(function(){
-                object.usuarios_id.forEach(function(usuario){
-                  models.Notificacion.create({
-                      usuario_id:usuario,
-                      tipoNotificacion_id:12,
-                      data:req.session.passport.user.Paciente_id+"|"+medico.id
-                  }).then(function(){
-                    recomcount++;
-                    if (recomcount == object.usuarios_id.length){
-                      _this.enviarCorreosRecomendacion(req,res,object,medico);
-                    }
-                  });
-                });
-              });
-          } else {
             _this.enviarCorreosRecomendacion(req,res,object,medico);
-          }
         }else{
           //Error: el medico no existe
           res.status(200).json({
@@ -1279,7 +1257,8 @@ var _this = module.exports = {
         var mailobject ={
           nombre:'correo de recomendacion',
           subject:'Recomendaciones',
-          to:email,
+          to:email.correo,
+          nombre: ' ' + email.nombre,
           enlace:enlace,
           mensaje:req.body.mensaje,
           usuario:req.session.passport.user.name,
