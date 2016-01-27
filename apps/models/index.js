@@ -28,7 +28,7 @@ var historial = new Sequelize('intermed.historia','root','',{
   },
   logging: null
 });
-var inbox = new Sequelize( 'Intermed-Inbox', 'root', '', {
+var inbox = new Sequelize( 'intermed.inbox', 'root', '', {
   host: 'localhost',
   dialect: 'mysql',
   pool: {
