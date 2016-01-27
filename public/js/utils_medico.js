@@ -2536,7 +2536,6 @@ function traerAseguradoras(){
   function loadFechaNac(idInput){
     // se hace el post
     $.post('/medico/datos/loadFechaNac',function(data){
-      console.log("Fecha nacimiento: "+data.fechaNac);
       var cortando =data.fechaNac.split('T');
       if( data != null ){
         $(idInput).val(cortando[0]);
