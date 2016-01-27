@@ -905,6 +905,7 @@ exports.detalleCita = function(object, req, res){
       model: models.Paciente,
       include: [{
         model: models.Usuario,
+        attributes:['usuarioUrl','urlPersonal','urlFotoPerfil'],
         include: [{
           model: models.DatosGenerales
         }]
@@ -912,7 +913,21 @@ exports.detalleCita = function(object, req, res){
     },{
       model: models.CatalogoServicios
     },{
-      model: models.Direccion
+      model: models.Usuario,
+      attributes:['usuarioUrl','urlPersonal','urlFotoPerfil'],
+      include: [{
+        model: models.DatosGenerales
+      }]
+    },{
+      model: models.Direccion,
+      include: [{
+        model: models.Localidad
+      },{
+        model: models.Municipio,
+        include: [{
+          model: models.Estado
+        }]
+      }]
     }]
   }).then(function(result){
     res.status(200).json({

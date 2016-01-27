@@ -3311,6 +3311,7 @@ function DetallesCitaPaciente(agenda_id){
     var fecha = '';
     var hora = '';
 
+    var result = null;
     $.ajax( {
       async: false,
       url: '/agenda/detalleCita',
@@ -3321,10 +3322,10 @@ function DetallesCitaPaciente(agenda_id){
         'agenda_id': agenda_id
       },
       success: function ( data ) {
-        console.log('Result: ' + JSON.stringify(data));
-        imagenUrl = data.result.Paciente.Usuario.urlFotoPerfil;
-        if (!data.result.Paciente.Usuario.DatosGenerale.apellidoM) data.result.Paciente.Usuario.DatosGenerale.apellidoM = '';
-        nombreUsuario = data.result.Paciente.Usuario.DatosGenerale.nombre  + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoM;
+        result = data.result;
+        imagenUrl = data.result.Usuario.urlFotoPerfil;
+        if (!data.result.Usuario.DatosGenerale.apellidoM) data.result.Usuario.DatosGenerale.apellidoM = '';
+        nombreUsuario = data.result.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Usuario.DatosGenerale.apellidoM;
         nombreUbicacion = data.result.Direccion.nombre;
         nombreServicio = data.result.CatalogoServicio.concepto;
         fecha = data.result.fechaHoraInicio.split('T')[0];
@@ -3334,4 +3335,45 @@ function DetallesCitaPaciente(agenda_id){
         console.log('AJAX Error: ' + JSON.stringify(err));
       }
     });
+
+
+    box = bootbox.dialog({
+      backdrop: true,
+      className: 'Intermed-Bootbox',
+      title: '<span class="title h65-medium">CITA AGENDADA</span>',
+      message:'<div class="col-md-12 h65-medium">'+
+            '<div class="row">'+
+              '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">'+
+                '<div class="row">'+
+                  '<img src="'+imagenUrl+'" style="margin-top:15px;width:100%" class="img-thumbnail">'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">'+
+                '<div class="row" style="padding-left:20px">'+
+                  '<span class="pull-right"><b>Fecha: </b>'+ fecha +'</span><br/>'+
+                  '<span class="pull-right"><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+                  '<h4><b>'+nombreUsuario+'</b></h4><br/>'+
+                  '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
+                  '<b>Servicio: </b>'+nombreServicio+'<br/>'+
+                '</div>'+
+              '</div>'+
+
+              '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+                '<div class="row">'+
+                  '<div id="mapaUbicacionCita" style="width:100%; height:250px; margin-top:20px;"></div>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+
+          '<div class="row">'+
+              '<div class="col-md-4 col-md-offset-8">'+
+                  '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="cerrarCurrentBootbox()">'+
+              '</div>'+
+          '</div>'
+        });
+
+        setTimeout(function(){
+          cargarMapaUbicacionCita(result);
+        },500);
 }

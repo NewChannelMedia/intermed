@@ -295,7 +295,6 @@ function validateForm( tipoForm, nameForm ){
       case "input-select":console.log("Entro aqui");
         var tamaño = $("#"+nameForm+" :selected").val();
         comprobando = ( $( tamaño ).val() != 0 ) ? true : false;
-        console.log("Tamaño: "+tamaño);
         mensaje = "select-error";
         break;
     }

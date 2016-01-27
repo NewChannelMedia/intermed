@@ -425,7 +425,7 @@ function AsignarColonia() {
 
 function SeleccionarValor(control, valor) {
     $("#" + control + ' option').each(function () {
-        if (ReemplezarAcentos($(this).text()) == ReemplezarAcentos(valor)) {            
+        if (ReemplezarAcentos($(this).text()) == ReemplezarAcentos(valor)) {
             $(this).attr("selected", true);
         }
 
@@ -626,4 +626,43 @@ function centrarEnMapa(latitud,longitud,medico_id,direccion_id, noScr){
     MapaSearch.setCenter(pos);
     MapaSearch.setZoom(11);
   }
+}
+
+function cargarMapaUbicacionCita(data){
+  var nombre = data.Direccion.nombre;
+  var direccion = data.Direccion.calle  + ' #' + data.Direccion.numero + ' ';
+  if (data.Direccion.numeroInt){
+    direccion+= data.Direccion.numeroInt + ' ';
+  }
+
+  direccion += '<br>' + data.Direccion.Localidad.localidad + ', C.P. '+ data.Direccion.Localidad.cp;
+  direccion += '<br><br>' + data.Direccion.Municipio.municipio + ', '+ data.Direccion.Municipio.Estado.estado;
+
+    var pos = new google.maps.LatLng(data.Direccion.latitud, data.Direccion.longitud);
+
+    var mapProp = {
+        center: pos,
+        zoom: 13,
+        draggable: true,
+        scrollwheel: true,
+        mapTypeId:google.maps.MapTypeId.ROADMAP
+    };
+
+    var mapaUbicacion =new google.maps.Map(document.getElementById("mapaUbicacionCita"),mapProp);
+
+    var marker = new google.maps.Marker({
+        position: pos,
+        map: mapaUbicacion
+    });
+
+    var contentString = '<div><h4>'+nombre+'</h4><p>'+direccion+'</p></div>';
+
+    var infowindow = new google.maps.InfoWindow({
+      content: contentString
+    });
+    infowindow.open(mapaUbicacion, marker);
+
+    marker.addListener('click', function() {
+      infowindow.open(mapaUbicacion, marker);
+    });
 }
