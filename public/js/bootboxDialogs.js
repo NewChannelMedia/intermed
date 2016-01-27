@@ -1669,11 +1669,30 @@ function registroMedicoDatosPersonales(){
                       '</div>'+
                     '</div>'+
                   '</div>'+
-                  '<div class="row">'+
-                    '<div class="col-md-3 col-md-offset-9">'+
-                      '<input type="button" id="regi" name="registroCorreo" value="Guardar" class="btn btn-warning btn-block btn-step" onclick="saveStepOne()" style="margin-top:10px;margin-bottom:10px">'+
+                  '<hr class="separator2">'+
+                    '<!-- Especialidades -->'+
+                    '<div class="row">'+
+                      '<h4 style="color:white;">Especialidades</h4>'+
+                      '<div class="col-md-4 form-group">'+
+                        '<select id="autoEspecialidad" class="form-control"></select>'+
+                      '</div>'+
+                      '<div class="col-md-4 checkbox form-group">'+
+                        '<label style="color:white">'+
+                          '<input type="checkbox" id="subEspEdit" name="subEsp" value="0"/>¿Es sub especialidad?'+
+                        '</label>'+
+                      '</div>'+
+                      '<div class="col-md-4 form-group">'+
+                        '<button id="addEspecialidadMedic" onclick="editEspecialidades();" class="btn btn-warning form-control" type="button">'+
+                          '<span class="glyphicon glyphicon-floppy-disk"></span>'+
+                        '</button>'+
+                      '</div>'+
                     '</div>'+
-                  '</div>'+
+                    '<!-- fin add Especialidades -->'+
+                    '<div class="row">'+
+                      '<div class="col-md-3 col-md-offset-9">'+
+                        '<input type="button" id="regi" name="registroCorreo" value="Guardar" class="btn btn-warning btn-block btn-step" onclick="saveStepOne()" style="margin-top:10px;margin-bottom:10px">'+
+                      '</div>'+
+                    '</div>'+
                 '</form>'+
 
               '</div>'+
@@ -1692,7 +1711,7 @@ function registroMedicoDatosPersonales(){
         console.log('Ajax error: ' + JSON.stringify(error));
     }
   });
-
+  loadEspecialidades();
 }
 
 
@@ -2009,6 +2028,26 @@ function editMedicoPerfil(){
                   '</button>'+
                 '</span>'+
               '</div>'+
+              '<hr>'+
+              '<!-- Fecha de nacimiento -->'+
+              '<div class="hidden" id="actualizoFecha">'+
+                '<small>ACTUALIZO LA FECHA</small>'+
+              '</div>'+
+              '<div class="col-lg-6">'+
+                '<label for="fechaNacimiento"><span class="glyphicon glyphicon-calendar">'+
+                '&nbsp;Fecha de nacimiento(&nbsp;'+
+                  '<small><span class="label label-danger" id="muestraFecha"></span></small>'+
+                '&nbsp;) "Mes/Dia/Año"'+
+                '</span></label>'+
+                '<div class="input-group">'+
+                  '<input type="date"class="form-control" id="fechaNacimiento"/>'+
+                  '<span class="input-group-btn">'+
+                    '<button class="btn btn-warning" title="Guardar fecha" onclick="regFechaNacimiento(\'#fechaNacimiento\');" type="button">'+
+                      '<span class="glyphicon glyphicon-gift"></span>'+
+                    '</button>'+
+                  '</span>'+
+                '</div>'+
+              '</div>'+
               '<div class="col-md-12 hidden" id="divEditGeneral">'+
                 '<h4 id="tipoUpdate" style="color:green;"></h4>'+
               '</div>'+
@@ -2122,6 +2161,7 @@ function editMedicoPerfil(){
   loadPadecimientos();
   loadPalabras();
   traePadecimientos();
+  loadFechaNac("#fechaNacimiento");
 }
 
 

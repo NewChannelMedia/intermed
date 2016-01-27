@@ -1554,5 +1554,30 @@ var _this = module.exports = {
         error: 3
       });
     }
+  },
+  loadFechaNac: function(req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Medico.findOne({
+        where:{usuario_id:usuario_id},
+        attributes:['fechaNac']
+      }).then(function(fecha){
+        res.send(fecha);
+      });
+    }
+  },
+  regFechaNacimiento: function( object, req, res ){
+    if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Medico.update({fechaNac: object.fecha},{
+        where:{usuario_id:usuario_id}
+      }).then(function(actualizado){
+        if( actualizado == 1 ){
+          res.send(true);
+        }else{
+          res.send(false);
+        }
+      });
+    }
   }
 }

@@ -2531,3 +2531,30 @@ function traerAseguradoras(){
       }
     });
   });
+  //funcion que checara si el campo esta vacio, si encuentra informacion la guardara en el
+  // input correspondiente para la fecha, en caso contrario solo mostrara el input vacio para que se llene
+  function loadFechaNac(idInput){
+    // se hace el post
+    $.post('/medico/datos/loadFechaNac',function(data){
+      console.log("Fecha nacimiento: "+data.fechaNac);
+      var cortando =data.fechaNac.split('T');
+      if( data != null ){
+        $(idInput).val(cortando[0]);
+        $("#muestraFecha").text(cortando[0]);
+      }
+    });
+  }
+  // funcion para guardar la fecha de nacimiento del medico
+  function regFechaNacimiento(idInput){
+    var fecha= $(idInput).val();
+    // se envia la fecha
+    $.post('/medico/datos/regFechaNacimiento',{fecha:fecha}, function( data ){
+      if( data ){
+        console.log("actualizado");
+      }else{
+        console.log("No actualizado");
+      }
+    }).fail(function(e){
+      console.err("Error: "+JSON.stringify(e));
+    });
+  }
