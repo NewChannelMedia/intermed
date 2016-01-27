@@ -3741,7 +3741,7 @@ function cargarAseguradoras(){
           console.log('ASEGURADORAS: ' + JSON.stringify(data));
           var sub = false;
           data.result.forEach(function(rec){
-            listaNueva += '<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">'
+            listaNueva += '<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">'+
             '<div class="menuDiv">' +
               '<span>' +
                 '<span data-id="2" class="itemTitle">' + rec.aseguradora + '</span>' +

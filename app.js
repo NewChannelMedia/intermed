@@ -11,9 +11,3 @@
 
 //librerias requeridas
 var arranca = require('./config/router');
-// carga del archivo intermed para la carga de los controladores encontrados en ese fichero
-
-// se arranca el servidor
-arranca.iniciar();
-arranca.manejarPerfiles();
-arranca.error404();
