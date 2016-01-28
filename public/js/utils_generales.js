@@ -2,6 +2,13 @@
 * Todas las funciones cargadas en el $(document).ready();
 * o funciones que las pueden llamar donde sea
 **/
+//Eliminar el hash '#_=_' que agrega el login con facebook
+if (window.location.hash == '#_=_'){
+    history.replaceState
+        ? history.replaceState(null, null, window.location.href.split('#')[0])
+        : window.location.hash = '';
+}
+
 var regTotalDoc = 0;
 var base_url = 'http://localhost:3000/';
 var default_urlFotoPerfil = '/garage/profilepics/dpp.png';
