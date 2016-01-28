@@ -199,7 +199,6 @@ var io = function ( io, bundle, ioPassport ) {
       });
 
       socket.on('buscarNotificaciones',function (object){
-        console.log('buscarNotificaciones');
         var req = {
           socket: socket,
           usuario_id: socket.request.cookies.intermed_sesion.id,
