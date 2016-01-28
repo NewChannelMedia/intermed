@@ -19,4 +19,7 @@ module.exports = function (object){
   app.post('/changePass', function( req, res ){
     intermed.callController('/configuracion/configuraciones','changePass', req.body,req,res);
   });
+  app.post('/consultaInfo', function( req, res ){
+    intermed.callController('/configuracion/configuraciones','consultaInfo', req.body, req, res);
+  });
 }

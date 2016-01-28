@@ -66,3 +66,17 @@ exports.changePass = function( object, req, res ){
     });
   }
 }
+exports.consultaInfo = function( object, req, res ){
+  if ( req.session.passport.user && req.session.passport.user.id > 0 ){
+    var usuario_id = req.session.passport.user.id;
+    models.Usuario.findOne({
+      where:{ password: object.mail, id: usuario_id}
+    }).then(function(encontrado){
+      if(encontrado){
+        res.send(true);
+      }else{
+        res.send(false);
+      }
+    });
+  }
+}

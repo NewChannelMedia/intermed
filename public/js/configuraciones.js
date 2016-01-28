@@ -27,15 +27,51 @@ $("#saveMail").click(function(){
   var comprobar = expreg.test(mail)? true: false;
   if( mail != '' ){
     if( comprobar ){
-      // si entro aqui el correo esta bien y se actualizara en la base de datos
-      $.post('/changeMail',{correo:mail},function(data){
-        if(data ){
-          $("#mensaje").removeClass('hidden');
-          $("#texto").text('Su correo '+mail+' fue cambiado con exito');
-        }else{
-          $("#mensaje").removeClass('hidden');
-          $("#texto").text('Su correo '+mail+' no se pudo cambiar, ya existe uno igual');
-        }
+      bootbox.dialog({
+        className: 'Intermed-Bootbox',
+        title:'<span class="title">Confirmar con tu correo</span><span class="subtitle">Para realizar esta acción ocupamos que confirmes con tu contraseña</span>',
+        buttons:{
+          confirmar:{
+            label:'Confirmar',
+            className:'btn-danger',
+            callback: function(){
+              var email = $("#bootConfirm").val();
+              //consulta a la db para checar que la consulta sea la misma
+              $.post('/consultaInfo',{mail:email}, function(data){
+                if(data){
+                  // si entro aqui el correo esta bien y se actualizara en la base de datos
+                  $.post('/changeMail',{correo:mail},function(data){
+                    if(data ){
+                      $("#mensaje").removeClass('hidden');
+                      $("#texto").text('Su correo '+mail+' fue cambiado con exito');
+                    }else{
+                      $("#mensaje").removeClass('hidden');
+                      $("#texto").text('Su correo '+mail+' no se pudo cambiar, ya existe uno igual');
+                    }
+                  });
+                }else{
+                  console.log("No");
+                }
+              });
+            },
+          },
+          cancel:{
+            label:'Cancelar',
+            className:'btn-default',
+            callback: function(){
+              bootbox.hideAll();
+            }
+          }
+        },
+        message:
+        '<div class="container-fluid">'+
+          '<div class="row">'+
+            '<div class="col-md-12">'+
+              '<span class="label label-info">Confirmar con tu contraseña</span>'+
+              '<input type="password" class="form-control" id="bootConfirm" />'+
+            '</div>'+
+          '</div>'+
+        '</div>'
       });
     }else{
       bootbox.alert('el correo que ingreso no es correcto\nRevise que no contenga lo siguiente:\nespacios en blanco al principio ni al final',
