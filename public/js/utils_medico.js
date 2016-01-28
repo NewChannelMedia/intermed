@@ -68,6 +68,59 @@ function muestraMedico( id ) {
   } );
 }
 $( document ).ready( function () {
+  if ($('#regMedStepOne').length>0){
+
+      var nombre = '', apellidop = '', apellidom = '';
+      var curpRegMed = '', cedulaRegMed = '';
+      var genderF = '', genderM = '';
+
+      var continuar = true;
+      $.ajax( {
+        async: false,
+        url: '/informacionRegistroMedico',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        success: function ( data ) {
+          if (data.success ){
+            //Registrado el nombre
+            if ( data.result.DatosGenerale) {
+              $('#nombreRegMed').val(data.result.DatosGenerale.nombre);
+              $('#apePatRegMed').val(data.result.DatosGenerale.apellidoP);
+              if (data.result.DatosGenerale.apellidoM){
+                $('#apeMatRegMed').val(data.result.DatosGenerale.apellidoM);
+              }
+            }
+
+            //Registrado el Genero
+            if ( data.result.Biometrico ) {
+              if ( data.result.Biometrico.genero == "F"){
+                genderF = ' checked ';
+                $('#sexF').attr('checked',true);
+              }
+              else if ( data.result.Biometrico.genero == "M"){
+                genderM = ' checked ';
+                $('#sexM').attr('checked',true);
+              }
+            }
+
+            //Registrado el curp
+            if ( data.result.Medico && data.result.Medico.curp) {
+              $('#curpRegMed').val(data.result.Medico.curp);
+            }
+            //Registrada la cedula
+            if ( data.result.Medico && data.result.Medico.cedula) {
+              $('#cedulaRegMed').val(data.result.Medico.cedula);
+            }
+          }
+        },
+        error: function(err){
+          console.log('Ajax erro: ' + JSON.stringify(err));
+        }
+      });
+      loadEspecialidades();
+  }
+
   if ( $( "#tarjetaOptReg" ).is( ":checked" ) ) {
     //$( '#paypalOpt' ).find( ".disabledBox" ).addClass( "dB" );
     $( '#paypalOptBox' ).find( $( "input" ) ).prop( 'disabled', true );
@@ -360,17 +413,17 @@ function saveStepOne() {
   var gender = $('input[name=gender]').val();
   var curpRegMed = $('#curpRegMed').val();
   var cedulaRegMed = $('#cedulaRegMed').val();
-  if (nombreRegMed != "" && apePatRegMed != "" && gender != "" && curpRegMed != "" && cedulaRegMed != ""){
+  if (nombreRegMed != "" && apePatRegMed != "" && gender != "" && curpRegMed != "" && cedulaRegMed != "" && $('#regmedEsp').text() != ""){
     $.ajax( {
       url: '/regMedPasoUno',
       type: 'POST',
       dataType: "json",
       cache: false,
+      async: false,
       data: $( '#regMedStepOne' ).serialize(),
       success: function ( data ) {
         if ( data.success) {
-          actualizarSesion();
-          bootbox.hideAll();
+          actualizarSesion(true);
           //registroMedicoDatosPago();
         } else {
           if (data.error){
@@ -392,6 +445,8 @@ function saveStepOne() {
       error = "su género";
     } else if (curpRegMed == ""){
       error = "su CURP";
+    } else if ($('#regmedEsp').text() == ""){
+      error ="su especialidad"
     } else {
       error = "su cédula";
     }
@@ -400,6 +455,7 @@ function saveStepOne() {
       title: "No se puede guardar la información."
     });
   }
+  return false;
 }
 function saveStepTwo() {
   $.ajax( {
@@ -418,7 +474,7 @@ function saveStepTwo() {
     }
   } );
 }
-function actualizarSesion() {
+function actualizarSesion(refresh) {
   $.ajax( {
     url: '/actualizarSesion',
     type: 'POST',
@@ -449,6 +505,9 @@ function actualizarSesion() {
 
         if ( data.session.ciudad ) {
           $( '#session_ubicacion' ).html( data.session.ciudad + ', ' + data.session.estado );
+        }
+        if (refresh){
+          location.reload();
         }
       }
       else {
@@ -1695,38 +1754,57 @@ function traerAseguradoras(){
         $("#autoEspecialidad").html(html2);
       });
       $.post('/loadEspecialidades', function(data){
-        $.each(data.MedicoEspecialidads, function( i, item ){
-          if( item.subEsp == 0 ){
-            html += '<tr style="color:white;">'
-              html += '<td ><center>'+contador+'</center></td>';
-              html += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
-              html += '<td><center>';
-                html += '<button type="button" onclick="deleteEsp(\'#mDelete-'+i+'\');" oculto="'+item.id+'" class="btn btn-danger" id="mDelete-'+i+'">';
-                  html += '<span class="glyphicon glyphicon-remove-sign"></span>';
-                html += '</button>';
-              html += '</center></td>';
-            html += '</tr>';
-            contador++;
-          }
-        });
-        $("#tableEspecialidades").html(html);
+        if ($('#regMedStepOne').length>0){
+          var cont = '';
+          $.each(data.MedicoEspecialidads, function( i, item ){
+            var clase = 'btn-info';
+            if( item.subEsp == 1 ){
+              clase = 'btn-default';
+            }
+            cont += '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
+            '<label class="btn btn-xs '+ clase +'">'+
+            '<span>'+item.Especialidad.especialidad+'</span>'+
+            '</label>'+
+            '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+item.id+'\');" >'+
+            '<span class="glyphicon glyphicon-remove"></span></button></div>';
+          });
+          $('#regmedEsp').html(cont);
+        }else {
+          $.each(data.MedicoEspecialidads, function( i, item ){
+            if( item.subEsp == 0 ){
+              html += '<tr>'
+                html += '<td ><center>'+contador+'</center></td>';
+                html += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
+                html += '<td><center>';
+                  html += '<button type="button" onclick="deleteEsp(\''+item.id+'\');" class="btn btn-danger">';
+                    html += '<span class="glyphicon glyphicon-remove-sign"></span>';
+                  html += '</button>';
+                html += '</center></td>';
+              html += '</tr>';
+              contador++;
+            }
+          });
+          $("#tableEspecialidades").html(html);
+        }
       });
       $.post('/loadEspecialidades', function(data){
-        $.each(data.MedicoEspecialidads, function( i, item){
-          if( item.subEsp == 1 ){
-            html3 += '<tr style="color:white;">'
-              html3 += '<td ><center>'+contador2+'</center></td>';
-              html3 += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
-              html3 += '<td><center>';
-                html3 += '<button type="button" onclick="deleteSubEsp(\'#mDeletes-'+i+'\');" oculto="'+item.id+'" class="btn btn-warning" id="mDeletes-'+i+'">';
-                  html3 += '<span class="glyphicon glyphicon-remove-sign"></span>';
-                html3 += '</button>';
-              html3 += '</center></td>';
-            html3 += '</tr>';
-            contador2++;
-          }
-        });
-        $("#tableSubEspecialidades").html(html3);
+        if (!($('#regMedStepOne').length>0)){
+          $.each(data.MedicoEspecialidads, function( i, item){
+            if( item.subEsp == 1 ){
+              html3 += '<tr>'
+                html3 += '<td ><center>'+contador2+'</center></td>';
+                html3 += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
+                html3 += '<td><center>';
+                  html3 += '<button type="button" onclick="deleteSubEsp(\'#mDeletes-'+i+'\');" oculto="'+item.id+'" class="btn btn-warning" id="mDeletes-'+i+'">';
+                    html3 += '<span class="glyphicon glyphicon-remove-sign"></span>';
+                  html3 += '</button>';
+                html3 += '</center></td>';
+              html3 += '</tr>';
+              contador2++;
+            }
+          });
+          $("#tableSubEspecialidades").html(html3);
+        }
       });
     }
     function loadPadecimientos(){
@@ -1828,7 +1906,6 @@ function traerAseguradoras(){
       });
     }
     function deleteEsp(id){
-      var id = $(id).attr('oculto');
       bootbox.confirm('¿Estas seguro de eliminar esto?',function(result){
         if(result){
           $.post('/deleteEsp',{id:id}, function( data ){

@@ -164,7 +164,8 @@ exports.registrarUsuario = function ( object, req, res ) {
                   password: object[ 'password' ],
                   tipoUsuario: object[ 'tipoUsuario' ],
                   tipoRegistro: object[ 'tipoRegistro' ],
-                  estatusActivacion: 0
+                  estatusActivacion: 0,
+                  status: 0
                 }, {
                   transaction: t
                 } ).then( function ( usuario ) {
@@ -179,7 +180,7 @@ exports.registrarUsuario = function ( object, req, res ) {
                     }, {
                       transaction: t
                     } )
-                    .then( function ( usuario ) {
+                    .then( function ( usuarioUpd ) {
                       return crearMedico( req, res, object, usuario, t );
                     } );
                 } );
@@ -358,7 +359,7 @@ var generarSesion = function ( req, res, usuario_id, redirect , response) {
       where: {
         id: usuario_id
       },
-      attributes: [ 'id', 'usuarioUrl', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion','urlPersonal' ],
+      attributes: [ 'id', 'usuarioUrl', 'urlFotoPerfil', 'tipoUsuario', 'tipoRegistro', 'estatusActivacion','urlPersonal','status' ],
       include: [ {
         model: models.DatosGenerales,
         attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
@@ -389,7 +390,8 @@ var generarSesion = function ( req, res, usuario_id, redirect , response) {
           'estatusActivacion': usuario.estatusActivacion,
           'logueado': usuario.logueado,
           'usuarioUrl': usuario.usuarioUrl,
-          'urlPersonal': usuario.urlPersonal
+          'urlPersonal': usuario.urlPersonal,
+          'status':usuario.status
         } ) );
 
         if (usuario.Direccions && usuario.Direccions[0]){

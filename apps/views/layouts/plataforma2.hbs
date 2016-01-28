@@ -33,11 +33,9 @@
   </head>
 
   <body>
-    {{#unless name}}
-    <input type="hidden" id="inicio" value="{{valSession 'inicio'}}">
-    <input type="hidden" id="registroCompleto" value="{{valSession 'registroCompleto'}}">
     <input type="hidden" id="tipoUsuario" value="{{valSession 'tipoUsuario'}}">
-    <input type="hidden" id="usuarioPerfil" value="{{#if usuario.id}}{{usuario.id}}{{else}}{{valSession 'id'}}{{/if}}"> {{/unless}}
+    <input type="hidden" id="usuarioPerfil" value="{{#if usuario.id}}{{usuario.id}}{{else}}{{valSession 'id'}}{{/if}}">
+
     <nav id="mainNav" class="navbar navigator navbar-static-top">
       <div class="navigator-container container-fluid">
         <div class="navigator-inner row">

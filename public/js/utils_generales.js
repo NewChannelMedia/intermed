@@ -1246,12 +1246,6 @@ $( document ).ready( function () {
     $('#buscadorEspecial').on('input',function(e){
      cargarListaEspCol( $( '#usuarioPerfil' ).val() );
     });
-
-    if ( $( '#registroCompleto' ) && $( '#registroCompleto' ).val() === "0" && $( '#inicio' ).val() === "1" ) {
-      if ( $( '#tipoUsuario' ).val() === "M" ) {
-        registroMedicoDatosPersonales();
-      }
-    }
   } else if ($( '#perfilPaciente' ).length > 0 ) {
     cargarListaEspCol( $( '#usuarioPerfil' ).val() ,'P');
     cargarCitasPaciente();
@@ -2312,7 +2306,7 @@ function cargarCitasPaciente(offset, element){
           });
           $('#div_citasPaciente').html(contenido);
         } else if (data.error){
-          manejadorDeErrores(data.error);
+          //manejadorDeErrores(data.error);
         }
       },
       error: function (err){

@@ -39,7 +39,10 @@ module.exports = function ( sequelize, DataTypes ) {
     },
     token: {
       type: DataTypes.STRING
-    }
+    },
+    status: {
+      type: DataTypes.INTEGER
+    },
   }, {
     classMethods: {
       // asociaciones con otras tablas

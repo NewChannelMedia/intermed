@@ -388,46 +388,56 @@ var _this = module.exports = {
                 cedula: object[ 'cedulaRegMed' ]
               }}).then(function(medicoCedula){
                 if (!medicoCedula){
-                  models.DatosGenerales.upsert( {
-                    nombre: object[ 'nombreRegMed' ],
-                    apellidoP: object[ 'apePatRegMed' ],
-                    apellidoM: object[ 'apeMatRegMed' ],
-                    usuario_id: usuario_id
-                  } ).then( function ( result ) {
-                    models.Biometrico.upsert( {
-                      genero: object[ 'gender' ],
+                  models.Usuario.update({
+                    status: 2
+                  },{
+                    where: {
+                      id: usuario_id
+                    }
+                  }).then(function(status){
+                    //Actualizar datos generales
+                    models.DatosGenerales.upsert({
+                      nombre: object[ 'nombreRegMed' ],
+                      apellidoP: object[ 'apePatRegMed' ],
+                      apellidoM: object[ 'apeMatRegMed' ],
                       usuario_id: usuario_id
-                    } ).then( function ( result ) {
-                      models.Medico.findOne( {
-                        where: {
+                    },{where: {
+                      usuario_id: usuario_id
+                    }}).then(function(DG){
+                      models.Medico.upsert({
+                        curp: object[ 'curpRegMed' ],
+                        cedula: object[ 'cedulaRegMed' ],
+                        usuario_id: usuario_id
+                        },{where: {
                           usuario_id: usuario_id
-                        }
-                      } ).then( function ( medico ) {
-                        medico.update( {
-                          curp: object[ 'curpRegMed' ],
-                          cedula: object[ 'cedulaRegMed' ]
-                        } ).then( function ( result ) {
+                      }}).then(function(MED){
+                        models.Biometrico.upsert({
+                          genero: object[ 'gender' ],
+                          usuario_id: usuario_id
+                        },{where: {
+                          usuario_id: usuario_id
+                        }}).then(function(BIO){
                           res.send( {
                             'success': true
                           } );
-                        } );
-                      } )
-                    } )
-                  } );
+                        });
+                      });
+                    })
+                  });
                 } else {
-                  res.status(200).send( {
-                    'success': false,
-                    'error': 102
-                  } );
+                    res.status(200).send( {
+                      'success': false,
+                      'error': 102
+                    } );
                 }
               });
-          } else {
-            res.status(200).send( {
-              'success': false,
-              'error': 101
-            } );
-          }
-        })
+            } else {
+                res.status(200).send( {
+                  'success': false,
+                  'error': 101
+                } );
+            }
+          });
     }
     else {
       res.status(200).send( {
