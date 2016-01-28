@@ -3,140 +3,14 @@
 * o funciones que las pueden llamar donde sea
 **/
 //Eliminar el hash '#_=_' que agrega el login con facebook
+var base_url = 'http://localhost:3000/';
+var default_urlFotoPerfil = '/garage/profilepics/dpp.png';
 if (window.location.hash == '#_=_'){
     history.replaceState
         ? history.replaceState(null, null, window.location.href.split('#')[0])
         : window.location.hash = '';
 }
 
-var regTotalDoc = 0;
-var base_url = 'http://localhost:3000/';
-var default_urlFotoPerfil = '/garage/profilepics/dpp.png';
-if ( location.pathname === '/registro' ) {
-  $( document ).ready( getAllDoctors() );
-}
-else {
-  $( document ).ready( function () {
-    $( '#frm_regP' ).on( 'submit', function ( e ) {
-      e.preventDefault();
-      var pass1 = $( '#contraseñaReg' ).val();
-      var pass2 = $( '#contraseña2Reg' ).val();
-      var submit = true,
-        mensaje = '';
-      //Validar contraseña y confirmacion de contraseña
-      if ( pass1 != pass2 ) {
-        submit = false;
-        mensaje = 'Confirmación de contraseña no coincide';
-      }
-      //Validar fecha
-      if ( submit ) {
-        var dia = $( '#diaNacReg' ).val();
-        var mes = $( '#mesNacReg' ).val();
-        var anio = $( '#añoNacReg' ).val()
-        fecha = dia + "/" + mes + "/" + anio;
-        if ( validarFormatoFecha( fecha ) ) {
-          if ( !existeFecha( fecha ) ) {
-            submit = false;
-            mensaje = "La fecha de nacimiento introducida no existe.";
-          }
-        }
-        else {
-          submit = false;
-          mensaje = "El formato de la fecha de nacimiento es incorrecto.";
-        }
-      }
-
-      if ( submit ) {
-        var correo = document.getElementById( 'correoReg' ).value;
-        if ( correoValido( correo ) ) {
-          $.ajax( {
-            async: false,
-            url: '/correoDisponible',
-            type: 'POST',
-            dataType: "json",
-            cache: false,
-            data: {
-              'email': correo
-            },
-            success: function ( data ) {
-              submit = data.result;
-              if ( !submit ) mensaje = "El correo " + correo + ' ya se encuentra registrado.';
-            },
-            error: function ( jqXHR, textStatus, err ) {
-              console.error( 'AJAX ERROR: ' + err );
-            }
-          } );
-        }
-      }
-
-      if ( submit ) {
-        document.getElementById( 'alertError' ).innerHTML = '';
-        this.submit();
-      }
-      else {
-        document.getElementById( 'alertError' ).innerHTML = '<div class="alert alert-danger" role="alert" >' + mensaje + '</div>';
-      }
-    } );
-
-    $( '#frm_regM' ).on( 'submit', function ( e ) {
-      e.preventDefault();
-      var pass1 = $( '#contraseñaRegM' ).val();
-      var pass2 = $( '#contraseña2RegM' ).val();
-      var correo = $( '#correoRegM' ).val();
-      var correo2 = $( '#correoConfirmRegM' ).val();
-      var submit = true,
-        mensaje = '';
-      //Validar contraseña y confirmacion de contraseña
-      if ( pass1 != pass2 ) {
-        submit = false;
-        mensaje = 'Confirmación de contraseña no coincide';
-      }
-      //Validar correo y confirmacion de correo
-      else if ( correo != correo2 ) {
-        submit = false;
-        mensaje = 'Confirmación de correo no coincide';
-      }
-      //Validar correo no registrado
-      else {
-        if ( correoValido( correo ) ) {
-          $.ajax( {
-            async: false,
-            url: '/correoDisponible',
-            type: 'POST',
-            dataType: "json",
-            cache: false,
-            data: {
-              'email': correo
-            },
-            success: function ( data ) {
-              submit = data.result;
-              if ( !submit ) mensaje = "El correo " + correo + ' ya se encuentra registrado.';
-            },
-            error: function ( jqXHR, textStatus, err ) {
-              console.error( 'AJAX ERROR: ' + err );
-            }
-          } );
-        }
-      }
-
-      if ( submit ) {
-        document.getElementById( 'alertErrorM' ).innerHTML = '';
-        this.submit();
-      }
-      else {
-        document.getElementById( 'alertErrorM' ).innerHTML = '<div class="alert alert-danger" role="alert" >' + mensaje + '</div>';
-      }
-    } );
-
-    if ( location.pathname.substring( 0, 7 ) === '/perfil' ) {
-      cargarFavCol( $( '#usuarioPerfil' ).val() );
-    }
-
-    /* validaciones al registro */
-    validateForm( 'input-nombre', 'nombreMed' );
-    validateForm('input-select', 'selectEstado');
-  } );
-}
 function validarFormatoFecha( campo ) {
   var RegExPattern = /^\d{1,2}\/\d{1,2}\/\d{2,4}$/;
   if ( ( campo.match( RegExPattern ) ) && ( campo != '' ) ) {
@@ -492,9 +366,6 @@ function validateForm( tipoForm, nameForm ){
   } );
 }
 //<---------------------------------------------------->
-$( '#CambiarFotoPerfil' ).on( 'hidden.bs.modal', function ( e ) {
-  $( '#imageFile' ).val( '' );cambioFotoPerfil();
-} )
 var base64file;
 
 $( function () {
@@ -557,86 +428,6 @@ function SetCoordinates( c ) {
     $( '#btnCrop' ).hide();
   }
 };
-function MakeWizard() {
-  $( "#RegMedModal" ).formToWizard()
-}
-// formToWizard
-( function ( $ ) {
-  $.fn.formToWizard = function () {
-    var element = this;
-
-    var steps = $( element ).find( ".step" );
-    var count = steps.size();
-
-    $( element ).find( ".modal-header" ).find( ".close" ).remove();
-    $( element ).find( ".modal-header" ).append( "<div class='stepsContainer pull-right'><ul id='steps' class='stepsList'></ul></div>" );
-    $( element ).find( ".stepsContainer" ).append( "<span class='stepsConnector'></span>" );
-
-    steps.each( function ( i ) {
-      if ( i == 0 ) $( "#steps" ).html( "" );
-      $( this ).wrap( "<div id='step" + i + "'></div>" );
-      $( this ).find( ".EndButtons" ).addClass( "step" + i + "c" );
-      $( this ).find( ".EndButtons" ).append( "<p id='step" + i + "c'></p>" );
-
-      var name = $( this ).find( ".modal-footer" ).html();
-      $( "#steps" ).append( "<li id='stepDesc" + i + "' class='stepBullets'>" + i + "</li>" );
-      if ( i == 0 ) {
-        createNextButton( i );
-        selectStep( i );
-      }
-      else if ( i == count - 1 ) {
-        $( "#step" + i ).hide();
-        createPrevButton( i );
-      }
-      else {
-        $( "#step" + i ).hide();
-        createPrevButton( i );
-        createNextButton( i );
-      }
-    } );
-
-    function createPrevButton( i ) {
-      var stepName = "step" + i;
-      $( "#" + stepName + "c" ).append( "<a href='#' id='" + stepName + "Prev' class='btn btn-default btn-block prev'><span class='glyphicon glyphicon-arrow-left'></span></a>" );
-      $( "#" + stepName + "Prev" ).bind( "click", function ( e ) {
-        $( "#" + stepName ).hide();
-        $( "#step" + ( i - 1 ) ).show();
-        selectStep( i - 1 );
-      } );
-    }
-
-    function createNextButton( i ) {
-      var stepName = "step" + i;
-      $( "#" + stepName + "c" ).append( "<a href='#' id='" + stepName + "Next' class='btn btn-default btn-block next'><span class='glyphicon glyphicon-arrow-right'></span></a>" );
-      $( "#" + stepName + "Next" ).bind( "click", function ( e ) {
-        $( "#" + stepName ).hide();
-        $( "#step" + ( i + 1 ) ).show();
-        selectStep( i + 1 );
-      } );
-    }
-
-    function selectStep( i ) {
-      $( "#steps li" ).removeClass( "current" );
-      $( "#stepDesc" + i ).addClass( "current" );
-    }
-
-  }
-} )( jQuery );
-$( function () {
-  $( '[data-toggle="popover"]' ).popover()
-} )
-//Funcion que previene que un dropdown se cierre al dar click dentro de el
-$( function () {
-  $( ".dropdown-form" ).click( function ( event ) {
-    event.stopPropagation();
-  } );
-} )
-$( function () {
-  $( ".notificationDropdown" ).click( function ( event ) {
-    event.stopPropagation();
-  } );
-} )
-
 
 //funcion que vacia la forma dentro de un dropdown y lo cierra al click del boton de guardar
 $( function () {
@@ -694,6 +485,7 @@ function regUbiValid(UbicData) {
 
     return {'valido':blnValido, 'error':error};
 }
+
 $(function(){
   $('#btnAgregaUbi').on('click',function(){
     agregarUbicacion();
