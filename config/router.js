@@ -86,6 +86,7 @@ require( './routers/router-paciente.js' )(routerObject);
 require( './routers/router-ubicacion.js' )(routerObject);
 require( './routers/router-usuario.js' )(routerObject);
 require('./routers/router-encriptacion.js')(routerObject);
+require('./routers/router-configuraciones.js')(routerObject);//router para las configuraciones
 require( './routers/router-error.js' )(routerObject);
 /*FIN CARGA DE ROUTERS*/
 

@@ -1,0 +1,155 @@
+<section>
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="" onclick="generales();">
+      <a href="#generales" aria-controls="generales" role="tab" data-toggle="tab">
+        <span class="glyphicon glyphicon-wrench">&nbsp;Generales</span>
+      </a>
+    </li>
+    <li role="presentation" class="">
+      <a href="#notificaciones" aria-controls="notificaciones" role="tab" data-toggle="tab">
+        <span class="glyphicon glyphicon-record">&nbsp;Notificaciones</span>
+      </a>
+    </li>
+    <li role="presentation" class="">
+      <a href="#pagos" aria-controls="pagos" role="tab" data-toggle="tab">
+        <span class="glyphicon glyphicon-piggy-bank">&nbsp;Pagos</span>
+      </a>
+    </li>
+  </ul>
+  <div class="col-md-12">
+    <div class="hidden" id="mensaje">
+      <h4 id="texto"></h4>
+    </div>
+  </div>
+  <div class="tab-content col-md-12">
+    <div role="tabpanel" class="tab-pane" id="generales">
+      <div class="container-fluid profileHolder">
+        <div class="row">
+          <div class="col-md-12">
+              <!-- Correo modificacion -->
+              <div class="form-horizontal">
+                <div class="col-md-2">
+                  <p>
+                    <small>Cambia el correo con el que entras a intermed</small>
+                  </p>
+                </div>
+                <div class="form-group">
+                  <label for="mailMedic" class="col-md-2 control-label">
+                    <span class="glyphicon glyphicon-envelope"></span>
+                  </label>
+                  <div class="col-md-4">
+                    <span class="label label-warning" id="getMail"></span>
+                    <div class="input-group">
+                      <input type="mail" id="mailMedic" class="form-control" placeholder="E-mail">
+                      <span class="input-group-btn">
+                        <button class="btn btn-warning" type="button" id="saveMail">
+                          <span class="glyphicon glyphicon-floppy-disk"></span>
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- Fin correo modificacion -->
+          </div><!-- fin col-md-12 fin -->
+        </div><!-- Fin primer row -->
+        <div class="row">
+          <div class="col-md-12">
+            <!-- URL -->
+              <div class="form-horizontal">
+                <div class="col-md-2">
+                  <p>
+                    <small>Cambia el url, esta acción solo se podrá hacer una vez</small>
+                  </p>
+                </div>
+                <div class="form-group">
+                  <label for="urlMedic" class="col-md-2 control-label">
+                    <span class=""><small>www.intermed.online/</small></span>
+                  </label>
+                  <div class="col-md-4">
+                    <span class="label label-warning"><small>www.intermed.online/</small><small id="getUrl"></small></span>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="input-group">
+                      <input type="text" id="urlMedic" title="" class="form-control" placeholder="Url personalizado"/>
+                      <span class="input-group-btn">
+                        <button class="btn btn-warning" type="button" id="saveUrl">
+                          <span class="glyphicon glyphicon-link"></span>
+                        </button>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <!-- Fin URL -->
+          </div><!-- fin col-md-12 -->
+        </div><!-- Fin segundo row -->
+        <hr>
+        <div class="row">
+          <div class="col-md-12">
+            <!-- PASSWORD Y CONFIRMACION -->
+              <div class="form-horizontal">
+                <div class="col-md-2">
+                  <p>
+                    <small>Cambia tu contraseña</small>
+                  </p>
+                </div>
+                <div class="form-group">
+                  <label for="passMedic" class="col-md-2 control-label">
+                    <span class="glyphicon glyphicon-lock"></span>
+                  </label>
+                  <div class="col-md-4">
+                    <div class="input-group">
+                      <input type="password" id="passMedic" class="form-control" placeholder="Password"/>
+                      <input type="password" id="confiMedic" class="form-control" placeholder="Confirmar"/>
+                    </div>
+                    <div class="col-md-12">
+                      <button class="btn btn-warning form-control" id="confirMedicPas">
+                        <span class="glyphicon glyphicon-lock"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <!-- FIN PASSWORD Y CONFIRMACION -->
+          </div>
+        </div><!-- Fin Tercer row -->
+      </div><!-- container-fluid principal fin -->
+    </div><!-- Fin tab generales-->
+    <div role="tabpanel" class="tab-pane" id="notificaciones">
+      <div role="tabpanel" class="tab-pane" id="notificaciones">
+        <div class="container-fluid profileHolder">
+          <div>
+            <div>
+              <div class="container">
+                <div class="row" style="margin-top:40px;">
+                  <div class="col-lg-12 col-md-12" style="margin-bottom:15px;">
+                    <h3 style="display:inline">Notificaciones</h3>
+                  </div>
+                  <div class="col-lg-12 col-md-12" id="notifList" >
+                    <input type="hidden" value="" id="maxId">
+                    <table class="table" id="notifListTable" style="border-color: black;">
+                      <thead>
+                            <tr>
+                              <th style="width: 70%">Tipo</th>
+                              <th style="width: 10%" class="text-center">Interno</th>
+                              <th style="width: 10%" class="text-center">Push</th>
+                              <th style="width: 10%" class="text-center">Mail</th>
+                            </tr>
+                          </thead>
+                          <tbody id="configNot">
+                          </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div><!-- FIN TAB PANE 2-->
+    </div><!-- Fin tab notificaciones -->
+    <div role="tabpanel" class="tab-pane" id="pagos">
+      <h4>Pague ya</h4>
+    </div><!-- Fin tab pagos-->
+  </div><!-- FIN PRINCIPAL -->
+</section>

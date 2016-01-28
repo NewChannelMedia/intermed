@@ -578,11 +578,9 @@ $( document ).ready( function () {
   }
 } );
 
-if ( window.location.href.indexOf( "/notificaciones/configuracion" ) > 0 ) {
+if ( window.location.href.indexOf( "/configuraciones" ) > 0 ) {
 
   $( document ).ready( function () {
-
-    if ( window.location.href.indexOf( "/notificaciones/configuracion" ) > 0 ) {
       //Manejar notificaciones
       $.ajax( {
         url: '/notificaciones',
@@ -644,7 +642,6 @@ if ( window.location.href.indexOf( "/notificaciones/configuracion" ) > 0 ) {
           console.error( 'AJAX ERROR: ' + err );
         }
       } );
-    }
   } );
 
   function modificarConfiguracion( id, interno, push, mail ) {
