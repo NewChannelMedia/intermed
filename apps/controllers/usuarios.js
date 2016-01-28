@@ -57,10 +57,14 @@ exports.iniciarSesion = function ( object, req, res ) {
     }
   } ).then( function ( usuario ) {
     if ( usuario ) {
-      generarSesion( req, res, usuario.id, true );
+      generarSesion( req, res, usuario.id, false , true);
     }
     else {
-      res.redirect( '/' );
+      //Usuario o contraseña incorrectos
+      res.status(200).json({
+        success:false,
+        error:'3'
+      });
     }
   } );
 };

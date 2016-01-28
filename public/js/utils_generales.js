@@ -2573,3 +2573,36 @@ function agregarDestRecom(){
   $('#destRec')[0].reset();
   return false;
 }
+
+function iniciarSesionLocal(inputEmail, inputPassword){
+  var email = $('#'+inputEmail).val();
+  var pass = $('#'+inputPassword).val();
+  $.ajax({
+    async: false,
+    url: '/auth/correo',
+    type: 'POST',
+    dataType: "json",
+    data:{'email':email,'password':pass},
+    cache: false,
+    success: function ( data ) {
+        if (data.result == "success"){
+          var usuarioUrl = data.session.usuarioUrl;
+          if (data.session.urlPersonal){
+            usuarioUrl = data.session.urlPersonal;
+          }
+          window.location.href = '/'+usuarioUrl
+        } else {
+          $('#LoginError').removeClass('hidden');
+          setTimeout(function(){
+            $('#LoginError').addClass('hidden');
+          },3000);
+        }
+      return false;
+    },
+    error: function(err){
+      console.log('AJAX error: ' + JSON.stringify(err));
+      return false;
+    }
+  });
+  return false;
+}

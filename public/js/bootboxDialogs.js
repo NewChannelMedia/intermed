@@ -860,6 +860,7 @@ function recomendacionesBoot(){
 //<------------------- LOGIN ------------------------------->
 function loginModal(){
   $('.modal-body').css('padding',0);
+  //action="/auth/correo"
   bootbox.dialog({
     onEscape: function () {
     bootbox.hideAll();
@@ -870,10 +871,15 @@ function loginModal(){
     backdrop:true,
     message:
       '<div class="" id="logInicio">'+
-        '<form method="POST" action="/auth/correo">'+
+        '<form onsubmit="return iniciarSesionLocal(\'email\',\'password\');">'+
           '<div class="row">'+
             '<div class="col-md-8 col-md-offset-2">'+
               '<input type="button" name="loginFB" value="Login con Facebook" class="btn btn-primary btn-block" onclick="window.location=\'/auth/facebook/request/loguin\'">'+
+            '</div>'+
+          '</div>'+
+          '<div class="row">'+
+            '<div class="col-md-8 col-md-offset-2">'+
+            '<div class="alert alert-danger hidden" id="LoginError" role="alert" style="margin-bottom:0px;"> <strong>Correo o contraseña incorrectos.</strong></div>'+
             '</div>'+
           '</div>'+
           '<div class="row">'+
