@@ -61,20 +61,18 @@ function send( object, file ,res) {
     template: file,
     context: object
   };
-  console.log("OBJECTO: "+JSON.stringify(object));
-  console.log('Template: '+file);
   var transporter = nodemailer.createTransport( smtpTransport( datos ) );
   transporter.use( 'compile', hbs( options ) );
   // se hace la funcion para el envio de el correo
   transporter.sendMail( mailOptions, function ( err, informacion ) {
     if ( err ) {
-      console.log( "Error sending mail: " + JSON.stringify(err));
+      console.log( "Error sending mail {"+ object.to +":"+ file +"}: " + JSON.stringify(err));
       if (res){
         res.send({success: false, error: err});
       }
     }
     else {
-      console.log( "Sending mail: " + informacion.response );
+      console.log( "Sending mail {"+ object.to +":"+ file +"}: " + informacion.response );
       if (res){
         res.send({success: true, result: informacion.response});
       }

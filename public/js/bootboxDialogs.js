@@ -755,39 +755,46 @@ function recomendacionesBoot(){
     },
     backdrop:true,
     closeButton:true,
-    className: 'Intermed-Bootbox',
-    title: '<span class="title">Recomendar '+ nombreUsuario +' A:</span>',
+    className: 'Intermed-Bootbox h65-medium',
+    title: '<span class="title">Recomendar al '+ nombreUsuario +'</span>',
     size:'large',
     message:
-      '<div id=“recomienda” class=“col-md-12”>'+
-         '<div class="form-group has-feedback" id="buscador">'+
-             '<label class="control-label"for="buscadorRecomendados" style="color:white">Busca entre tus contactos para que les recomiendes al Dr.<span class="hidden" id="pacienteIdOculto"></span></label>'+
-             '<input type="text" class="form-control" id="buscadorRecomendados" placeholder="Buscar contacto...">'+
-             '<span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>'+
-         '</div>'+
-         '<div class="" id="enviarRecomendaciones">'+
-           '<ul class="list-inline"></ul>'+
-         '</div>'+
-      '</div>'+
+      '<form method="POST" onsubmit="return agregarDestRecom();" id="destRec">'+
+        '<div class="form-group col-md-5">'+
+          '<input class="form-control" type="text" placeholder="Nombre" name="nombre" id="nombreRecomendacion" required="">'+
+        '</div>'+
+        '<div class="form-group col-md-6">'+
+          '<input class="form-control" type="email" placeholder="E-mail" name="email" id="correoRecomendacion" required="">'+
+        '</div>'+
+        '<div class="form-group col-md-1">'+
+          '<button class="btn btn-warning btn-block"><span class="glyphicon glyphicon-plus"></span></button>'+
+        '</div>'+
+
+        '<div class="col-md-2 white-c ag-bold s20" style="min-height:35px">'+
+          'Destinatarios:'+
+        '</div>'+
+        '<div class="form-group col-md-10"><div id="destRecomendacion" style="min-height: 30px;border-radius: 5px;"></div></div>'+
+      '</form>'+
+
       '<div class="form-group">'+
-         '<label class="control-label" for="correoEnviarRecomendado" style="color:white">Recomendar via correo:</label>'+
-         '<input type="mail" class="form-control" id="correoEnviarRecomendado" placeholder="Correo:"/>'+
-      '</div>'+
-      '<div class="form-group">'+
-         '<textarea id="mensajeRecomendar" class="form-control" rows="3" placeholder="mensaje para los recomendados" style="resize: none;margin-top: -10px;"></textarea>'+
-      '</div>'+
+        '<div class="form-group col-md-12">'+
+           '<textarea id="mensajeRecomendar" class="form-control" rows="3" placeholder="mensaje para los recomendados" style="resize: none;margin-top: -10px;"></textarea>'+
+        '</div>'+
+     '</div>'+
 
       '<div class="row">'+
-          '<div class="col-md-4">'+
-              '<div class="form-group">'+
-                  '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="bootbox.hideAll();">'+
-              '</div>'+
-          '</div>'+
-          '<div class="col-md-6 col-md-offset-2">'+
-              '<div class="form-group">'+
-                  '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Enviar" onclick="enviarRecomendacion();">'+
-              '</div>'+
-          '</div>'+
+        '<div class="form-group col-md-12">'+
+            '<div class="col-md-4">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="bootbox.hideAll();">'+
+                '</div>'+
+            '</div>'+
+            '<div class="col-md-6 col-md-offset-2">'+
+                '<div class="form-group">'+
+                    '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Enviar" onclick="enviarRecomendacion();">'+
+                '</div>'+
+            '</div>'+
+        '</div>'+
       '</div>'
   });
   recomiendaAuto();
@@ -853,6 +860,7 @@ function recomendacionesBoot(){
 //<------------------- LOGIN ------------------------------->
 function loginModal(){
   $('.modal-body').css('padding',0);
+  //action="/auth/correo"
   bootbox.dialog({
     onEscape: function () {
     bootbox.hideAll();
@@ -863,10 +871,15 @@ function loginModal(){
     backdrop:true,
     message:
       '<div class="" id="logInicio">'+
-        '<form method="POST" action="/auth/correo">'+
+        '<form onsubmit="return iniciarSesionLocal(\'email\',\'password\');">'+
           '<div class="row">'+
             '<div class="col-md-8 col-md-offset-2">'+
               '<input type="button" name="loginFB" value="Login con Facebook" class="btn btn-primary btn-block" onclick="window.location=\'/auth/facebook/request/loguin\'">'+
+            '</div>'+
+          '</div>'+
+          '<div class="row">'+
+            '<div class="col-md-8 col-md-offset-2">'+
+            '<div class="alert alert-danger hidden" id="LoginError" role="alert" style="margin-bottom:0px;"> <strong>Correo o contraseña incorrectos.</strong></div>'+
             '</div>'+
           '</div>'+
           '<div class="row">'+
@@ -2138,8 +2151,7 @@ function agendarCitaBootbox(){
       message:
             '<form method="POST" name="frmRegCita" id="frmRegCita">'+
               '<input type="hidden" id="id" name="id">'+
-              '<input type="hidden" id="paciente_id" name="paciente_id" value="2">'+
-              '<input type="hidden" id="medico_id" name="medico_id" value="1">'+
+              '<input type="hidden" id="medico_id" name="medico_id" value="'+ $( '#usuarioPerfil' ).val() +'">'+
               '<input type="hidden" id="fecha" name="fecha" />'+
               '<input type="hidden" id="fechaFin" name="fechaFin" />'+
               '<input type="hidden" id="serviciocita_id" name="serviciocita_id" />'+
@@ -3302,3 +3314,79 @@ function BootboxExperienciaLaboral(){
     getMailSend('#validateEmail');
   }
 //<------------- fin function login del archivero ----------------------->
+
+function DetallesCitaPaciente(agenda_id){
+
+    var imagenUrl = '';
+    var nombreUsuario = '';
+    var nombreUbicacion = '';
+    var nombreServicio = '';
+    var fecha = '';
+    var hora = '';
+
+    var result = null;
+    $.ajax( {
+      async: false,
+      url: '/agenda/detalleCita',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        'agenda_id': agenda_id
+      },
+      success: function ( data ) {
+        result = data.result;
+        imagenUrl = data.result.Usuario.urlFotoPerfil;
+        if (!data.result.Usuario.DatosGenerale.apellidoM) data.result.Usuario.DatosGenerale.apellidoM = '';
+        nombreUsuario = data.result.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Usuario.DatosGenerale.apellidoM;
+        nombreUbicacion = data.result.Direccion.nombre;
+        nombreServicio = data.result.CatalogoServicio.concepto;
+        fecha = data.result.fechaHoraInicio.split('T')[0];
+        hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+
+
+    box = bootbox.dialog({
+      backdrop: true,
+      className: 'Intermed-Bootbox',
+      title: '<span class="title h65-medium">CITA AGENDADA</span>',
+      message:'<div class="col-md-12 h65-medium">'+
+            '<div class="row">'+
+              '<div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">'+
+                '<div class="row">'+
+                  '<img src="'+imagenUrl+'" style="margin-top:15px;width:100%" class="img-thumbnail">'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">'+
+                '<div class="row" style="padding-left:20px">'+
+                  '<span class="pull-right"><b>Fecha: </b>'+ fecha +'</span><br/>'+
+                  '<span class="pull-right"><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+                  '<h4><b>'+nombreUsuario+'</b></h4><br/>'+
+                  '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
+                  '<b>Servicio: </b>'+nombreServicio+'<br/>'+
+                '</div>'+
+              '</div>'+
+
+              '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+                '<div class="row">'+
+                  '<div id="mapaUbicacionCita" style="width:100%; height:250px; margin-top:20px;"></div>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+
+          '<div class="row">'+
+              '<div class="col-md-4 col-md-offset-8">'+
+                  '<input type="button" class="btn btn-warning btn-md btn-block" id="btnRegMed" value="Cerrar" onclick="cerrarCurrentBootbox()">'+
+              '</div>'+
+          '</div>'
+        });
+
+        setTimeout(function(){
+          cargarMapaUbicacionCita(result);
+        },500);
+}

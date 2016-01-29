@@ -22,6 +22,7 @@ exports.agregaCita = function(object, req, res) {
   var fechaFinNotificacion = new Date(object.fechaFin);
   fechaNotificacion.setMinutes(fechaNotificacion.getMinutes() + 30);
   fechaFinNotificacion.setMinutes(fechaNotificacion.getDay() + 7);
+  console.log('paciente_id: '+req.session.passport.user.Paciente_id);
   //console.log(object.fecha)
   models.Agenda.create({
       fechaHoraInicio:  object.fecha,
@@ -33,6 +34,7 @@ exports.agregaCita = function(object, req, res) {
       usuario_id : object.medico_id,
       status : true
   }).then(function(datos) {
+    console.log('Datos: ' + datos);
       models.Medico.findOne({
         where:{
           usuario_id: object.medico_id
@@ -903,6 +905,7 @@ exports.detalleCita = function(object, req, res){
       model: models.Paciente,
       include: [{
         model: models.Usuario,
+        attributes:['usuarioUrl','urlPersonal','urlFotoPerfil'],
         include: [{
           model: models.DatosGenerales
         }]
@@ -910,7 +913,21 @@ exports.detalleCita = function(object, req, res){
     },{
       model: models.CatalogoServicios
     },{
-      model: models.Direccion
+      model: models.Usuario,
+      attributes:['usuarioUrl','urlPersonal','urlFotoPerfil'],
+      include: [{
+        model: models.DatosGenerales
+      }]
+    },{
+      model: models.Direccion,
+      include: [{
+        model: models.Localidad
+      },{
+        model: models.Municipio,
+        include: [{
+          model: models.Estado
+        }]
+      }]
     }]
   }).then(function(result){
     res.status(200).json({
@@ -970,6 +987,146 @@ exports.calificarCita = function(object, req, res){
   });
 };
 
+exports.obtenerCitasPropias = function(object, req, res){
+  if (req.session.passport && req.session.passport.user){
+    if (!object.limit){
+      object.limit = 0;
+    }
+    if (!object.offset){
+      object.offset = 0;
+    }
+    if (req.session.passport.user.tipoUsuario == "M"){
+      //Si es un medico
+      models.Agenda.findAll({
+        where:{
+          usuario_id: req.session.passport.user.id,
+          fechaHoraInicio: {
+            $gte: getDateTime()
+          }
+        },
+        limit: object.limit,
+        offset: object.offset,
+        order: [['fechaHoraInicio','ASC']],
+        include: [{
+          model: models.Paciente,
+          attributes:['id'],
+          include: [{
+              model: models.Usuario,
+              attributes: ['usuarioUrl','urlFotoPerfil','urlPersonal'],
+              include: [{
+                  model: models.DatosGenerales,
+                  attributes: ['nombre','apellidoP','apellidoM']
+              }]
+          }]
+        }]
+      }).then(function(result){
+        res.status(200).json({
+          success: true,
+          result: result
+        });
+      });
+    } else {
+      //Si es un paciente
+      models.Agenda.findAll({
+        where:{
+          paciente_id: req.session.passport.user.Paciente_id,
+          fechaHoraInicio: {
+            $gte: getDateTime()
+          }
+        },
+        limit: object.limit,
+        offset: object.offset,
+        order: [['fechaHoraInicio','ASC']],
+        include: [{
+          model: models.Usuario,
+          attributes:['usuarioUrl','urlFotoPerfil','urlPersonal'],
+          include: [{
+              model: models.DatosGenerales,
+              attributes: ['nombre','apellidoP','apellidoM']
+          }]
+        }]
+      }).then(function(result){
+        res.status(200).json({
+          success: true,
+          result: result
+        });
+      });
+    }
+  } else {
+    //Error: no sesion activa
+    res.status(200).json({
+      success: false,
+      error: 1
+    });
+  }
+};
+
+
+
+exports.contarCitasPropias = function(object, req, res){
+  if (req.session.passport && req.session.passport.user){
+    if (req.session.passport.user.tipoUsuario == "M"){
+      //Si es un medico
+      models.Agenda.findAll({
+        where:{
+          usuario_id: req.session.passport.user.id,
+          fechaHoraInicio: {
+            $gte: getDateTime()
+          }
+        },
+        order: [['fechaHoraInicio','ASC']],
+        include: [{
+          model: models.Paciente,
+          attributes:['id'],
+          include: [{
+              model: models.Usuario,
+              attributes: ['usuarioUrl','urlFotoPerfil','urlPersonal'],
+              include: [{
+                  model: models.DatosGenerales,
+                  attributes: ['nombre','apellidoP','apellidoM']
+              }]
+          }]
+        }]
+      }).then(function(result){
+        res.status(200).json({
+          success: true,
+          result: result.length
+        });
+      });
+    } else {
+      //Si es un paciente
+      models.Agenda.findAll({
+        where:{
+          paciente_id: req.session.passport.user.Paciente_id,
+          fechaHoraInicio: {
+            $gte: getDateTime()
+          }
+        },
+        order: [['fechaHoraInicio','ASC']],
+        include: [{
+          model: models.Usuario,
+          attributes:['usuarioUrl','urlFotoPerfil','urlPersonal'],
+          include: [{
+              model: models.DatosGenerales,
+              attributes: ['nombre','apellidoP','apellidoM']
+          }]
+        }]
+      }).then(function(result){
+        res.status(200).json({
+          success: true,
+          result: result.length
+        });
+      });
+    }
+  } else {
+    //Error: no sesion activa
+    res.status(200).json({
+      success: false,
+      error: 1
+    });
+  }
+};
+
 function formatearFecha(fecha){
   var fecha = new Date(fecha);
   var año = fecha.getFullYear();
@@ -979,4 +1136,21 @@ function formatearFecha(fecha){
   var minutos = ("0" + fecha.getMinutes()).slice(-2);
   var segundos = ("0" + fecha.getSeconds()).slice(-2);
   return año + '-' + mes + '-' + dia + ' ' + hora + ':' + minutos + ':' + segundos;
+}
+
+
+function getDateTime() {
+  var date = new Date();
+  var hour = date.getHours();
+  hour = ( hour < 10 ? "0" : "" ) + hour;
+  var min = date.getMinutes();
+  min = ( min < 10 ? "0" : "" ) + min;
+  var sec = date.getSeconds();
+  sec = ( sec < 10 ? "0" : "" ) + sec;
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  month = ( month < 10 ? "0" : "" ) + month;
+  var day = date.getDate();
+  day = ( day < 10 ? "0" : "" ) + day;
+  return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
 }

@@ -207,6 +207,10 @@ module.exports = {
                           plataform2.plataform2(req.session.passport.user.usuarioUrl,req,res, function(response){
                             medico['MedicoAseguradoras'] = aseguradora;
                             var vista = '/nuevoPerfilMedicos';
+                            if (req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
+                              vista = '/registro';
+                              tipoUsuario = 'medico';
+                            }
                             res.render( tipoUsuario + vista, {
                               medico: medico,
                               estados: estados,
@@ -589,7 +593,10 @@ function armarPerfilNuevo( usuario, req, res ) {
                       usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
                       var vista = '/nuevoPerfilMedicos';
                       if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
-                        var vista = '/vistaPerfilNoRegistrado';
+                        vista = '/vistaPerfilNoRegistrado';
+                      } else if (req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
+                        vista = '/registro';
+                        tipoUsuario = 'medico';
                       }
                       res.render( tipoUsuario.toLowerCase() + vista, {
                         usuario: usuario,
@@ -601,8 +608,15 @@ function armarPerfilNuevo( usuario, req, res ) {
           });
         });
     } else {
+      var vista = '/nuevoPerfilMedicos';
+      if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
+        vista = '/vistaPerfilNoRegistrado';
+      } else if (req.session.passport.user && req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
+        vista = '/registro';
+        tipoUsuario = 'medico';
+      }
       usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
-      res.render( tipoUsuario.toLowerCase() + '/nuevoPerfilMedicos', {
+      res.render( tipoUsuario.toLowerCase()+vista, {
         usuario: usuario
       } );
     }

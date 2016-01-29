@@ -51,4 +51,14 @@ module.exports = function (object){
   app.post('/cita/calificar', function (req, res){
     intermed.callController('agenda','calificarCita', req.body, req, res);
   });
+
+  //Obtener citas proximas de usuario logueado
+  app.post('/ag/private/get', function (req, res){
+    intermed.callController('agenda','obtenerCitasPropias', req.body, req, res);
+  });
+
+  //Contar citas proximas de usuario logueado
+  app.post('/ag/private/count', function (req, res){
+    intermed.callController('agenda','contarCitasPropias', req.body, req, res);
+  });
 }

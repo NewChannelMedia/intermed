@@ -388,46 +388,56 @@ var _this = module.exports = {
                 cedula: object[ 'cedulaRegMed' ]
               }}).then(function(medicoCedula){
                 if (!medicoCedula){
-                  models.DatosGenerales.upsert( {
-                    nombre: object[ 'nombreRegMed' ],
-                    apellidoP: object[ 'apePatRegMed' ],
-                    apellidoM: object[ 'apeMatRegMed' ],
-                    usuario_id: usuario_id
-                  } ).then( function ( result ) {
-                    models.Biometrico.upsert( {
-                      genero: object[ 'gender' ],
+                  models.Usuario.update({
+                    status: 2
+                  },{
+                    where: {
+                      id: usuario_id
+                    }
+                  }).then(function(status){
+                    //Actualizar datos generales
+                    models.DatosGenerales.upsert({
+                      nombre: object[ 'nombreRegMed' ],
+                      apellidoP: object[ 'apePatRegMed' ],
+                      apellidoM: object[ 'apeMatRegMed' ],
                       usuario_id: usuario_id
-                    } ).then( function ( result ) {
-                      models.Medico.findOne( {
-                        where: {
+                    },{where: {
+                      usuario_id: usuario_id
+                    }}).then(function(DG){
+                      models.Medico.upsert({
+                        curp: object[ 'curpRegMed' ],
+                        cedula: object[ 'cedulaRegMed' ],
+                        usuario_id: usuario_id
+                        },{where: {
                           usuario_id: usuario_id
-                        }
-                      } ).then( function ( medico ) {
-                        medico.update( {
-                          curp: object[ 'curpRegMed' ],
-                          cedula: object[ 'cedulaRegMed' ]
-                        } ).then( function ( result ) {
+                      }}).then(function(MED){
+                        models.Biometrico.upsert({
+                          genero: object[ 'gender' ],
+                          usuario_id: usuario_id
+                        },{where: {
+                          usuario_id: usuario_id
+                        }}).then(function(BIO){
                           res.send( {
                             'success': true
                           } );
-                        } );
-                      } )
-                    } )
-                  } );
+                        });
+                      });
+                    })
+                  });
                 } else {
-                  res.status(200).send( {
-                    'success': false,
-                    'error': 102
-                  } );
+                    res.status(200).send( {
+                      'success': false,
+                      'error': 102
+                    } );
                 }
               });
-          } else {
-            res.status(200).send( {
-              'success': false,
-              'error': 101
-            } );
-          }
-        })
+            } else {
+                res.status(200).send( {
+                  'success': false,
+                  'error': 101
+                } );
+            }
+          });
     }
     else {
       res.status(200).send( {
@@ -1208,29 +1218,7 @@ var _this = module.exports = {
         ]
       }).then(function(medico){
           if (medico){
-            if (object.usuarios_id){
-              var recomcount = 0;
-              models.Notificacion.create({
-                usuario_id: object.usuario_medico_id,
-                tipoNotificacion_id:13,
-                data:String(req.session.passport.user.id)
-              }).then(function(){
-                object.usuarios_id.forEach(function(usuario){
-                  models.Notificacion.create({
-                      usuario_id:usuario,
-                      tipoNotificacion_id:12,
-                      data:req.session.passport.user.Paciente_id+"|"+medico.id
-                  }).then(function(){
-                    recomcount++;
-                    if (recomcount == object.usuarios_id.length){
-                      _this.enviarCorreosRecomendacion(req,res,object,medico);
-                    }
-                  });
-                });
-              });
-          } else {
             _this.enviarCorreosRecomendacion(req,res,object,medico);
-          }
         }else{
           //Error: el medico no existe
           res.status(200).json({
@@ -1279,7 +1267,8 @@ var _this = module.exports = {
         var mailobject ={
           nombre:'correo de recomendacion',
           subject:'Recomendaciones',
-          to:email,
+          to:email.correo,
+          nombre: ' ' + email.nombre,
           enlace:enlace,
           mensaje:req.body.mensaje,
           usuario:req.session.passport.user.name,

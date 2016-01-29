@@ -2,134 +2,15 @@
 * Todas las funciones cargadas en el $(document).ready();
 * o funciones que las pueden llamar donde sea
 **/
-var regTotalDoc = 0;
+//Eliminar el hash '#_=_' que agrega el login con facebook
 var base_url = 'http://localhost:3000/';
 var default_urlFotoPerfil = '/garage/profilepics/dpp.png';
-if ( location.pathname === '/registro' ) {
-  $( document ).ready( getAllDoctors() );
+if (window.location.hash == '#_=_'){
+    history.replaceState
+        ? history.replaceState(null, null, window.location.href.split('#')[0])
+        : window.location.hash = '';
 }
-else {
-  $( document ).ready( function () {
-    $( '#frm_regP' ).on( 'submit', function ( e ) {
-      e.preventDefault();
-      var pass1 = $( '#contraseñaReg' ).val();
-      var pass2 = $( '#contraseña2Reg' ).val();
-      var submit = true,
-        mensaje = '';
-      //Validar contraseña y confirmacion de contraseña
-      if ( pass1 != pass2 ) {
-        submit = false;
-        mensaje = 'Confirmación de contraseña no coincide';
-      }
-      //Validar fecha
-      if ( submit ) {
-        var dia = $( '#diaNacReg' ).val();
-        var mes = $( '#mesNacReg' ).val();
-        var anio = $( '#añoNacReg' ).val()
-        fecha = dia + "/" + mes + "/" + anio;
-        if ( validarFormatoFecha( fecha ) ) {
-          if ( !existeFecha( fecha ) ) {
-            submit = false;
-            mensaje = "La fecha de nacimiento introducida no existe.";
-          }
-        }
-        else {
-          submit = false;
-          mensaje = "El formato de la fecha de nacimiento es incorrecto.";
-        }
-      }
 
-      if ( submit ) {
-        var correo = document.getElementById( 'correoReg' ).value;
-        if ( correoValido( correo ) ) {
-          $.ajax( {
-            async: false,
-            url: '/correoDisponible',
-            type: 'POST',
-            dataType: "json",
-            cache: false,
-            data: {
-              'email': correo
-            },
-            success: function ( data ) {
-              submit = data.result;
-              if ( !submit ) mensaje = "El correo " + correo + ' ya se encuentra registrado.';
-            },
-            error: function ( jqXHR, textStatus, err ) {
-              console.error( 'AJAX ERROR: ' + err );
-            }
-          } );
-        }
-      }
-
-      if ( submit ) {
-        document.getElementById( 'alertError' ).innerHTML = '';
-        this.submit();
-      }
-      else {
-        document.getElementById( 'alertError' ).innerHTML = '<div class="alert alert-danger" role="alert" >' + mensaje + '</div>';
-      }
-    } );
-
-    $( '#frm_regM' ).on( 'submit', function ( e ) {
-      e.preventDefault();
-      var pass1 = $( '#contraseñaRegM' ).val();
-      var pass2 = $( '#contraseña2RegM' ).val();
-      var correo = $( '#correoRegM' ).val();
-      var correo2 = $( '#correoConfirmRegM' ).val();
-      var submit = true,
-        mensaje = '';
-      //Validar contraseña y confirmacion de contraseña
-      if ( pass1 != pass2 ) {
-        submit = false;
-        mensaje = 'Confirmación de contraseña no coincide';
-      }
-      //Validar correo y confirmacion de correo
-      else if ( correo != correo2 ) {
-        submit = false;
-        mensaje = 'Confirmación de correo no coincide';
-      }
-      //Validar correo no registrado
-      else {
-        if ( correoValido( correo ) ) {
-          $.ajax( {
-            async: false,
-            url: '/correoDisponible',
-            type: 'POST',
-            dataType: "json",
-            cache: false,
-            data: {
-              'email': correo
-            },
-            success: function ( data ) {
-              submit = data.result;
-              if ( !submit ) mensaje = "El correo " + correo + ' ya se encuentra registrado.';
-            },
-            error: function ( jqXHR, textStatus, err ) {
-              console.error( 'AJAX ERROR: ' + err );
-            }
-          } );
-        }
-      }
-
-      if ( submit ) {
-        document.getElementById( 'alertErrorM' ).innerHTML = '';
-        this.submit();
-      }
-      else {
-        document.getElementById( 'alertErrorM' ).innerHTML = '<div class="alert alert-danger" role="alert" >' + mensaje + '</div>';
-      }
-    } );
-
-    if ( location.pathname.substring( 0, 7 ) === '/perfil' ) {
-      cargarFavCol( $( '#usuarioPerfil' ).val() );
-    }
-
-    /* validaciones al registro */
-    validateForm( 'input-nombre', 'nombreMed' );
-    validateForm('input-select', 'selectEstado');
-  } );
-}
 function validarFormatoFecha( campo ) {
   var RegExPattern = /^\d{1,2}\/\d{1,2}\/\d{2,4}$/;
   if ( ( campo.match( RegExPattern ) ) && ( campo != '' ) ) {
@@ -295,7 +176,6 @@ function validateForm( tipoForm, nameForm ){
       case "input-select":console.log("Entro aqui");
         var tamaño = $("#"+nameForm+" :selected").val();
         comprobando = ( $( tamaño ).val() != 0 ) ? true : false;
-        console.log("Tamaño: "+tamaño);
         mensaje = "select-error";
         break;
     }
@@ -486,9 +366,6 @@ function validateForm( tipoForm, nameForm ){
   } );
 }
 //<---------------------------------------------------->
-$( '#CambiarFotoPerfil' ).on( 'hidden.bs.modal', function ( e ) {
-  $( '#imageFile' ).val( '' );cambioFotoPerfil();
-} )
 var base64file;
 
 $( function () {
@@ -551,86 +428,6 @@ function SetCoordinates( c ) {
     $( '#btnCrop' ).hide();
   }
 };
-function MakeWizard() {
-  $( "#RegMedModal" ).formToWizard()
-}
-// formToWizard
-( function ( $ ) {
-  $.fn.formToWizard = function () {
-    var element = this;
-
-    var steps = $( element ).find( ".step" );
-    var count = steps.size();
-
-    $( element ).find( ".modal-header" ).find( ".close" ).remove();
-    $( element ).find( ".modal-header" ).append( "<div class='stepsContainer pull-right'><ul id='steps' class='stepsList'></ul></div>" );
-    $( element ).find( ".stepsContainer" ).append( "<span class='stepsConnector'></span>" );
-
-    steps.each( function ( i ) {
-      if ( i == 0 ) $( "#steps" ).html( "" );
-      $( this ).wrap( "<div id='step" + i + "'></div>" );
-      $( this ).find( ".EndButtons" ).addClass( "step" + i + "c" );
-      $( this ).find( ".EndButtons" ).append( "<p id='step" + i + "c'></p>" );
-
-      var name = $( this ).find( ".modal-footer" ).html();
-      $( "#steps" ).append( "<li id='stepDesc" + i + "' class='stepBullets'>" + i + "</li>" );
-      if ( i == 0 ) {
-        createNextButton( i );
-        selectStep( i );
-      }
-      else if ( i == count - 1 ) {
-        $( "#step" + i ).hide();
-        createPrevButton( i );
-      }
-      else {
-        $( "#step" + i ).hide();
-        createPrevButton( i );
-        createNextButton( i );
-      }
-    } );
-
-    function createPrevButton( i ) {
-      var stepName = "step" + i;
-      $( "#" + stepName + "c" ).append( "<a href='#' id='" + stepName + "Prev' class='btn btn-default btn-block prev'><span class='glyphicon glyphicon-arrow-left'></span></a>" );
-      $( "#" + stepName + "Prev" ).bind( "click", function ( e ) {
-        $( "#" + stepName ).hide();
-        $( "#step" + ( i - 1 ) ).show();
-        selectStep( i - 1 );
-      } );
-    }
-
-    function createNextButton( i ) {
-      var stepName = "step" + i;
-      $( "#" + stepName + "c" ).append( "<a href='#' id='" + stepName + "Next' class='btn btn-default btn-block next'><span class='glyphicon glyphicon-arrow-right'></span></a>" );
-      $( "#" + stepName + "Next" ).bind( "click", function ( e ) {
-        $( "#" + stepName ).hide();
-        $( "#step" + ( i + 1 ) ).show();
-        selectStep( i + 1 );
-      } );
-    }
-
-    function selectStep( i ) {
-      $( "#steps li" ).removeClass( "current" );
-      $( "#stepDesc" + i ).addClass( "current" );
-    }
-
-  }
-} )( jQuery );
-$( function () {
-  $( '[data-toggle="popover"]' ).popover()
-} )
-//Funcion que previene que un dropdown se cierre al dar click dentro de el
-$( function () {
-  $( ".dropdown-form" ).click( function ( event ) {
-    event.stopPropagation();
-  } );
-} )
-$( function () {
-  $( ".notificationDropdown" ).click( function ( event ) {
-    event.stopPropagation();
-  } );
-} )
-
 
 //funcion que vacia la forma dentro de un dropdown y lo cierra al click del boton de guardar
 $( function () {
@@ -688,6 +485,7 @@ function regUbiValid(UbicData) {
 
     return {'valido':blnValido, 'error':error};
 }
+
 $(function(){
   $('#btnAgregaUbi').on('click',function(){
     agregarUbicacion();
@@ -1448,12 +1246,9 @@ $( document ).ready( function () {
     $('#buscadorEspecial').on('input',function(e){
      cargarListaEspCol( $( '#usuarioPerfil' ).val() );
     });
-
-    if ( $( '#registroCompleto' ) && $( '#registroCompleto' ).val() === "0" && $( '#inicio' ).val() === "1" ) {
-      if ( $( '#tipoUsuario' ).val() === "M" ) {
-        registroMedicoDatosPersonales();
-      }
-    }
+  } else if ($( '#perfilPaciente' ).length > 0 ) {
+    cargarListaEspCol( $( '#usuarioPerfil' ).val() ,'P');
+    cargarCitasPaciente();
   }
 } );
 //fin de Perfil Medicos
@@ -1923,7 +1718,7 @@ function obtenerCPModal(tipo) {
         }
     });
 }
-function cargarListaEspCol( usuario ) {
+function cargarListaEspCol( usuario ,tipo) {
   var filtro = $('#buscadorEspecialInput').val();
   $.ajax( {
     async: false,
@@ -1947,12 +1742,12 @@ function cargarListaEspCol( usuario ) {
             primero = esp.id;
           }
           contenido += '<li>' +
-          '<a onclick="cargarListaColegasByEsp(' + usuario + ',' + esp.id + ',this)">' + esp.especialidad + '<span class="badge pull-right">' + esp.total + '</span></a>' +
+          '<a onclick="cargarListaColegasByEsp(' + usuario + ',' + esp.id + ',this,\''+tipo+'\')">' + esp.especialidad + '<span class="badge pull-right">' + esp.total + '</span></a>' +
           '</li>';
         });
         $('#especialidadesList').html(contenido);
         if (primero != ""){
-          cargarListaColegasByEsp(usuario,primero);
+          cargarListaColegasByEsp(usuario,primero,null,tipo);
         }
       }else{
         if (data.error){
@@ -1965,7 +1760,12 @@ function cargarListaEspCol( usuario ) {
     }
   } );
 }
-function cargarListaColegasByEsp(usuario_id,especialidad_id, element){
+function cargarListaColegasByEsp(usuario_id,especialidad_id, element,tipo){
+  var classDiv = 'class="col-lg-3 col-md-3 col-sm-4 col-xs-4"';
+  if (tipo && tipo == "P"){
+    classDiv = 'class="col-lg-3 col-md-6 col-sm-4 col-xs-6"';
+  }
+
   $('#especialidadesList li.active').removeClass('active');
   if (element){
     $(element).parent().addClass('active');
@@ -2004,23 +1804,137 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id, element){
           if (res.urlPersonal && res.urlPersonal != ""){
             usuarioUrl = res.urlPersonal;
           }
-          contenido += `
-          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
-            <div class="thumbnail">
-              <div >
-                <a class="pPic" href="/`+ usuarioUrl +`"><img src="`+ res.urlFotoPerfil +`" alt="..."></a>
-              </div>
-              <div class="caption">
-                <div class="nombre h77-boldcond">
-                  Dr.&nbsp;<span>`+ res.DatosGenerale.nombre +`</span>&nbsp;<span>`+ res.DatosGenerale.apellidoP +` `+ res.DatosGenerale.apellidoM +`</span>
-                </div>
-                <div class="esp h67-medcond">
-                  <span class="colEsp">`+ especialidad +`</span>
-                </div>
-                <a class="h67-medcondobl" href="/`+ usuarioUrl +`">Ver Perfil</a>
-              </div>
-            </div>
-          </div>`
+          contenido +=  '<div '+classDiv+'>'+
+            '<div class="thumbnail">'+
+              '<div >'+
+                '<a class="pPic" href="/'+ usuarioUrl +'"><img src="'+ res.urlFotoPerfil +'" alt="..."></a>'+
+              '</div>'+
+              '<div class="caption">'+
+                '<div class="nombre h77-boldcond">'+
+                  'Dr.&nbsp;<span>'+ res.DatosGenerale.nombre +'</span>&nbsp;<span>'+ res.DatosGenerale.apellidoP +' '+ res.DatosGenerale.apellidoM +'</span>'+
+                '</div>'+
+                '<div class="esp h67-medcond">'+
+                  '<span class="colEsp">'+ especialidad +'</span>'+
+                '</div>'+
+                '<a class="h67-medcondobl" href="/'+ usuarioUrl +'">Ver Perfil</a>'+
+              '</div>'+
+            '</div>'+
+          '</div>'
+        })
+        contenido += '</div>';
+        $('#listaColegas').html(contenido);
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+
+function cargarListaAlfCol( usuario ,tipo) {
+  $.ajax( {
+    async: false,
+    url: '/cargarListaAlfCol',
+    type: 'POST',
+    data: {
+      usuario: usuario
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+        $('#especialidadesList').html('');
+        $('#listaColegas').html('');
+        $('#tipoFiltro').html('una letra');
+        if ( data.success ) {
+          var contenido = '';
+          var primero = '';
+          data.result.forEach(function(rec){
+            if (primero == ""){
+              primero = rec.Letra;
+            }
+            contenido += '<li>' +
+              '<a onclick="cargarListaColegasByAlf(' + usuario + ',\'' + rec.Letra + '\',this,\''+tipo+'\')">' + rec.Letra + '<span class="badge pull-right">' + rec.Total + '</span></a>' +
+            '</li>';
+          });
+          $('#especialidadesList').html(contenido);
+          if (primero != ""){
+            cargarListaColegasByAlf(usuario,primero,null,tipo);
+          }
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+function cargarListaColegasByAlf(usuario_id,letra,element,tipo){
+  var classDiv = 'class="col-lg-3 col-md-3 col-sm-4 col-xs-4"';
+  if (tipo && tipo == "P"){
+    classDiv = 'class="col-lg-3 col-md-6 col-sm-4 col-xs-6"';
+  }
+  $('#especialidadesList li.active').removeClass('active');
+  if (element){
+    $(element).parent().addClass('active');
+  } else {
+    $('#especialidadesList li').first().addClass('active');
+  }
+  $.ajax( {
+    async: false,
+    url: '/cargarListaColegasByAlf',
+    type: 'POST',
+    data: {
+      usuario_id: usuario_id,
+      letra: letra
+    },
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      $('#listaColegas').html('');
+      if ( data.success ) {
+        var contenido = '';
+        contenido += '<div id="'+ letra +'" class="row" ><h1 class="h67-medcond">'+letra+'</h1>';
+        data.result.forEach(function(res){
+          var especialidad= '';
+          if (res.Medico.MedicoEspecialidads){
+            res.Medico.MedicoEspecialidads.forEach(function(esp){
+              if (especialidad != ""){
+                especialidad += ', ';
+              }
+              especialidad += esp.Especialidad.especialidad;
+            });
+          }
+
+          if (res.DatosGenerale.apellidoM == null){
+            res.DatosGenerale.apellidoM = '';
+          }
+          var usuarioUrl = res.usuarioUrl;
+          if (res.urlPersonal && res.urlPersonal != ""){
+            usuarioUrl = res.urlPersonal;
+          }
+          contenido += '<div '+classDiv+'>'+
+            '<div class="thumbnail">'+
+              '<div >'+
+                '<a class="pPic" href="/'+ usuarioUrl +'"><img src="'+ res.urlFotoPerfil +'" alt="..."></a>'+
+              '</div>'+
+              '<div class="caption">'+
+                '<div class="nombre h77-boldcond">'+
+                  'Dr.&nbsp;<span>'+ res.DatosGenerale.nombre +'</span>&nbsp;<span>'+ res.DatosGenerale.apellidoP +' '+ res.DatosGenerale.apellidoM +'</span>'+
+                '</div>'+
+                '<div class="esp h67-medcond">'+
+                  '<span class="colEsp">'+ especialidad +'</span>'+
+                '</div>'+
+                '<a class="h67-medcondobl" href="/'+ usuarioUrl +'">Ver Perfil</a>'+
+              '</div>'+
+            '</div>'+
+          '</div>'
         })
         contenido += '</div>';
         $('#listaColegas').html(contenido);
@@ -2298,4 +2212,190 @@ function autoCompleteAseg(inputId){
         console.log('Ajax error: ' + JSON.stringify(err));
       }
     });
+}
+
+function cargarCitasPaciente(offset, element){
+    var limit = 4;
+    $('.citaPac').removeClass('hidden').removeClass('hidden').removeClass('active');
+
+    if (element){
+      $(element).parent().addClass('active');
+    }
+    if (offset === 0){
+      $('.citaPac.prev').addClass('hidden');
+    }
+    if ($('.citaPac').not('.next').last().text() == $(element).text()){
+      $('.citaPac.next').addClass('hidden');
+    }
+
+    if (!offset && offset !== 0){
+      //Calcular paginador
+      $.ajax({
+        async: false,
+        url: '/ag/private/count',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        success: function ( data ) {
+          var contenido = '';
+          var paginas = Math.ceil(parseInt(data.result)/limit);
+          if (paginas>1){
+              contenido = '<li class="citaPac prev hidden"><a style="border:none;background-color:rgba(0,0,0,0)" onclick="cargarCitasPacientePrev()">&laquo;</a></li>';
+              for (var i = 0; i < paginas; i++) {
+                var clase = '';
+                if (i == 0) clase = ' class="citaPac active" '; else clase = ' class="citaPac" ';
+                contenido += '<li '+ clase +'><a style="border:none;background-color:rgba(0,0,0,0)" onclick="cargarCitasPaciente('+parseInt(i)+',this)">'+(parseInt(i)+1)+'</a></li>';
+              }
+              contenido += '<li class="citaPac next"><a style="border:none;background-color:rgba(0,0,0,0)" onclick="cargarCitasPacienteNext()">&raquo;</a></li>';
+          }
+          $('#pagination_citasPaciente').html(contenido);
+        },
+        error: function (err){
+          console.log('Ajax error: ' + JSON.stringify(err));
+        }
+      });
+    }
+    if (!offset){
+      offset = 0;
+    }
+    offset = offset*limit;
+
+    $.ajax({
+      async: false,
+      url: '/ag/private/get',
+      type: 'POST',
+      dataType: "json",
+      data:{'limit':limit,'offset':offset},
+      cache: false,
+      success: function ( data ) {
+        if (data.success){
+          var contenido = '';
+          var meses = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+          data.result.forEach(function(res){
+            var date = new Date(res.fechaHoraInicio).toLocaleString();
+            var dia = parseInt(res.fechaHoraInicio.split('T')[0].split('-')[2]);
+            var mes = parseInt(res.fechaHoraInicio.split('T')[0].split('-')[1]);
+            var hora = parseInt(res.fechaHoraInicio.split('T')[1].split(':')[0]);
+            var minutos = res.fechaHoraInicio.split('T')[1].split(':')[1];
+            var T = 'AM';
+            if (hora >= 12){
+              T = 'PM';
+              if (hora>12){
+                hora = hora-12;
+              }
+            }
+            hora = hora + ':'+minutos+' ' + T;
+            mes = meses[mes-1];
+            if (res.Usuario.DatosGenerale.apellidoM && res.Usuario.DatosGenerale.apellidoM != ""){
+              res.Usuario.DatosGenerale.apellidoM = ' ' + res.Usuario.DatosGenerale.apellidoM;
+            } else {
+              res.Usuario.DatosGenerale.apellidoM = '';
+            }
+            var nombre = res.Usuario.DatosGenerale.nombre  + ' ' + res.Usuario.DatosGenerale.apellidoP + res.Usuario.DatosGenerale.apellidoM;
+            contenido += '<div class="media list-group-item" style="background-color:#CACACA;border: none;">';
+              contenido += '<div class="media-left text-center" style="padding: 10px;padding-top: 2px;padding-bottom: 2px;background-color:#FFF">';
+                contenido += '<h1 style="padding:2px;margin:0px;">'+ dia +'</h1>';
+                contenido += '<h3 style="padding:0px;margin:0px;">'+ mes +'</h3>';
+              contenido += '</div>';
+              contenido += '<div class="media-body text-left" style="padding: 10px;">';
+                contenido += '<h4 class="media-heading">'+ hora +'</h4>';
+                contenido += '<h5>'+ nombre +'</h5>';
+                contenido += '<a onclick="DetallesCitaPaciente('+ res.id +')">Ver detalles >></a>';
+              contenido += '</div>';
+            contenido += '</div>';
+          });
+          $('#div_citasPaciente').html(contenido);
+        } else if (data.error){
+          //manejadorDeErrores(data.error);
+        }
+      },
+      error: function (err){
+        console.log('Ajax error: ' + JSON.stringify(err));
+      }
+    });
+}
+
+function cargarCitasPacientePrev(){
+  var active = null;
+  $('.citaPac.active').each(function(){
+    active = $(this);
+  });
+  if (active){
+    var offset = active.text();
+    offset = parseInt(offset)-1;
+    $('.citaPac').each(function(){
+      if ($(this).text() == offset){
+        active = $(this).find('a').first();
+      }
+    });
+    cargarCitasPaciente((parseInt(offset)-1),active);
+  }
+}
+
+function cargarCitasPacienteNext(){
+  var active = null;
+  $('.citaPac.active').each(function(){
+    active = $(this);
+  });
+  if (active){
+    var offset = active.text();
+    offset = parseInt(offset)+1;
+    $('.citaPac').each(function(){
+      if ($(this).text() == offset){
+        active = $(this).find('a').first();
+      }
+    });
+    cargarCitasPaciente(offset-1,active);
+  }
+}
+
+
+
+function agregarDestRecom(){
+  var nombre = $('#nombreRecomendacion').val();
+  var email = $('#correoRecomendacion').val();
+  $('#destRecomendacion').append('<div class="input-group-btn InvitacionRecomendacion" style="display:inline-table;margin: 3px;">'+
+    '<label class="btn btn-xs" style="background-color:#f0ad4e;border-color:#eea236;">'+
+      '<span class="Nombre">'+nombre+'</span>&lt;'+
+      '<span class="Correo">'+email+'</span>&gt;'+
+    '</label>'+
+    '<button class="btn btn-xs borrar" onclick="$(this).parent().remove()">'+
+      '<span class="glyphicon glyphicon-remove"></span>'+
+    '</button>'+
+  '</div>');
+  $('#destRec')[0].reset();
+  return false;
+}
+
+function iniciarSesionLocal(inputEmail, inputPassword){
+  var email = $('#'+inputEmail).val();
+  var pass = $('#'+inputPassword).val();
+  $.ajax({
+    async: false,
+    url: '/auth/correo',
+    type: 'POST',
+    dataType: "json",
+    data:{'email':email,'password':pass},
+    cache: false,
+    success: function ( data ) {
+        if (data.result == "success"){
+          var usuarioUrl = data.session.usuarioUrl;
+          if (data.session.urlPersonal){
+            usuarioUrl = data.session.urlPersonal;
+          }
+          window.location.href = '/'+usuarioUrl
+        } else {
+          $('#LoginError').removeClass('hidden');
+          setTimeout(function(){
+            $('#LoginError').addClass('hidden');
+          },3000);
+        }
+      return false;
+    },
+    error: function(err){
+      console.log('AJAX error: ' + JSON.stringify(err));
+      return false;
+    }
+  });
+  return false;
 }

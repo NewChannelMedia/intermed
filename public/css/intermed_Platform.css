@@ -1007,7 +1007,6 @@ a:visited {
 }
 
 .side-especialidades{
-  width: 195px;
   min-height: 640px;
   background-color: #3c6b8a;
   text-align: justify;
@@ -1113,7 +1112,7 @@ a:visited {
 
 .main-colegas .pPic{
   display: block;
-  height: 175px;
+  /*height: 175px;*/
   width: 100%;
   overflow: hidden;
 }

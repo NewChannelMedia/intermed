@@ -145,20 +145,21 @@ var uId ="";
   //se carga el bootbox para que funcionen el boton de enviar
   function enviarRecomendacion(){
     var usuario_medico_id = $('#usuarioPerfil').val();
-    var usuarios_id = [];
-    var emails = $( "#correoEnviarRecomendado" ).val().split(',');
+    var destinatarios = [];
 
-    $( '#enviarRecomendaciones li.recomendacion' ).each(function(){
-      var id = $(this).prop('id').split('_')[1];
-      usuarios_id.push(id);
+    $('#destRecomendacion').find('.InvitacionRecomendacion').each(function(){
+      var nombre = $(this).find('.Nombre').text();
+      var correo = $(this).find('.Correo').text();
+      destinatarios.push({
+        'nombre':nombre,
+        'correo':correo
+      });
     });
-
     var mensaje =$("#mensajeRecomendar").val();
 
     $.post('/medicos/recomendar',{
       usuario_medico_id:usuario_medico_id,
-      usuarios_id:usuarios_id,
-      emails:emails,
+      emails:destinatarios,
       mensaje:mensaje
     },function(data,status){
       if(data.success){
