@@ -91,6 +91,14 @@ $( document ).ready( function () {
                 $('#apeMatRegMed').val(data.result.DatosGenerale.apellidoM);
               }
             }
+            console.log('FECHA: ' + data.result.Medico.fechaNac);
+
+            if (data.result.Medico.fechaNac){
+              var fechaNac = data.result.Medico.fechaNac.split('T')[0].split('-');
+              $('#anioNacReg').val(fechaNac[0]);
+              $('#mesNacReg').val(fechaNac[1]);
+              $('#diaNacReg').val(fechaNac[2]);
+            }
 
             //Registrado el Genero
             if ( data.result.Biometrico ) {
@@ -407,13 +415,19 @@ function createPassword(){
   passwordCreate();
 }
 function saveStepOne() {
+  var diaNac = $('#diaNacReg').val();
+  var mesNac = $('#mesNacReg').val();
+  var anioNac = $('#anioNacReg').val();
+
+  var fechaValida = isValidDate(anioNac,parseInt(mesNac)-1,diaNac);
+
   var nombreRegMed = $('#nombreRegMed').val();
   var apePatRegMed= $('#apePatRegMed').val();
   var apeMatRegMed = $('#apeMatRegMed').val();
   var gender = $('input[name=gender]').val();
   var curpRegMed = $('#curpRegMed').val();
   var cedulaRegMed = $('#cedulaRegMed').val();
-  if (nombreRegMed != "" && apePatRegMed != "" && gender != "" && curpRegMed != "" && cedulaRegMed != "" && $('#regmedEsp').text() != ""){
+  if (nombreRegMed != "" && apePatRegMed != "" && gender != "" && curpRegMed != "" && cedulaRegMed != "" && $('#regmedEsp').text() != "" && fechaValida){
     $.ajax( {
       url: '/regMedPasoUno',
       type: 'POST',
@@ -447,6 +461,8 @@ function saveStepOne() {
       error = "su CURP";
     } else if ($('#regmedEsp').text() == ""){
       error ="su especialidad"
+    } else if (fechaValida){
+      error="su fecha de nacimiento (correcta)"
     } else {
       error = "su cédula";
     }
@@ -1782,15 +1798,7 @@ function traerAseguradoras(){
                 html += '</center></td>';
               html += '</tr>';
               contador++;
-            }
-          });
-          $("#tableEspecialidades").html(html);
-        }
-      });
-      $.post('/loadEspecialidades', function(data){
-        if (!($('#regMedStepOne').length>0)){
-          $.each(data.MedicoEspecialidads, function( i, item){
-            if( item.subEsp == 1 ){
+            } else {
               html3 += '<tr>'
                 html3 += '<td ><center>'+contador2+'</center></td>';
                 html3 += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
@@ -1803,6 +1811,7 @@ function traerAseguradoras(){
               contador2++;
             }
           });
+          $("#tableEspecialidades").html(html);
           $("#tableSubEspecialidades").html(html3);
         }
       });
@@ -1880,29 +1889,24 @@ function traerAseguradoras(){
       }
     }
     function editEspecialidades(){
-      var medico_id;
-      $.post('/sacaMedicoId', function(data){
-        medico_id = data.id;
-      }).done(function(){
-        var especial = $("#autoEspecialidad option:selected").val();
-        var checado;
-        if( $("#subEspEdit").is(":checked") ){
-          checado = 1;
+      var especial = $("#autoEspecialidad option:selected").val();
+      var checado;
+      if( $("#subEspEdit").is(":checked") ){
+        checado = 1;
+      }else{
+        checado = 0;
+      }
+      // se inserta una nueva especialidad
+      $.post('/editEspecialidades',{
+        especialidad:especial,
+        checado:checado
+      },function( data ){
+        if( data != null ){
+          $("#subEspEdit").attr('checked',false);
+          loadEspecialidades();
         }else{
-          checado = 0;
+          console.log("ERror al agregar la especialidad");
         }
-        // se inserta una nueva especialidad
-        $.post('/editEspecialidades',{
-          especialidad:especial,
-          checado:checado,
-          medico_id: medico_id
-        },function( data ){
-          if( data != null ){
-            loadEspecialidades();
-          }else{
-            console.log("ERror al agregar la especialidad");
-          }
-        });
       });
     }
     function deleteEsp(id){
@@ -2497,3 +2501,15 @@ function traerAseguradoras(){
       }
     });
   });
+
+function isValidDate(anio, mes, dia){
+  //1991-12-01T06:00:00.000Z
+  var date = new Date(parseInt(anio), parseInt(mes) , parseInt(dia)).toISOString();
+  date = date.split('T')[0];
+  date = date.split('-');
+  if (parseInt(date[1]) == (parseInt(mes)+1)){
+    return true;
+  } else {
+    return false;
+  }
+}

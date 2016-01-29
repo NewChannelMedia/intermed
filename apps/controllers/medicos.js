@@ -404,9 +404,11 @@ var _this = module.exports = {
                     },{where: {
                       usuario_id: usuario_id
                     }}).then(function(DG){
+                      var fechaNac = object.anioNacReg + '-' + object.mesNacReg + '-' + object.diaNacReg;
                       models.Medico.upsert({
                         curp: object[ 'curpRegMed' ],
                         cedula: object[ 'cedulaRegMed' ],
+                        fechaNac: fechaNac,
                         usuario_id: usuario_id
                         },{where: {
                           usuario_id: usuario_id
@@ -1007,12 +1009,23 @@ var _this = module.exports = {
   editEspecialidades: function( req, res ){
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
-        models.MedicoEspecialidad.create({
-        especialidad_id: parseInt(req.body.especialidad),
-        subEsp: parseInt(req.body.checado),
-        medico_id: parseInt(req.body.medico_id)
-      }).then(function(creado){
-        res.send(creado);
+      models.MedicoEspecialidad.findOne({
+        where:{
+          especialidad_id: parseInt(req.body.especialidad),
+          medico_id: parseInt(req.session.passport.user.Medico_id)
+        }
+      }).then(function(esp){
+        if (esp){
+            res.send(creado);
+        }else{
+          models.MedicoEspecialidad.create({
+            especialidad_id: parseInt(req.body.especialidad),
+            subEsp: parseInt(req.body.checado),
+            medico_id: parseInt(req.session.passport.user.Medico_id)
+          }).then(function(creado){
+            res.send(creado);
+          });
+        }
       });
     }
   },
