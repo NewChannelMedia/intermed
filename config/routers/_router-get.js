@@ -84,7 +84,11 @@ module.exports = function (object){
       intermed.callController('notificaciones','configuracion', req.body, req, res);
     }
   });
-
+  //Configuraciones
+  app.get('/configuraciones',function(req,res){
+    routeLife('plataforma2','plataforma',hps);
+    intermed.callController('/configuracion/configuraciones','index',req, res);
+  });
   /*RUTA CARGAR PERFIL (DEJAR SIEMPRE AL FINAL)*/
   /*Dejando al final se evita que cada que se entre al router se haga una consulta para ver si se trata de un usuario*/
   app.get( '/:usuario', function ( req, res, next) {
@@ -114,5 +118,4 @@ module.exports = function (object){
     }
   } );
   /*FIN RUTA PERFIL USUARIO*/
-
 }

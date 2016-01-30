@@ -50,6 +50,8 @@ app.use( '/', express.static( __dirname + '/../public' ) );
 app.use( '/inbox', express.static( __dirname + '/../public' ) );
 app.use( '/notificaciones', express.static( __dirname + '/../public' ) );
 app.use( '/cambiar', express.static( __dirname + '/../public' ) );
+app.use( '/cambiar/historial', express.static( __dirname + '/../public' ) );
+app.use( '/cambiar/intermed', express.static( __dirname + '/../public' ) );
 app.use( '/historiales', express.static( __dirname + '/../public' ) );
 app.use( '/medico', express.static( __dirname + '/../public' ) );
 
@@ -86,6 +88,7 @@ require( './routers/router-paciente.js' )(routerObject);
 require( './routers/router-ubicacion.js' )(routerObject);
 require( './routers/router-usuario.js' )(routerObject);
 require('./routers/router-encriptacion.js')(routerObject);
+require('./routers/router-configuraciones.js')(routerObject);//router para las configuraciones
 require( './routers/router-error.js' )(routerObject);
 /*FIN CARGA DE ROUTERS*/
 

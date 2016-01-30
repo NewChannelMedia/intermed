@@ -93,19 +93,36 @@
     var password = generateEncrypted(object.pass);
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
-      models.UsuarioHistorial.update({
-        pass: password
-      },{
-        where:{
-          idDr: usuario_id
-        }
-      }).then(function(actualizado){
-        if( actualizado == 1 ){
-          res.send(true)
-        }else{
-          res.send(false);
-        }
-      });
+      switch(object.bandera){
+        case 'historial':
+          models.UsuarioHistorial.update({
+            pass: password
+          },{
+            where:{
+              idDr: usuario_id
+            }
+          }).then(function(actualizado){
+            if( actualizado == 1 ){
+              res.send(true)
+            }else{
+              res.send(false);
+            }
+          });
+        break;
+        case 'intermed':
+          models.Usuario.update({
+            password: object.pass
+          },{
+            where:{id:usuario_id}
+          }).then(function(actualizo){
+            if( actualizo == 1 ){
+              res.send(true);
+            }else{
+              res.send(false);
+            }
+          });
+        break;
+      }
     }
   }
   exports.getMailSend = function( req, res ){
@@ -122,21 +139,40 @@
   exports.sendMailto = function( object, req, res ){
     if ( req.session.passport.user && req.session.passport.user.id > 0 ){
       var usuario_id = req.session.passport.user.id;
+      var bandera = object.bandera;
       var f = new Date();
       var fecha = f.getFullYear()+'/'+(f.getMonth()+1)+'/'+f.getDate();
-      var link = "localhost:3000/cambiar/"+String(doEncriptToken( usuario_id, fecha));
-      console.log("ENLACE "+link);
-      var objeto = {
-        to:object.to,
-        subject: object.subject,
-        token: doEncriptToken( usuario_id, fecha),
-        enlace: link
+      // caso uno historial
+      // caso dos cuenta intermed
+      switch(bandera){
+        case "historial":
+          var link = "localhost:3000/cambiar/historial/"+String(doEncriptToken( usuario_id, fecha));
+          var objeto = {
+            to:object.to,
+            subject: object.subject,
+            token: doEncriptToken( usuario_id, fecha),
+            enlace: link
+          };
+          sendMail.send( objeto,'changePassword',res);
+          break;
+        case "intermed":
+          var link = "localhost:3000/cambiar/intermed/"+String(doEncriptToken(usuario_id,fecha));
+          var objecto = {
+            to: object.to,
+            subject: object.subject,
+            token: doEncriptToken( usuario_id, fecha ),
+            enlace: link
+          };
+          sendMail.send( objecto, 'intermedChangePassword', res );
+          break;
       }
-      sendMail.send( objeto,'changePassword',res);
     }
   }
   exports.cambiar = function( object, req, res ){
     res.render('cambiarPass');
+  }
+  exports.cambiarIntermedPass = function( object, req, res ){
+    res.render('cambiarPassIntermed');
   }
   // Solo renderiza la vista de historiales
   exports.historiales = function( req, res ){
@@ -185,10 +221,10 @@
       res.send(true)
     });
   }
-  function generateEncrypted(pass){
-    const password = crypto.createHmac('sha512',pass);
-    password.update(pass);// se actualiza la cadena
-    var cadena = password.digest('hex'); // almacena la cadena encriptada
+  function generateEncrypted(str){
+    const cadena = crypto.createHmac('sha512',str);
+    cadena.update(str);// se actualiza la cadena
+    var cadena = cadena.digest('hex'); // almacena la cadena encriptada
     return cadena;
   }
   /**

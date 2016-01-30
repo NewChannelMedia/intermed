@@ -2387,7 +2387,7 @@ function traerAseguradoras(){
     });
   }
   // cambiar password
-  function confirmChangePass( password, confirm ){
+  function confirmChangePass( password, confirm, bandera ){
     var primero = $(password).val();
     var segundo = $(confirm).val();
     // validaciones
@@ -2399,14 +2399,27 @@ function traerAseguradoras(){
             $("#mismaCantidad").addClass('hidden');
             $("#menorDeSeis").addClass('hidden');
             $("#igualInfo").addClass('hidden');
-            // se hace la consulta
-            $.post('/changeValidPass',{pass:primero}, function(data){
-              if( data == true ){
-                $("#bingo").removeClass('hidden');
-                $(password).val('');
-                $(confirm).val('');
-              }
-            });
+            switch(bandera){
+              case 'historial':
+                // se hace la consulta
+                $.post('/changeValidPass',{pass:primero,bandera:'historial'}, function(data){
+                  if( data == true ){
+                    $("#bingo").removeClass('hidden');
+                    $(password).val('');
+                    $(confirm).val('');
+                  }
+                });
+                break;
+              case 'intermed':
+                $.post('/changeValidPass',{pass:primero,bandera:'intermed'}, function(data){
+                  if( data == true ){
+                    $("#bingo").removeClass('hidden');
+                    $(password).val('');
+                    $(confirm).val('');
+                  }
+                });
+                break;
+            }
           }else{
             $("#vacioCampo").addClass('hidden');
             $("#bingo").addClass('hidden');
@@ -2442,14 +2455,28 @@ function traerAseguradoras(){
     })
   }
   // enviar correo de cambio de contraseña con el evento click
-  function sendMailto(mail){
+  function sendMailto(mail, bandera){
     var email = $(mail).text();
-    $.post('/sendMailto',{
-      to: email,
-      subject: "Cambio de password",
-    },function(data){
+    switch(bandera){
+      case "historial":console.log("Historial");
+        $.post('/sendMailto',{
+          to: email,
+          bandera:"historial",
+          subject: "Cambio de password",
+        },function(data){
 
-    });
+        });
+        break;
+      case "intermed":
+        $.post('/sendMailto',{
+          to: email,
+          bandera:"intermed",
+          subject: "Cambio de password de su cuenta principal",
+        },function(data){
+
+        });
+        break;
+    }
   }
   $("#agregarHistorial").click(function(){
     var nombre = $("#nombreInputHistorial").val();
@@ -2513,3 +2540,29 @@ function isValidDate(anio, mes, dia){
     return false;
   }
 }
+  //funcion que checara si el campo esta vacio, si encuentra informacion la guardara en el
+  // input correspondiente para la fecha, en caso contrario solo mostrara el input vacio para que se llene
+  function loadFechaNac(idInput){
+    // se hace el post
+    $.post('/medico/datos/loadFechaNac',function(data){
+      var cortando =data.fechaNac.split('T');
+      if( data != null ){
+        $(idInput).val(cortando[0]);
+        $("#muestraFecha").text(cortando[0]);
+      }
+    });
+  }
+  // funcion para guardar la fecha de nacimiento del medico
+  function regFechaNacimiento(idInput){
+    var fecha= $(idInput).val();
+    // se envia la fecha
+    $.post('/medico/datos/regFechaNacimiento',{fecha:fecha}, function( data ){
+      if( data ){
+        console.log("actualizado");
+      }else{
+        console.log("No actualizado");
+      }
+    }).fail(function(e){
+      console.err("Error: "+JSON.stringify(e));
+    });
+  }

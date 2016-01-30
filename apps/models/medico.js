@@ -9,7 +9,7 @@ module.exports = function(sequelize, DataTypes) {
     tokenMaestro: {type: DataTypes.STRING},
     usuario_id: {type : DataTypes.BIGINT, allowNull:false, unique:true},
     calificacion:  {type : DataTypes.DECIMAL},
-    fechaNac: {type:DataTypes.DATE}
+    fechaNac: { type: DataTypes.DATE}
     /*,
     activo: { type: DataTypes.INTEGER },
     fechaprimerdescuento: {type:DataTypes.DATE}*/
