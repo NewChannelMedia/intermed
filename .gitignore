@@ -1,2 +1,10 @@
 
 *.orig
+bin/Microsoft.NodejsTools.WebRole.dll
+.ntvs_analysis.dat
+intermed.njsproj
+obj/Debug/intermed.njsproj.FileListAbsolute.txt
+obj/Debug/intermed.njsprojResolveAssemblyReference.cache
+*.suo
+*.sln
+*.log

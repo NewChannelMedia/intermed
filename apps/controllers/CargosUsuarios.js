@@ -114,7 +114,7 @@ function EjecutarCargo(res, conektaTokenId, datos, usuariocargo, monto) {
                         "amount": monto,
                         "currency": "MXN",
                         "reference_id": ref.referencia,
-                        "card": "tok_test_visa_4242",
+                        "card": conektaTokenId,//"tok_test_visa_4242",
                         "details": {
                             "name": datos.DatosGenerale.nombre + ' ' + datos.DatosGenerale.apellidoP + ' ' + datos.DatosGenerale.apellidoM,
                             "phone": "403-342-0642",
@@ -147,6 +147,9 @@ function EjecutarCargo(res, conektaTokenId, datos, usuariocargo, monto) {
                     }, function (err, cargo) {
                         if (err) {
                             console.log(err);
+                            res.render('registrado', {
+                                title: 'Cargo rechazado' + err.message_to_purchaser
+                            });
                         } else {
                             res.render('registrado', {
                                 title: 'Cargo hecho'
