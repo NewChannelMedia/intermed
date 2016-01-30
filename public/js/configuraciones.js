@@ -42,9 +42,12 @@ $("#saveMail").click(function(){
                   // si entro aqui el correo esta bien y se actualizara en la base de datos
                   $.post('/changeMail',{correo:mail},function(data){
                     if(data ){
+                      $("#mailMedic").val('');
                       $("#mensaje").removeClass('hidden');
                       $("#texto").text('Su correo '+mail+' fue cambiado con exito');
+                      $("#getMail").text(mail);
                     }else{
+                      $("#mailMedic").val('');
                       $("#mensaje").removeClass('hidden');
                       $("#texto").text('Su correo '+mail+' no se pudo cambiar, ya existe uno igual');
                     }
@@ -70,33 +73,138 @@ $("#saveMail").click(function(){
               '<span class="label label-info">Confirmar con tu contraseña</span>'+
               '<input type="password" class="form-control" id="bootConfirm" />'+
             '</div>'+
+            '<div class="col-md-12">'+
+              '¿Olvidaste tu contraseña?<a href="#" onclick="updatePasswordIntermed();" style="color:green;">'+
+                'Cambiala aquí'+
+              '</a>'+
+            '</div>'+
           '</div>'+
         '</div>'
       });
     }else{
-      bootbox.alert('el correo que ingreso no es correcto\nRevise que no contenga lo siguiente:\nespacios en blanco al principio ni al final',
-      function(e){
+      bootbox.dialog({
+        className: 'Intermed-Bootbox',
+        title:'<span class="title">Confirmar con tu correo</span><span class="subtitle">Para realizar esta acción ocupamos que confirmes con tu contraseña</span>',
+        buttons:{
+          ok:{
+            label:'Ok',
+            className:'btn-warning',
+            callback: function(){
+              bootbox.hideAll();
+            }
+          }
+        },
+        message:
+          '<div class="container-fluid">'+
+            '<div class="row">'+
+              '<div class="col-md-12">'+
+                '<span class="label label-info">el correo que ingreso no es correcto\nRevise que no contenga lo siguiente:\nespacios en blanco al principio ni al final</span>'+
+              '</div>'+
+            '</div>'+
+          '</div>'
       });
     }
   }else{
-    bootbox.alert('El campo mail no puede estar vacio', function(){});
+    bootbox.dialog({
+        className: 'Intermed-Bootbox',
+        title:'<span class="title">Revisa los campos</span><span class="subtitle">Hubo un error por favor revisa</span>',
+        buttons:{
+          ok:{
+            label:'Ok',
+            className:'btn-warning',
+            callback: function(){
+              bootbox.hideAll();
+            }
+          }
+        },
+        message:
+          '<div class="container-fluid">'+
+            '<div class="row">'+
+              '<div class="col-md-12">'+
+                '<span class="label label-info">El campo mail no puede estar vacio</span>'+
+              '</div>'+
+            '</div>'+
+          '</div>'
+    });
   }
 });
 $("#saveUrl").click(function(){
   var url = $("#urlMedic").val();
   if( url != '' ){
-    // se envia a que se guarde este campo
-    $.post('/saveUrl',{url:url},function(data){
-      if(data){
-        $("#mensaje").removeClass('hidden');
-        $("#texto").text('Su url '+url+' fue cambiado con exito');
-      }else{
-        $("#mensaje").removeClass('hidden');
-        $("#texto").text('Su url '+mail+' no se pudo cambiar');
-      }
+    bootbox.dialog({
+      className: 'Intermed-Bootbox',
+      title:'<span class="title">Confirmar con tu correo</span><span class="subtitle">Para realizar esta acción ocupamos que confirmes con tu contraseña</span>',
+      buttons:{
+        confirmar:{
+          label:'Confirmar',
+          className:'btn-danger',
+          callback: function(){
+            var email = $("#bootConfirm").val();
+            //consulta a la db para checar que la consulta sea la misma
+            $.post('/consultaInfo',{mail:email}, function(data){
+              if(data){
+                // se envia a que se guarde este campo
+                $.post('/saveUrl',{url:url},function(data){
+                  if(data){
+                    $("#urlMedic").val('');
+                    $("#mensaje").removeClass('hidden');
+                    $("#texto").text('Su url '+url+' fue cambiado con exito');
+                    $("#getUrl").text(url);
+                  }else{
+                    $("#urlMedic").val('');
+                    $("#mensaje").removeClass('hidden');
+                    $("#texto").text('Su url '+mail+' no se pudo cambiar');
+                  }
+                });
+              }else{
+                console.log("No");
+              }
+            });
+          }
+        },
+        cancel:{
+          label:'Cancelar',
+          className:'btn-default',
+          callback: function(){bootbox.hideAll();}
+        }
+      },
+      message:
+      '<div class="container-fluid">'+
+        '<div class="row">'+
+          '<div class="col-md-12">'+
+            '<span class="label label-info">Confirmar con tu contraseña</span>'+
+            '<input type="password" class="form-control" id="bootConfirm" />'+
+          '</div>'+
+          '<div class="col-md-12">'+
+            '¿Olvidaste tu contraseña?<a href="#" onclick="updatePasswordIntermed();" style="color:green;">'+
+              'Cambiala aquí'+
+            '</a>'+
+          '</div>'+
+        '</div>'+
+      '</div>'
     });
   }else{
-    bootbox.alert("Campo vacio", function(){});
+    bootbox.dialog({
+        className: 'Intermed-Bootbox',
+        title:'<span class="title">Revisa los campos</span><span class="subtitle">Hubo un error por favor revisa</span>',
+        buttons:{
+          ok:{
+            label:'Ok',
+            className:'btn-warning',
+            callback: function(){
+              bootbox.hideAll();
+            }
+          }
+        },
+        message:
+          '<div class="container-fluid">'+
+            '<div class="row">'+
+              '<div class="col-md-12">'+
+                '<span class="label label-info">Campo vacio</span>'+
+              '</div>'+
+            '</div>'+
+          '</div>'
+    });
   }
 });
 $("#confirMedicPas").click(function(){
@@ -105,52 +213,126 @@ $("#confirMedicPas").click(function(){
   if( pass != '' && confirmPass != '' ){
     if( pass === confirmPass ){
       if( (pass.length > 0 && pass.length >= 6) && (confirmPass.length > 0 && confirmPass.length >= 6) ){
-        // consulta para modificar los campos
-        $.post('/changePass',{password:pass},function(data){
-          if(data){
-            $("#passMedic").val('');
-            $("#mensaje").removeClass('hidden');
-            $("#texto").text('Su contraseña fue cambiado con exito');
-          }else{
-            $("#confiMedic").val('');
-            $("#mensaje").removeClass('hidden');
-            $("#texto").text('Su contraseña no se pudo cambiar');
-          }
+        bootbox.dialog({
+          className: 'Intermed-Bootbox',
+          title:'<span class="title">Confirmar con tu correo</span><span class="subtitle">Para realizar esta acción ocupamos que confirmes con tu contraseña</span>',
+          buttons:{
+            confirmar:{
+              label:'Confirmar',
+              className:'btn-danger',
+              callback: function(){
+                var email = $("#bootConfirm").val();
+                //consulta a la db para checar que la consulta sea la misma
+                $.post('/consultaInfo',{mail:email}, function(data){
+                  if(data){
+                    // consulta para modificar los campos
+                    $.post('/changePass',{password:pass},function(data){
+                      if(data){
+                        $("#passMedic").val('');
+                        $("#confiMedic").val('');
+                        $("#mensaje").removeClass('hidden');
+                        $("#texto").text('Su contraseña fue cambiado con exito');
+                      }else{
+                        $("#passMedic").val('');
+                        $("#confiMedic").val('');
+                        $("#mensaje").removeClass('hidden');
+                        $("#texto").text('Su contraseña no se pudo cambiar');
+                      }
+                    });
+                  }else{
+                    console.log("No");
+                  }
+                });
+              }
+            },
+            cancel:{
+              label:'Cancelar',
+              className:'btn-default',
+              callback: function(){bootbox.hideAll();}
+            }
+          },
+          message:
+          '<div class="container-fluid">'+
+            '<div class="row">'+
+              '<div class="col-md-12">'+
+                '<span class="label label-info">Confirmar con tu contraseña</span>'+
+                '<input type="password" class="form-control" id="bootConfirm" />'+
+              '</div>'+
+              '<div class="col-md-12">'+
+                '¿Olvidaste tu contraseña?<a href="#" onclick="updatePasswordIntermed();" style="color:green;">'+
+                  'Cambiala aquí'+
+                '</a>'+
+              '</div>'+
+            '</div>'+
+          '</div>'
         });
       }else{
-        bootbox.alert({
-          message:'Los campos deben de tener mas de 6 caracteres',
-          callback: function(){
-            setTimeout(function(){
-              if( pass.length == 0 || pass.length < 6 ){
-                $("#passMedic").focus();
-              }else if( confirmPass.length == 0 && confirmPass.length < 6){
-                $("#confiMedic").focus();
+        bootbox.dialog({
+            className: 'Intermed-Bootbox',
+            title:'<span class="title">Revisa los campos</span><span class="subtitle">Hubo un error por favor revisa</span>',
+            buttons:{
+              ok:{
+                label:'Ok',
+                className:'btn-warning',
+                callback: function(){
+                  bootbox.hideAll();
+                }
               }
-            });
-          }
+            },
+            message:
+              '<div class="container-fluid">'+
+                '<div class="row">'+
+                  '<div class="col-md-12">'+
+                    '<span class="label label-info">Los campos deben de tener mas de 6 caracteres</span>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'
         });
       }
     }else{
-      bootbox.alert({
-        message:"Los campos deben de coincidir",
-        callback: function(){
-          setTimeout(function(){
-            if(pass!=confirmPass){
-              $("#passMedic").focus();
+      bootbox.dialog({
+          className: 'Intermed-Bootbox',
+          title:'<span class="title">Revisa los campos</span><span class="subtitle">Hubo un error por favor revisa</span>',
+          buttons:{
+            ok:{
+              label:'Ok',
+              className:'btn-warning',
+              callback: function(){
+                bootbox.hideAll();
+              }
             }
-          },300);
-        }
+          },
+          message:
+            '<div class="container-fluid">'+
+              '<div class="row">'+
+                '<div class="col-md-12">'+
+                  '<span class="label label-info">Los campos deben de coincidir</span>'+
+                '</div>'+
+              '</div>'+
+            '</div>'
       });
     }
   }else{
-    bootbox.alert({
-      message:"Los campos no pueden estar vacios",
-      callback: function(){
-        setTimeout(function(){
-        $("#passMedic").focus();
-        },300);
-      }
+    bootbox.dialog({
+        className: 'Intermed-Bootbox',
+        title:'<span class="title">Revisa los campos</span><span class="subtitle">Hubo un error por favor revisa</span>',
+        buttons:{
+          ok:{
+            label:'Ok',
+            className:'btn-warning',
+            callback: function(){
+              bootbox.hideAll();
+            }
+          }
+        },
+        message:
+          '<div class="container-fluid">'+
+            '<div class="row">'+
+              '<div class="col-md-12">'+
+                '<span class="label label-info">Los campos no pueden estar vacios</span>'+
+              '</div>'+
+            '</div>'+
+          '</div>'
     });
   }
 });

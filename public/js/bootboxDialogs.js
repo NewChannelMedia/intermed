@@ -3332,7 +3332,7 @@ function BootboxExperienciaLaboral(){
             '</p>'+
           '</div>'+
           '<div class="col-md-4">'+
-            '<button class="btn btn-danger pull-right" onclick="sendMailto(\'#validateEmail\')">'+
+            '<button class="btn btn-danger pull-right" onclick="sendMailto(\'#validateEmail\',\'historial\')">'+
               '<span class="glyphicon glyphicon-send">&nbsp; Enviar correo</span>'+
             '</button>'+
           '</div>'+
@@ -3342,3 +3342,36 @@ function BootboxExperienciaLaboral(){
     getMailSend('#validateEmail');
   }
 //<------------- fin function login del archivero ----------------------->
+function updatePasswordIntermed(){
+  bootbox.hideAll();
+  bootbox.dialog({
+    backdrop:false,
+    className: 'Intermed-Bootbox',
+    title: '<span class"title">Password intermed</span><span class="subtitle">Cambiar su password</span>',
+    message:
+    '<div class="container-fluid">'+
+      '<div class="row">'+
+        '<div class="col-md-12">'+
+          '<p>'+
+            'Se le enviara un correo con la informacion correspondiente'+
+            'para poder cambiar su contraseña debe de validar que su correo'+
+            'es con el que se registro en este sitio, su correo es el siguiente:<br />'+
+            '<h4>'+
+              '<span class="label label-warning">'+
+                '<span class="glyphicon glyphicon-envelope">&nbsp;'+
+                  '<span id="validateEmail"></span>'+
+                '</span>'+
+              '</span>'+
+            '</h4>'+
+          '</p>'+
+        '</div>'+
+        '<div class="col-md-4">'+
+          '<button class="btn btn-danger pull-right" onclick="sendMailto(\'#validateEmail\',\'intermed\')">'+
+            '<span class="glyphicon glyphicon-send">&nbsp; Enviar correo</span>'+
+          '</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>'
+  });
+  getMailSend('#validateEmail');
+}

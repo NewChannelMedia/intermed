@@ -80,3 +80,6 @@ exports.consultaInfo = function( object, req, res ){
     });
   }
 }
+exports.cambiar = function( object, req, res ){
+  res.render('cambiarPassIntermed');
+}

@@ -50,6 +50,8 @@ app.use( '/', express.static( __dirname + '/../public' ) );
 app.use( '/inbox', express.static( __dirname + '/../public' ) );
 app.use( '/notificaciones', express.static( __dirname + '/../public' ) );
 app.use( '/cambiar', express.static( __dirname + '/../public' ) );
+app.use( '/cambiar/historial', express.static( __dirname + '/../public' ) );
+app.use( '/cambiar/intermed', express.static( __dirname + '/../public' ) );
 app.use( '/historiales', express.static( __dirname + '/../public' ) );
 app.use( '/medico', express.static( __dirname + '/../public' ) );
 

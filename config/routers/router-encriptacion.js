@@ -34,11 +34,19 @@ module.exports = function (object){
     intermed.callController( 'encryption', 'sendMailto', req.body, req, res );
   });
   // fin inserta contraseña
-  // get para el cambio del password
-  app.get( '/cambiar/:token', function ( req, res ) {
+  // get para el cambio del password de historial
+  app.get( '/cambiar/:bandera/:token', function ( req, res ) {
     var tok = req.params.token;
-    routeLife( 'plataforma2', 'interno', hps );
-    intermed.callController( 'encryption', 'cambiar', {token: tok}, req, res );
+    switch (req.params.bandera) {
+      case 'historial':
+        routeLife( 'plataforma2', 'interno', hps );
+        intermed.callController( 'encryption', 'cambiar', {token: tok}, req, res );
+        break;
+      case 'intermed':
+        routeLife( 'plataforma2', 'interno', hps );
+        intermed.callController( 'encryption', 'cambiarIntermedPass', {token: tok}, req, res );
+        break;
+    }
   });
   //Vista de historiales
   app.get('/historiales', function( req, res ){
