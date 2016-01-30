@@ -1,10 +1,22 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "intermed", "intermed.njsproj", "{C55E3418-0433-44F2-8B00-9C49B1C27802}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Default|Any CPU = Default|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C55E3418-0433-44F2-8B00-9C49B1C27802}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C55E3418-0433-44F2-8B00-9C49B1C27802}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C55E3418-0433-44F2-8B00-9C49B1C27802}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C55E3418-0433-44F2-8B00-9C49B1C27802}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

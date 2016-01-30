@@ -8,12 +8,23 @@ $(function () {
 
     conektaErrorResponseHandler = function (response) {        
         $("#card-form .card-errors").text(response.message);
-        $form.find("button").prop("disabled", false);
+        var $form = $(this);
+        //$form.find("button").prop("disabled", false);
+        
     }
 
     $("#card-form").submit(function (event) {
-        $("#card-form").find("button").prop("disabled", true);        
-        Conekta.token.create($("#card-form"), conektaSuccessResponseHandler, conektaErrorResponseHandler);
+        var $form = $(this);
+
+        // Previene hacer submit más de una vez
+        //$form.find("button").prop("disabled", true);
+        Conekta.token.create($form, conektaSuccessResponseHandler, conektaErrorResponseHandler);
+
+        // Previene que la información de la forma sea enviada al servidor
         return false;
+
+        //$("#card-form").find("button").prop("disabled", true);        
+        //Conekta.token.create($("#card-form"), conektaSuccessResponseHandler, conektaErrorResponseHandler);
+        //return false;
     });
 })
