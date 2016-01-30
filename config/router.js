@@ -74,6 +74,13 @@ var routerObject = {
   models: models
 }
 
+
+//::Temporal::, solo para ver la información que tiene el usuario en su variable sesión
+app.get( '/informacionusuario', function ( req, res ) {
+  res.send( JSON.stringify( req.session.passport ) + '<br/><a href="/">Regresar</a>' );
+} );
+//Fin temporal
+
 require( './routers/router-sesion.js' )(routerObject);//Es el primero en cargar, verifica la sesión
 require( './routers/_router-get.js' )(routerObject); //Contiene todas las rutas a cargar (render)
 require( './routers/router-buscador.js' )(routerObject);
@@ -86,6 +93,7 @@ require( './routers/router-paciente.js' )(routerObject);
 require( './routers/router-ubicacion.js' )(routerObject);
 require( './routers/router-usuario.js' )(routerObject);
 require('./routers/router-encriptacion.js')(routerObject);
+require('./routers/router-control.js')(routerObject);
 require( './routers/router-error.js' )(routerObject);
 /*FIN CARGA DE ROUTERS*/
 

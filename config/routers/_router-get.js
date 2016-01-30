@@ -8,12 +8,6 @@ module.exports = function (object){
   var passport = object.passport;
   var url = object.url;
 
-  //::Temporal::, solo para ver la información que tiene el usuario en su variable sesión
-  app.get( '/informacionusuario', function ( req, res ) {
-    res.send( JSON.stringify( req.session.passport ) + '<br/><a href="/">Regresar</a>' );
-  } );
-  //Fin temporal
-
   //Vista: home
   app.get( '/', function ( req, res ) {
     routeLife( 'main', 'main', hps );
@@ -85,6 +79,15 @@ module.exports = function (object){
     }
   });
 
+  app.get('/control', function (req, res,next){
+    if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "A"){
+      routeLife( 'plataforma2', 'plataforma', hps );
+      res.render('control');
+    } else {
+      next();
+    }
+  });
+
   /*RUTA CARGAR PERFIL (DEJAR SIEMPRE AL FINAL)*/
   /*Dejando al final se evita que cada que se entre al router se haga una consulta para ver si se trata de un usuario*/
   app.get( '/:usuario', function ( req, res, next) {
@@ -94,10 +97,16 @@ module.exports = function (object){
       models.Usuario.findOne({
         where: models.Sequelize.or(
           {
-            usuarioUrl: usuario
+            usuarioUrl: usuario,
+            tipoUsuario: {
+              $not: 'A'
+            }
           },
           {
-            urlPersonal: usuario
+            urlPersonal: usuario,
+            tipoUsuario: {
+              $not: 'A'
+            }
           }
         )
       }).then(function(us){

@@ -1556,5 +1556,44 @@ var _this = module.exports = {
         error: 3
       });
     }
+  },
+
+  updateCedula: function (object, req, res){
+    if (req.session.passport && req.session.passport.user){
+        models.Medico.update({
+          cedula: object.cedula
+        },{
+          where: {
+            usuario_id: req.session.passport.user.id
+          }
+        }).then(function(medico){
+          if (medico){
+            models.Usuario.update({
+              status: 4
+            },{
+              where: {
+                id: req.session.passport.user.id
+              }
+            }).then(function(usuario){
+              res.status( 200 ).json( {
+                success: true,
+                result: medico
+              } );
+            });
+          } else {
+            res.status( 200 ).json( {
+              success: false,
+              error: 0
+            } );
+          }
+        });
+    } else {
+      //Error: no usuario_id
+      res.status(200).json({
+        success: false,
+        error: 3
+      });
+    }
   }
+
 }

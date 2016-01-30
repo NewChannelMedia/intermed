@@ -2513,3 +2513,28 @@ function isValidDate(anio, mes, dia){
     return false;
   }
 }
+
+function guardarCedula(){
+  var cedula = $('#cedulaRegMed').val();
+	$.ajax({
+		url: '/medicos/cedula/update',
+		type: 'POST',
+		dataType: "json",
+		cache: false,
+    data: {
+      cedula: cedula
+    },
+		type: 'POST',
+		success: function( data ) {
+      if (data.success){
+        actualizarSesion(true);
+      } else if (data.error){
+        manejadorDeErrores(data.error);
+      }
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+		}
+	});
+  return false;
+}

@@ -166,4 +166,8 @@ module.exports = function (object){
   app.post('/medico/formacionAcademica/cargarById', function(req,res){
     intermed.callController('medicos','cargarFormacionAcademicaByID', req.body, req, res);
   });
+
+  app.post('/medicos/cedula/update', function (req, res){
+    intermed.callController('medicos','updateCedula', req.body, req, res);
+  });
 }
