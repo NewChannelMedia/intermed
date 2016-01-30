@@ -686,6 +686,18 @@ function formatearNotificacion(result, emit, object){
               }
             });
             break;
+          case 9:
+            totalProcesados++;
+            if ( totalProcesados === result.length) {
+              object.socket.emit(emit,result);
+            }
+            break;
+          case 10:
+            totalProcesados++;
+            if ( totalProcesados === result.length) {
+              object.socket.emit(emit,result);
+            }
+            break;
         default:
             console.log('Notificacion sin procesar: [tipoNotificacion_id: '+ record.tipoNotificacion_id +']');
             totalProcesados++;

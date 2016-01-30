@@ -105,6 +105,31 @@ module.exports = {
           id: object.usuario_id
         }
       }).then(function(result){
+        models.Notificacion.destroy({
+          where: {
+            usuario_id: object.usuario_id,
+            tipoNotificacion_id: {
+              $in: [9,10]
+            }
+          }
+        });
+        if (object.status == 1){
+          //insertar notificacion cedula aceptada (9)
+          models.Notificacion.create({
+            usuario_id: object.usuario_id,
+            tipoNotificacion_id: 9,
+            data: ''
+          });
+        }else if (object.status == 3){
+          //insertar notificacion cedula rechazada (10)
+          models.Notificacion.create({
+            usuario_id: object.usuario_id,
+            tipoNotificacion_id: 10,
+            data: ''
+          });
+        }
+
+
         res.status(200).json({
           success: true,
           error: result

@@ -376,16 +376,23 @@ function formatearNotificacion( record , element) {
   //$('img').on('error', function() { $(this).attr("src", '/garage/profilepics/dpp.png')});
 
   var fecha = formattedDate( record.inicio );
-  if ( record[ tipo ] ) {
+  //if ( record[ tipo ] ) {
     not = '';
-    var usuarioUrl = record[ tipo ].Usuario.usuarioUrl;
-    var fotoPerfil = record[ tipo ].Usuario.urlFotoPerfil;
-    var nombreCompleto = record[ tipo ].Usuario.DatosGenerale.nombre + ' ' + record[ tipo ].Usuario.DatosGenerale.apellidoP + ' ' + record[ tipo ].Usuario.DatosGenerale.apellidoM;
-    if ( tipo == 'medico' ) {
-      nombreCompleto = 'Dr. ' + nombreCompleto;
+    var usuarioUrl = '';
+    var fotoPerfil = '';
+    var nombreCompleto = '';
+
+    if ( record[ tipo ] ) {
+      var usuarioUrl = record[ tipo ].Usuario.usuarioUrl;
+      var fotoPerfil = record[ tipo ].Usuario.urlFotoPerfil;
+      var nombreCompleto = record[ tipo ].Usuario.DatosGenerale.nombre + ' ' + record[ tipo ].Usuario.DatosGenerale.apellidoP + ' ' + record[ tipo ].Usuario.DatosGenerale.apellidoM;
+      if ( tipo == 'medico' ) {
+        nombreCompleto = 'Dr. ' + nombreCompleto;
+      }
     }
 
     var mediaObjectFecha = '<div class="text-left" style="margin-top:-5px;"><span class="not-fecha hidden invisible">' + record.inicio.slice( 0, 19 ).replace( 'T', ' ' ) + '</span><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + fecha + '</span></div>';
+
     var mediaObjectImagen = '<img class="media-object img-circle" src="' + fotoPerfil + '" '+style+'>';
     var mediaObjectFotoPerfil = '<div class="media-left"><a href= "/perfil/' + usuarioUrl + '">'+mediaObjectImagen+'</a></div>';
 
@@ -464,7 +471,7 @@ function formatearNotificacion( record , element) {
         //agregadoMedicoFavorito
         not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/perfil/' + usuarioUrl + '">' + nombreCompleto + ' te agregó a sus médicos favoritos</a>' + mediaObjectFecha + '</div>';
         break;
-      case 9:
+      case 8:
         //solicitudRechazada
         not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/perfil/' + usuarioUrl + '">Rechazaste la solicitud de amistad de ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
         break;
@@ -500,11 +507,22 @@ function formatearNotificacion( record , element) {
           //medico tiene solicitud de cita
           not += '<div class="media-left"><a onclick="detalleCita(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body"><a onclick="detalleCita(\''+record.data+'\')">El paciente ' + nombreCompleto + ' ha generado una cita.</a>' + mediaObjectFecha + '</div>';
           break;
+      case 9:
+          //medico tiene solicitud de cita
+          not += '<div class="media-left"><a>INTERMED</a></div><div class="media-body"><a onclick="location.reload();">Tu cédula ha sido aceptada.</a>' + mediaObjectFecha + '</div>';
+          actualizarSesion();
+          break;
+      case 10:
+          not += '<div class="media-left"><a>INTERMED</a></div><div class="media-body"><a onclick="location.reload();">Tu cédula ha sido rechazada.</a>' + mediaObjectFecha + '</div>';
+          actualizarSesion();
+          //medico tiene solicitud de cita
+          //not += '<div class="media-left"><a onclick="detalleCita(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body"><a onclick="detalleCita(\''+record.data+'\')">El paciente ' + nombreCompleto + ' ha generado una cita.</a>' + mediaObjectFecha + '</div>';
+          break;
     }
     not += '</div>';
 
     not = '<'+ element +' class="media" id="li' + record.id + '" ' + visto + '>' + not + '</'+element+'>'
-  }
+  //}
   return not;
 }
 
