@@ -179,6 +179,10 @@
     res.render('historiales');
   }
   // conviertiendo a xml
+  /**
+  *  Esta funcion es la encargada de mandar a xml
+  * el objecto que se le pasa por paramtetro
+  */
   exports.htmlToXml = function(object, req, res){
     var f = new Date();
     var fecha = f.getDate()+'_'+(f.getMonth()+1)+'_'+f.getFullYear();
@@ -221,6 +225,12 @@
       res.send(true)
     });
   }
+
+  /**
+  * Con este medoto se puede encriptar cualquier password
+  * algoritmo que utilizara es el sha512 y encripta a una cadena de 128 caracteres
+  *
+  **/
   function generateEncrypted(str){
     const cadena = crypto.createHmac('sha512',str);
     cadena.update(str);// se actualiza la cadena
