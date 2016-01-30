@@ -1619,6 +1619,90 @@ var _this = module.exports = {
         error: 3
       });
     }
+  },
+
+
+  agregarExperienciaLaboral: function  (object, req, res){
+    if (req.session.passport && req.session.passport.user){
+        if (object.fechaFin == ""){
+          object.fechaFin = null;
+        }
+        if (object.fechaTitulo == ""){
+          object.fechaTitulo = null;
+        }
+        if (object.fechaFin == ""){
+          object.fechaFin = null;
+        }
+
+        models.Medico.findOne({
+          where: {
+            usuario_id: req.session.passport.user.id
+          }
+        }).then(function(medico){
+          console.log(JSON.stringify(object));
+          /*
+          titulo
+          lugarTrabajo
+          descripcion
+          fechaInicio
+          fechaFin
+          actual
+          municipio_id
+          medico_id
+          */
+          if (object.formacion_id != "" && parseInt(object.formacion_id)>0){
+            models.MedicoExperiencia.update( {
+              titulo:object.titulo,
+              lugarTrabajo:object.institucion,
+              descripcion:object.descripcion,
+              fechaInicio: object.fechaInicio,
+              fechaFin: object.fechaFin,
+              actual: object.actual,
+              municipio_id: object.municipio_id,
+              medico_id: medico.id
+            }, {
+              where: {
+                id: object.formacion_id
+              }
+            } ).then( function ( datos ) {
+              res.status( 200 ).json( {
+                success: true,
+                result: datos
+              } );
+            } ).catch( function ( err ) {
+              res.status( 500 ).json( {
+                error: err
+              } );
+            } );
+          } else {
+            models.MedicoExperiencia.create( {
+              titulo:object.titulo,
+              lugarTrabajo:object.institucion,
+              descripcion:object.descripcion,
+              fechaInicio: object.fechaInicio,
+              fechaFin: object.fechaFin,
+              actual: object.actual,
+              municipio_id: object.municipio_id,
+              medico_id: medico.id
+            } ).then( function ( datos ) {
+              res.status( 200 ).json( {
+                success: true,
+                result: datos
+              } );
+            } ).catch( function ( err ) {
+              res.status( 500 ).json( {
+                error: err
+              } );
+            } );
+          }
+        });
+    } else {
+      //Error: no usuario_id
+      res.status(200).json({
+        success: false,
+        error: 3
+      });
+    }
   }
 
 }

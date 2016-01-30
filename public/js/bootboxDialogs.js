@@ -3189,29 +3189,127 @@ function BootboxFormacionAcademica(){
 
 function BootboxExperienciaLaboral(){
 
-      bootbox.dialog({
-        backdrop: true,
-        onEscape: function () {
-            bootbox.hideAll();
-        },
-        size:'large',
-        className: 'Intermed-Bootbox',
-        title: '<span class="title">Editar formación académica.</span>',
-        message:
-        '<div class="tab-content">'+
 
-          '<div id="divListaFormacion" class="tab-pane fade in active">'+
-            'LISTA'+
-            '<button onclick="CambiarVisible(\'divListaFormacion\',\'divAddFormacion\');">Cambiar</button>'+
-          '</div>'+
+        bootbox.dialog({
+          backdrop: true,
+          onEscape: function () {
+              bootbox.hideAll();
+          },
+          size:'large',
+          className: 'Intermed-Bootbox',
+          title: '<span class="title"></span>',
+          message:
+          '<style>.modal-header .close {margin-top: -17px;margin-right: -9px;}</style>'+
+          '<div class="tab-content Flama-normal">'+
 
-          '<div id="divAddFormacion" class="tab-pane fade">'+
-            'AGREGAR'+
-            '<button onclick="CambiarVisible(\'divAddFormacion\',\'divListaFormacion\');">Cambiar</button>'+
-          '</div>'+
+            '<div id="divListaExperiencia" class="tab-pane fade in active">'+
+              '<div class="row">'+
+                '<div class="col-md-10"><h2 class="whiteF" style="margin-top:0px">Tu experiencia laboral</h2></div>'+
+                '<div class="col-md-2"><input type="button" class="btn btn-warning btn-block" value="Agregar" onclick="CambiarVisible(\'divListaExperiencia\',\'divAddExperiencia\',true);"></div>'+
+              '</div>'+
 
-      '</div>'
-    });
+              '<div class="row">'+
+                '<div class="col-md-12">'+
+                `<table class="table">
+                  <thead>
+                    <tr style="background-color:#172c3b;color:white;">
+                      <th class="text-center">Institución</th>
+                      <th class="text-center">Especialidad</th>
+                      <th class="text-center">Inicio</th>
+                      <th class="text-center">Fin</th>
+                      <th class="text-center">Obtención del grado</th>
+                      <th class="text-center"></th>
+                      <th class="text-center"></th>
+                    </tr>
+                  </thead>
+                  <tbody style="background-color:#FFF;" class="text-center" id="formacionAcademicaList">
+                  </tbody>
+                </table>`+
+                '</div>'+
+              '</div>'+
+
+            '</div>'+
+
+            '<div id="divAddExperiencia" class="tab-pane fade">'+
+
+              '<div class="row">'+
+                '<div class="col-md-12"><h2 class="whiteF" style="margin-top:0px">Agregar experiencia laboral</h2></div>'+
+              '</div>'+
+
+              '<form id="formAcademica">'+
+                '<input type="hidden" id="formacion_id">'+
+
+                '<div class="row">'+
+                  '<div class="col-md-6">'+
+                    '<div class="form-group">'+
+                      '<select class="form-control" id="selectEstados" onchange="cargarCiudades(\'#selectEstados\');" name="estado"></select>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="col-md-6">'+
+                    '<div class="form-group">'+
+                      '<select class="form-control invisible" id="selectCiudad"></select>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="row">'+
+                  '<div class="col-md-12">'+
+                    '<div class="form-group">'+
+                      '<input type="text" class="form-control" id="inputPuesto" placeholder="Puesto">'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="row">'+
+                  '<div class="col-md-12">'+
+                    '<div class="form-group">'+
+                      '<input type="text" class="form-control" id="inputInstitucion" placeholder="Institución">'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="row">'+
+                  '<div class="col-md-12">'+
+                    '<div class="form-group">'+
+                      '<textarea class="form-control" id="inputDescripcion" placeholder="Descripción" style="resize: none"></textarea>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="row">'+
+
+                  '<div class="col-md-2">'+
+                    '<div class="checkbox" style="text-align:center"><br/>'+
+                      '<label style="font-weight:bold">'+
+                        '<input type="checkbox" id="inputActual" onChange="cambiarActual(this)"> Actual'+
+                      '</label>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="col-md-3" id="divInicio">'+
+                    '<div class="form-group">'+
+                      '<label for="inputInicio">Inicio</label>'+
+                      '<input type="date" class="form-control" id="inputInicio">'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="col-md-3" id="divFin">'+
+                    '<div class="form-group">'+
+                      '<label for="inputFin">Fin</label>'+
+                      '<input type="date" class="form-control" id="inputFin">'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+              '</form>'+
+
+              '<div class="row">'+
+                '<div class="col-md-2"><input type="button" class="btn btn-danger btn-block" value="Cancelar" onclick="CambiarVisible(\'divAddExperiencia\',\'divListaExperiencia\');"></div>'+
+                '<div class="col-md-4 pull-right"><input type="button" class="btn btn-warning btn-block" value="Agregar" onclick="agregarExperienciaLaboral()"></div>'+
+              '</div>'+
+            '</div>'+
+
+        '</div>'
+      });
+      cargarEstados('selectEstados');
+      cargarExperienciaLaboral();
 }
 //<-------------- function to open login del archivero ------------------>
   function logEncrypt(){

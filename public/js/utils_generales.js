@@ -1955,11 +1955,12 @@ function cargarCiudades(id){
   var idABuscar = $(id).val();// se saca el value del select de estados
   // se hace la consulta se manda como parametro el id que se obtuvo de seleccionar el estado
   $.post('/cargarCiudades',{id:idABuscar}, function(data){
-    var cont = '<option value="0">Municipio/Ciudad</option>';
+    var cont = '<option value="0" selected disabled>Selecciona municipio/ciudad</option>';
     $.each(data,function(i, item){
       cont += '<option value="'+item.id+'">'+item.municipio+'</option>';
     });
     $("#selectCiudad").html(cont);
+    $('#selectCiudad').removeClass('invisible');
   });
 }
 function cargaEspecialidades(){
@@ -2398,4 +2399,24 @@ function iniciarSesionLocal(inputEmail, inputPassword){
     }
   });
   return false;
+}
+
+function cargarEstados(divestados){
+  $('#'+divestados).html('<option value=""></option>');
+  $.ajax({
+      url: '/obtenerEstados',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      async: false,
+      success: function (data) {
+        $('#'+divestados).html('<option value="" selected disabled>Selecciona estado</option>');
+          data.forEach(function (record) {
+              $('#'+divestados).append('<option value="' + record.id + '">' + record.estado + '</option>');
+          });
+      },
+      error: function (jqXHR, textStatus, err) {
+        console.log('ERROR: ' + JSON.stringify(err));
+      }
+  });
 }
