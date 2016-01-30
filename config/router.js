@@ -97,6 +97,7 @@ require( './routers/router-usuario.js' )(routerObject);
 require('./routers/router-encriptacion.js')(routerObject);
 require('./routers/router-configuraciones.js')(routerObject);//router para las configuraciones
 require('./routers/router-control.js')(routerObject);
+require('./routers/router-pagos.js')(routerObject);
 require( './routers/router-error.js' )(routerObject);
 /*FIN CARGA DE ROUTERS*/
 
