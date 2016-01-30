@@ -210,6 +210,12 @@ module.exports = {
                             if (req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
                               vista = '/registro';
                               tipoUsuario = 'medico';
+                            } else if (req.session.passport.user.status == 3 && req.session.passport.user.tipoUsuario == "M"){
+                              vista = '/cambioCedula';
+                              tipoUsuario = 'medico';
+                            } else if (req.session.passport.user.status == 4 && req.session.passport.user.tipoUsuario == "M"){
+                              vista = '/bloqueoPorCedula';
+                              tipoUsuario = 'medico';
                             }
                             res.render( tipoUsuario + vista, {
                               medico: medico,
@@ -597,6 +603,12 @@ function armarPerfilNuevo( usuario, req, res ) {
                       } else if (req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
                         vista = '/registro';
                         tipoUsuario = 'medico';
+                      } else if (req.session.passport.user.status == 3 && req.session.passport.user.tipoUsuario == "M"){
+                        vista = '/cambioCedula';
+                        tipoUsuario = 'medico';
+                      } else if (req.session.passport.user.status == 4 && req.session.passport.user.tipoUsuario == "M"){
+                        vista = '/bloqueoPorCedula';
+                        tipoUsuario = 'medico';
                       }
                       res.render( tipoUsuario.toLowerCase() + vista, {
                         usuario: usuario,
@@ -613,6 +625,12 @@ function armarPerfilNuevo( usuario, req, res ) {
         vista = '/vistaPerfilNoRegistrado';
       } else if (req.session.passport.user && req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
         vista = '/registro';
+        tipoUsuario = 'medico';
+      } else if (req.session.passport.user.status == 3 && req.session.passport.user.tipoUsuario == "M"){
+        vista = '/cambioCedula';
+        tipoUsuario = 'medico';
+      } else if (req.session.passport.user.status == 4 && req.session.passport.user.tipoUsuario == "M"){
+        vista = '/bloqueoPorCedula';
         tipoUsuario = 'medico';
       }
       usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );

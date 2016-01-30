@@ -166,10 +166,16 @@ module.exports = function (object){
   app.post('/medico/formacionAcademica/cargarById', function(req,res){
     intermed.callController('medicos','cargarFormacionAcademicaByID', req.body, req, res);
   });
+
   app.post('/medico/datos/loadFechaNac', function( req, res ){
     intermed.callController('medicos','loadFechaNac', req, res);
   });
+
   app.post('/medico/datos/regFechaNacimiento', function( req, res ){
     intermed.callController('medicos','regFechaNacimiento', req.body, req, res );
+  });
+
+  app.post('/medicos/cedula/update', function (req, res){
+    intermed.callController('medicos','updateCedula', req.body, req, res);
   });
 }

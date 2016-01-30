@@ -529,7 +529,14 @@ function cargarExtraInfo( usuario, redirect, response, req, res ) {
   }
   else {
     if ( usuario.tipoUsuario === 'A' ) {
-      res.redirect( '/registro' );
+      if ( redirect || req.method == "GET") {
+        res.redirect( '/control' );
+      } else {
+        res.send( {
+          'result': 'success',
+          'session': req.session.passport.user
+        } );
+      }
     }
   }
 }

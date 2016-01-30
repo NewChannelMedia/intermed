@@ -2552,6 +2552,7 @@ function isValidDate(anio, mes, dia){
       }
     });
   }
+
   // funcion para guardar la fecha de nacimiento del medico
   function regFechaNacimiento(idInput){
     var fecha= $(idInput).val();
@@ -2566,3 +2567,28 @@ function isValidDate(anio, mes, dia){
       console.err("Error: "+JSON.stringify(e));
     });
   }
+
+function guardarCedula(){
+  var cedula = $('#cedulaRegMed').val();
+	$.ajax({
+		url: '/medicos/cedula/update',
+		type: 'POST',
+		dataType: "json",
+		cache: false,
+    data: {
+      cedula: cedula
+    },
+		type: 'POST',
+		success: function( data ) {
+      if (data.success){
+        actualizarSesion(true);
+      } else if (data.error){
+        manejadorDeErrores(data.error);
+      }
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+		}
+	});
+  return false;
+}
