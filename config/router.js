@@ -29,6 +29,8 @@ var passport = require( 'passport' ),
   bundle = require( 'socket.io-bundle' ),
   ioPassport = require( 'socket.io-passport' );
 
+
+
 app.use( cookieParser( 'intermedSession' ) );
 
 app.use( session( {
@@ -1474,9 +1476,54 @@ var iniciar = function () {
     app.post('/deleteFon',function( req, res ){
       intermed.callController('contactos','deleteFon',req, res);
     });
+
+    //rutas Para Cargos
+    app.get('/ProcesarCargosClientes', function (req, res) {        
+        intermed.callController('CargosUsuarios', 'FormularioCobro', req, res);
+    });
+
+    app.post('/ProcesarCargosClientes', function (req, res) {
+        intermed.callController('CargosUsuarios', 'ProcesarCargosClientes', req.body, req, res);
+    });
+
+    app.get('/registrarusuariotarjeta', function (req, res) {
+        intermed.callController('CargosUsuarios', 'RegistrarUsuarioEnProveedorDatos', req.body, req, res);
+    });
+
+    app.post('/registrarusuariotarjeta', function (req, res) {        
+        intermed.callController('CargosUsuarios', 'RegistrarUsuarioEnProveedor', req.body, req, res);
+    });
+
+
+    app.get('/registrarnuevatarjeta', function (req, res) {
+        intermed.callController('CargosUsuarios', 'RegistrarNuevaTarjetaDatos', req.body, req, res);
+    });
+
+    app.post('/registrarnuevatarjeta', function (req, res) {
+        intermed.callController('CargosUsuarios', 'RegistrarNuevaTarjeta', req.body, req, res);
+    });
+
+    //Registrar plan de cargo
+    app.get('/registrarplancargo', function (req, res) {
+        intermed.callController('CargosUsuarios', 'PlanCargoDatosRegistro', req.body, req, res);       
+    });
+
+    app.post('/registrarplancargo', function (req, res) {
+        intermed.callController('CargosUsuarios', 'PlanCargoRegistrar', req.body, req, res);
+    });
+
+    app.post('/eliminarplancargo', function (req, res) {
+        intermed.callController('CargosUsuarios', 'PlanCargoEliminar', req.body, req, res);
+    });
+
+    app.post('/notificacionesproveedor', function (req, res) {
+        intermed.callController('CargosProcesos', 'RecibirNotificacion', req.body, req, res);
+    });
+    //fin rutas cargos
+
 }
 
-var io = serv.server( app, 3000 );
+var io = serv.server( app, 80 );
 
 socket.io( io, bundle, ioPassport );
 
