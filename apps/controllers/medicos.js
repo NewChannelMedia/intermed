@@ -389,7 +389,7 @@ var _this = module.exports = {
               }}).then(function(medicoCedula){
                 if (!medicoCedula){
                   models.Usuario.update({
-                    status: 2
+                    status: -1
                   },{
                     where: {
                       id: usuario_id

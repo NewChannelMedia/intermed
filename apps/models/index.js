@@ -124,6 +124,7 @@ Object.keys( db ).forEach( function ( modelName ) {
   }
 } );
 
+db.sequelize = sequelizeMain;
 db.Sequelize = Sequelize;
 
 
