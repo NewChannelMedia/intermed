@@ -1384,7 +1384,6 @@ function guardarImagenPerfil() {
     cache: false,
     success: function ( data ) {
       if ( data.result === 'success' ) {
-        $( '#CambiarFotoPerfil' ).modal( 'toggle' );
         actualizarSesion();
       }
       else {
@@ -1661,8 +1660,8 @@ function cargarFavCol( usuario ) {
               "<a class='contList-profileEsp' href='http://" + window.location.host + "/perfil/" + data[ p ].Medico.Usuario.usuarioUrl + "'> " + data[ p ].Medico.Usuario.Especialidad + "</a>" +
               "</div>" +
               "<div class='media-right contList-profileAction'>" +
-              "<a id ='"+data[ p ].Medico.id+"' href ='#' data-target='#recomendar' data-toggle='modal' class='recomendar contList-profileActionLink Flama-bold s15'>Recomendar</a>" +
-              "<a id='"+data[ p ].Medico.id+"' href='#' data-target='#pedir' data-toggle='modal' class='Pedir contList-profileActionLink Flama-bold s15'><smal>Pedir Recomendacion</smal></a>"+
+              "<a id='"+data[p].Medico.Usuario.id+"' href ='#' data-target='#recomendar' data-toggle='modal' class='recomendar contList-profileActionLink Flama-bold s15'>Recomendar</a>" +
+              "<a id='"+data[p].Medico.Usuario.id+"' href='#' data-target='#pedir' data-toggle='modal' class='Pedir contList-profileActionLink Flama-bold s15'><smal>Pedir Recomendacion</smal></a>"+
               "</div>" +
               "</li>"
             );
@@ -1707,20 +1706,17 @@ var uId ="";
     $( '.recomendar.contList-profileActionLink' ).click(function(){
       //se manda a llamar al bootbox
       recomendacionesBoot();
-      id += $( this ).attr('id');
+      id = $( this ).attr('id');
       $("#pacienteIdOculto").text(id);
       var medico_id="";
       var di = "";
-      //console.log("ID: "+id);
       $.post('/medicosContacto',{idMedico:id},function(data){
-        for( var i in data ){
-          medico_id = data[ i ].id;
-          di = data[ i ].Usuario.id;
-          if( data[ i ].Usuario ){
-            usuarioRL += data[ i ].Usuario.usuarioUrl;
-            var nombreCompleto = data[ i ].Usuario.DatosGenerale.nombre+' '+data[ i ].Usuario.DatosGenerale.apellidoP+' '+data[ i ].Usuario.DatosGenerale.apellidoM;
-            $("#doctorSpan").text(nombreCompleto);
-          }
+        medico_id = data.id;
+        di = data.Usuario.id;
+        if( data.Usuario ){
+          usuarioUrl = data.Usuario.usuarioUrl;
+          var nombreCompleto = data.Usuario.DatosGenerale.nombre+' '+data.Usuario.DatosGenerale.apellidoP+' '+data.Usuario.DatosGenerale.apellidoM;
+          $("#doctorSpan").text(nombreCompleto);
         }
       });
       // con ajax se hace la peticion a la url la cual me mostrara la informacion en una tabla con
@@ -2716,7 +2712,7 @@ if ( location.pathname.substring(0,20) === '/nuevoRegistroMedicos' ) {
       $(window).scroll(sticky_relocate);
       sticky_relocate();
   });
-  
+
   $('.logros-slider').bxSlider({
     slideWidth: 250,
     minSlides: 1,
