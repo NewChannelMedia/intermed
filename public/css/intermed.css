@@ -2489,7 +2489,7 @@ div.Slider{
 }
 
 #divCalendario.regHorMed div.fc-content-skeleton table{
-  height: 700px;
+  height: 1500px;
 }
 
 #divCalendario.regHorMed div.fc-content-skeleton table tr td{
@@ -2584,6 +2584,40 @@ th.fc-day-header.fc-widget-header{
   margin-right: 15px;
 }
 
+.regSectionTitle .glyphicon.glyphicon-pencil{
+  border-radius: 5px;
+  background-color: transparent;
+  border: solid 3px white;
+  color: white;
+  padding: 11px;
+  font-size: 23px;
+}
+
+.regSectionTitle .glyphicon.glyphicon-pencil:before {
+    content: "\270f";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+}
+
+.regInput{
+  border-radius: 9px;
+}
+
+label.regInput{
+  padding-left: 6px;
+}
+
+button.regInput{
+  background-color: #50A8DE;
+  border: none;
+}
+
+button.regInput.btn-danger{
+  background-color: #E74000;
+  border: none;
+}
+
 span.borderCircle{
   border: solid 2px white;
   padding: 4px;
@@ -2593,4 +2627,54 @@ span.borderCircle{
   border-radius: 17px;
   font-size: 80%;
   margin-right: 20px;
+}
+
+.divActionsUbic>div.action{
+  font-weight: bold;
+  text-align: center;
+  color:white;
+  padding: 10px;
+  border-top: solid 3px #FFF;
+  border-bottom: solid 3px #FFF;
+  height: 65px;
+  overflow: hidden;
+}
+
+div.action-All{
+  background-color: #FF9600;
+}
+
+div.action-Busy{
+  background-color: #30424F;
+}
+
+div.action-Office{
+  background-color: #3D5A6E;
+}
+
+div.action-All>.glyphicon{
+  margin-top: 5px;
+  margin-bottom: -10px;
+  font-weight: lighter;
+  margin-right: 15px;
+  border-radius: 5px;
+  background-color: transparent;
+  border: solid 3px white;
+  color: white;
+  padding: 11px;
+  font-size: 25px;
+}
+
+div.action-All>.glyphicon:before {
+    position: absolute;
+    top: -5px;
+    right: -6px;
+}
+
+
+div.action-Busy>.glyphicon{
+  margin-top: -5px;
+  margin-bottom: -20px;
+  font-size: 25px;
+  margin-right: 15px;
 }

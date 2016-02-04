@@ -182,4 +182,20 @@ module.exports = function (object){
   app.post('/medicos/address/get', function (req, res){
     intermed.callController('medicos','addressGet', req.body, req, res);
   });
+
+  app.post('/medicos/serv/update', function (req, res){
+    intermed.callController('medicos','serbUpdate', req.body, req, res);
+  });
+
+  app.post('/medicos/serv/getByAddr', function (req, res){
+    intermed.callController('medicos','serbGetByAddr', req.body, req, res);
+  });
+
+  app.post('/medicos/serv/drop', function (req, res){
+    intermed.callController('medicos','servDrop', req.body, req, res);
+  });
+
+  app.post('/medicos/ubic/minconf', function (req, res){
+    intermed.callController('medicos','ubicMinConf', req.body, req, res);
+  });
 }
