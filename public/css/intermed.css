@@ -2443,9 +2443,9 @@ div.Slider{
   position: relative;
   margin-bottom: -10px;
   margin-top: 10px;
-  margin-left: 5px;
+  margin-left: -3px;
   border: solid 1px white;
-  margin-right: -5px;
+  margin-right: -3px;
 }
 
 .menuRegUbic li.active a hr{
@@ -2471,6 +2471,126 @@ div.Slider{
   background-color:#50A8DE;
   text-align: center;
   padding: 30px;
-  height: 80px;
+  min-height: 80px;
   margin-top: -2px;
+}
+
+.btn-save-reg{
+  font-weight: bold;
+  height: 65px;
+  border-radius: 15px;
+  background-color: #50A8DE;
+  border-color: transparent;
+  font-size: 150%;
+}
+
+#divCalendario.regHorMed .fc-widget-content .fc-time-grid-container{
+  height: auto!important;
+}
+
+#divCalendario.regHorMed div.fc-content-skeleton table{
+  height: 700px;
+}
+
+#divCalendario.regHorMed div.fc-content-skeleton table tr td{
+  border: solid 5px #6A808E!important;
+}
+
+#divCalendario.regHorMed .fc-slats td.fc-widget-content{
+  background-color: #2F424F;
+}
+
+#divCalendario.regHorMed .fc-slats td.fc-time,
+#divCalendario.regHorMed thead {
+    background-color: transparent;
+    color: white;
+    border: none;
+}
+
+#divCalendario.regHorMed thead th,
+#divCalendario.regHorMed thead td,
+#divCalendario.regHorMed .fc-slats td.fc-time,
+#divCalendario.regHorMed td.fc-widget-content
+{
+    border: none;
+}
+
+#divCalendario.regHorMed div.fc-slats td.fc-widget-content{
+  height: 10px;
+}
+
+#divCalendario.regHorMed div.fc-slats td.fc-widget-content:not(.fc-time){
+  border: solid 2px #6A808E!important;
+}
+
+#divCalendario.regHorMed .fc-body{
+  background-color: transparent;
+}
+
+#divCalendario.regHorMed div.fc-event-container{
+  margin-top: -6px;
+  height: 1px;
+  width: 100%;
+  margin-left: 0px;
+}
+
+#divCalendario.regHorMed div.fc-event-container a.fc-time-grid-event,
+#divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg{
+  background-color: rgba(255,149,0,0.7);
+}
+
+th.fc-day-header.fc-widget-header{
+  text-transform: uppercase;
+  padding-bottom: 10px;
+}
+
+.inputTransparent{
+  background-color: transparent;
+  border: 0px;
+  border-radius: 0;
+  box-shadow: 0 0 0;
+  color:white;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.inputTransparent:focus{
+  background-color: transparent;
+  border: 0px;
+  border-radius: 0;
+  box-shadow: 0 0 0;
+}
+
+.tab-pane:not(.active){
+  visibility: hidden;
+}
+
+.regSectionTitle{
+  font-size: 20px;
+  padding: 11px;
+  background-color: #172C3B;
+  margin: 10px;
+  margin-top: 20px;
+}
+
+.regSectionTitle .glyphicon{
+  background-color: white;
+  color: #172C3B;
+  padding: 8px;
+  padding-left: 9px;
+  font-weight: lighter;
+  border-radius: 18px;
+  font-size: 79%;
+  margin-right: 15px;
+}
+
+span.borderCircle{
+  border: solid 2px white;
+  padding: 4px;
+  padding-left: 9px;
+  padding-right: 9px;
+  padding-top: 8px;
+  border-radius: 17px;
+  font-size: 80%;
+  margin-right: 20px;
 }

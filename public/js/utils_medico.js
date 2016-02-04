@@ -127,6 +127,11 @@ $( document ).ready( function () {
         }
       });
       loadEspecialidades();
+  } else if ($('#divMapRegHor').length>0){
+    cargarMapa(0);
+    cargarTelefonos();
+    funcionesTelefonos();
+    obtenerDirecciones();
   }
 
   if ( $( "#tarjetaOptReg" ).is( ":checked" ) ) {
@@ -798,7 +803,10 @@ function regUbicacion(salir) {
     latitud = $('#latitud').val();
     longitud = $('#longitud').val();
 
-    ubicacion_id = $('#idDireccion').val();
+    var ubicacion_id = '';
+    if ($('#idDireccion').length>0 && $('#idDireccion').val()!=""){
+      ubicacion_id = $('#idDireccion').val();
+    }
 
     UbicData = {
       idDireccion: ubicacion_id,
@@ -877,33 +885,40 @@ function regUbicacion(salir) {
             type: 'POST',
             success: function (data) {
               if (data.success){
-                $('#idDireccion').val(data.ubicacion_id);
-                $('#btnEliminar').removeClass('hidden');
-                $('#btnGuardarSalir').addClass('hidden');
-                $('#btnGuardar').val('Editar');
-                $('#btnGuardar').parent().parent().addClass('pull-right');
-                //Telefonos
-                $('#addFon').val('Añadir');
-                $('#tipoTelefono').prop('selectedIndex', 0);
-                $('#tipoTelefono').change();
-
-                $('#btnGuardar').val('Editar');
-                $("#frmRegUbi :input").prop('disabled', true);
-                $('#frmRegUbi :button #addFon').prop('disabled', true);
-                $("#frmRegUbi :button").prop('disabled', false);
-                $("#frmRegUbi #btnGuardarSalir").addClass('hidden');
-                mapa.marker.setOptions({draggable: false,animation:null});
-                cargarTelefonos();
-                actualizarDirecciones();
-                if (salir){
-                  bootbox.hideAll();
+                if ($('#alertRegUbi').length>0){
+                  $('#alertRegUbi').html('Tu ubicación <b>'+ UbicData.nombreUbi +'</b> ha sido agrega, puedes agregar otra si gustas.');
+                  $('.slc_ubicReg').append('<option value="'+ data.datos.id +'">'+ data.datos.nombre +' '+ data.datos.calle + ' #' + data.datos.numero +'</option>');
+                  resetearFormRegUbi();
                 } else {
-                  $('.menuBootbox').find('li.ubicaciones').removeClass('active');
-                  $('.menuBootbox').find('li.servicios').addClass('active');
-                  $('#divUbicacion').removeClass('in');
-                  $('#divUbicacion').removeClass('active');
-                  $('#divServicios').addClass('in');
-                  $('#divServicios').addClass('active');
+
+                  $('#idDireccion').val(data.ubicacion_id);
+                  $('#btnEliminar').removeClass('hidden');
+                  $('#btnGuardarSalir').addClass('hidden');
+                  $('#btnGuardar').val('Editar');
+                  $('#btnGuardar').parent().parent().addClass('pull-right');
+                  //Telefonos
+                  $('#addFon').val('Añadir');
+                  $('#tipoTelefono').prop('selectedIndex', 0);
+                  $('#tipoTelefono').change();
+
+                  $('#btnGuardar').val('Editar');
+                  $("#frmRegUbi :input").prop('disabled', true);
+                  $('#frmRegUbi :button #addFon').prop('disabled', true);
+                  $("#frmRegUbi :button").prop('disabled', false);
+                  $("#frmRegUbi #btnGuardarSalir").addClass('hidden');
+                  mapa.marker.setOptions({draggable: false,animation:null});
+                  cargarTelefonos();
+                  actualizarDirecciones();
+                  if (salir){
+                    bootbox.hideAll();
+                  } else {
+                    $('.menuBootbox').find('li.ubicaciones').removeClass('active');
+                    $('.menuBootbox').find('li.servicios').addClass('active');
+                    $('#divUbicacion').removeClass('in');
+                    $('#divUbicacion').removeClass('active');
+                    $('#divServicios').addClass('in');
+                    $('#divServicios').addClass('active');
+                  }
 
                 }
               } else {
@@ -924,10 +939,10 @@ function regUbicacion(salir) {
     }
 }
 //Registrar Ubicacion
-function regHorarios() {
+function regHorarios(direccion_id) {
     if (regHorariosValid() == true) {
         //agregar horarios al control
-        $('#horariosUbi').val(JSON.stringify(obtenerHorariosAgenda()));
+        $('#horariosUbi').val(JSON.stringify(obtenerHorariosAgenda(direccion_id)));
 
         $.ajax({
             url: '/registrarhorarios',
@@ -2591,4 +2606,56 @@ function guardarCedula(){
 		}
 	});
   return false;
+}
+
+function resetearFormRegUbi() {
+  $('#frmRegUbi')[0].reset();
+  mapa.marker = null;
+  $('#slc_estados_mapa').val('');
+  obtenerCiudades("_mapa");
+  cargarMapa(0);
+  cargarTelefonos();
+  funcionesTelefonos();
+  $('#nombreUbi').focus();
+}
+
+function obtenerDirecciones(){
+	$.ajax({
+		url: '/medicos/address/get',
+		type: 'POST',
+		dataType: "json",
+		cache: false,
+		type: 'POST',
+		success: function( data ) {
+      if (data.success){
+        var contenido = '';
+        if (data.result){
+          data.result.forEach(function(res){
+            contenido += '<option value="'+ res.id +'"><b>'+ res.nombre +'</b> '+ res.calle +' #'+ res.numero +'</option>';
+          });
+          if (data.result.length>0){
+            $('#alertRegUbi').text('Ya has registrado ubicaciones, puedes registrar una nueva o continuar con la edición de servicios y horarios.');
+          } else {
+            $('#alertRegUbi').text('Debes de registrar por lo menos una ubicación.');
+          }
+        }
+        $('.slc_ubicReg').html(contenido);
+      } else if (data.error){
+        manejadorDeErrores(data.error);
+      }
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+		}
+	});
+}
+
+function cargarServicios(element){
+  var direccion_id = $(element).val();
+  console.log('Servicos-Direccion_id: ' + direccion_id);
+}
+
+function cargarHorario(element){
+  var direccion_id = $(element).val();
+  iniciarDivCalendario(direccion_id);
 }

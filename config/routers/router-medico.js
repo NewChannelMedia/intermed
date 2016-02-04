@@ -178,4 +178,8 @@ module.exports = function (object){
   app.post('/medicos/cedula/update', function (req, res){
     intermed.callController('medicos','updateCedula', req.body, req, res);
   });
+
+  app.post('/medicos/address/get', function (req, res){
+    intermed.callController('medicos','addressGet', req.body, req, res);
+  });
 }

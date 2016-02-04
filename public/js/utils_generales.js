@@ -1018,7 +1018,7 @@ function iniciarDivCalendario(direccion_id){
         $('#horariosUbi').val(data.horarios);
         $('#direccion_id').val(data.direccion_id);
         $("#divCalendario").remove();
-        $("#divCalendarioPadre").html('<div id="divCalendario"></div>');
+        $("#divCalendarioPadre").html('<div id="divCalendario" class="regHorMed"></div>');
         setTimeout(function(){iniciarCalendario(data.horarios)},300);
 
       },

@@ -2,7 +2,7 @@ var eventos = [];
 var fechaInicio = '2015-11-02';
 
 $(document).ready(function () {
-  if ($('#horariosUbi').length>0){
+  if ($('#horariosUbi').length>0 && $('#horariosUbi').val()){
 
     var valido = true;
     var eventos = JSON.parse($('#horariosUbi').val());
@@ -94,7 +94,7 @@ $(document).ready(function () {
 });
 
 
-function obtenerHorariosAgenda() {
+function obtenerHorariosAgenda(direccion_id) {
     var objhorarios = [];
     var h = $('#divCalendario').fullCalendar('clientEvents');
     var evento;
@@ -103,6 +103,10 @@ function obtenerHorariosAgenda() {
     var fin = new moment();
 
     objhorarios = [];
+    if (parseInt(direccion_id<=0)){
+      direccion_id = $('#idDireccion').val();
+    }
+
     for (i = 0; i <= h.length - 1; i++) {
         evento = h[i];
 
@@ -113,7 +117,7 @@ function obtenerHorariosAgenda() {
         fin.minute(evento.end._d.getUTCMinutes());
 
         var horario = {
-            direccion_id: $('#idDireccion').val(),
+            direccion_id: direccion_id,
             dia: evento.start._d.getDay(),
             horaInicio: inicio.format('HH:mm'),
             horaFin: fin.format('HH:mm')
@@ -148,8 +152,8 @@ function iniciarCalendario(eventos){
       //    end: '2015-11-08 12:00',
       //    dow: [0, 1, 2, 3, 4, 5, 6]
       //},
-      minTime: '8:00',
-      maxTime: '19:00',
+      minTime: '7:00',
+      maxTime: '21:00',
       lang: 'es',
       //events: eventos,
       events: eventos,
@@ -161,7 +165,7 @@ function iniciarCalendario(eventos){
       select: function (start, end) {
           var eventData;
           if (start.format('DMYYYY') != end.format('DMYYYY')) {
-              alert('fechas distintas');
+              //alert('fechas distintas');
               valido = false;
           } else {
               valido = true;

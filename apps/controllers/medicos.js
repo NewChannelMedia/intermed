@@ -1619,6 +1619,28 @@ var _this = module.exports = {
         error: 3
       });
     }
+  },
+
+  addressGet: function (object, req, res){
+    if (req.session.passport && req.session.passport.user){
+      models.Direccion.findAll({
+        where:{
+          usuario_id: req.session.passport.user.id
+        },
+        order: [['principal','DESC']],
+        attributes: ['id','nombre','principal','calle','numero']
+      }).then(function(ubicaciones){
+        res.status( 200 ).json( {
+          success: true,
+          result: ubicaciones
+        } );
+      });
+    }else {
+      res.status(200).json({
+        success: false,
+        error: 1
+      });
+    }
   }
 
 }
