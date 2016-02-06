@@ -20,49 +20,49 @@ exports.ProcesarCargosClientes = function (object, req, res) {
         },
         attributes: ['id', 'correo'],
         include: [
-         {
-             model: models.DatosGenerales,
-             attributes: ['nombre', 'apellidoP', 'apellidoM']
-         },
+            {
+                model: models.DatosGenerales,
+                attributes: ['nombre', 'apellidoP', 'apellidoM']
+            },
          //{
          //    model: models.Telefono,
          //    attributes: ['nombre', 'apellidoP', 'apellidoM']
          //},
-         {
-             model: models.DatosFacturacion,
-             attributes: ['RFC', 'razonSocial'],
-             include: [
-                 {
-                     model: models.Direccion,
-                     attributes: ['calle', 'numero'],
-                     include: [
-                         {
-                             model: models.Localidad,
-                             attributes: ['localidad', 'cp'],
-                             include: [
-                                 {
-                                     model: models.Municipio,
-                                     attributes: ['municipio'],
-                                 },
-                                 {
-                                     model: models.Estado,
-                                     attributes: ['estado'],
-                                 }
-                             ]
-                         }
-                     ]
-                 }
-             ]
-         }
+            {
+                model: models.DatosFacturacion,
+                attributes: ['RFC', 'razonSocial'],
+                include: [
+                    {
+                        model: models.Direccion,
+                        attributes: ['calle', 'numero'],
+                        include: [
+                            {
+                                model: models.Localidad,
+                                attributes: ['localidad', 'cp'],
+                                include: [
+                                    {
+                                        model: models.Municipio,
+                                        attributes: ['municipio'],
+                                    },
+                                    {
+                                        model: models.Estado,
+                                        attributes: ['estado'],
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         ]
     })
      .then(function (datos) {
-         if (datos) {
-             RealizarCargo(res, object.conektaTokenId, datos);
-         }
-     }).catch(function (err) {
-         console.log(err);
-     });
+        if (datos) {
+            RealizarCargo(res, object.conektaTokenId, datos);
+        }
+    }).catch(function (err) {
+        console.log(err);
+    });
 }
 
 function RealizarCargo(res, conektaTokenId, datos) {
@@ -128,11 +128,11 @@ function EjecutarCargo(res, conektaTokenId, datos, usuariocargo, monto) {
                             //    "score": 9
                             //},
                             "line_items": [{
-                                "name": "Cargo Mensual",
-                                "description": "Cargo Mensual",
-                                "unit_price": monto,
-                                "quantity": 1
-                            }],
+                                    "name": "Cargo Mensual",
+                                    "description": "Cargo Mensual",
+                                    "unit_price": monto,
+                                    "quantity": 1
+                                }],
                             "billing_address": {
                                 "tax_id": datos.DatosFacturacion.RFC,
                                 "company_name": datos.DatosFacturacion.razonSocial,
@@ -162,20 +162,6 @@ function EjecutarCargo(res, conektaTokenId, datos, usuariocargo, monto) {
                 console.log(err);
             });
         }
-    }).catch(function (err) {
-        console.log(err);
-    });
-}
-
-//Informacion para registrar cargos de usuario
-exports.RegistrarUsuarioEnProveedorDatos = function (object, req, res) {
-    models.PlanDeCargo.findAll()
-    .then(function (planes) {
-        res.render('cargoportarjeta', {
-            title: 'Pagos',
-            usuario_id: 1,
-            planes: planes
-        });
     }).catch(function (err) {
         console.log(err);
     });
@@ -218,7 +204,7 @@ exports.RegistrarNuevaTarjeta = function (object, req, res) {
                     //    }
                     //});
                 });
-            }             
+            }
         } else {
             console.log('???');
         }
@@ -228,111 +214,168 @@ exports.RegistrarNuevaTarjeta = function (object, req, res) {
 
 }
 
-exports.RegistrarUsuarioEnProveedor = function (object, req, res) {
 
+//Informacion para registrar cargos de usuario
+exports.RegistrarCargoRecurrenteDatos = function (object, req, res) {
+    models.PlanDeCargo.findAll()
+    .then(function (planes) {
+        res.render('cargoportarjeta', {
+            title: 'Pagos',
+            usuario_id: 1,
+            planes: planes
+        });
+    }).catch(function (err) {
+        console.log(err);
+    });
+}
+
+exports.RegistrarCargoRecurrente = function (object, req, res) {
     models.Usuario.findOne({
         where: {
             id: object.usuario_id
         },
         attributes: ['correo'],
         include: [
-         {
-             model: models.DatosGenerales,
-             attributes: ['nombre', 'apellidoP', 'apellidoM']
-         },
+            {
+                model: models.DatosGenerales,
+                attributes: ['nombre', 'apellidoP', 'apellidoM']
+            },
          //{
          //    model: models.Telefono,
          //    attributes: ['nombre', 'apellidoP', 'apellidoM']
          //},
-         {
-             model: models.DatosFacturacion,
-             attributes: ['RFC', 'razonSocial'],
-             include: [
-                 {
-                     model: models.Direccion,
-                     attributes: ['calle', 'numero'],
-                     include: [
-                         {
-                             model: models.Localidad,
-                             attributes: ['localidad', 'cp'],
-                             include: [
-                                 {
-                                     model: models.Municipio,
-                                     attributes: ['municipio'],
-                                 },
-                                 {
-                                     model: models.Estado,
-                                     attributes: ['estado'],
-                                 }
-                             ]
-                         }
-                     ]
-                 }
-             ]
-         }
+            {
+                model: models.DatosFacturacion,
+                attributes: ['RFC', 'razonSocial'],
+                include: [
+                    {
+                        model: models.Direccion,
+                        attributes: ['calle', 'numero'],
+                        include: [
+                            {
+                                model: models.Localidad,
+                                attributes: ['localidad', 'cp'],
+                                include: [
+                                    {
+                                        model: models.Municipio,
+                                        attributes: ['municipio'],
+                                    },
+                                    {
+                                        model: models.Estado,
+                                        attributes: ['estado'],
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
         ]
     })
      .then(function (datos) {
-         //Validar que exista el usuario en registro cargo
-         models.UsuarioCargo.findOne({
-             where: { medico_id: object.usuario_id }
-         }).then(function (usuario) {
-             if (!usuario) {
-                 models.UsuarioCargo.create({
-                     medico_id: object.usuario_id,
-                     plandecargo_id: object.planid
-                 }).then(function (usuariocargoregistrado) {
-                     if (usuariocargoregistrado) {
-                         UsuarioRegistrarEnProveedor(res, object.usuario_id, datos, object.conektaTokenId, object.planid);
-                     }
-                 }).catch(function (err) {
-                     console.log(err);
-                 });
-             } else {
-                 if (usuario.idUsuarioProveedor) {
-                     UsuarioActualizarEnProveedor(res, datos, usuario.idUsuarioProveedor)
-                 } else {
-                     UsuarioRegistrarEnProveedor(res, object.usuario_id, datos, object.conektaTokenId, object.planid);
-                 }
-             }
-         }).catch(function (err) {
-             console.log(err);
-         });
-     }).catch(function (err) {
-         console.log(err);
-     });
+        //Validar que exista el usuario en registro cargo
+        models.UsuarioCargo.findOne({
+            where: { medico_id: object.usuario_id }
+        }).then(function (usuario) {
+            if (usuario) {
+                if (usuario.idUsuarioProveedor) {
+                    UsuarioActualizarEnProveedor(res, datos, usuario.idUsuarioProveedor)
+                } else {
+                    RegistrarUsuarioEnProveedor(res, object.usuario_id, datos, object.conektaTokenId, object.planid);
+                }
+            } else {
+                models.UsuarioCargo.create({
+                    medico_id: object.usuario_id,
+                    plandecargo_id: object.planid
+                }).then(function (usuariocargoregistrado) {
+                    if (usuariocargoregistrado) {
+                        RegistrarUsuarioEnProveedor(res, object.usuario_id, datos, object.conektaTokenId, object.planid);
+                    }
+                }).catch(function (err) {
+                    console.log(err);
+                });
+            }
+        }).catch(function (err) {
+            console.log(err);
+        });
+    }).catch(function (err) {
+        console.log(err);
+    });
 }
 
-function UsuarioRegistrarEnProveedor(res, usuario_id, datos, conektaTokenId, planid) {
-    //Registrar Usuario con proveedor      
-    conekta.Customer.create({
-        "name": datos.DatosGenerale.nombre + ' ' + datos.DatosGenerale.apellidoP + ' ' + datos.DatosGenerale.apellidoM,
-        "email": datos.correo,
-        //"phone": "55-5555-5555",
-        "cards": [conektaTokenId],
-        "billing_address": {
-            "tax_id": datos.DatosFacturacion.RFC,
-            "company_name": datos.DatosFacturacion.razonSocial,
-            "street1": datos.DatosFacturacion.Direccion.calle,
-            "external_number": datos.DatosFacturacion.Direccion.numero,
-            "street3": datos.DatosFacturacion.Direccion.Localidad.localidad,
-            "city": datos.DatosFacturacion.Direccion.Localidad.Municipio.municipio,
-            "state": datos.DatosFacturacion.Direccion.Localidad.Estado.estado,
-            "zip": datos.DatosFacturacion.Direccion.Localidad.cp
-        }
-    }, function (err, resultado) {
-        if (err) {
-            console.log(err.message_to_purchaser);
-        } else {
-            UsuarioGuardarIdProveedor(usuario_id, resultado.toObject().id);
-            UsuarioGuardarTarjeta(usuario_id, resultado.toObject().cards[0]);
-            RegitrarSuscripcionEnProveedor(usuario_id, resultado.toObject().id, planid);
-            console.log('cliente registrado en proveedor');
 
-            res.render('registrado', {
-                title: 'Registrado'
-            });
+function RegistrarUsuarioEnProveedor(res, usuario_id, datos, conektaTokenId, planid) {
+    //Obtener el id del plan
+    models.PlanDeCargo.findOne({
+        where: { id: planid }
+    }).then(function (plan) {
+      console.log(plan);
+        //registra en proveedor
+        conekta.Customer.create({
+            "name": datos.DatosGenerale.nombre + ' ' + datos.DatosGenerale.apellidoP + ' ' + datos.DatosGenerale.apellidoM,
+            "email": datos.correo,
+            //"phone": "55-5555-5555",
+            "cards": [conektaTokenId],
+            "plan": plan.idproveedor,
+            "billing_address": {
+                "tax_id": datos.DatosFacturacion.RFC,
+                "company_name": datos.DatosFacturacion.razonSocial,
+                "street1": datos.DatosFacturacion.Direccion.calle,
+                "external_number": datos.DatosFacturacion.Direccion.numero,
+                "street3": datos.DatosFacturacion.Direccion.Localidad.localidad,
+                "city": datos.DatosFacturacion.Direccion.Localidad.Municipio.municipio,
+                "state": datos.DatosFacturacion.Direccion.Localidad.Estado.estado,
+                "zip": datos.DatosFacturacion.Direccion.Localidad.cp
+            }
+        }, function (err, resultado) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(resultado.toObject());
+                UsuarioGuardarDatosProveedor(usuario_id, resultado.toObject().id, planid, resultado.subscription.toObject().created_at, resultado.subscription.toObject().subscription_start);
+                UsuarioGuardarTarjeta(usuario_id, resultado.toObject().cards[0]);
+
+                console.log('cliente registrado en proveedor');
+
+                res.render('registrado', {
+                    title: 'Registrado'
+                });
+            }
+        });
+    }).catch(function (err) {
+        console.log('error al obtener el id del intervalo cargo');
+    });
+}
+
+function UsuarioGuardarDatosProveedor(idUsuario, idUsuarioProveedor, planid, fechaAlta, fechaProximoDescuento) {
+    var _fechaAlta = new Date(fechaAlta * 1000);
+    var _fechaProximoDescuento = new Date(fechaProximoDescuento * 1000);
+    console.log(_fechaAlta);
+    console.log(_fechaProximoDescuento);
+
+    models.UsuarioCargo.update({
+        idUsuarioProveedor: idUsuarioProveedor,
+        planDeCargo_id: planid,
+        fechaAlta: _fechaAlta,
+        fechaProximoDescuento: _fechaProximoDescuento
+    }, {
+        where: { medico_id: idUsuario }
+    })
+}
+
+function UsuarioGuardarTarjeta(idUsuario, tarjetaProveedor) {
+    models.UsuarioTarjeta.findOne({
+        where: { idTarjetaProveedor: tarjetaProveedor.id }
+    }).then(function (tarjeta) {
+        if (!tarjeta) {
+            models.UsuarioTarjeta.create({
+                medico_id: idUsuario,
+                idTarjetaProveedor: tarjetaProveedor.id,
+                ultimosDigitos: tarjetaProveedor.last4
+            })
         }
+    }).catch(function (err) {
+        console.log('error al registrar tarjeta del usuario');
     });
 }
 
@@ -365,29 +408,9 @@ function UsuarioActualizarEnProveedor(res, datos, idUsuarioProveedor, conektaTok
     });
 }
 
-function UsuarioGuardarIdProveedor(idUsuario, idUsuarioProveedor) {
-    models.UsuarioCargo.update({
-        idUsuarioProveedor: idUsuarioProveedor
-    }, {
-        where: { medico_id: idUsuario }
-    })
-}
 
-function UsuarioGuardarTarjeta(idUsuario, tarjetaProveedor) {
-    models.UsuarioTarjeta.findOne({
-        where: { idTarjetaProveedor: tarjetaProveedor.id }
-    }).then(function (tarjeta) {
-        if (!tarjeta) {
-            models.UsuarioTarjeta.create({
-                medico_id: idUsuario,
-                idTarjetaProveedor: tarjetaProveedor.id,
-                ultimosDigitos: tarjetaProveedor.last4
-            })
-        }
-    }).catch(function (err) {
-        console.log('error al registrar tarjeta del usuario');
-    });
-}
+
+
 
 function RegitrarSuscripcionEnProveedor(idUsuario, idUsuarioProveedor, planid) {
     models.PlanDeCargo.findOne({
@@ -451,7 +474,7 @@ exports.PlanCargoDatosRegistro = function (object, req, res) {
     });
 }
 
-//Planes son plantillas que te permiten crear suscripciones. 
+//Planes son plantillas que te permiten crear suscripciones.
 //Dentro del plan se define la cantidad y frecuencia con el cual se generaran los cobros recurrentes a los usuarios
 exports.PlanCargoRegistrar = function (object, req, res) {
     models.IntervaloCargo.findOne({
@@ -469,7 +492,7 @@ exports.PlanCargoRegistrar = function (object, req, res) {
 }
 
 function PlanCargoCrear(res, object, intervaloId, intervaloDescripcion) {
-    //registrar plan en conecta        
+    //registrar plan en conecta
     conekta.Plan.create({
         //"id": plan.idpublico,
         "name": object.nombre,
@@ -513,17 +536,17 @@ function PlanCargoActualizar(res, object, intervaloId, intervaloDescripcion) {
         periodoprueba: object.periodoprueba
     },
        {
-           where: {
-               id: object.idPlan
-           }
-       }
+        where: {
+            id: object.idPlan
+        }
+    }
     ).then(function (datos) {
         console.log(datos);
         models.PlanDeCargo.findOne({
             where: { id: object.idPlan },
             attributes: ['idproveedor']
         }).then(function (plan) {
-            //actualizar plan en conekta        
+            //actualizar plan en conekta
             conekta.Plan.find(plan.idproveedor, function (err, plan) {
                 if (err) {
                     console.log(err);
