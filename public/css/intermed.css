@@ -2294,7 +2294,7 @@ ol.sortable,ol.sortable ol {
 }
 
 .eventCalRemove{
-  font-size: 150%;
+  font-size: 15px;
   color: black;
   margin-top: 5px;
 }
@@ -2406,4 +2406,272 @@ div.Slider{
 
 .Intermed-Bootbox .modal-footer button{
   min-width: 100px;
+}
+
+/*Menu registra ubicaciones*/
+
+.menuRegUbic{
+  padding:0px;
+  /*width: 100%;*/
+  display: block;
+  margin: -15px;
+  margin-bottom: 0px;
+}
+
+.menuRegUbic li{
+  text-align: center;
+  font-weight: bold;
+  width:1%;
+  margin:0px;
+  border-radius: 0px;
+  background-color:#4F606A;
+  display: table-cell;
+  float: none;
+  border: solid 2px white;
+}
+
+.menuRegUbic li a {
+  color: white;
+  margin:0px;
+  border-radius: 0px 0px 0 0!important;
+}
+
+.menuRegUbic li a hr{
+  display: none;
+  padding: 0px;
+  margin: 0px;
+  position: relative;
+  margin-bottom: -10px;
+  margin-top: 10px;
+  margin-left: -3px;
+  border: solid 1px white;
+  margin-right: -3px;
+}
+
+.menuRegUbic li.active a hr{
+  display: block;
+}
+
+.menuRegUbic li.active a,
+.menuRegUbic li.active a:focus,
+.menuRegUbic li.active a:hover,
+.menuRegUbic li a:hover{
+  background-color:#50A8DE;
+  color:white!important;
+  border: 0px!important;
+  border-bottom: 0px!important;
+}
+
+.menuRegUbic li.active{
+  background-color:#50A8DE;
+  border-bottom: none;
+}
+
+.regExp{
+  background-color:#50A8DE;
+  text-align: center;
+  padding: 30px;
+  min-height: 80px;
+  margin-top: -2px;
+}
+
+.btn-save-reg{
+  font-weight: bold;
+  height: 65px;
+  border-radius: 15px;
+  background-color: #50A8DE;
+  border-color: transparent;
+  font-size: 150%;
+}
+
+#divCalendario.regHorMed .fc-widget-content .fc-time-grid-container{
+  height: auto!important;
+}
+
+#divCalendario.regHorMed div.fc-content-skeleton table{
+  height: 1500px;
+}
+
+#divCalendario.regHorMed div.fc-content-skeleton table tr td{
+  border: solid 5px #6A808E!important;
+}
+
+#divCalendario.regHorMed .fc-slats td.fc-widget-content{
+  background-color: #2F424F;
+}
+
+#divCalendario.regHorMed .fc-slats td.fc-time,
+#divCalendario.regHorMed thead {
+    background-color: transparent;
+    color: white;
+    border: none;
+}
+
+#divCalendario.regHorMed thead th,
+#divCalendario.regHorMed thead td,
+#divCalendario.regHorMed .fc-slats td.fc-time,
+#divCalendario.regHorMed td.fc-widget-content
+{
+    border: none;
+}
+
+#divCalendario.regHorMed div.fc-slats td.fc-widget-content{
+  height: 10px;
+}
+
+#divCalendario.regHorMed div.fc-slats td.fc-widget-content:not(.fc-time){
+  border: solid 2px #6A808E!important;
+}
+
+#divCalendario.regHorMed .fc-body{
+  background-color: transparent;
+}
+
+#divCalendario.regHorMed div.fc-event-container{
+  margin-top: -6px;
+  height: 1px;
+  width: 100%;
+  margin-left: 0px;
+}
+
+#divCalendario.regHorMed div.fc-event-container a.fc-time-grid-event,
+#divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg{
+  background-color: rgb(255,149,0);
+  background-image: url('../img/plataforma/agenda-bg.png');
+  background-position: top;
+  background-repeat: repeat-y;
+  background-size: 100% 27px;
+}
+
+th.fc-day-header.fc-widget-header{
+  text-transform: uppercase;
+  padding-bottom: 10px;
+}
+
+.inputTransparent{
+  background-color: transparent;
+  border: 0px;
+  border-radius: 0;
+  box-shadow: 0 0 0;
+  color:white;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.inputTransparent:focus{
+  background-color: transparent;
+  border: 0px;
+  border-radius: 0;
+  box-shadow: 0 0 0;
+}
+
+.tab-pane:not(.active){
+  visibility: hidden;
+}
+
+.regSectionTitle{
+  font-size: 20px;
+  padding: 11px;
+  background-color: #172C3B;
+  margin: 10px;
+  margin-top: 20px;
+}
+
+.regSectionTitle .glyphicon{
+  background-color: white;
+  color: #172C3B;
+  padding: 8px;
+  padding-left: 9px;
+  font-weight: lighter;
+  border-radius: 18px;
+  font-size: 79%;
+  margin-right: 15px;
+}
+
+.regSectionTitle .glyphicon.glyphicon-pencil{
+  border-radius: 5px;
+  background-color: transparent;
+  border: solid 3px white;
+  color: white;
+  padding: 11px;
+  font-size: 23px;
+}
+
+.regSectionTitle .glyphicon.glyphicon-pencil:before {
+    content: "\270f";
+    position: absolute;
+    top: -8px;
+    right: -8px;
+}
+
+.regInput{
+  border-radius: 9px;
+}
+
+label.regInput{
+  padding-left: 6px;
+}
+
+button.regInput{
+  background-color: #50A8DE;
+  border: none;
+}
+
+button.regInput.btn-danger{
+  background-color: #E74000;
+  border: none;
+}
+
+span.borderCircle{
+  border: solid 2px white;
+  padding: 4px;
+  padding-left: 9px;
+  padding-right: 9px;
+  padding-top: 8px;
+  border-radius: 17px;
+  font-size: 80%;
+  margin-right: 20px;
+}
+
+.divActionsUbic>div.action{
+  font-weight: bold;
+  text-align: center;
+  color:white;
+  padding: 20px;
+  border-top: solid 3px #FFF;
+  border-bottom: solid 3px #FFF;
+  height: 65px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+div.action-All{
+  background-color: #FF9600;
+}
+
+div.action-Busy{
+  background-color: #30424F;
+}
+
+div.action-Office{
+  background-color: #3D5A6E;
+}
+
+div.action-All>.glyphicon{
+  margin-top: -15px;
+  margin-bottom: -10px;
+  font-weight: lighter;
+  margin-right: 15px;
+  border-radius: 5px;
+  background-color: transparent;
+  border: solid 3px white;
+  color: white;
+  padding: 11px;
+  font-size: 25px;
+}
+
+div.action-All>.glyphicon:before {
+    position: absolute;
+    top: -5px;
+    right: -6px;
 }

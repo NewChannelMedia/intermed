@@ -208,9 +208,12 @@ module.exports = {
                             medico['MedicoAseguradoras'] = aseguradora;
                             var vista = '/nuevoPerfilMedicos';
                             if (req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
-                              vista = '/registro';
+                              vista = '/registro_1';
                               tipoUsuario = 'medico';
-                            } else if (req.session.passport.user.status == 3 && req.session.passport.user.tipoUsuario == "M"){
+                            } else if (req.session.passport.user.status == -1 && req.session.passport.user.tipoUsuario == "M"){
+                              vista = '/registro_2';
+                              tipoUsuario = 'medico';
+                            }  else if (req.session.passport.user.status == 3 && req.session.passport.user.tipoUsuario == "M"){
                               vista = '/cambioCedula';
                               tipoUsuario = 'medico';
                             } else if (req.session.passport.user.status == 4 && req.session.passport.user.tipoUsuario == "M"){
@@ -601,9 +604,12 @@ function armarPerfilNuevo( usuario, req, res ) {
                       if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
                         vista = '/vistaPerfilNoRegistrado';
                       } else if (req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
-                        vista = '/registro';
+                        vista = '/registro_1';
                         tipoUsuario = 'medico';
-                      } else if (req.session.passport.user.status == 3 && req.session.passport.user.tipoUsuario == "M"){
+                      } else if (req.session.passport.user.status == -1 && req.session.passport.user.tipoUsuario == "M"){
+                        vista = '/registro_2';
+                        tipoUsuario = 'medico';
+                      }  else if (req.session.passport.user.status == 3 && req.session.passport.user.tipoUsuario == "M"){
                         vista = '/cambioCedula';
                         tipoUsuario = 'medico';
                       } else if (req.session.passport.user.status == 4 && req.session.passport.user.tipoUsuario == "M"){
@@ -624,7 +630,10 @@ function armarPerfilNuevo( usuario, req, res ) {
       if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
         vista = '/vistaPerfilNoRegistrado';
       } else if (req.session.passport.user && req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
-        vista = '/registro';
+        vista = '/registro_1';
+        tipoUsuario = 'medico';
+      } else if (req.session.passport.user.status == -1 && req.session.passport.user.tipoUsuario == "M"){
+        vista = '/registro_2';
         tipoUsuario = 'medico';
       } else if (req.session.passport.user.status == 3 && req.session.passport.user.tipoUsuario == "M"){
         vista = '/cambioCedula';

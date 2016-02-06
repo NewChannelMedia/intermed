@@ -2,7 +2,7 @@ var eventos = [];
 var fechaInicio = '2015-11-02';
 
 $(document).ready(function () {
-  if ($('#horariosUbi').length>0){
+  if ($('#horariosUbi').length>0 && $('#horariosUbi').val()){
 
     var valido = true;
     var eventos = JSON.parse($('#horariosUbi').val());
@@ -28,7 +28,7 @@ $(document).ready(function () {
         //    dow: [0, 1, 2, 3, 4, 5, 6]
         //},
         minTime: '8:00',
-        maxTime: '19:00',
+        maxTime: '21:00',
         lang: 'es',
         events: eventos,
         defaultDate: fechaInicio,
@@ -94,7 +94,7 @@ $(document).ready(function () {
 });
 
 
-function obtenerHorariosAgenda() {
+function obtenerHorariosAgenda(direccion_id) {
     var objhorarios = [];
     var h = $('#divCalendario').fullCalendar('clientEvents');
     var evento;
@@ -103,6 +103,12 @@ function obtenerHorariosAgenda() {
     var fin = new moment();
 
     objhorarios = [];
+    if (parseInt(direccion_id<=0)){
+      direccion_id = $('#idDireccion').val();
+    }
+
+    var h = sortEvents(h);
+
     for (i = 0; i <= h.length - 1; i++) {
         evento = h[i];
 
@@ -111,15 +117,29 @@ function obtenerHorariosAgenda() {
 
         fin.hours(evento.end._d.getUTCHours());
         fin.minute(evento.end._d.getUTCMinutes());
+        var total = objhorarios.length;
 
-        var horario = {
-            direccion_id: $('#idDireccion').val(),
-            dia: evento.start._d.getDay(),
-            horaInicio: inicio.format('HH:mm'),
-            horaFin: fin.format('HH:mm')
-        };
+        console.log('____________');
 
-        objhorarios.push(horario);
+        if (objhorarios.length){
+          console.log('DAY: ' + objhorarios[total-1].dia);
+          console.log('DAY: ' + evento.start._d.getDay());
+          console.log('Hora Fin: ' + objhorarios[total-1].horaFin);
+          console.log('Hora Inicio: ' + inicio.format('HH:mm'));
+        }
+
+        if (objhorarios.length>0 && evento.start._d.getDay() == objhorarios[total-1].dia && inicio.format('HH:mm') == objhorarios[total-1].horaFin){
+          objhorarios[total-1].horaFin = fin.format('HH:mm');
+        } else {
+          var horario = {
+              direccion_id: direccion_id,
+              dia: evento.start._d.getDay(),
+              horaInicio: inicio.format('HH:mm'),
+              horaFin: fin.format('HH:mm')
+          };
+          objhorarios.push(horario);
+        }
+
     };
     return objhorarios;
 };
@@ -149,19 +169,20 @@ function iniciarCalendario(eventos){
       //    dow: [0, 1, 2, 3, 4, 5, 6]
       //},
       minTime: '8:00',
-      maxTime: '19:00',
+      maxTime: '21:00',
       lang: 'es',
       //events: eventos,
       events: eventos,
       defaultDate: fechaInicio,
       selectable: true,
+      eventOrder: 'start',
       selectHelper: true,
       displayEventTime: false,
       eventOverlap:false,
       select: function (start, end) {
           var eventData;
           if (start.format('DMYYYY') != end.format('DMYYYY')) {
-              alert('fechas distintas');
+              //alert('fechas distintas');
               valido = false;
           } else {
               valido = true;
@@ -920,4 +941,65 @@ function cancelarCitaPorPaciente(eventid){
       }
     }
   });
+}
+
+function calendarSeleccionarTodo(){
+  calendarSeleccionarNada();
+  var d = new Date(formatearTimestampAgenda($('#divCalendario').fullCalendar('getView').start));
+
+  var year = d.getFullYear();
+  var month = d.getMonth();
+  var day = d.getDate();
+
+  for (var i = 0; i < 6; i++) {
+    var dateStart = new Date(year, month, day+i, 7, 0, 0, 0);
+    var dateEnd = new Date(year, month, day+i, 21, 0, 0, 0);
+    eventData = {
+      "start":dateStart.toLocaleString(),
+      "end":dateEnd.toLocaleString()
+    }
+    $('#divCalendario').fullCalendar('renderEvent', eventData, true);
+  }
+}
+
+function calendarSeleccionarNada(){
+  var calendario = $('#divCalendario').fullCalendar('removeEvents');
+}
+
+function calendarHorarioOficina(){
+    calendarSeleccionarNada();
+    var d = new Date(formatearTimestampAgenda($('#divCalendario').fullCalendar('getView').start));
+
+    var year = d.getFullYear();
+    var month = d.getMonth();
+    var day = d.getDate();
+
+    for (var i = 0; i < 5; i++) {
+      var dateStart = new Date(year, month, day+i, 9, 0, 0, 0);
+      var dateEnd = new Date(year, month, day+i, 14, 0, 0, 0);
+      eventData = {
+        "start":dateStart.toLocaleString(),
+        "end":dateEnd.toLocaleString()
+      }
+      $('#divCalendario').fullCalendar('renderEvent', eventData, true);
+
+
+      var dateStart = new Date(year, month, day+i, 16, 0, 0, 0);
+      var dateEnd = new Date(year, month, day+i, 19, 0, 0, 0);
+      eventData = {
+        "start":dateStart.toLocaleString(),
+        "end":dateEnd.toLocaleString()
+      }
+      $('#divCalendario').fullCalendar('renderEvent', eventData, true);
+    }
+}
+
+function sortEvents(a, b) {
+  index = 0;
+  if (a[index] === b[index]) {
+      return index;
+  }
+  else {
+      return (a[index] < b[index]) ? -1 : 1;
+  }
 }

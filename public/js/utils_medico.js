@@ -127,6 +127,13 @@ $( document ).ready( function () {
         }
       });
       loadEspecialidades();
+  } else if ($('#divMapRegHor').length>0){
+    cargarMapa(0);
+    cargarTelefonos();
+    funcionesTelefonos();
+    obtenerDirecciones();
+
+    checkUbicMinConf();
   }
 
   if ( $( "#tarjetaOptReg" ).is( ":checked" ) ) {
@@ -480,9 +487,8 @@ function saveStepTwo() {
     dataType: "json",
     cache: false,
     success: function ( data ) {
-      if ( data.result === "success" ) {
-        actualizarSesion();
-        bootbox.hideAll();
+      if ( data.success) {
+        actualizarSesion(true);
       }
     },
     error: function ( jqXHR, textStatus, err ) {
@@ -798,7 +804,10 @@ function regUbicacion(salir) {
     latitud = $('#latitud').val();
     longitud = $('#longitud').val();
 
-    ubicacion_id = $('#idDireccion').val();
+    var ubicacion_id = '';
+    if ($('#idDireccion').length>0 && $('#idDireccion').val()!=""){
+      ubicacion_id = $('#idDireccion').val();
+    }
 
     UbicData = {
       idDireccion: ubicacion_id,
@@ -877,33 +886,48 @@ function regUbicacion(salir) {
             type: 'POST',
             success: function (data) {
               if (data.success){
-                $('#idDireccion').val(data.ubicacion_id);
-                $('#btnEliminar').removeClass('hidden');
-                $('#btnGuardarSalir').addClass('hidden');
-                $('#btnGuardar').val('Editar');
-                $('#btnGuardar').parent().parent().addClass('pull-right');
-                //Telefonos
-                $('#addFon').val('Añadir');
-                $('#tipoTelefono').prop('selectedIndex', 0);
-                $('#tipoTelefono').change();
-
-                $('#btnGuardar').val('Editar');
-                $("#frmRegUbi :input").prop('disabled', true);
-                $('#frmRegUbi :button #addFon').prop('disabled', true);
-                $("#frmRegUbi :button").prop('disabled', false);
-                $("#frmRegUbi #btnGuardarSalir").addClass('hidden');
-                mapa.marker.setOptions({draggable: false,animation:null});
-                cargarTelefonos();
-                actualizarDirecciones();
-                if (salir){
-                  bootbox.hideAll();
+                if ($('#alertRegUbi').length>0){
+                  $('#alertRegUbi').html('Tu ubicación <b>'+ UbicData.nombreUbi +'</b> ha sido agrega, puedes agregar otra si gustas.');
+                  var ubic = '<option value="'+ data.datos.id +'">'+ data.datos.nombre +' '+ data.datos.calle + ' #' + data.datos.numero +'</option>';
+                  if ($('.UbicHidden').hasClass('hidden')){
+                    $('.UbicHidden').removeClass('hidden');
+                    $('.slc_ubicReg').html(ubic);
+                    cargarServicios($('#slc_servicios_ubi'));
+                    cargarHorario($('#slc_horarios_ubi'));
+                  }else {
+                    $('.slc_ubicReg').append(ubic);
+                  }
+                  resetearFormRegUbi();
                 } else {
-                  $('.menuBootbox').find('li.ubicaciones').removeClass('active');
-                  $('.menuBootbox').find('li.servicios').addClass('active');
-                  $('#divUbicacion').removeClass('in');
-                  $('#divUbicacion').removeClass('active');
-                  $('#divServicios').addClass('in');
-                  $('#divServicios').addClass('active');
+
+                  $('#idDireccion').val(data.ubicacion_id);
+                  $('#btnEliminar').removeClass('hidden');
+                  $('#btnGuardarSalir').addClass('hidden');
+                  $('#btnGuardar').val('Editar');
+                  $('#btnGuardar').parent().parent().addClass('pull-right');
+                  //Telefonos
+                  $('#addFon').val('Añadir');
+                  $('#tipoTelefono').prop('selectedIndex', 0);
+                  $('#tipoTelefono').change();
+
+                  $('#btnGuardar').val('Editar');
+                  $("#frmRegUbi :input").prop('disabled', true);
+                  $('#frmRegUbi :button #addFon').prop('disabled', true);
+                  $("#frmRegUbi :button").prop('disabled', false);
+                  $("#frmRegUbi #btnGuardarSalir").addClass('hidden');
+                  mapa.marker.setOptions({draggable: false,animation:null});
+                  cargarTelefonos();
+                  actualizarDirecciones();
+                  if (salir){
+                    bootbox.hideAll();
+                  } else {
+                    $('.menuBootbox').find('li.ubicaciones').removeClass('active');
+                    $('.menuBootbox').find('li.servicios').addClass('active');
+                    $('#divUbicacion').removeClass('in');
+                    $('#divUbicacion').removeClass('active');
+                    $('#divServicios').addClass('in');
+                    $('#divServicios').addClass('active');
+                  }
 
                 }
               } else {
@@ -924,10 +948,10 @@ function regUbicacion(salir) {
     }
 }
 //Registrar Ubicacion
-function regHorarios() {
+function regHorarios(direccion_id) {
     if (regHorariosValid() == true) {
         //agregar horarios al control
-        $('#horariosUbi').val(JSON.stringify(obtenerHorariosAgenda()));
+        $('#horariosUbi').val(JSON.stringify(obtenerHorariosAgenda(direccion_id)));
 
         $.ajax({
             url: '/registrarhorarios',
@@ -944,6 +968,7 @@ function regHorarios() {
                       manejadorDeErrores(data.error);
                   }
                 }
+                checkUbicMinConf();
             },
             error: function (jqXHR, textStatus, err) {
                 console.error('AJAX ERROR: (registro 166) : ' + err + ' ' + textStatus);
@@ -2591,4 +2616,320 @@ function guardarCedula(){
 		}
 	});
   return false;
+}
+
+function resetearFormRegUbi() {
+  $('#frmRegUbi')[0].reset();
+  mapa.marker = null;
+  $('#slc_estados_mapa').val('');
+  obtenerCiudades("_mapa");
+  cargarMapa(0);
+  cargarTelefonos();
+  funcionesTelefonos();
+  $('#nombreUbi').focus();
+}
+
+function obtenerDirecciones(){
+	$.ajax({
+		url: '/medicos/address/get',
+		type: 'POST',
+		dataType: "json",
+		cache: false,
+		type: 'POST',
+		success: function( data ) {
+      if (data.success){
+        var contenido = '';
+        if (data.result){
+          data.result.forEach(function(res){
+            contenido += '<option value="'+ res.id +'"><b>'+ res.nombre +'</b> '+ res.calle +' #'+ res.numero +'</option>';
+          });
+          if (data.result.length>0){
+            $('#alertRegUbi').text('Ya has registrado ubicaciones, puedes registrar una nueva o continuar con la edición de servicios y horarios.');
+            $('.slc_ubicReg').html(contenido);
+            $('.UbicHidden').removeClass('hidden');
+          } else {
+            $('#alertRegUbi').text('Debes de registrar por lo menos una ubicación.');
+            $('.UbicHidden').addClass('hidden');
+          }
+        }else {
+          $('#alertRegUbi').text('Debes de registrar por lo menos una ubicación.');
+          $('.UbicHidden').addClass('hidden');
+        }
+      } else if (data.error){
+        manejadorDeErrores(data.error);
+      }
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+		}
+	});
+}
+
+function cargarServicios(element){
+  var direccion_id = $(element).val();
+	$.ajax({
+		url: '/medicos/serv/getByAddr',
+		type: 'POST',
+		dataType: "json",
+    data: {'direccion_id': direccion_id},
+		cache: false,
+		type: 'POST',
+		success: function( data ) {
+      if (data.success){
+        if (data.result){
+          $('#ServListReg').html('');
+          data.result.forEach(function(res){
+            var contenido = `
+            <div class="col-lg-12">
+              <form method="POST" onsubmit="return guardarServicio('frmRegServ-`+ res.id +`');" id="frmRegServ-`+ res.id +`">
+                <input type="hidden" name="servicio_id" value="`+res.id+`">
+                <div class="col-md-3">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <label class="whiteF regInput">Concepto.</label>
+                    </div>
+                    <div class="col-md-12">
+                      <input type="text" class="form-control regInput" id="conceptServ" name="concepto" required="required" value="`+res.concepto+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <label class="whiteF regInput">Descripción.</label>
+                    </div>
+                    <div class="col-md-12">
+                      <input type="text" class="form-control regInput" id="decriptServ" name="descripcion" required="required" value="`+res.descripcion+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <label class="whiteF regInput">Costo.</label>
+                    </div>
+                    <div class="col-md-12">
+                      <input type="text" class="form-control regInput" id="precServ" name="precio" required="required" value="`+res.precio+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <label class="whiteF regInput">Duración.</label>
+                    </div>
+                    <div class="col-md-12">
+                      <select id="duraServ" class="form-control regInput" name="duracion" required="required" onChange="$('#frmRegServ-`+ res.id +`').submit()">
+                        <option value="" selected disabled>Selecciona</option>
+                        <option value="00:30:00">30 minutos</option>
+                        <option value="00:45:00">1 hora</option>
+                        <option value="01:30:00">1 hora y 30 minutos</option>
+                        <option value="02:00:00">2 horas</option>
+                        <option value="02:30:00">2 horas y 30 minutos</option>
+                        <option value="03:00:00">3 horas</option>
+                        <option value="03:30:00">3 horas y 30 minutos</option>
+                        <option value="04:00:00">4 horas</option>
+                        <option value="04:30:00">4 horas y 30 minutos</option>
+                        <option value="05:00:00">5 horas</option>
+                        <option value="05:30:00">5 horas y 30 minutos</option>
+                        <option value="06:00:00">6 horas</option>
+                        <option value="06:30:00">6 horas y 30 minutos</option>
+                        <option value="07:00:00">7 horas</option>
+                        <option value="07:30:00">7 horas y 30 minutos</option>
+                        <option value="08:00:00">8 horas</option>
+                        <option value="08:30:00">8 horas y 30 minutos</option>
+                        <option value="09:00:00">9 horas</option>
+                        <option value="09:30:00">9 horas y 30 minutos</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-1">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <label class="whiteF">&nbsp;</label>
+                    </div>
+                    <div class="col-md-12">
+                      <button type="button" class="btn btn-danger regInput" onclick="eliminarServicio(`+ res.id +`)">
+                        <span style="color:white;" class="glyphicon glyphicon-minus"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>`;
+            $('#ServListReg').append(contenido);
+            $('#frmRegServ-'+ res.id +' [name="duracion"]').prop('value',res.duracion);
+          });
+        }
+      } else if (data.error){
+        manejadorDeErrores(data.error);
+      }
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+		}
+	});
+}
+
+function cargarHorario(element){
+  var direccion_id = $(element).val();
+  iniciarDivCalendario(direccion_id);
+}
+
+function guardarServicio(idElement){
+  var formData = $('#'+idElement).serializeArray();
+  var element = {};
+  formData.forEach(function(el){
+    element[el.name] = el.value;
+  });
+
+  element['direccion_id'] = $('#slc_servicios_ubi').val();
+
+	$.ajax({
+		url: '/medicos/serv/update',
+		type: 'POST',
+		dataType: "json",
+    data: element,
+		cache: false,
+		type: 'POST',
+		success: function( data ) {
+      if (data.success){
+        if (data.result){
+          $('#'+idElement)[0].reset();
+          var res = data.result;
+
+          var contenido = `
+          <div class="col-lg-12">
+            <form method="POST" onsubmit="return guardarServicio('frmRegServ-`+ res.id +`');" id="frmRegServ-`+ res.id +`">
+              <input type="hidden" name="servicio_id" value="`+res.id+`">
+              <div class="col-md-3">
+                <div class="row">
+                  <div class="col-md-12">
+                    <label class="whiteF regInput">Concepto.</label>
+                  </div>
+                  <div class="col-md-12">
+                    <input type="text" class="form-control regInput" id="conceptServ" name="concepto" required="required" value="`+res.concepto+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="row">
+                  <div class="col-md-12">
+                    <label class="whiteF regInput">Descripción.</label>
+                  </div>
+                  <div class="col-md-12">
+                    <input type="text" class="form-control regInput" id="decriptServ" name="descripcion" required="required" value="`+res.descripcion+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="row">
+                  <div class="col-md-12">
+                    <label class="whiteF regInput">Costo.</label>
+                  </div>
+                  <div class="col-md-12">
+                    <input type="text" class="form-control regInput" id="precServ" name="precio" required="required" value="`+res.precio+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="row">
+                  <div class="col-md-12">
+                    <label class="whiteF regInput">Duración.</label>
+                  </div>
+                  <div class="col-md-12">
+                    <select id="duraServ" class="form-control regInput" name="duracion" required="required" onChange="$('#frmRegServ-`+ res.id +`').submit()">
+                      <option value="" selected disabled>Selecciona</option>
+                      <option value="00:30:00">30 minutos</option>
+                      <option value="00:45:00">1 hora</option>
+                      <option value="01:30:00">1 hora y 30 minutos</option>
+                      <option value="02:00:00">2 horas</option>
+                      <option value="02:30:00">2 horas y 30 minutos</option>
+                      <option value="03:00:00">3 horas</option>
+                      <option value="03:30:00">3 horas y 30 minutos</option>
+                      <option value="04:00:00">4 horas</option>
+                      <option value="04:30:00">4 horas y 30 minutos</option>
+                      <option value="05:00:00">5 horas</option>
+                      <option value="05:30:00">5 horas y 30 minutos</option>
+                      <option value="06:00:00">6 horas</option>
+                      <option value="06:30:00">6 horas y 30 minutos</option>
+                      <option value="07:00:00">7 horas</option>
+                      <option value="07:30:00">7 horas y 30 minutos</option>
+                      <option value="08:00:00">8 horas</option>
+                      <option value="08:30:00">8 horas y 30 minutos</option>
+                      <option value="09:00:00">9 horas</option>
+                      <option value="09:30:00">9 horas y 30 minutos</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-1">
+                <div class="row">
+                  <div class="col-md-12">
+                    <label class="whiteF">&nbsp;</label>
+                  </div>
+                  <div class="col-md-12">
+                    <button type="button" class="btn btn-danger regInput" onclick="eliminarServicio(`+ res.id +`)">
+                      <span style="color:white;" class="glyphicon glyphicon-minus" ></span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>`;
+          $('#ServListReg').append(contenido);
+          $('#frmRegServ-'+ res.id +' [name="duracion"]').prop('value',res.duracion);
+        }
+      } else if (data.error){
+        manejadorDeErrores(data.error);
+      }
+      checkUbicMinConf();
+		},
+		error: function( jqXHR, textStatus, err ) {
+			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+		}
+	});
+  return false;
+}
+
+function eliminarServicio(id){
+  	$.ajax({
+  		url: '/medicos/serv/drop',
+  		type: 'POST',
+  		dataType: "json",
+      data: {id: id},
+  		cache: false,
+  		type: 'POST',
+  		success: function( data ) {
+        if (data.success){
+          $('#frmRegServ-'+id).remove();
+        }
+        checkUbicMinConf();
+      },
+      error: function (err){
+  			console.error( 'AJAX ERROR: ' + err );
+      }
+    });
+}
+
+function checkUbicMinConf(){
+  	$.ajax({
+  		url: '/medicos/ubic/minconf',
+  		type: 'POST',
+  		dataType: "json",
+      data: {id: id},
+  		cache: false,
+  		type: 'POST',
+  		success: function( data ) {
+        if (data.success){
+          $('#btnEndReg').removeClass('hidden');
+        } else {
+          $('#btnEndReg').addClass('hidden');
+        }
+      },
+      error: function (err){
+  			console.error( 'AJAX ERROR: ' + err );
+      }
+    });
 }

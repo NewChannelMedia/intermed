@@ -389,7 +389,7 @@ var _this = module.exports = {
               }}).then(function(medicoCedula){
                 if (!medicoCedula){
                   models.Usuario.update({
-                    status: 2
+                    status: -1
                   },{
                     where: {
                       id: usuario_id
@@ -452,21 +452,21 @@ var _this = module.exports = {
   regMedPasoDos: function ( object, req, res ) {
     if ( req.session.passport.user && req.session.passport.user.tipoUsuario === "M" ) {
       var usuario_id = req.session.passport.user.id;
-      models.Medico.update( {
-        pago: 1
-      }, {
+      models.Usuario.update({
+        status: 1
+      },{
         where: {
-          usuario_id: usuario_id
+          id: usuario_id
         }
       } ).then( function ( result ) {
         res.send( {
-          'result': 'success'
+          'success': true
         } );
-      } )
+      } );
     }
     else {
       res.send( {
-        'result': 'error'
+        'success':false
       } );
     }
   },
@@ -1619,6 +1619,145 @@ var _this = module.exports = {
         error: 3
       });
     }
+  },
+
+  addressGet: function (object, req, res){
+    if (req.session.passport && req.session.passport.user){
+      models.Direccion.findAll({
+        where:{
+          usuario_id: req.session.passport.user.id
+        },
+        order: [['principal','DESC']],
+        attributes: ['id','nombre','principal','calle','numero']
+      }).then(function(ubicaciones){
+        res.status( 200 ).json( {
+          success: true,
+          result: ubicaciones
+        } );
+      });
+    }else {
+      res.status(200).json({
+        success: false,
+        error: 1
+      });
+    }
+  },
+
+  serbUpdate: function (object, req, res){
+    if (req.session.passport && req.session.passport.user){
+      if (object.servicio_id){
+        //Actualizar servicio
+        models.CatalogoServicios.update({
+          concepto: object.concepto,
+          descripcion: object.descripcion,
+          precio: parseFloat(object.precio),
+          duracion: object.duracion
+        },{
+          where: {
+            id: object.servicio_id
+          }
+        }).then(function(datos) {
+            res.status(200).json({success: true});
+        }).catch(function(err) {
+            res.status(500).json({error: err});
+        });
+      } else {
+        //Agregar nuevo servicio
+        models.CatalogoServicios.create({
+          concepto: object.concepto,
+          descripcion: object.descripcion,
+          precio: parseFloat(object.precio),
+          duracion: object.duracion,
+          usuario_id: req.session.passport.user.id,
+          direccion_id: object.direccion_id
+        }).then(function(datos) {
+            res.status(200).json({success: true, result: datos});
+        }).catch(function(err) {
+            res.status(500).json({error: err});
+        });
+      }
+    }else {
+      res.status(200).json({
+        success: false,
+        error: 1
+      });
+    }
+  },
+
+  serbGetByAddr: function (object, req, res){
+        if (req.session.passport && req.session.passport.user){
+          if (object.direccion_id){
+            models.CatalogoServicios.findAll({
+              where: {
+                direccion_id: object.direccion_id,
+                usuario_id: req.session.passport.user.id
+              }
+            }).then(function(datos) {
+                res.status(200).json({success: true, result: datos});
+            }).catch(function(err) {
+                res.status(500).json({error: err});
+            });
+          } else {
+              res.status(200).json({success: false});
+          }
+      }else {
+        res.status(200).json({
+          success: false,
+          error: 1
+        });
+      }
+  },
+
+  servDrop: function (object, req, res){
+      if (req.session.passport && req.session.passport.user){
+        if (object.id){
+          models.CatalogoServicios.destroy({
+            where: {
+              id: object.id
+            }
+          }).then(function(datos) {
+              res.status(200).json({success: true});
+          }).catch(function(err) {
+              res.status(500).json({error: err});
+          });
+        } else {
+            res.status(200).json({success: false});
+        }
+    }else {
+      res.status(200).json({
+        success: false,
+        error: 1
+      });
+    }
+  },
+
+  ubicMinConf: function (object, req, res){
+      if (req.session.passport && req.session.passport.user){
+        models.Direccion.findAll({
+          where: {
+            usuario_id: req.session.passport.user.id
+          },
+          include: [{
+            model: models.CatalogoServicios
+          },{
+            model: models.Horarios
+          }]
+        }).then(function(result){
+          var valido = false;
+          result.forEach(function(res){
+            if (res.CatalogoServicios.length>0 && res.Horarios.length>0){
+              valido = true;
+            }
+          });
+          res.status(200).json({success: valido, result: result});
+        });
+    }else {
+      res.status(200).json({
+        success: false,
+        error: 1
+      });
+    }
   }
+
 
 }
