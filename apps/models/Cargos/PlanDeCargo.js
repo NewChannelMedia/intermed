@@ -8,7 +8,7 @@ module.exports = function (sequelize, DataTypes) {
         intervalocargo_id: { type: DataTypes.INTEGER, allowNull: false },
         frecuencia: { type: DataTypes.INTEGER, allowNull: false },
         periodoprueba: { type: DataTypes.INTEGER, allowNull: false },
-        //idproveedor: { type: DataTypes.STRING }
+        idproveedor: { type: DataTypes.STRING }
     },
     {
         classMethods: {

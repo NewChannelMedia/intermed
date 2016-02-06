@@ -93,6 +93,24 @@ module.exports = function (object){
     }
   });
 
+  /* routers que cargan vista para cargos */
+  app.get('/registrarcargorecurrente', function (req, res) {
+    routeLife( 'plataforma2', 'main', hps );
+    intermed.callController('CargosUsuarios', 'RegistrarCargoRecurrenteDatos', req.body, req, res);
+  });
+  app.get('/ProcesarCargosClientes', function (req, res) {
+    routeLife( 'plataforma2', 'main', hps );
+    intermed.callController('CargosUsuarios', 'FormularioCobro', req, res);
+  });
+  app.get('/registrarnuevatarjeta', function (req, res) {
+    routeLife( 'plataforma2', 'main', hps );
+    intermed.callController('CargosUsuarios', 'RegistrarNuevaTarjetaDatos', req.body, req, res);
+  });
+  app.get('/registrarplancargo', function (req, res) {
+    routeLife( 'plataforma2', 'main', hps );
+    intermed.callController('CargosUsuarios', 'PlanCargoDatosRegistro', req.body, req, res);
+  });
+
   /*RUTA CARGAR PERFIL (DEJAR SIEMPRE AL FINAL)*/
   /*Dejando al final se evita que cada que se entre al router se haga una consulta para ver si se trata de un usuario*/
   app.get( '/:usuario', function ( req, res, next) {
