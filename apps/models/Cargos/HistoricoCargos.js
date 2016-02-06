@@ -3,8 +3,9 @@
 module.exports = function (sequelize, DataTypes) {
     var HistoricoCargos = sequelize.define("HistoricoCargos", {
         id: { type: DataTypes.BIGINT, autoIncrement: true, primaryKey: true },
-        usuariocargo_id: { type: DataTypes.BIGINT },
-        fecha: { type: DataTypes.DATE, allowNull: false },
+        usuariocargo_id: { type: DataTypes.BIGINT },        
+        fechaRegistro: { type: DataTypes.DATE, allowNull: false },
+        periodoPago: { type: DataTypes.DATE, allowNull: false },
         monto: { type: DataTypes.DOUBLE, allowNull: false }
     },
     {
@@ -14,6 +15,6 @@ module.exports = function (sequelize, DataTypes) {
         freezeTableName: true,
         tableName: 'historicocargos'
     });
-
+    
     return HistoricoCargos;
 };

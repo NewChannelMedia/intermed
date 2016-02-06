@@ -1477,7 +1477,19 @@ var iniciar = function () {
       intermed.callController('contactos','deleteFon',req, res);
     });
 
-    //rutas Para Cargos
+    //rutas Para Cargos    
+
+    //Registrar cargo recurrente
+    app.get('/registrarcargorecurrente', function (req, res) {
+        intermed.callController('CargosUsuarios', 'RegistrarCargoRecurrenteDatos', req.body, req, res);
+    });
+    
+    app.post('/registrarcargorecurrente', function (req, res) {
+        intermed.callController('CargosUsuarios', 'RegistrarCargoRecurrente', req.body, req, res);
+
+    });
+    
+
     app.get('/ProcesarCargosClientes', function (req, res) {        
         intermed.callController('CargosUsuarios', 'FormularioCobro', req, res);
     });
@@ -1486,13 +1498,9 @@ var iniciar = function () {
         intermed.callController('CargosUsuarios', 'ProcesarCargosClientes', req.body, req, res);
     });
 
-    app.get('/registrarusuariotarjeta', function (req, res) {
-        intermed.callController('CargosUsuarios', 'RegistrarUsuarioEnProveedorDatos', req.body, req, res);
-    });
+   
 
-    app.post('/registrarusuariotarjeta', function (req, res) {        
-        intermed.callController('CargosUsuarios', 'RegistrarUsuarioEnProveedor', req.body, req, res);
-    });
+   
 
 
     app.get('/registrarnuevatarjeta', function (req, res) {
