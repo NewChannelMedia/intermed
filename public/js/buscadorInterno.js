@@ -125,7 +125,7 @@ $(document).ready(function(){
         return false;
       },
       select: function( event, ui ) {
-        window.location.href = "167.160.162.251:4001/"+ui.item.url;
+        window.location.href = "http://167.160.162.251:4001/"+ui.item.url;
         return false;
       }
     })
@@ -219,7 +219,7 @@ $(document).ready(function(){
           return false;
         },
         select: function( event, ui ) {
-          window.location.href = "167.160.162.251:4001/"+ui.item.url;
+          window.location.href = "http://167.160.162.251:4001/"+ui.item.url;
           return false;
         }
       })

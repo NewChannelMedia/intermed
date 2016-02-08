@@ -3,7 +3,7 @@
  *
  */
 var regTotalDoc = 0;
-var base_url = '167.160.162.251:4001/';
+var base_url = 'http://167.160.162.251:4001/';
 var default_urlFotoPerfil = '/garage/profilepics/dpp.png';
 if ( location.pathname === '/registro' ) {
   $( document ).ready( getAllDoctors() );

@@ -6,7 +6,7 @@
  *	@version 0
  *	@date Tuesday, August 4,  2015
  */
-global.base_url = '167.160.162.251:4001/';
+global.base_url = 'http://167.160.162.251:4001/';
 
 
 var express = require( 'express' ),
