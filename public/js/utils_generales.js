@@ -1241,6 +1241,8 @@ $( document ).ready( function () {
 
     cargarListaEspCol( $( '#usuarioPerfil' ).val() );
 
+    cargarFormacionAcademica();
+
     cargarComentariosMedico();
 
     $('#buscadorEspecial').on('input',function(e){

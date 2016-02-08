@@ -2277,30 +2277,53 @@ function traerAseguradoras(){
         success: function (data) {
           if (data.success){
             var contenido = '';
-            data.result.forEach(function(res){
-              var anioInicio = new Date(res.fechaInicio).toLocaleDateString().split(' ')[0].split('/')[2];
-              var anioFin = '';
-              if (res.fechaFin && res.fechaFin != ""){
-                anioFin = new Date(res.fechaFin).toLocaleDateString().split(' ')[0].split('/')[2];
-              }
-              var anioGrado = '';
-              if (res.fechaTitulo && res.fechaTitulo != ""){
-                anioGrado = new Date(res.fechaTitulo).toLocaleDateString().split(' ')[0].split('/')[2];
-              }
+              if ($('#formacionAcademicaList').length>0){
+                data.result.forEach(function(res){
+                  var anioInicio = new Date(res.fechaInicio).toLocaleDateString().split(' ')[0].split('/')[2];
+                  var anioFin = '';
+                  if (res.fechaFin && res.fechaFin != ""){
+                    anioFin = new Date(res.fechaFin).toLocaleDateString().split(' ')[0].split('/')[2];
+                  }
+                  var anioGrado = '';
+                  if (res.fechaTitulo && res.fechaTitulo != ""){
+                    anioGrado = new Date(res.fechaTitulo).toLocaleDateString().split(' ')[0].split('/')[2];
+                  }
 
-              var clase = '';
+                  var clase = '';
 
-              if (res.actual == 1){
-                clase = " class='success' ";
+                  if (res.actual == 1){
+                    clase = " class='success' ";
+                  }
+
+                  contenido += '<tr ' + clase + '><td>'+res.lugarDeEstudio+'</td><td>'+res.especialidad+'</td><td>'+anioInicio+'</td>';
+                  contenido += '<td>'+anioFin+'</td>';
+                  contenido += '<td>'+anioGrado+'</td>';
+                  contenido += '<td><a style="color:green"><span class="glyphicon glyphicon-pencil" onclick="CambiarVisible(\'divListaFormacion\',\'divAddFormacion\','+ res.id +');"></span></a></td>';
+                  contenido += '<td><a style="color:red"><span class="glyphicon glyphicon-remove"></span></a></td></tr>';
+                });
+                $('#formacionAcademicaList').html(contenido);
+              } else {
+                data.result.forEach(function(res){
+                  var anioInicio = new Date(res.fechaInicio).toLocaleDateString().split(' ')[0].split('/')[2];
+                  var anioFin = '';
+                  if (res.fechaFin && res.fechaFin != ""){
+                    anioFin = new Date(res.fechaFin).toLocaleDateString().split(' ')[0].split('/')[2];
+                    anioFin = '<strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">'+anioFin+'</span><br>';
+                  }
+                  var anioGrado = '';
+                  if (res.fechaTitulo && res.fechaTitulo != ""){
+                    anioGrado = new Date(res.fechaTitulo).toLocaleDateString().split(' ')[0].split('/')[2];
+                    anioGrado = '<strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>';
+                  }
+
+                  contenido += '<p class="cv-element col-md-12 col-sm-12 col-xs-6">'+
+                    '<strong class="h85-heavy">Institución:</strong>&nbsp;<span class="h45-light">'+ res.lugarDeEstudio +'</span><br>'+
+                    '<strong class="h85-heavy">Especialidad:</strong>&nbsp;<span class="h45-light">'+res.especialidad+'</span><br>'+
+                    '<strong class="h85-heavy">Inicio:</strong>&nbsp;<span class="h45-light">'+anioInicio+'</span><br>'+ anioFin + anioGrado +
+                  '</p>';
+                });
+                $('#divFormAcad').html(contenido);
               }
-
-              contenido += '<tr ' + clase + '><td>'+res.lugarDeEstudio+'</td><td>'+res.especialidad+'</td><td>'+anioInicio+'</td>';
-              contenido += '<td>'+anioFin+'</td>';
-              contenido += '<td>'+anioGrado+'</td>';
-              contenido += '<td><a style="color:green"><span class="glyphicon glyphicon-pencil" onclick="CambiarVisible(\'divListaFormacion\',\'divAddFormacion\','+ res.id +');"></span></a></td>';
-              contenido += '<td><a style="color:red"><span class="glyphicon glyphicon-remove"></span></a></td></tr>';
-            });
-            $('#formacionAcademicaList').html(contenido);
           }else {
             if (data.error){
               manejadorDeErrores(data.error);
