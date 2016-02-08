@@ -7,7 +7,8 @@ var env = process.env.NODE_ENV || "development";
 var db = {};
 
 //var config    = require(__dirname + '/../config/config.json')[env];
-var main = new Sequelize( 'intermed', 'intermed', '', {
+//var main = new Sequelize( 'intermed', 'intermed', '', {
+var sequelizeMain = new Sequelize( 'intermed', 'intermed', '', {
   host: 'localhost',
   dialect: 'mysql',
   pool: {
@@ -21,7 +22,8 @@ var main = new Sequelize( 'intermed', 'intermed', '', {
   logging: null
 } );
 // conexion a la nueva base de datos intermed.historia
-var historial = new Sequelize('intermed.historia','intermed','',{
+//var historial = new Sequelize('intermed.historia','intermed','',{
+var sequelizeHistorial = new Sequelize('intermed.historia','intermed','',{
   host: 'localhost',
   dialect: 'mysql',
   pool:{
@@ -31,7 +33,8 @@ var historial = new Sequelize('intermed.historia','intermed','',{
   },
   logging: null
 });
-var inbox = new Sequelize( 'intermed.inbox', 'intermed', '', {
+//var inbox = new Sequelize( 'intermed.inbox', 'intermed', '', {
+var sequelizeInbox = new Sequelize( 'intermed.inbox', 'intermed', '', {
   host: 'localhost',
   dialect: 'mysql',
   pool: {
@@ -42,27 +45,28 @@ var inbox = new Sequelize( 'intermed.inbox', 'intermed', '', {
   logging: null
 } );
 
+//var sequelizeCargos = new Sequelize('intermed.cargos', 'intermed', '', {
 var sequelizeCargos = new Sequelize('intermed.cargos', 'intermed', '', {
-    host: 'localhost',
-    dialect: 'mysql',
-    pool: {
-        max: 5,
-        min: 0,
-        idle: 10000
-    },
-    logging: null
+  host: 'localhost',
+  dialect: 'mysql',
+  pool: {
+    max: 5,
+    min: 0,
+    idle: 10000
+  },
+  logging: null
 });
 
-
-var sequelizeEncuesta = new Sequelize('intermed.encuestas', 'root', '', {
-    host: 'localhost',
-    dialect: 'mysql',
-    pool: {
-        max: 5,
-        min: 0,
-        idle: 10000
-    },
-    logging: null
+//var sequelizeEncuesta = new Sequelize('intermed.encuestas', 'root', '', {
+var sequelizeEncuesta = new Sequelize('intermed.encuestas', 'intermed', '', {
+  host: 'localhost',
+  dialect: 'mysql',
+  pool: {
+    max: 5,
+    min: 0,
+    idle: 10000
+  },
+  logging: null
 });
 
 //Modelo de Intermed.Intermed
