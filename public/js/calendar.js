@@ -989,7 +989,7 @@ function calendarHorarioOficina(){
     var month = d.getMonth();
     var day = d.getDate();
 
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < 6; i++) {
       var dateStart = new Date(year, month, day+i, 9, 0, 0, 0);
       var dateEnd = new Date(year, month, day+i, 14, 0, 0, 0);
       eventData = {
@@ -998,14 +998,15 @@ function calendarHorarioOficina(){
       }
       $('#divCalendario').fullCalendar('renderEvent', eventData, true);
 
-
-      var dateStart = new Date(year, month, day+i, 16, 0, 0, 0);
-      var dateEnd = new Date(year, month, day+i, 19, 0, 0, 0);
-      eventData = {
-        "start":dateStart.toLocaleString(),
-        "end":dateEnd.toLocaleString()
+      if (i<5){
+        var dateStart = new Date(year, month, day+i, 16, 0, 0, 0);
+        var dateEnd = new Date(year, month, day+i, 19, 0, 0, 0);
+        eventData = {
+          "start":dateStart.toLocaleString(),
+          "end":dateEnd.toLocaleString()
+        }
+        $('#divCalendario').fullCalendar('renderEvent', eventData, true);
       }
-      $('#divCalendario').fullCalendar('renderEvent', eventData, true);
     }
 }
 
