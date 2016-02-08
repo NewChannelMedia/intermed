@@ -16,7 +16,8 @@ module.exports = function ( passport ) {
   passport.use( new FacebookStrategy( {
       clientID: FACEBOOK_APP_ID,
       clientSecret: FACEBOOK_APP_SECRET,
-      callbackURL: "http://localhost:3000/auth/facebook/callback",
+      //callbackURL: "http://localhost:3000/auth/facebook/callback",
+      callbackURL: "167.160.162.251:4001/auth/facebook/callback",
       enableProof: false,
       profileFields: [ 'id', 'displayName', 'gender', 'email', 'first_name', 'last_name', 'birthday', 'location', 'picture.type(large)' ]
         //https://developers.facebook.com/docs/facebook-login/permissions/v2.4

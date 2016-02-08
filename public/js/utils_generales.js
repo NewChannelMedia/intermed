@@ -3,7 +3,7 @@
 * o funciones que las pueden llamar donde sea
 **/
 //Eliminar el hash '#_=_' que agrega el login con facebook
-var base_url = 'http://localhost:3000/';
+var base_url = '167.160.162.251:4001/';
 var default_urlFotoPerfil = '/garage/profilepics/dpp.png';
 if (window.location.hash == '#_=_'){
     history.replaceState
