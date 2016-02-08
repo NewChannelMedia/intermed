@@ -351,5 +351,26 @@ module.exports = {
         result: result
       });
     });
+  },
+
+  encExist: function (object, req, res){
+      models.DBEncuesta_encuesta.findOne({
+        where: {
+          codigo: object.codigo
+        }
+      }).then(function(encuesta){
+        var valido = false;
+        var registrado = false;
+        if (encuesta){
+          valido = true;
+          if (encuesta.registrado == 1){
+          registrado = true;
+          }
+        }
+        res.status(200).json({
+          success: valido,
+          registrado: registrado
+        });
+      });
   }
 }
