@@ -7,11 +7,7 @@ var env = process.env.NODE_ENV || "development";
 var db = {};
 
 //var config    = require(__dirname + '/../config/config.json')[env];
-<<<<<<< HEAD
 var main = new Sequelize( 'intermed', 'intermed', '', {
-=======
-var sequelizeMain = new Sequelize( 'intermed', 'root', '', {
->>>>>>> b5c942598e918acb9f8282b340816836faef422c
   host: 'localhost',
   dialect: 'mysql',
   pool: {
@@ -25,11 +21,7 @@ var sequelizeMain = new Sequelize( 'intermed', 'root', '', {
   logging: null
 } );
 // conexion a la nueva base de datos intermed.historia
-<<<<<<< HEAD
 var historial = new Sequelize('intermed.historia','intermed','',{
-=======
-var sequelizeHistorial = new Sequelize('intermed.historia','root','',{
->>>>>>> b5c942598e918acb9f8282b340816836faef422c
   host: 'localhost',
   dialect: 'mysql',
   pool:{
@@ -39,11 +31,7 @@ var sequelizeHistorial = new Sequelize('intermed.historia','root','',{
   },
   logging: null
 });
-<<<<<<< HEAD
 var inbox = new Sequelize( 'intermed.inbox', 'intermed', '', {
-=======
-var sequelizeInbox = new Sequelize( 'intermed.inbox', 'root', '', {
->>>>>>> b5c942598e918acb9f8282b340816836faef422c
   host: 'localhost',
   dialect: 'mysql',
   pool: {
