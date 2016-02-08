@@ -2933,3 +2933,50 @@ function checkUbicMinConf(){
       }
     });
 }
+
+function validarCodigo(element){
+  var codigo = $(element).val();
+
+  console.log('Codigo: ' + codigo);
+  if (codigo != ""){
+  	$.ajax({
+  		url: '/medicos/enc/exist',
+  		type: 'POST',
+  		dataType: "json",
+      data: {codigo: codigo},
+  		cache: false,
+  		type: 'POST',
+  		success: function( data ) {
+        if (data.success && !data.registrado){
+          $(element).parent().addClass('has-success');
+          $(element).parent().removeClass('has-error');
+          $(element).parent().find('.glyphicon').first().addClass('glyphicon-ok');
+          $(element).parent().find('.glyphicon').removeClass('glyphicon-remove');
+          $(element).parent().find('label').first().text('');
+        } else {
+          var mensaje = '';
+          if (data.registrado){
+            //mensaje: codigo ya usado
+            mensaje = "El código '" + codigo + "' ya fue usado.";
+          } else {
+            //Codigo no existe
+            mensaje = "El código '" + codigo + "' no existe.";
+          }
+          $(element).parent().find('label').first().text(mensaje);
+          $(element).parent().addClass('has-error');
+          $(element).parent().removeClass('has-success');
+          $(element).parent().find('.glyphicon').addClass('glyphicon-remove');
+          $(element).parent().find('.glyphicon').removeClass('glyphicon-ok');
+        }
+      },
+      error: function (err){
+  			console.error( 'AJAX ERROR: ' + err );
+      }
+    });
+  } else {
+    $(element).parent().removeClass('has-error');
+    $(element).parent().removeClass('has-success');
+    $(element).parent().find('.glyphicon').removeClass('glyphicon-ok');
+    $(element).parent().find('.glyphicon').removeClass('glyphicon-remove');
+  }
+}

@@ -96,6 +96,7 @@ $(document).ready(function () {
 
 function obtenerHorariosAgenda(direccion_id) {
     var objhorarios = [];
+    var objhtemp = [];
     var h = $('#divCalendario').fullCalendar('clientEvents');
     var evento;
     var i;
@@ -107,38 +108,53 @@ function obtenerHorariosAgenda(direccion_id) {
       direccion_id = $('#idDireccion').val();
     }
 
-    for (i = 0; i <= h.length - 1; i++) {
-        evento = h[i];
+    h.forEach(function(evento){
 
-        inicio.hours(evento.start._d.getUTCHours());
-        inicio.minute(evento.start._d.getUTCMinutes());
+      inicio.hours(evento.start._d.getUTCHours());
+      inicio.minute(evento.start._d.getUTCMinutes());
 
-        fin.hours(evento.end._d.getUTCHours());
-        fin.minute(evento.end._d.getUTCMinutes());
+      fin.hours(evento.end._d.getUTCHours());
+      fin.minute(evento.end._d.getUTCMinutes());
+
+      var horario = {
+          direccion_id: direccion_id,
+          dia: evento.start._d.getDay(),
+          horaInicio: inicio.format('HH:mm'),
+          horaFin: fin.format('HH:mm')
+      };
+      objhtemp.push(horario);
+    });
+
+    //Ordenar por hora
+    objhtemp.sort(function(a, b){
+      var date1 = new Date(2016, 01, a['dia'], parseInt(a['horaInicio'].split(':')[0]), parseInt(a['horaInicio'].split(':')[1]));
+      var date2 = new Date(2016, 01, b['dia'], parseInt(b['horaInicio'].split(':')[0]), parseInt(b['horaInicio'].split(':')[1]));
+
+      if(date1 < date2){
+        return -1;
+      }else if(date1 > date2){
+        return 1;
+      } else {
+        return 0;
+      }
+    });
+
+    for (i = 0; i <= objhtemp.length-1; i++) {
         var total = objhorarios.length;
 
-        console.log('____________');
-
-        if (objhorarios.length){
-          console.log('DAY: ' + objhorarios[total-1].dia);
-          console.log('DAY: ' + evento.start._d.getDay());
-          console.log('Hora Fin: ' + objhorarios[total-1].horaFin);
-          console.log('Hora Inicio: ' + inicio.format('HH:mm'));
-        }
-
-        if (objhorarios.length>0 && evento.start._d.getDay() == objhorarios[total-1].dia && inicio.format('HH:mm') == objhorarios[total-1].horaFin){
-          objhorarios[total-1].horaFin = fin.format('HH:mm');
+        if (i>0 && total>0){
+          var date1 = new Date(2016, 01, objhorarios[total-1]['dia'], parseInt(objhorarios[total-1]['horaFin'].split(':')[0]), parseInt(objhorarios[total-1]['horaFin'].split(':')[1]));
+          var date2 = new Date(2016, 01, objhtemp[i]['dia'], parseInt(objhtemp[i]['horaInicio'].split(':')[0]), parseInt(objhtemp[i]['horaInicio'].split(':')[1]));
+          if (date1.toISOString() == date2.toISOString()){
+            objhorarios[total-1].horaFin = objhtemp[i].horaFin;
+          } else {
+            objhorarios.push(objhtemp[i]);
+          }
         } else {
-          var horario = {
-              direccion_id: direccion_id,
-              dia: evento.start._d.getDay(),
-              horaInicio: inicio.format('HH:mm'),
-              horaFin: fin.format('HH:mm')
-          };
-          objhorarios.push(horario);
+          objhorarios.push(objhtemp[i]);
         }
-
     };
+
     return objhorarios;
 };
 
@@ -880,6 +896,7 @@ function cancelaCita(id) {
             }
           }
       };
+
       return objhorarios;
   };
 
@@ -972,7 +989,7 @@ function calendarHorarioOficina(){
     var month = d.getMonth();
     var day = d.getDate();
 
-    for (var i = 0; i < 5; i++) {
+    for (var i = 0; i < 6; i++) {
       var dateStart = new Date(year, month, day+i, 9, 0, 0, 0);
       var dateEnd = new Date(year, month, day+i, 14, 0, 0, 0);
       eventData = {
@@ -981,13 +998,14 @@ function calendarHorarioOficina(){
       }
       $('#divCalendario').fullCalendar('renderEvent', eventData, true);
 
-
-      var dateStart = new Date(year, month, day+i, 16, 0, 0, 0);
-      var dateEnd = new Date(year, month, day+i, 19, 0, 0, 0);
-      eventData = {
-        "start":dateStart.toLocaleString(),
-        "end":dateEnd.toLocaleString()
+      if (i<5){
+        var dateStart = new Date(year, month, day+i, 16, 0, 0, 0);
+        var dateEnd = new Date(year, month, day+i, 19, 0, 0, 0);
+        eventData = {
+          "start":dateStart.toLocaleString(),
+          "end":dateEnd.toLocaleString()
+        }
+        $('#divCalendario').fullCalendar('renderEvent', eventData, true);
       }
-      $('#divCalendario').fullCalendar('renderEvent', eventData, true);
     }
 }

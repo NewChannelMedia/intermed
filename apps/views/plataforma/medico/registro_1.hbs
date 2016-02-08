@@ -1,7 +1,16 @@
 <div id="" class="container-fluid h45-light s17"  style="background-color:#6A808E;">
-  <div class="row header-section" style="height:120px">
+  <form id="regMedStepOne" onsubmit="return saveStepOne();">
+
+  <div class="row header-section" style="min-height: 120px;height: auto;">
         <div class="col-md-12">
           <h4 class="h77-boldcond whiteF s30 text-center" style="margin-top: 35px;">!BIENVENIDO DR.!</h4>
+        </div>
+        <div class="col-md-4 col-md-offset-4">
+            <div class="form-group has-feedback">
+                <input type="text" class="form-control" placeholder="Ingresa aquí tu código de promoción." maxlength="6" minLength="6" id="codigoPromo" name="codigoPromo" onchange="validarCodigo(this)">
+                <span class="glyphicon form-control-feedback"></span>
+                <label for="codigoPromo" style="color:#a94442;text-align:center"></label>
+            </div>
         </div>
   </div>
 
@@ -9,7 +18,6 @@
     <div class="col-md-12">
       <div class="row">
         <div class="col-md-8 col-md-offset-2">
-          <form id="regMedStepOne" onsubmit="return saveStepOne();">
             <div class="row">
               <div class="col-md-12">
                 <div id="alertError"></div>
@@ -145,10 +153,11 @@
                 </div>
               </div>
 
-          </form>
         </div>
       </div>
     </div>
+
+  </form>
 
 
 </div>

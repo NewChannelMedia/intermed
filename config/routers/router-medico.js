@@ -198,4 +198,8 @@ module.exports = function (object){
   app.post('/medicos/ubic/minconf', function (req, res){
     intermed.callController('medicos','ubicMinConf', req.body, req, res);
   });
+
+  app.post('/medicos/enc/exist', function (req, res){
+    intermed.callController('control','encExist', req.body, req, res);
+  });
 }

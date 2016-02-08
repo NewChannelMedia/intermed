@@ -43,6 +43,9 @@ module.exports = function ( sequelize, DataTypes ) {
     status: {
       type: DataTypes.INTEGER
     },
+    codigoPromo_id: {
+      type: DataTypes.INTEGER
+    }
   }, {
     classMethods: {
       // asociaciones con otras tablas
