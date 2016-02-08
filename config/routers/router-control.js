@@ -19,4 +19,24 @@ module.exports = function (object){
   app.post('/control/PV/update', function (req, res){
     intermed.callController( 'control', 'updatePV', req.body, req, res );
   });
+
+  app.post('/control/enc/tipoCod/load', function (req, res){
+    intermed.callController( 'control', 'encTipoCodLoad', req.body, req, res );
+  });
+
+  app.post('/control/tipoPlan/load', function (req, res){
+    intermed.callController( 'control', 'tipoPlanLoad', req.body, req, res );
+  });
+
+  app.post('/control/enc/cod/create', function (req, res){
+    intermed.callController( 'control', 'encCodCreate', req.body, req, res );
+  });
+
+  app.post('/control/encCod/Load', function (req, res){
+    intermed.callController( 'control', 'encCodLoad', req.body, req, res );
+  });
+
+  app.post('/control/encCod/loadByCod', function (req, res){
+    intermed.callController( 'control', 'encCodLoadByCod', req.body, req, res );
+  });
 }

@@ -1,0 +1,384 @@
+<div id="divMapRegHor" class="container-fluid h45-light s17">
+  <div class="row">
+    <div class="header-section" style="height:120px">
+      <div class="row">
+        <div class="col-md-12 hidden" id="btnEndReg">
+          <button type="button" class="btn btn-warning btn-block" onclick="saveStepTwo()">Terminar</button>
+        </div>
+        <div class="col-md-12">
+          <h4 class="h77-boldcond whiteF s30 text-center" style="margin-top: 35px;">CONFIGURA TUS SERVICIOS Y HORARIOS DE ATENCIÓN //</h4>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <ul class="nav nav-tabs menuRegUbic h77-boldcond whiteF s20">
+        <li class="active"><a data-toggle="tab" href="#home"><span class="borderCircle">1</span>UBICACIONES<hr></a></li>
+        <li><a data-toggle="tab" href="#menu1" onclick="cargarServicios($('#slc_servicios_ubi'))"><span class="borderCircle">2</span>SERVICIOS<hr></a></li>
+        <li><a data-toggle="tab" href="#menu2" onclick="cargarHorario($('#slc_horarios_ubi'))"><span class="borderCircle">3</span>HORARIOS<hr></a></li>
+      </ul>
+
+      <div class="tab-content ">
+        <div class="row">
+          <div id="home" class="tab-pane fade in active" style="background-color:#6A808E;position: absolute;width: 100%;">
+            <div class="regExp h77-boldcond whiteF">
+              <div class="col-lg-12 col-md-12" id="alertRegUbi"></div>
+            </div>
+
+            <form method="POST" name="frmRegUb" id="frmRegUbi">
+              <div class="col-md-12" style="margin-top:20px">
+                <div class="col-md-6" style="margin-top:10px">
+                  <input type="hidden" id="idDireccion">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="row">
+                        <div class="col-md-7">
+                          <label class="col-md-12 control-label regInput" for="textinput" style="color:white">Nombre de la ubicación:</label>
+                        <div class="col-md-7">
+                        </div>
+                          <input id="nombreUbi" name="nombreUbi" type="text" placeholder="" class="form-control input-md regInput">
+                        </div>
+                        <div class="col-md-5">
+                          <div class="checkbox" style="margin-top: 27px;margin-left: 17px;">
+                            <label style="color:white;font-weight:bold" class=" regInput">
+                              <input type="checkbox" id="principal" name="principal" value="" style="margin-top:0px"> Ubicación principal.
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="row">
+                        <div class="col-md-7">
+                          <div class="row">
+                          <div class="col-md-12">
+                              <label class="control-label  regInput" for="textinput" style="color:white">Calle o avenida:</label>
+                              <input id="calleUbi" name="calleUbi" type="text" placeholder="" class="form-control input-md regInput">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <label class="control-label regInput" for="textinput" style="color:white">Número:</label>
+                            </div>
+                            <div class="col-md-12">
+                              <input id="numeroUbi" name="numeroUbi" type="text" placeholder="" class="form-control input-md regInput">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-2">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <label class="control-label regInput" for="textinput" style="color:white">Interior:</label>
+                            </div>
+                            <div class="col-md-12">
+                              <input id="numeroIntUbi" name="numeroIntUbi" type="text" placeholder="" class="form-control input-md regInput">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <label class="col-md-12 control-label regInput" for="textinput" style="color:white">Entre calles:</label>
+                            </div>
+                            <div class="col-md-12">
+                              <input id="calle1Ubi" name="calle1Ubi" type="text" placeholder="" class="form-control input-md regInput">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <label class="col-md-12 control-label regInput" for="textinput" style="color:white">Y:</label>
+                            </div>
+                            <div class="col-md-12">
+                              <input id="calle2Ubi" name="calle2Ubi" type="text" placeholder="" class="form-control input-md regInput">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <label class="col-md-12 control-label regInput" for="textinput" style="color:white">Estado:</label>
+                            </div>
+                            <div class="col-md-12">
+                              <select id="slc_estados_mapa" name="slc_estados_mapa" type="text" placeholder="" class="form-control input-md regInput" onChange="obtenerCiudades('_mapa')">
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <label class="col-md-12 control-label regInput" for="textinput" style="color:white">Municipio/ciudad:</label>
+                            </div>
+                            <div class="col-md-12">
+                              <select id="slc_ciudades_mapa" name="slc_ciudades_mapa" type="text" placeholder="" class="form-control input-md regInput" onChange="obtenerColonias('_mapa')">
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <label class="col-md-12 control-label regInput" for="textinput" style="color:white">Localidad/colonia:</label>
+                            </div>
+                            <div class="col-md-12">
+                              <select id="slc_colonias_mapa" name="slc_colonias_mapa" type="text" placeholder="" class="form-control input-md regInput">
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="row">
+                            <div class="col-md-12">
+                              <label class="col-md-12 control-label regInput" for="textinput" style="color:white">CP:</label>
+                            </div>
+                            <div class="col-md-12">
+                              <input id="cpUbi" name="cpUbi" type="text" placeholder="" class="form-control input-md regInput">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="row">
+                    <input type="hidden" id="latitud" name="latitud" value="latitud+'" />
+                    <input type="hidden" id="longitud" name="longitud" value="longitud+'" />
+                    <div id="searchDiv">
+                      <input id="autocomplete_searchField" type="text" placeholder="Buscar Dirección">
+                    </div>
+                    <div id="direccion"></div>
+                    <div id="mapDiv"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <hr class="style-white" />
+                <div class="row">
+                  <div class="col-md-12 text-center">
+                    <span style="font-weight:bold;color:white;font-size:130%;text-align:center;padding:7px;" class="col-md-12">
+                      Teléfonos
+                    </span>
+                  </div>
+                </div>
+                <div class="col-md-10 col-sm-10">
+                  <div class="row">
+                    <div class="col-md-3 col-sm-3">
+                      <select class="form-control regInput" id="tipoTelefono">
+                        <option value="celular">Celular</option>
+                        <option value="oficina">Oficina</option>
+                        <option value="localizador">Localizador</option>
+                      </select>
+                    </div>
+                    <div class="col-md-9 col-sm-9" id="divTelefono">
+                      <input type="text" id="numTelefono" class="form-control solo-numero regInput" placeholder="Número:" onpaste="soloNumeros()" maxlength="12">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-2 col-sm-2">
+                  <input type="button" class="btn btn-warning btn-block regInput" id="addFon" value="Añadir">
+                </div>
+                <div class="col-md-12 col-sm-12">
+                  <div class="form-group col-md-12 col-sm-12 btn-group edit-btns text-center" id="divTelefonoAgregado" data-toggle="buttons">
+                    <H2></H2>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12">
+                <div class="row">
+                  <hr class="style-white" />
+                  <span style="font-weight:bold;color:white;font-size:80%;">
+                    'Al finalizar de agregar tus ubicaciones, pasa a la pestaña de "horarios" para organizar las horas de atención que se mostrarán en tu agenda de citas.
+                  </span>
+                </div>
+              </div>
+              <div class="col-md-12" style="margin-top:15px;margin-bottom:30px">
+
+                <div class="col-md-3 pull-right">
+                  <div class="row">
+                    <input type="button" class="btn btn-add btn-block" value="Guardar" onclick="regUbicacion()" id="btnGuardar">
+                  </div>
+                </div>
+                <div class="col-md-6 pull-left">
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="row">
+                        <input type="button" class="btn btn-drop btn-block hidden" value="Eliminar" onclick="eliminarUbicacion()" id="btnEliminar">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div id="menu1" class="tab-pane fade" style="background-color:#6A808E;position: absolute;width: 100%;">
+            <div class="container-fluid">
+            <div class="row">
+              <div class="regExp h77-boldcond">
+                <div class="col-lg-6 col-md-6">CONFIGURAR SERVICIOS PARA LA UBICACIÓN: </div>
+                <div class="col-lg-6 col-md-6 whiteF ">
+                  <select class="form-control inputTransparent slc_ubicReg" style="margin-top:-10px" onchange="cargarServicios(this);" id="slc_servicios_ubi">
+                    <option value="" disabled selected>REGISTRA UNA UBICACIÓN</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row UbicHidden">
+                <div class="col-lg-12">
+                  <div class="regSectionTitle whiteF h77-boldcond">
+                    <span class="glyphicon glyphicon-plus"></span>DA DE ALTA UN SERVICIO
+                  </div>
+                </div>
+                <div class="col-lg-12">
+                  <form method="POST" onsubmit="return guardarServicio('frmRegServ');" id="frmRegServ">
+                    <div class="col-md-3">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <label class="whiteF regInput">Concepto.</label>
+                        </div>
+                        <div class="col-md-12">
+                          <input type="text" class="form-control regInput" id="conceptServ" name="concepto" required="required">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <label class="whiteF regInput">Descripción.</label>
+                        </div>
+                        <div class="col-md-12">
+                          <input type="text" class="form-control regInput" id="decriptServ" name="descripcion" required="required">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <label class="whiteF regInput">Costo.</label>
+                        </div>
+                        <div class="col-md-12">
+                          <input type="text" class="form-control regInput" id="precServ" name="precio" required="required">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-2">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <label class="whiteF regInput">Duración.</label>
+                        </div>
+                        <div class="col-md-12">
+                          <select id="duraServ" class="form-control regInput" name="duracion" required="required">
+                            <option value="" selected disabled>Selecciona</option>
+                            <option value="00:30:00">30 minutos</option>
+                            <option value="00:45:00">1 hora</option>
+                            <option value="01:30:00">1 hora y 30 minutos</option>
+                            <option value="02:00:00">2 horas</option>
+                            <option value="02:30:00">2 horas y 30 minutos</option>
+                            <option value="03:00:00">3 horas</option>
+                            <option value="03:30:00">3 horas y 30 minutos</option>
+                            <option value="04:00:00">4 horas</option>
+                            <option value="04:30:00">4 horas y 30 minutos</option>
+                            <option value="05:00:00">5 horas</option>
+                            <option value="05:30:00">5 horas y 30 minutos</option>
+                            <option value="06:00:00">6 horas</option>
+                            <option value="06:30:00">6 horas y 30 minutos</option>
+                            <option value="07:00:00">7 horas</option>
+                            <option value="07:30:00">7 horas y 30 minutos</option>
+                            <option value="08:00:00">8 horas</option>
+                            <option value="08:30:00">8 horas y 30 minutos</option>
+                            <option value="09:00:00">9 horas</option>
+                            <option value="09:30:00">9 horas y 30 minutos</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-1">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <label class="whiteF">&nbsp;</label>
+                        </div>
+                        <div class="col-md-12">
+                          <button type="submit" class="btn btn-primary regInput">
+                            <span style="color:white;" class="glyphicon glyphicon-plus"></span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="row UbicHidden">
+                <div class="col-lg-12">
+                  <div class="regSectionTitle whiteF h77-boldcond">
+                    <span class="glyphicon glyphicon-pencil"></span>EDITA TUS SERVICIOS
+                  </div>
+                </div>
+
+                <div id="ServListReg">
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="menu2" class="tab-pane fade" style="background-color:#6A808E;position: absolute;width: 100%;">
+            <div class="regExp h77-boldcond">
+              <div class="col-lg-6 col-md-6">CONFIGURAR EL HORARIO DE ATENCIÓN PARA LA UBICACIÓN: </div>
+              <div class="col-lg-6 col-md-6 whiteF ">
+                <select class="form-control inputTransparent slc_ubicReg" style="margin-top:-10px" onchange="cargarHorario(this);" id="slc_horarios_ubi">
+                  <option value="" disabled selected>REGISTRA UNA UBICACIÓN</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-lg-12 col-md-12 UbicHidden">
+              <div class="row divActionsUbic">
+                <div class="col-lg-4 col-md-4 action action-All" onclick="calendarSeleccionarTodo()">
+                  <span class="glyphicon glyphicon-ok"></span>
+                  <span>Todo disponible</span>
+                </div>
+                <div class="col-lg-4 col-md-4 action action-Busy" onclick="calendarSeleccionarNada()">
+                  <span class="glyphicon glyphicon-remove"></span>
+                  <span>Todo ocupado</span>
+                </div>
+                <div class="col-lg-4 col-md-4 action action-Office" onclick="calendarHorarioOficina()">
+                  <span class="glyphicon glyphicon-calendar"></span>
+                  <span>Horario de oficina</span>
+                </div>
+              </div>
+            </div>
+            <form method="POST" name="frmRegHorarios" id="frmRegHorarios" onsubmit="return false;" class="UbicHidden">
+              <div class="col-lg-12 col-md-12">
+                <input type="hidden" id="horariosUbi" name="horariosUbi" value="" />
+                <input type="hidden" id="direccion_id" name="direccion_id" value="" />
+                  <div class="col-md-12" id="divCalendarioPadre" style="margin-right: 15px;">
+                    <div id="divCalendario" class="regHorMed"></div>
+                  </div>
+                  <div class="col-md-2 col-md-offset-10">
+                    <button type="button" class="btn btn-save-reg btn-block h77-boldcond whiteF" id="btnRegHorarios" onclick="regHorarios($('#slc_horarios_ubi').val())">Guardar.</button>
+                  </div>
+              </div>
+            </form>
+            <!--<input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarHorariosBot();">-->
+            <br/>
+            <br/>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

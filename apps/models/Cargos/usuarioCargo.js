@@ -5,7 +5,9 @@ module.exports = function (sequelize, DataTypes) {
         id: { type: DataTypes.BIGINT, autoIncrement: true, primaryKey: true },
         medico_id: { type: DataTypes.BIGINT, allowNull: false },
         idUsuarioProveedor: { type: DataTypes.STRING },
-        plandecargo_id: { type: DataTypes.STRING },
+        planDeCargo_id: { type: DataTypes.STRING },
+        fechaAlta: { type: DataTypes.DATE},
+        fechaProximoDescuento: { type: DataTypes.DATE},
     },
     {
         classMethods: {

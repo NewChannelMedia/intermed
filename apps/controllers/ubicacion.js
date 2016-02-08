@@ -9,7 +9,7 @@ exports.index = function (req, res) {
 exports.mostrar = function (req, res) {
     models.Especialidades.findAll().then(function (datos) {
         res.render('registrado', {
-            title: 'REgistrado'            
+            title: 'REgistrado'
         });
     });
 };
@@ -149,6 +149,7 @@ exports.registrarUbicacion = function (objects, req, res) {
             latitud: objects.latitud,
             longitud: objects.longitud
         }).then(function (datos) {
+          console.log('Direccion: ' + JSON.stringify(datos));
             if (datos){
               if (objects.telefonosNuevos){
                 objects.telefonosNuevos.forEach(function(record){
@@ -174,10 +175,12 @@ exports.registrarUbicacion = function (objects, req, res) {
             }
             res.status(200).json({
                 success: true,
+                datos: datos,
                 ubicacion_id: datos.id
             });
         });
     } else {
+      console.log('UBICACION_ID');
         models.Direccion.update({
             calle: objects.calleUbi,
             numero: objects.numeroUbi,
@@ -332,7 +335,7 @@ exports.horarios = function (objects, req, res) {
 };
 
 exports.registrarHorarios = function (objects, req, res) {
-  console.log('object: ' + JSON.stringify(objects.direccion_id));
+  console.log('Direccion_id: ' + JSON.stringify(objects.direccion_id));
     //eliminar registros anteriores
     if (req.session.passport && req.session.passport.user){
       models.Horarios.destroy({
