@@ -2211,7 +2211,6 @@ function traerAseguradoras(){
     }
 
     var formacion_id = $('#formacion_id').val();
-    alert(formacion_id);
 
     var grado = form.find('#inputGrado').val();
     var nivel = form.find('#inputNivel').val();
@@ -2246,8 +2245,8 @@ function traerAseguradoras(){
             success: function (data) {
               console.log('Result: ' + JSON.stringify(data));
               if (data.success){
-                bootbox.hideAll();
                 cargarFormacionAcademica();
+                CambiarVisible('divAddFormacion','divListaFormacion');
               } else {
                 if(data.error){
                   manejadorDeErrores(data.error);
@@ -2335,6 +2334,130 @@ function traerAseguradoras(){
         }
       });
   }
+
+  function cargarExperienciaLaboral(){
+    $.ajax({
+        url: '/medico/formacionAcademica/cargar',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        type: 'POST',
+        success: function (data) {
+          if (data.success){
+            var contenido = '';
+            data.result.forEach(function(res){
+              var anioInicio = new Date(res.fechaInicio).toLocaleDateString().split(' ')[0].split('/')[2];
+              var anioFin = '';
+              if (res.fechaFin && res.fechaFin != ""){
+                anioFin = new Date(res.fechaFin).toLocaleDateString().split(' ')[0].split('/')[2];
+              }
+              var anioGrado = '';
+              if (res.fechaTitulo && res.fechaTitulo != ""){
+                anioGrado = new Date(res.fechaTitulo).toLocaleDateString().split(' ')[0].split('/')[2];
+              }
+
+              var clase = '';
+
+              if (res.actual == 1){
+                clase = " class='success' ";
+              }
+
+              contenido += '<tr ' + clase + '><td>'+res.lugarDeEstudio+'</td><td>'+res.especialidad+'</td><td>'+anioInicio+'</td>';
+              contenido += '<td>'+anioFin+'</td>';
+              contenido += '<td>'+anioGrado+'</td>';
+              contenido += '<td><a style="color:green"><span class="glyphicon glyphicon-pencil" onclick="CambiarVisible(\'divListaFormacion\',\'divAddFormacion\','+ res.id +');"></span></a></td>';
+              contenido += '<td><a style="color:red"><span class="glyphicon glyphicon-remove"></span></a></td></tr>';
+            });
+            $('#formacionAcademicaList').html(contenido);
+          }else {
+            if (data.error){
+              manejadorDeErrores(data.error);
+            }
+          }
+        },
+        error: function (err){
+          console.log('AJAX Error: ' + JSON.stringify(err));
+        }
+      });
+  }
+
+
+  function agregarExperienciaLaboral(){
+    var form = $('#formAcademica');
+    var institucion = form.find('#inputInstitucion').val();
+    var descripcion = form.find('#inputDescripcion').val();
+    var inicio = form.find('#inputInicio').val();
+    var fin = form.find('#inputFin').val();
+    var actual = 0;
+    if (form.find('#inputActual').is(':checked')){
+      actual = 1;
+    }
+
+    var formacion_id = $('#formacion_id').val();
+
+    var grado = form.find('#inputGrado').val();
+    var puesto = form.find('#inputPuesto').val();
+
+    var municipio_id = $('#selectCiudad').val();
+    console.log('Puesto: ' + puesto);
+    console.log('institucion: ' + institucion);
+    console.log('descripcion: ' + descripcion);
+    console.log('inicio: ' + inicio);
+
+    if (puesto != "" && institucion != "" && descripcion != "" && inicio != ""){
+      var insertar = true;
+      if (!actual){
+        if (fin == ""){
+          insertar = false;
+        }
+      } else {
+        fin = '';
+        grado = '';
+      }
+
+      if (insertar){
+        $.ajax({
+            url: '/medico/experienciaLaboral/agregar',
+            type: 'POST',
+            dataType: "json",
+            cache: false,
+            data: {
+              formacion_id: formacion_id,
+              titulo:puesto,
+              institucion: institucion,
+              descripcion: descripcion,
+              fechaInicio: inicio,
+              fechaFin: fin,
+              actual: actual,
+              fechaTitulo: grado,
+              municipio_id: municipio_id
+            },
+            type: 'POST',
+            success: function (data) {
+              console.log('Result: ' + JSON.stringify(data));
+              if (data.success){
+                cargarFormacionAcademica();
+                CambiarVisible('divAddFormacion','divListaFormacion');
+              } else {
+                if(data.error){
+                  manejadorDeErrores(data.error);
+                }
+              }
+            },
+            error: function (err){
+              console.log('AJAX Error: ' + JSON.stringify(err));
+            }
+          });
+      } else {
+        //Faltan campos
+        alert('Faltan campos (A)');
+      }
+    }else {
+      //Faltan campos
+      alert('Faltan campos (B)');
+    }
+  }
+
   function cargarFormacionAcademicaByID(formacion_id){
     $.ajax({
         url: '/medico/formacionAcademica/cargarById',
@@ -2349,9 +2472,9 @@ function traerAseguradoras(){
               $('#formacion_id').val(formacion_id);
               $('#inputInstitucion').val(data.result.lugarDeEstudio);
               $('#inputEspecialidad').val(data.result.especialidad);
-              var fechaInicio = new Date(new Date(data.result.fechaInicio).toLocaleDateString()).toISOString().split('T')[0];
-              var fechaFin = new Date(new Date(data.result.fechaFin).toLocaleDateString()).toISOString().split('T')[0];
-              var fechaTitulo = new Date(new Date(data.result.fechaTitulo).toLocaleDateString()).toISOString().split('T')[0];
+              var fechaInicio = new Date(data.result.fechaInicio).toISOString().split('T')[0];
+              var fechaFin = new Date(data.result.fechaFin).toISOString().split('T')[0];
+              var fechaTitulo = new Date(data.result.fechaTitulo).toISOString().split('T')[0];
               $('#inputInicio').val(fechaInicio);
               $('#inputFin').val(fechaFin);
               $('#inputGrado').val(fechaTitulo);

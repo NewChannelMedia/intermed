@@ -179,6 +179,7 @@ module.exports = function (object){
     intermed.callController('medicos','updateCedula', req.body, req, res);
   });
 
+<<<<<<< HEAD
   app.post('/medicos/address/get', function (req, res){
     intermed.callController('medicos','addressGet', req.body, req, res);
   });
@@ -201,5 +202,9 @@ module.exports = function (object){
 
   app.post('/medicos/enc/exist', function (req, res){
     intermed.callController('control','encExist', req.body, req, res);
+=======
+  app.post('/medico/experienciaLaboral/agregar', function (req, res){
+    intermed.callController('medicos','agregarExperienciaLaboral', req.body, req, res);
+>>>>>>> dev3_300116_formacionyexperiencia
   });
 }
