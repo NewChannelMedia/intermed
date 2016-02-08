@@ -107,8 +107,6 @@ function obtenerHorariosAgenda(direccion_id) {
       direccion_id = $('#idDireccion').val();
     }
 
-    var h = sortEvents(h);
-
     for (i = 0; i <= h.length - 1; i++) {
         evento = h[i];
 
@@ -992,14 +990,4 @@ function calendarHorarioOficina(){
       }
       $('#divCalendario').fullCalendar('renderEvent', eventData, true);
     }
-}
-
-function sortEvents(a, b) {
-  index = 0;
-  if (a[index] === b[index]) {
-      return index;
-  }
-  else {
-      return (a[index] < b[index]) ? -1 : 1;
-  }
 }
