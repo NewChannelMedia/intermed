@@ -419,6 +419,30 @@ var _this = module.exports = {
                         },{where: {
                           usuario_id: usuario_id
                         }}).then(function(BIO){
+                          //Insergar codigo_id en usuario, y set codigo como registrado
+                          models.DBEncuesta_encuesta.findOne({
+                            where: {
+                              codigo: object.codigoPromo
+                            }
+                          }).then(function(codigoEncuesta){
+                            if (codigoEncuesta){
+                              models.Usuario.update({
+                                codigoPromo_id: codigoEncuesta.id
+                              },{
+                                where: {
+                                  id: usuario_id
+                                }
+                              }).then(function(){
+                                codigoEncuesta.update({
+                                  registrado: 1
+                                }).then(function(result){
+                                  console.log('Result: ' + JSON.stringify(result));
+                                });
+                              });
+                            }
+                          });
+
+
                           res.send( {
                             'success': true
                           } );
@@ -1757,7 +1781,6 @@ var _this = module.exports = {
         error: 1
       });
     }
-  }
-
+  },
 
 }

@@ -9,7 +9,8 @@ module.exports = function (sequelize, DataTypes) {
         canalUsado: { type: DataTypes.INTEGER},
         codigoUsado: { type: DataTypes.INTEGER},
         usada: { type: DataTypes.INTEGER},
-        fecha: { type: DataTypes.DATE}
+        fecha: { type: DataTypes.DATE},
+        registrado: { type: DataTypes.INTEGER},
     }, {
       classMethods: {
         associate: function(models) {
