@@ -29,7 +29,7 @@ module.exports = function ( sequelize, DataTypes ) {
     paranoid: true,
     underscored: true,
     freezeTableName: true,
-    tableName: 'medicosEspecialidades'
+    tableName: 'medicosespecialidades'
   } );
 
   return MedicoEspecialidad;

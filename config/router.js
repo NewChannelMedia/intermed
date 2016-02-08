@@ -101,5 +101,7 @@ require('./routers/router-pagos.js')(routerObject);
 require( './routers/router-error.js' )(routerObject);
 /*FIN CARGA DE ROUTERS*/
 
-var io = serv.server( app, 3000 );
+
+
+var io = serv.server( app, 4001 );
 socket.io( io, bundle, ioPassport );

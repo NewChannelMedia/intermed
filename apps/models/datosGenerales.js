@@ -36,7 +36,7 @@ module.exports = function ( sequelize, DataTypes ) {
     paranoid: true,
     underscored: true,
     freezeTableName: true,
-    tableName: 'datosGenerales'
+    tableName: 'datosgenerales'
   } );
 
   return DatosGenerales;

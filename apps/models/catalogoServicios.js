@@ -24,7 +24,7 @@ module.exports = function(sequelize, DataTypes) {
     paranoid: true,
     underscored: true,
     freezeTableName: true,
-    tableName: 'catalogoServicios'
+    tableName: 'catalogoservicios'
   });
 
   return CatalogoServicios;

@@ -49,7 +49,7 @@ module.exports = function ( sequelize, DataTypes ) {
     paranoid: true,
     underscored: true,
     freezeTableName: true,
-    tableName: 'tipoNotificacion'
+    tableName: 'tiponotificacion'
   } );
 
   return TipoNotificacion;
