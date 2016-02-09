@@ -330,7 +330,7 @@ function RegistrarUsuarioEnProveedor(res, usuario_id, datos, conektaTokenId, pla
             if (err) {
                 console.log(err);
             } else {
-                UsuarioGuardarDatosProveedor(usuario_id, resultado.toObject().id, planid, resultado.subscription.toObject().created_at, resultado.subscription.toObject().billing_cycle_end);
+                UsuarioGuardarDatosProveedor(usuario_id, resultado.toObject().id, planid, resultado.subscription.toObject().created_at, resultado.subscription.toObject().subscription_start);
                 UsuarioGuardarTarjeta(usuario_id, resultado.toObject().cards[0]);
                 
                 console.log('cliente registrado en proveedor');
