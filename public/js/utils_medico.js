@@ -988,10 +988,8 @@ function regHorarios(direccion_id) {
             success: function (data) {
               console.log(JSON.stringify(data));
                 if (data.success){
-                  alert('success');
                   bootbox.hideAll();
                 } else {
-                  alert('no success');
                   if (data.error>0){
                       manejadorDeErrores(data.error);
                   }
@@ -1831,7 +1829,7 @@ function traerAseguradoras(){
               clase = 'btn-default';
             }
             cont += '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
-            '<label class="btn btn-xs btn-info">'+
+            '<label class="btn btn-xs '+ clase +'">'+
             '<span>'+item.Especialidad.especialidad+'</span>'+
             '</label>'+
             '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+item.id+'\',this);" >'+
