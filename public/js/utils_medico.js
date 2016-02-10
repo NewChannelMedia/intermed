@@ -3270,7 +3270,6 @@ function guardarInformacionPersonal(){
   }else {
     alert('Falta un campo');
   }
-
 }
 
 function agregarExpecialidad(element){
@@ -3279,10 +3278,22 @@ function agregarExpecialidad(element){
     especialidad:esp,
     checado:0
   },function( data ){
-    if( data != null ){
-      loadEspecialidades();
+    if( data.success ){
+       $('#'+element).val('');
+      var cont = '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
+      '<label class="btn btn-xs btn-info">'+
+      '<span>'+data.Especialidad.especialidad+'</span>'+
+      '</label>'+
+      '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+data.id+'\');" >'+
+      '<span class="glyphicon glyphicon-remove"></span></button></div>';
+      $('#especialidadesListBoot').append(cont);
+
     }else{
-      console.log("ERror al agregar la especialidad");
+      if (!data.existe){
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
     }
   });
 }
@@ -3293,10 +3304,21 @@ function agregarSubespecialidad(element){
     especialidad:esp,
     checado:1
   },function( data ){
-    if( data != null ){
-      loadEspecialidades();
+    if( data.success ){
+       $('#'+element).val('');
+      var cont = '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
+      '<label class="btn btn-xs btn-info">'+
+      '<span>'+data.especialidad+'</span>'+
+      '</label>'+
+      '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+data.id+'\');" >'+
+      '<span class="glyphicon glyphicon-remove"></span></button></div>';
+      $('#subEspecialidadesListBoot').append(cont);
     }else{
-      console.log("ERror al agregar la especialidad");
+      if (!data.existe){
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
     }
   });
 }

@@ -1040,16 +1040,41 @@ var _this = module.exports = {
         }
       }).then(function(esp){
         if (esp){
-            res.send(esp);
+          creado['success'] = false;
+          creado['existe'] = true;
+          res.send(esp);
         }else{
           models.MedicoEspecialidad.create({
             especialidad_id: parseInt(req.body.especialidad),
             subEsp: parseInt(req.body.checado),
             medico_id: parseInt(req.session.passport.user.Medico_id)
           }).then(function(creado){
-            res.send(creado);
+            models.MedicoEspecialidad.findOne({
+              where:{
+                especialidad_id: parseInt(req.body.especialidad),
+                medico_id: parseInt(req.session.passport.user.Medico_id)
+              }
+            }).then(function(creado){
+              models.Especialidad.findOne({
+                where: {
+                  id: creado.especialidad_id
+                }
+              }).then(function(especialidad){
+                creado = JSON.parse(JSON.stringify(creado));
+                creado['Especialidad'] = JSON.parse(JSON.stringify(especialidad));
+                if (especialidad){
+                  creado['success'] = true;
+                }
+                res.send(creado);
+              });
+            });
           });
         }
+      });
+    } else {
+      res.status(200).json({
+        success: false,
+        error: 1
       });
     }
   },
