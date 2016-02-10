@@ -1040,8 +1040,8 @@ var _this = module.exports = {
         }
       }).then(function(esp){
         if (esp){
-          creado['success'] = false;
-          creado['existe'] = true;
+          esp['success'] = false;
+          esp['existe'] = true;
           res.send(esp);
         }else{
           models.MedicoEspecialidad.create({

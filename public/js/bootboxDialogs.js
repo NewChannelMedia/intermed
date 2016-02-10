@@ -316,17 +316,34 @@ function agregarUbicacion(ubicacion_id){
 
 
       '<div id="divHorarios" class="tab-pane fade divBodyBootbox">'+
+        '<div class="row" style="margin-top:-10px;">'+
+          '<div class="row">'+
+            '<div class="row">'+
+              '<div class="col-lg-12 col-md-12 UbicHidden">'+
+                '<div class="row divActionsUbic">'+
+                  '<div class="col-lg-4 col-md-4 action action-All" onclick="calendarSeleccionarTodo()">'+
+                    '<span class="glyphicon glyphicon-ok"></span>'+
+                    '<span>Todo disponible</span>'+
+                  '</div>'+
+                  '<div class="col-lg-4 col-md-4 action action-Busy" onclick="calendarSeleccionarNada()">'+
+                    '<span class="glyphicon glyphicon-remove"></span>'+
+                    '<span>Todo ocupado</span>'+
+                  '</div>'+
+                  '<div class="col-lg-4 col-md-4 action action-Office" onclick="calendarHorarioOficina()">'+
+                    '<span class="glyphicon glyphicon-calendar"></span>'+
+                    '<span>Horario de oficina</span>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
         '<form method="POST" name="frmRegHorarios" id="frmRegHorarios" onsubmit="return false;">'+
             '<input type="hidden" id="horariosUbi" name="horariosUbi" value="" />'+
             '<input type="hidden" id="direccion_id" name="direccion_id" value="" />'+
             '<div class="row">'+
-                '<div class="col-md-12" id="divCalendarioPadre"><div id="divCalendario"></div></div>'+
-                '<div class="col-md-6">'+
-                    '<button class="btn btn-danger btn-md" onclick="vaciarCalendario()">'+
-                        '<span class="glyphicon glyphicon-trash"></span>'+
-                    '</button>'+
-                '</div>'+
-                '<div class="col-md-6"><input type="button" class="btn btn-save btn-md btn-block" id="btnRegHorarios" value="Guardar Horarios" onclick="regHorarios()"></div>'+
+                '<div class="col-md-12" id="divCalendarioPadre"><div id="divCalendario" class="regHorMed"></div></div>'+
+                '<div class="col-md-6 pull-right"><input type="button" class="btn btn-save btn-md btn-block" id="btnRegHorarios" value="Guardar Horarios" onclick="regHorarios()"></div>'+
             '</div>'+
         '</form>'+
         '<!--<input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarHorariosBot();">-->'+

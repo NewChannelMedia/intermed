@@ -971,6 +971,9 @@ function regUbicacion(salir) {
 }
 //Registrar Ubicacion
 function regHorarios(direccion_id) {
+    if (!direccion_id){
+      direccion_id = $('#direccion_id').val();
+    }
     if (regHorariosValid() == true) {
         //agregar horarios al control
         $('#horariosUbi').val(JSON.stringify(obtenerHorariosAgenda(direccion_id)));
@@ -983,9 +986,12 @@ function regHorarios(direccion_id) {
             data: $('#frmRegHorarios').serialize(),
             type: 'POST',
             success: function (data) {
+              console.log(JSON.stringify(data));
                 if (data.success){
+                  alert('success');
                   bootbox.hideAll();
                 } else {
+                  alert('no success');
                   if (data.error>0){
                       manejadorDeErrores(data.error);
                   }

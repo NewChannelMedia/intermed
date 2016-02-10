@@ -2543,6 +2543,13 @@ div.Slider{
   background-size: 100% 27px;
 }
 
+#divCalendario.regHorMed.regBack div.fc-event-container a.fc-time-grid-event,
+#divCalendario.regHorMed.regBack div.fc-event-container .fc-event .fc-bg{
+  background-size: 100% 24px;
+}
+
+
+
 th.fc-day-header.fc-widget-header{
   text-transform: uppercase;
   padding-bottom: 10px;

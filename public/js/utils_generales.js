@@ -1010,6 +1010,10 @@ function iniciarDivCalendario(direccion_id){
   if (!direccion_id){
     direccion_id = $('#idDireccion').val();
   }
+  var clase = '';
+  if ($('#divMapRegHor').length==0){
+    clase = 'regBack';
+  }
   $.ajax({
       url: '/horariosObtener',
       type: 'POST',
@@ -1021,7 +1025,7 @@ function iniciarDivCalendario(direccion_id){
         $('#horariosUbi').val(data.horarios);
         $('#direccion_id').val(data.direccion_id);
         $("#divCalendario").remove();
-        $("#divCalendarioPadre").html('<div id="divCalendario" class="regHorMed"></div>');
+        $("#divCalendarioPadre").html('<div id="divCalendario" class="regHorMed '+ clase +'"></div>');
         setTimeout(function(){iniciarCalendario(data.horarios)},300);
 
       },
