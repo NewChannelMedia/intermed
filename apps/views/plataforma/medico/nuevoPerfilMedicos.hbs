@@ -237,7 +237,7 @@
                         {{valSession "municipio"}}, {{valSession "estado"}}. MX
                       {{/ifSession}}</h4>
 
-                    <ul class="list-inline profile-esp">
+                    <ul class="list-inline profile-esp user">
                       {{#eachValSession "especialidades"}}
                         {{#unless subEsp}}
                         <li>
@@ -246,9 +246,8 @@
                         {{/unless}}
                       {{/eachValSession}}
                       <span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarEspecialidades()"></span>
-
                     </ul>
-                    <ul class="list-inline profile-subesp">
+                    <ul class="list-inline profile-subesp user">
                       {{#ifsubEsp}}
                         <li>
                           Subespecialidad:
@@ -262,7 +261,6 @@
                         {{/eachValSession}}
                       {{/ifsubEsp}}
                     </ul>
-                    <a href="#" id="editaMedicoPerfil" onclick="editMedicoPerfil();">Edita tu perfil</a>
                   {{/if}}
                 </div>
               </div>

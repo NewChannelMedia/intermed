@@ -530,6 +530,24 @@ function actualizarSesion(refresh) {
           });
         }
 
+        var especialidades = '';
+        var subespecialidades = '';
+        data.session.especialidades.forEach(function(esp){
+          var contenido = '<li>'+ esp.Especialidad.especialidad +'</li>';
+          if (esp.subEsp){
+            subespecialidades += contenido;
+          } else {
+            especialidades += contenido;
+          }
+        });
+        especialidades += '<span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarEspecialidades()"></span>';
+        if (subespecialidades != ""){
+          subespecialidades = '<li>Subespecialidad:</li>' + subespecialidades;
+        }
+
+        $('.user.profile-esp').html(especialidades);
+        $('.user.profile-subesp').html(subespecialidades);
+
         if ( data.session.ciudad ) {
           $( '#session_ubicacion' ).html( data.session.ciudad + ', ' + data.session.estado );
         }
@@ -1810,7 +1828,7 @@ function traerAseguradoras(){
             '<label class="btn btn-xs btn-info">'+
             '<span>'+item.Especialidad.especialidad+'</span>'+
             '</label>'+
-            '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+item.id+'\');" >'+
+            '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+item.id+'\',this);" >'+
             '<span class="glyphicon glyphicon-remove"></span></button></div>';
           });
           $('#regmedEsp').html(cont);
@@ -1822,7 +1840,7 @@ function traerAseguradoras(){
             '<label class="btn btn-xs btn-info">'+
             '<span>'+item.Especialidad.especialidad+'</span>'+
             '</label>'+
-            '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+item.id+'\');" >'+
+            '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+item.id+'\',this);" >'+
             '<span class="glyphicon glyphicon-remove"></span></button></div>';
             if (item.subEsp == 1){
               subesp += cont;
@@ -1927,12 +1945,13 @@ function traerAseguradoras(){
         }
       });
     }
-    function deleteEsp(id){
+    function deleteEsp(id, element){
       bootbox.confirm('¿Estas seguro de eliminar esto?',function(result){
         if(result){
           $.post('/deleteEsp',{id:id}, function( data ){
             if( data == "OK" ){
-              loadEspecialidades();
+              $(element).parent().remove();
+              actualizarSesion();
             }else{
               console.log("Error al eliminar especialidades");
             }
@@ -3253,7 +3272,6 @@ function guardarInformacionPersonal(){
       cache: false,
       type: 'POST',
       success: function( data ) {
-        console.log('result: ' + JSON.stringify(data));
         if (data.success){
           actualizarSesion();
           bootbox.hideAll();
@@ -3284,10 +3302,10 @@ function agregarExpecialidad(element){
       '<label class="btn btn-xs btn-info">'+
       '<span>'+data.Especialidad.especialidad+'</span>'+
       '</label>'+
-      '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+data.id+'\');" >'+
+      '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+data.id+'\',this);" >'+
       '<span class="glyphicon glyphicon-remove"></span></button></div>';
       $('#especialidadesListBoot').append(cont);
-
+      actualizarSesion();
     }else{
       if (!data.existe){
         if (data.error){
@@ -3308,11 +3326,12 @@ function agregarSubespecialidad(element){
        $('#'+element).val('');
       var cont = '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
       '<label class="btn btn-xs btn-info">'+
-      '<span>'+data.especialidad+'</span>'+
+      '<span>'+data.Especialidad.especialidad+'</span>'+
       '</label>'+
-      '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+data.id+'\');" >'+
+      '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+data.id+'\',this);" >'+
       '<span class="glyphicon glyphicon-remove"></span></button></div>';
       $('#subEspecialidadesListBoot').append(cont);
+      actualizarSesion();
     }else{
       if (!data.existe){
         if (data.error){
