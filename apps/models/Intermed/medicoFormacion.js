@@ -33,6 +33,14 @@ module.exports = function ( sequelize, DataTypes ) {
       type: DataTypes.INTEGER,
       required: true
     },
+    estado_id: {
+      type: DataTypes.BIGINT,
+      required: true
+    },
+    municipio_id: {
+      type: DataTypes.BIGINT,
+      required: true
+    },
     medico_id: {
       type: DataTypes.BIGINT,
       required: true
@@ -40,7 +48,9 @@ module.exports = function ( sequelize, DataTypes ) {
   }, {
     classMethods: {
       associate: function ( models ) {
-        MedicoFormacion.belongsTo( models.Medico )
+        MedicoFormacion.belongsTo( models.Medico );
+        MedicoFormacion.belongsTo( models.Municipio );
+        MedicoFormacion.belongsTo( models.Estado );
       }
     },
     timestamps: false,

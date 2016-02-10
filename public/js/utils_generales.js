@@ -368,37 +368,40 @@ function validateForm( tipoForm, nameForm ){
 //<---------------------------------------------------->
 var base64file;
 
-$( function () {
-  $( '#imageFile' ).change( function () {
-    base64file = '';
-    var tamanio = $( this )[ 0 ].files[ 0 ].size;
-    if ( tamanio < 1048576 ) {
-      cambioFotoPerfil();
-      $( '#btnCrop' ).hide();
-      document.getElementById( "contenedorFoto" ).innerHTML = '<img id="fotoPerfilNueva" >';
-      var reader = new FileReader();
-      var fotoPerfilNueva = $( '#fotoPerfilNueva' );
-      reader.onload = function ( e ) {
-        fotoPerfilNueva.attr( "src", e.target.result );
-        var x = document.getElementById( "fotoPerfilNueva" ).width;
-        var y = document.getElementById( "fotoPerfilNueva" ).height;
-        if ( x > y ) x = y;
-        fotoPerfilNueva.Jcrop( {
-          onChange: SetCoordinates,
-          onSelect: SetCoordinates,
-          boxWidth: 570,
-          aspectRatio: 1,
-          setSelect: [ x * 0.1, x * 0.1, x - ( x * 0.1 ), x - ( x * 0.1 ) ]
-        } );
-      }
-      reader.readAsDataURL( $( this )[ 0 ].files[ 0 ] );
+function seleccionarImagenPerfil(element) {
+  base64file = '';
+  var tamanio = $( element )[ 0 ].files[ 0 ].size;
+  $('#contenedorFoto').html('');
+  if ( tamanio < 1048576 ) {
+    $('#tabPerfil').removeClass('active');
+    $('#tabImagen').addClass('active');
+    //cambioFotoPerfil();
+    $( '#btnCrop' ).hide();
+    document.getElementById( "contenedorFoto" ).innerHTML = '<img id="fotoPerfilNueva" >';
+    var reader = new FileReader();
+    var fotoPerfilNueva = $( '#fotoPerfilNueva' );
+    reader.onload = function ( e ) {
+      fotoPerfilNueva.attr( "src", e.target.result );
+      var x = document.getElementById( "fotoPerfilNueva" ).width;
+      var y = document.getElementById( "fotoPerfilNueva" ).height;
+      if ( x > y ) x = y;
+      fotoPerfilNueva.Jcrop( {
+        onChange: SetCoordinates,
+        onSelect: SetCoordinates,
+        boxWidth: 570,
+        aspectRatio: 1,
+        setSelect: [ x * 0.1, x * 0.1, x - ( x * 0.1 ), x - ( x * 0.1 ) ]
+      } );
     }
-    else {
-      $( '#imageFile' ).val( '' );
-      alert( "La imagen es muy grande, selecciona otra" );
-    }
-  } );
-} );
+    reader.readAsDataURL( $( element )[ 0 ].files[ 0 ] );
+  }
+  else {
+    $( '#imageFile' ).val( '' );
+    alert( "La imagen es muy grande, selecciona otra" );
+  }
+}
+
+
 function SetCoordinates( c ) {
   var imgX1 = c.x,
     imgY1 = c.y,
@@ -1007,6 +1010,10 @@ function iniciarDivCalendario(direccion_id){
   if (!direccion_id){
     direccion_id = $('#idDireccion').val();
   }
+  var clase = '';
+  if ($('#divMapRegHor').length==0){
+    clase = 'regBack';
+  }
   $.ajax({
       url: '/horariosObtener',
       type: 'POST',
@@ -1018,7 +1025,7 @@ function iniciarDivCalendario(direccion_id){
         $('#horariosUbi').val(data.horarios);
         $('#direccion_id').val(data.direccion_id);
         $("#divCalendario").remove();
-        $("#divCalendarioPadre").html('<div id="divCalendario" class="regHorMed"></div>');
+        $("#divCalendarioPadre").html('<div id="divCalendario" class="regHorMed '+ clase +'"></div>');
         setTimeout(function(){iniciarCalendario(data.horarios)},300);
 
       },
@@ -1241,6 +1248,9 @@ $( document ).ready( function () {
 
     cargarListaEspCol( $( '#usuarioPerfil' ).val() );
 
+    cargarFormacionAcademica();
+    cargarExperienciaLaboral();
+
     cargarComentariosMedico();
 
     $('#buscadorEspecial').on('input',function(e){
@@ -1304,17 +1314,24 @@ function formatearFechaComentario(fecha){
   var anio = fecha[2];
   return parseInt(dia) + ' de ' + mes + ' de ' + anio ;
 }
-function CambiarVisible(anterior,nuevo, formacion_id){
+function CambiarVisible(anterior,nuevo, formacion_id, experiencia_id){
   $('#formAcademica')[0].reset();
-  if (formacion_id){
+  if (formacion_id || experiencia_id){
+
     $('#divInicio').removeClass('col-md-10');
     $('#divInicio').addClass('col-md-3');
     $('#divFin').removeClass('hidden');
     $('#divGrado').removeClass('hidden');
+
+    $('#formacion_id').val('');
+    $('#experiencia_id').val('');
+
     if (formacion_id>0 && !(formacion_id === true)){
       //AJax para traer la informacion de la formacion_id
-      console.log('AJAX: formacion_id ' + formacion_id);
       cargarFormacionAcademicaByID(formacion_id);
+    } else if (experiencia_id>0 && !(experiencia_id === true)){
+      //AJax para traer la informacion de la formacion_id
+      cargarExperienciaLaboralById(experiencia_id);
     }
   }
 
@@ -1575,6 +1592,9 @@ function guardarImagenPerfil() {
     success: function ( data ) {
       if ( data.result === 'success' ) {
         actualizarSesion();
+
+        $('#tabPerfil').addClass('active');
+        $('#tabImagen').removeClass('active');
       }
       else {
         alert( 'No se pudo guardar la imagen' );
@@ -1955,11 +1975,12 @@ function cargarCiudades(id){
   var idABuscar = $(id).val();// se saca el value del select de estados
   // se hace la consulta se manda como parametro el id que se obtuvo de seleccionar el estado
   $.post('/cargarCiudades',{id:idABuscar}, function(data){
-    var cont = '<option value="0">Municipio/Ciudad</option>';
+    var cont = '<option value="0" selected disabled>Selecciona municipio/ciudad</option>';
     $.each(data,function(i, item){
       cont += '<option value="'+item.id+'">'+item.municipio+'</option>';
     });
     $("#selectCiudad").html(cont);
+    $('#selectCiudad').removeClass('invisible');
   });
 }
 function cargaEspecialidades(){
@@ -2398,4 +2419,24 @@ function iniciarSesionLocal(inputEmail, inputPassword){
     }
   });
   return false;
+}
+
+function cargarEstados(divestados){
+  $('#'+divestados).html('<option value=""></option>');
+  $.ajax({
+      url: '/obtenerEstados',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      async: false,
+      success: function (data) {
+        $('#'+divestados).html('<option value="" selected disabled>Selecciona estado</option>');
+          data.forEach(function (record) {
+              $('#'+divestados).append('<option value="' + record.id + '">' + record.estado + '</option>');
+          });
+      },
+      error: function (jqXHR, textStatus, err) {
+        console.log('ERROR: ' + JSON.stringify(err));
+      }
+  });
 }

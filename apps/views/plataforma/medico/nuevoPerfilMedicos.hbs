@@ -180,9 +180,7 @@
                   {{#if usuario.id}}
                     <img class="header-profile-photo-img" src="{{usuario.urlFotoPerfil}}"  alt="perfil"/>
                   {{else}}
-                    <img class="header-profile-photo-img" src="{{valSession 'fotoPerfil'}}" id='fotoPerfil'  alt="perfil"/>
-                    <label for="imageFile">Cambiar Imagen</label>
-                    <input type="file" id="imageFile" style="display:none">
+                    <img class="header-profile-photo-img fotoPerfil" src="{{valSession 'fotoPerfil'}}" id='fotoPerfil'  alt="perfil"/>
                   {{/if}}
                 </div>
               </div>
@@ -225,16 +223,21 @@
                     </ul>
                   {{else}}
                     <h2 class="profile-name" style="text-transform:capitalize;">
-                    {{#ifSession "name"}}
-                      Dr. {{valSession "name"}}
-                      {{else}}
-                      No tenemos tu nombre registrado, continúa tu registro <a onclick="registroMedicoDatosPersonales()">aquí</a>.
-                    {{/ifSession}}</h2>
+                      <span class="name">
+                        {{#ifSession "name"}}
+                          Dr. {{valSession "name"}}
+                          {{else}}
+                          No tenemos tu nombre registrado, continúa tu registro <a onclick="registroMedicoDatosPersonales()">aquí</a>.
+                        {{/ifSession}}
+                      </span>
+                      <span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarPerfilPersonal()"></span>
+                    </h2>
                     <h4 class="profile-location">
                       {{#ifSession "municipio"}}
                         {{valSession "municipio"}}, {{valSession "estado"}}. MX
                       {{/ifSession}}</h4>
-                    <ul class="list-inline profile-esp">
+
+                    <ul class="list-inline profile-esp user">
                       {{#eachValSession "especialidades"}}
                         {{#unless subEsp}}
                         <li>
@@ -242,8 +245,9 @@
                         </li>
                         {{/unless}}
                       {{/eachValSession}}
+                      <span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarEspecialidades()"></span>
                     </ul>
-                    <ul class="list-inline profile-subesp">
+                    <ul class="list-inline profile-subesp user">
                       {{#ifsubEsp}}
                         <li>
                           Subespecialidad:
@@ -257,7 +261,6 @@
                         {{/eachValSession}}
                       {{/ifsubEsp}}
                     </ul>
-                    <a href="#" id="editaMedicoPerfil" onclick="editMedicoPerfil();">Edita tu perfil</a>
                   {{/if}}
                 </div>
               </div>
@@ -712,49 +715,8 @@
                       <span class="whiteF h67-medcond s30">Formación Académica</span>
                     </div>
                   </div>
-                  <div class="cv-info whiteF s15">
-                    <p class="cv-element col-md-12 col-sm-12 col-xs-6">
-                      <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
-                      <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
-                      <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
-                      <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
-                      <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
-                    </p>
-                    <p class="cv-element col-md-12 col-sm-12 col-xs-6">
-                      <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
-                      <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
-                      <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
-                      <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
-                      <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
-                    </p>
-                    <p class="cv-element col-md-12 col-sm-12 col-xs-6">
-                      <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
-                      <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
-                      <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
-                      <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
-                      <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
-                    </p>
-                    <p class="cv-element col-md-12 col-sm-12 col-xs-6">
-                      <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
-                      <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
-                      <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
-                      <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
-                      <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
-                    </p>
-                    <p class="cv-element col-md-12 col-sm-12 col-xs-6">
-                      <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
-                      <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
-                      <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
-                      <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
-                      <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
-                    </p>
-                    <p class="cv-element col-md-12 col-sm-12 col-xs-6">
-                      <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
-                      <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
-                      <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
-                      <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
-                      <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
-                    </p>
+                  <div class="cv-info whiteF s15" id="divFormAcad">
+
                   </div>
                 </div>
               </div>
@@ -778,35 +740,7 @@
                       <span class="whiteF h67-medcond s30">Experiencia Laboral</span>
                     </div>
                   </div>
-                  <div class="cv-info whiteF s15">
-                    <p class="cv-element col-md-12 col-sm-12 col-xs-6">
-                      <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
-                      <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
-                      <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
-                      <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
-                      <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
-                    </p>
-                    <p class="cv-element col-md-12 col-sm-12 col-xs-6">
-                      <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
-                      <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
-                      <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
-                      <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
-                      <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
-                    </p>
-                    <p class="cv-element col-md-12 col-sm-12 col-xs-6">
-                      <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
-                      <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
-                      <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
-                      <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
-                      <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
-                    </p>
-                    <p class="cv-element col-md-12 col-sm-12 col-xs-6">
-                      <strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">Universidad</span><br>
-                      <strong class="h85-heavy">Especialidad:</strong>&nbsp;<span name="institucion" class="h45-light">Médico Cirujano</span><br>
-                      <strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">1998</span><br>
-                      <strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">2004</span><br>
-                      <strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>
-                    </p>
+                  <div class="cv-info whiteF s15" id="divExpLab">
                   </div>
                 </div>
               </div>

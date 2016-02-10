@@ -316,17 +316,34 @@ function agregarUbicacion(ubicacion_id){
 
 
       '<div id="divHorarios" class="tab-pane fade divBodyBootbox">'+
+        '<div class="row" style="margin-top:-10px;">'+
+          '<div class="row">'+
+            '<div class="row">'+
+              '<div class="col-lg-12 col-md-12 UbicHidden">'+
+                '<div class="row divActionsUbic">'+
+                  '<div class="col-lg-4 col-md-4 action action-All" onclick="calendarSeleccionarTodo()">'+
+                    '<span class="glyphicon glyphicon-ok"></span>'+
+                    '<span>Todo disponible</span>'+
+                  '</div>'+
+                  '<div class="col-lg-4 col-md-4 action action-Busy" onclick="calendarSeleccionarNada()">'+
+                    '<span class="glyphicon glyphicon-remove"></span>'+
+                    '<span>Todo ocupado</span>'+
+                  '</div>'+
+                  '<div class="col-lg-4 col-md-4 action action-Office" onclick="calendarHorarioOficina()">'+
+                    '<span class="glyphicon glyphicon-calendar"></span>'+
+                    '<span>Horario de oficina</span>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
         '<form method="POST" name="frmRegHorarios" id="frmRegHorarios" onsubmit="return false;">'+
             '<input type="hidden" id="horariosUbi" name="horariosUbi" value="" />'+
             '<input type="hidden" id="direccion_id" name="direccion_id" value="" />'+
             '<div class="row">'+
-                '<div class="col-md-12" id="divCalendarioPadre"><div id="divCalendario"></div></div>'+
-                '<div class="col-md-6">'+
-                    '<button class="btn btn-danger btn-md" onclick="vaciarCalendario()">'+
-                        '<span class="glyphicon glyphicon-trash"></span>'+
-                    '</button>'+
-                '</div>'+
-                '<div class="col-md-6"><input type="button" class="btn btn-save btn-md btn-block" id="btnRegHorarios" value="Guardar Horarios" onclick="regHorarios()"></div>'+
+                '<div class="col-md-12" id="divCalendarioPadre"><div id="divCalendario" class="regHorMed"></div></div>'+
+                '<div class="col-md-6 pull-right"><input type="button" class="btn btn-save btn-md btn-block" id="btnRegHorarios" value="Guardar Horarios" onclick="regHorarios()"></div>'+
             '</div>'+
         '</form>'+
         '<!--<input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarHorariosBot();">-->'+
@@ -1986,197 +2003,6 @@ function manejadorDeErrores(error){
     '</div>'
   });
 }
-function editMedicoPerfil(){
-  $('.modal-body').css('padding',0);
-  bootbox.dialog({
-    onEscape: function () {
-      bootbox.hideAll();
-  },
-  className: 'Intermed-Bootbox',
-  title: '<span class="title"></span>',
-  backdrop: true,
-  size:'large',
-  message:
-    '<style>.modal-header .close {margin-top: -17px;margin-right: -9px;}</style>'+
-    '<ul class="nav nav-tabs menuBootbox" style="margin:-15px;margin-bottom:0px">'+
-      '<li role="presentation" class="active" >'+
-        '<a href="#general" aria-control="general" role="tab" data-toggle="tab">'+
-          '<span class="glyphicon glyphicon-th">&nbsp;Generales</span>'+
-        '</a>'+
-      '</li>'+
-      '<li role="presentation" >'+
-        '<a href="#padecimiento" aria-control="padecimiento" role="tab" data-toggle="tab">'+
-          '<span class="glyphicon glyphicon-plus-sign">&nbsp;Padecimientos</span>'+
-        '</a>'+
-      '</li>'+
-    '</ul>'+
-    '<div class="tab-content tabBootBox">'+
-      '<div class="tab-pane active" role="tabpanel" id="general">'+
-          '<div class="container-fluid">'+
-            '<div class="row">'+
-              '<div class="col-md-4">'+
-                '<img id="imgPerfilMedic" src="" width="200" height="200" class="img-rounded">'+
-              '</div>'+
-              '<div class="col-lg-8 input-group">'+
-                '<input type="text" id="editNombreMed" class="form-control" placeholder="Nombre" />'+
-                '<span class="input-group-btn">'+
-                  '<button id="editMedNombre" class="btn btn-danger" type="button" onclick="editGenerales(1)">'+
-                    '<span class="glyphicon glyphicon-wrench"></span>'+
-                  '</button>'+
-                '</span>'+
-              '</div>'+
-              '<div class="col-lg-8 input-group">'+
-                '<input type="text" id="editApellidoPMed" class="form-control" placeholder="Apellido paterno" />'+
-                '<span class="input-group-btn">'+
-                  '<button id="editMedApellidoP" class="btn btn-danger" type="button" onclick="editGenerales(2)">'+
-                    '<span class="glyphicon glyphicon-wrench"></span>'+
-                  '</button>'+
-                '</span>'+
-              '</div>'+
-              '<div class="col-lg-8 input-group">'+
-                '<input type="text" id="editApellidoMMed" class="form-control" placeholder="Apellido materno" />'+
-                '<span class="input-group-btn">'+
-                  '<button id="editMedApellidoM" class="btn btn-danger" type="button" onclick="editGenerales(3)">'+
-                    '<span class="glyphicon glyphicon-wrench"></span>'+
-                  '</button>'+
-                '</span>'+
-              '</div>'+
-              '<hr>'+
-              '<!-- Fecha de nacimiento -->'+
-              '<div class="hidden" id="actualizoFecha">'+
-                '<small>ACTUALIZO LA FECHA</small>'+
-              '</div>'+
-              '<div class="col-lg-6">'+
-                '<label for="fechaNacimiento"><span class="glyphicon glyphicon-calendar">'+
-                '&nbsp;Fecha de nacimiento(&nbsp;'+
-                  '<small><span class="label label-danger" id="muestraFecha"></span></small>'+
-                '&nbsp;) "Mes/Dia/Año"'+
-                '</span></label>'+
-                '<div class="input-group">'+
-                  '<input type="date"class="form-control" id="fechaNacimiento"/>'+
-                  '<span class="input-group-btn">'+
-                    '<button class="btn btn-warning" title="Guardar fecha" onclick="regFechaNacimiento(\'#fechaNacimiento\');" type="button">'+
-                      '<span class="glyphicon glyphicon-gift"></span>'+
-                    '</button>'+
-                  '</span>'+
-                '</div>'+
-              '</div>'+
-              '<div class="col-md-12 hidden" id="divEditGeneral">'+
-                '<h4 id="tipoUpdate" style="color:green;"></h4>'+
-              '</div>'+
-            '</div>'+
-          '</div>'+
-        '<hr>'+
-        '<div class="container-fluid">'+
-          '<div class="row">'+
-            '<h4 style="color:white;">Especialidades</h4>'+
-            '<!-- AUTOCOMPLETE -->'+
-              '<div class="col-md-4 form-group">'+
-                '<select id="autoEspecialidad" class="form-control"></select>'+
-              '</div>'+
-              '<div class="col-md-4 checkbox form-group">'+
-                '<label style="color:white;">'+
-                  '<input type="checkbox" id="subEspEdit" name="subEsp" value="0"/>¿Es sub especialidad?'+
-                '</label>'+
-              '</div>'+
-              '<div class="col-md-4 form-group">'+
-                '<button id="addEspecialidadMedic" onclick="editEspecialidades();" class="btn btn-success form-control" type="button">'+
-                  '<span class="glyphicon glyphicon-floppy-disk" style="color:white;"></span>'+
-                '</button>'+
-              '</div>'+
-            '<!-- FIN DEL AUTOCOMPLETE -->'+
-          '</div>'+
-        '</div>'+
-        '<hr>'+
-        '<div class="container-fluid">'+
-          '<div class="row">'+
-            '<div class="col-md-6">'+
-                '<!-- TABlA PARA EL CONTENIDO DONDE PODRA ELIMINAR -->'+
-                  '<table class="table table-condensed">'+
-                    '<thead style="color:white;">'+
-                      '<th><center>#</center></th>'+
-                      '<th><center><span class="glyphicon glyphicon-leaf">&nbsp;Especialidad</span></center></th>'+
-                      '<th><center><span class="glyphicon glyphicon-warning-sign">&nbsp;Eliminar</span></center></th>'+
-                    '</thead>'+
-                    '<tbody id="tableEspecialidades" style="color:white;">'+
-                    '</tbody>'+
-                  '</table>'+
-                '<!-- FIN DE LA TABLA -->'+
-            '</div>'+
-            '<div class="col-md-6">'+
-            '  <!-- TABLA PARA EL CONTENIDO DE SUBESPECIALIDADES -->'+
-                '<table class="table table-condensed">'+
-                  '<thead style="color:white;">'+
-                    '<th><center>#</center></th>'+
-                    '<th><center><span class="glyphicon glyphicon-heart-empty">&nbsp;Sub especialidad</span></center></th>'+
-                    '<th><center><span class="glyphicon glyphicon-warning-sign">&nbsp;Eliminar</span></center></th>'+
-                  '</thead>'+
-                  '<tbody id="tableSubEspecialidades" style="color:white;">'+
-                  '</tbody>'+
-                '</table>'+
-              '<!-- FIN DE TABLA PARA EL CONTENIDO DE SUBESPECIALIDADES -->'+
-            '</div>'+
-          '</div>'+
-        '</div>'+
-      '</div>'+
-      '<div class="tab-pane" role="tabpanel" id="padecimiento">'+
-        '<div class="container-fluid">'+
-          '<div class="row">'+
-            '<div class="col-md-6 ">'+
-              '<h4 style="color:white;">Padecimiento</h4>'+
-              '<div class="input-group">'+
-                '<select class="form-control" id="editPadeMedic"></select>'+
-                '<span class="input-group-btn">'+
-                  '<button id="padeEditMedic" onclick="editPadecimientos();" class="btn btn-success" type="button">'+
-                    '<span class="lyphicon glyphicon-plus"></span>'+
-                  '</button>'+
-                '</span>'+
-              '</div>'+
-              '<hr>'+
-              '<table class="table table-condensed">'+
-                '<thead style="color:white;">'+
-                  '<th><center>#</center></th>'+
-                  '<th><center><span class="glyphicon glyphicon-heart-empty">&nbsp;Padecimiento</span></center></th>'+
-                  '<th><center><span class="glyphicon glyphicon-trash">&nbsp;Eliminar</span></center></th>'+
-                '</thead>'+
-                '<tbody id="tablePadecimientos" style="color:white;">'+
-                '</tbody>'+
-            '  </table>'+
-            '</div>'+
-            '<div class="col-md-6">'+
-              '<h4 style="color:white;">Palabras clave</h4>'+
-              '<div class="input-group">'+
-                '<input type="text" class="form-control" id="autoPalabras" placeholder="Palabras clave"/>'+
-                '<span class="input-group-btn">'+
-                  '<button id="palabrasEdit" onclick="editPalabrasClave();"class="btn btn-success form-control" type="button">'+
-                    '<span class="glyphicon glyphicon-plus"></span>'+
-                  '</button>'+
-                '</span>'+
-              '</div>'+
-              '<hr>'+
-              '<table class="table table-condensed">'+
-                '<thead style="color:white;">'+
-                  '<th><center>#</center></th>'+
-                  '<th><center><span class="glyphicon glyphicon-pushpin">&nbsp;Palabras clave</span></center></th>'+
-                  '<th><center><span class="glyphicon glyphicon-trash">&nbsp;Eliminar</span></center></th>'+
-                '</thead>'+
-                '<tbody id="tablePalabras" style="color:white;">'+
-                '</tbody>'+
-              '</table>'+
-            '</div>'+
-          '</div>'+
-        '</div>'+
-      '</div>'+
-    '</div>'
-  });
-  loadGenerales();
-  loadEspecialidades();
-  loadPadecimientos();
-  loadPalabras();
-  traePadecimientos();
-  loadFechaNac("#fechaNacimiento");
-}
-
 
 
 function agendarCitaBootbox(){
@@ -3111,6 +2937,21 @@ function BootboxFormacionAcademica(){
 
             '<form id="formAcademica">'+
               '<input type="hidden" id="formacion_id">'+
+
+
+              '<div class="row">'+
+                '<div class="col-md-6">'+
+                  '<div class="form-group">'+
+                    '<select class="form-control" id="selectEstados" onchange="cargarCiudades(\'#selectEstados\');" name="estado"></select>'+
+                  '</div>'+
+                '</div>'+
+                '<div class="col-md-6">'+
+                  '<div class="form-group">'+
+                    '<select class="form-control invisible" id="selectCiudad"></select>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+
               '<div class="row">'+
                 '<div class="col-md-12">'+
                   '<div class="form-group">'+
@@ -3184,34 +3025,132 @@ function BootboxFormacionAcademica(){
       '</div>'
     });
 
+    cargarEstados('selectEstados');
     cargarFormacionAcademica();
 }
 
 function BootboxExperienciaLaboral(){
 
-      bootbox.dialog({
-        backdrop: true,
-        onEscape: function () {
-            bootbox.hideAll();
-        },
-        size:'large',
-        className: 'Intermed-Bootbox',
-        title: '<span class="title">Editar formación académica.</span>',
-        message:
-        '<div class="tab-content">'+
 
-          '<div id="divListaFormacion" class="tab-pane fade in active">'+
-            'LISTA'+
-            '<button onclick="CambiarVisible(\'divListaFormacion\',\'divAddFormacion\');">Cambiar</button>'+
-          '</div>'+
+        bootbox.dialog({
+          backdrop: true,
+          onEscape: function () {
+              bootbox.hideAll();
+          },
+          size:'large',
+          className: 'Intermed-Bootbox',
+          title: '<span class="title"></span>',
+          message:
+          '<style>.modal-header .close {margin-top: -17px;margin-right: -9px;}</style>'+
+          '<div class="tab-content Flama-normal">'+
 
-          '<div id="divAddFormacion" class="tab-pane fade">'+
-            'AGREGAR'+
-            '<button onclick="CambiarVisible(\'divAddFormacion\',\'divListaFormacion\');">Cambiar</button>'+
-          '</div>'+
+            '<div id="divListaExperiencia" class="tab-pane fade in active">'+
+              '<div class="row">'+
+                '<div class="col-md-10"><h2 class="whiteF" style="margin-top:0px">Tu experiencia laboral</h2></div>'+
+                '<div class="col-md-2"><input type="button" class="btn btn-warning btn-block" value="Agregar" onclick="CambiarVisible(\'divListaExperiencia\',\'divAddExperiencia\',true);"></div>'+
+              '</div>'+
 
-      '</div>'
-    });
+              '<div class="row">'+
+                '<div class="col-md-12">'+
+                `<table class="table">
+                  <thead>
+                    <tr style="background-color:#172c3b;color:white;">
+                      <th class="text-center">Institución</th>
+                      <th class="text-center">Especialidad</th>
+                      <th class="text-center">Inicio</th>
+                      <th class="text-center">Fin</th>
+                      <th class="text-center"></th>
+                      <th class="text-center"></th>
+                    </tr>
+                  </thead>
+                  <tbody style="background-color:#FFF;" class="text-center" id="formacionAcademicaList">
+                  </tbody>
+                </table>`+
+                '</div>'+
+              '</div>'+
+
+            '</div>'+
+
+            '<div id="divAddExperiencia" class="tab-pane fade">'+
+
+              '<div class="row">'+
+                '<div class="col-md-12"><h2 class="whiteF" style="margin-top:0px">Agregar experiencia laboral</h2></div>'+
+              '</div>'+
+
+              '<form id="formAcademica">'+
+                '<input type="hidden" id="experiencia_id">'+
+
+                '<div class="row">'+
+                  '<div class="col-md-6">'+
+                    '<div class="form-group">'+
+                      '<select class="form-control" id="selectEstados" onchange="cargarCiudades(\'#selectEstados\');" name="estado"></select>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="col-md-6">'+
+                    '<div class="form-group">'+
+                      '<select class="form-control invisible" id="selectCiudad"></select>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="row">'+
+                  '<div class="col-md-12">'+
+                    '<div class="form-group">'+
+                      '<input type="text" class="form-control" id="inputPuesto" placeholder="Puesto">'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="row">'+
+                  '<div class="col-md-12">'+
+                    '<div class="form-group">'+
+                      '<input type="text" class="form-control" id="inputInstitucion" placeholder="Institución">'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="row">'+
+                  '<div class="col-md-12">'+
+                    '<div class="form-group">'+
+                      '<textarea class="form-control" id="inputDescripcion" placeholder="Descripción" style="resize: none"></textarea>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="row">'+
+
+                  '<div class="col-md-2">'+
+                    '<div class="checkbox" style="text-align:center"><br/>'+
+                      '<label style="font-weight:bold">'+
+                        '<input type="checkbox" id="inputActual" onChange="cambiarActual(this)"> Actual'+
+                      '</label>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="col-md-3" id="divInicio">'+
+                    '<div class="form-group">'+
+                      '<label for="inputInicio">Inicio</label>'+
+                      '<input type="date" class="form-control" id="inputInicio">'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="col-md-3" id="divFin">'+
+                    '<div class="form-group">'+
+                      '<label for="inputFin">Fin</label>'+
+                      '<input type="date" class="form-control" id="inputFin">'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+              '</form>'+
+
+              '<div class="row">'+
+                '<div class="col-md-2"><input type="button" class="btn btn-danger btn-block" value="Cancelar" onclick="CambiarVisible(\'divAddExperiencia\',\'divListaExperiencia\');"></div>'+
+                '<div class="col-md-4 pull-right"><input type="button" class="btn btn-warning btn-block" value="Agregar" onclick="agregarExperienciaLaboral()"></div>'+
+              '</div>'+
+            '</div>'+
+
+        '</div>'
+      });
+      cargarEstados('selectEstados');
+      cargarExperienciaLaboral();
 }
 //<-------------- function to open login del archivero ------------------>
   function logEncrypt(){
@@ -3464,4 +3403,198 @@ function updatePasswordIntermed(){
     '</div>'
   });
   getMailSend('#validateEmail');
+}
+
+function editarPerfilPersonal(){
+  bootbox.dialog({
+    onEscape: function () {
+      bootbox.hideAll();
+  },
+  className: 'Intermed-Bootbox',
+  title: '<span class="title"></span>',
+  backdrop: true,
+  size:'large',
+  message:
+    '<style>.modal-header .close {margin-top: -17px;margin-right: -9px;}</style>'+
+    '<div class="tab-content tabBootBox">'+
+      '<div class="tab-pane active" role="tabpanel" id="tabPerfil">'+
+          '<div class="container-fluid">'+
+            '<div class="col-md-12">'+
+              '<div class="row">'+
+                '<div class="whiteF h77-boldcond" style="font-size: 18px;padding: 8px;background-color: #172C3B;margin: -10px;margin-bottom: 20px;">'+
+                  '<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;INFORMACIÓN PERSONAL.'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+            '<div class="col-md-4">'+
+              '<div class="profilePic header-profile-photo-link center-block">'+
+                '<img id="imgPerfilMedic" src="" width="200" height="200" class="img-rounded fotoPerfil">'+
+                '<label for="imageFile">Cambiar Imagen</label>'+
+                '<input type="file" id="imageFile" style="display:none" onchange="seleccionarImagenPerfil(this)">'+
+              '</div>'+
+            '</div>'+
+
+            '<div class="col-lg-8 input-group">'+
+              '<div class="row">'+
+                '<div class="col-md-12">'+
+                  '<input class="form-control" placeholder="Nombre" id="nombrePersonal">'+
+                '</div>'+
+              '</div>'+
+              '<div class="row">'+
+                '<div class="col-md-6">'+
+                  '<input class="form-control" placeholder="Apellido paterno" id="appPatPersonal">'+
+                '</div>'+
+                '<div class="col-md-6">'+
+                  '<input class="form-control" placeholder="Apellido materno" id="appMatPersonal">'+
+                '</div>'+
+              '</div>'+
+              '<div class="row">'+
+                '<div class="col-md-3">'+
+                  '<label for="fechaNacimiento">Fecha de nacimiento: </label>'+
+                '</div>'+
+                '<div class="col-md-9">'+
+                  '<input type="date" class="form-control" id="fechaNacimiento" style="text-align: center;"/>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+
+            '<div class="row">'+
+              '<div class="col-md-12">'+
+                '<div class="whiteF h77-boldcond" style="font-size: 18px;padding: 8px;background-color: #172C3B;margin: -10px;margin-bottom: 10px;margin-top:15px;">'+
+                  '<span class="glyphicon glyphicon-filter"></span>&nbsp;&nbsp;PALABRAS CLAVE.'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+
+            '<form onsubmit="return editPalabrasClave();">'+
+
+              '<div class="row">'+
+                '<div class="col-md-12">'+
+                  '<div class="input-group">'+
+                    '<input type="text" class="form-control" id="autoPalabras" placeholder="Palabras clave" required>'+
+                    '<span class="input-group-btn">'+
+                    '<button id="palabrasEdit" class="btn btn-success form-control" type="submit">'+
+                    '<span class="glyphicon glyphicon-plus"></span>'+
+                    '</button>'+
+                    '</span>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+            '</form>'+
+
+            '<div class="row">'+
+              '<div class="col-md-12" id="PalabrasClaveList" style="text-align: center;">'+
+              '</div>'+
+            '</div>'+
+
+            '<div class="col-lg-4 col-md-offset-8">'+
+              '<div class="row">'+
+                '<button class="btn btn-primary btn-block" onclick="guardarInformacionPersonal()">Guardar cambios</button>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+
+        '<div class="tab-pane" role="tabpanel" id="tabImagen">'+
+            '<div  id="CambiarFotoPerfil" name="CambiarFotoPerfil" >'+
+              '<form>'+
+                '<div class="col-md-12">'+
+                  '<div class="row" style="display: flex;align-items: center;justify-content: center;flex-direction: column;">'+
+                    '<input type="hidden" value="" name="base64file" id="base64file">'+
+                    '<div class="col-md-12" id="contenedorFoto" class="text-center" style="width: auto;margin: auto"></div>'+
+                    '<canvas id="canvas" height="300" width="300" style="display: none"></canvas>'+
+                  '</div>'+
+                '</div>'+
+              '</form>'+
+          '</div>'+
+          '<div class="row">'+
+              '<div class="col-md-4">'+
+                  '<div class="form-group">'+
+                      '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="$(\'#tabPerfil\').addClass(\'active\');$(\'#tabImagen\').removeClass(\'active\');">'+
+                  '</div>'+
+              '</div>'+
+              '<div class="col-md-6 col-md-offset-2">'+
+                  '<div class="form-group">'+
+                      '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Guardar" onclick="guardarImagenPerfil();">'+
+                  '</div>'+
+              '</div>'+
+          '</div>'+
+      '</div>'+
+    '</div>'
+  });
+  loadGenerales();
+  loadPalabras();
+  loadFechaNac("#fechaNacimiento");
+}
+
+
+function editarEspecialidades(){
+  bootbox.dialog({
+    onEscape: function () {
+      bootbox.hideAll();
+  },
+  className: 'Intermed-Bootbox',
+  title: '<span class="title"></span>',
+  backdrop: true,
+  message:
+    '<style>.modal-header .close {margin-top: -17px;margin-right: -9px;}</style>'+
+    '<div class="tab-content tabBootBox">'+
+      '<div class="tab-pane active" role="tabpanel" id="tabPerfil">'+
+          '<div class="container-fluid">'+
+              '<div class="row">'+
+                '<div class="col-md-12">'+
+                  '<div class="whiteF h77-boldcond" style="font-size: 18px;padding: 8px;background-color: #172C3B;margin: -10px;margin-bottom: 5px;">'+
+                    '<span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;ESPECIALIDADES.'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="col-md-12">'+
+                  '<div class="input-group">'+
+                    '<select id="autoEsp" class="form-control autoEspecialidad"></select>'+
+                    '<span class="input-group-btn">'+
+                      '<button id="addEspecialidadMedic" onclick="agregarExpecialidad(\'autoEsp\');" class="btn btn-primary form-control" type="button">'+
+                        '<span class="glyphicon glyphicon-plus"></span>'+
+                      '</button>'+
+                    '</span>'+
+                  '</div>'+
+                '</div>'+
+
+
+                '<div class="col-md-12 text-center" id="especialidadesListBoot" style="margin-top:5px">'+
+                '</div>'+
+              '</div>'+
+
+
+              '<div class="row">'+
+                '<div class="col-md-12">'+
+                  '<div class="whiteF h77-boldcond" style="font-size: 18px;padding: 8px;background-color: #172C3B;margin: -10px;margin-bottom: 5px;margin-top:20px;">'+
+                    '<span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;SUBESPECIALIDADES.'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="col-md-12">'+
+                  '<div class="input-group">'+
+                    '<select id="autoSubEsp" class="form-control autoEspecialidad"></select>'+
+                    '<span class="input-group-btn">'+
+                      '<button id="addEspecialidadMedic" onclick="agregarSubespecialidad(\'autoSubEsp\');" class="btn btn-primary form-control" type="button">'+
+                        '<span class="glyphicon glyphicon-plus"></span>'+
+                      '</button>'+
+                    '</span>'+
+                  '</div>'+
+                '</div>'+
+
+
+                '<div class="col-md-12 text-center" id="subEspecialidadesListBoot" style="margin-top:5px">'+
+                '</div>'+
+
+              '</div>'+
+            '</div>'+
+
+        '</div>'+
+
+    '</div>'
+  });
+  setTimeout(function(){
+  loadEspecialidades();
+  },300);
 }
