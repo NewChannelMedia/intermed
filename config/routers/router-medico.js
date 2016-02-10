@@ -167,6 +167,14 @@ module.exports = function (object){
     intermed.callController('medicos','cargarFormacionAcademicaByID', req.body, req, res);
   });
 
+  app.post('/medico/experienciaLaboral/cargarById', function(req,res){
+    intermed.callController('medicos','cargarExperienciaLaboralByID', req.body, req, res);
+  });
+
+  app.post('/medico/experienciaLaboral/agregar', function (req, res){
+    intermed.callController('medicos','agregarExperienciaLaboral', req.body, req, res);
+  });
+
   app.post('/medico/datos/loadFechaNac', function( req, res ){
     intermed.callController('medicos','loadFechaNac', req, res);
   });
@@ -179,7 +187,6 @@ module.exports = function (object){
     intermed.callController('medicos','updateCedula', req.body, req, res);
   });
 
-<<<<<<< HEAD
   app.post('/medicos/address/get', function (req, res){
     intermed.callController('medicos','addressGet', req.body, req, res);
   });
@@ -202,9 +209,9 @@ module.exports = function (object){
 
   app.post('/medicos/enc/exist', function (req, res){
     intermed.callController('control','encExist', req.body, req, res);
-=======
-  app.post('/medico/experienciaLaboral/agregar', function (req, res){
-    intermed.callController('medicos','agregarExperienciaLaboral', req.body, req, res);
->>>>>>> dev3_300116_formacionyexperiencia
+  });
+
+  app.post('/medico/experienciaLaboral/cargar', function (req, res){
+    intermed.callController('medicos','cargarExperienciaLaboral', req.body, req, res);
   });
 }

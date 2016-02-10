@@ -91,7 +91,6 @@ $( document ).ready( function () {
                 $('#apeMatRegMed').val(data.result.DatosGenerale.apellidoM);
               }
             }
-            console.log('FECHA: ' + data.result.Medico.fechaNac);
 
             if (data.result.Medico.fechaNac){
               var fechaNac = data.result.Medico.fechaNac.split('T')[0].split('-');
@@ -513,16 +512,22 @@ function actualizarSesion(refresh) {
 
         if ( data.session.fotoPerfil ) fotoPerfil = data.session.fotoPerfil;
         $( '#fotoPerfilMini' ).attr( "src", fotoPerfil );
-        $( '#fotoPerfil' ).attr( "src", fotoPerfil );
+        $( '.fotoPerfil' ).attr( "src", fotoPerfil );
         if ( data.session.tipoUsuario === "M" ) {
           if ( !data.session.name ) $( '#session_nombreUsuario' ).html( 'No tenemos registrado tu nombre, por favor continua con tu registro <a onclick="registroMedicoDatosPersonales()">aquí</a>' );
           else {
-            if ( data.session.tipoUsuario == "M" ) $( '#session_nombreUsuario' ).html( 'Dr. ' + data.session.name )
-            else $( '#session_nombreUsuario' ).html( data.session.name );
+            if ( data.session.tipoUsuario == "M" ){
+              data.session.name = 'Dr. ' + data.session.name;
+            }
+              $( '.profile-name .name' ).each(function(){
+                  $(this).text( data.session.name );
+              });
           }
         }
         else {
-          $( '#session_nombreUsuario' ).html( data.session.name );
+          $( '.profile-name .name' ).each(function(){
+            $(this).text( data.session.name );
+          });
         }
 
         if ( data.session.ciudad ) {
@@ -631,7 +636,6 @@ function agregarFavoritos( medico ) {
     },
     cache: false,
     success: function ( data ) {
-      console.log('Agregar a favoritos: ' + JSON.stringify(data));
       if ( data.success ) {
         if ( $( '#tipoUsuario' ).val() === "P" ) {
           if ( medicoID ) {
@@ -1773,9 +1777,9 @@ function traerAseguradoras(){
       // se cargan los datos generales y foto
       var html = "";
       $.post('/loadGenerales', function(data){
-        $("#editNombreMed").attr('value',data.DatosGenerale.nombre);
-        $("#editApellidoPMed").attr('value',data.DatosGenerale.apellidoP);
-        $("#editApellidoMMed").attr('value',data.DatosGenerale.apellidoM);
+        $("#nombrePersonal").attr('value',data.DatosGenerale.nombre);
+        $("#appPatPersonal").attr('value',data.DatosGenerale.apellidoP);
+        $("#appMatPersonal").attr('value',data.DatosGenerale.apellidoM);
         $("#imgPerfilMedic").attr('src',data.urlFotoPerfil);
       });
     }
@@ -1788,14 +1792,14 @@ function traerAseguradoras(){
       //carga todas las especialidades
       $.post('/todasEspecialidades',function(p){
         var html2 = "";
-        html2 += '<option value="0">--Especialidad--</option>';
+        html2 += '<option value="" selected disabled>Selecciona una</option>';
         $.each(p,function(e, etem){
           html2 += '<option value="'+etem.id+'">'+etem.especialidad+'</option>';
         });
-        $("#autoEspecialidad").html(html2);
+        $(".autoEspecialidad").html(html2);
       });
       $.post('/loadEspecialidades', function(data){
-        if ($('#regMedStepOne').length>0){
+        if ($('#regmedEsp').length>0){
           var cont = '';
           $.each(data.MedicoEspecialidads, function( i, item ){
             var clase = 'btn-info';
@@ -1803,41 +1807,32 @@ function traerAseguradoras(){
               clase = 'btn-default';
             }
             cont += '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
-            '<label class="btn btn-xs '+ clase +'">'+
+            '<label class="btn btn-xs btn-info">'+
             '<span>'+item.Especialidad.especialidad+'</span>'+
             '</label>'+
             '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+item.id+'\');" >'+
             '<span class="glyphicon glyphicon-remove"></span></button></div>';
           });
           $('#regmedEsp').html(cont);
-        }else {
+        } else {
+          var esp = '';
+          var subesp = '';
           $.each(data.MedicoEspecialidads, function( i, item ){
-            if( item.subEsp == 0 ){
-              html += '<tr>'
-                html += '<td ><center>'+contador+'</center></td>';
-                html += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
-                html += '<td><center>';
-                  html += '<button type="button" onclick="deleteEsp(\''+item.id+'\');" class="btn btn-danger">';
-                    html += '<span class="glyphicon glyphicon-remove-sign"></span>';
-                  html += '</button>';
-                html += '</center></td>';
-              html += '</tr>';
-              contador++;
+            var cont = '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
+            '<label class="btn btn-xs btn-info">'+
+            '<span>'+item.Especialidad.especialidad+'</span>'+
+            '</label>'+
+            '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+item.id+'\');" >'+
+            '<span class="glyphicon glyphicon-remove"></span></button></div>';
+            if (item.subEsp == 1){
+              subesp += cont;
             } else {
-              html3 += '<tr>'
-                html3 += '<td ><center>'+contador2+'</center></td>';
-                html3 += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
-                html3 += '<td><center>';
-                  html3 += '<button type="button" onclick="deleteSubEsp(\'#mDeletes-'+i+'\');" oculto="'+item.id+'" class="btn btn-warning" id="mDeletes-'+i+'">';
-                    html3 += '<span class="glyphicon glyphicon-remove-sign"></span>';
-                  html3 += '</button>';
-                html3 += '</center></td>';
-              html3 += '</tr>';
-              contador2++;
+              esp += cont;
             }
           });
-          $("#tableEspecialidades").html(html);
-          $("#tableSubEspecialidades").html(html3);
+
+          $('#especialidadesListBoot').html(esp);
+          $('#subEspecialidadesListBoot').html(subesp);
         }
       });
     }
@@ -1861,22 +1856,20 @@ function traerAseguradoras(){
       });
     }
     function loadPalabras(){
-      var html = "";
-      var contador = 1;
+      var contenido = "";
       $.post('/loadPalabras',function(data){
         $.each(data, function( i, item ){
-          html += '<tr style="color:white;">';
-            html += '<td><center>'+contador+'</center></td>';
-            html += '<td><center>'+item.palabra+'</center></td>';
-            html += '<td><center>';
-              html += '<button class="btn btn-danger" onclick="deletePalabra(\'#palabrasDelete-'+i+'\')" oculto="'+item.id+'" id="palabrasDelete-'+i+'">';
-                html += '<span class="glyphicon glyphicon-remove-circle"></span>';
-              html += '</button>';
-            html += '</center></td>';
-          html += '</tr>';
-          contador++;
+          contenido += '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
+                          '<span class="hidden palabra_id">'+ item.id +'</span>'+
+                          '<label class="btn btn-sm btn-warning">'+
+                            '<span>'+item.palabra+'</span>'+
+                          '</label>'+
+                          '<button class="btn btn-sm borrar" type="button" onclick="deletePalabra(this)">'+
+                            '<span class="glyphicon glyphicon-remove"></span>'+
+                          '</button>'+
+                        '</div>';
         });
-        $("#tablePalabras").html(html);
+        $("#PalabrasClaveList").html(contenido);
       });
     }
     function editGenerales(tipo){
@@ -1989,11 +1982,24 @@ function traerAseguradoras(){
       var palabra = $("#autoPalabras").val();
       $.post('/editPalabrasClave',{palabra:palabra},function(data){
         if( data != null ){
-          loadPalabras();
+          $('#autoPalabras').val('');
+           var contenido = '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
+                            '<span class="hidden palabra_id">'+ data.id +'</span>'+
+                            '<label class="btn btn-sm btn-warning">'+
+                              '<span>'+data.palabra+'</span>'+
+                            '</label>'+
+                            '<button class="btn btn-sm borrar" type="button" onclick="deletePalabra(this)">'+
+                              '<span class="glyphicon glyphicon-remove"></span>'+
+                            '</button>'+
+                          '</div>';
+            $("#PalabrasClaveList").append(contenido);
+            return false;
         }else{
           console.log("Error: al agregar la palabra clave");
+          return false;
         }
       });
+      return false;
     }
     function deletePad(id){
       var id = $(id).attr('oculto');
@@ -2009,19 +2015,21 @@ function traerAseguradoras(){
         }
       });
     }
-    function deletePalabra(id){
-      var id = $(id).attr('oculto');
-      bootbox.confirm('¿Estas seguro de eliminar este campo?', function(result){
-        if( result ){
-          $.post('/deletePalabra',{id:id}, function(data){
-            if( data == "OK" ){
-              loadPalabras();
-            }else{
-              console.log("ERROR: no se pudo eliminar la palabra clave seleccionada");
-            }
-          });
-        }
-      });
+    function deletePalabra(element){
+      var id = $(element).parent().find('.palabra_id').text();
+      if (id){
+        bootbox.confirm('¿Estas seguro de eliminar este campo?', function(result){
+          if( result ){
+            $.post('/deletePalabra',{id:id}, function(data){
+              if( data == "OK" ){
+                $(element).parent().remove();
+              }else{
+                console.log("ERROR: no se pudo eliminar la palabra clave seleccionada");
+              }
+            });
+          }
+        });
+      }
     }
   //<--------- FIN EDIT PERFIL MEDICO -------->
   function traerServiciosPorMedico(usuario_id){
@@ -2210,11 +2218,22 @@ function traerAseguradoras(){
       actual = 1;
     }
 
+    var estado_id = $('#selectEstados').val();
+    var municipio_id = $('#selectCiudad').val();
+
+    if (!estado_id || parseInt(estado_id)== 0){
+      estado_id = '';
+    }
+
+    if (!municipio_id || parseInt(municipio_id)== 0){
+      municipio_id = '';
+    }
+
     var formacion_id = $('#formacion_id').val();
 
     var grado = form.find('#inputGrado').val();
     var nivel = form.find('#inputNivel').val();
-    if (nivel > 0 && institucion != "" && especialidad != "" && inicio != ""){
+    if (nivel > 0 && institucion != "" && especialidad != "" && inicio != "" && estado_id != "" && municipio_id != ""){
       var insertar = true;
       if (!actual){
         if (fin == ""){
@@ -2239,7 +2258,9 @@ function traerAseguradoras(){
               fechaInicio: inicio,
               fechaFin: fin,
               actual: actual,
-              fechaTitulo: grado
+              fechaTitulo: grado,
+              estado_id: estado_id,
+              municipio_id: municipio_id
             },
             type: 'POST',
             success: function (data) {
@@ -2301,7 +2322,10 @@ function traerAseguradoras(){
                   contenido += '<td><a style="color:red"><span class="glyphicon glyphicon-remove"></span></a></td></tr>';
                 });
                 $('#formacionAcademicaList').html(contenido);
-              } else {
+              }
+
+              if ($('#divFormAcad').length>0){
+                contenido = '';
                 data.result.forEach(function(res){
                   var anioInicio = new Date(res.fechaInicio).toLocaleDateString().split(' ')[0].split('/')[2];
                   var anioFin = '';
@@ -2315,9 +2339,13 @@ function traerAseguradoras(){
                     anioGrado = '<strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>';
                   }
 
+                  var estado = res.Estado.estado;
+                  var municipio = res.Municipio.municipio;
+
                   contenido += '<p class="cv-element col-md-12 col-sm-12 col-xs-6">'+
                     '<strong class="h85-heavy">Institución:</strong>&nbsp;<span class="h45-light">'+ res.lugarDeEstudio +'</span><br>'+
                     '<strong class="h85-heavy">Especialidad:</strong>&nbsp;<span class="h45-light">'+res.especialidad+'</span><br>'+
+                    '<strong class="h85-heavy">Ubicación:</strong>&nbsp;<span class="h45-light">'+estado+', ' + municipio+'</span><br>'+
                     '<strong class="h85-heavy">Inicio:</strong>&nbsp;<span class="h45-light">'+anioInicio+'</span><br>'+ anioFin + anioGrado +
                   '</p>';
                 });
@@ -2337,38 +2365,61 @@ function traerAseguradoras(){
 
   function cargarExperienciaLaboral(){
     $.ajax({
-        url: '/medico/formacionAcademica/cargar',
+        url: '/medico/experienciaLaboral/cargar',
         type: 'POST',
         dataType: "json",
         cache: false,
         type: 'POST',
         success: function (data) {
           if (data.success){
-            var contenido = '';
-            data.result.forEach(function(res){
-              var anioInicio = new Date(res.fechaInicio).toLocaleDateString().split(' ')[0].split('/')[2];
-              var anioFin = '';
-              if (res.fechaFin && res.fechaFin != ""){
-                anioFin = new Date(res.fechaFin).toLocaleDateString().split(' ')[0].split('/')[2];
-              }
-              var anioGrado = '';
-              if (res.fechaTitulo && res.fechaTitulo != ""){
-                anioGrado = new Date(res.fechaTitulo).toLocaleDateString().split(' ')[0].split('/')[2];
-              }
+            if ($('#formacionAcademicaList').length>0){
+                var contenido = '';
+                data.result.forEach(function(res){
+                  var anioInicio = res.fechaInicio.split('-')[0];
+                  var anioFin = '';
+                  if (res.fechaFin && res.fechaFin != ""){
+                    anioFin = res.fechaFin.split('-')[0];
+                  }
 
-              var clase = '';
+                  var clase = '';
 
-              if (res.actual == 1){
-                clase = " class='success' ";
-              }
+                  if (res.actual == 1){
+                    clase = " class='success' ";
+                  }
 
-              contenido += '<tr ' + clase + '><td>'+res.lugarDeEstudio+'</td><td>'+res.especialidad+'</td><td>'+anioInicio+'</td>';
-              contenido += '<td>'+anioFin+'</td>';
-              contenido += '<td>'+anioGrado+'</td>';
-              contenido += '<td><a style="color:green"><span class="glyphicon glyphicon-pencil" onclick="CambiarVisible(\'divListaFormacion\',\'divAddFormacion\','+ res.id +');"></span></a></td>';
-              contenido += '<td><a style="color:red"><span class="glyphicon glyphicon-remove"></span></a></td></tr>';
-            });
-            $('#formacionAcademicaList').html(contenido);
+                  contenido += '<tr ' + clase + '><td>'+res.lugarTrabajo+'</td><td>'+res.titulo+'</td><td>'+anioInicio+'</td>';
+                  contenido += '<td>'+anioFin+'</td>';
+                  contenido += '<td><a style="color:green"><span class="glyphicon glyphicon-pencil" onclick="CambiarVisible(\'divListaExperiencia\',\'divAddExperiencia\',null,'+ res.id +');"></span></a></td>';
+                  contenido += '<td><a style="color:red"><span class="glyphicon glyphicon-remove"></span></a></td></tr>';
+                });
+                $('#formacionAcademicaList').html(contenido);
+            }
+
+
+            if ($('#divExpLab').length>0){
+              contenido = '';
+              data.result.forEach(function(res){
+
+                var anioInicio = res.fechaInicio.split('-')[0];
+                var anioFin = '';
+                if (res.fechaFin && res.fechaFin != ""){
+                  anioFin = res.fechaFin.split('-')[0];
+                  anioFin = '<strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">'+anioFin+'</span><br>';
+                }
+
+                var estado = res.Estado.estado;
+                var municipio = res.Municipio.municipio;
+
+                contenido += '<p class="cv-element col-md-12 col-sm-12 col-xs-6">'+
+                  '<strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">'+ res.lugarTrabajo +'</span><br>'+
+                  '<strong class="h85-heavy">Puesto:</strong>&nbsp;<span name="institucion" class="h45-light">'+ res.titulo +'</span><br>'+
+                  '<strong class="h85-heavy">Ubicación:</strong>&nbsp;<span name="institucion" class="h45-light">'+ municipio + ', ' + estado +'</span><br>'+
+                  '<strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">' + anioInicio + '&nbsp;&nbsp;&nbsp;'+ anioFin+
+                '</p>';
+              });
+              $('#divExpLab').html(contenido);
+            }
+
           }else {
             if (data.error){
               manejadorDeErrores(data.error);
@@ -2393,18 +2444,21 @@ function traerAseguradoras(){
       actual = 1;
     }
 
-    var formacion_id = $('#formacion_id').val();
+    var experiencia_id = $('#experiencia_id').val();
 
-    var grado = form.find('#inputGrado').val();
     var puesto = form.find('#inputPuesto').val();
 
     var municipio_id = $('#selectCiudad').val();
-    console.log('Puesto: ' + puesto);
-    console.log('institucion: ' + institucion);
-    console.log('descripcion: ' + descripcion);
-    console.log('inicio: ' + inicio);
+    if (!municipio_id || parseInt(municipio_id) == 0){
+      municipio_id = "";
+    }
 
-    if (puesto != "" && institucion != "" && descripcion != "" && inicio != ""){
+    var estado_id = $('#selectEstados').val();
+    if (!estado_id || parseInt(estado_id) == 0){
+      estado_id = "";
+    }
+
+    if (puesto != "" && institucion != "" && descripcion != "" && inicio != "" && estado_id != "" && municipio_id != ""){
       var insertar = true;
       if (!actual){
         if (fin == ""){
@@ -2422,22 +2476,22 @@ function traerAseguradoras(){
             dataType: "json",
             cache: false,
             data: {
-              formacion_id: formacion_id,
+              experiencia_id: experiencia_id,
               titulo:puesto,
               institucion: institucion,
               descripcion: descripcion,
               fechaInicio: inicio,
               fechaFin: fin,
               actual: actual,
-              fechaTitulo: grado,
-              municipio_id: municipio_id
+              municipio_id: municipio_id,
+              estado_id: estado_id
             },
             type: 'POST',
             success: function (data) {
               console.log('Result: ' + JSON.stringify(data));
               if (data.success){
-                cargarFormacionAcademica();
-                CambiarVisible('divAddFormacion','divListaFormacion');
+                cargarExperienciaLaboral();
+                CambiarVisible('divAddExperiencia','divListaExperiencia');
               } else {
                 if(data.error){
                   manejadorDeErrores(data.error);
@@ -2469,6 +2523,13 @@ function traerAseguradoras(){
         success: function (data) {
           if (data.success){
             if (data.result){
+              $('#selectEstados').val(data.result.estado_id);
+              $('#selectEstados').change();
+
+              setTimeout(function(){
+                $('#selectCiudad').val(data.result.municipio_id);
+              },1000);
+
               $('#formacion_id').val(formacion_id);
               $('#inputInstitucion').val(data.result.lugarDeEstudio);
               $('#inputEspecialidad').val(data.result.especialidad);
@@ -2486,6 +2547,55 @@ function traerAseguradoras(){
               }
               $('#inputActual').change();
               $('#inputNivel').val(data.result.nivel);
+            }
+          }else {
+            if (data.error){
+              manejadorDeErrores(data.error);
+            }
+          }
+        },
+        error: function (err){
+          console.log('AJAX Error: ' + JSON.stringify(err));
+        }
+      });
+  }
+
+
+
+  function cargarExperienciaLaboralById(experiencia_id){
+    $.ajax({
+        url: '/medico/experienciaLaboral/cargarById',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        type: 'POST',
+        data: {id:experiencia_id},
+        success: function (data) {
+          if (data.success){
+            if (data.result){
+              $('#inputPuesto').val(data.result.titulo);
+              $('#inputInstitucion').val(data.result.lugarTrabajo);
+              $('#inputDescripcion').val(data.result.descripcion);
+
+              $('#selectEstados').val(data.result.estado_id);
+              $('#selectEstados').change();
+
+              setTimeout(function(){
+                $('#selectCiudad').val(data.result.municipio_id);
+              },500);
+
+              if (data.result.actual == "0"){
+                $('#inputActual').prop('checked',false);
+              } else {
+                $('#inputActual').prop('checked',true);
+              }
+              $('#inputActual').change();
+
+              $('#experiencia_id').val(experiencia_id);
+              var fechaInicio = new Date(data.result.fechaInicio).toISOString().split('T')[0];
+              var fechaFin = new Date(data.result.fechaFin).toISOString().split('T')[0];
+              $('#inputInicio').val(fechaInicio);
+              $('#inputFin').val(fechaFin);
             }
           }else {
             if (data.error){
@@ -3125,4 +3235,68 @@ function validarCodigo(element){
     $(element).parent().find('.glyphicon').removeClass('glyphicon-ok');
     $(element).parent().find('.glyphicon').removeClass('glyphicon-remove');
   }
+}
+
+function guardarInformacionPersonal(){
+  var nombre = $('#nombrePersonal').val();
+  var appPatPersonal = $('#appPatPersonal').val();
+  var appMatPersonal = $('#appMatPersonal').val();
+  var fechaNacimiento = $('#fechaNacimiento').val();
+
+  if (nombre != "" && appPatPersonal != "" && fechaNacimiento != ""){
+
+    $.ajax({
+      url: '/usuario/info/update',
+      type: 'POST',
+      dataType: "json",
+      data: {nombre: nombre, apellidoP: appPatPersonal, apellidoM: appMatPersonal, fechaNac:fechaNacimiento},
+      cache: false,
+      type: 'POST',
+      success: function( data ) {
+        console.log('result: ' + JSON.stringify(data));
+        if (data.success){
+          actualizarSesion();
+          bootbox.hideAll();
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      },
+      error: function (err){
+        console.error( 'AJAX ERROR: ' + err );
+      }
+    });
+  }else {
+    alert('Falta un campo');
+  }
+
+}
+
+function agregarExpecialidad(element){
+  var esp = $('#'+element).val();
+  $.post('/editEspecialidades',{
+    especialidad:esp,
+    checado:0
+  },function( data ){
+    if( data != null ){
+      loadEspecialidades();
+    }else{
+      console.log("ERror al agregar la especialidad");
+    }
+  });
+}
+
+function agregarSubespecialidad(element){
+  var esp = $('#'+element).val();
+  $.post('/editEspecialidades',{
+    especialidad:esp,
+    checado:1
+  },function( data ){
+    if( data != null ){
+      loadEspecialidades();
+    }else{
+      console.log("ERror al agregar la especialidad");
+    }
+  });
 }

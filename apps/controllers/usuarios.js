@@ -1007,3 +1007,48 @@ exports.traerDatosUsuario = function (object, req, res){
     res.send(usuario);
   });
 }
+
+exports.UpdateInfo = function(object, req, res){
+
+    if (req.session.passport && req.session.passport.user) {
+      models.DatosGenerales.update({
+        nombre: object.nombre,
+        apellidoP: object.apellidoP,
+        apellidoM: object.apellidoM
+      },{
+        where: {
+          usuario_id: req.session.passport.user.id
+        }
+      }).then(function(result){
+        if (result){
+          if (req.session.passport.user.tipoUsuario == "M"){
+            models.Medico.update({
+              fechaNac: object.fechaNac
+            },{
+              where: {
+                usuario_id: req.session.passport.user.id
+              }
+            }).then(function(result){
+                res.status( 200 ).json({success:true, result: result});
+            });
+          } else {
+            models.Paciente.update({
+              fechaNac: object.fechaNac
+            },{
+              where: {
+                usuario_id: req.session.passport.user.id
+              }
+            }).then(function(result){
+                res.status( 200 ).json({success:true, result: result});
+            });
+          }
+        } else {
+            res.status( 200 ).json({success:false});
+        }
+      });
+    }
+    else {
+      res.status( 200 )
+          .send({success:false,error:1});
+    }
+}

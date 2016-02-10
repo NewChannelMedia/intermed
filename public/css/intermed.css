@@ -2675,3 +2675,16 @@ div.action-All>.glyphicon:before {
     top: -5px;
     right: -6px;
 }
+
+.editIcon{
+  background-color: #999;
+  color: #DADADA;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.editIcon:hover{
+  background-color: #666;
+}

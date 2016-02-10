@@ -29,10 +29,6 @@ module.exports = function ( sequelize, DataTypes ) {
       type: DataTypes.INTEGER,
       required: true
     },
-    ciudad_id: {
-      type: DataTypes.INTEGER,
-      required: true
-    },
     municipio_id: {
       type: DataTypes.INTEGER,
       required: true
@@ -40,7 +36,11 @@ module.exports = function ( sequelize, DataTypes ) {
     estado_id: {
       type: DataTypes.INTEGER,
       required: true
-    },
+    },/*
+    ciudad_id: {
+      type: DataTypes.INTEGER,
+      required: true
+    },*/
     medico_id: {
       type: DataTypes.BIGINT,
       required: true
@@ -52,10 +52,12 @@ module.exports = function ( sequelize, DataTypes ) {
   }, {
     classMethods: {
       associate: function ( models ) {
-        MedicoExperiencia.belongsTo( models.Medico )
-        MedicoExperiencia.belongsTo( models.Institucion )
-        MedicoExperiencia.belongsTo( models.Estado )
-        MedicoExperiencia.belongsTo( models.Ciudad )
+        MedicoExperiencia.belongsTo( models.Medico );
+        MedicoExperiencia.belongsTo( models.Municipio );
+        MedicoExperiencia.belongsTo( models.Estado );
+      /*  MedicoExperiencia.belongsTo( models.Institucion )
+
+        MedicoExperiencia.belongsTo( models.Ciudad )*/
       }
     },
     timestamps: false,
