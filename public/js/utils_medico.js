@@ -2151,7 +2151,7 @@ function traerAseguradoras(){
           $('#horariosUbi').val(data.horarios);
           $('#direccion_id').val(data.direccion_id);
           $("#divCalendario").remove();
-          $("#divCalendarioPadre").html('<div id="divCalendario"></div>');
+          $("#divCalendarioPadre").html('<div id="divCalendario" class="regHorMed"></div>');
           setTimeout(function(){
             iniciarCalendarioAgendarCita();
             $('#cita_detalles').css('visibility','visible');
@@ -2316,6 +2316,9 @@ function traerAseguradoras(){
         type: 'POST',
         dataType: "json",
         cache: false,
+        data: {
+          usuario_id: $('#usuarioPerfil').val()
+        },
         type: 'POST',
         success: function (data) {
           if (data.success){
@@ -2393,6 +2396,9 @@ function traerAseguradoras(){
         dataType: "json",
         cache: false,
         type: 'POST',
+        data: {
+          usuario_id: $('#usuarioPerfil').val()
+        },
         success: function (data) {
           if (data.success){
             if ($('#formacionAcademicaList').length>0){
@@ -2957,85 +2963,65 @@ function cargarServicios(element){
       if (data.success){
         if (data.result){
           $('#ServListReg').html('');
+          if (data.result.length>0){
+            contenido = `<div class="row">
+                          <div class="col-md-3"><label class="whiteF regInput">Concepto.</label></div>
+                          <div class="col-md-3"><label class="whiteF regInput">Descripción.</label></div>
+                          <div class="col-md-2"><label class="whiteF regInput">Costo.</label></div>
+                          <div class="col-md-2"><label class="whiteF regInput">Duración.</label></div>
+                        </div>`;
+          }
+          $('#ServListReg').append(contenido);
+
           data.result.forEach(function(res){
             var contenido = `
-            <div class="col-lg-12">
-              <form method="POST" onsubmit="return guardarServicio('frmRegServ-`+ res.id +`');" id="frmRegServ-`+ res.id +`">
-                <input type="hidden" name="servicio_id" value="`+res.id+`">
-                <div class="col-md-3">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <label class="whiteF regInput">Concepto.</label>
-                    </div>
-                    <div class="col-md-12">
-                      <input type="text" class="form-control regInput" id="conceptServ" name="concepto" required="required" value="`+res.concepto+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <label class="whiteF regInput">Descripción.</label>
-                    </div>
-                    <div class="col-md-12">
-                      <input type="text" class="form-control regInput" id="decriptServ" name="descripcion" required="required" value="`+res.descripcion+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-2">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <label class="whiteF regInput">Costo.</label>
-                    </div>
-                    <div class="col-md-12">
-                      <input type="text" class="form-control regInput" id="precServ" name="precio" required="required" value="`+res.precio+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-2">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <label class="whiteF regInput">Duración.</label>
-                    </div>
-                    <div class="col-md-12">
-                      <select id="duraServ" class="form-control regInput" name="duracion" required="required" onChange="$('#frmRegServ-`+ res.id +`').submit()">
-                        <option value="" selected disabled>Selecciona</option>
-                        <option value="00:30:00">30 minutos</option>
-                        <option value="00:45:00">1 hora</option>
-                        <option value="01:30:00">1 hora y 30 minutos</option>
-                        <option value="02:00:00">2 horas</option>
-                        <option value="02:30:00">2 horas y 30 minutos</option>
-                        <option value="03:00:00">3 horas</option>
-                        <option value="03:30:00">3 horas y 30 minutos</option>
-                        <option value="04:00:00">4 horas</option>
-                        <option value="04:30:00">4 horas y 30 minutos</option>
-                        <option value="05:00:00">5 horas</option>
-                        <option value="05:30:00">5 horas y 30 minutos</option>
-                        <option value="06:00:00">6 horas</option>
-                        <option value="06:30:00">6 horas y 30 minutos</option>
-                        <option value="07:00:00">7 horas</option>
-                        <option value="07:30:00">7 horas y 30 minutos</option>
-                        <option value="08:00:00">8 horas</option>
-                        <option value="08:30:00">8 horas y 30 minutos</option>
-                        <option value="09:00:00">9 horas</option>
-                        <option value="09:30:00">9 horas y 30 minutos</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-1">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <label class="whiteF">&nbsp;</label>
-                    </div>
-                    <div class="col-md-12">
-                      <button type="button" class="btn btn-danger regInput" onclick="eliminarServicio(`+ res.id +`)">
-                        <span style="color:white;" class="glyphicon glyphicon-minus"></span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </form>
+            <div class="row">
+            <form method="POST" onsubmit="return guardarServicio('frmRegServ-`+ res.id +`');" id="frmRegServ-`+ res.id +`">
+              <input type="hidden" name="servicio_id" value="`+res.id+`">
+              <div class="col-md-3">
+                <input type="text" class="form-control regInput" id="conceptServ" name="concepto" required="required" value="`+res.concepto+`">
+              </div>
+              <div class="col-md-3">
+                <input type="text" class="form-control regInput" id="decriptServ" name="descripcion" required="required" value="`+res.descripcion+`">
+              </div>
+              <div class="col-md-2">
+                <input type="text" class="form-control regInput" id="precServ" name="precio" required="required" value="`+res.precio+`">
+              </div>
+              <div class="col-md-2">
+                <select id="duraServ" class="form-control regInput" name="duracion" required="required">
+                  <option value="" selected disabled>Selecciona</option>
+                  <option value="00:30:00">30 minutos</option>
+                  <option value="00:45:00">1 hora</option>
+                  <option value="01:30:00">1 hora y 30 minutos</option>
+                  <option value="02:00:00">2 horas</option>
+                  <option value="02:30:00">2 horas y 30 minutos</option>
+                  <option value="03:00:00">3 horas</option>
+                  <option value="03:30:00">3 horas y 30 minutos</option>
+                  <option value="04:00:00">4 horas</option>
+                  <option value="04:30:00">4 horas y 30 minutos</option>
+                  <option value="05:00:00">5 horas</option>
+                  <option value="05:30:00">5 horas y 30 minutos</option>
+                  <option value="06:00:00">6 horas</option>
+                  <option value="06:30:00">6 horas y 30 minutos</option>
+                  <option value="07:00:00">7 horas</option>
+                  <option value="07:30:00">7 horas y 30 minutos</option>
+                  <option value="08:00:00">8 horas</option>
+                  <option value="08:30:00">8 horas y 30 minutos</option>
+                  <option value="09:00:00">9 horas</option>
+                  <option value="09:30:00">9 horas y 30 minutos</option>
+                </select>
+              </div>
+              <div class="col-md-1">
+                <button type="submit" class="btn btn-success regInput">
+                  <span style="color:white;" class="glyphicon glyphicon-floppy-disk"></span>
+                </button>
+              </div>
+              <div class="col-md-1">
+                <button type="button" class="btn btn-danger regInput" onclick="eliminarServicio(`+ res.id +`)">
+                  <span style="color:white;" class="glyphicon glyphicon-minus"></span>
+                </button>
+              </div>
+            </form>
             </div>`;
             $('#ServListReg').append(contenido);
             $('#frmRegServ-'+ res.id +' [name="duracion"]').prop('value',res.duracion);
@@ -3063,7 +3049,11 @@ function guardarServicio(idElement){
     element[el.name] = el.value;
   });
 
-  element['direccion_id'] = $('#slc_servicios_ubi').val();
+  if ($('#idDireccion').length>0){
+    element['direccion_id'] = $('#idDireccion').val();
+  }else {
+    element['direccion_id'] = $('#slc_servicios_ubi').val();
+  }
 
 	$.ajax({
 		url: '/medicos/serv/update',

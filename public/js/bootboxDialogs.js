@@ -63,7 +63,7 @@ function agregarUbicacion(ubicacion_id){
       message:
       '<ul class="nav nav-tabs menuBootbox">'+
         '<li class="active ubicaciones"><a data-toggle="tab" href="#divUbicacion">UBICACIONES</a></li>'+
-        '<li class="servicios"><a data-toggle="tab" href="#divServicios">SERVICIOS</a></li>'+
+        '<li class="servicios"><a data-toggle="tab" href="#divServicios" onclick="cargarServicios(\'#idDireccion\')">SERVICIOS</a></li>'+
         '<li class="horarios"><a data-toggle="tab" href="#divHorarios" onclick="iniciarDivCalendario()">HORARIOS</a></li>'+
       '</ul>'+
       '<div class="tab-content">'+
@@ -350,117 +350,115 @@ function agregarUbicacion(ubicacion_id){
         '<br/><br/>'+
       '</div>'+
 
-
-      '<div id="divServicios" class="tab-pane fade divBodyBootbox">'+
-        '<div class="container-fluid">'+
+        '<div id="divServicios" class="tab-pane fade divBodyBootbox">'+
           '<div class="row">'+
-            '<div class="col-md-12">'+
-              '<div class="col-lg-12">'+
-                '<h3 style="color:white">'+
-                  '<span class="glyphicon glyphicon-plus">&nbsp;Servicios</span>'+
-                '</h3>'+
-              '</div>'+
-              '<div class="col-lg-12">'+
-                '<table class="table table-condensed">'+
-                  '<thead>'+
-                    '<td><center>Concepto</center></td>'+
-                    '<td><center>Descripcion</center></td>'+
-                    '<td><center>Precio</center></td>'+
-                    '<td><center>Duracion</center></td>'+
-                    '<td><center>Agregar</center></td>'+
-                  '</thead>'+
-                  '<tbody id="agregatuServices">'+
-                    '<td>'+
-                      '<center>'+
-                        '<div class="form-group">'+
-                          '<input type="text" class="form-control" id="conceptServ" />'+
-                        '</div>'+
-                      '</center>'+
-                    '</td>'+
-                    '<td>'+
-                      '<center>'+
-                        '<div class="form-group">'+
-                          '<input type="text" class="form-control" id="decriptServ" />'+
-                        '</div>'+
-                      '</center>'+
-                    '</td>'+
-                    '<td>'+
-                      '<center>'+
-                        '<div class="form-group">'+
-                          '<input type="text" class="form-control" id="precServ" />'+
-                        '</div>'+
-                      '</center>'+
-                    '</td>'+
-                    '<td>'+
-                      '<center>'+
-                        '<div class="form-group">'+
-                          '<select id="duraServ">'+
-                            '<option value="time">--Selecciona--</option>'+
-                            '<option value="00:30:00">30 minutos</option>'+
-                            '<option value="00:45:00">1 hora</option>'+
-                            '<option value="01:30:00">1 hora y 30 minutos</option>'+
-                            '<option value="02:00:00">2 horas</option>'+
-                            '<option value="02:30:00">2 horas y 30 minutos</option>'+
-                            '<option value="03:00:00">3 horas</option>'+
-                            '<option value="03:30:00">3 horas y 30 minutos</option>'+
-                            '<option value="04:00:00">4 horas</option>'+
-                            '<option value="04:30:00">4 horas y 30 minutos</option>'+
-                            '<option value="05:00:00">5 horas</option>'+
-                            '<option value="05:30:00">5 horas y 30 minutos</option>'+
-                            '<option value="06:00:00">6 horas</option>'+
-                            '<option value="06:30:00">6 horas y 30 minutos</option>'+
-                            '<option value="07:00:00">7 horas</option>'+
-                            '<option value="07:30:00">7 horas y 30 minutos</option>'+
-                            '<option value="08:00:00">8 horas</option>'+
-                            '<option value="08:30:00">8 horas y 30 minutos</option>'+
-                            '<option value="09:00:00">9 horas</option>'+
-                            '<option value="09:30:00">9 horas y 30 minutos</option>'+
-                          '</select>'+
-                        '</div>'+
-                      '</center>'+
-                    '</td>'+
-                    '<td>'+
-                      '<center>'+
-                        '<button type="button" onclick="addServices(\'#conceptServ\',\'#decriptServ\',\'#precServ\',\'#duraServ\');" class="btn btn-primary">'+
-                          '<span style="color:white;" class="glyphicon glyphicon-plus"></span>'+
-                        '</button>'+
-                      '</center>'+
-                    '</td>'+
-                  '</tbody>'+
-                '</table>'+
-              '</div>'+
+            '<div class="col-lg-12 regSectionTitle whiteF h77-boldcond" style="margin:5px!important;">'+
+                  '<span class="glyphicon glyphicon-plus"></span>DA DE ALTA UN SERVICIO'+
             '</div>'+
-            '<hr style="color:white;" />'+
-            '<div class="col-md-12">'+
-              '<div class="col-lg-12">'+
-                '<h3 style="color:white;">'+
-                  '<span class="glyphicon glyphicon-pencil">&nbsp;Edita tus servicios</span>'+
-                '</h3>'+
-              '</div>'+
-              '<div class="col-lg-12">'+
-                '<table class="table table-condensed">'+
-                  '<thead>'+
-                    '<td><center>Concepto</center></td>'+
-                    '<td><center>Descripcion</center></td>'+
-                    '<td><center>Precio</center></td>'+
-                    '<td><center>Duracion</center></td>'+
-                    '<td><center>Eliminar</center></td>'+
-                  '</thead>'+
-                  '<tbody id="modificatusServices"></tbody>'+
-                '</table>'+
+          '</div>'+
+          '<div class="row">'+
+            '<div class="col-lg-12">'+
+              '<div class="row">'+
+              '<form method="POST" onsubmit="return guardarServicio(\'frmRegServ\');" id="frmRegServ">'+
+                '<div class="col-md-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12">'+
+                      '<label class="whiteF regInput">Concepto.</label>'+
+                    '</div>'+
+                    '<div class="col-md-12">'+
+                      '<input type="text" class="form-control regInput" id="conceptServ" name="concepto" required="required">'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+                '<div class="col-md-4">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12">'+
+                      '<label class="whiteF regInput">Descripción.</label>'+
+                    '</div>'+
+                    '<div class="col-md-12">'+
+                      '<input type="text" class="form-control regInput" id="decriptServ" name="descripcion" required="required">'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+                '<div class="col-md-2">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12">'+
+                      '<label class="whiteF regInput">Costo.</label>'+
+                    '</div>'+
+                    '<div class="col-md-12">'+
+                      '<input type="text" class="form-control regInput" id="precServ" name="precio" required="required">'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+                '<div class="col-md-2">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12">'+
+                      '<label class="whiteF regInput">Duración.</label>'+
+                    '</div>'+
+                    '<div class="col-md-12">'+
+                      '<select id="duraServ" class="form-control regInput" name="duracion" required="required">'+
+                        '<option value="" selected disabled>Selecciona</option>'+
+                        '<option value="00:30:00">30 minutos</option>'+
+                        '<option value="00:45:00">1 hora</option>'+
+                        '<option value="01:30:00">1 hora y 30 minutos</option>'+
+                        '<option value="02:00:00">2 horas</option>'+
+                        '<option value="02:30:00">2 horas y 30 minutos</option>'+
+                        '<option value="03:00:00">3 horas</option>'+
+                        '<option value="03:30:00">3 horas y 30 minutos</option>'+
+                        '<option value="04:00:00">4 horas</option>'+
+                        '<option value="04:30:00">4 horas y 30 minutos</option>'+
+                        '<option value="05:00:00">5 horas</option>'+
+                        '<option value="05:30:00">5 horas y 30 minutos</option>'+
+                        '<option value="06:00:00">6 horas</option>'+
+                        '<option value="06:30:00">6 horas y 30 minutos</option>'+
+                        '<option value="07:00:00">7 horas</option>'+
+                        '<option value="07:30:00">7 horas y 30 minutos</option>'+
+                        '<option value="08:00:00">8 horas</option>'+
+                        '<option value="08:30:00">8 horas y 30 minutos</option>'+
+                        '<option value="09:00:00">9 horas</option>'+
+                        '<option value="09:30:00">9 horas y 30 minutos</option>'+
+                      '</select>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+                '<div class="col-md-1">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12">'+
+                      '<label class="whiteF">&nbsp;</label>'+
+                    '</div>'+
+                    '<div class="col-md-12">'+
+                      '<button type="submit" class="btn btn-primary regInput">'+
+                        '<span style="color:white;" class="glyphicon glyphicon-plus"></span>'+
+                      '</button>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+              '</form>'+
               '</div>'+
             '</div>'+
           '</div>'+
-        '</div>'+
-        '<input type="button" class="btn btn-add btn-sm" value="Guardar y continuar" onclick="registrarServicios();">'+
-        '<input type="button" class="btn btn-save btn-sm" value="Guardar y salir" onclick="registrarServicios(true);">'+
+
+
+          '<div class="row" style="margin-top:20px">'+
+            '<div class="col-lg-12 regSectionTitle whiteF h77-boldcond" style="margin:5px!important;">'+
+                  '<span class="glyphicon glyphicon-pencil"></span>EDITA TUS SERVICIOS'+
+            '</div>'+
+          '</div>'+
+
+          '<div class="row">'+
+            '<div class="col-lg-12">'+
+              '<div id="ServListReg" style="margin-bottom:15px">'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+
       '</div>'+
+
+
 
 
     '</div>'
   });
-
-  maquetaServices();
 
   if (btnGuardar == "Editar"){
     $("#frmRegUbi :input").prop('disabled', true);
@@ -2026,7 +2024,7 @@ function agendarCitaBootbox(){
                   '<label for="servicio_id">Servicio: </label>'+
                 '</div>'+
                 '<div class="col-md-10">'+
-                  '<select class="form-control" id="servicio_id" name="servicio_id" >'+
+                  '<select class="form-control" id="servicio_id" name="servicio_id" onchange="iniciarDivAgendaCita();">'+
                     '<option value=""></option>'+
                   '</select>'+
                 '</div>'+
@@ -2051,7 +2049,7 @@ function agendarCitaBootbox(){
               '</div>'+
 
 
-              '<div class="col-md-12" id="divCalendarioPadre"><div class="row"><div id="divCalendario"></div></div></div>'+
+              '<div class="col-md-12" id="divCalendarioPadre"><div class="row"><div id="divCalendario" class="regHorMed"></div></div></div>'+
 
             '</form>'+
             '<input type="button" class="btn btn-drop btn-sm pull-left" value="Cancelar" onclick="bootbox.hideAll();">'+
@@ -2059,6 +2057,7 @@ function agendarCitaBootbox(){
             '<span style="color:#5D9AB7">.</span><br/><br/>'
   });
   traerServiciosPorMedico($('#usuarioPerfil').val());
+  iniciarDivAgendaCita();
 }
 
 
@@ -2120,7 +2119,7 @@ function verAgendaPaciente(){
 
             '<div class="col-md-12">'+
               '<div class="row">'+
-              '<div id="divCalendario"></div>'+
+              '<div id="divCalendario" class="regHorMed"></div>'+
               '</div>'+
             '</div>'+
 

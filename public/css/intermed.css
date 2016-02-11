@@ -2288,7 +2288,12 @@ ol.sortable,ol.sortable ol {
   background-color: #172c3b;
   color: white;
 }
-#divCalendario td{
+#divCalendario.calCita .fc-axis.fc-time.fc-widget-content{
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+#divCalendario.calAgenda td{
   padding-top: 5px;
   padding-bottom: 5px;
 }
@@ -2488,6 +2493,10 @@ div.Slider{
   height: auto!important;
 }
 
+#divCalendario.regHorMed .fc-bgevent{
+  opacity: .8;
+}
+
 #divCalendario.regHorMed div.fc-content-skeleton table{
   height: 1500px;
 }
@@ -2534,8 +2543,18 @@ div.Slider{
   margin-left: 0px;
 }
 
-#divCalendario.regHorMed div.fc-event-container a.fc-time-grid-event,
-#divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg{
+#divCalendario.regHorMed div.fc-event-container a.fc-time-grid-event.notBG
+#divCalendario.regHorMed div.fc-event-container a.fc-time-grid-event.notBG,
+#divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg.notBG,
+#divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg.notBG{
+  opacity: 1;
+  border-radius: 0px;
+}
+
+#divCalendario.regHorMed div.fc-event-container a.fc-time-grid-event:not(.notBG)
+#divCalendario.regHorMed div.fc-event-container a.fc-time-grid-event:not(.notBG),
+#divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg:not(.notBG),
+#divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg:not(.notBG){
   background-color: rgb(255,149,0);
   background-image: url('../img/plataforma/agenda-bg.png');
   background-position: top;
@@ -2619,16 +2638,6 @@ label.regInput{
   padding-left: 6px;
 }
 
-button.regInput{
-  background-color: #50A8DE;
-  border: none;
-}
-
-button.regInput.btn-danger{
-  background-color: #E74000;
-  border: none;
-}
-
 span.borderCircle{
   border: solid 2px white;
   padding: 4px;
@@ -2694,4 +2703,8 @@ div.action-All>.glyphicon:before {
 
 .editIcon:hover{
   background-color: #666;
+}
+
+hr.fc-divider.fc-widget-header{
+  display: none!important;
 }
