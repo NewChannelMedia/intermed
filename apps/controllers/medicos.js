@@ -1549,7 +1549,7 @@ var _this = module.exports = {
     if (req.session.passport && req.session.passport.user){
         models.Medico.findOne({
           where: {
-            usuario_id: req.session.passport.user.id
+            usuario_id: object.usuario_id
           }
         }).then(function(medico){
           models.MedicoFormacion.findAll( {
@@ -1931,7 +1931,7 @@ var _this = module.exports = {
     if (req.session.passport && req.session.passport.user){
         models.Medico.findOne({
           where: {
-            usuario_id: req.session.passport.user.id
+            usuario_id: object.usuario_id
           }
         }).then(function(medico){
           models.MedicoExperiencia.findAll( {
