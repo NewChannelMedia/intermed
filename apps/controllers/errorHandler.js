@@ -12,6 +12,11 @@ exports.report = function ( err, req, res ) {
     var usuario_id =req.session.passport.user.id
   }
 
+  var userAgent = req.headers['user-agent'];
+  var headers = JSON.stringify(req.headers);
+  if (headers.length>450){
+    headers =  headers.substring(0,450);
+  }
   models.DBError_registro.create({
     type: type,
     err: err,
@@ -20,9 +25,16 @@ exports.report = function ( err, req, res ) {
     session: session,
     usuario_id: usuario_id,
     file: req.file,
-    method: req.funct
+    function: req.funct,
+    protocol: req.protocol,
+    host: req.hostname,
+    port: req.port,
+    method: req.method,
+    path: req.path,
+    headers: headers,
+    userAgent: userAgent
   }).then(function(error){
-    console.log('[' + new Date().toISOString() + '] Error insertado en BD.')
+    console.log('xxxx [' + new Date().toISOString() + '] Error insertado en BD.')
     if (!res.headersSent){
       if (req.method == "GET"){
         req.routeLife( 'plataforma2', 'interno', req.hps );
@@ -30,8 +42,6 @@ exports.report = function ( err, req, res ) {
       } else {
         res.status(200).json({success:false,error: err});
       }
-    } else{
-        console.log('headers enviados');
     }
   });
 

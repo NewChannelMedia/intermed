@@ -6,14 +6,19 @@ var cryptomaniacs = require( './encryption' );
 var mail = require( './emailSender' );
 var correoUser = '';
 exports.ajax = function ( object, req, res ) {
-  models.DatosGenerales.findAll()
+  try{
+    models.DatosGenerales.findAll()
     .then( function ( datos ) {
       res.send( datos );
     } );
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.obtieneUsuariosCompletos = function ( object, req, res ) {
-  models.Usuario.findAll( {
+  try{
+    models.Usuario.findAll( {
       include: [ {
         model: models.DatosGenerales
             }, {
@@ -23,225 +28,253 @@ exports.obtieneUsuariosCompletos = function ( object, req, res ) {
     .then( function ( datos ) {
       res.send( datos );
     } );
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.ObtieneDatosGenerales = function ( object, req, res ) {
-  models.DatosGenerales.findAll()
+  try{
+    models.DatosGenerales.findAll()
     .then( function ( datos ) {
       res.send( datos );
     } );
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.index = function ( object, req, res ) {
-  res.render( 'usuarios/index', {
-    title: 'Usuarios'
-  } );
+  try{
+    res.render( 'usuarios/index', {
+      title: 'Usuarios'
+    } );
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.mostrar = function ( object, req, res ) {
-  models.Usuario.findAll()
+  try{
+    models.Usuario.findAll()
     .then( function ( datos ) {
       res.render( 'usuarios/mostrar', {
         title: 'Usuarios',
         datos: datos
       } );
     } );
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.iniciarSesion = function ( object, req, res ) {
-  req.session.passport = {};
-  models.Usuario.findOne( {
-    where: {
-      correo: object[ 'email' ],
-      password: object[ 'password' ]
-    }
-  } ).then( function ( usuario ) {
-    if ( usuario ) {
-      generarSesion( req, res, usuario.id, false , true);
-    }
-    else {
-      //Usuario o contraseña incorrectos
-      res.status(200).json({
-        success:false,
-        error:'3'
-      });
-    }
-  } );
+  try{
+    req.session.passport = {};
+    models.Usuario.findOne( {
+      where: {
+        correo: object[ 'email' ],
+        password: object[ 'password' ]
+      }
+    } ).then( function ( usuario ) {
+      if ( usuario ) {
+        generarSesion( req, res, usuario.id, false , true);
+      }
+      else {
+        //Usuario o contraseña incorrectos
+        res.status(200).json({
+          success:false,
+          error:'3'
+        });
+      }
+    } );
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.logout = function ( object, req, res ) {
-  if ( req.session ) {
-    res.clearCookie( 'intermed_sesion' );
-    req.session.destroy();
+  try{
+    if ( req.session ) {
+      res.clearCookie( 'intermed_sesion' );
+      req.session.destroy();
+    }
+    res.redirect( '/' );
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
   }
-  res.redirect( '/' );
 };
 
 // Método que registra pacientes (facebook)
 exports.registrarUsuario = function ( object, req, res ) {
-  req.session.passport = {};
-  //Usuario que lo invito: req.session.invito;
-  var usuario_id = '';
-  object[ 'birthday' ] = object.birthdayYear + '-' + object.birthdayMonth + '-' + object.birthdayDay;
-  // Inicia transacción de registro de usuarios
-  models.sequelize.transaction( {
-      isolationLevel: models.Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
-    }, function ( t ) {
+  try{
+    req.session.passport = {};
+    //Usuario que lo invito: req.session.invito;
+    var usuario_id = '';
+    object[ 'birthday' ] = object.birthdayYear + '-' + object.birthdayMonth + '-' + object.birthdayDay;
+    // Inicia transacción de registro de usuarios
+    models.sequelize.transaction( {
+        isolationLevel: models.Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
+      }, function ( t ) {
 
-      if ( object[ 'tipoRegistro' ] === 'F' ) {
+        if ( object[ 'tipoRegistro' ] === 'F' ) {
 
-        return models.Usuario.findOne( {
-          where: {
-            fbId: object[ 'id' ]
-          }
-        }, {
-          transaction: t
-        } ).then( function ( usuario ) {
-          if ( !usuario && req.session.tipo != '' ) {
-            return models.Usuario.create( {
-                usuario: object[ 'email' ],
-                correo: object[ 'email' ],
-                tipoUsuario: object[ 'tipoUsuario' ],
-                tipoRegistro: object[ 'tipoRegistro' ],
-                fbId: object[ 'id' ]
-              }, {
-                transaction: t
-              } )
-              .then( function ( usuario ) {
-
-                var usuarioUrl = String( usuario.id );
-                for ( var i = usuarioUrl.length; i < 7; i++ ) {
-                  usuarioUrl = '0' + usuarioUrl;
-                }
-
-                usuario_id = usuario.id;
-
-                if ( object[ 'email' ] ) {
-                  return usuario.update( {
-                    estatusActivacion: 1,
-                    usuarioUrl: usuarioUrl
-                  }, {
-                    transaction: t
-                  } ).then( function ( resutl ) {
-                    return crearDatosGeneralesFB( usuario, object, req, res, t );
-                  } );
-                }
-                else {
-                  return usuario.update( {
-                    usuarioUrl: usuarioUrl
-                  }, {
-                    transaction: t
-                  } ).then( function ( resutl ) {
-                    return crearDatosGeneralesFB( usuario, object, req, res, t );
-                  } );
-                }
-              } );
-          }
-          else if ( usuario ) {
-            usuario_id = usuario.id;
-            generarSesion( req, res, usuario_id, true );
-          }
-          else {
-            console.log( 'El usuario no se encuentra registrado' );
-            generarSesion( req, res, '', true );
-          }
-        } );
-      }
-      else { //Registro por correo
-        return models.Usuario.findOne( {
+          return models.Usuario.findOne( {
             where: {
-              correo: object[ 'email' ]
+              fbId: object[ 'id' ]
             }
           }, {
             transaction: t
-          } )
-          .then( function ( usuario ) {
-            if ( !usuario ) {
-              //Usuario nuevo
-              if ( object.tipoUsuario === 'M' ) {
-                return models.Usuario.create( {
+          } ).then( function ( usuario ) {
+            if ( !usuario && req.session.tipo != '' ) {
+              return models.Usuario.create( {
+                  usuario: object[ 'email' ],
                   correo: object[ 'email' ],
-                  password: object[ 'password' ],
                   tipoUsuario: object[ 'tipoUsuario' ],
                   tipoRegistro: object[ 'tipoRegistro' ],
-                  estatusActivacion: 0,
-                  status: 0
+                  fbId: object[ 'id' ]
                 }, {
                   transaction: t
-                } ).then( function ( usuario ) {
+                } )
+                .then( function ( usuario ) {
+
                   var usuarioUrl = String( usuario.id );
                   for ( var i = usuarioUrl.length; i < 7; i++ ) {
                     usuarioUrl = '0' + usuarioUrl;
                   }
-                  var tokens = String( cryptomaniacs.doEncriptToken( usuario.id, getDateTime( false ) ) );
-                  return usuario.update( {
-                      token: tokens,
+
+                  usuario_id = usuario.id;
+
+                  if ( object[ 'email' ] ) {
+                    return usuario.update( {
+                      estatusActivacion: 1,
                       usuarioUrl: usuarioUrl
                     }, {
                       transaction: t
-                    } )
-                    .then( function ( usuarioUpd ) {
-                      return crearMedico( req, res, object, usuario, t );
+                    } ).then( function ( resutl ) {
+                      return crearDatosGeneralesFB( usuario, object, req, res, t );
                     } );
+                  }
+                  else {
+                    return usuario.update( {
+                      usuarioUrl: usuarioUrl
+                    }, {
+                      transaction: t
+                    } ).then( function ( resutl ) {
+                      return crearDatosGeneralesFB( usuario, object, req, res, t );
+                    } );
+                  }
                 } );
+            }
+            else if ( usuario ) {
+              usuario_id = usuario.id;
+              generarSesion( req, res, usuario_id, true );
+            }
+            else {
+              console.log( 'El usuario no se encuentra registrado' );
+              generarSesion( req, res, '', true );
+            }
+          } );
+        }
+        else { //Registro por correo
+          return models.Usuario.findOne( {
+              where: {
+                correo: object[ 'email' ]
               }
-              else if ( object.tipoUsuario === 'P' ) {
-                return models.Usuario.create( {
+            }, {
+              transaction: t
+            } )
+            .then( function ( usuario ) {
+              if ( !usuario ) {
+                //Usuario nuevo
+                if ( object.tipoUsuario === 'M' ) {
+                  return models.Usuario.create( {
                     correo: object[ 'email' ],
                     password: object[ 'password' ],
                     tipoUsuario: object[ 'tipoUsuario' ],
                     tipoRegistro: object[ 'tipoRegistro' ],
-                    estatusActivacion: 0
+                    estatusActivacion: 0,
+                    status: 0
                   }, {
                     transaction: t
-                  } )
-                  .then( function ( usuario ) {
+                  } ).then( function ( usuario ) {
                     var usuarioUrl = String( usuario.id );
                     for ( var i = usuarioUrl.length; i < 7; i++ ) {
                       usuarioUrl = '0' + usuarioUrl;
                     }
-
-                    var tokens = String( cryptomaniacs.doEncriptToken( usuario.id, object[ 'tiempoStamp' ] ) );
+                    var tokens = String( cryptomaniacs.doEncriptToken( usuario.id, getDateTime( false ) ) );
                     return usuario.update( {
                         token: tokens,
                         usuarioUrl: usuarioUrl
                       }, {
                         transaction: t
                       } )
-                      .then( function ( usuario ) {
-                        return models.DatosGenerales.create( {
-                            nombre: object.first_name,
-                            apellidoP: object.last_name,
-                            apellidoM: '',
-                            usuario_id: usuario.id,
-                            genero: object.gender
-                          }, {
-                            transaction: t
-                          } )
-                          .then( function ( result ) {
-                            return crearPaciente( req, res, object, usuario, t );
-                          } );
+                      .then( function ( usuarioUpd ) {
+                        return crearMedico( req, res, object, usuario, t );
                       } );
                   } );
+                }
+                else if ( object.tipoUsuario === 'P' ) {
+                  return models.Usuario.create( {
+                      correo: object[ 'email' ],
+                      password: object[ 'password' ],
+                      tipoUsuario: object[ 'tipoUsuario' ],
+                      tipoRegistro: object[ 'tipoRegistro' ],
+                      estatusActivacion: 0
+                    }, {
+                      transaction: t
+                    } )
+                    .then( function ( usuario ) {
+                      var usuarioUrl = String( usuario.id );
+                      for ( var i = usuarioUrl.length; i < 7; i++ ) {
+                        usuarioUrl = '0' + usuarioUrl;
+                      }
+
+                      var tokens = String( cryptomaniacs.doEncriptToken( usuario.id, object[ 'tiempoStamp' ] ) );
+                      return usuario.update( {
+                          token: tokens,
+                          usuarioUrl: usuarioUrl
+                        }, {
+                          transaction: t
+                        } )
+                        .then( function ( usuario ) {
+                          return models.DatosGenerales.create( {
+                              nombre: object.first_name,
+                              apellidoP: object.last_name,
+                              apellidoM: '',
+                              usuario_id: usuario.id,
+                              genero: object.gender
+                            }, {
+                              transaction: t
+                            } )
+                            .then( function ( result ) {
+                              return crearPaciente( req, res, object, usuario, t );
+                            } );
+                        } );
+                    } );
+                }
               }
-            }
-            else {
-              //Usuario ya existente
-              console.log( 'El usuario con el correo ' + object[ 'email' ] + ' ya se encuentra registrado' );
-              req.session.passport = {};
-              res.redirect( '/' );
-            }
-          } );
-      }
-    } )
-    .catch( function ( err ) {
-      console.error( 'ERROR: ' + err );
-      req.session.passport = {};
-      res.redirect( '/' );
-    } );
+              else {
+                //Usuario ya existente
+                console.log( 'El usuario con el correo ' + object[ 'email' ] + ' ya se encuentra registrado' );
+                req.session.passport = {};
+                res.redirect( '/' );
+              }
+            } );
+        }
+      } )
+      .catch( function ( err ) {
+        console.error( 'ERROR: ' + err );
+        req.session.passport = {};
+        res.redirect( '/' );
+      } );
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
 };
 exports.correoDisponible = function ( object, req, res ) {
-  models.Usuario.findAll( {
+  try{
+    models.Usuario.findAll( {
       where: {
         correo: object[ 'email' ]
       }
@@ -258,6 +291,9 @@ exports.correoDisponible = function ( object, req, res ) {
         } );
       }
     } );
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 
@@ -308,7 +344,8 @@ var crearPaciente = function ( req, res, object, usuario, t ) {
 }
 
 var crearMedico = function ( req, res, object, usuario, t ) {
-  return models.Medico.create( {
+  try{
+    return models.Medico.create( {
       usuario_id: usuario.id
     }, {
       transaction: t
@@ -327,6 +364,9 @@ var crearMedico = function ( req, res, object, usuario, t ) {
         }, 1000 );
       } );
     } );
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 var enviarCorreoConfirmacion = function ( usuario ) {
@@ -350,6 +390,7 @@ exports.actualizarSesion = function ( object, req, res ) {
 }
 
 var generarSesion = function ( req, res, usuario_id, redirect , response) {
+  //AQUI ME QUEDE
   if (!(response === false)){
     response = true;
   }

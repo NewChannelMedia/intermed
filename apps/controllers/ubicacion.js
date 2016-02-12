@@ -1,20 +1,29 @@
 var models = require('../models');
 
 exports.index = function (req, res) {
+  try{
     res.render('especialidades/index', {
         title: 'Especialidades'
     });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.mostrar = function (req, res) {
+  try{
     models.Especialidades.findAll().then(function (datos) {
         res.render('registrado', {
             title: 'REgistrado'
         });
     });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.obtieneTelefonos = function (object,req, res) {
+  try{
     models.Telefono.findAll({
       where: {
         direccion_id: object.direccion_id
@@ -22,33 +31,49 @@ exports.obtieneTelefonos = function (object,req, res) {
     }).then(function (datos) {
         res.send(datos);
     });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.ObtieneDirecciones = function (req, res) {
+  try{
     models.Direccion.findAll().then(function (datos) {
         res.send(datos);
     });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.obtieneEstados = function (object, req, res) {
+  try{
     models.Estado.findAll().then(function (datos) {
         res.send(datos);
     });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.obtieneCiudades = function (object, req, res) {
-  models.Municipio.findAll({
-    where:{estado_id: object.estado_id},
-    order: ['municipio'],
-    attributes: ['id','municipio_id', 'municipio']
-  }).then(function(ciudades){
-    res.send({
-        'municipio': ciudades
+  try{
+    models.Municipio.findAll({
+      where:{estado_id: object.estado_id},
+      order: ['municipio'],
+      attributes: ['id','municipio_id', 'municipio']
+    }).then(function(ciudades){
+      res.send({
+          'municipio': ciudades
+      });
     });
-  });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.encontrarPorCP = function (object, req, res) {
+  try{
     models.Localidad.findOne({
         where: {
             id: object.localidad_id
@@ -57,36 +82,44 @@ exports.encontrarPorCP = function (object, req, res) {
     }).then(function (localidad) {
         res.send(localidad);
     });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.obtieneLocalidades = function (object, req, res) {
-  models.Municipio.findOne({
-    where: {
-      id: object.municipio_id
-    }
-  }).then(function(municipio){
-    if (municipio){
-      models.Localidad.findAll({
-        where:{
-          estado_id:object.estado_id,
-          municipio_ant_id: municipio.municipio_id
-        },
-        order:['localidad'],
-        attributes:['id','localidad']
-      }).then( function(municipios){
-        res.send({
-            'municipios': municipios
+  try{
+    models.Municipio.findOne({
+      where: {
+        id: object.municipio_id
+      }
+    }).then(function(municipio){
+      if (municipio){
+        models.Localidad.findAll({
+          where:{
+            estado_id:object.estado_id,
+            municipio_ant_id: municipio.municipio_id
+          },
+          order:['localidad'],
+          attributes:['id','localidad']
+        }).then( function(municipios){
+          res.send({
+              'municipios': municipios
+          });
         });
-      });
-    } else {
-      res.send({
-          'success': false
-      });
-    }
-  });
+      } else {
+        res.send({
+            'success': false
+        });
+      }
+    });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.nuevaUbicacion = function (objects, req, res) {
+  try {
     var estados;
 
     models.Estado.findAll().then(function (datos) {
@@ -116,104 +149,45 @@ exports.nuevaUbicacion = function (objects, req, res) {
             usuario_id: 1
         })
     });
-
-
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.registrarUbicacion = function (objects, req, res) {
-  if (req.session.passport.user){
-    if (objects.principal == 1){
-      models.Direccion.update({
-        principal:0
-      },{
-        where: {
-          usuario_id: req.session.passport.user.id,
-          principal: 1
-        }
-      });
-    }
-    if (objects.idDireccion=='') {
-        models.Direccion.create({
-            calle: objects.calleUbi,
-            numero: objects.numeroUbi,
-            numeroInt: objects.numeroIntUbi,
-            calle1: objects.calle1Ubi,
-            calle2: objects.calle2Ubi,
-            principal: objects.principal,
-            nombre: objects.nombreUbi,
-            usuario_id: req.session.passport.user.id,
-            estado_id: objects.slc_estados,
-            localidad_id: objects.slc_colonias,
-            municipio_id: objects.slc_ciudades,
-            cp: objects.cpUbi,
-            latitud: objects.latitud,
-            longitud: objects.longitud
-        }).then(function (datos) {
-          console.log('Direccion: ' + JSON.stringify(datos));
-            if (datos){
-              if (objects.telefonosNuevos){
-                objects.telefonosNuevos.forEach(function(record){
-                  var numVar = record.numero.split("-");
-                  var claveRegion = '';
-                  var numero = '';
-                  if (numVar.length==3){
-                    claveRegion = numVar[0];
-                    numero = numVar[1] + ' ' + numVar[2];
-                  } else {
-                    numero = numVar[0] + ' ' + numVar[1];
-                  }
-
-                  models.Telefono.create({
-                    tipo:record.tipo,
-                    claveRegion: claveRegion,
-                    numero:numero,
-                    ext:record.ext,
-                    direccion_id: datos.id
-                  });
-                });
-              }
-            }
-            res.status(200).json({
-                success: true,
-                datos: datos,
-                ubicacion_id: datos.id
-            });
-        });
-    } else {
-      console.log('UBICACION_ID');
+  try{
+    if (req.session.passport.user){
+      if (objects.principal == 1){
         models.Direccion.update({
-            calle: objects.calleUbi,
-            numero: objects.numeroUbi,
-            numeroInt: objects.numeroIntUbi,
-            calle1: objects.calle1Ubi,
-            calle2: objects.calle2Ubi,
-            principal: objects.principal,
-            nombre: objects.nombreUbi,
+          principal:0
+        },{
+          where: {
             usuario_id: req.session.passport.user.id,
-            estado_id: objects.slc_estados,
-            localidad_id: objects.slc_colonias,
-            municipio_id: objects.slc_ciudades,
-            cp: objects.cpUbi,
-            latitud: objects.latitud,
-            longitud: objects.longitud
-        }, {
-            where: {
-                id: objects.idDireccion
-            }
-        }).then(function (datos) {
-            if (datos){
-              if (objects.telefonosActualizar){
-                var noEliminarId = [];
-                objects.telefonosActualizar.forEach(function(record){
-                  noEliminarId.push(record.id);
-                });
-                models.Telefono.destroy({
-                  where:{
-                    id: {$notIn: noEliminarId},
-                    direccion_id: objects.idDireccion
-                  }
-                }).then(function(){
-                  objects.telefonosActualizar.forEach(function(record){
+            principal: 1
+          }
+        });
+      }
+      if (objects.idDireccion=='') {
+          models.Direccion.create({
+              calle: objects.calleUbi,
+              numero: objects.numeroUbi,
+              numeroInt: objects.numeroIntUbi,
+              calle1: objects.calle1Ubi,
+              calle2: objects.calle2Ubi,
+              principal: objects.principal,
+              nombre: objects.nombreUbi,
+              usuario_id: req.session.passport.user.id,
+              estado_id: objects.slc_estados,
+              localidad_id: objects.slc_colonias,
+              municipio_id: objects.slc_ciudades,
+              cp: objects.cpUbi,
+              latitud: objects.latitud,
+              longitud: objects.longitud
+          }).then(function (datos) {
+            console.log('Direccion: ' + JSON.stringify(datos));
+              if (datos){
+                if (objects.telefonosNuevos){
+                  objects.telefonosNuevos.forEach(function(record){
                     var numVar = record.numero.split("-");
                     var claveRegion = '';
                     var numero = '';
@@ -223,57 +197,122 @@ exports.registrarUbicacion = function (objects, req, res) {
                     } else {
                       numero = numVar[0] + ' ' + numVar[1];
                     }
-                    models.Telefono.update({
+
+                    models.Telefono.create({
                       tipo:record.tipo,
                       claveRegion: claveRegion,
-                      numero: numero,
-                      ext:record.ext
-                    },{
-                      where: {
-                        id: record.id
-                      }
+                      numero:numero,
+                      ext:record.ext,
+                      direccion_id: datos.id
                     });
                   });
-                });
+                }
               }
-              if (objects.telefonosNuevos){
-                objects.telefonosNuevos.forEach(function(record){
-                  var numVar = record.numero.split("-");
-                  var claveRegion = '';
-                  var numero = '';
-                  if (numVar.length==3){
-                    claveRegion = numVar[0];
-                    numero = numVar[1] + ' ' + numVar[2];
-                  } else {
-                    numero = numVar[0] + ' ' + numVar[1];
-                  }
-
-                  models.Telefono.create({
-                    tipo:record.tipo,
-                    claveRegion: claveRegion,
-                    numero:numero,
-                    ext:record.ext,
-                    direccion_id: objects.idDireccion
+              res.status(200).json({
+                  success: true,
+                  datos: datos,
+                  ubicacion_id: datos.id
+              });
+          });
+      } else {
+        console.log('UBICACION_ID');
+          models.Direccion.update({
+              calle: objects.calleUbi,
+              numero: objects.numeroUbi,
+              numeroInt: objects.numeroIntUbi,
+              calle1: objects.calle1Ubi,
+              calle2: objects.calle2Ubi,
+              principal: objects.principal,
+              nombre: objects.nombreUbi,
+              usuario_id: req.session.passport.user.id,
+              estado_id: objects.slc_estados,
+              localidad_id: objects.slc_colonias,
+              municipio_id: objects.slc_ciudades,
+              cp: objects.cpUbi,
+              latitud: objects.latitud,
+              longitud: objects.longitud
+          }, {
+              where: {
+                  id: objects.idDireccion
+              }
+          }).then(function (datos) {
+              if (datos){
+                if (objects.telefonosActualizar){
+                  var noEliminarId = [];
+                  objects.telefonosActualizar.forEach(function(record){
+                    noEliminarId.push(record.id);
                   });
-                });
-              }
-            }
-            res.status(200).json({
-                success: true,
-                ubicacion_id: objects.idDireccion
-            });
+                  models.Telefono.destroy({
+                    where:{
+                      id: {$notIn: noEliminarId},
+                      direccion_id: objects.idDireccion
+                    }
+                  }).then(function(){
+                    objects.telefonosActualizar.forEach(function(record){
+                      var numVar = record.numero.split("-");
+                      var claveRegion = '';
+                      var numero = '';
+                      if (numVar.length==3){
+                        claveRegion = numVar[0];
+                        numero = numVar[1] + ' ' + numVar[2];
+                      } else {
+                        numero = numVar[0] + ' ' + numVar[1];
+                      }
+                      models.Telefono.update({
+                        tipo:record.tipo,
+                        claveRegion: claveRegion,
+                        numero: numero,
+                        ext:record.ext
+                      },{
+                        where: {
+                          id: record.id
+                        }
+                      });
+                    });
+                  });
+                }
+                if (objects.telefonosNuevos){
+                  objects.telefonosNuevos.forEach(function(record){
+                    var numVar = record.numero.split("-");
+                    var claveRegion = '';
+                    var numero = '';
+                    if (numVar.length==3){
+                      claveRegion = numVar[0];
+                      numero = numVar[1] + ' ' + numVar[2];
+                    } else {
+                      numero = numVar[0] + ' ' + numVar[1];
+                    }
 
+                    models.Telefono.create({
+                      tipo:record.tipo,
+                      claveRegion: claveRegion,
+                      numero:numero,
+                      ext:record.ext,
+                      direccion_id: objects.idDireccion
+                    });
+                  });
+                }
+              }
+              res.status(200).json({
+                  success: true,
+                  ubicacion_id: objects.idDireccion
+              });
+
+          });
+      }
+    } else {
+        res.status(200).json({
+            success: false,
+            error: 1
         });
     }
-  } else {
-      res.status(200).json({
-          success: false,
-          error: 1
-      });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
   }
 };
 
 exports.horarios = function (objects, req, res) {
+  try{
     var id = 1;
     var resultado = [];
     models.Horarios.findAll({
@@ -332,10 +371,14 @@ exports.horarios = function (objects, req, res) {
             horarios: JSON.stringify(resultado)
         });
     });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.registrarHorarios = function (objects, req, res) {
-  console.log('Direccion_id: ' + JSON.stringify(objects.direccion_id));
+  try{
+    console.log('Direccion_id: ' + JSON.stringify(objects.direccion_id));
     //eliminar registros anteriores
     if (req.session.passport && req.session.passport.user){
       models.Horarios.destroy({
@@ -356,9 +399,13 @@ exports.registrarHorarios = function (objects, req, res) {
         error: 1
       });
     }
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.ubicacionObtener = function (objects, req, res) {
+  try{
     models.Direccion.findAll({
         where: {
             usuario_id: 1
@@ -380,9 +427,13 @@ exports.ubicacionObtener = function (objects, req, res) {
             direccion: datos
         });
     });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.horariosObtener = function (objects, req, res) {
+  try{
     var resultado = [];
     models.Horarios.findAll({
         where: {
@@ -438,9 +489,13 @@ exports.horariosObtener = function (objects, req, res) {
             horarios: resultado
         });
     });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 };
 
 exports.agregaDireccion = function(object, req, res) {
+  try{
     models.Direccion.create({
       calle: object.calle,
       nombre: object.nombre,
@@ -452,13 +507,17 @@ exports.agregaDireccion = function(object, req, res) {
       principal: 0,
       longitud: object.longitud,
       latitud: object.latitud,
-    usuario_id: id
-  }).then(function(medico) {
-        res.status(200).json({ok: true});
-  });
+      usuario_id: id
+    }).then(function(medico) {
+          res.status(200).json({ok: true});
+    });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 }
 
 exports.actualizaDireccion = function(object, req, res) {
+  try{
     models.Direccion.update({
       calle: object.calle,
       numero: object.numero,
@@ -472,87 +531,106 @@ exports.actualizaDireccion = function(object, req, res) {
       latitud: object.latitud,
       usuario_id: id
     },{ where : {id : object.id}
-  }).then(function(medico) {
-        res.status(200).json({ok: true});
-  });
+    }).then(function(medico) {
+          res.status(200).json({ok: true});
+    });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 }
 
 exports.borraDireccion = function(object, req, res) {
+  try{
     models.Direccion.destroy({
       where : {id : object.id}
-  }).then(function(medico) {
-        res.status(200).json({ok: true});
-  });
+    }).then(function(medico) {
+          res.status(200).json({ok: true});
+    });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 }
 
 exports.obtieneUbicacion = function(object, req, res) {
-  if (req.session.passport.user){
-    var where = {usuario_id : req.session.passport.user.id};
-    var tipo = "findAll";
-    if (object.ubicacion_id && object.ubicacion_id >0){
-      where = {id : object.ubicacion_id};
-      tipo = "findOne";
-    }
+  try{
+    if (req.session.passport.user){
+      var where = {usuario_id : req.session.passport.user.id};
+      var tipo = "findAll";
+      if (object.ubicacion_id && object.ubicacion_id >0){
+        where = {id : object.ubicacion_id};
+        tipo = "findOne";
+      }
 
-    models.Direccion[tipo]({
-        where : where,
-        include: [
-          {
-              model: models.Municipio,
-              attributes: ['id','municipio'],
-              include: [{
-                  model: models.Estado,
-                  attributes: ['id','estado'],
-              }],
-          },
-          {
-              model: models.Localidad,
-              attributes: ['id','localidad','CP'],
-              include: [{
-                  model: models.TipoLocalidad,
-                  attributes: ['tipo'],
-              }],
-          },
-          {
-              model: models.Telefono
-          }],
-          order: [['principal','DESC']]
-    }).then(function(datos) {
-          res.status(200).json({success:true,result: datos});
-    });
-  } else {
-        res.status(200).json({success:false,error: 1});
+      models.Direccion[tipo]({
+          where : where,
+          include: [
+            {
+                model: models.Municipio,
+                attributes: ['id','municipio'],
+                include: [{
+                    model: models.Estado,
+                    attributes: ['id','estado'],
+                }],
+            },
+            {
+                model: models.Localidad,
+                attributes: ['id','localidad','CP'],
+                include: [{
+                    model: models.TipoLocalidad,
+                    attributes: ['tipo'],
+                }],
+            },
+            {
+                model: models.Telefono
+            }],
+            order: [['principal','DESC']]
+      }).then(function(datos) {
+            res.status(200).json({success:true,result: datos});
+      });
+    } else {
+          res.status(200).json({success:false,error: 1});
+    }
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
   }
 }
 
 
 exports.eliminaUbicacion = function(object, req, res){
-  models.Telefono.destroy({
-    where:{
-      direccion_id: object.idDireccion
-    }
-  }).then(function (datos) {
-    models.Direccion.destroy({
-      where:{ id: object.idDireccion}
-    }).then(function(result){
-        res.status(200).json({success: true,result: result});
-    });
-  });
-}
-
-exports.registrarubicacionPaciente = function (object, req, res){
-  if (req.session.passport.user){
-    object['usuario_id'] =req.session.passport.user.id;
-    models.Direccion.destroy({
-      where: {
-        usuario_id: req.session.passport.user.id
+  try{
+    models.Telefono.destroy({
+      where:{
+        direccion_id: object.idDireccion
       }
-    }).then(function(){
-      models.Direccion.create(object).then(function(result){
+    }).then(function (datos) {
+      models.Direccion.destroy({
+        where:{ id: object.idDireccion}
+      }).then(function(result){
           res.status(200).json({success: true,result: result});
       });
     });
-  } else {
-      res.status(200).json({success: false});
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
+}
+
+exports.registrarubicacionPaciente = function (object, req, res){
+  try{
+    if (req.session.passport.user){
+      object['usuario_id'] =req.session.passport.user.id;
+      models.Direccion.destroy({
+        where: {
+          usuario_id: req.session.passport.user.id
+        }
+      }).then(function(){
+        models.Direccion.create(object).then(function(result){
+            res.status(200).json({success: true,result: result});
+        });
+      });
+    } else {
+        res.status(200).json({success: false});
+    }
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
   }
 }

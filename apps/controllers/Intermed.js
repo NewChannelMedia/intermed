@@ -39,7 +39,6 @@ function callController( file, method, object, rq, rs ) {
       }
       else
         console.error( "Error2: falta indicar medoto a llamar." );
-
     }
     else
       console.error( "Error3: El controlador \'" + file + "\' no existe." );
