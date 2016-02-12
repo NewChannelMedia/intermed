@@ -21,15 +21,20 @@ var fs = require( 'fs' );
  *	para poderlo usar y asi mandar a llamar el o los metodos que pueda contener.
  */
 function callController( file, method, object, rq, rs ) {
+
   var exists = fs.exists( __dirname + '/' + file + '.js', function ( req, res ) {
-    if ( req === true ) {
+    if ( req === true) {
       var controller = require( './' + file + '.js' );
-      if ( method ) {
+      if ( method) {
         try {
           controller[ method ]( object, rq, rs );
         }
         catch ( e ) {
-          console.error( "Error1: el método '" + method + "' no existe." + " Error " + e );
+          if (rq){
+            rq.file = file;
+            rq.funct = method;
+            rq.errorHandler.report(e, rq, rs);
+          }
         }
       }
       else

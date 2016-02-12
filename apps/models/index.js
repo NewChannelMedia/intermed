@@ -62,6 +62,17 @@ var sequelizeEncuesta = new Sequelize('intermed.encuestas', 'root', '', {
     logging: null
 });
 
+var sequelizeError = new Sequelize('intermed.error', 'root', '', {
+    host: 'localhost',
+    dialect: 'mysql',
+    pool: {
+        max: 5,
+        min: 0,
+        idle: 10000
+    },
+    logging: null
+});
+
 //Modelo de Intermed.Intermed
 fs
   .readdirSync(__dirname + '/Intermed')
@@ -107,16 +118,27 @@ fs
   });
 
 
-//Modelo de Intermed.Encuesta
-fs
-  .readdirSync(__dirname + '/Encuesta')
-  .filter(function (file) {
-      return (file.indexOf(".") !== 0);
-  })
-  .forEach(function (file) {
-      var model = sequelizeEncuesta.import(path.join(__dirname + '/Encuesta', file));
-      db[model.name] = model;
-  });
+  //Modelo de Intermed.Encuesta
+  fs
+    .readdirSync(__dirname + '/Encuesta')
+    .filter(function (file) {
+        return (file.indexOf(".") !== 0);
+    })
+    .forEach(function (file) {
+        var model = sequelizeEncuesta.import(path.join(__dirname + '/Encuesta', file));
+        db[model.name] = model;
+    });
+
+  //Modelo de Intermed.Error
+  fs
+    .readdirSync(__dirname + '/Errores')
+    .filter(function (file) {
+        return (file.indexOf(".") !== 0);
+    })
+    .forEach(function (file) {
+        var model = sequelizeError.import(path.join(__dirname + '/Errores', file));
+        db[model.name] = model;
+    });
 
 Object.keys( db ).forEach( function ( modelName ) {
     if ("associate" in db[modelName]) {

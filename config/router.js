@@ -23,6 +23,7 @@ var express = require( 'express' ),
     ioPassport = require( 'socket.io-passport' ),
     hps = require( '../apps/helpers/helpers' ),
     intermed = require( '../apps/controllers/Intermed' ),
+    errorHandler = require( '../apps/controllers/errorHandler' ),
     models  = require('../apps/models');
 
 require( './configPassport' )( passport );
@@ -73,7 +74,8 @@ var routerObject = {
   express: express,
   passport: passport,
   url: url,
-  models: models
+  models: models,
+  errorHandler: errorHandler
 }
 
 
