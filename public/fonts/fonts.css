@@ -28,117 +28,235 @@ footer,header,hgroup,menu,nav,section {
   color: #000;
 }
 
+/* font styling */
+
+.white-c {
+  color: #ffffff!important;
+}
+
+.black-c {
+  color: #000000!important;
+}
+
+.red-c {
+  color: #ff0030!important;
+}
+
+.grey1-c {
+  color: #aaaaaa!important;
+}
+
+.grey2 {
+  color: #595959!important;
+}
+
+.grey3-c {
+  color: #767676!important;
+}
+
+.blue-c {
+  color: #3690c8!important;
+}
+
+.dark-c {
+  color: #323232!important;
+}
+
 .s5 {
-  font-size: 5px;
+    font-size: 5px!important;
 }
 
 .s10 {
-  font-size: 10px;
-}
-
-.s14 {
-  font-size: 14px;
+  font-size: 10px!important;
 }
 
 .s15 {
-  font-size: 15px;
-}
-
-.s17 {
-  font-size: 17px;
-}
-
-.s19 {
-  font-size: 19px;
+  font-size: 15px!important;
 }
 
 .s20 {
-  font-size: 20px;
+  font-size: 20px!important;
 }
 
 .s25 {
-  font-size: 25px;
+  font-size: 25px!important;
 }
 
 .s30 {
-  font-size: 30px;
+  font-size: 30px!important;
 }
 
 .s35 {
-  font-size: 35px;
+  font-size: 35px!important;
 }
 
 .s40 {
-  font-size: 40px;
+  font-size: 40px!important;
 }
 
 .s45 {
-  font-size: 45px;
+  font-size: 45px!important;
 }
 
 .s50 {
-  font-size: 50px;
+  font-size: 50px!important;
 }
 
 .s55 {
-  font-size: 55px;
+  font-size: 55px!important;
 }
 
 .s60 {
-  font-size: 60px;
+  font-size: 60px!important;
 }
 
 .s65 {
-  font-size: 65px;
+  font-size: 65px!important;
 }
 
 .s70 {
-  font-size: 70px;
+  font-size: 70px!important;
 }
 
 .s75 {
-  font-size: 75px;
+  font-size: 75px!important;
 }
 
 .s80 {
-  font-size: 80px;
+  font-size: 80px!important;
 }
 
 .s85 {
-  font-size: 85px;
+  font-size: 85px!important;
 }
 
 .s90 {
-  font-size: 90px;
+  font-size: 90px!important;
 }
 
 .s95 {
-  font-size: 95px;
+  font-size: 95px!important;
 }
 
 .s100 {
-  font-size: 100px;
+  font-size: 100px!important;
 }
 
-.uppercase {
-  text-transform: uppercase;
+.s110 {
+  font-size: 110px!important;
 }
 
-.capitalize {
-  text-transform: capitalize;
+.s120 {
+  font-size: 120px!important;
 }
 
-.lowercase {
-  text-transform: lowercase;
+.s130 {
+  font-size: 130px!important;
+}
+
+.s140 {
+  font-size: 140px!important;
+}
+
+.s150 {
+  font-size: 150px!important;
+}
+
+.s200 {
+  font-size: 200px!important;
+}
+
+.ls-7 {
+  letter-spacing: -7px;
+}
+
+.ls-6 {
+  letter-spacing: -6px;
+}
+
+.ls-5 {
+  letter-spacing: -5px;
+}
+
+.ls-4 {
+  letter-spacing: -4px;
+}
+
+.ls-3 {
+  letter-spacing: -3px;
+}
+
+.ls-2 {
+  letter-spacing: -2px;
+}
+
+.ls-1 {
+  letter-spacing: -1px;
+}
+
+.ls0 {
+  letter-spacing: 0;
+}
+
+.ls1 {
+  letter-spacing: 1px;
+}
+
+.ls2 {
+  letter-spacing: 2px;
+}
+
+.ls3 {
+  letter-spacing: 3px;
+}
+
+.ls4 {
+  letter-spacing: 4px;
+}
+
+.ls5 {
+  letter-spacing: 5px;
+}
+
+.lh1 {
+  line-height: 1!important;
+}
+
+.lh1-5 {
+  line-height: 1.5!important;
+}
+
+.lh2 {
+  line-height: 2!important;
+}
+
+@media (max-width:765px) {
+  .s40,.s45,.s50,.s55,.s60,.s65,.s70,
+  .s75,.s80,.s85,.s90,.s95,.s100,
+  .s110,.s120,.s130,.s140,.s150,.s200 {
+    font-size: 35px!important;
+    line-height: 1.5!important;
+    letter-spacing: 1px!important;
+  }
+  .lh1,
+  .lh1-5,
+  .lh2 {
+    line-height: 1.2!important;
+  }
+
+  .ls-7,.ls-6,.ls-5,.ls-4,.ls-3,.ls-2,.ls-1,
+  .ls0,.ls1,.ls2,.ls3 .ls4,.ls5 {
+    letter-spacing: 1px!important;
+  }
 }
 
 .shadow {
-  text-shadow: 0 0 10px rgba(10, 10, 10, .5);
+  text-shadow: 0 0 10px rgba(0, 0, 0, .7)!important;
 }
 
 .noTransform {
-  text-decoration: none;
-  text-transform: none;
+  text-decoration: none!important;
+  text-transform: none!important;
 }
 
 
@@ -946,4 +1064,22 @@ url('/IntermedFonts/hinted-HelveticaNeue-MediumCondObl.svg#HelveticaNeue-MediumC
   font-family: 'Helvetica Neue Medium Condensed Oblique';
   font-weight: 500;
   font-style: italic;
+}
+
+@font-face {
+	font-family: 'Helvetica Neue';
+	src: url('/IntermedFonts/hinted-HelveticaNeue-Thin.eot');
+	src: local('Helvetica 35 Thin'), local('HelveticaNeue-Thin'),
+		url('/IntermedFonts/hinted-HelveticaNeue-Thin.eot?#iefix') format('embedded-opentype'),
+		url('/IntermedFonts/hinted-HelveticaNeue-Thin.woff2') format('woff2'),
+		url('/IntermedFonts/hinted-HelveticaNeue-Thin.woff') format('woff'),
+		url('/IntermedFonts/hinted-HelveticaNeue-Thin.ttf') format('truetype'),
+		url('/IntermedFonts/hinted-HelveticaNeue-Thin.svg#HelveticaNeue-Thin') format('svg');
+	font-weight: 100;
+	font-style: normal;
+}
+.h35-thin {
+  font-family: 'Helvetica Neue';
+	font-weight: 100;
+	font-style: normal;
 }
