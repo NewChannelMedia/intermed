@@ -3597,3 +3597,107 @@ function editarEspecialidades(){
   loadEspecialidades();
   },300);
 }
+
+function detallesError(error_id){
+
+
+  var error = '';
+  var fecha = '';
+  $.ajax({
+    url: '/control/err/getById',
+    type: 'POST',
+    dataType: "json",
+    data: {
+      id: error_id
+    },
+    async: false,
+    cache: false,
+    type: 'POST',
+    success: function( data ) {
+      if (data.success){
+        if (data.result){
+          data.result = JSON.parse(JSON.stringify(data.result));
+          error = data.result.err;
+          fecha = data.result.datetime;
+          data.result.jsonContent = JSON.parse(JSON.stringify(data.result.jsonContent));
+          data.result.jsonContent.forEach(function(err){
+            console.log('-' + JSON.stringify(err));
+          });
+        }
+      } else {
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    }
+  });
+
+    bootbox.dialog({
+      onEscape: function () {
+        bootbox.hideAll();
+    },
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">'+ error +'</span><span class="subtitle">'+ fecha +'</span>',
+    backdrop: true,
+    message:
+      '<style>.modal-header .close {margin-top: -17px;margin-right: -9px;}</style>'+
+      '<div class="tab-content tabBootBox">'+
+        '<div class="tab-pane active" role="tabpanel" id="tabPerfil">'+
+            '<div class="container-fluid">'+
+                '<div class="row">'+
+                  '<div class="col-md-12">'+
+                    '<div class="whiteF h77-boldcond" style="font-size: 18px;padding: 8px;background-color: #172C3B;margin: -10px;margin-bottom: 5px;">'+
+                      '<span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;ESPECIALIDADES.'+
+                    '</div>'+
+                  '</div>'+
+
+                  '<div class="col-md-12">'+
+                    '<div class="input-group">'+
+                      '<select id="autoEsp" class="form-control autoEspecialidad"></select>'+
+                      '<span class="input-group-btn">'+
+                        '<button id="addEspecialidadMedic" onclick="agregarExpecialidad(\'autoEsp\');" class="btn btn-primary form-control" type="button">'+
+                          '<span class="glyphicon glyphicon-plus"></span>'+
+                        '</button>'+
+                      '</span>'+
+                    '</div>'+
+                  '</div>'+
+
+
+                  '<div class="col-md-12 text-center" id="especialidadesListBoot" style="margin-top:5px">'+
+                  '</div>'+
+                '</div>'+
+
+
+                '<div class="row">'+
+                  '<div class="col-md-12">'+
+                    '<div class="whiteF h77-boldcond" style="font-size: 18px;padding: 8px;background-color: #172C3B;margin: -10px;margin-bottom: 5px;margin-top:20px;">'+
+                      '<span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;SUBESPECIALIDADES.'+
+                    '</div>'+
+                  '</div>'+
+
+                  '<div class="col-md-12">'+
+                    '<div class="input-group">'+
+                      '<select id="autoSubEsp" class="form-control autoEspecialidad"></select>'+
+                      '<span class="input-group-btn">'+
+                        '<button id="addEspecialidadMedic" onclick="agregarSubespecialidad(\'autoSubEsp\');" class="btn btn-primary form-control" type="button">'+
+                          '<span class="glyphicon glyphicon-plus"></span>'+
+                        '</button>'+
+                      '</span>'+
+                    '</div>'+
+                  '</div>'+
+
+
+                  '<div class="col-md-12 text-center" id="subEspecialidadesListBoot" style="margin-top:5px">'+
+                  '</div>'+
+
+                '</div>'+
+              '</div>'+
+
+          '</div>'+
+
+      '</div>'
+    });
+}

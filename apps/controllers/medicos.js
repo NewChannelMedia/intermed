@@ -189,9 +189,6 @@ var _this = module.exports = {
     // Método para actualizar médicos
     actualizar: function(object, req, res) {
       try{
-    }catch ( err ) {
-      req.errorHandler.report(err, req, res);
-    }
         var id = object.id;
         var idMedico = 0;
 
@@ -270,7 +267,7 @@ var _this = module.exports = {
               });
               //  res.json({error: err});
           });
-        }catch ( err ) {
+        } catch ( err ) {
           req.errorHandler.report(err, req, res);
         }
     },

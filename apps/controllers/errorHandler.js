@@ -1,6 +1,10 @@
 var models = require( '../models' );
+var jsonfile = require('jsonfile')
+
 
 exports.report = function ( err, req, res ) {
+
+
   var err = err.toString();
   var type = err.type;
   var stack = err.stack;
@@ -13,11 +17,8 @@ exports.report = function ( err, req, res ) {
   }
 
   var userAgent = req.headers['user-agent'];
-  var headers = JSON.stringify(req.headers);
-  if (headers.length>450){
-    headers =  headers.substring(0,450);
-  }
-  models.DBError_registro.create({
+
+  var obj = {
     type: type,
     err: err,
     stack: stack,
@@ -31,8 +32,36 @@ exports.report = function ( err, req, res ) {
     port: req.port,
     method: req.method,
     path: req.path,
-    headers: headers,
+    headers: req.headers,
     userAgent: userAgent
+  }
+
+  var nombre = new Date().toISOString() +'_'+ Math.floor((Math.random() * 9999) + 1);
+
+  var location = './apps/errors/';
+  nombre = location + nombre  + '.json';
+
+  fs = require('fs');
+  fs.writeFile(nombre, JSON.stringify(obj), function (err) {
+    if (err) return console.log(err);
+    console.log('Write-> '+nombre);
+  });
+
+
+
+  var headers = JSON.stringify(req.headers);
+
+  if (headers.length>400){
+    headers = headers.substring(0,400);
+  }
+
+  models.DBError_registro.create({
+    type: type,
+    err: err,
+    file: req.file,
+    function: req.funct,
+    method: req.method,
+    filePath: nombre
   }).then(function(error){
     console.log('xxxx [' + new Date().toISOString() + '] Error insertado en BD.')
     if (!res.headersSent){

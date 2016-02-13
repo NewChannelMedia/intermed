@@ -10,6 +10,7 @@ $(document).ready(function(){
 
   if ($('#controlPanelAdmin').length>0){
     contarPV();
+    contarErrors();
     //contarM();
     //contarN();
   }
@@ -28,6 +29,31 @@ function contarPV(){
             $('#badgePV').text(data.count);
           } else {
             $('#badgePV').text('');
+          }
+        } else if (data.error){
+          manejadorDeErrores(data.error);
+        }
+  		},
+  		error: function( jqXHR, textStatus, err ) {
+  			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+  		}
+  	});
+}
+
+
+function contarErrors(){
+  	$.ajax({
+  		url: '/control/Err/count',
+  		type: 'POST',
+  		dataType: "json",
+  		cache: false,
+  		type: 'POST',
+  		success: function( data ) {
+        if (data.success){
+          if (data.count>0){
+            $('#badgeErr').text(data.count);
+          } else {
+            $('#badgeErr').text('');
           }
         } else if (data.error){
           manejadorDeErrores(data.error);
@@ -396,6 +422,239 @@ function exportarCodigos(tipoCodigo, tipoPlan, tcodigo, tplan){
       },
       error: function (err){
         console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+}
+
+
+
+
+function cargarError(){
+
+            /*{"id":107,
+            "err":"ReferenceError: a is not defined",
+            "file":"usuarios",
+            "function":"revivirSesion",
+            "method":"GET",
+            "datetime":"2016-02-12T23:41:18.000Z",
+            "filePath":"./apps/errors/2016-02-12T23:41:18.827Z_9047.json",
+            "status":0,
+            "userIntermed_id":null}*/
+
+    var contenido = `
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs menuBootbox" role="tablist" style="margin: -25px;">
+    <li role="presentation" class="active"><a href="#errNuev" aria-controls="errNuev" role="tab" data-toggle="tab" aria-expanded="true">Nuevos</a></li>
+    <li role="presentation" class=""><a href="#errNoAt" aria-controls="errNoAt" role="tab" data-toggle="tab" aria-expanded="false">Por atender</a></li>
+    <li role="presentation" class=""><a href="#errAt" aria-controls="errAt" role="tab" data-toggle="tab" aria-expanded="false">Atendidos</a></li>
+    <li role="presentation" class=""><a href="#errSol" aria-controls="errSol" role="tab" data-toggle="tab" aria-expanded="false">Solucionados</a></li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content" style="margin-top:30px;">
+    <div role="tabpanel" class="tab-pane active" id="errNuev" >
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th class="text-center">#</th>
+            <th class="text-center">Fecha</th>
+            <th class="text-center">Metodo</th>
+            <th class="text-center">Error</th>
+            <th class="text-center">Controlador/Función</th>
+            <th class="text-center">Detalles</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="errNoAt">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th class="text-center">#</th>
+            <th class="text-center">Fecha</th>
+            <th class="text-center">Metodo</th>
+            <th class="text-center">Error</th>
+            <th class="text-center">Controlador/Función</th>
+            <th class="text-center">Detalles</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="errAt">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th class="text-center">#</th>
+            <th class="text-center">Fecha</th>
+            <th class="text-center">Metodo</th>
+            <th class="text-center">Error</th>
+            <th class="text-center">Controlador/Función</th>
+            <th class="text-center">Detalles</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="errSol">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th class="text-center">#</th>
+            <th class="text-center">Fecha</th>
+            <th class="text-center">Metodo</th>
+            <th class="text-center">Error</th>
+            <th class="text-center">Controlador/Función</th>
+            <th class="text-center">Detalles</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+`;
+
+$('#pageAdminContent').html(contenido);
+    //Cargar nuevos
+  	$.ajax({
+  		url: '/control/err/get',
+  		type: 'POST',
+  		dataType: "json",
+      data: {
+        status: 0
+      },
+  		cache: false,
+  		type: 'POST',
+  		success: function( data ) {
+        if (data.success){
+          var cont = '';
+          data.result.forEach(function(res){
+            cont += '<tr>'+
+                '<td>'+ res.id +'</td>'+
+                '<td>'+ res.datetime +'</td>'+
+                '<td>'+ res.method +'</td>'+
+                '<td>'+ res.err +'</td>'+
+                '<td>'+ res.file + '/' + res.function +'</td>'+
+                '<td><a onclick=\'detallesError('+ res.id +')\'><span class=\'glyphicon glyphicon-search\'></span></a></td>'+
+              '</tr>';
+          });
+          $('#errNuev').find('tbody').html(JSON.stringify(cont));
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+  		},
+  		error: function( jqXHR, textStatus, err ) {
+  			console.error( 'AJAX ERROR: (registro 166) : ' + err );
+  		}
+  	});
+
+    //Cargar por atender
+    $.ajax({
+      url: '/control/err/get',
+      type: 'POST',
+      dataType: "json",
+      data: {
+        status: 1
+      },
+      cache: false,
+      type: 'POST',
+      success: function( data ) {
+        if (data.success){
+          var cont = '';
+          data.result.forEach(function(res){
+            cont += '<tr>'+
+                '<td>'+ res.id +'</td>'+
+                '<td>'+ res.datetime +'</td>'+
+                '<td>'+ res.method +'</td>'+
+                '<td>'+ res.err +'</td>'+
+                '<td>'+ res.file + '/' + res.function +'</td>'+
+                '<td><a onclick=\'detallesError('+ res.id +')\'><span class=\'glyphicon glyphicon-search\'></span></a></td>'+
+              '</tr>';
+          });
+          $('#errNoAt').find('tbody').html(JSON.stringify(cont));
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      },
+      error: function( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: (registro 166) : ' + err );
+      }
+    });
+
+    //Cargar Atendidos
+    $.ajax({
+      url: '/control/err/get',
+      type: 'POST',
+      dataType: "json",
+      data: {
+        status: 2
+      },
+      cache: false,
+      type: 'POST',
+      success: function( data ) {
+        if (data.success){
+          var cont = '';
+          data.result.forEach(function(res){
+            cont += '<tr>'+
+                '<td>'+ res.id +'</td>'+
+                '<td>'+ res.datetime +'</td>'+
+                '<td>'+ res.method +'</td>'+
+                '<td>'+ res.err +'</td>'+
+                '<td>'+ res.file + '/' + res.function +'</td>'+
+                '<td><a onclick=\'detallesError('+ res.id +')\'><span class=\'glyphicon glyphicon-search\'></span></a></td>'+
+              '</tr>';
+          });
+          $('#errAt').find('tbody').html(JSON.stringify(cont));
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      },
+      error: function( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: (registro 166) : ' + err );
+      }
+    });
+
+
+    //Cargar solucionados
+    $.ajax({
+      url: '/control/err/get',
+      type: 'POST',
+      dataType: "json",
+      data: {
+        status: 3
+      },
+      cache: false,
+      type: 'POST',
+      success: function( data ) {
+        if (data.success){
+          var cont = '';
+          data.result.forEach(function(res){
+            cont += '<tr>'+
+                '<td>'+ res.id +'</td>'+
+                '<td>'+ res.datetime +'</td>'+
+                '<td>'+ res.method +'</td>'+
+                '<td>'+ res.err +'</td>'+
+                '<td>'+ res.file + '/' + res.function +'</td>'+
+                '<td><a onclick=\'detallesError('+ res.id +')\'><span class=\'glyphicon glyphicon-search\'></span></a></td>'+
+              '</tr>';
+          });
+          $('#errSol').find('tbody').html(JSON.stringify(cont));
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      },
+      error: function( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: (registro 166) : ' + err );
       }
     });
 }

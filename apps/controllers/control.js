@@ -1,5 +1,6 @@
 var models = require( '../models' );
 var mail = require( './emailSender' );
+var fs = require("fs");
 /**
 *	@author Cinthia Bermúdez
 *	@version 0.0.0.0
@@ -407,6 +408,67 @@ module.exports = {
           success: valido,
           registrado: registrado
         });
+      });
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
+  },
+
+  countErr: function (object, req, res){
+    try{
+      models.DBError_registro.findAll({
+        where: {
+          status: 0
+        }
+      }).then(function(total){
+        res.status(200).json({
+          success: true,
+          count: total.length
+        });
+      }).catch(function(err){
+        req.errorHandler.report(err, req, res);
+      });
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
+  },
+
+  getErr: function (object, req, res){
+    try{
+      models.DBError_registro.findAll({
+        where: {
+          status: object.status
+        }
+      }).then(function(total){
+        res.status(200).json({
+          success: true,
+          result: total
+        });
+      }).catch(function(err){
+        req.errorHandler.report(err, req, res);
+      });
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
+  },
+
+  errGetById: function (object, req, res){
+    try{
+      models.DBError_registro.findOne({
+        where: {
+          id: object.id
+        }
+      }).then(function(result){
+        var contents = fs.readFileSync(result.filePath);
+        result = JSON.parse(JSON.stringify(result));
+        result.jsonContent = JSON.parse(contents);
+
+        res.status(200).json({
+          success: true,
+          result: result
+        });
+      }).catch(function(err){
+        req.errorHandler.report(err, req, res);
       });
     }catch ( err ) {
       req.errorHandler.report(err, req, res);
