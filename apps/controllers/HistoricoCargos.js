@@ -1,6 +1,6 @@
 ﻿var models = require('../models');
 
-exports.HistoricoCargosRegistrar = function (usuarioid, fecha, periodoPago, proximoDescuento, monto, notificacionId) {
+exports.HistoricoCargosRegistrar = function (usuarioid, fecha, periodoPago, proximoDescuento, monto, notificacionId) {    
     switch (notificacion.type) {
         case 'subscription.paid': //cuando una suscripción ha sido pagada.                
         case 'charge.paid'://cuando un cargo ha sido pagado            
@@ -12,17 +12,16 @@ exports.HistoricoCargosRegistrar = function (usuarioid, fecha, periodoPago, prox
             }).then(function (historico) {
                 if (historico) {
                     models.UsuarioCargo.update({
-                        fechaProximoDescuento: proximoDescuento
+                        fechaProximoCargo: proximoDescuento
                     }, {
                         where: { id: usuarioid }
-                    })
-                    
+                    });
+
                     models.ProveedorNotificaciones.update({
                         historicoCargos_id: historico.id
                     }, {
                         where: { id: notificacionId }
-                    })
-
+                    });
                 }
             }).catch(function (err) {                
                 console.log(err);        
