@@ -3409,116 +3409,98 @@ function editarPerfilPersonal(){
       bootbox.hideAll();
   },
   className: 'Intermed-Bootbox',
-  title: '<span class="title"></span>',
+  title: '<span class="title">Editar información personal</span>',
   backdrop: true,
-  size:'large',
+  /*size:'large',*/
   message:
-    '<style>.modal-header .close {margin-top: -17px;margin-right: -9px;}</style>'+
-    '<div class="tab-content tabBootBox">'+
-      '<div class="tab-pane active" role="tabpanel" id="tabPerfil">'+
-          '<div class="container-fluid">'+
-            '<div class="col-md-12">'+
-              '<div class="row">'+
-                '<div class="whiteF h77-boldcond" style="font-size: 18px;padding: 8px;background-color: #172C3B;margin: -10px;margin-bottom: 20px;">'+
-                  '<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;INFORMACIÓN PERSONAL.'+
-                '</div>'+
-              '</div>'+
+  '<div class="tab-content tabBootBox">'+
+    '<div class="tab-pane active" role="tabpanel" id="tabPerfil">'+
+      '<div class="row" style="padding: 10px 15px;">'+
+        '<div class="h77-boldcond s20" style="color:#172C3B;">'+
+          '<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;INFORMACIÓN PERSONAL.'+
+          '</div>'+
+        '</div>'+
+      '<div class="row">'+
+        '<div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">'+
+          '<div class="profilePic header-profile-photo-link center-block">'+
+            '<img id="imgPerfilMedic" src="" width="200" height="200" class="img-rounded fotoPerfil">'+
+            '<label for="imageFile">Cambiar Imagen</label>'+
+            '<input type="file" id="imageFile" style="display:none" onchange="seleccionarImagenPerfil(this)">'+
             '</div>'+
-            '<div class="col-md-4">'+
-              '<div class="profilePic header-profile-photo-link center-block">'+
-                '<img id="imgPerfilMedic" src="" width="200" height="200" class="img-rounded fotoPerfil">'+
-                '<label for="imageFile">Cambiar Imagen</label>'+
-                '<input type="file" id="imageFile" style="display:none" onchange="seleccionarImagenPerfil(this)">'+
-              '</div>'+
+          '</div>'+
+        '<div class="col-lg-7 col-md-7 col-sm-7 col-xs-12">'+
+          '<div class="form-group">'+
+            '<label>Nombre:</label>'+
+            '<input class="form-control" placeholder="Nombre" id="nombrePersonal">'+
             '</div>'+
-
-            '<div class="col-lg-8 input-group">'+
-              '<div class="row">'+
-                '<div class="col-md-12">'+
-                  '<input class="form-control" placeholder="Nombre" id="nombrePersonal">'+
-                '</div>'+
-              '</div>'+
-              '<div class="row">'+
-                '<div class="col-md-6">'+
-                  '<input class="form-control" placeholder="Apellido paterno" id="appPatPersonal">'+
-                '</div>'+
-                '<div class="col-md-6">'+
-                  '<input class="form-control" placeholder="Apellido materno" id="appMatPersonal">'+
-                '</div>'+
-              '</div>'+
-              '<div class="row">'+
-                '<div class="col-md-3">'+
-                  '<label for="fechaNacimiento">Fecha de nacimiento: </label>'+
-                '</div>'+
-                '<div class="col-md-9">'+
-                  '<input type="date" class="form-control" id="fechaNacimiento" style="text-align: center;"/>'+
-                '</div>'+
-              '</div>'+
-            '</div>'+
-
+          '<div class="form-group">'+
             '<div class="row">'+
-              '<div class="col-md-12">'+
-                '<div class="whiteF h77-boldcond" style="font-size: 18px;padding: 8px;background-color: #172C3B;margin: -10px;margin-bottom: 10px;margin-top:15px;">'+
-                  '<span class="glyphicon glyphicon-filter"></span>&nbsp;&nbsp;PALABRAS CLAVE.'+
+              '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+                '<label>Apellido:</label>'+
                 '</div>'+
+              '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'+
+                '<input class="form-control" placeholder="Apellido paterno" id="appPatPersonal">'+
+              '</div>'+
+              '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'+
+                '<input class="form-control col-lg-6 col-md-6 col-sm-6 col-xs-6" placeholder="Apellido materno" id="appMatPersonal">'+
               '</div>'+
             '</div>'+
-
-            '<form onsubmit="return editPalabrasClave();">'+
-
-              '<div class="row">'+
-                '<div class="col-md-12">'+
-                  '<div class="input-group">'+
-                    '<input type="text" class="form-control" id="autoPalabras" placeholder="Palabras clave" required>'+
-                    '<span class="input-group-btn">'+
-                    '<button id="palabrasEdit" class="btn btn-success form-control" type="submit">'+
-                    '<span class="glyphicon glyphicon-plus"></span>'+
-                    '</button>'+
-                    '</span>'+
-                  '</div>'+
-                '</div>'+
-              '</div>'+
-            '</form>'+
-
-            '<div class="row">'+
-              '<div class="col-md-12" id="PalabrasClaveList" style="text-align: center;">'+
-              '</div>'+
-            '</div>'+
-
-            '<div class="col-lg-4 col-md-offset-8">'+
-              '<div class="row">'+
-                '<button class="btn btn-primary btn-block" onclick="guardarInformacionPersonal()">Guardar cambios</button>'+
-              '</div>'+
+          '</div>'+
+          '<div class="form-group">'+
+            '<label>Fecha de Nacimiento</label>'+
+            '<input type="date" class="form-control" id="fechaNacimiento" style="text-align: center;" />'+
             '</div>'+
           '</div>'+
         '</div>'+
-
-        '<div class="tab-pane" role="tabpanel" id="tabImagen">'+
-            '<div  id="CambiarFotoPerfil" name="CambiarFotoPerfil" >'+
-              '<form>'+
-                '<div class="col-md-12">'+
-                  '<div class="row" style="display: flex;align-items: center;justify-content: center;flex-direction: column;">'+
-                    '<input type="hidden" value="" name="base64file" id="base64file">'+
-                    '<div class="col-md-12" id="contenedorFoto" class="text-center" style="width: auto;margin: auto"></div>'+
-                    '<canvas id="canvas" height="300" width="300" style="display: none"></canvas>'+
-                  '</div>'+
-                '</div>'+
-              '</form>'+
+      '<div class="row" style="padding: 10px 15px;">'+
+        '<div class="h77-boldcond s20" style="color:#172C3B;">'+
+          '<span class="glyphicon glyphicon-filter"></span>&nbsp;&nbsp;PALABRAS CLAVE.'+
           '</div>'+
-          '<div class="row">'+
-              '<div class="col-md-4">'+
-                  '<div class="form-group">'+
-                      '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="$(\'#tabPerfil\').addClass(\'active\');$(\'#tabImagen\').removeClass(\'active\');">'+
-                  '</div>'+
-              '</div>'+
-              '<div class="col-md-6 col-md-offset-2">'+
-                  '<div class="form-group">'+
-                      '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Guardar" onclick="guardarImagenPerfil();">'+
-                  '</div>'+
-              '</div>'+
-          '</div>'+
+        '</div>'+
+      '<div class="row">'+
+        '<div class="col-md-12">'+
+          '<form onsubmit="return editPalabrasClave();">'+
+            '<div class="input-group">'+
+              '<input type="text" class="form-control" id="autoPalabras" placeholder="Palabras clave" required>'+
+              '<span class="input-group-btn">'+
+                '<button id="palabrasEdit" class="btn btn-success form-control" type="submit">'+
+                  '<span class="glyphicon glyphicon-plus"></span>'+
+                '</button>'+
+              '</span>'+
+            '</div>'+
+          '</form>'+
+        '</div>'+
+        '<div class="col-md-12" id="PalabrasClaveList" style="text-align: center;">'+
+        '</div>'+
       '</div>'+
-    '</div>'
+      '<div class="row footerBootbox">'+
+        '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pull-right">'+
+          '<button class="btn btn-success btn-lg btn-block" onclick="guardarInformacionPersonal()">Guardar cambios</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="tab-pane" role="tabpanel" id="tabImagen">'+
+      '<div class="row" id="CambiarFotoPerfil" name="CambiarFotoPerfil">'+
+        '<div class="col-md-12">'+
+          '<form>'+
+            '<div class="" style="display: flex;align-items: center;justify-content: center;flex-direction: column;">'+
+              '<input type="hidden" value="" name="base64file" id="base64file">'+
+              '<div class="col-md-12" id="contenedorFoto" class="text-center" style="width: auto;margin: auto"></div>'+
+              '<canvas id="canvas" height="300" width="300" style="display: none"></canvas>'+
+            '</div>'+
+          '</form>'+
+        '</div>'+
+      '</div>'+
+      '<div class="row footerBootbox">'+
+        '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'+
+          '<input type="button" class="btn btn-danger btn-lg btn-block" id="btnRegMed" value="Cancelar" onclick="$(\ #tabPerfil\ ).addClass(\ active\ );$(\ #tabImagen\ ).removeClass(\ active\ );">'+
+        '</div>'+
+        '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'+
+          '<input type="button" class="btn btn-success btn-lg btn-block" id="btnRegMed" value="Guardar" onclick="guardarImagenPerfil();">'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+  '</div>'
   });
   loadGenerales();
   loadPalabras();
