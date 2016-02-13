@@ -1,236 +1,261 @@
-<section id="principal">
-  <section class="container">
-    <div class="row">
-      <div id="myCarousel" class="carousel slide carousel-fade bottom-border" data-ride="carousel">
-        <!-- Indicators -->
-        <ol class="carousel-indicators">
-          <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-          <li data-target="#myCarousel" data-slide-to="1"></li>
-          <li data-target="#myCarousel" data-slide-to="2"></li>
-        </ol>
-        <div class="carousel-inner" role="listbox">
-          <div class="item active" id="item-1">
-            <div class="container">
-              <div class="carousel-caption">
-                <img class="item-title" src="img/que-es-intermed.png" alt="¿Qué es Intermed?">
-                <div class="clearfix"></div>
-                <div class="item-block">
-                  <div class="large-text">
-                    <strong>INTERMED <sup>&reg</sup></strong> es la primera
-                    <br>red social
-                    <strong>médico-paciente.!!!!</strong>
-                  </div>
-                </div>
-                <div class="item-block">
-                  <div class="normal-text">
-                    creada para ayudarte a llevar un control de tu salud
-                    <br> y optimizar tu comunicación con médicos, instituciones
-                    <br> y demás profesionales del ramo.
-                  </div>
-                </div>
-              </div>
+<div id="newHome">
+  <header id="newHomeHeader">
+    <div class="container-fluid body-container">
+      <div class="row center-content">
+        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 header-content-left text-center">
+          <div class="row">
+            <div class="col-lg-12">
+              <img class="center-block img-responsive" src="img/newHome/intermed.png">
             </div>
           </div>
-          <div class="item" id="item-2">
-            <div class="container">
-              <div class="carousel-caption">
-                <h1 class="item-title-text">
-                  <small>Agenda tus citas</small>
-                  <br>con un click
-                </h1>
-                <div class="clearfix"></div>
-                <div class="clearfix"></div>
-                <div class="item-block">
-                  <div class="large-text">
-                    <strong>Seguridad y rapidez</strong>
-                  </div>
-                </div>
-                <div class="item-block">
-                  <div class="normal-text">
-                    Desde cualquier lugar y en cualquier momento, agenda
-                    <br> tus citas a traves de Intermed, y sin costo alguno
-                    <br> nosotros la reservaremos para ti, recordandote
-                    <br> la fecha y registrando tu visita.
-                  </div>
-                </div>
-              </div>
+          <div class="row">
+            {{#ifSession "id"}}
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col-lg-offset-3 col-md-offset-3 col-sm-offset-3 col-xs-12 text-center">
+              Hola {{valSession "name"}}<br>
+              <a class="btn btn-transparent h65-medium s25 whiteF noTransform login" href="#" id="logMod">Ir a perfil</a>
             </div>
-          </div>
-          <div class="item" id="item-3">
-            <div class="container">
-              <div class="carousel-caption">
-                <h1 class="item-title-text">
-                  <small>Lleva un registro</small>
-                  <br>detallado
-                  <small>de tu</small>
-                  <br>
-                  <small>historial de salud</small>
-                </h1>
-                <div class="clearfix"></div>
-                <div class="item-block">
-                  <div class="large-text">
-                    Seguridad y
-                    <strong>rapidez</strong>
-                  </div>
-                </div>
-                <div class="item-block">
-                  <div class="normal-text">
-                    Cada vez que visitas a un médico de Intermed, la
-                    <br> registramos y la incluímos en una bitacora que
-                    <br> puedes consultar en cualquier momento.
-                  </div>
-                </div>
-              </div>
+            {{else}}
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center">
+              <a class="btn btn-transparent btn-block h65-medium s20 whiteF text-uppercase login" href="#" id="logMod">INGRESA</a>
             </div>
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center">
+              <a class="btn btn-transparent btn-block h65-medium s20 whiteF text-uppercase reg" href="#" onclick="registro();">REGISTRATE</a>
+            </div>
+            {{/ifSession}}
           </div>
         </div>
-        <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
-          <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-          <span class="sr-only">Previous</span>
-        </a>
-        <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
-          <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-          <span class="sr-only">Next</span>
-        </a>
-      </div>
-      <!-- /.carousel -->
-    </div>
-  </section>
-  <section id="buscador" class="container">
-    <!-- empieza buscador -->
-    <div id="panel-buscador" class="panel">
-      <div class="panel-body" style="height:auto!important">
-        <form action="/buscar" id="buscaMedico" method="POST" onsubmit="return iniciarBusqueda()">
-          <div class="col-md-10">
-            <div class="row" style="padding-bottom:0px!important">
-              <div class="col-md-3">
-                <div class="form-group">
-                  <select class="form-control selectprimary" onchange="CargarExtraBusqueda()" id="tipoBusqueda" name="tipoBusqueda">
-                    <option value="0">Médicos/Instituciones</option>
-                    <option value="1">Médicos</option>
-                    <option value="2">Instituciones</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="col-md-2">
-                <div class="form-group" id="selectGroup">
-                  <select class="form-control" id="selectEstado" name="selectEstado" onChange="cargarCiudades('#selectEstado');" aria-describedby="selectEstadoP">
-                    <option value="0">Estado</option>
-                    {{#each estado}}
-                      <option value="{{id}}">{{estado}}</option>
-                    {{/each}}
-                  </select>
-                  <span id = "selectIcon" class="" aria-hidden="true"></span>
-                  <span class="sr-only" id="selectEstadoP">(success)</span>
-                  <div id = "select-error"></div>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="form-group">
-                  <select class="form-control" id="selectCiudad" name="selectCiudad">
-                    <option value="0">Municipio/Ciudad</option>
-                    {{#each render.municipios}}
-                      <option value="{{id}}">{{municipio}}</option>
-                    {{/each}}
-                  </select>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="form-group" id="nameGroup">
-                  <input type="text" class="form-control" id="nombreMed" name="nombreMed" value="{{render.nombre}} {{render.apellido}}" aria-describedby="algo">
-                  <span id = "nameIcon" class="" aria-hidden="true"></span>
-                  <span id="algo" class="sr-only">(success)</span>
-                  <div id = "nombre-error"></div>
-                </div>
-              </div>
-              {{#if render.estado}}
-                <script type="text/javascript">
-                  $('#selectEstados').prop('value',{{render.estado}});
-                  {{#if render.municipio}}
-                    $('#selectCiudad').prop('value',{{render.municipio}});
-                  {{/if}}
-                </script>
-              {{/if}}
-              <div class="col-md-12">
-                <div class="row"  id="extraSearch"  style="padding-bottom:0px!important">
-                </div>
-              </div>
-          </div>
-        </div>
-          <div class="col-md-2">
-            <div class="row">
-              <div class="col-md-12">
-                <div class="form-group">
-                   <!--<button type="button" id="searchingData" class="btn btn-success btn-md btn-block"id = "btn">
-                    <span class="glyphicon glyphicon-search"></span>&nbsp Buscar
-                  </button>-->
-                  <input type="submit" value="Buscar" class="btn btn-success btn-md btn-block" id="btn" />
-                </div>
-              </div>
-            </div>
-          </div>
-        </form>
-        <!-- final del form principal -->
-      </div>
-    </div>
-    <!-- espacio para icono scroll -->
-    <div class="row ">
-      <div style="text-align:center;">
-        <span class="center-block glyphicon glyphicon-hand-down btn-lg"></span>
-      </div>
-    </div>
-  </section>
-</section>
-<section id="servicios" style="text-align:center; color:#fff;">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <span class="icon-white"></span>
-        <article>
-          <h2>
-            <strong>Intermed<sup>&reg</sup></strong> Es la primera red social dedicada a la salud.
-          </h2>
-          <div class="medium-text">Es una plataforma diseñada para conectar a pacientes, medicos e instituciones, ofreciéndoles una
-            <br> selección de útiles herramientas creadas especialmente para cada uno de ellos.
-          </div>
-          <h1>Conoce los servicios que
-            <strong>Intermed<sup>&reg</sup></strong> tiene para ti.</br>
-            <small>Selecciona tu categoría:</small>
+        <hr class="separator hidden-xs">
+        <!--<div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 header-content-right">
+          <h1 class="h45-light s40 white-c">Intermed está en construcción.
+            <br>¡Espéranos pronto!
           </h1>
-        </article>
+          <br>
+          <h2 class="h35-thin s50 white-c">¿Qué es Intermed?</h2>
+          <p class="h45-light s20 white-c text-justify">
+            Intermed es una red social que conecta a médicos
+            <br class="hidden-sm hidden-xs">con pacientes.
+            <br>Con ella, puedes encontrar médicos de acuerdo a
+            <br class="hidden-sm hidden-xs">tus preferencias y necesidades y hacer citas con
+            <br class="hidden-sm hidden-xs">ellos en cualquier momento y desde cualquier lugar.
+          </p>
+        </div>-->
+        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 header-content-right">
+          <div class="body-container">
+            <div class="center-content">
+              <h1 class="h45-light s40 white-c">¡Encuentra tus medicos favoritos!</h1>
+              <form action="/buscar" id="buscaMedico" method="POST" onsubmit="return iniciarBusqueda()">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group" >
+                      <input type="text" class="form-control" id="nombreMed" name="nombreMed" placeholder="Busca a tu medico" value="{{render.nombre}} {{render.apellido}}">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <select class="form-control" id="selectEstado" name="selectEstado" onChange="cargarCiudades('#selectEstado');">
+                        <option value="0">Estado</option>
+                        {{#each estado}}
+                          <option value="{{id}}">{{estado}}</option>
+                        {{/each}}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <select class="form-control" id="selectCiudad" name="selectCiudad">
+                        <option value="0">Municipio/Ciudad</option>
+                        {{#each render.municipios}}
+                          <option value="{{id}}">{{municipio}}</option>
+                        {{/each}}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <input type="submit" value="Buscar" class="btn btn-success btn-md btn-block" id="btn">
+                  </div>
+                  {{#if render.estado}}
+                    <script type="text/javascript">
+                      $('#selectEstados').prop('value',{{render.estado}});
+                      {{#if render.municipio}}
+                        $('#selectCiudad').prop('value',{{render.municipio}});
+                      {{/if}}
+                    </script>
+                  {{/if}}
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="row">
-      <div class="iconos-servicios hi-icon-wrap hi-icon-effect hi-icon-effect-a">
-        <div class="col-md-3">
-          <a href="/pacientes" class="hi-icon">
-            <img class=" hi-icon-img" src="img/BotonPacientes.png">
-          </a>
-        </div>
-        <div class="col-md-3">
-          <a href="/medicos" class="hi-icon">
-            <img class=" hi-icon-img" src="img/BotonMedicos.png">
-          </a>
-        </div>
-        <div class="col-md-3">
-          <a href="/instituciones" class="hi-icon">
-            <img class=" hi-icon-img" src="img/BotonInstituciones.png">
-          </a>
-        </div>
-        <div class="col-md-3">
-          <a href="/proveedores" class="hi-icon">
-            <img class=" hi-icon-img" src="img/BotonProveedores.png">
-          </a>
+    <div class="bounce-item hidden-xs">
+      <img id="bounce" class="center-block" src="img/newHome/down-arrow.png">
+    </div>
+  </header>
+  <section id="homeMainTitle">
+    <div class="container-fluid body-container">
+      <div class="row center-content text-center">
+        <h3 class="h35-thin s50 text-center dark-c">
+          ¿Qué te ofrece Intermed?
+        </h3>
+      </div>
+    </div>
+  </section>
+  <section id="homeMain">
+    <div class="container-fluid body-container">
+      <div class="row center-content">
+        <div class="container">
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 homeMainContainer">
+            <div class="row">
+              <div class="col-lg-12">
+                <h4 class="h35-thin s50 text-center white-c">Paciente</h4>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1 homeMainContent">
+                <div class="body-container">
+                  <div class="center-content">
+                    <img class="center-block img-responsive" src="img/newHome/iconoPaciente.png">
+                    <br><br>
+                    <p class="h45-light s20 text-center dark-c">
+                      Como paciente, puedes buscar, calificar y recomendar médicos a tus familiares y amigos, ademas de formar tu directorio de médicos favoritos y llevar una bitácora de tu salud.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 homeMainContainer">
+            <div class="row">
+              <div class="col-lg-12">
+                <h4 class="h35-thin s50 text-center dark-c">Médico</h4>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1 homeMainContent">
+                <div class="body-container">
+                  <div class="center-content">
+                    <img class="center-block img-responsive" src="img/newHome/iconoMedico.png">
+                    <br><br>
+                    <p class="h45-light s20 text-center dark-c">
+                       Como médico, puedes darte a conocer a nuevos pacientes además de contar con herramientas funcionales que agilizan tu rutina de trabajo y la manera en la que te comunicas con tus pacientes.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  </div>
-</section>
-<section id="section3">
-  <div class="section3cover">
-    <div class="container">
+    <div class="homeMainBg pacienteBG"></div>
+    <div class="homeMainBg medicoBG"></div>
+  </section>
+  <section id="preCodigo">
+    <div class="body-container">
+      <div class="center-content">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 preCodigoContainer">
+              <div class="body-container">
+                <div class="center-content">
+                  <img class="center-block img-responsive" src="img/newHome/iconoMedico.png">
+                  <h4 class="h35-thin s55 text-uppercase text-center black-c">¿Eres <span class="h65-medium">Médico</span>?</h4>
+                  <h5 class="h75-bold s30 text-center red-c">¡Nos interesa tu opinión!</h5>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 preCodigoContainer">
+              <div class="body-container">
+                <div class="center-content">
+                  <p class="h35-thin s25 text-justify grey2-c">
+                    ¡Conoce <span class="h65-medium">Intermed</span> y gánate una <span class="h65-medium">iPad Mini</span> o un <span class="h65-medium">iPod Nano</span> participando en nuestra encuesta!
+                    <br><br>Estamos diseñando Intermed para acercarte a tus pacientes y revolucionar la manera en que te comunicas con ellos.
+                    <br><br>¡Ayúdanos a crear un mejor producto para ti y obten la oportunidad de ganar estos fantásticos premios!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+  <section id="codigo">
+    <div class="container-fluid body-container">
+      <div class="row center-content">
+        <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-0">
+          <p class="h35-thin s25 lh1-5 text-center white-c">
+            A continuación hemos preparado 3 breves videos para ti, con los que podrás conocer más acerca de Intermed y después contestar nuestra pequeña encuesta.
+            <br>Anota tus datos al finalizar la encuesta para participar en el sorteo de una <span class="h65-medium">iPad Mini*</span> y un <span class="h65-medium">iPod Nano*</span>.
+          </p>
+          <br><br>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-8 col-xs-10 col-lg-offset-4 col-md-offset-4 col-sm-offset-2 col-xs-offset-1">
+          <form role="form" method="POST" action="<?= base_url(); ?>about" class="code-input">
+            <div class="input-group">
+              <input type="text" class="form-control code-intput-control h65-medium s20" placeholder="" name="codigo">
+              <span class="input-group-btn">
+                <input type="submit" value="Entrar" class="btn btn-default code-intput-button h35-thin s25 ls2">
+              </span>
+            </div>
+          </form>
+        </div>
+        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 col-lg-offset-1 col-md-offset-1 col-sm-offset-0 col-xs-offset-0">
+          <br><br>
+          <p class="h75-bold s30 text-center white-c">
+            Ingresa con tu código de acceso.
+          </p>
+          <p class="h35-thin s25 lh1-5 text-center white-c">
+            Si no tienes un código, solicitalo <a href="<?php echo base_url(); ?>codigo/pedir" class="h65-medium dark-c">aqui</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="postCodigo">
+    <div class="container-fluid body-container">
+      <div class="row center-content">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <p class="h35-thin s15 lh1-5 text-center white-c">
+            * Sorteo válido para los primeros 500 participantes. El participante ganador será notificado por medio de los datos proporcionados al finalizar la encuesta. De no responder en un plazo de 5 días hábiles, un tercer lugar será premiado en su lugar. Para conocer nuestra politica de privacidad y protección de información haz <strong><a href="terminos" class="white-c">click aquí</a></strong>.
+            <br><strong>Apple</strong>, <strong>Mac</strong> y los simbolos que los representan son marcas registradas de <strong>Apple Inc</strong>.
+            <br><strong>Intermed®</strong> y <strong>New Channel Media</strong> no están afiliados a estás marcas.
+          </p>
+          <br><br>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="homeContacto">
+    <div class="container-fluid body-container">
+      <div class="row center-content">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <h4 class="h35-thin s35 text-center grey1-c">¿Deseas más información sobre intermed?</h4>
+          <br><br>
+          <h5 class="h35-thin s30 text-center grey1-c">Escríbenos</h5>
+          <br>
+        </div>
+        <div class="col-lg-6 col-lg-offset-3 col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2 col-xs-10 col-xs-offset-1">
+          <form id="frm_contacto" method="POST" class="code-input">
+            <div class="form-group">
+              <label class="h65-medium s20 grey3-c">Nombre:</label>
+              <input type="text" class="form-control code-intput-control h65-medium s20" placeholder="" name="nombreContacto" id="nombreContacto" required>
+            </div>
+            <div class="form-group">
+              <label class="h65-medium s20 grey3-c">Correo:</label>
+              <input type="email" class="form-control code-intput-control h65-medium s20" placeholder="" name="emailContacto" id="emailContacto" required>
+            </div>
+            <div class="form-group">
+              <label class="h65-medium s20 grey3-c">Mensaje:</label>
+              <textarea class="form-control code-intput-control h65-medium s20" rows="6" placeholder="" id="mensajeContacto" name="mensajeContacto" required></textarea>
+            </div>
+            <br>
+            <input type="submit" value="Enviar" class="btn btn-default btn-submit h45-light s30 ls2">
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

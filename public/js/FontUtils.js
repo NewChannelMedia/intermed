@@ -389,4 +389,11 @@ $( document ).ready( function () {
     fontStyle: "italic"
   } );
 
+  $( ".h35-thin" ).fontface( {
+    fontName: "Helvetica Neue",
+    fileName: "hinted-HelveticaNeue-Thin",
+    fontWeight: "100",
+    fontStyle: "normal"
+  } );
+
 } );

@@ -2080,15 +2080,6 @@ li.error{
   border-bottom: 0px!important;
 }
 
-.footerBootbox{
-  background-color: #172c3b;
-  margin-bottom: 0px;
-  color:gray;
-  padding: 5px;
-  margin-left: -15px;
-  margin-right: -15px;
-}
-
 #divUbicacion{
   padding:30px;
   background-color:#5D9AB7;
@@ -2099,16 +2090,7 @@ li.error{
   padding-bottom: 2px!important;
 }
 
-.divBodyBootbox {
-  padding:30px;
-  background-color:#5D9AB7;
-  padding-top: 10px;
-  padding-bottom: 5px;
-}
 
-.divBodyBootbox .row {
-  padding-bottom: 2px!important;
-}
 
 .btn-add{
   background-color: #5AA5C9;
@@ -2369,16 +2351,19 @@ div.Slider{
 }
 
 
-.Intermed-Bootbox .modal-content{
-  background-color: #172c3b;
-  padding: 4px;
-  border-radius: 0px;
+.Intermed-Bootbox .modal-content {
+  padding: 0;
+  border-radius: 0;
+  background-color: #ffffff;
+  -webkit-box-shadow: 0 0 15px rgba(0,0,0,.5);
+  box-shadow: 0 0 15px rgba(0, 0, 0, .5);
+  border: solid 0.1pt rgba(0,0,0,0.001);
 }
 
 .Intermed-Bootbox .modal-header{
-  background-color: #172c3b;
+  background-color: transparent;
   border: none;
-  color: white;
+  color: #333;
 }
 
 .Intermed-Bootbox .modal-header .title{
@@ -2396,21 +2381,89 @@ div.Slider{
 
 .Intermed-Bootbox .bootbox-close-button{
   font-size: 180%;
-  color: white;
+  color: #333;
 }
 
 .Intermed-Bootbox .modal-body{
-  background-color: #5D9AB7;
-  padding-bottom: 0px;
+  background-color: transparent;/*#5D9AB7;#337ab7;#0098d7;*/
+  padding: 0px;
+  border: 0;
 }
 
 .Intermed-Bootbox .modal-footer{
-  background-color: #5D9AB7;
+  background-color: #375467;
   border: none;
+  color: #fff;
 }
 
 .Intermed-Bootbox .modal-footer button{
   min-width: 100px;
+}
+
+.Intermed-Bootbox .divBodyBootbox {
+  padding:30px;
+  background-color:#5D9AB7;
+  padding-top: 10px;
+  padding-bottom: 5px;
+}
+
+.Intermed-Bootbox .divBodyBootbox .row {
+  padding: 2px!important;
+}
+
+.Intermed-Bootbox .row {
+  margin: 0;
+  padding-bottom: 15px;
+}
+
+.Intermed-Bootbox .footerBootbox {
+  margin-right: 0;
+  margin-left: 0;
+  padding-top: 10px;
+  padding-right: 0;
+  padding-bottom: 10px;
+  padding-left: 0;
+  color: #fff;
+  background-color: #172c3b;
+}
+
+.Intermed-Bootbox hr {
+  margin: 12px 0 0 0;
+  padding: 0;
+  border: solid 1px rgba(255,255,255,0.6);
+}
+
+.Intermed-Bootbox .form-group {
+  padding-top: 15px;
+  margin: 0;
+}
+
+.Intermed-Bootbox .form-control {
+  border-radius: 0;
+}
+
+.Intermed-Bootbox .alert {
+  margin: 0 auto;
+  border-radius: 0;
+}
+
+.Intermed-Bootbox p {
+  margin-top: 9px;
+  margin-bottom: 9px;
+}
+
+.modal-backdrop{
+  background-color: #000230!important;
+}
+.modal-backdrop.in {
+  filter: alpha(opacity=50);
+  opacity: .3;
+}
+
+.btn-facebook, .btn-facebook:hover {
+  background-color: #425F9C;
+  color: #ffffff;
+  border: 0;
 }
 
 /*Menu registra ubicaciones*/

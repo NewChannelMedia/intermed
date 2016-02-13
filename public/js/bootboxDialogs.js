@@ -882,52 +882,53 @@ function loginModal(){
   },
     size:'medium',
     className: 'Intermed-Bootbox',
-    title: '<span class="title">Intermed&reg | Login</span>',
+    title: '<span class="title">Intermed<sup>&reg;</sup> | Login</span>',
     backdrop:true,
     message:
       '<div class="" id="logInicio">'+
         '<form onsubmit="return iniciarSesionLocal(\'email\',\'password\');">'+
           '<div class="row">'+
             '<div class="col-md-8 col-md-offset-2">'+
-              '<input type="button" name="loginFB" value="Login con Facebook" class="btn btn-primary btn-block" onclick="window.location=\'/auth/facebook/request/loguin\'">'+
+              '<div class="form-group">'+
+                '<button type="button" name="loginFB" class="btn btn-facebook btn-block btn-lg" onclick="window.location=\'/auth/facebook/request/loguin\'"><span class="icon icon-facebook2"></span> Login con Facebook</button>'+
+              '</div>'+
             '</div>'+
           '</div>'+
-          '<div class="row">'+
-            '<div class="col-md-8 col-md-offset-2">'+
-            '<div class="alert alert-danger hidden" id="LoginError" role="alert" style="margin-bottom:0px;"> <strong>Correo o contraseña incorrectos.</strong></div>'+
-            '</div>'+
-          '</div>'+
+          '<div class="col-lg-2 col-md-2 col-sm-2 col-xs-1"><hr class="hidden"></div>'+
+          '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-10 s15 text-uppercase text-center dark-c"><br>o ingresa con tu correo:</div>'+
+          '<div class="col-lg-2 col-md-2 col-sm-2 col-xs-1"><hr class="hidden"></div>'+
           '<div class="row">'+
             '<div class="col-md-8 col-md-offset-2">'+
               '<div class="form-group" id="emailGroup">'+
-                '<input type="text" class="form-control" id="email" name="email" placeholder="Usuario" required="true" aria-describedby="emailP">'+
-                '<span  id="emailIcon" class="" aria-hidden="true"></span>'+
+                '<input type="text" class="form-control input-lg" id="email" name="email" placeholder="Usuario o Correo" required="true" aria-describedby="emailP">'+
+                /*'<span  id="emailIcon" class="" aria-hidden="true"></span>'+
                 '<span class="sr-only" id="emailP">(success)</span>'+
-                '<div id="mail-error"></div>'+
+                '<div id="mail-error"></div>'+*/
               '</div>'+
               '<div class="form-group" id="passwordGroup">'+
-                '<input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required="true" aria-describedby="passwordP">'+
-                '<span id="passwordIcon" class="" aria-hidden="true"></span>'+
+                '<input type="password" class="form-control input-lg" id="password" name="password" placeholder="Contraseña" required="true" aria-describedby="passwordP">'+
+                /*'<span id="passwordIcon" class="" aria-hidden="true"></span>'+
                 '<span class="sr-only" id="passwordP">(success)</span>'+
-                '<div id="pass-error"></div>'+
+                '<div id="pass-error"></div>'+*/
               '</div>'+
-              '<input type="submit" name="login" value="Ingresar" class="btn btn-primary btn-block">'+
             '</div>'+
           '</div>'+
+          '<div class="alert alert-info hidden text-center text-uppercase" id="LoginError" role="alert"> <strong>Correo o contraseña incorrectos.</strong></div>'+
           '<div class="row footerBootbox" id="fin">'+
-            '<div class="col-md-8 col-md-offset-2">'+
+            '<div class="col-md-6 pull-right">'+
+              '<input type="submit" name="login" value="Ingresar" class="btn btn-success btn-lg btn-block">'+
+            '</div>'+
+            '<div class="col-md-6 pull-left">'+
               '<p class="text-center">'+
-                '<small>Recuerda que instituciones, proveedores y secretarias solo pueden ingresar con su correo y contraseña.</small>'+
-                '<br>'+
-                '<small>¿Olvidaste tus datos de acceso? <a href="#">Haz click aqui para recuperarlos</a></small>'+
+                '¿Olvidaste tus datos de acceso? <br><a class="whiteF" href="#">Haz click aqui para recuperarlos</a>'+
               '</p>'+
             '</div>'+
           '</div>'+
         '</form>'+
       '</div><!-- fin del div principal -->'
   });
-  validateForm('input-correo','email');
-  validateForm('input-password','password');
+  /*validateForm('input-correo','email');
+  validateForm('input-password','password');*/
 }
 //<------------------- FIN LOGIN --------------------------->
 //<------------------- INVITAR ----------------------------->
@@ -1036,13 +1037,12 @@ function regPaciente(){
       '<div id="RegPacModal" class="Flama-normal">'+
           '<form method="POST" action="/reg/local" id="frm_regP">'+
               '<div class="">'+
-                '<hr class="separator" style="top: 236px;width: 435px;border:1px solid #172c3b">'+
                 '<div class="row">'+
                   '<div class="col-md-6 regFacebook">'+
-                    '<h3>Intermed &reg es mejor'+
+                    '<h3>Intermed <sup>&reg;</sup> es mejor'+
                       '<br>con Facebook</h3>'+
                     '<br>'+
-                    '<input name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block s20" onclick="window.location=\'/auth/facebook/request/P\'">'+
+                    '<button name="registroFB" class="btn btn-facebook btn-block s20" onclick="window.location=\'/auth/facebook/request/P\'"><span class="icon icon-facebook2"></span> Regístrate con Facebook</button>'+
                     '<br>'+
                     '<h2 class="Flama-bold">¡En un solo click!</h2>'+
                     '<p class="s20 flamaBook-normal">'+
@@ -1185,13 +1185,12 @@ function regMedico(){
     message:
       '<div id="RegMedModal">'+
         '<div class="Flama-normal">'+
-          '<hr class="separator" style="top: 190px;width: 350px;border:1px solid #172c3b">'+
           '<div class="row">'+
             '<div class="col-md-6 regFacebook">'+
               '<h3>Intermed &reg es mejor'+
                 '<br>con Facebook</h3>'+
               '<br>'+
-              '<input name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block s20" onclick="window.location=\'/auth/facebook/request/M\'">'+
+              '<button name="registroFB" class="btn btn-facebook btn-block s20" onclick="window.location=\'/auth/facebook/request/M\'"><span class="icon icon-facebook2"></span> Regístrate con Facebook</button>'+
               '<br>'+
               '<h2 class="Flama-bold">¡En un solo click!</h2>'+
               '<p class="s20 flamaBook-normal">'+
