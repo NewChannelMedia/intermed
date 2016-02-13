@@ -549,6 +549,7 @@ function cancelaCita(id) {
     var horariosDireccion = 0;
     var horariosMedico = 0;
 
+    $('#divCalendario').addClass('calAgenda');
     $('#divCalendario').fullCalendar({
         firstDay:1,
         defaultView: 'agendaWeek',
@@ -647,6 +648,7 @@ function cancelaCita(id) {
     var horariosDireccion = 0;
     var horariosMedico = 0;
 
+    $('#divCalendario').addClass('calCita');
     $('#divCalendario').fullCalendar({
         firstDay:1,
         defaultView: 'agendaWeek',

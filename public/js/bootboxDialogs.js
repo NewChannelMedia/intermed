@@ -3578,3 +3578,156 @@ function editarEspecialidades(){
   loadEspecialidades();
   },300);
 }
+
+function detallesError(error_id, element){
+
+
+  var error = '';
+  var fecha = '';
+  var descripcion = '';
+  var comentarios = '';
+  var estatus = '';
+  $.ajax({
+    url: '/control/err/getById',
+    type: 'POST',
+    dataType: "json",
+    data: {
+      id: error_id
+    },
+    async: false,
+    cache: false,
+    type: 'POST',
+    success: function( data ) {
+      if (data.success){
+        if (data.result){
+          if (element){
+            var clone = $(element).parent().parent().clone();
+            $(element).parent().parent().remove();
+            $('#errNoAt').find('tbody').append(clone);
+            contarErrores();
+          }
+          estatus = data.result.status;
+          error = data.result.err;
+          fecha = data.result.datetime;
+          if ( data.result.jsonContent ){
+            var jsonContent = data.result.jsonContent;
+            descripcion += '<div class="list-group"><a href="#" class="list-group-item active"><b>Detalles de error:</b></a>';
+            descripcion += '<a class="list-group-item disabled"><b>Error: </b>' + jsonContent.err +'</a>';
+            if (jsonContent.usuario_id){
+              descripcion +=  '<a class="list-group-item disabled"><b>Usuario: </b>' + jsonContent.usuario_id  +'</a>';
+            }
+            if (jsonContent.session){
+              descripcion +=  '<a class="list-group-item disabled"><b>Sesion: </b>' + jsonContent.session  +'</a>';
+            }
+            if (jsonContent.file){
+              descripcion +=  '<a class="list-group-item disabled"><b>Controlador:</b> ' + jsonContent.file  +'</a>';
+            }
+            if (jsonContent.function){
+              descripcion +=  '<a class="list-group-item disabled"><b>Función:</b>' + jsonContent.function  +'</a>';
+            }
+            if (jsonContent.protocol){
+              descripcion +=  '<a class="list-group-item disabled"><b>Protocolo:</b> ' + jsonContent.protocol  +'</a>';
+            }
+            if (jsonContent.host){
+              descripcion +=  '<a class="list-group-item disabled"><b>Host:</b> ' + jsonContent.host  +'</a>';
+            }
+            if (jsonContent.method){
+              descripcion +=  '<a class="list-group-item disabled"><b>Metodo:</b> ' + jsonContent.method  +'</a>';
+            }
+            if (jsonContent.path){
+              descripcion +=  '<a class="list-group-item disabled"><b>Path:</b> ' + jsonContent.path  +'</a>';
+            }
+            if (jsonContent.headers){
+              descripcion +=  '<a class="list-group-item active"><b>Headers</b></a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>Connection:</b> ' + jsonContent.headers.connection +'</a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>Cache-control:</b> ' + jsonContent.headers['cache-control'] +'</a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>Upgrade-insecure-requests:</b> ' + jsonContent.headers['upgrade-insecure-requests'] +'</a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>User-agent:</b> ' + jsonContent.headers['user-agent'] +'</a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>Accept-encoding:</b> ' + jsonContent.headers['accept-encoding'] +'</a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>Accept-language:</b> ' + jsonContent.headers['accept-language'] +'</a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>if-none-match:</b> ' + jsonContent.headers['if-none-match'] +'</a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>Cookie:</b> ' + jsonContent.headers.cookie +'</a>';
+            }
+            descripcion += '</div>';
+
+            comentarios += '<div class="list-group" id="listComentErr"><a href="#" class="list-group-item active"><b>Comentarios:</b></a>';
+            data.result.jsonContent.comentarios.forEach(function(coment){
+              comentarios += '<a class="list-group-item disabled" style="overflow-x: auto;"><small class="pull-right">'+ new Date(coment.datetime) +'</small><b>'+ coment.usuario.nombre +':</b><br><br> ' + coment.comentario +'</a>';
+            });
+            comentarios += '</div>';
+          }
+        }
+      } else {
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    }
+  });
+
+    bootbox.dialog({
+      onEscape: function () {
+        bootbox.hideAll();
+    },
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">'+ error +'</span><span class="subtitle">'+ fecha +'</span>',
+    backdrop: true,
+    message:
+        '<div class="row">'+
+        '<div class="col-md-12">'+
+
+          '<ul class="nav nav-tabs menuBootbox" role="tablist">'+
+            '<li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Detalles</a></li>'+
+            '<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Historial</a></li>'+
+          '</ul>'+
+
+          '<div class="tab-content" style="margin-top:20px">'+
+            '<div role="tabpanel" class="tab-pane active" id="home">'+
+
+              descripcion +
+            '</div>'+
+            '<div role="tabpanel" class="tab-pane" id="profile">'+
+              '<div class="row" style="margin-top:20px;">'+
+                '<div class="col-md-12">'+
+                  '<form role="form" onsubmit="return agregarComentarioErr('+error_id+',\'ErrComent\')" id="addComentErr">'+
+                    '<div class="input-group">'+
+                      '<textarea class="form-control custom-control" rows="3" style="resize:none;height: 80px;" id="ErrComent" placeholder="Nuevo comentario..." required></textarea>'+
+                      '<span class="input-group-btn">'+
+                        '<button class="btn btn-primary" style="height: 80px;">Agregar</button>'+
+                      '</span>'+
+                    '</div>'+
+                  '</form>'+
+                '</div>'+
+              '</div>'+
+
+              comentarios +
+              '</div>'+
+          '</div>'+
+        '</div>'+
+
+      '</div>'+
+
+      '<div class="row footerBootbox" style="padding-top:20px;padding-bottom:20px">'+
+          '<div class="col-md-12">'+
+            '<div class="input-group">'+
+              '<label class="input-group-addon" style="background-color: transparent;border: none;color: white;font-weight: bold;">Estatus: </label>'+
+              '<select id="estatusError" class="form-control">'+
+                '<option value="1" >Por atender</option>'+
+                '<option value="2" >Atendido</option>'+
+                '<option value="3" >Solucionado</option>'+
+              '</select>'+
+              '<span class="input-group-btn">'+
+                '<button id="addEspecialidadMedic" onclick="guardarEstatusError('+ error_id +',\'estatusError\');" class="btn btn-primary form-control" type="button">Guardar</button>'+
+              '</span>'+
+            '</div>'+
+        '</div>'+
+      '</div>'
+    });
+
+    setTimeout(function(){
+      $('#estatusError').val(estatus);
+    },300);
+}

@@ -10,6 +10,10 @@ module.exports = function (object){
   var url = object.url;
 
   app.all( '*', function ( req, res, next ) {
+    req.errorHandler = object.errorHandler;
+    req.routeLife = object.routeLife;
+    req.hps = object.hps;
+
     var revivirSesion = false;
     if (url.parse(req.url).pathname != "/favicon.ico"){
       if ( req.session.passport.user ) {

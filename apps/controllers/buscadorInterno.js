@@ -8,6 +8,7 @@ var busquedaEspecial = {
 }
 
 exports.buscar = function ( object, req, res ) {
+  try{
     var where = new Array();
     var whereTipoUsuario = new Array();
     var busqueda = object.busqueda;
@@ -72,10 +73,15 @@ exports.buscar = function ( object, req, res ) {
     } else {
       res.render('buscador');
     }
+
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 }
 
 
 exports.buscadorContactos = function ( object, req, res ) {
+  try{
     var where = '';
     var whereTipoUsuario = new Array();
     var busqueda = object.busqueda;
@@ -130,4 +136,8 @@ exports.buscadorContactos = function ( object, req, res ) {
     } ).then( function ( result ) {
       res.send(JSON.parse(JSON.stringify(result)));
     } );
+
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 }

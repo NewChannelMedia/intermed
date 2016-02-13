@@ -1,4 +1,4 @@
-﻿//Procesar las notificaciones recibidas del proveedor
+//Procesar las notificaciones recibidas del proveedor
 var models = require('../models');
 var historicoCargos = require('./HistoricoCargos');
 var bitacora = require('./Bitacora');
