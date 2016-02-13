@@ -54,7 +54,7 @@ app.use( '/', express.static( __dirname + '/../public' ) );
 app.use( '/perfil', express.static( __dirname + '/../public' ) );
 app.use( '/nuevoPerfilMedicos', express.static( __dirname + '/../public' ) );
 app.use( '/inbox', express.static( __dirname + '/../public' ) );
-app.use( '/notificaciones', express.static( __dirname + '/../public' ) );
+app.use('/notificaciones', express.static(__dirname + '/../public'));
 
 //<----------------------------------------------------------------------------->
 /**
@@ -1511,13 +1511,12 @@ var iniciar = function () {
         intermed.callController('CargosUsuarios', 'RegistrarNuevaTarjeta', req.body, req, res);
     });
 
-    //Registrar plan de cargo
     app.get('/registrarplancargo', function (req, res) {
-        intermed.callController('CargosUsuarios', 'PlanCargoDatosRegistro', req.body, req, res);       
+        intermed.callController('PlanDeCargo', 'PlanCargoDatosRegistro', req.body, req, res);       
     });
 
     app.post('/registrarplancargo', function (req, res) {
-        intermed.callController('CargosUsuarios', 'PlanCargoRegistrar', req.body, req, res);
+        intermed.callController('PlanDeCargo', 'PlanCargoRegistrar', req.body, req, res);
     });
 
     app.post('/eliminarplancargo', function (req, res) {
@@ -1527,6 +1526,32 @@ var iniciar = function () {
     app.post('/notificacionesproveedor', function (req, res) {
         intermed.callController('CargosProcesos', 'RecibirNotificacion', req.body, req, res);
     });
+    
+    app.get('/suscripcionpausar', function (req, res) {
+        intermed.callController('CargosUsuarios', 'SuscripcionPausarDatos', req, res);
+    });
+
+    app.post('/suscripcionpausar', function (req, res) {        
+        intermed.callController('CargosUsuarios', 'SuscripcionPausar', req.body, req, res);
+    });
+    
+    app.get('/suscripcioncancelar', function (req, res) {
+        intermed.callController('CargosUsuarios', 'SuscripcionCancelarDatos', req, res);
+
+    });
+
+    app.post('/suscripcioncancelar', function (req, res) {
+        intermed.callController('CargosUsuarios', 'SuscripcionCancelar', req.body, req, res);
+    });
+    
+    app.get('/suscripcionreanudar', function (req, res) {
+        intermed.callController('CargosUsuarios', 'SuscripcionReanudarDatos', req, res);
+    });
+
+    app.post('/suscripcionreanudar', function (req, res) {
+        intermed.callController('CargosUsuarios', 'SuscripcionReanudar', req.body, req, res);
+    });
+    
     //fin rutas cargos
 
 }
