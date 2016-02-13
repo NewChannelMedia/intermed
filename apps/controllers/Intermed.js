@@ -27,7 +27,7 @@ function callController( file, method, object, rq, rs ) {
       var controller = require( './' + file + '.js' );
       if ( method) {
         try {
-      //  console.log(a);
+          /*console.log(a);*/
           controller[ method ]( object, rq, rs );
         }
         catch ( e ) {

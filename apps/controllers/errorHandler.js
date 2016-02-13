@@ -18,7 +18,6 @@ exports.report = function ( err, req, res ) {
 
   var userAgent = req.headers['user-agent'];
   var fecha = new Date().toISOString();
-
   var obj = {
     datetime: new Date().toISOString(),
     type: type,
@@ -38,7 +37,7 @@ exports.report = function ( err, req, res ) {
     userAgent: userAgent,
     comentarios:[]
   }
-  
+
   var obj = JSON.parse(JSON.stringify(obj));
 
   var nombre = new Date().toISOString() +'_'+ Math.floor((Math.random() * 9999) + 1);
