@@ -5,9 +5,10 @@ module.exports = function (sequelize, DataTypes) {
         id: { type: DataTypes.BIGINT, autoIncrement: true, primaryKey: true },
         medico_id: { type: DataTypes.BIGINT, allowNull: false },
         idUsuarioProveedor: { type: DataTypes.STRING },
+        cargosEstatus_id : { type: DataTypes.BIGINT, allowNull: false },
         planDeCargo_id: { type: DataTypes.STRING },
-        fechaAlta: { type: DataTypes.DATE},
-        fechaProximoDescuento: { type: DataTypes.DATE},
+        fechaAlta: { type: DataTypes.DATE },
+        fechaProximoCargo: { type: DataTypes.DATE },
     },
     {
         classMethods: {
@@ -21,6 +22,6 @@ module.exports = function (sequelize, DataTypes) {
         freezeTableName: true,
         tableName: 'usuarioscargos'
     });
-
+    
     return UsuarioCargo;
 };

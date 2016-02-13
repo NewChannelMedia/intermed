@@ -350,16 +350,17 @@ a:visited {
 
 .header-profile-photo-link {
   display: block;
+  display: flex;
   overflow: hidden;
   width: 200px;
   height: 100%;
+  min-height: 200px;
+  margin: 10px;
   text-align: center;
-  border: solid 4px #fff;
-  border-radius: 5px;
+  border: 0;
+  border-radius: 0;
   background-color: #7dc9f7;
-  display: flex;
   justify-content: center;
-  overflow: hidden;
 }
 
 .header-profile-photo-img {

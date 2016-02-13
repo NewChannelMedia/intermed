@@ -1040,16 +1040,41 @@ var _this = module.exports = {
         }
       }).then(function(esp){
         if (esp){
-            res.send(creado);
+          esp['success'] = false;
+          esp['existe'] = true;
+          res.send(esp);
         }else{
           models.MedicoEspecialidad.create({
             especialidad_id: parseInt(req.body.especialidad),
             subEsp: parseInt(req.body.checado),
             medico_id: parseInt(req.session.passport.user.Medico_id)
           }).then(function(creado){
-            res.send(creado);
+            models.MedicoEspecialidad.findOne({
+              where:{
+                especialidad_id: parseInt(req.body.especialidad),
+                medico_id: parseInt(req.session.passport.user.Medico_id)
+              }
+            }).then(function(creado){
+              models.Especialidad.findOne({
+                where: {
+                  id: creado.especialidad_id
+                }
+              }).then(function(especialidad){
+                creado = JSON.parse(JSON.stringify(creado));
+                creado['Especialidad'] = JSON.parse(JSON.stringify(especialidad));
+                if (especialidad){
+                  creado['success'] = true;
+                }
+                res.send(creado);
+              });
+            });
           });
         }
+      });
+    } else {
+      res.status(200).json({
+        success: false,
+        error: 1
       });
     }
   },
@@ -1461,7 +1486,6 @@ var _this = module.exports = {
             usuario_id: req.session.passport.user.id
           }
         }).then(function(medico){
-          console.log(JSON.stringify(object));
           if (object.formacion_id != "" && parseInt(object.formacion_id)>0){
             models.MedicoFormacion.update( {
               nivel: object.nivel,
@@ -1471,6 +1495,8 @@ var _this = module.exports = {
               fechaFin: object.fechaFin,
               fechaTitulo: object.fechaTitulo,
               actual: object.actual,
+              municipio_id: object.municipio_id,
+              estado_id: object.estado_id,
               medico_id: medico.id
             }, {
               where: {
@@ -1495,6 +1521,8 @@ var _this = module.exports = {
               fechaFin: object.fechaFin,
               fechaTitulo: object.fechaTitulo,
               actual: object.actual,
+              municipio_id: object.municipio_id,
+              estado_id: object.estado_id,
               medico_id: medico.id
             } ).then( function ( datos ) {
               res.status( 200 ).json( {
@@ -1521,14 +1549,22 @@ var _this = module.exports = {
     if (req.session.passport && req.session.passport.user){
         models.Medico.findOne({
           where: {
-            usuario_id: req.session.passport.user.id
+            usuario_id: object.usuario_id
           }
         }).then(function(medico){
           models.MedicoFormacion.findAll( {
             where:{
               medico_id: medico.id
             },
-            order:[['fechaInicio','ASC']]
+            order:[['fechaInicio','ASC']],
+            include: [
+              {
+                model: models.Estado
+              },
+              {
+                model: models.Municipio
+              }
+            ]
           } ).then( function ( datos ) {
             res.status( 200 ).json( {
               success: true,
@@ -1779,6 +1815,154 @@ var _this = module.exports = {
       res.status(200).json({
         success: false,
         error: 1
+      });
+    }
+  },
+
+  agregarExperienciaLaboral: function  (object, req, res){
+    if (req.session.passport && req.session.passport.user){
+        if (object.fechaFin == ""){
+          object.fechaFin = null;
+        }
+        if (object.fechaTitulo == ""){
+          object.fechaTitulo = null;
+        }
+        if (object.fechaFin == ""){
+          object.fechaFin = null;
+        }
+
+        models.Medico.findOne({
+          where: {
+            usuario_id: req.session.passport.user.id
+          }
+        }).then(function(medico){
+          console.log('Object: ' + JSON.stringify(object));
+          if (object.experiencia_id != "" && parseInt(object.experiencia_id)>0){
+            models.MedicoExperiencia.update( {
+              titulo:object.titulo,
+              lugarTrabajo:object.institucion,
+              descripcion:object.descripcion,
+              fechaInicio: object.fechaInicio,
+              fechaFin: object.fechaFin,
+              actual: object.actual,
+              estado_id: object.estado_id,
+              municipio_id: object.municipio_id,
+              medico_id: medico.id
+            }, {
+              where: {
+                id: object.experiencia_id
+              }
+            } ).then( function ( datos ) {
+              res.status( 200 ).json( {
+                success: true,
+                result: datos
+              } );
+            } ).catch( function ( err ) {
+              res.status( 500 ).json( {
+                error: err
+              } );
+            } );
+          } else {
+            models.MedicoExperiencia.create( {
+              titulo:object.titulo,
+              lugarTrabajo:object.institucion,
+              descripcion:object.descripcion,
+              fechaInicio: object.fechaInicio,
+              fechaFin: object.fechaFin,
+              actual: object.actual,
+              municipio_id: object.municipio_id,
+              medico_id: medico.id
+            } ).then( function ( datos ) {
+              res.status( 200 ).json( {
+                success: true,
+                result: datos
+              } );
+            } ).catch( function ( err ) {
+              res.status( 500 ).json( {
+                error: err
+              } );
+            } );
+          }
+        });
+    } else {
+      //Error: no usuario_id
+      res.status(200).json({
+        success: false,
+        error: 3
+      });
+    }
+  },
+
+  cargarExperienciaLaboralByID: function (object, req, res){
+      if (req.session.passport && req.session.passport.user){
+          models.Medico.findOne({
+            where: {
+              usuario_id: req.session.passport.user.id
+            }
+          }).then(function(medico){
+            models.MedicoExperiencia.findOne( {
+              where:{
+                medico_id: medico.id,
+                id: object.id
+              },
+              order:[['fechaInicio','ASC']]
+            } ).then( function ( datos ) {
+              res.status( 200 ).json( {
+                success: true,
+                result: datos
+              } );
+            } ).catch( function ( err ) {
+              res.status( 500 ).json( {
+                error: err
+              } );
+            } );
+          });
+      } else {
+        //Error: no usuario_id
+        res.status(200).json({
+          success: false,
+          error: 3
+        });
+      }
+  },
+
+
+  cargarExperienciaLaboral: function (object, req, res){
+    if (req.session.passport && req.session.passport.user){
+        models.Medico.findOne({
+          where: {
+            usuario_id: object.usuario_id
+          }
+        }).then(function(medico){
+          models.MedicoExperiencia.findAll( {
+            where:{
+              medico_id: medico.id
+            },
+            order:[['actual','DESC'],['fechaInicio','ASC']],
+            include: [{
+              model: models.Municipio
+            },{
+              model: models.Estado
+            }]
+          } ).then( function ( datos ) {
+            res.status( 200 ).json( {
+              success: true,
+              result: datos
+            } );
+          } );
+
+          /*.catch( function ( err ) {
+            res.status( 500 ).json( {
+              error: err
+            } );
+          } );
+          */
+        });
+    } else {
+      //Error: no usuario_id
+      res.status(200).json({
+        success: false,
+        error: 3
       });
     }
   },

@@ -158,12 +158,14 @@ function obtenerHorariosAgenda(direccion_id) {
     return objhorarios;
 };
 
+
+//Editar horario medico
 function iniciarCalendario(eventos){
 
   eventos = JSON.parse(JSON.stringify(eventos));
 
   var valido = true;
-
+  $('#divCalendario').addClass('calAgenda');
   $('#divCalendario').fullCalendar({
       // put your options and callbacks here
       defaultView: 'agendaWeek',
@@ -250,10 +252,12 @@ function iniciarCalendario(eventos){
   });
 }
 
+//Paciente agenda cita con médico
 function iniciarCalendarioAgendarCita(){
     var valido = true;
     var duracionServicio =  $('#citaDuracion').html().substring(0, 5);
 
+    $('#divCalendario').addClass('calCita');
     $('#divCalendario').fullCalendar({
         firstDay:1,
         defaultView: 'agendaWeek',
@@ -261,7 +265,6 @@ function iniciarCalendarioAgendarCita(){
         allDaySlot: false,
         defaultDate: moment().format("YYYY-MM-DD"),
         slotLabelFormat: 'h:mm a',
-        businessHours: true,
         slotLabelInterval : duracionServicio,
         slotDuration: '00:30',
         header: {
@@ -278,6 +281,7 @@ function iniciarCalendarioAgendarCita(){
               cache: false,
               data: { direccion_id: $('#ubicacion_id').val(), inicio: start.format(), fin: end.format()},
               success: function (data) {
+                console.log('data: ' + JSON.stringify(data));
                 callback(data);
               },
               error: function (err){
@@ -552,7 +556,6 @@ function cancelaCita(id) {
         allDaySlot: false,
         defaultDate: moment().format("YYYY-MM-DD"),
         slotLabelFormat: 'h:mm a',
-        businessHours: true,
         slotLabelInterval : duracionServicio.substring(0, 5),
         /*businessHours: {
               start: '06:00',
@@ -651,8 +654,7 @@ function cancelaCita(id) {
         allDaySlot: false,
         defaultDate: moment().format("YYYY-MM-DD"),
         slotLabelFormat: 'h:mm a',
-        businessHours: true,
-        slotLabelInterval : duracionServicio.substring(0, 5),
+        slotLabelInterval : '00:30',
         /*businessHours: {
               start: '06:00',
               end: '22:59',

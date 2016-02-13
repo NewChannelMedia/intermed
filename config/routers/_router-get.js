@@ -110,6 +110,18 @@ module.exports = function (object){
     routeLife( 'plataforma2', 'main', hps );
     intermed.callController('CargosUsuarios', 'PlanCargoDatosRegistro', req.body, req, res);
   });
+  app.get('/suscripcionpausar', function (req, res) {
+    routeLife( 'plataforma2', 'main', hps );
+    intermed.callController('CargosUsuarios', 'SuscripcionPausarDatos', req, res);
+  });
+  app.get('/suscripcioncancelar', function (req, res) {
+    routeLife( 'plataforma2', 'main', hps );
+    intermed.callController('CargosUsuarios', 'SuscripcionCancelarDatos', req, res);
+  });
+  app.get('/suscripcionreanudar', function (req, res) {
+    routeLife( 'plataforma2', 'main', hps );
+    intermed.callController('CargosUsuarios', 'SuscripcionReanudarDatos', req, res);
+  });
 
   /*RUTA CARGAR PERFIL (DEJAR SIEMPRE AL FINAL)*/
   /*Dejando al final se evita que cada que se entre al router se haga una consulta para ver si se trata de un usuario*/

@@ -703,7 +703,7 @@ exports.seleccionaHorarios = function(object, req, res) {
             title: datos[i].horaInicio + ' - ' + datos[i].horaFin,
             start: horaInicio,
             end: horaFin,
-            color : '#578',
+            color : '#FFF',
             constraint: 'businessHours',
             rendering: 'background',
             overlap: false,
@@ -733,6 +733,7 @@ exports.seleccionaHorarios = function(object, req, res) {
             var horario = {
                 id: 'cita_' +  datos[i].id,
                 title: 'Cita',
+                className: 'notBG',
                 start: datos[i].fechaHoraInicio,
                 end: datos[i].fechaHoraFin,
                 color : color,
@@ -747,6 +748,7 @@ exports.seleccionaHorarios = function(object, req, res) {
             var horario = {
               id: 'cita_' +  datos[i].id,
               title: 'Cancelada',
+              className: 'notBG',
               start: datos[i].fechaHoraInicio,
               end: datos[i].fechaHoraFin,
               color : '#000',
@@ -763,6 +765,7 @@ exports.seleccionaHorarios = function(object, req, res) {
               title: 'No disponible',
               start: datos[i].fechaHoraInicio,
               end: datos[i].fechaHoraFin,
+              className: 'notBG',
               color : '#000',
               editable: false,
               durationEditable: false,

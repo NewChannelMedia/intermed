@@ -91,7 +91,6 @@ $( document ).ready( function () {
                 $('#apeMatRegMed').val(data.result.DatosGenerale.apellidoM);
               }
             }
-            console.log('FECHA: ' + data.result.Medico.fechaNac);
 
             if (data.result.Medico.fechaNac){
               var fechaNac = data.result.Medico.fechaNac.split('T')[0].split('-');
@@ -513,17 +512,41 @@ function actualizarSesion(refresh) {
 
         if ( data.session.fotoPerfil ) fotoPerfil = data.session.fotoPerfil;
         $( '#fotoPerfilMini' ).attr( "src", fotoPerfil );
-        $( '#fotoPerfil' ).attr( "src", fotoPerfil );
+        $( '.fotoPerfil' ).attr( "src", fotoPerfil );
         if ( data.session.tipoUsuario === "M" ) {
           if ( !data.session.name ) $( '#session_nombreUsuario' ).html( 'No tenemos registrado tu nombre, por favor continua con tu registro <a onclick="registroMedicoDatosPersonales()">aquí</a>' );
           else {
-            if ( data.session.tipoUsuario == "M" ) $( '#session_nombreUsuario' ).html( 'Dr. ' + data.session.name )
-            else $( '#session_nombreUsuario' ).html( data.session.name );
+            if ( data.session.tipoUsuario == "M" ){
+              data.session.name = 'Dr. ' + data.session.name;
+            }
+              $( '.profile-name .name' ).each(function(){
+                  $(this).text( data.session.name );
+              });
           }
         }
         else {
-          $( '#session_nombreUsuario' ).html( data.session.name );
+          $( '.profile-name .name' ).each(function(){
+            $(this).text( data.session.name );
+          });
         }
+
+        var especialidades = '';
+        var subespecialidades = '';
+        data.session.especialidades.forEach(function(esp){
+          var contenido = '<li>'+ esp.Especialidad.especialidad +'</li>';
+          if (esp.subEsp){
+            subespecialidades += contenido;
+          } else {
+            especialidades += contenido;
+          }
+        });
+        especialidades += '<span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarEspecialidades()"></span>';
+        if (subespecialidades != ""){
+          subespecialidades = '<li>Subespecialidad:</li>' + subespecialidades;
+        }
+
+        $('.user.profile-esp').html(especialidades);
+        $('.user.profile-subesp').html(subespecialidades);
 
         if ( data.session.ciudad ) {
           $( '#session_ubicacion' ).html( data.session.ciudad + ', ' + data.session.estado );
@@ -631,7 +654,6 @@ function agregarFavoritos( medico ) {
     },
     cache: false,
     success: function ( data ) {
-      console.log('Agregar a favoritos: ' + JSON.stringify(data));
       if ( data.success ) {
         if ( $( '#tipoUsuario' ).val() === "P" ) {
           if ( medicoID ) {
@@ -949,6 +971,9 @@ function regUbicacion(salir) {
 }
 //Registrar Ubicacion
 function regHorarios(direccion_id) {
+    if (!direccion_id){
+      direccion_id = $('#direccion_id').val();
+    }
     if (regHorariosValid() == true) {
         //agregar horarios al control
         $('#horariosUbi').val(JSON.stringify(obtenerHorariosAgenda(direccion_id)));
@@ -961,6 +986,7 @@ function regHorarios(direccion_id) {
             data: $('#frmRegHorarios').serialize(),
             type: 'POST',
             success: function (data) {
+              console.log(JSON.stringify(data));
                 if (data.success){
                   bootbox.hideAll();
                 } else {
@@ -1773,9 +1799,9 @@ function traerAseguradoras(){
       // se cargan los datos generales y foto
       var html = "";
       $.post('/loadGenerales', function(data){
-        $("#editNombreMed").attr('value',data.DatosGenerale.nombre);
-        $("#editApellidoPMed").attr('value',data.DatosGenerale.apellidoP);
-        $("#editApellidoMMed").attr('value',data.DatosGenerale.apellidoM);
+        $("#nombrePersonal").attr('value',data.DatosGenerale.nombre);
+        $("#appPatPersonal").attr('value',data.DatosGenerale.apellidoP);
+        $("#appMatPersonal").attr('value',data.DatosGenerale.apellidoM);
         $("#imgPerfilMedic").attr('src',data.urlFotoPerfil);
       });
     }
@@ -1788,14 +1814,14 @@ function traerAseguradoras(){
       //carga todas las especialidades
       $.post('/todasEspecialidades',function(p){
         var html2 = "";
-        html2 += '<option value="0">--Especialidad--</option>';
+        html2 += '<option value="" selected disabled>Selecciona una</option>';
         $.each(p,function(e, etem){
           html2 += '<option value="'+etem.id+'">'+etem.especialidad+'</option>';
         });
-        $("#autoEspecialidad").html(html2);
+        $(".autoEspecialidad").html(html2);
       });
       $.post('/loadEspecialidades', function(data){
-        if ($('#regMedStepOne').length>0){
+        if ($('#regmedEsp').length>0){
           var cont = '';
           $.each(data.MedicoEspecialidads, function( i, item ){
             var clase = 'btn-info';
@@ -1806,38 +1832,29 @@ function traerAseguradoras(){
             '<label class="btn btn-xs '+ clase +'">'+
             '<span>'+item.Especialidad.especialidad+'</span>'+
             '</label>'+
-            '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+item.id+'\');" >'+
+            '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+item.id+'\',this);" >'+
             '<span class="glyphicon glyphicon-remove"></span></button></div>';
           });
           $('#regmedEsp').html(cont);
-        }else {
+        } else {
+          var esp = '';
+          var subesp = '';
           $.each(data.MedicoEspecialidads, function( i, item ){
-            if( item.subEsp == 0 ){
-              html += '<tr>'
-                html += '<td ><center>'+contador+'</center></td>';
-                html += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
-                html += '<td><center>';
-                  html += '<button type="button" onclick="deleteEsp(\''+item.id+'\');" class="btn btn-danger">';
-                    html += '<span class="glyphicon glyphicon-remove-sign"></span>';
-                  html += '</button>';
-                html += '</center></td>';
-              html += '</tr>';
-              contador++;
+            var cont = '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
+            '<label class="btn btn-xs btn-info">'+
+            '<span>'+item.Especialidad.especialidad+'</span>'+
+            '</label>'+
+            '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+item.id+'\',this);" >'+
+            '<span class="glyphicon glyphicon-remove"></span></button></div>';
+            if (item.subEsp == 1){
+              subesp += cont;
             } else {
-              html3 += '<tr>'
-                html3 += '<td ><center>'+contador2+'</center></td>';
-                html3 += '<td><center>'+ item.Especialidad.especialidad+'</center></td>';
-                html3 += '<td><center>';
-                  html3 += '<button type="button" onclick="deleteSubEsp(\'#mDeletes-'+i+'\');" oculto="'+item.id+'" class="btn btn-warning" id="mDeletes-'+i+'">';
-                    html3 += '<span class="glyphicon glyphicon-remove-sign"></span>';
-                  html3 += '</button>';
-                html3 += '</center></td>';
-              html3 += '</tr>';
-              contador2++;
+              esp += cont;
             }
           });
-          $("#tableEspecialidades").html(html);
-          $("#tableSubEspecialidades").html(html3);
+
+          $('#especialidadesListBoot').html(esp);
+          $('#subEspecialidadesListBoot').html(subesp);
         }
       });
     }
@@ -1861,22 +1878,20 @@ function traerAseguradoras(){
       });
     }
     function loadPalabras(){
-      var html = "";
-      var contador = 1;
+      var contenido = "";
       $.post('/loadPalabras',function(data){
         $.each(data, function( i, item ){
-          html += '<tr style="color:white;">';
-            html += '<td><center>'+contador+'</center></td>';
-            html += '<td><center>'+item.palabra+'</center></td>';
-            html += '<td><center>';
-              html += '<button class="btn btn-danger" onclick="deletePalabra(\'#palabrasDelete-'+i+'\')" oculto="'+item.id+'" id="palabrasDelete-'+i+'">';
-                html += '<span class="glyphicon glyphicon-remove-circle"></span>';
-              html += '</button>';
-            html += '</center></td>';
-          html += '</tr>';
-          contador++;
+          contenido += '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
+                          '<span class="hidden palabra_id">'+ item.id +'</span>'+
+                          '<label class="btn btn-sm btn-warning">'+
+                            '<span>'+item.palabra+'</span>'+
+                          '</label>'+
+                          '<button class="btn btn-sm borrar" type="button" onclick="deletePalabra(this)">'+
+                            '<span class="glyphicon glyphicon-remove"></span>'+
+                          '</button>'+
+                        '</div>';
         });
-        $("#tablePalabras").html(html);
+        $("#PalabrasClaveList").html(contenido);
       });
     }
     function editGenerales(tipo){
@@ -1934,12 +1949,13 @@ function traerAseguradoras(){
         }
       });
     }
-    function deleteEsp(id){
+    function deleteEsp(id, element){
       bootbox.confirm('¿Estas seguro de eliminar esto?',function(result){
         if(result){
           $.post('/deleteEsp',{id:id}, function( data ){
             if( data == "OK" ){
-              loadEspecialidades();
+              $(element).parent().remove();
+              actualizarSesion();
             }else{
               console.log("Error al eliminar especialidades");
             }
@@ -1989,11 +2005,24 @@ function traerAseguradoras(){
       var palabra = $("#autoPalabras").val();
       $.post('/editPalabrasClave',{palabra:palabra},function(data){
         if( data != null ){
-          loadPalabras();
+          $('#autoPalabras').val('');
+           var contenido = '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
+                            '<span class="hidden palabra_id">'+ data.id +'</span>'+
+                            '<label class="btn btn-sm btn-warning">'+
+                              '<span>'+data.palabra+'</span>'+
+                            '</label>'+
+                            '<button class="btn btn-sm borrar" type="button" onclick="deletePalabra(this)">'+
+                              '<span class="glyphicon glyphicon-remove"></span>'+
+                            '</button>'+
+                          '</div>';
+            $("#PalabrasClaveList").append(contenido);
+            return false;
         }else{
           console.log("Error: al agregar la palabra clave");
+          return false;
         }
       });
+      return false;
     }
     function deletePad(id){
       var id = $(id).attr('oculto');
@@ -2009,19 +2038,21 @@ function traerAseguradoras(){
         }
       });
     }
-    function deletePalabra(id){
-      var id = $(id).attr('oculto');
-      bootbox.confirm('¿Estas seguro de eliminar este campo?', function(result){
-        if( result ){
-          $.post('/deletePalabra',{id:id}, function(data){
-            if( data == "OK" ){
-              loadPalabras();
-            }else{
-              console.log("ERROR: no se pudo eliminar la palabra clave seleccionada");
-            }
-          });
-        }
-      });
+    function deletePalabra(element){
+      var id = $(element).parent().find('.palabra_id').text();
+      if (id){
+        bootbox.confirm('¿Estas seguro de eliminar este campo?', function(result){
+          if( result ){
+            $.post('/deletePalabra',{id:id}, function(data){
+              if( data == "OK" ){
+                $(element).parent().remove();
+              }else{
+                console.log("ERROR: no se pudo eliminar la palabra clave seleccionada");
+              }
+            });
+          }
+        });
+      }
     }
   //<--------- FIN EDIT PERFIL MEDICO -------->
   function traerServiciosPorMedico(usuario_id){
@@ -2120,7 +2151,7 @@ function traerAseguradoras(){
           $('#horariosUbi').val(data.horarios);
           $('#direccion_id').val(data.direccion_id);
           $("#divCalendario").remove();
-          $("#divCalendarioPadre").html('<div id="divCalendario"></div>');
+          $("#divCalendarioPadre").html('<div id="divCalendario" class="regHorMed"></div>');
           setTimeout(function(){
             iniciarCalendarioAgendarCita();
             $('#cita_detalles').css('visibility','visible');
@@ -2210,12 +2241,22 @@ function traerAseguradoras(){
       actual = 1;
     }
 
+    var estado_id = $('#selectEstados').val();
+    var municipio_id = $('#selectCiudad').val();
+
+    if (!estado_id || parseInt(estado_id)== 0){
+      estado_id = '';
+    }
+
+    if (!municipio_id || parseInt(municipio_id)== 0){
+      municipio_id = '';
+    }
+
     var formacion_id = $('#formacion_id').val();
-    alert(formacion_id);
 
     var grado = form.find('#inputGrado').val();
     var nivel = form.find('#inputNivel').val();
-    if (nivel > 0 && institucion != "" && especialidad != "" && inicio != ""){
+    if (nivel > 0 && institucion != "" && especialidad != "" && inicio != "" && estado_id != "" && municipio_id != ""){
       var insertar = true;
       if (!actual){
         if (fin == ""){
@@ -2240,14 +2281,16 @@ function traerAseguradoras(){
               fechaInicio: inicio,
               fechaFin: fin,
               actual: actual,
-              fechaTitulo: grado
+              fechaTitulo: grado,
+              estado_id: estado_id,
+              municipio_id: municipio_id
             },
             type: 'POST',
             success: function (data) {
               console.log('Result: ' + JSON.stringify(data));
               if (data.success){
-                bootbox.hideAll();
                 cargarFormacionAcademica();
+                CambiarVisible('divAddFormacion','divListaFormacion');
               } else {
                 if(data.error){
                   manejadorDeErrores(data.error);
@@ -2273,34 +2316,67 @@ function traerAseguradoras(){
         type: 'POST',
         dataType: "json",
         cache: false,
+        data: {
+          usuario_id: $('#usuarioPerfil').val()
+        },
         type: 'POST',
         success: function (data) {
           if (data.success){
             var contenido = '';
-            data.result.forEach(function(res){
-              var anioInicio = new Date(res.fechaInicio).toLocaleDateString().split(' ')[0].split('/')[2];
-              var anioFin = '';
-              if (res.fechaFin && res.fechaFin != ""){
-                anioFin = new Date(res.fechaFin).toLocaleDateString().split(' ')[0].split('/')[2];
-              }
-              var anioGrado = '';
-              if (res.fechaTitulo && res.fechaTitulo != ""){
-                anioGrado = new Date(res.fechaTitulo).toLocaleDateString().split(' ')[0].split('/')[2];
+              if ($('#formacionAcademicaList').length>0){
+                data.result.forEach(function(res){
+                  var anioInicio = new Date(res.fechaInicio).toLocaleDateString().split(' ')[0].split('/')[2];
+                  var anioFin = '';
+                  if (res.fechaFin && res.fechaFin != ""){
+                    anioFin = new Date(res.fechaFin).toLocaleDateString().split(' ')[0].split('/')[2];
+                  }
+                  var anioGrado = '';
+                  if (res.fechaTitulo && res.fechaTitulo != ""){
+                    anioGrado = new Date(res.fechaTitulo).toLocaleDateString().split(' ')[0].split('/')[2];
+                  }
+
+                  var clase = '';
+
+                  if (res.actual == 1){
+                    clase = " class='success' ";
+                  }
+
+                  contenido += '<tr ' + clase + '><td>'+res.lugarDeEstudio+'</td><td>'+res.especialidad+'</td><td>'+anioInicio+'</td>';
+                  contenido += '<td>'+anioFin+'</td>';
+                  contenido += '<td>'+anioGrado+'</td>';
+                  contenido += '<td><a style="color:green"><span class="glyphicon glyphicon-pencil" onclick="CambiarVisible(\'divListaFormacion\',\'divAddFormacion\','+ res.id +');"></span></a></td>';
+                  contenido += '<td><a style="color:red"><span class="glyphicon glyphicon-remove"></span></a></td></tr>';
+                });
+                $('#formacionAcademicaList').html(contenido);
               }
 
-              var clase = '';
+              if ($('#divFormAcad').length>0){
+                contenido = '';
+                data.result.forEach(function(res){
+                  var anioInicio = new Date(res.fechaInicio).toLocaleDateString().split(' ')[0].split('/')[2];
+                  var anioFin = '';
+                  if (res.fechaFin && res.fechaFin != ""){
+                    anioFin = new Date(res.fechaFin).toLocaleDateString().split(' ')[0].split('/')[2];
+                    anioFin = '<strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">'+anioFin+'</span><br>';
+                  }
+                  var anioGrado = '';
+                  if (res.fechaTitulo && res.fechaTitulo != ""){
+                    anioGrado = new Date(res.fechaTitulo).toLocaleDateString().split(' ')[0].split('/')[2];
+                    anioGrado = '<strong class="h85-heavy">Obtención del grado:</strong>&nbsp;<span name="institucion" class="h45-light">Julio 2004</span><br>';
+                  }
 
-              if (res.actual == 1){
-                clase = " class='success' ";
+                  var estado = res.Estado.estado;
+                  var municipio = res.Municipio.municipio;
+
+                  contenido += '<p class="cv-element col-md-12 col-sm-12 col-xs-6">'+
+                    '<strong class="h85-heavy">Institución:</strong>&nbsp;<span class="h45-light">'+ res.lugarDeEstudio +'</span><br>'+
+                    '<strong class="h85-heavy">Especialidad:</strong>&nbsp;<span class="h45-light">'+res.especialidad+'</span><br>'+
+                    '<strong class="h85-heavy">Ubicación:</strong>&nbsp;<span class="h45-light">'+estado+', ' + municipio+'</span><br>'+
+                    '<strong class="h85-heavy">Inicio:</strong>&nbsp;<span class="h45-light">'+anioInicio+'</span><br>'+ anioFin + anioGrado +
+                  '</p>';
+                });
+                $('#divFormAcad').html(contenido);
               }
-
-              contenido += '<tr ' + clase + '><td>'+res.lugarDeEstudio+'</td><td>'+res.especialidad+'</td><td>'+anioInicio+'</td>';
-              contenido += '<td>'+anioFin+'</td>';
-              contenido += '<td>'+anioGrado+'</td>';
-              contenido += '<td><a style="color:green"><span class="glyphicon glyphicon-pencil" onclick="CambiarVisible(\'divListaFormacion\',\'divAddFormacion\','+ res.id +');"></span></a></td>';
-              contenido += '<td><a style="color:red"><span class="glyphicon glyphicon-remove"></span></a></td></tr>';
-            });
-            $('#formacionAcademicaList').html(contenido);
           }else {
             if (data.error){
               manejadorDeErrores(data.error);
@@ -2312,6 +2388,159 @@ function traerAseguradoras(){
         }
       });
   }
+
+  function cargarExperienciaLaboral(){
+    $.ajax({
+        url: '/medico/experienciaLaboral/cargar',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        type: 'POST',
+        data: {
+          usuario_id: $('#usuarioPerfil').val()
+        },
+        success: function (data) {
+          if (data.success){
+            if ($('#formacionAcademicaList').length>0){
+                var contenido = '';
+                data.result.forEach(function(res){
+                  var anioInicio = res.fechaInicio.split('-')[0];
+                  var anioFin = '';
+                  if (res.fechaFin && res.fechaFin != ""){
+                    anioFin = res.fechaFin.split('-')[0];
+                  }
+
+                  var clase = '';
+
+                  if (res.actual == 1){
+                    clase = " class='success' ";
+                  }
+
+                  contenido += '<tr ' + clase + '><td>'+res.lugarTrabajo+'</td><td>'+res.titulo+'</td><td>'+anioInicio+'</td>';
+                  contenido += '<td>'+anioFin+'</td>';
+                  contenido += '<td><a style="color:green"><span class="glyphicon glyphicon-pencil" onclick="CambiarVisible(\'divListaExperiencia\',\'divAddExperiencia\',null,'+ res.id +');"></span></a></td>';
+                  contenido += '<td><a style="color:red"><span class="glyphicon glyphicon-remove"></span></a></td></tr>';
+                });
+                $('#formacionAcademicaList').html(contenido);
+            }
+
+
+            if ($('#divExpLab').length>0){
+              contenido = '';
+              data.result.forEach(function(res){
+
+                var anioInicio = res.fechaInicio.split('-')[0];
+                var anioFin = '';
+                if (res.fechaFin && res.fechaFin != ""){
+                  anioFin = res.fechaFin.split('-')[0];
+                  anioFin = '<strong class="h85-heavy">Finalización:</strong>&nbsp;<span name="institucion" class="h45-light">'+anioFin+'</span><br>';
+                }
+
+                var estado = res.Estado.estado;
+                var municipio = res.Municipio.municipio;
+
+                contenido += '<p class="cv-element col-md-12 col-sm-12 col-xs-6">'+
+                  '<strong class="h85-heavy">Institución:</strong>&nbsp;<span name="institucion" class="h45-light">'+ res.lugarTrabajo +'</span><br>'+
+                  '<strong class="h85-heavy">Puesto:</strong>&nbsp;<span name="institucion" class="h45-light">'+ res.titulo +'</span><br>'+
+                  '<strong class="h85-heavy">Ubicación:</strong>&nbsp;<span name="institucion" class="h45-light">'+ municipio + ', ' + estado +'</span><br>'+
+                  '<strong class="h85-heavy">Inicio:</strong>&nbsp;<span name="institucion" class="h45-light">' + anioInicio + '&nbsp;&nbsp;&nbsp;'+ anioFin+
+                '</p>';
+              });
+              $('#divExpLab').html(contenido);
+            }
+
+          }else {
+            if (data.error){
+              manejadorDeErrores(data.error);
+            }
+          }
+        },
+        error: function (err){
+          console.log('AJAX Error: ' + JSON.stringify(err));
+        }
+      });
+  }
+
+
+  function agregarExperienciaLaboral(){
+    var form = $('#formAcademica');
+    var institucion = form.find('#inputInstitucion').val();
+    var descripcion = form.find('#inputDescripcion').val();
+    var inicio = form.find('#inputInicio').val();
+    var fin = form.find('#inputFin').val();
+    var actual = 0;
+    if (form.find('#inputActual').is(':checked')){
+      actual = 1;
+    }
+
+    var experiencia_id = $('#experiencia_id').val();
+
+    var puesto = form.find('#inputPuesto').val();
+
+    var municipio_id = $('#selectCiudad').val();
+    if (!municipio_id || parseInt(municipio_id) == 0){
+      municipio_id = "";
+    }
+
+    var estado_id = $('#selectEstados').val();
+    if (!estado_id || parseInt(estado_id) == 0){
+      estado_id = "";
+    }
+
+    if (puesto != "" && institucion != "" && descripcion != "" && inicio != "" && estado_id != "" && municipio_id != ""){
+      var insertar = true;
+      if (!actual){
+        if (fin == ""){
+          insertar = false;
+        }
+      } else {
+        fin = '';
+        grado = '';
+      }
+
+      if (insertar){
+        $.ajax({
+            url: '/medico/experienciaLaboral/agregar',
+            type: 'POST',
+            dataType: "json",
+            cache: false,
+            data: {
+              experiencia_id: experiencia_id,
+              titulo:puesto,
+              institucion: institucion,
+              descripcion: descripcion,
+              fechaInicio: inicio,
+              fechaFin: fin,
+              actual: actual,
+              municipio_id: municipio_id,
+              estado_id: estado_id
+            },
+            type: 'POST',
+            success: function (data) {
+              console.log('Result: ' + JSON.stringify(data));
+              if (data.success){
+                cargarExperienciaLaboral();
+                CambiarVisible('divAddExperiencia','divListaExperiencia');
+              } else {
+                if(data.error){
+                  manejadorDeErrores(data.error);
+                }
+              }
+            },
+            error: function (err){
+              console.log('AJAX Error: ' + JSON.stringify(err));
+            }
+          });
+      } else {
+        //Faltan campos
+        alert('Faltan campos (A)');
+      }
+    }else {
+      //Faltan campos
+      alert('Faltan campos (B)');
+    }
+  }
+
   function cargarFormacionAcademicaByID(formacion_id){
     $.ajax({
         url: '/medico/formacionAcademica/cargarById',
@@ -2323,12 +2552,19 @@ function traerAseguradoras(){
         success: function (data) {
           if (data.success){
             if (data.result){
+              $('#selectEstados').val(data.result.estado_id);
+              $('#selectEstados').change();
+
+              setTimeout(function(){
+                $('#selectCiudad').val(data.result.municipio_id);
+              },1000);
+
               $('#formacion_id').val(formacion_id);
               $('#inputInstitucion').val(data.result.lugarDeEstudio);
               $('#inputEspecialidad').val(data.result.especialidad);
-              var fechaInicio = new Date(new Date(data.result.fechaInicio).toLocaleDateString()).toISOString().split('T')[0];
-              var fechaFin = new Date(new Date(data.result.fechaFin).toLocaleDateString()).toISOString().split('T')[0];
-              var fechaTitulo = new Date(new Date(data.result.fechaTitulo).toLocaleDateString()).toISOString().split('T')[0];
+              var fechaInicio = new Date(data.result.fechaInicio).toISOString().split('T')[0];
+              var fechaFin = new Date(data.result.fechaFin).toISOString().split('T')[0];
+              var fechaTitulo = new Date(data.result.fechaTitulo).toISOString().split('T')[0];
               $('#inputInicio').val(fechaInicio);
               $('#inputFin').val(fechaFin);
               $('#inputGrado').val(fechaTitulo);
@@ -2340,6 +2576,55 @@ function traerAseguradoras(){
               }
               $('#inputActual').change();
               $('#inputNivel').val(data.result.nivel);
+            }
+          }else {
+            if (data.error){
+              manejadorDeErrores(data.error);
+            }
+          }
+        },
+        error: function (err){
+          console.log('AJAX Error: ' + JSON.stringify(err));
+        }
+      });
+  }
+
+
+
+  function cargarExperienciaLaboralById(experiencia_id){
+    $.ajax({
+        url: '/medico/experienciaLaboral/cargarById',
+        type: 'POST',
+        dataType: "json",
+        cache: false,
+        type: 'POST',
+        data: {id:experiencia_id},
+        success: function (data) {
+          if (data.success){
+            if (data.result){
+              $('#inputPuesto').val(data.result.titulo);
+              $('#inputInstitucion').val(data.result.lugarTrabajo);
+              $('#inputDescripcion').val(data.result.descripcion);
+
+              $('#selectEstados').val(data.result.estado_id);
+              $('#selectEstados').change();
+
+              setTimeout(function(){
+                $('#selectCiudad').val(data.result.municipio_id);
+              },500);
+
+              if (data.result.actual == "0"){
+                $('#inputActual').prop('checked',false);
+              } else {
+                $('#inputActual').prop('checked',true);
+              }
+              $('#inputActual').change();
+
+              $('#experiencia_id').val(experiencia_id);
+              var fechaInicio = new Date(data.result.fechaInicio).toISOString().split('T')[0];
+              var fechaFin = new Date(data.result.fechaFin).toISOString().split('T')[0];
+              $('#inputInicio').val(fechaInicio);
+              $('#inputFin').val(fechaFin);
             }
           }else {
             if (data.error){
@@ -2678,85 +2963,65 @@ function cargarServicios(element){
       if (data.success){
         if (data.result){
           $('#ServListReg').html('');
+          if (data.result.length>0){
+            contenido = `<div class="row">
+                          <div class="col-md-3"><label class="whiteF regInput">Concepto.</label></div>
+                          <div class="col-md-3"><label class="whiteF regInput">Descripción.</label></div>
+                          <div class="col-md-2"><label class="whiteF regInput">Costo.</label></div>
+                          <div class="col-md-2"><label class="whiteF regInput">Duración.</label></div>
+                        </div>`;
+          }
+          $('#ServListReg').append(contenido);
+
           data.result.forEach(function(res){
             var contenido = `
-            <div class="col-lg-12">
-              <form method="POST" onsubmit="return guardarServicio('frmRegServ-`+ res.id +`');" id="frmRegServ-`+ res.id +`">
-                <input type="hidden" name="servicio_id" value="`+res.id+`">
-                <div class="col-md-3">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <label class="whiteF regInput">Concepto.</label>
-                    </div>
-                    <div class="col-md-12">
-                      <input type="text" class="form-control regInput" id="conceptServ" name="concepto" required="required" value="`+res.concepto+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <label class="whiteF regInput">Descripción.</label>
-                    </div>
-                    <div class="col-md-12">
-                      <input type="text" class="form-control regInput" id="decriptServ" name="descripcion" required="required" value="`+res.descripcion+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-2">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <label class="whiteF regInput">Costo.</label>
-                    </div>
-                    <div class="col-md-12">
-                      <input type="text" class="form-control regInput" id="precServ" name="precio" required="required" value="`+res.precio+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-2">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <label class="whiteF regInput">Duración.</label>
-                    </div>
-                    <div class="col-md-12">
-                      <select id="duraServ" class="form-control regInput" name="duracion" required="required" onChange="$('#frmRegServ-`+ res.id +`').submit()">
-                        <option value="" selected disabled>Selecciona</option>
-                        <option value="00:30:00">30 minutos</option>
-                        <option value="00:45:00">1 hora</option>
-                        <option value="01:30:00">1 hora y 30 minutos</option>
-                        <option value="02:00:00">2 horas</option>
-                        <option value="02:30:00">2 horas y 30 minutos</option>
-                        <option value="03:00:00">3 horas</option>
-                        <option value="03:30:00">3 horas y 30 minutos</option>
-                        <option value="04:00:00">4 horas</option>
-                        <option value="04:30:00">4 horas y 30 minutos</option>
-                        <option value="05:00:00">5 horas</option>
-                        <option value="05:30:00">5 horas y 30 minutos</option>
-                        <option value="06:00:00">6 horas</option>
-                        <option value="06:30:00">6 horas y 30 minutos</option>
-                        <option value="07:00:00">7 horas</option>
-                        <option value="07:30:00">7 horas y 30 minutos</option>
-                        <option value="08:00:00">8 horas</option>
-                        <option value="08:30:00">8 horas y 30 minutos</option>
-                        <option value="09:00:00">9 horas</option>
-                        <option value="09:30:00">9 horas y 30 minutos</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-1">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <label class="whiteF">&nbsp;</label>
-                    </div>
-                    <div class="col-md-12">
-                      <button type="button" class="btn btn-danger regInput" onclick="eliminarServicio(`+ res.id +`)">
-                        <span style="color:white;" class="glyphicon glyphicon-minus"></span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </form>
+            <div class="row">
+            <form method="POST" onsubmit="return guardarServicio('frmRegServ-`+ res.id +`');" id="frmRegServ-`+ res.id +`">
+              <input type="hidden" name="servicio_id" value="`+res.id+`">
+              <div class="col-md-3">
+                <input type="text" class="form-control regInput" id="conceptServ" name="concepto" required="required" value="`+res.concepto+`">
+              </div>
+              <div class="col-md-3">
+                <input type="text" class="form-control regInput" id="decriptServ" name="descripcion" required="required" value="`+res.descripcion+`">
+              </div>
+              <div class="col-md-2">
+                <input type="text" class="form-control regInput" id="precServ" name="precio" required="required" value="`+res.precio+`">
+              </div>
+              <div class="col-md-2">
+                <select id="duraServ" class="form-control regInput" name="duracion" required="required">
+                  <option value="" selected disabled>Selecciona</option>
+                  <option value="00:30:00">30 minutos</option>
+                  <option value="00:45:00">1 hora</option>
+                  <option value="01:30:00">1 hora y 30 minutos</option>
+                  <option value="02:00:00">2 horas</option>
+                  <option value="02:30:00">2 horas y 30 minutos</option>
+                  <option value="03:00:00">3 horas</option>
+                  <option value="03:30:00">3 horas y 30 minutos</option>
+                  <option value="04:00:00">4 horas</option>
+                  <option value="04:30:00">4 horas y 30 minutos</option>
+                  <option value="05:00:00">5 horas</option>
+                  <option value="05:30:00">5 horas y 30 minutos</option>
+                  <option value="06:00:00">6 horas</option>
+                  <option value="06:30:00">6 horas y 30 minutos</option>
+                  <option value="07:00:00">7 horas</option>
+                  <option value="07:30:00">7 horas y 30 minutos</option>
+                  <option value="08:00:00">8 horas</option>
+                  <option value="08:30:00">8 horas y 30 minutos</option>
+                  <option value="09:00:00">9 horas</option>
+                  <option value="09:30:00">9 horas y 30 minutos</option>
+                </select>
+              </div>
+              <div class="col-md-1">
+                <button type="submit" class="btn btn-success regInput">
+                  <span style="color:white;" class="glyphicon glyphicon-floppy-disk"></span>
+                </button>
+              </div>
+              <div class="col-md-1">
+                <button type="button" class="btn btn-danger regInput" onclick="eliminarServicio(`+ res.id +`)">
+                  <span style="color:white;" class="glyphicon glyphicon-minus"></span>
+                </button>
+              </div>
+            </form>
             </div>`;
             $('#ServListReg').append(contenido);
             $('#frmRegServ-'+ res.id +' [name="duracion"]').prop('value',res.duracion);
@@ -2784,7 +3049,11 @@ function guardarServicio(idElement){
     element[el.name] = el.value;
   });
 
-  element['direccion_id'] = $('#slc_servicios_ubi').val();
+  if ($('#idDireccion').length>0){
+    element['direccion_id'] = $('#idDireccion').val();
+  }else {
+    element['direccion_id'] = $('#slc_servicios_ubi').val();
+  }
 
 	$.ajax({
 		url: '/medicos/serv/update',
@@ -2979,4 +3248,90 @@ function validarCodigo(element){
     $(element).parent().find('.glyphicon').removeClass('glyphicon-ok');
     $(element).parent().find('.glyphicon').removeClass('glyphicon-remove');
   }
+}
+
+function guardarInformacionPersonal(){
+  var nombre = $('#nombrePersonal').val();
+  var appPatPersonal = $('#appPatPersonal').val();
+  var appMatPersonal = $('#appMatPersonal').val();
+  var fechaNacimiento = $('#fechaNacimiento').val();
+
+  if (nombre != "" && appPatPersonal != "" && fechaNacimiento != ""){
+
+    $.ajax({
+      url: '/usuario/info/update',
+      type: 'POST',
+      dataType: "json",
+      data: {nombre: nombre, apellidoP: appPatPersonal, apellidoM: appMatPersonal, fechaNac:fechaNacimiento},
+      cache: false,
+      type: 'POST',
+      success: function( data ) {
+        if (data.success){
+          actualizarSesion();
+          bootbox.hideAll();
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      },
+      error: function (err){
+        console.error( 'AJAX ERROR: ' + err );
+      }
+    });
+  }else {
+    alert('Falta un campo');
+  }
+}
+
+function agregarExpecialidad(element){
+  var esp = $('#'+element).val();
+  $.post('/editEspecialidades',{
+    especialidad:esp,
+    checado:0
+  },function( data ){
+    if( data.success ){
+       $('#'+element).val('');
+      var cont = '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
+      '<label class="btn btn-xs btn-info">'+
+      '<span>'+data.Especialidad.especialidad+'</span>'+
+      '</label>'+
+      '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+data.id+'\',this);" >'+
+      '<span class="glyphicon glyphicon-remove"></span></button></div>';
+      $('#especialidadesListBoot').append(cont);
+      actualizarSesion();
+    }else{
+      if (!data.existe){
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    }
+  });
+}
+
+function agregarSubespecialidad(element){
+  var esp = $('#'+element).val();
+  $.post('/editEspecialidades',{
+    especialidad:esp,
+    checado:1
+  },function( data ){
+    if( data.success ){
+       $('#'+element).val('');
+      var cont = '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
+      '<label class="btn btn-xs btn-info">'+
+      '<span>'+data.Especialidad.especialidad+'</span>'+
+      '</label>'+
+      '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+data.id+'\',this);" >'+
+      '<span class="glyphicon glyphicon-remove"></span></button></div>';
+      $('#subEspecialidadesListBoot').append(cont);
+      actualizarSesion();
+    }else{
+      if (!data.existe){
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    }
+  });
 }
