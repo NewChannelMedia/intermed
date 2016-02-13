@@ -886,15 +886,15 @@ function loginModal(){
             '<div class="col-md-8 col-md-offset-2">'+
               '<div class="form-group" id="emailGroup">'+
                 '<input type="text" class="form-control input-lg" id="email" name="email" placeholder="Usuario o Correo" required="true" aria-describedby="emailP">'+
-                '<span  id="emailIcon" class="" aria-hidden="true"></span>'+
+                /*'<span  id="emailIcon" class="" aria-hidden="true"></span>'+
                 '<span class="sr-only" id="emailP">(success)</span>'+
-                '<div id="mail-error"></div>'+
+                '<div id="mail-error"></div>'+*/
               '</div>'+
               '<div class="form-group" id="passwordGroup">'+
                 '<input type="password" class="form-control input-lg" id="password" name="password" placeholder="Contraseña" required="true" aria-describedby="passwordP">'+
-                '<span id="passwordIcon" class="" aria-hidden="true"></span>'+
+                /*'<span id="passwordIcon" class="" aria-hidden="true"></span>'+
                 '<span class="sr-only" id="passwordP">(success)</span>'+
-                '<div id="pass-error"></div>'+
+                '<div id="pass-error"></div>'+*/
               '</div>'+
             '</div>'+
           '</div>'+
@@ -912,8 +912,8 @@ function loginModal(){
         '</form>'+
       '</div><!-- fin del div principal -->'
   });
-  validateForm('input-correo','email');
-  validateForm('input-password','password');
+  /*validateForm('input-correo','email');
+  validateForm('input-password','password');*/
 }
 //<------------------- FIN LOGIN --------------------------->
 //<------------------- INVITAR ----------------------------->
