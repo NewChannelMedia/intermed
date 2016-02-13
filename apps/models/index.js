@@ -9,7 +9,7 @@ var db = {};
 //var config    = require(__dirname + '/../config/config.json')[env];
 //var main = new Sequelize( 'intermed', 'intermed', '', {
 var sequelizeMain = new Sequelize( 'intermed', 'intermed', '', {
-  host: 'localhost',
+  host: '167.160.162.251',
   dialect: 'mysql',
   pool: {
     max: 5,
@@ -24,7 +24,7 @@ var sequelizeMain = new Sequelize( 'intermed', 'intermed', '', {
 // conexion a la nueva base de datos intermed.historia
 //var historial = new Sequelize('intermed.historia','intermed','',{
 var sequelizeHistorial = new Sequelize('intermed.historia','intermed','',{
-  host: 'localhost',
+  host: '167.160.162.251',
   dialect: 'mysql',
   pool:{
     max: 5,
@@ -35,7 +35,7 @@ var sequelizeHistorial = new Sequelize('intermed.historia','intermed','',{
 });
 //var inbox = new Sequelize( 'intermed.inbox', 'intermed', '', {
 var sequelizeInbox = new Sequelize( 'intermed.inbox', 'intermed', '', {
-  host: 'localhost',
+  host: '167.160.162.251',
   dialect: 'mysql',
   pool: {
     max: 5,
@@ -47,7 +47,7 @@ var sequelizeInbox = new Sequelize( 'intermed.inbox', 'intermed', '', {
 
 //var sequelizeCargos = new Sequelize('intermed.cargos', 'intermed', '', {
 var sequelizeCargos = new Sequelize('intermed.cargos', 'intermed', '', {
-  host: 'localhost',
+  host: '167.160.162.251',
   dialect: 'mysql',
   pool: {
     max: 5,
@@ -59,7 +59,7 @@ var sequelizeCargos = new Sequelize('intermed.cargos', 'intermed', '', {
 
 //var sequelizeEncuesta = new Sequelize('intermed.encuestas', 'root', '', {
 var sequelizeEncuesta = new Sequelize('intermed.encuestas', 'intermed', '', {
-  host: 'localhost',
+  host: '167.160.162.251',
   dialect: 'mysql',
   pool: {
     max: 5,
