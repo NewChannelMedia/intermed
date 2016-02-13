@@ -108,7 +108,7 @@ module.exports = function (object){
   });
   app.get('/registrarplancargo', function (req, res) {
     routeLife( 'plataforma2', 'main', hps );
-    intermed.callController('CargosUsuarios', 'PlanCargoDatosRegistro', req.body, req, res);
+    intermed.callController('PlanDeCargo', 'PlanCargoDatosRegistro', req.body, req, res);
   });
   app.get('/suscripcionpausar', function (req, res) {
     routeLife( 'plataforma2', 'main', hps );
