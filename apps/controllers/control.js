@@ -1,6 +1,8 @@
 var models = require( '../models' );
 var mail = require( './emailSender' );
 var fs = require("fs");
+
+var jsonfile = require('jsonfile')
 /**
 *	@author Cinthia Bermúdez
 *	@version 0.0.0.0
@@ -459,16 +461,114 @@ module.exports = {
           id: object.id
         }
       }).then(function(result){
-        var contents = fs.readFileSync(result.filePath);
-        result = JSON.parse(JSON.stringify(result));
-        result.jsonContent = JSON.parse(contents);
+        if (result.status == 0){
+          result.status = 1;
+          result.update({status:1});
+        }
+        jsonfile.readFile(result.filePath, function(err, obj) {
+          result = JSON.parse(JSON.stringify(result));
+          result.jsonContent = JSON.parse(JSON.stringify(obj));
+          var total = 0;
+          if (result.jsonContent.comentarios.length>0){
+            result.jsonContent.comentarios.forEach(function(com){
+              models.DBError_userIntermed.findOne({
+                where: {
+                  id: com.usuarioIntermed_id
+                }
+              }).then(function(usuario){
+                com.usuario = usuario;
+                total++;
+                if (total == result.jsonContent.comentarios.length){
+                  res.status(200).json({
+                    success: true,
+                    result: result
+                  });
+                }
+              });
+            });
+          } else {
+            res.status(200).json({
+              success: true,
+              result: result
+            });
+          }
+        });
+      }).catch(function(err){
+        req.errorHandler.report(err, req, res);
+      });
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
+  },
 
+  errStatusUpdate: function (object, req, res){
+    try{
+      models.DBError_registro.update({
+        status: object.status
+      },{
+        where: {
+          id: object.id
+        }
+      }).then(function(result){
         res.status(200).json({
           success: true,
           result: result
         });
-      }).catch(function(err){
-        req.errorHandler.report(err, req, res);
+      });
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
+  },
+
+  errAddComment: function (object, req, res){
+    try{
+      models.DBError_registro.findOne({
+        where: {
+          id: object.id
+        }
+      }).then(function(result){
+        if (result){
+          //Leer el archivo de Error
+
+          jsonfile.readFile(result.filePath, function(err, obj) {
+            var jsonContent = JSON.parse(JSON.stringify(obj));
+            var fecha = new Date().toISOString();
+            var usuarioIntermed_id = 1;
+            var nuevoComentario = {
+              datetime: fecha,
+              usuarioIntermed_id: usuarioIntermed_id,
+              comentario: object.comentario
+            }
+            jsonContent.comentarios.push(nuevoComentario);
+
+            jsonfile.writeFile(result.filePath, jsonContent, function (error) {
+                if (!error){
+                  models.DBError_userIntermed.findOne({
+                    where:{
+                      id: usuarioIntermed_id
+                    }
+                  }).then(function(usuario){
+                    nuevoComentario.usuario = usuario;
+                    res.status(200).json({
+                      success: true,
+                      result: nuevoComentario
+                    });
+                  });
+                } else {
+                  res.status(200).json({
+                    success: false,
+                    error: error
+                  });
+                }
+            });
+
+          });
+          //Sobreescribir con nuevo comentario
+        } else {
+          res.status(200).json({
+            success: false
+          });
+        }
       });
     }catch ( err ) {
       req.errorHandler.report(err, req, res);

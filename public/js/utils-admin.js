@@ -10,7 +10,7 @@ $(document).ready(function(){
 
   if ($('#controlPanelAdmin').length>0){
     contarPV();
-    contarErrors();
+    contarErrores();
     //contarM();
     //contarN();
   }
@@ -41,7 +41,7 @@ function contarPV(){
 }
 
 
-function contarErrors(){
+function contarErrores(){
   	$.ajax({
   		url: '/control/Err/count',
   		type: 'POST',
@@ -531,13 +531,13 @@ $('#pageAdminContent').html(contenido);
         if (data.success){
           var cont = '';
           data.result.forEach(function(res){
-            cont += '<tr>'+
+            cont += '<tr id=\'err_'+ res.id +'\'>'+
                 '<td>'+ res.id +'</td>'+
                 '<td>'+ res.datetime +'</td>'+
                 '<td>'+ res.method +'</td>'+
                 '<td>'+ res.err +'</td>'+
                 '<td>'+ res.file + '/' + res.function +'</td>'+
-                '<td><a onclick=\'detallesError('+ res.id +')\'><span class=\'glyphicon glyphicon-search\'></span></a></td>'+
+                '<td><a onclick=\'detallesError('+ res.id +',this)\'><span class=\'glyphicon glyphicon-search\'></span></a></td>'+
               '</tr>';
           });
           $('#errNuev').find('tbody').html(JSON.stringify(cont));
@@ -566,7 +566,7 @@ $('#pageAdminContent').html(contenido);
         if (data.success){
           var cont = '';
           data.result.forEach(function(res){
-            cont += '<tr>'+
+            cont += '<tr id=\'err_'+ res.id +'\'>'+
                 '<td>'+ res.id +'</td>'+
                 '<td>'+ res.datetime +'</td>'+
                 '<td>'+ res.method +'</td>'+
@@ -601,7 +601,7 @@ $('#pageAdminContent').html(contenido);
         if (data.success){
           var cont = '';
           data.result.forEach(function(res){
-            cont += '<tr>'+
+            cont += '<tr id=\'err_'+ res.id +'\'>'+
                 '<td>'+ res.id +'</td>'+
                 '<td>'+ res.datetime +'</td>'+
                 '<td>'+ res.method +'</td>'+
@@ -637,7 +637,7 @@ $('#pageAdminContent').html(contenido);
         if (data.success){
           var cont = '';
           data.result.forEach(function(res){
-            cont += '<tr>'+
+            cont += '<tr id=\'err_'+ res.id +'\'>'+
                 '<td>'+ res.id +'</td>'+
                 '<td>'+ res.datetime +'</td>'+
                 '<td>'+ res.method +'</td>'+
@@ -657,4 +657,86 @@ $('#pageAdminContent').html(contenido);
         console.error( 'AJAX ERROR: (registro 166) : ' + err );
       }
     });
+}
+
+function guardarEstatusError(error_id,statusInput){
+  var status = statusInput = $('#'+statusInput).val();
+  var error_id = error_id;
+  $.ajax({
+    url: '/control/err/status/update',
+    type: 'POST',
+    dataType: "json",
+    data: {
+      status: status,
+      id: error_id
+    },
+    cache: false,
+    type: 'POST',
+    success: function( data ) {
+      if (data.success){
+        if (data.success && data.result){
+          var clone = $('tr#err_'+error_id).clone();
+          $('tr#err_'+error_id).remove();
+          var divid = '';
+          if (status == 1){
+            divid = '#errNoAt';
+          } else if (status == 2){
+            divid = '#errAt';
+          } else if (status == 3){
+            divid = '#errSol';
+          }
+          $(divid).find('tbody').append(clone);
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      } else {
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    }
+  });
+}
+
+function agregarComentarioErr(error_id, inputComentario){
+  var comentario = $('#'+inputComentario).val();
+  $('#'+inputComentario).val('')
+  $('#'+inputComentario).focus();
+  console.log('Agregar comentario: ' + comentario);
+  $.ajax({
+    url: '/control/err/comentario/add',
+    type: 'POST',
+    dataType: "json",
+    data: {
+      comentario: comentario,
+      id: error_id
+    },
+    cache: false,
+    type: 'POST',
+    success: function( data ) {
+      if (data.success){
+        if (data.success && data.result){
+          var error = '<a class="list-group-item disabled" style="overflow-x: auto;"><small class="pull-right">'+ new Date(data.result.datetime) +'</small><b>'+ data.result.usuario.nombre +':</b><br><br>'+ data.result.comentario +'</a>';
+          $('#listComentErr').append(error);
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      } else {
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    }
+  });
+  return false;
 }

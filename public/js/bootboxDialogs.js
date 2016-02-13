@@ -3598,11 +3598,14 @@ function editarEspecialidades(){
   },300);
 }
 
-function detallesError(error_id){
+function detallesError(error_id, element){
 
 
   var error = '';
   var fecha = '';
+  var descripcion = '';
+  var comentarios = '';
+  var estatus = '';
   $.ajax({
     url: '/control/err/getById',
     type: 'POST',
@@ -3616,13 +3619,62 @@ function detallesError(error_id){
     success: function( data ) {
       if (data.success){
         if (data.result){
-          data.result = JSON.parse(JSON.stringify(data.result));
+          if (element){
+            var clone = $(element).parent().parent().clone();
+            $(element).parent().parent().remove();
+            $('#errNoAt').find('tbody').append(clone);
+            contarErrores();
+          }
+          estatus = data.result.status;
           error = data.result.err;
           fecha = data.result.datetime;
-          data.result.jsonContent = JSON.parse(JSON.stringify(data.result.jsonContent));
-          data.result.jsonContent.forEach(function(err){
-            console.log('-' + JSON.stringify(err));
-          });
+          if ( data.result.jsonContent ){
+            var jsonContent = data.result.jsonContent;
+            descripcion += '<div class="list-group"><a href="#" class="list-group-item active"><b>Detalles de error:</b></a>';
+            descripcion += '<a class="list-group-item disabled"><b>Error: </b>' + jsonContent.err +'</a>';
+            if (jsonContent.usuario_id){
+              descripcion +=  '<a class="list-group-item disabled"><b>Usuario: </b>' + jsonContent.usuario_id  +'</a>';
+            }
+            if (jsonContent.session){
+              descripcion +=  '<a class="list-group-item disabled"><b>Sesion: </b>' + jsonContent.session  +'</a>';
+            }
+            if (jsonContent.file){
+              descripcion +=  '<a class="list-group-item disabled"><b>Controlador:</b> ' + jsonContent.file  +'</a>';
+            }
+            if (jsonContent.function){
+              descripcion +=  '<a class="list-group-item disabled"><b>Función:</b>' + jsonContent.function  +'</a>';
+            }
+            if (jsonContent.protocol){
+              descripcion +=  '<a class="list-group-item disabled"><b>Protocolo:</b> ' + jsonContent.protocol  +'</a>';
+            }
+            if (jsonContent.host){
+              descripcion +=  '<a class="list-group-item disabled"><b>Host:</b> ' + jsonContent.host  +'</a>';
+            }
+            if (jsonContent.method){
+              descripcion +=  '<a class="list-group-item disabled"><b>Metodo:</b> ' + jsonContent.method  +'</a>';
+            }
+            if (jsonContent.path){
+              descripcion +=  '<a class="list-group-item disabled"><b>Path:</b> ' + jsonContent.path  +'</a>';
+            }
+            if (jsonContent.headers){
+              descripcion +=  '<a class="list-group-item active"><b>Headers</b></a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>Connection:</b> ' + jsonContent.headers.connection +'</a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>Cache-control:</b> ' + jsonContent.headers['cache-control'] +'</a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>Upgrade-insecure-requests:</b> ' + jsonContent.headers['upgrade-insecure-requests'] +'</a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>User-agent:</b> ' + jsonContent.headers['user-agent'] +'</a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>Accept-encoding:</b> ' + jsonContent.headers['accept-encoding'] +'</a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>Accept-language:</b> ' + jsonContent.headers['accept-language'] +'</a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>if-none-match:</b> ' + jsonContent.headers['if-none-match'] +'</a>';
+              descripcion +=  '<a class="list-group-item disabled" style="overflow-x: auto;"><b>Cookie:</b> ' + jsonContent.headers.cookie +'</a>';
+            }
+            descripcion += '</div>';
+
+            comentarios += '<div class="list-group" id="listComentErr"><a href="#" class="list-group-item active"><b>Comentarios:</b></a>';
+            data.result.jsonContent.comentarios.forEach(function(coment){
+              comentarios += '<a class="list-group-item disabled" style="overflow-x: auto;"><small class="pull-right">'+ new Date(coment.datetime) +'</small><b>'+ coment.usuario.nombre +':</b><br><br> ' + coment.comentario +'</a>';
+            });
+            comentarios += '</div>';
+          }
         }
       } else {
         if (data.error){
@@ -3643,61 +3695,58 @@ function detallesError(error_id){
     title: '<span class="title">'+ error +'</span><span class="subtitle">'+ fecha +'</span>',
     backdrop: true,
     message:
-      '<style>.modal-header .close {margin-top: -17px;margin-right: -9px;}</style>'+
-      '<div class="tab-content tabBootBox">'+
-        '<div class="tab-pane active" role="tabpanel" id="tabPerfil">'+
-            '<div class="container-fluid">'+
-                '<div class="row">'+
-                  '<div class="col-md-12">'+
-                    '<div class="whiteF h77-boldcond" style="font-size: 18px;padding: 8px;background-color: #172C3B;margin: -10px;margin-bottom: 5px;">'+
-                      '<span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;ESPECIALIDADES.'+
-                    '</div>'+
-                  '</div>'+
+        '<div class="row">'+
+        '<div class="col-md-12">'+
 
-                  '<div class="col-md-12">'+
+          '<ul class="nav nav-tabs menuBootbox" role="tablist">'+
+            '<li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Detalles</a></li>'+
+            '<li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Historial</a></li>'+
+          '</ul>'+
+
+          '<div class="tab-content" style="margin-top:20px">'+
+            '<div role="tabpanel" class="tab-pane active" id="home">'+
+
+              descripcion +
+            '</div>'+
+            '<div role="tabpanel" class="tab-pane" id="profile">'+
+              '<div class="row" style="margin-top:20px;">'+
+                '<div class="col-md-12">'+
+                  '<form role="form" onsubmit="return agregarComentarioErr('+error_id+',\'ErrComent\')" id="addComentErr">'+
                     '<div class="input-group">'+
-                      '<select id="autoEsp" class="form-control autoEspecialidad"></select>'+
+                      '<textarea class="form-control custom-control" rows="3" style="resize:none;height: 80px;" id="ErrComent" placeholder="Nuevo comentario..." required></textarea>'+
                       '<span class="input-group-btn">'+
-                        '<button id="addEspecialidadMedic" onclick="agregarExpecialidad(\'autoEsp\');" class="btn btn-primary form-control" type="button">'+
-                          '<span class="glyphicon glyphicon-plus"></span>'+
-                        '</button>'+
+                        '<button class="btn btn-primary" style="height: 80px;">Agregar</button>'+
                       '</span>'+
                     '</div>'+
-                  '</div>'+
-
-
-                  '<div class="col-md-12 text-center" id="especialidadesListBoot" style="margin-top:5px">'+
-                  '</div>'+
-                '</div>'+
-
-
-                '<div class="row">'+
-                  '<div class="col-md-12">'+
-                    '<div class="whiteF h77-boldcond" style="font-size: 18px;padding: 8px;background-color: #172C3B;margin: -10px;margin-bottom: 5px;margin-top:20px;">'+
-                      '<span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;SUBESPECIALIDADES.'+
-                    '</div>'+
-                  '</div>'+
-
-                  '<div class="col-md-12">'+
-                    '<div class="input-group">'+
-                      '<select id="autoSubEsp" class="form-control autoEspecialidad"></select>'+
-                      '<span class="input-group-btn">'+
-                        '<button id="addEspecialidadMedic" onclick="agregarSubespecialidad(\'autoSubEsp\');" class="btn btn-primary form-control" type="button">'+
-                          '<span class="glyphicon glyphicon-plus"></span>'+
-                        '</button>'+
-                      '</span>'+
-                    '</div>'+
-                  '</div>'+
-
-
-                  '<div class="col-md-12 text-center" id="subEspecialidadesListBoot" style="margin-top:5px">'+
-                  '</div>'+
-
+                  '</form>'+
                 '</div>'+
               '</div>'+
 
+              comentarios +
+              '</div>'+
           '</div>'+
+        '</div>'+
 
+      '</div>'+
+
+      '<div class="row footerBootbox" style="padding-top:20px;padding-bottom:20px">'+
+          '<div class="col-md-12">'+
+            '<div class="input-group">'+
+              '<label class="input-group-addon" style="background-color: transparent;border: none;color: white;font-weight: bold;">Estatus: </label>'+
+              '<select id="estatusError" class="form-control">'+
+                '<option value="1" >Por atender</option>'+
+                '<option value="2" >Atendido</option>'+
+                '<option value="3" >Solucionado</option>'+
+              '</select>'+
+              '<span class="input-group-btn">'+
+                '<button id="addEspecialidadMedic" onclick="guardarEstatusError('+ error_id +',\'estatusError\');" class="btn btn-primary form-control" type="button">Guardar</button>'+
+              '</span>'+
+            '</div>'+
+        '</div>'+
       '</div>'
     });
+
+    setTimeout(function(){
+      $('#estatusError').val(estatus);
+    },300);
 }

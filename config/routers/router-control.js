@@ -51,4 +51,12 @@ module.exports = function (object){
   app.post('/control/err/getById', function (req, res){
     intermed.callController( 'control', 'errGetById', req.body, req, res );
   });
+
+  app.post('/control/err/status/update', function (req, res){
+    intermed.callController( 'control', 'errStatusUpdate', req.body, req, res );
+  });
+
+  app.post('/control/err/comentario/add', function (req, res){
+    intermed.callController( 'control', 'errAddComment', req.body, req, res );
+  });
 }
