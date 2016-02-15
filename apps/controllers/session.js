@@ -16,22 +16,30 @@ module.exports = {
    *	vista.
    */
   login: function ( object, req, res ) {
-    if ( object.usuario === 'admin' && object.contraseña === 'admin' ) {
-      req.session.passport = {};
-      req.session.passport.name = 'admin';
-      req.session.passport.admin = true;
-      req.session.passport.logged = true;
-      res.redirect( '/registro' );
-    }
-    else {
-      res.redirect( '/' );
+    try{
+      if ( object.usuario === 'admin' && object.contraseña === 'admin' ) {
+        req.session.passport = {};
+        req.session.passport.name = 'admin';
+        req.session.passport.admin = true;
+        req.session.passport.logged = true;
+        res.redirect( '/registro' );
+      }
+      else {
+        res.redirect( '/' );
+      }
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
     }
   },
   logout: function ( object, req, res ) {
-    if ( req.session ) {
-      res.clearCookie( 'intermed_sesion' );
-      req.session.destroy();
+    try{
+      if ( req.session ) {
+        res.clearCookie( 'intermed_sesion' );
+        req.session.destroy();
+      }
+      res.redirect( '/' );
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
     }
-    res.redirect( '/' );
   }
 }

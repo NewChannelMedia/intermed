@@ -20,279 +20,75 @@ module.exports = {
    *	vista.
    */
   index: function ( object, req, res ) {
-    models.Especialidad.findAll( {
-      attributes: [ 'id', 'especialidad' ]
-    } ).then( function ( especia ) {
-      models.Padecimiento.findAll( {
-        attributes: [ 'id', 'padecimiento' ]
-      } ).then( function ( padeci ) {
-        models.Estado.findAll( {
-          attributes: [ 'id', 'estado' ]
-        } ).then( function ( estado ) {
-          models.Ciudad.findAll( {} ).then( function ( ciudad ) {
-            res.render( 'home', {
-              especia: especia,
-              padecimiento: padeci,
-              estado: estado,
-              ciudad: ciudad
+    try{
+      models.Especialidad.findAll( {
+        attributes: [ 'id', 'especialidad' ]
+      } ).then( function ( especia ) {
+        models.Padecimiento.findAll( {
+          attributes: [ 'id', 'padecimiento' ]
+        } ).then( function ( padeci ) {
+          models.Estado.findAll( {
+            attributes: [ 'id', 'estado' ]
+          } ).then( function ( estado ) {
+            models.Ciudad.findAll( {} ).then( function ( ciudad ) {
+              res.render( 'home', {
+                especia: especia,
+                padecimiento: padeci,
+                estado: estado,
+                ciudad: ciudad
+              } );
             } );
           } );
         } );
       } );
-    } );
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
   },
   perfil: function ( object, req, res ) {
-    usuario = object.usuario;
+    try{
+      usuario = object.usuario;
 
-    if ( ( req.session.passport.user && ( !usuario ) ) || ( req.session.passport.user && usuario == req.session.passport.user.usuarioUrl ) ) {
-      var tipoUsuario = '';
-      if ( req.session.passport.user.tipoUsuario == 'M' ) tipoUsuario = 'medico';
-      else if ( req.session.passport.user.tipoUsuario == 'P' ) tipoUsuario = 'paciente';
+      if ( ( req.session.passport.user && ( !usuario ) ) || ( req.session.passport.user && usuario == req.session.passport.user.usuarioUrl ) ) {
+        var tipoUsuario = '';
+        if ( req.session.passport.user.tipoUsuario == 'M' ) tipoUsuario = 'medico';
+        else if ( req.session.passport.user.tipoUsuario == 'P' ) tipoUsuario = 'paciente';
 
-      models.Estado.findAll( {
-        attributes: [ 'id', 'estado' ]
-      } ).then( function ( estados ) {
-        res.render( tipoUsuario + '/perfil', {
-          estados: estados
+        models.Estado.findAll( {
+          attributes: [ 'id', 'estado' ]
+        } ).then( function ( estados ) {
+          res.render( tipoUsuario + '/perfil', {
+            estados: estados
+          } );
+          if ( !usuario ) req.session.passport.user.logueado = "1";
         } );
-        if ( !usuario ) req.session.passport.user.logueado = "1";
-      } );
-    }
-    else if ( usuario ) {
-      //Perfil de otro usuario
-      models.Usuario.findOne( {
-        where: {
-          usuarioUrl: usuario
-        },
-        include: [ {
-          model: models.DatosGenerales,
-          attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                }, {
-          model: models.Medico,
-          attributes: [ 'id' ],
-          include: [ {
-            model: models.MedicoEspecialidad,
-            attributes: [ 'id', 'subEsp' ],
-            include: [ {
-              model: models.Especialidad
-                        } ]
-                    } ]
-                }, {
-          model: models.Paciente,
-          attributes: [ 'id' ]
-                } ]
-      } ).then( function ( usuario ) {
-        if ( usuario ) {
-          usuario = JSON.parse( JSON.stringify( usuario ) );
-
-          if ( req.session.passport.user && ( usuario.Medico || usuario.Paciente ) ) {
-            if (usuario.Medico){
-              var condiciones = {
-                usuario_id: req.session.passport.user.id,
-                medico_id: usuario.Medico.id
-              };
-            } else {
-              var condiciones = {
-                usuario_id: req.session.passport.user.id,
-                paciente_id: usuario.Paciente.id
-              };
-            }
-            cargarInfoPerfil( usuario, condiciones, req, res );
-          }
-          else {
-            models.Direccion.findOne( {
-              where: {
-                usuario_id: usuario.id
-              }
-            } ).then( function ( direccion ) {
-              if ( direccion ) {
-                models.sequelize.query( "SELECT `Localidad`.`CP`, `Localidad`.`localidad`, `TipoLocalidad`.`id` AS 'tipo_id', `TipoLocalidad`.`tipo`, `Ciudad`.`id` AS 'ciudad_id', `Ciudad`.`ciudad`, `Municipio`.`id` AS 'municipio_id', `Municipio`.`municipio`, `Estado`.`id` AS 'estado_id', `Estado`.`estado` FROM `localidades` AS `Localidad`INNER JOIN `tipoLocalidad` AS `TipoLocalidad` ON `TipoLocalidad`.`id` = `Localidad`.`tipo_localidad_id` INNER JOIN `ciudades` AS `Ciudad` ON `Localidad`.`ciudad_id` = `Ciudad`.`id` and `Localidad`.`municipio_id` = `Ciudad`.`municipio_id` and `Localidad`.`estado_id` = `Ciudad`.`estado_id` INNER JOIN `municipios` AS `Municipio` ON `Localidad`.`municipio_id` = `Municipio`.`municipio_id` and `Localidad`.`estado_id` = `Municipio`.`estado_id` INNER JOIN `estados` AS `Estado` ON `Localidad`.`estado_id` = `Estado`.`id` WHERE `Localidad`.`id` = " + direccion.localidad_id + ";", {
-                    type: models.sequelize.QueryTypes.SELECT
-                  } )
-                  .then( function ( localidad ) {
-                    if (usuario.localidad && localidad[0]){
-                      usuario.localidad = {
-                        ciudad: localidad[ 0 ].ciudad,
-                        estado: localidad[ 0 ].estado
-                      };
-                    }
-                    armarPerfil( usuario, req, res );
-                  } )
-              }
-              else {
-                armarPerfil( usuario, req, res );
-              }
-            } );
-          }
-        }
-        else {
-          res.status( 200 ).send( 'El usuario \'' + object.usuario + '\' no existe.' );
-        }
-      } );
-    }
-    else {
-      res.redirect( global.base_url);
-    }
-  },
-  aboutPacientes: function ( object, req, res ) {
-    res.render( 'pacientes', object )
-  },
-  perfilMedicos: function ( object, req, res ) {
-    res.render( 'perfil', object )
-  },
-  perfilPacientes: function ( object, req, res ) {
-    res.render( 'perfil', object )
-  },
-
-  //perfil nuevo
-  nuevoPerfilMedicos: function ( object, req, res ) {
-    usuario = object.usuario;
-    var uUrl = "";
-    var uTipo = "";
-    if ( ( req.session.passport.user && ( !usuario ) ) || ( req.session.passport.user && usuario == req.session.passport.user.usuarioUrl ) || ( req.session.passport.user && usuario == req.session.passport.user.urlPersonal ) ) {
-      var tipoUsuario = '';
-      if ( req.session.passport.user.tipoUsuario == 'M' ) tipoUsuario = 'medico';
-      else if ( req.session.passport.user.tipoUsuario == 'P' ) tipoUsuario = 'paciente';
-
-      models.Estado.findAll( {
-        attributes: [ 'id', 'estado' ]
-      } ).then( function ( estados ) {
-        models.Direccion.findAll({
+      }
+      else if ( usuario ) {
+        //Perfil de otro usuario
+          models.Usuario.findOne( {
             where: {
-                usuario_id: req.session.passport.user.id
+              usuarioUrl: usuario
             },
-            order: [['principal','DESC']],
-            attributes: ['id', 'nombre', 'latitud', 'longitud', 'calle', 'numero', 'calle1','calle2','principal'],
-            include: [{
-              model: models.Localidad,
-              attributes: ['localidad','CP'],
-              include: [{
-                  model: models.TipoLocalidad,
-                  attributes: ['tipo'],
-              }],
-              },
-              {
-                  model: models.Municipio,
-                  attributes: ['municipio'],
-                  include: [{
-                      model: models.Estado,
-                      attributes: ['estado'],
-                  }],
-              },
-              {
-                  model: models.Telefono
-              },{
-                model: models.Usuario,
-                attributes:['usuarioUrl','tipoUsuario']
-              }],
-              order: [['principal', 'DESC']]
-        }).then(function (direccion) {
-          if (req.session.passport.user.Medico_id){
-            var medico = {};
-            models.MedicoExpertoEn.findAll({
-                where: {medico_id: req.session.passport.user.Medico_id},
-                order: [['orden','ASC']]
-              }).then(function(expertoen){
-                  medico['MedicoExpertoEns'] = expertoen;
-                  models.MedicoClinica.findAll({
-                      where: {medico_id: req.session.passport.user.Medico_id},
-                      order: [['orden','ASC']]
-                    }).then(function(clinica){
-                        medico['MedicoClinicas'] = clinica;
-                        models.MedicoAseguradora.findAll({
-                          where: {medico_id: req.session.passport.user.Medico_id},
-                          order: [['orden','ASC']]
-                        }).then(function(aseguradora){
-                          var prueba = "";
-                          plataform2.plataform2(req.session.passport.user.usuarioUrl,req,res, function(response){
-                            medico['MedicoAseguradoras'] = aseguradora;
-                            var vista = '/nuevoPerfilMedicos';
-                            if (req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
-                              vista = '/registro_1';
-                              tipoUsuario = 'medico';
-                            } else if (req.session.passport.user.status == -1 && req.session.passport.user.tipoUsuario == "M"){
-                              vista = '/registro_2';
-                              tipoUsuario = 'medico';
-                            }  else if (req.session.passport.user.status == 3 && req.session.passport.user.tipoUsuario == "M"){
-                              vista = '/cambioCedula';
-                              tipoUsuario = 'medico';
-                            } else if (req.session.passport.user.status == 4 && req.session.passport.user.tipoUsuario == "M"){
-                              vista = '/bloqueoPorCedula';
-                              tipoUsuario = 'medico';
-                            }
-                            res.render( tipoUsuario + vista, {
-                              medico: medico,
-                              estados: estados,
-                              usuario:{Direccions: JSON.parse(JSON.stringify(direccion))},
-                              keywords: response
-                            } );
-                          });
-                        });
-                    });
-                  });
-          } else {
-              res.render( tipoUsuario + '/nuevoPerfilMedicos', {
-                estados: estados,
-                usuario:{Direccions: JSON.parse(JSON.stringify(direccion))}
-              } );
-          }
-        })
-        if ( !usuario ) req.session.passport.user.logueado = "1";
-      } );
-    }
-    else if ( usuario ) {
-      //Perfil de otro usuario
-      models.Usuario.findOne( {
-        where: models.Sequelize.or({
-          urlPersonal: usuario
-        },{
-          usuarioUrl: usuario
-        }),
-        include: [ {
-          model: models.DatosGenerales,
-          attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-                }, {
-          model: models.Medico,
-          attributes: [ 'id' ],
-          include: [ {
-            model: models.MedicoEspecialidad,
-            attributes: [ 'id', 'subEsp' ],
             include: [ {
-              model: models.Especialidad
+              model: models.DatosGenerales,
+              attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                    }, {
+              model: models.Medico,
+              attributes: [ 'id' ],
+              include: [ {
+                model: models.MedicoEspecialidad,
+                attributes: [ 'id', 'subEsp' ],
+                include: [ {
+                  model: models.Especialidad
+                            } ]
                         } ]
+                    }, {
+              model: models.Paciente,
+              attributes: [ 'id' ]
                     } ]
-                }, {
-          model: models.Paciente,
-          attributes: [ 'id' ]
-                }]
-      } ).then( function ( usuario ) {
-        if ( usuario ) {
-          models.Direccion.findAll({
-             where: {usuario_id: usuario.id},
-             order: [['principal', 'DESC']],
-             attributes: ['id', 'nombre', 'latitud', 'longitud', 'calle', 'numero', 'calle1','calle2','principal'],
-             include: [{
-             model: models.Localidad,
-             attributes: ['localidad','CP'],
-             include: [{
-                 model: models.TipoLocalidad,
-                 attributes: ['tipo'],
-             }],
-             },
-             {
-             model: models.Municipio,
-             attributes: ['municipio'],
-             include: [{
-                 model: models.Estado,
-                 attributes: ['estado'],
-             }],
-            },
-             {
-                 model: models.Telefono
-             }]
-          }).then(function(direccion){
+          } ).then( function ( usuario ) {
+            if ( usuario ) {
             usuario = JSON.parse( JSON.stringify( usuario ) );
-            usuario.Direccions = JSON.parse(JSON.stringify(direccion));
 
             if ( req.session.passport.user && ( usuario.Medico || usuario.Paciente ) ) {
               if (usuario.Medico){
@@ -306,39 +102,275 @@ module.exports = {
                   paciente_id: usuario.Paciente.id
                 };
               }
-              cargarInfoPerfilNuevo( usuario, condiciones, req, res );
+              cargarInfoPerfil( usuario, condiciones, req, res );
             }
             else {
-              armarPerfilNuevo( usuario, req, res );
+              models.Direccion.findOne( {
+                where: {
+                  usuario_id: usuario.id
+                }
+              } ).then( function ( direccion ) {
+                if ( direccion ) {
+                  models.sequelize.query( "SELECT `Localidad`.`CP`, `Localidad`.`localidad`, `TipoLocalidad`.`id` AS 'tipo_id', `TipoLocalidad`.`tipo`, `Ciudad`.`id` AS 'ciudad_id', `Ciudad`.`ciudad`, `Municipio`.`id` AS 'municipio_id', `Municipio`.`municipio`, `Estado`.`id` AS 'estado_id', `Estado`.`estado` FROM `localidades` AS `Localidad`INNER JOIN `tipoLocalidad` AS `TipoLocalidad` ON `TipoLocalidad`.`id` = `Localidad`.`tipo_localidad_id` INNER JOIN `ciudades` AS `Ciudad` ON `Localidad`.`ciudad_id` = `Ciudad`.`id` and `Localidad`.`municipio_id` = `Ciudad`.`municipio_id` and `Localidad`.`estado_id` = `Ciudad`.`estado_id` INNER JOIN `municipios` AS `Municipio` ON `Localidad`.`municipio_id` = `Municipio`.`municipio_id` and `Localidad`.`estado_id` = `Municipio`.`estado_id` INNER JOIN `estados` AS `Estado` ON `Localidad`.`estado_id` = `Estado`.`id` WHERE `Localidad`.`id` = " + direccion.localidad_id + ";", {
+                      type: models.sequelize.QueryTypes.SELECT
+                    } )
+                    .then( function ( localidad ) {
+                      if (usuario.localidad && localidad[0]){
+                        usuario.localidad = {
+                          ciudad: localidad[ 0 ].ciudad,
+                          estado: localidad[ 0 ].estado
+                        };
+                      }
+                      armarPerfil( usuario, req, res );
+                    } )
+                }
+                else {
+                  armarPerfil( usuario, req, res );
+                }
+              } );
             }
-          });
-        }
-        else {
-          res.status( 200 ).send( 'El usuario \'' + object.usuario + '\' no existe.' );
-        }
-      } );
+          }
+          else {
+            res.status( 200 ).send( 'El usuario \'' + object.usuario + '\' no existe.' );
+          }
+        } );
+      }
+      else {
+        res.redirect( global.base_url);
+      }
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
     }
-    else {
-      res.redirect( global.base_url);
+  },
+  aboutPacientes: function ( object, req, res ) {
+    try{
+      res.render( 'pacientes', object )
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
+  },
+  perfilMedicos: function ( object, req, res ) {
+    try{
+      res.render( 'perfil', object )
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
+  },
+  perfilPacientes: function ( object, req, res ) {
+    try{
+      res.render( 'perfil', object )
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
+  },
+
+  //perfil nuevo
+  nuevoPerfilMedicos: function ( object, req, res ) {
+    try{
+      usuario = object.usuario;
+      var uUrl = "";
+      var uTipo = "";
+      if ( ( req.session.passport.user && ( !usuario ) ) || ( req.session.passport.user && usuario == req.session.passport.user.usuarioUrl ) || ( req.session.passport.user && usuario == req.session.passport.user.urlPersonal ) ) {
+        var tipoUsuario = '';
+        if ( req.session.passport.user.tipoUsuario == 'M' ) tipoUsuario = 'medico';
+        else if ( req.session.passport.user.tipoUsuario == 'P' ) tipoUsuario = 'paciente';
+
+        models.Estado.findAll( {
+          attributes: [ 'id', 'estado' ]
+        } ).then( function ( estados ) {
+          models.Direccion.findAll({
+              where: {
+                  usuario_id: req.session.passport.user.id
+              },
+              order: [['principal','DESC']],
+              attributes: ['id', 'nombre', 'latitud', 'longitud', 'calle', 'numero', 'calle1','calle2','principal'],
+              include: [{
+                model: models.Localidad,
+                attributes: ['localidad','CP'],
+                include: [{
+                    model: models.TipoLocalidad,
+                    attributes: ['tipo'],
+                }],
+                },
+                {
+                    model: models.Municipio,
+                    attributes: ['municipio'],
+                    include: [{
+                        model: models.Estado,
+                        attributes: ['estado'],
+                    }],
+                },
+                {
+                    model: models.Telefono
+                },{
+                  model: models.Usuario,
+                  attributes:['usuarioUrl','tipoUsuario']
+                }],
+                order: [['principal', 'DESC']]
+          }).then(function (direccion) {
+            if (req.session.passport.user.Medico_id){
+              var medico = {};
+              models.MedicoExpertoEn.findAll({
+                  where: {medico_id: req.session.passport.user.Medico_id},
+                  order: [['orden','ASC']]
+                }).then(function(expertoen){
+                    medico['MedicoExpertoEns'] = expertoen;
+                    models.MedicoClinica.findAll({
+                        where: {medico_id: req.session.passport.user.Medico_id},
+                        order: [['orden','ASC']]
+                      }).then(function(clinica){
+                          medico['MedicoClinicas'] = clinica;
+                          models.MedicoAseguradora.findAll({
+                            where: {medico_id: req.session.passport.user.Medico_id},
+                            order: [['orden','ASC']]
+                          }).then(function(aseguradora){
+                            var prueba = "";
+                            plataform2.plataform2(req.session.passport.user.usuarioUrl,req,res, function(response){
+                              medico['MedicoAseguradoras'] = aseguradora;
+                              var vista = '/nuevoPerfilMedicos';
+                              if (req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
+                                vista = '/registro_1';
+                                tipoUsuario = 'medico';
+                              } else if (req.session.passport.user.status == -1 && req.session.passport.user.tipoUsuario == "M"){
+                                vista = '/registro_2';
+                                tipoUsuario = 'medico';
+                              }  else if (req.session.passport.user.status == 3 && req.session.passport.user.tipoUsuario == "M"){
+                                vista = '/cambioCedula';
+                                tipoUsuario = 'medico';
+                              } else if (req.session.passport.user.status == 4 && req.session.passport.user.tipoUsuario == "M"){
+                                vista = '/bloqueoPorCedula';
+                                tipoUsuario = 'medico';
+                              }
+                              res.render( tipoUsuario + vista, {
+                                medico: medico,
+                                estados: estados,
+                                usuario:{Direccions: JSON.parse(JSON.stringify(direccion))},
+                                keywords: response
+                              } );
+                            });
+                          });
+                      });
+                    });
+            } else {
+                res.render( tipoUsuario + '/nuevoPerfilMedicos', {
+                  estados: estados,
+                  usuario:{Direccions: JSON.parse(JSON.stringify(direccion))}
+                } );
+            }
+          })
+          if ( !usuario ) req.session.passport.user.logueado = "1";
+        } );
+      }
+      else if ( usuario ) {
+        //Perfil de otro usuario
+        models.Usuario.findOne( {
+          where: models.Sequelize.or({
+            urlPersonal: usuario
+          },{
+            usuarioUrl: usuario
+          }),
+          include: [ {
+            model: models.DatosGenerales,
+            attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+                  }, {
+            model: models.Medico,
+            attributes: [ 'id' ],
+            include: [ {
+              model: models.MedicoEspecialidad,
+              attributes: [ 'id', 'subEsp' ],
+              include: [ {
+                model: models.Especialidad
+                          } ]
+                      } ]
+                  }, {
+            model: models.Paciente,
+            attributes: [ 'id' ]
+                  }]
+        } ).then( function ( usuario ) {
+          if ( usuario ) {
+            models.Direccion.findAll({
+               where: {usuario_id: usuario.id},
+               order: [['principal', 'DESC']],
+               attributes: ['id', 'nombre', 'latitud', 'longitud', 'calle', 'numero', 'calle1','calle2','principal'],
+               include: [{
+               model: models.Localidad,
+               attributes: ['localidad','CP'],
+               include: [{
+                   model: models.TipoLocalidad,
+                   attributes: ['tipo'],
+               }],
+               },
+               {
+               model: models.Municipio,
+               attributes: ['municipio'],
+               include: [{
+                   model: models.Estado,
+                   attributes: ['estado'],
+               }],
+              },
+               {
+                   model: models.Telefono
+               }]
+            }).then(function(direccion){
+              usuario = JSON.parse( JSON.stringify( usuario ) );
+              usuario.Direccions = JSON.parse(JSON.stringify(direccion));
+
+              if ( req.session.passport.user && ( usuario.Medico || usuario.Paciente ) ) {
+                if (usuario.Medico){
+                  var condiciones = {
+                    usuario_id: req.session.passport.user.id,
+                    medico_id: usuario.Medico.id
+                  };
+                } else {
+                  var condiciones = {
+                    usuario_id: req.session.passport.user.id,
+                    paciente_id: usuario.Paciente.id
+                  };
+                }
+                cargarInfoPerfilNuevo( usuario, condiciones, req, res );
+              }
+              else {
+                armarPerfilNuevo( usuario, req, res );
+              }
+            });
+          }
+          else {
+            res.status( 200 ).send( 'El usuario \'' + object.usuario + '\' no existe.' );
+          }
+        } );
+      }
+      else {
+        res.redirect( global.base_url);
+      }
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
     }
     //res.render( 'nuevoPerfilMedicos', object )
   },
 
   sayHello: function ( object, req, res ) {
-    res.render( 'home', {}, function ( err, html ) {
-      res.send( html )
-    } );
+    try{
+      res.render( 'home', {}, function ( err, html ) {
+        res.send( html )
+      } );
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
   },
   vacio: function ( object, req, res ) {
-    models.Estado.findAll( {
-      attributes: [ 'id', 'estado' ]
-    } ).then( function ( estado ) {
-      models.Ciudad.findAll( {} ).then( function ( ciudad ) {
-        res.render( 'searchMedic', {
-          estado: estado
+    try{
+      models.Estado.findAll( {
+        attributes: [ 'id', 'estado' ]
+      } ).then( function ( estado ) {
+        models.Ciudad.findAll( {} ).then( function ( ciudad ) {
+          res.render( 'searchMedic', {
+            estado: estado
+          } );
         } );
       } );
-    } );
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
   },
   /**
    *	EL siguiente metodo es el que realizara las busquedas,
@@ -353,196 +385,121 @@ module.exports = {
    *
    */
   searching: function (  object, req, res ) {
-      var render = {};
-      render.nombre = object.nombreMed;
-      render.estado = object.selectEstado;
-      render.municipio = object.selectCiudad;
-      render.tipoBusqueda = object.tipoBusqueda;
-      render.inputEspecialidad = object.hiddenEspecialidad;
-      render.inputPadecimiento = object.hiddenPadecimiento;
-      render.inputInstitucion = object.hiddenInstitucion;
-      render.inputAseguradora = object.hiddenAseguradora;
+      try{
+        var render = {};
+        render.nombre = object.nombreMed;
+        render.estado = object.selectEstado;
+        render.municipio = object.selectCiudad;
+        render.tipoBusqueda = object.tipoBusqueda;
+        render.inputEspecialidad = object.hiddenEspecialidad;
+        render.inputPadecimiento = object.hiddenPadecimiento;
+        render.inputInstitucion = object.hiddenInstitucion;
+        render.inputAseguradora = object.hiddenAseguradora;
 
-      models.Estado.findAll( {
-        attributes: [ 'id', 'estado' ]
-      } ).then( function ( estado ) {
-        if (render.estado>0){
-          models.Municipio.findAll({
-            where: {
-              estado_id: render.estado
-            }
-          }).then(function(municipios){
-            render.municipios = municipios;
+        models.Estado.findAll( {
+          attributes: [ 'id', 'estado' ]
+        } ).then( function ( estado ) {
+          if (render.estado>0){
+            models.Municipio.findAll({
+              where: {
+                estado_id: render.estado
+              }
+            }).then(function(municipios){
+              render.municipios = municipios;
+              res.render( 'searchMedic', {
+                estado: estado,
+                render: render
+              } );
+            })
+          } else {
             res.render( 'searchMedic', {
               estado: estado,
               render: render
             } );
-          })
-        } else {
-          res.render( 'searchMedic', {
-            estado: estado,
-            render: render
-          } );
-        }
-      } );
+          }
+        } );
+      }catch ( err ) {
+        req.errorHandler.report(err, req, res);
+      }
     }, //fin del metodo searching
     homeEspecialidades: function( req, res ){
-      // carga la info para que retorne las especialidades
-      models.Especialidad.findAll({
-        attributes:['id','especialidad']
-      }).then(function(especialidades){
-        res.send(especialidades);
-      });
+      try{
+        // carga la info para que retorne las especialidades
+        models.Especialidad.findAll({
+          attributes:['id','especialidad']
+        }).then(function(especialidades){
+          res.send(especialidades);
+        });
+      }catch ( err ) {
+        req.errorHandler.report(err, req, res);
+      }
     },
     homePadecimientos: function( req, res ){
-      models.Padecimiento.findAll({
-        attributes:['id','padecimiento']
-      }).then(function(padecimiento){
-        res.send(padecimiento);
-      })
+      try{
+        models.Padecimiento.findAll({
+          attributes:['id','padecimiento']
+        }).then(function(padecimiento){
+          res.send(padecimiento);
+        })
+      }catch ( err ) {
+        req.errorHandler.report(err, req, res);
+      }
     },
     homeEstados: function( req, res ){
-      models.Estado.findAll({
-        attributes:['id','estado']
-      }).then(function(estado){
-        res.send(estado);
-      });
+      try{
+        models.Estado.findAll({
+          attributes:['id','estado']
+        }).then(function(estado){
+          res.send(estado);
+        });
+      }catch ( err ) {
+        req.errorHandler.report(err, req, res);
+      }
     },
     homeCiudad: function( req, res ){
-      models.Municipio.findAll({
-        where:{estado_id:req.body.id},
-        attributes:['id','municipio']
-      }).then( function( ciudades ){
-        res.send(ciudades);
-      });
+      try{
+        models.Municipio.findAll({
+          where:{estado_id:req.body.id},
+          attributes:['id','municipio']
+        }).then( function( ciudades ){
+          res.send(ciudades);
+        });
+      }catch ( err ) {
+        req.errorHandler.report(err, req, res);
+      }
     }
 }
 
 function armarPerfil( usuario, req, res ) {
-  usuario = JSON.parse( JSON.stringify( usuario ) );
-  var especialidades = [];
-  if ( usuario.tipoUsuario == "M" && usuario.Medico.MedicoEspecialidads ) {
-    usuario.especialidades = JSON.parse( JSON.stringify( usuario.Medico.MedicoEspecialidads ) );
-  }
-
-  var tipoUsuario = 'Paciente';
-  if ( usuario.tipoUsuario == 'M' ) tipoUsuario = 'Medico';
-  models[ tipoUsuario ].findOne( {
-    where: {
-      usuario_id: usuario.id
-    }
-  } ).then( function ( result ) {
-    usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
-    res.render( tipoUsuario.toLowerCase() + '/perfil', {
-      usuario: usuario
-    } );
-  } )
-}
-
-function cargarInfoPerfil( usuario, condiciones, req, res ) {
-  models.MedicoFavorito.findOne( {
-    where: condiciones
-  } ).then( function ( result ) {
-    if ( result ) {
-      if ( result.aprobado == 1 && result.mutuo == 1 ) {
-        usuario.medFavCol = result.id;
-      }
-      else if ( result.aprobado == 1 && result.mutuo == 0 ) {
-        usuario.invitacionEnviada = "1";
-      }
-      else {
-        usuario.invitacionEspera = "1";
-      }
-    } else {
-      usuario.noAmigos = "1";
+  try{
+    usuario = JSON.parse( JSON.stringify( usuario ) );
+    var especialidades = [];
+    if ( usuario.tipoUsuario == "M" && usuario.Medico.MedicoEspecialidads ) {
+      usuario.especialidades = JSON.parse( JSON.stringify( usuario.Medico.MedicoEspecialidads ) );
     }
 
-    models.Direccion.findOne( {
+    var tipoUsuario = 'Paciente';
+    if ( usuario.tipoUsuario == 'M' ) tipoUsuario = 'Medico';
+    models[ tipoUsuario ].findOne( {
       where: {
         usuario_id: usuario.id
       }
-    } ).then( function ( direccion ) {
-      if ( direccion ) {
-        models.sequelize.query( "SELECT `Localidad`.`CP`, `Localidad`.`localidad`, `TipoLocalidad`.`id` AS 'tipo_id', `TipoLocalidad`.`tipo`, `Ciudad`.`id` AS 'ciudad_id', `Ciudad`.`ciudad`, `Municipio`.`id` AS 'municipio_id', `Municipio`.`municipio`, `Estado`.`id` AS 'estado_id', `Estado`.`estado` FROM `localidades` AS `Localidad`INNER JOIN `tipoLocalidad` AS `TipoLocalidad` ON `TipoLocalidad`.`id` = `Localidad`.`tipo_localidad_id` INNER JOIN `ciudades` AS `Ciudad` ON `Localidad`.`ciudad_id` = `Ciudad`.`id` and `Localidad`.`municipio_id` = `Ciudad`.`municipio_id` and `Localidad`.`estado_id` = `Ciudad`.`estado_id` INNER JOIN `municipios` AS `Municipio` ON `Localidad`.`municipio_id` = `Municipio`.`municipio_id` and `Localidad`.`estado_id` = `Municipio`.`estado_id` INNER JOIN `estados` AS `Estado` ON `Localidad`.`estado_id` = `Estado`.`id` WHERE `Localidad`.`id` = " + direccion.localidad_id + ";", {
-            type: models.sequelize.QueryTypes.SELECT
-          } )
-          .then( function ( localidad ) {
-            if(localidad[0]){
-              usuario.localidad = {
-                ciudad: localidad[ 0 ].ciudad,
-                estado: localidad[ 0 ].estado
-              };
-            }
-            armarPerfil( usuario, req, res );
-          } )
-      }
-      else {
-        armarPerfil( usuario, req, res );
-      }
-    } );
-  } );
+    } ).then( function ( result ) {
+      usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
+      res.render( tipoUsuario.toLowerCase() + '/perfil', {
+        usuario: usuario
+      } );
+    } )
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 }
 
-
-
-function cargarInfoPerfilNuevo( usuario, condiciones, req, res ) {
-  usuario = JSON.parse(JSON.stringify(usuario));
-  models.MedicoFavorito.findOne( {
-    where: condiciones
-  } ).then( function ( result ) {
-    if (req.session.passport && req.session.passport.user && req.session.passport.user.Medico_id && usuario.Paciente){
-      //Checar si es un medico que atiende
-      models.MedicoPaciente.findOne({
-        where:{
-          medico_id: req.session.passport.user.Medico_id,
-          paciente_id: usuario.Paciente.id
-        }
-      }).then(function(MedicoQueAtiende){
-        if ( result ) {
-          if (MedicoQueAtiende){
-            usuario.medPac = "1";
-          }
-          if ( result.aprobado == 1 && result.mutuo == 1 ) {
-            usuario.medFavCol = result.id;
-          }
-          else if ( result.aprobado == 1 && result.mutuo == 0 ) {
-            usuario.invitacionEnviada = "1";
-          }
-          else {
-            usuario.invitacionEspera = "1";
-          }
-        } else {
-          usuario.noAmigos = "1";
-        }
-        armarPerfilNuevo( usuario, req, res );
-      });
-    } else if (req.session.passport && req.session.passport.user && req.session.passport.user.Paciente_id && usuario.Medico){
-      //Checar si es un medico que atiende
-      models.MedicoPaciente.findOne({
-        where:{
-          medico_id: usuario.Medico.id,
-          paciente_id: req.session.passport.user.Paciente_id
-        }
-      }).then(function(MedicoQueAtiende){
-        if ( result ) {
-          if (MedicoQueAtiende){
-            usuario.medPac = "1";
-          }
-          if ( result.aprobado == 1 && result.mutuo == 1 ) {
-            usuario.medFavCol = result.id;
-          }
-          else if ( result.aprobado == 1 && result.mutuo == 0 ) {
-            usuario.invitacionEnviada = "1";
-          }
-          else {
-            usuario.invitacionEspera = "1";
-          }
-        } else {
-          usuario.noAmigos = "1";
-        }
-        armarPerfilNuevo( usuario, req, res );
-      });
-    } else {
+function cargarInfoPerfil( usuario, condiciones, req, res ) {
+  try{
+    models.MedicoFavorito.findOne( {
+      where: condiciones
+    } ).then( function ( result ) {
       if ( result ) {
         if ( result.aprobado == 1 && result.mutuo == 1 ) {
           usuario.medFavCol = result.id;
@@ -556,96 +513,207 @@ function cargarInfoPerfilNuevo( usuario, condiciones, req, res ) {
       } else {
         usuario.noAmigos = "1";
       }
-      armarPerfilNuevo( usuario, req, res );
-    }
-  } );
+
+      models.Direccion.findOne( {
+        where: {
+          usuario_id: usuario.id
+        }
+      } ).then( function ( direccion ) {
+        if ( direccion ) {
+          models.sequelize.query( "SELECT `Localidad`.`CP`, `Localidad`.`localidad`, `TipoLocalidad`.`id` AS 'tipo_id', `TipoLocalidad`.`tipo`, `Ciudad`.`id` AS 'ciudad_id', `Ciudad`.`ciudad`, `Municipio`.`id` AS 'municipio_id', `Municipio`.`municipio`, `Estado`.`id` AS 'estado_id', `Estado`.`estado` FROM `localidades` AS `Localidad`INNER JOIN `tipoLocalidad` AS `TipoLocalidad` ON `TipoLocalidad`.`id` = `Localidad`.`tipo_localidad_id` INNER JOIN `ciudades` AS `Ciudad` ON `Localidad`.`ciudad_id` = `Ciudad`.`id` and `Localidad`.`municipio_id` = `Ciudad`.`municipio_id` and `Localidad`.`estado_id` = `Ciudad`.`estado_id` INNER JOIN `municipios` AS `Municipio` ON `Localidad`.`municipio_id` = `Municipio`.`municipio_id` and `Localidad`.`estado_id` = `Municipio`.`estado_id` INNER JOIN `estados` AS `Estado` ON `Localidad`.`estado_id` = `Estado`.`id` WHERE `Localidad`.`id` = " + direccion.localidad_id + ";", {
+              type: models.sequelize.QueryTypes.SELECT
+            } )
+            .then( function ( localidad ) {
+              if(localidad[0]){
+                usuario.localidad = {
+                  ciudad: localidad[ 0 ].ciudad,
+                  estado: localidad[ 0 ].estado
+                };
+              }
+              armarPerfil( usuario, req, res );
+            } )
+        }
+        else {
+          armarPerfil( usuario, req, res );
+        }
+      } );
+    } );
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
+}
+
+
+
+function cargarInfoPerfilNuevo( usuario, condiciones, req, res ) {
+  try{
+    usuario = JSON.parse(JSON.stringify(usuario));
+    models.MedicoFavorito.findOne( {
+      where: condiciones
+    } ).then( function ( result ) {
+      if (req.session.passport && req.session.passport.user && req.session.passport.user.Medico_id && usuario.Paciente){
+        //Checar si es un medico que atiende
+        models.MedicoPaciente.findOne({
+          where:{
+            medico_id: req.session.passport.user.Medico_id,
+            paciente_id: usuario.Paciente.id
+          }
+        }).then(function(MedicoQueAtiende){
+          if ( result ) {
+            if (MedicoQueAtiende){
+              usuario.medPac = "1";
+            }
+            if ( result.aprobado == 1 && result.mutuo == 1 ) {
+              usuario.medFavCol = result.id;
+            }
+            else if ( result.aprobado == 1 && result.mutuo == 0 ) {
+              usuario.invitacionEnviada = "1";
+            }
+            else {
+              usuario.invitacionEspera = "1";
+            }
+          } else {
+            usuario.noAmigos = "1";
+          }
+          armarPerfilNuevo( usuario, req, res );
+        });
+      } else if (req.session.passport && req.session.passport.user && req.session.passport.user.Paciente_id && usuario.Medico){
+        //Checar si es un medico que atiende
+        models.MedicoPaciente.findOne({
+          where:{
+            medico_id: usuario.Medico.id,
+            paciente_id: req.session.passport.user.Paciente_id
+          }
+        }).then(function(MedicoQueAtiende){
+          if ( result ) {
+            if (MedicoQueAtiende){
+              usuario.medPac = "1";
+            }
+            if ( result.aprobado == 1 && result.mutuo == 1 ) {
+              usuario.medFavCol = result.id;
+            }
+            else if ( result.aprobado == 1 && result.mutuo == 0 ) {
+              usuario.invitacionEnviada = "1";
+            }
+            else {
+              usuario.invitacionEspera = "1";
+            }
+          } else {
+            usuario.noAmigos = "1";
+          }
+          armarPerfilNuevo( usuario, req, res );
+        });
+      } else {
+        if ( result ) {
+          if ( result.aprobado == 1 && result.mutuo == 1 ) {
+            usuario.medFavCol = result.id;
+          }
+          else if ( result.aprobado == 1 && result.mutuo == 0 ) {
+            usuario.invitacionEnviada = "1";
+          }
+          else {
+            usuario.invitacionEspera = "1";
+          }
+        } else {
+          usuario.noAmigos = "1";
+        }
+        armarPerfilNuevo( usuario, req, res );
+      }
+    } );
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 }
 
 
 function armarPerfilNuevo( usuario, req, res ) {
-  usuario = JSON.parse( JSON.stringify( usuario ) );
-  var especialidades = [];
-  if ( usuario.tipoUsuario == "M" && usuario.Medico.MedicoEspecialidads ) {
-    usuario.especialidades = JSON.parse( JSON.stringify( usuario.Medico.MedicoEspecialidads ) );
-  }
+  try{
+      usuario = JSON.parse( JSON.stringify( usuario ) );
+      var especialidades = [];
+      if ( usuario.tipoUsuario == "M" && usuario.Medico.MedicoEspecialidads ) {
+        usuario.especialidades = JSON.parse( JSON.stringify( usuario.Medico.MedicoEspecialidads ) );
+      }
 
-  var tipoUsuario = 'Paciente';
-  if ( usuario.tipoUsuario == 'M' )
-    tipoUsuario = 'Medico';
+      var tipoUsuario = 'Paciente';
+      if ( usuario.tipoUsuario == 'M' )
+        tipoUsuario = 'Medico';
 
-  models[ tipoUsuario ].findOne( {
-    where: {
-      usuario_id: usuario.id
-    }
-  } ).then( function ( result ) {
-    if ( usuario.tipoUsuario == 'M' ) {
-      var medico = {};
-      models.MedicoExpertoEn.findAll( {
+      models[ tipoUsuario ].findOne( {
         where: {
-          medico_id: result.id
-        },
-        order: [ [ 'orden', 'ASC' ] ]
-      } ).then( function ( expertoEn ) {
-        medico[ 'MedicoExpertoEns' ] = expertoEn;
+          usuario_id: usuario.id
+        }
+      } ).then( function ( result ) {
+        if ( usuario.tipoUsuario == 'M' ) {
+          var medico = {};
+          models.MedicoExpertoEn.findAll( {
+            where: {
+              medico_id: result.id
+            },
+            order: [ [ 'orden', 'ASC' ] ]
+          } ).then( function ( expertoEn ) {
+            medico[ 'MedicoExpertoEns' ] = expertoEn;
 
-            models.MedicoClinica.findAll({
-                where: {medico_id: result.id},
-                order: [['orden','ASC']]
-              }).then(function(clinica){
-                  medico['MedicoClinicas'] = clinica;
-                  models.MedicoAseguradora.findAll({
+                models.MedicoClinica.findAll({
                     where: {medico_id: result.id},
                     order: [['orden','ASC']]
-                  }).then(function(aseguradora){
-                    plataform2.plataform2(usuario.usuarioUrl, req, res, function(response){
-                      medico['MedicoAseguradoras'] = aseguradora;
-                      usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
-                      var vista = '/nuevoPerfilMedicos';
-                      if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
-                        vista = '/vistaPerfilNoRegistrado';
-                      } else if (req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
-                        vista = '/registro_1';
-                        tipoUsuario = 'medico';
-                      } else if (req.session.passport.user.status == -1 && req.session.passport.user.tipoUsuario == "M"){
-                        vista = '/registro_2';
-                        tipoUsuario = 'medico';
-                      }  else if (req.session.passport.user.status == 3 && req.session.passport.user.tipoUsuario == "M"){
-                        vista = '/cambioCedula';
-                        tipoUsuario = 'medico';
-                      } else if (req.session.passport.user.status == 4 && req.session.passport.user.tipoUsuario == "M"){
-                        vista = '/bloqueoPorCedula';
-                        tipoUsuario = 'medico';
-                      }
-                      res.render( tipoUsuario.toLowerCase() + vista, {
-                        usuario: usuario,
-                        medico: medico,
-                        keywords: response
-                      } );
+                  }).then(function(clinica){
+                      medico['MedicoClinicas'] = clinica;
+                      models.MedicoAseguradora.findAll({
+                        where: {medico_id: result.id},
+                        order: [['orden','ASC']]
+                      }).then(function(aseguradora){
+                        plataform2.plataform2(usuario.usuarioUrl, req, res, function(response){
+                          medico['MedicoAseguradoras'] = aseguradora;
+                          usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
+                          var vista = '/nuevoPerfilMedicos';
+                          if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
+                            vista = '/vistaPerfilNoRegistrado';
+                          } else if (req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
+                            vista = '/registro_1';
+                            tipoUsuario = 'medico';
+                          } else if (req.session.passport.user.status == -1 && req.session.passport.user.tipoUsuario == "M"){
+                            vista = '/registro_2';
+                            tipoUsuario = 'medico';
+                          }  else if (req.session.passport.user.status == 3 && req.session.passport.user.tipoUsuario == "M"){
+                            vista = '/cambioCedula';
+                            tipoUsuario = 'medico';
+                          } else if (req.session.passport.user.status == 4 && req.session.passport.user.tipoUsuario == "M"){
+                            vista = '/bloqueoPorCedula';
+                            tipoUsuario = 'medico';
+                          }
+                          res.render( tipoUsuario.toLowerCase() + vista, {
+                            usuario: usuario,
+                            medico: medico,
+                            keywords: response
+                          } );
+                      });
                   });
               });
-          });
-        });
-    } else {
-      var vista = '/nuevoPerfilMedicos';
-      if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
-        vista = '/vistaPerfilNoRegistrado';
-      } else if (req.session.passport.user && req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
-        vista = '/registro_1';
-        tipoUsuario = 'medico';
-      } else if (req.session.passport.user.status == -1 && req.session.passport.user.tipoUsuario == "M"){
-        vista = '/registro_2';
-        tipoUsuario = 'medico';
-      } else if (req.session.passport.user.status == 3 && req.session.passport.user.tipoUsuario == "M"){
-        vista = '/cambioCedula';
-        tipoUsuario = 'medico';
-      } else if (req.session.passport.user.status == 4 && req.session.passport.user.tipoUsuario == "M"){
-        vista = '/bloqueoPorCedula';
-        tipoUsuario = 'medico';
-      }
-      usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
-      res.render( tipoUsuario.toLowerCase()+vista, {
-        usuario: usuario
+            });
+        } else {
+          var vista = '/nuevoPerfilMedicos';
+          if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id > 0)){
+            vista = '/vistaPerfilNoRegistrado';
+          } else if (req.session.passport.user && req.session.passport.user.status == 0 && req.session.passport.user.tipoUsuario == "M"){
+            vista = '/registro_1';
+            tipoUsuario = 'medico';
+          } else if (req.session.passport.user.status == -1 && req.session.passport.user.tipoUsuario == "M"){
+            vista = '/registro_2';
+            tipoUsuario = 'medico';
+          } else if (req.session.passport.user.status == 3 && req.session.passport.user.tipoUsuario == "M"){
+            vista = '/cambioCedula';
+            tipoUsuario = 'medico';
+          } else if (req.session.passport.user.status == 4 && req.session.passport.user.tipoUsuario == "M"){
+            vista = '/bloqueoPorCedula';
+            tipoUsuario = 'medico';
+          }
+          usuario[ tipoUsuario ] = JSON.parse( JSON.stringify( result ) );
+          res.render( tipoUsuario.toLowerCase()+vista, {
+            usuario: usuario
+          } );
+        }
       } );
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
     }
-  } );
 }

@@ -1,7 +1,11 @@
 var models = require( '../models' );
 
 exports.index = function ( object, req, res ) {
-  res.render( 'inbox', object );
+  try {
+    res.render( 'inbox', object );
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 }
 
 exports.enviar = function( req ){
@@ -70,65 +74,69 @@ exports.enviar = function( req ){
 }
 
 exports.cargartodos  = function( object, req, res ){
-    var condicion = [];
-    if (object.notIn && object.notIn.length > 0){
-      condicion.push({
-        usuario_id_de: { $notIn: object.notIn},
-        usuario_id_para: { $notIn: object.notIn}
-      })
-    }
-  models.Inbox.findAll({
-    where: models.sequelize.and(
-      condicion,
-      models.sequelize.or(
-        {usuario_id_de: req.session.passport.user.id},
-        {usuario_id_para: req.session.passport.user.id}
-      )
-    ),
-    attributes: [['IF(`usuario_id_de` = '+req.session.passport.user.id+',`usuario_id_para`,`usuario_id_de`)','usuario_id'],['max(`fecha`)','fecha'],'visto'],
-    group: ['usuario_id'],
-    order:  '`fecha` DESC',
-  }).then(function(result){
-    if (result.length > 0){
-      var total = 0;
-      result = JSON.parse(JSON.stringify(result));
-      var resultado = [];
-      result.forEach( function ( record ) {
-        models.Usuario.findOne( {
-          where: {
-            id: record.usuario_id
-          },
-          attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
-          include: [ {
-            model: models.DatosGenerales,
-            attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
-            } ]
-          }).then( function ( usuario ) {
-            //consultar si visto
-            models.Inbox.findOne({
-              where: { usuario_id_para: req.session.passport.user.id,
-                       usuario_id_de: record.usuario_id
-                     },
-              attributes: [[models.Sequelize.fn('min',models.Sequelize.col('visto')),'visto']],
-              limit: 1
-            }).then(function(visto){
-              if (visto){
-                visto = visto.visto;
-              } else {
-                visto = 1;
-              }
-              resultado[result.indexOf(record)] = {'fecha': record.fecha, 'usuario': usuario, 'visto':visto};
-              total++;
-              if ( total == result.length ) {
-                  res.send(resultado);
-              }
-            });
-        } )
-      });
-    } else {
-        res.send({});
-    }
-  });
+  try{
+      var condicion = [];
+      if (object.notIn && object.notIn.length > 0){
+        condicion.push({
+          usuario_id_de: { $notIn: object.notIn},
+          usuario_id_para: { $notIn: object.notIn}
+        })
+      }
+    models.Inbox.findAll({
+      where: models.sequelize.and(
+        condicion,
+        models.sequelize.or(
+          {usuario_id_de: req.session.passport.user.id},
+          {usuario_id_para: req.session.passport.user.id}
+        )
+      ),
+      attributes: [['IF(`usuario_id_de` = '+req.session.passport.user.id+',`usuario_id_para`,`usuario_id_de`)','usuario_id'],['max(`fecha`)','fecha'],'visto'],
+      group: ['usuario_id'],
+      order:  '`fecha` DESC',
+    }).then(function(result){
+      if (result.length > 0){
+        var total = 0;
+        result = JSON.parse(JSON.stringify(result));
+        var resultado = [];
+        result.forEach( function ( record ) {
+          models.Usuario.findOne( {
+            where: {
+              id: record.usuario_id
+            },
+            attributes: [ 'id', 'urlFotoPerfil', 'usuarioUrl' ],
+            include: [ {
+              model: models.DatosGenerales,
+              attributes: [ 'nombre', 'apellidoP', 'apellidoM' ]
+              } ]
+            }).then( function ( usuario ) {
+              //consultar si visto
+              models.Inbox.findOne({
+                where: { usuario_id_para: req.session.passport.user.id,
+                         usuario_id_de: record.usuario_id
+                       },
+                attributes: [[models.Sequelize.fn('min',models.Sequelize.col('visto')),'visto']],
+                limit: 1
+              }).then(function(visto){
+                if (visto){
+                  visto = visto.visto;
+                } else {
+                  visto = 1;
+                }
+                resultado[result.indexOf(record)] = {'fecha': record.fecha, 'usuario': usuario, 'visto':visto};
+                total++;
+                if ( total == result.length ) {
+                    res.send(resultado);
+                }
+              });
+          } )
+        });
+      } else {
+          res.send({});
+      }
+    });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 }
 
 
@@ -211,36 +219,9 @@ exports.cargarInboxVistaPrevia = function (object){
 
 
 exports.cargarMensajesPorUsuario  = function( object, req, res ){
-  models.Inbox.findAll({
-    where: models.sequelize.or(
-      models.sequelize.and(
-        {usuario_id_de: object.usuario_id},
-        {usuario_id_para: req.session.passport.user.id}
-      ),
-      models.sequelize.and(
-        {usuario_id_de: req.session.passport.user.id},
-        {usuario_id_para: object.usuario_id}
-      )
-    ),
-    attributes: ['id','usuario_id_de','usuario_id_para','mensaje','fecha', 'visto'],
-    order:  '`fecha` DESC',
-    limit: 10
-  }).then(function(result){
-      var resultado = [];
-
-      resultado.push(object.usuario_id);
-      resultado.push(req.session.passport.user.id);
-      resultado.push(JSON.parse(JSON.stringify(result)));
-      res.send(resultado);
-  });
-}
-
-
-exports.cargarMensajesPorUsuarioAnteriores  = function( object, req, res ){
-  models.Inbox.findAll({
-    where: models.sequelize.and(
-      {id:{$lt: object.mensaje_id}},
-      models.sequelize.or(
+  try{
+    models.Inbox.findAll({
+      where: models.sequelize.or(
         models.sequelize.and(
           {usuario_id_de: object.usuario_id},
           {usuario_id_para: req.session.passport.user.id}
@@ -249,19 +230,54 @@ exports.cargarMensajesPorUsuarioAnteriores  = function( object, req, res ){
           {usuario_id_de: req.session.passport.user.id},
           {usuario_id_para: object.usuario_id}
         )
-      )
-    ),
-    attributes: ['id','usuario_id_de','usuario_id_para','mensaje','fecha', 'visto'],
-    order:  '`fecha` DESC',
-    limit: 20
-  }).then(function(result){
-      var resultado = [];
+      ),
+      attributes: ['id','usuario_id_de','usuario_id_para','mensaje','fecha', 'visto'],
+      order:  '`fecha` DESC',
+      limit: 10
+    }).then(function(result){
+        var resultado = [];
 
-      resultado.push(object.usuario_id);
-      resultado.push(req.session.passport.user.id);
-      resultado.push(JSON.parse(JSON.stringify(result)));
-      res.send(resultado);
-  });
+        resultado.push(object.usuario_id);
+        resultado.push(req.session.passport.user.id);
+        resultado.push(JSON.parse(JSON.stringify(result)));
+        res.send(resultado);
+    });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
+}
+
+
+exports.cargarMensajesPorUsuarioAnteriores  = function( object, req, res ){
+  try{
+    models.Inbox.findAll({
+      where: models.sequelize.and(
+        {id:{$lt: object.mensaje_id}},
+        models.sequelize.or(
+          models.sequelize.and(
+            {usuario_id_de: object.usuario_id},
+            {usuario_id_para: req.session.passport.user.id}
+          ),
+          models.sequelize.and(
+            {usuario_id_de: req.session.passport.user.id},
+            {usuario_id_para: object.usuario_id}
+          )
+        )
+      ),
+      attributes: ['id','usuario_id_de','usuario_id_para','mensaje','fecha', 'visto'],
+      order:  '`fecha` DESC',
+      limit: 20
+    }).then(function(result){
+        var resultado = [];
+
+        resultado.push(object.usuario_id);
+        resultado.push(req.session.passport.user.id);
+        resultado.push(JSON.parse(JSON.stringify(result)));
+        res.send(resultado);
+    });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
 }
 
 exports.conversacionLeida = function(req){
