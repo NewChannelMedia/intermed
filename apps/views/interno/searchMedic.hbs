@@ -1,81 +1,21 @@
-<!--
-  EN ESTA VISTA SE DEBE DE CONDICIONAR LOS SELECT DONDE SI SELECCIONA
-  ESPECIALIDAD AL MENOS DEBE DE SELECCIONAR UNA EN EL CAMPO DONDE APARECEN LAS
-  ESPECIALIDADES, LOS CAMPOS DE ESTADO Y CIUDAD PUEDEN IR VACIOS,
-  TAMBIEN SE DEBE DE HACER ESO EN LOS CAMPOS DONDE SE PIDA LOS NOMBRES,
-  Y EN EL INPUT DONDE SE PIDE PADECIMIENTO, ALMENOS DEBE DE TENER UNA SELECCION
-  EN EL INPUT SELECT DE PADECIMIENTOS. LOS CAMPOS DE ESTADO Y CIUDAD PUEDEN
-  IR VACIOS.
--->
 <section id="buscadorFixed" class="Flama">
   <div class="container-fluid">
-    <div class="row">
-      <!-- empieza buscador -->
-      <div class="col-md-12">
-        <div class="row" style="padding-bottom:0px!important">
-          <div id="mapSearchDiv"></div>
-        </div>
-      </div>
-
+    <div class="row" style="padding-top: 15px;">
       <div class="col-md-11"  style="padding-bottom:0px!important;margin-top:10px">
         <div class="row" style="padding-bottom:0px!important">
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="text" class="form-control" id="nombreMed" name="nombreMed" placeholder="Nombre" value="{{render.nombre}}">
+            </div>
+          </div>
           <div class="col-md-3">
-            <div class="form-group">
-              <select class="form-control selectprimary" onchange="CargarExtraBusqueda()" id="tipoBusqueda">
-                <option value="0">Médicos/Instituciones</option>
-                <option value="1">Médicos</option>
-                <option value="2">Instituciones</option>
-              </select>
-            </div>
-            {{#if render.tipoBusqueda}}
-            <script type="text/javascript">
-              $('#tipoBusqueda').prop('value',{{render.tipoBusqueda}});
-              $(function(){
-                CargarExtraBusqueda();
-                agregarBusqueda('inputEspecialidad',"{{render.inputEspecialidad}}");
-                agregarBusqueda('inputPadecimiento',"{{render.inputPadecimiento}}");
-                agregarBusqueda('inputInstitucion',"{{render.inputInstitucion}}");
-                agregarBusqueda('inputAseguradora',"{{render.inputAseguradora}}");
-              });
-            </script>
-            {{/if}}
-          </div>
-
-          <div class="col-md-2">
-            <div class="form-group">
-              <select class="form-control" id="selectEstados" onChange="cargarCiudades('#selectEstados');" name="estado">
-                <option value="0">Estado</option>
-                {{#each estado}}
-                  <option value="{{id}}">{{estado}}</option>
-                {{/each}}
-              </select>
+            <div class="form-group" id="especialidadGroup">
+              <input id="inputEspecialidad" class="form-control" placeholder="Especialidad" name="inputEspecialidad">
             </div>
           </div>
-          <div class="col-md-2">
-            <div class="form-group">
-              <select class="form-control" id="selectCiudad" name="ciudad">
-                <option value="0">Municipio/Ciudad</option>
-                {{#each render.municipios}}
-                  <option value="{{id}}">{{municipio}}</option>
-                {{/each}}
-              </select>
-            </div>
-          </div>
-          <div class="col-md-5">
-            <div class="form-group">
-              <input type="text" class="form-control" id="nombreMed" name="nombreMed" value="{{render.nombre}} {{render.apellido}}">
-            </div>
-          </div>
-          {{#if render.estado}}
-            <script type="text/javascript">
-              $('#selectEstados').prop('value',{{render.estado}});
-              {{#if render.municipio}}
-                $('#selectCiudad').prop('value',{{render.municipio}});
-              {{/if}}
-            </script>
-          {{/if}}
-          <div class="col-md-12">
-            <div class="row"  id="extraSearch"  style="padding-bottom:0px!important">
+          <div class="col-md-3">
+            <div class="form-group" id="aseguradoraGroup">
+              <input id="inputAseguradora" class="form-control" placeholder="Aseguradora" name="inputAseguradora">
             </div>
           </div>
         </div>
@@ -90,12 +30,24 @@
   </div>
 </section>
 
-
-<section id="buscadorResultado" class="Flama"></section>
-<section id="buscadorPaginator">
+<section id="searchResult">
   <div class="container-fluid text-center">
-    <input type="hidden" id="maxNumPag">
-    <ul class="pagination pagination-sm" id="buscPag">
-    </ul>
+    <div class="row" style="padding-bottom: 0px;">
+      <div id="buscadorResultado" class="Flama col-md-4"></div>
+      <!-- empieza buscador -->
+      <div class="col-md-8">
+        <div style="margin-left:-15px;margin-right:-15px">
+          <div id="mapSearchDiv"></div>
+        </div>
+      </div>
+
+
+    </div><!--
+    <div class="row">
+      <input type="hidden" id="maxNumPag">
+      <ul class="pagination pagination-sm" id="buscPag">
+      </ul>
+    </div>-->
   </div>
-</section>
+
+</div>

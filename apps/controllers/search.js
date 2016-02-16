@@ -256,7 +256,110 @@ module.exports = {
   buscarInstituciones: function (res, usuarios, condicionNombre, condicionEstado, condicionMunicipio, condicionEspecialidad, condicionPadecimiento){
     console.log('Falta buscar instituciones');
     res.send(usuarios);
-  }
+  },
+
+    medico: function (object, req, res){
+      models.Medico.findAll({
+        include: [{
+          model: models.Usuario,
+          include:[{
+            model: models.DatosGenerales,
+            attributes:['nombre','apellidoP','apellidoM']
+          },{
+            model: models.Direccion,
+            attributes:['id','calle','numero','nombre','latitud','longitud'],
+            include:[{
+              model: models.Municipio,
+              attributes:['id','municipio'],
+              include:[{
+                model: models.Estado,
+                attributes:['id','estado']
+              }]
+            }],
+            where: {
+              latitud: {$gte: object.bounds.south ,$lte: object.bounds.north},
+              longitud: {$gte: object.bounds.east ,$lte: object.bounds.west}
+            }
+          }]
+        },{
+          model: models.Padecimiento
+        },{
+          model: models.MedicoEspecialidad,
+          attributes:['id','subEsp'],
+          include:[{
+            model: models.Especialidad,
+            attributes:['id','especialidad']
+          }]
+        },{
+          model: models.MedicoAseguradora,
+          attributes: ['aseguradora']
+        },{
+          model: models.MedicoClinica,
+          attributes:['id','clinica']
+        }],
+        group: 'id',
+        attributes:['id','calificacion'],
+        order: [['calificacion','DESC']],
+        limit: 1000
+      }).then(function(result){
+        res.status(200).json({
+          success: true,
+          count: result.length,
+          result: result
+        });
+      });
+    },
+
+    medicoGetCount: function (object, req, res){
+      models.Medico.findAll({
+        include: [{
+          model: models.Usuario,
+          include:[{
+            model: models.DatosGenerales,
+            attributes:['nombre','apellidoP','apellidoM']
+          },{
+            model: models.Direccion,
+            attributes:['id','calle','numero','nombre','latitud','longitud'],
+            include:[{
+              model: models.Municipio,
+              attributes:['id','municipio'],
+              include:[{
+                model: models.Estado,
+                attributes:['id','estado']
+              }]
+            }],
+            where: {
+              latitud: {$gte: object.bounds.south ,$lte: object.bounds.north},
+              longitud: {$gte: object.bounds.east ,$lte: object.bounds.west}
+            }
+          }]
+        },{
+          model: models.Padecimiento
+        },{
+          model: models.MedicoEspecialidad,
+          attributes:['id','subEsp'],
+          include:[{
+            model: models.Especialidad,
+            attributes:['id','especialidad']
+          }]
+        },{
+          model: models.MedicoAseguradora,
+          attributes: ['aseguradora']
+        },{
+          model: models.MedicoClinica,
+          attributes:['id','clinica']
+        }],
+        group: 'id',
+        attributes:['id','calificacion'],
+        order: [['calificacion','DESC']],
+        limit: 1000
+      }).then(function(result){
+        res.status(200).json({
+          success: true,
+          count: result.length,
+        });
+      });
+    }
 }
 
 function buscarInstituciones(res, usuarios, condicionNombre, condicionMunicipio, condicionEspecialidad, condicionPadecimiento){
@@ -320,4 +423,6 @@ function buscarMedicos( res,limit,offset, count,institucion, condicionNombre, co
       res.send(result);
     }
   });
+
+
 }

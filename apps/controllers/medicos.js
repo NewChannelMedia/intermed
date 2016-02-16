@@ -1777,43 +1777,35 @@ var _this = module.exports = {
 
   cargarFormacionAcademica: function (object, req, res){
     try{
-      if (req.session.passport && req.session.passport.user){
-          models.Medico.findOne({
-            where: {
-              usuario_id: object.usuario_id
+      models.Medico.findOne({
+        where: {
+          usuario_id: object.usuario_id
+        }
+      }).then(function(medico){
+        models.MedicoFormacion.findAll( {
+          where:{
+            medico_id: medico.id
+          },
+          order:[['fechaInicio','ASC']],
+          include: [
+            {
+              model: models.Estado
+            },
+            {
+              model: models.Municipio
             }
-          }).then(function(medico){
-            models.MedicoFormacion.findAll( {
-              where:{
-                medico_id: medico.id
-              },
-              order:[['fechaInicio','ASC']],
-              include: [
-                {
-                  model: models.Estado
-                },
-                {
-                  model: models.Municipio
-                }
-              ]
-            } ).then( function ( datos ) {
-              res.status( 200 ).json( {
-                success: true,
-                result: datos
-              } );
-            } ).catch( function ( err ) {
-              res.status( 500 ).json( {
-                error: err
-              } );
-            } );
-          });
-      } else {
-        //Error: no usuario_id
-        res.status(200).json({
-          success: false,
-          error: 3
-        });
-      }
+          ]
+        } ).then( function ( datos ) {
+          res.status( 200 ).json( {
+            success: true,
+            result: datos
+          } );
+        } ).catch( function ( err ) {
+          res.status( 500 ).json( {
+            error: err
+          } );
+        } );
+      });
     }catch ( err ) {
       req.errorHandler.report(err, req, res);
     }
@@ -2207,43 +2199,30 @@ var _this = module.exports = {
 
   cargarExperienciaLaboral: function (object, req, res){
     try{
-      if (req.session.passport && req.session.passport.user){
-          models.Medico.findOne({
-            where: {
-              usuario_id: object.usuario_id
-            }
-          }).then(function(medico){
-            models.MedicoExperiencia.findAll( {
-              where:{
-                medico_id: medico.id
-              },
-              order:[['actual','DESC'],['fechaInicio','ASC']],
-              include: [{
-                model: models.Municipio
-              },{
-                model: models.Estado
-              }]
-            } ).then( function ( datos ) {
-              res.status( 200 ).json( {
-                success: true,
-                result: datos
-              } );
-            } );
-
-            /*.catch( function ( err ) {
-              res.status( 500 ).json( {
-                error: err
-              } );
-            } );
-            */
-          });
-      } else {
-        //Error: no usuario_id
-        res.status(200).json({
-          success: false,
-          error: 3
-        });
-      }
+      models.Medico.findOne({
+        where: {
+          usuario_id: object.usuario_id
+        }
+      }).then(function(medico){
+        models.MedicoExperiencia.findAll( {
+          where:{
+            medico_id: medico.id
+          },
+          order:[['actual','DESC'],['fechaInicio','ASC']],
+          include: [{
+            model: models.Municipio
+          },{
+            model: models.Estado
+          }]
+        } ).then( function ( datos ) {
+          res.status( 200 ).json( {
+            success: true,
+            result: datos
+          } );
+        } ).catch( function ( err ) {
+          req.errorHandler.report(err, req, res);
+        } );
+      });
     }catch ( err ) {
       req.errorHandler.report(err, req, res);
     }

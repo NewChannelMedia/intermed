@@ -23,17 +23,19 @@ module.exports = {
     try{
       models.Especialidad.findAll( {
         attributes: [ 'id', 'especialidad' ]
-      } ).then( function ( especia ) {
-        models.Padecimiento.findAll( {
-          attributes: [ 'id', 'padecimiento' ]
-        } ).then( function ( padeci ) {
+      } ).then( function ( especialidades ) {
+        models.Aseguradora.findAll( {
+          attributes: [ 'id', 'aseguradora' ],
+          group: 'aseguradora',
+          order: [['aseguradora','ASC']]
+        } ).then( function ( aseguradoras ) {
           models.Estado.findAll( {
             attributes: [ 'id', 'estado' ]
           } ).then( function ( estado ) {
             models.Ciudad.findAll( {} ).then( function ( ciudad ) {
               res.render( 'home', {
-                especia: especia,
-                padecimiento: padeci,
+                especialidad: especialidades,
+                aseguradora: aseguradoras,
                 estado: estado,
                 ciudad: ciudad
               } );
@@ -357,7 +359,7 @@ module.exports = {
       req.errorHandler.report(err, req, res);
     }
   },
-  vacio: function ( object, req, res ) {
+  buscar: function ( object, req, res ) {
     try{
       models.Estado.findAll( {
         attributes: [ 'id', 'estado' ]
@@ -386,37 +388,13 @@ module.exports = {
    */
   searching: function (  object, req, res ) {
       try{
+        console.log('OBJECT: ' + JSON.stringify(object));
         var render = {};
         render.nombre = object.nombreMed;
-        render.estado = object.selectEstado;
-        render.municipio = object.selectCiudad;
-        render.tipoBusqueda = object.tipoBusqueda;
-        render.inputEspecialidad = object.hiddenEspecialidad;
-        render.inputPadecimiento = object.hiddenPadecimiento;
-        render.inputInstitucion = object.hiddenInstitucion;
-        render.inputAseguradora = object.hiddenAseguradora;
-
-        models.Estado.findAll( {
-          attributes: [ 'id', 'estado' ]
-        } ).then( function ( estado ) {
-          if (render.estado>0){
-            models.Municipio.findAll({
-              where: {
-                estado_id: render.estado
-              }
-            }).then(function(municipios){
-              render.municipios = municipios;
-              res.render( 'searchMedic', {
-                estado: estado,
-                render: render
-              } );
-            })
-          } else {
-            res.render( 'searchMedic', {
-              estado: estado,
-              render: render
-            } );
-          }
+        render.especialidad = object.selectEspecialidad;
+        render.aseguradora = object.selectAseguradora;
+        res.render( 'searchMedic', {
+          render: render
         } );
       }catch ( err ) {
         req.errorHandler.report(err, req, res);

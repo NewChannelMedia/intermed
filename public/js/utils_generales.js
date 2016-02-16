@@ -690,6 +690,8 @@ $(document).ready(function(){
     invitarModal();
   });
 });
+
+
 function buscarInsMed(){
   $('#buscPag').html('');
   searchingData();
@@ -793,9 +795,9 @@ function CargarExtraBusqueda(){
     $('#extraSearch').html(cont);
   }
   $('#buscadorFixed').css('top',$('#mainNav').height()+'px');
-  var height = $('#buscadorFixed').height();
-  height += $('#mainNav').height();
-  $('#buscadorResultado').css('margin-top',height+'px');
+//  var height = $('#buscadorFixed').height();
+//  height += $('#mainNav').height();
+//  $('#buscadorResultado').css('margin-top',height+'px');
 }
 function split( val ) {
   return val.split( /,\s*/ );
@@ -2039,121 +2041,8 @@ function searchingData(){
   var nombre = $("#nombreMed").val();
   var html5 = "";
   $("#medResults").html('');
-  $.post('/findData',{
-    pagina: pagina,
-    tipoBusqueda: tipoBusqueda,
-    estado: estado,
-    municipio: ciudad,
-    especialidad: especialidad,
-    padecimiento: padecimiento,
-    institucion: institucion,
-    aseguradora: aseguradora,
-    nombre: nombre
-  },function(data){
-    if ($('#buscPag').html() == "" && data.countmedicos>1){
-      $('#maxNumPag').val(data.countmedicos);
-      var limit = 5;
-      if (data.countmedicos<5){
-        limit = data.countmedicos;
-      }
-      var paginador = '<li class="first" onclick="buscadorFirst()" style="visibility:hidden"><a aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>';
-      paginador += '<li class="preview" onclick="buscadorPreview()" style="visibility:hidden"><a aria-label="Previous"><span aria-hidden="true">&lsaquo;</span></a></li>';
-      for (var i = 1; i<= limit; i++){
-        clase = '';
-        if (pagina == i){
-          clase = 'class="active"'
-        }
-        paginador += '<li id="paginador_'+i+'" '+clase+' onclick="buscarPaginador('+i+')"><a>'+i+'</a></li>';
-      }
-      paginador += '<li class="next"><a aria-label="Next" onclick="buscadorNext()"><span aria-hidden="true">&rsaquo;</span></a></li>';
-      paginador += '<li class="last"><a aria-label="Next" onclick="buscadorLast()"><span aria-hidden="true">&raquo;</span></a></li>';
-      $('#buscPag').html(paginador);
-    }
-    var contenido = '<div class="container-fluid">' +
-      '<div class="row">' +
-        '<div role="tabpanel" class="tab-pane fade in active " id="medResults">' +
-          '<ul class="media-list">';
-    if(data.medicos){
-      $.each(data.medicos, function( i, item ){
-        if (!item.DatosGenerale.apellidoM) item.DatosGenerale.apellidoM = ' ';
-        var nombreCompleto = item.DatosGenerale.nombre+' '+item.DatosGenerale.apellidoP + ' ' + item.DatosGenerale.apellidoM;
+  mapSearchDiv();
 
-        var usuarioUrl = item.usuarioUrl;
-        if (item.urlPersonal && item.urlPersonal != ""){
-          usuarioUrl = item.urlPersonal;
-        }
-        contenido += '<li class="media result" id="medico_id_'+ item.Medico.id +'">' +
-            '<div class="media-left"><div class="media-enclosure"><a href="/'+item.urlPersonal+'">'+
-                  '<img class="media-object imgBusqueda" src="'+ item.urlFotoPerfil +'" alt="">'+
-                '</a></div></div>' +
-            '<div class="media-body"><div class="col-md-8"><h4 class="media-heading">'+
-                  '<span class="label label-topDr">Top Doctor</span> <a href="/'+item.urlPersonal+'">Dr. '+ nombreCompleto +'.'+
-                '</a></h4><ul class="list-unstyled list-inline">';
-
-          $.each(item.Medico.MedicoEspecialidads, function(a, esp ){
-            if (esp.subEsp == 0){
-              contenido += '<li><strong>' +esp.Especialidad.especialidad+'</strong></li>';
-            }
-          });
-
-          contenido += '</ul><ul class="list-unstyled list-inline">';
-
-          $.each(item.Medico.MedicoEspecialidads, function(a, esp ){
-            if (esp.subEsp == 1){
-              contenido += '<li><strong>'+esp.Especialidad.especialidad+'</strong></li>';
-            }
-          });
-
-          contenido += '</ul><ul class="list-inline">';
-
-
-          $.each(item.Medico.Padecimientos, function(a, pad ){
-            contenido +='<li><small>'+pad.padecimiento+'</small></li>';
-          });
-
-          contenido += '</ul><ul class="list-unstyled list-ubicaciones">';
-
-          var usu = item.usuarioUrl;
-          if (item.urlPersonal && item.urlPersonal.length>0){
-          usu = item.urlPersonal;
-          }
-
-          $.each(item.Direccions, function( i, itemDir ){
-            contenido += '<li><div id="dir_'+itemDir.id+'" class="direccion hidden">'+
-                  '<div class="top_dr">1</div>'+
-                  '<div class="direccion_id">'+itemDir.id+'</div>'+
-                  '<div class="latitud">'+itemDir.latitud+'</div>'+
-                  '<div class="longitud">'+itemDir.longitud+'</div>'+
-                  '<div class="medico_id">'+item.Medico.id+'</div>'+
-                  '<div class="nombre">'+itemDir.nombre+'</div>'+
-                  '<div class="imagen">'+item.urlFotoPerfil +'</div>'+
-                  '<div class="doctor">Dr. '+nombreCompleto+'</div>'+
-                  '<div class="direccion">'+itemDir.calle+' #'+itemDir.numero+'<br/>'+itemDir.Municipio.municipio+', '+itemDir.Municipio.Estado.estado+'</div>'+
-                  '<div class="usuarioUrl">'+usu+'</div>'+
-                '</div>'+
-                '<a onclick="centrarEnMapa(\''+itemDir.latitud+'\',\''+itemDir.longitud+'\',\''+item.Medico.id+'\',\''+itemDir.id+'\',true)">'+
-                  '<button class="btn btn-warning">'+
-                    '<span class="glyphicon glyphicon-map-marker"></span>'+
-                  '</button>'+
-                  '<strong>'+itemDir.nombre+'</strong>'+
-                  '<small>'+itemDir.calle+' #'+itemDir.numero+', '+itemDir.Municipio.municipio+','+itemDir.Municipio.Estado.estado+'<span class="glyphicon glyphicon-zoom-in"></span></small>'+
-                '</a>'+
-              '</li>';
-          });
-
-        contenido += '</ul></div><div class="resultOptions col-md-4">'+
-                '<ul class="list-unstyled">'+
-                  '<li>Costo de consulta:<strong> $1,230</strong></li>'+
-                  '<li><a>Agrega a tus favoritos</a></li>'+
-                  '<li><a>Envía mensaje</a></li>'+
-                  '<li><a href="'+base_url+usu+'">Visita su perfíl</a></li>'+
-                '</ul></div></div></li>';
-      });
-    }
-    contenido += '</ul></div></div></div>';
-    $("#buscadorResultado").html(contenido);
-    mapSearchDiv();
-  });
 }
 //<------------- FIN DE LAS FUNCIONES ---------------------------->
 function autoCompleteEsp(inputId){
@@ -2438,5 +2327,216 @@ function cargarEstados(divestados){
       error: function (jqXHR, textStatus, err) {
         console.log('ERROR: ' + JSON.stringify(err));
       }
+  });
+}
+
+function realizarBusqueda(bounds){
+  bounds = JSON.parse(JSON.stringify(bounds));
+  $.post('/search/medico',{
+    bounds: bounds
+  },function(data){
+    marcadoresBusqueda.forEach(function(mark){
+      mark.exist = false;
+    });
+
+    var contenido =
+        `<div class="pagination pagination-large" style="display: inline-block;padding-left: 0;border-radius: 4px;text-align: right;width: 100%;font-size: 10px;margin-top: -15px;">
+            <ul class="pager" style="text-align:right;margin:0px;"></ul>
+        </div>`+
+        '<ul class="media-list" id="newStuff">';
+
+    var height = $('#buscadorFixed').height();
+    height += $('#mainNav').height();
+
+    var marcadoresBusquedaTemp = [];
+    data.result.forEach(function(medico){
+      //console.log('Usuario: ' + JSON.stringify(medico));
+      var usuarioUrl = medico.Usuario.usuarioUrl;
+      if (medico.Usuario.urlPersonal && medico.Usuario.urlPersonal != ""){
+        usuarioUrl = medico.Usuario.urlPersonal;
+      }
+      if (medico.Usuario.DatosGenerale.apellidoM && medico.Usuario.DatosGenerale.apellidoM != ""){
+        medico.Usuario.DatosGenerale.apellidoM = ' ' + medico.Usuario.DatosGenerale.apellidoM;
+      } else {
+        medico.Usuario.DatosGenerale.apellidoM  = '';
+      }
+
+      var topDr = false;
+      if (medico.calificacion>8){
+        topDr = true;
+      }
+
+      var nombre = 'Dr. ' +medico.Usuario.DatosGenerale.nombre  + ' ' + medico.Usuario.DatosGenerale.apellidoP + medico.Usuario.DatosGenerale.apellidoM + '.';
+
+      var imagenPerfil = medico.Usuario.urlFotoPerfil;
+
+      var insigTopDr = '';
+      if (topDr){
+        insigTopDr = '<span class="label label-topDr">Top Doctor</span>&nbsp;&nbsp;';
+      }
+      var medico_id = medico.id;
+
+      contenido += `
+        <div class="media" id="medico_id_`+ medico_id +`">
+          <div class="media-left">
+            <a href="` + base_url + usuarioUrl+`">
+              <img class="media-object" src="`+ imagenPerfil + `" alt="">
+            </a>
+          </div>
+          <div class="media-body">
+              <h4 class="media-heading">`+
+                insigTopDr+
+                `<a href="`+ base_url + usuarioUrl+`">` + nombre + `</a>
+              </h4>
+              <ul class="list-unstyled list-inline">
+                <li><strong>Alergólogo Pediatra</strong></li>
+                <li><strong>Dentista</strong></li>
+              </ul>
+              <ul class="list-unstyled list-inline">
+                <li><strong>Cirujano Endocrinólogo</strong></li>
+                <li><strong>Adicciones</strong></li>
+                <li><strong>Cirujano Pediatra</strong></li>
+              </ul>
+              <ul class="list-inline">
+              </ul>
+              <ul class="list-unstyled list-ubicaciones">`;
+
+        medico.Usuario.Direccions.forEach(function(direccion){
+          if (direccion.numeroInt && direccion.numeroInt != ""){
+            direccion.numeroInt = ' ' +direccion.numeroInt;
+          } else {
+            direccion.numeroInt = '';
+          }
+          contenido += `
+            <li>
+              <a onclick="centrarEnMapa('`+ direccion.latitud +`','`+ direccion.longitud +`','1','17',true)"><button class="btn btn-warning"><span class="glyphicon glyphicon-map-marker"></span></button>&nbsp;&nbsp;<strong>`+ direccion.nombre +`</strong><small> `+ direccion.calle +` #`+ direccion.numero + direccion.numeroInt +`, `+ direccion.Municipio.municipio +`,`+ direccion.Municipio.Estado.estado +`<span class="glyphicon glyphicon-zoom-in"></span></small></a>
+            </li>`;
+
+          if (!marcadoresBusqueda[direccion.id]){
+            var pos = new google.maps.LatLng(direccion.latitud, direccion.longitud);
+
+            var marker  = null;
+            if (topDr){
+              marker = new google.maps.Marker({
+                  position: pos,
+                  map: searchDiv,
+                  draggable: false,
+                  zIndex: 200,
+                  icon: 'img/marker.png'
+              });
+            } else {
+              marker = new google.maps.Marker({
+                  position: pos,
+                  map: searchDiv,
+                  zIndex: 100,
+                  draggable: false,
+              });
+            }
+
+            var contentString = '<div id="row"><div class="col-md-3"><img style="width:100%" src=\''+ medico.Usuario.urlFotoPerfil +'\'></div><div class="col-md-9"></div>'+ direccion.nombre +'</div>';
+
+            var infowindow = new google.maps.InfoWindow({
+              content: contentString
+            });
+
+            infoWindows.push(infowindow);
+
+            marker.addListener('click', function() {
+              infoWindows.forEach(function(info){
+                info.close();
+              });
+
+              if (!noScroll) $(document).scrollTo('#medico_id_'+medico_id, 500, {offset: function() { return {top:-(height+5)}; }});
+              $('.result').removeClass('seleccionado');
+              $('#medico_id_'+medico_id).addClass('seleccionado');
+
+              searchDiv.setCenter(pos);
+              infowindow.open(searchDiv, marker);
+              noScroll = false;
+            });
+
+
+            marcadoresBusqueda[direccion.id] = {
+              marker: marker,
+              exist: true
+            };
+          } else {
+            marcadoresBusqueda[direccion.id].exist = true;
+          }
+          marcadoresBusquedaTemp[direccion.id] = marcadoresBusqueda[direccion.id];
+
+        });
+
+        contenido +=
+              `</ul>
+            </div>
+            <div class="media-right">
+              <ul class="list-unstyled">
+                <li>Costo de consulta:<strong> $1,230</strong></li>
+                <li><a>Agrega a tus favoritos</a></li>
+                <li><a>Envía mensaje</a></li>
+                <li><a href="`+ base_url +usuarioUrl+`">Visita su perfíl</a></li>
+              </ul>
+            </div>
+          </div>`;
+    });
+    contenido += '</ul>';
+    $("#buscadorResultado").html(contenido);
+
+    marcadoresBusqueda.forEach(function(mark){
+      if (mark.exist == false){
+        mark.marker.setMap(null);
+      }
+    });
+
+    marcadoresBusqueda = marcadoresBusquedaTemp;
+
+    //Paginador
+
+
+    var listElement = $('#newStuff');
+    var perPage = 4;
+    var numItems = listElement.children().size();
+    var numPages = Math.ceil(numItems/perPage);
+
+    $('.pager').data("curr",0);
+
+    var curr = 0;
+    while(numPages > curr){
+      $('<li><a href="#" class="page_link" style="border: none;background: none;width: auto;padding: 3px;">'+(curr+1)+'</a></li>').appendTo('.pager');
+      curr++;
+    }
+
+    $('.pager .page_link:first').addClass('active');
+
+    listElement.children().css('display', 'none');
+    listElement.children().slice(0, perPage).css('display', 'block');
+
+    $('.pager li a').click(function(){
+      var clickedPage = $(this).html().valueOf() - 1;
+      goTo(clickedPage,perPage);
+    });
+
+    function previous(){
+      var goToPage = parseInt($('.pager').data("curr")) - 1;
+      if($('.active').prev('.page_link').length==true){
+        goTo(goToPage);
+      }
+    }
+
+    function next(){
+      goToPage = parseInt($('.pager').data("curr")) + 1;
+      if($('.active_page').next('.page_link').length==true){
+        goTo(goToPage);
+      }
+    }
+
+    function goTo(page,perPage){
+      var startAt = page * perPage,
+        endOn = startAt + perPage;
+
+      listElement.children().css('display','none').slice(startAt, endOn).css('display','block');
+      $('.pager').attr("curr",page);
+    }
   });
 }

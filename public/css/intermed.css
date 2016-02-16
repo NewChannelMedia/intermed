@@ -2209,16 +2209,19 @@ ol.sortable,ol.sortable ol {
 #buscadorFixed{
   background-color: #84AAC1;
   z-index: 3000;
+  width: 100%;
+  position: relative;
 }
 
 #buscadorResultado{
   margin-top: 0px;
   background-color: #EDEDED;
+  padding-top: 20px;
 }
 
 #buscadorResultado .result{
   margin-top: 0px;
-  padding-top: 5px;
+  padding-top: 15px;
   padding-bottom: 5px;
   padding-left: 20px;
   padding-right: 20px;
@@ -2769,4 +2772,13 @@ div.action-All>.glyphicon:before {
 
 hr.fc-divider.fc-widget-header{
   display: none!important;
+}
+
+#searchResult img.media-object {
+    height: 100px;
+    width: 100px;
+}
+
+#searchResult{
+  margin-top: 100px;
 }

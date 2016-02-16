@@ -485,6 +485,14 @@ $(function(){
   if($('#buscadorResultado').length>0){
     if ($('#buscadorResultado').text().replace(" ","").length<=1){
       //Cargar consulta por ajax post
+
+      var height = $('#buscadorFixed').height();
+          height += $('#mainNav').height();
+      var heightDiv = $(window).height() - height;
+
+      $('#buscadorResultado').css('height',heightDiv);
+      $('#buscadorResultado').css('overflow','scroll');
+      $('#mapSearchDiv').css('height',heightDiv);
       buscarInsMed();
     } else {
       //Busqueda hecha desde formulario post
@@ -493,120 +501,86 @@ $(function(){
   }
 });
 
+
+function geocodeAddress(geocoder, resultsMap) {
+  var address = '';
+  geocoder.geocode({'address': address}, function(results, status) {
+    if (status === google.maps.GeocoderStatus.OK) {
+      resultsMap.setCenter(results[0].geometry.location);
+      var marker = new google.maps.Marker({
+        map: resultsMap,
+        position: results[0].geometry.location
+      });
+    } else {
+      alert('Geocode was not successful for the following reason: ' + status);
+    }
+  });
+}
+
+
+
+function handleNoGeolocation(errorFlag) {
+  if (errorFlag == true) {
+    alert("Geolocation service failed.");
+    initialLocation = newyork;
+  } else {
+    alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
+    initialLocation = siberia;
+  }
+  map.setCenter(initialLocation);
+}
+
 var noScroll = false;
+var browserSupportFlag = false;
+var nuevaBusqueda = null;
+var marcadoresBusqueda = new Array();
 
 function mapSearchDiv(){
 
     var mapProp = {
         center:new google.maps.LatLng(21.94304553343818, -101.766357421875),
-        zoom: 15,
+        zoom: 4,
         draggable: true,
         scrollwheel: true,
         mapTypeId:google.maps.MapTypeId.ROADMAP
     };
-    MapaSearch=new google.maps.Map(document.getElementById("mapSearchDiv"),mapProp);
+    searchDiv =new google.maps.Map(document.getElementById("mapSearchDiv"),mapProp);
+
+    if(navigator.geolocation) {
+      browserSupportFlag = true;
+      navigator.geolocation.getCurrentPosition(function(position) {
+        searchDiv.setZoom(12);
+        initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+        searchDiv.addListener('bounds_changed', function(res){
+          //console.log('bounds_changed: ' + JSON.stringify(map.getBounds()));
+          if (nuevaBusqueda){
+            clearTimeout(nuevaBusqueda);
+          }
+          nuevaBusqueda = window.setTimeout(function() {
+            //console.log('Realizar busqueda: ' + JSON.stringify(map.getBounds()));
+
+
+            realizarBusqueda(searchDiv.getBounds());
+
+          }, 1500);
+        });
+        searchDiv.setCenter(initialLocation);
+      }, function() {
+        handleNoGeolocation(browserSupportFlag);
+      });
+    }
+    else {
+      browserSupportFlag = false;
+      handleNoGeolocation(browserSupportFlag);
+    }
+
     var height = $('#buscadorFixed').height();
     height += $('#mainNav').height();
-
-    google.maps.event.addListenerOnce(MapaSearch, 'idle', function(){
-
-      var total = 0;
-      var totallat =0; totallng = 0;
-      var maxlat =0, minlat = 0,minlng = 0, maxlng =0 ;
-      $('.direccion').each(function(){
-        var latitud = $(this).find('.latitud').text();
-        var longitud = $(this).find('.longitud').text();
-        if (maxlat === 0){
-          maxlat = latitud;
-          minlat = latitud;
-          minlng = longitud;
-          maxlng = longitud;
-        }
-        if (maxlat<latitud){
-          maxlat = latitud;
-        }
-        if (minlat>latitud){
-          minlat = latitud;
-        }
-        if (maxlng<longitud){
-          maxlng = longitud;
-        }
-        if (minlng>longitud){
-          minlng = longitud;
-        }
-        total++;
-      });
-
-      totallat = maxlat-minlat;
-      totallng = maxlng-minlng;
-      var pos = new google.maps.LatLng(totallat, totallng);
-
-      if (total===0){
-        MapaSearch.setOptions({zoom: 4});
-      } else {
-        MapaSearch.setCenter(pos);
-        $('.direccion').each(function(){
-          var id = $(this).find('.direccion_id').text();
-          var nombre = $(this).find('.nombre').text();
-          var imagen = $(this).find('.imagen').text();
-          var latitud = $(this).find('.latitud').text();
-          var longitud = $(this).find('.longitud').text();
-          var principal = $(this).find('.principal').text();
-          var direccion = $(this).find('.direccion').html();
-          var doctor = $(this).find('.doctor').text();
-          var medico_id = $(this).find('.medico_id').text();
-          var usuarioUrl = $(this).find('.usuarioUrl').text();
-          var top_dr = $(this).find('.top_dr').text();
-
-          if (latitud && longitud){
-            var pos = new google.maps.LatLng(latitud, longitud);
-
-            while (!(MapaSearch.getBounds().contains(pos))){
-              MapaSearch.setOptions({zoom: parseInt(MapaSearch.get('zoom'))-1});
-            }
-
-            var marker = new google.maps.Marker({
-                position: pos,
-                map: MapaSearch,
-                draggable: false
-            });
-
-            if (top_dr == 1){
-              marker.setIcon('img/marker.png');
-            }
-
-            var contentString = '<div style="width:50px; float:left"><center><a href="'+ base_url +usuarioUrl+'"><img src="'+imagen+'" style="width:40px;height:40px;margin-top:10px"><br/>Perfil</a></center></div><div style="float:left;margin-left:10px;"><h4>'+doctor+'</h4><h5>'+nombre+'</h5><p>'+direccion+'</p></div>';
-
-            var infowindow = new google.maps.InfoWindow({
-              content: contentString
-            });
-
-            infoWindows.push(infowindow);
-
-            marker.addListener('click', function() {
-              infoWindows.forEach(function(info){
-                info.close();
-              });
-
-              if (!noScroll) $(document).scrollTo('#medico_id_'+medico_id, 500, {offset: function() { return {top:-(height+5)}; }});
-              $('.result').removeClass('seleccionado');
-              $('#medico_id_'+medico_id).addClass('seleccionado');
-
-              MapaSearch.setCenter(pos);
-              infowindow.open(MapaSearch, marker);
-              noScroll = false;
-            });
-            markersSearch[id] = marker;
-          }
-        });
-      }
-    });
 
     $('#mainNav').removeClass('navbar-static-top');
     $('#mainNav').addClass('navbar-fixed-top');
     $( window ).resize(function() {
       $('#buscadorFixed').css('top',$('#mainNav').height()+'px');
-      $('#buscadorResultado').css('margin-top',height+'px');
     });
     $( window ).resize();
 }

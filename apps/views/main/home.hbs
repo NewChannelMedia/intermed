@@ -47,25 +47,25 @@
                 <div class="row">
                   <div class="col-md-12">
                     <div class="form-group" >
-                      <input type="text" class="form-control" id="nombreMed" name="nombreMed" placeholder="Busca a tu medico" value="{{render.nombre}} {{render.apellido}}">
+                      <input type="text" class="form-control" id="nombreMed" name="nombreMed" placeholder="Busca a tu medico">
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
-                      <select class="form-control" id="selectEstado" name="selectEstado" onChange="cargarCiudades('#selectEstado');">
-                        <option value="0">Estado</option>
-                        {{#each estado}}
-                          <option value="{{id}}">{{estado}}</option>
+                      <select class="form-control" name="selectEspecialidad">
+                        <option value="" disabled selected>Especialidad</option>
+                        {{#each especialidad}}
+                          <option value="{{id}}">{{especialidad}}</option>
                         {{/each}}
                       </select>
                     </div>
                   </div>
                   <div class="col-md-4">
                     <div class="form-group">
-                      <select class="form-control" id="selectCiudad" name="selectCiudad">
-                        <option value="0">Municipio/Ciudad</option>
-                        {{#each render.municipios}}
-                          <option value="{{id}}">{{municipio}}</option>
+                      <select class="form-control" name="selectAseguradora">
+                        <option value="" disabled selected>Aseguradora</option>
+                        {{#each aseguradora}}
+                          <option value="{{id}}">{{aseguradora}}</option>
                         {{/each}}
                       </select>
                     </div>
