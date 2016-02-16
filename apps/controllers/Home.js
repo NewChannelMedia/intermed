@@ -21,6 +21,59 @@ module.exports = {
    */
   index: function ( object, req, res ) {
     try{
+/*
+    var v = 14;
+    var va = 0;
+    var pe = 0.5;
+    var porc = 30;
+    console.log('Piramidal');
+    for (var j = 1; j <= 24; j++) {
+      var pi = va * (porc/100);
+      var i = pi * 3;
+      n = va - pi;
+      if (j>12) v = 0;
+      var vn =  Math.floor((v + i + n));
+      va = vn ;
+      console.log('Mes: ' + j + ' - ' + vn);
+    }
+    */
+/*
+    var cantidad = 14;
+    var total = 0;
+    console.log('----------------------');
+    console.log('Porcentual (25%)');
+    for (var j = 1; j <= 24; j++) {
+      total =  Math.floor((total + 14 )*1.25);
+      console.log('Mes: ' + j + ' - ' + total);
+    }
+    var total = 0;
+    console.log('----------------------');
+    console.log('Porcentual (30%)');
+    for (var j = 1; j <= 24; j++) {
+      total =  Math.floor((total + 14 )*1.3);
+      console.log('Mes: ' + j + ' - ' + total);
+    }
+    var total = 0;
+    console.log('----------------------');
+    console.log('Porcentual (50%)');
+    for (var j = 1; j <= 24; j++) {
+      total =  Math.floor((total + 14 )*1.5);
+      console.log('Mes: ' + j + ' - ' + total);
+    }
+*/
+/*
+    var ventas = 56;
+    var total = 0;
+    console.log('----------------------');
+    for (var j = 1; j <= 24; j++) {
+      //if (j > 12) ventas = 50;
+      total =  total + ventas;
+      console.log('Mes: ' + j + ' - ' + total * 1.5);
+      console.log('->P1: ' + total + ' (Ingresos: '+ (total*300) +')');
+      console.log('->P2: ' + total/2 + ' (Ingresos: '+ ((total/2)*600) +')');
+      console.log('->Ing.total: ' + ((total*300)*2));
+    }
+*/
       models.Especialidad.findAll( {
         attributes: [ 'id', 'especialidad' ]
       } ).then( function ( especialidades ) {
@@ -388,14 +441,28 @@ module.exports = {
    */
   searching: function (  object, req, res ) {
       try{
-        console.log('OBJECT: ' + JSON.stringify(object));
-        var render = {};
-        render.nombre = object.nombreMed;
-        render.especialidad = object.selectEspecialidad;
-        render.aseguradora = object.selectAseguradora;
-        res.render( 'searchMedic', {
-          render: render
-        } );
+              models.Especialidad.findOne( {
+                attributes: [ 'id', 'especialidad' ],
+                where: {
+                  id: object.selectEspecialidad
+                }
+              } ).then( function ( especialidad ) {
+                models.Aseguradora.findOne( {
+                  attributes: [ 'id', 'aseguradora' ],
+                  where: {
+                    id: object.selectAseguradora
+                  }
+                } ).then( function ( aseguradora ) {
+                  var render = {};
+                  render.nombre = object.nombreMed;
+                  render.especialidad = especialidad;
+                  render.aseguradora = aseguradora;
+                  console.log('INFO: ' + JSON.stringify(render));
+                  res.render( 'searchMedic', {
+                    render: render
+                  } );
+                });
+              });
       }catch ( err ) {
         req.errorHandler.report(err, req, res);
       }
