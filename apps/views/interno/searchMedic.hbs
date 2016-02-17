@@ -10,12 +10,31 @@
           </div>
           <div class="col-md-3">
             <div class="form-group" id="especialidadGroup">
-              <input id="inputEspecialidad" class="form-control" placeholder="Especialidad" name="inputEspecialidad">
+              <div class="form-control" placeholder="Especialidad" style="height:auto!important;padding:0px">
+                <input id="inputEspecialidad" class="form-control" placeholder="Especialidad" name="inputEspecialidad" style="border: none;">                {{#if render.especialidad}}
+                    <div class="input-group-btn" style="padding:1px;display:initial">
+                      <label class="btn-xs btn-primary" style="margin-top:2px">
+                        <span class="inputEspecialidad">{{render.especialidad.especialidad}}</span>
+                        <span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%"></span>
+                      </label>
+                    </div>
+                {{/if}}
+              </div>
             </div>
           </div>
           <div class="col-md-3">
-            <div class="form-group" id="aseguradoraGroup">
-              <input id="inputAseguradora" class="form-control" placeholder="Aseguradora" name="inputAseguradora">
+            <div class="form-group" id="especialidadGroup">
+              <div class="form-control" placeholder="Especialidad" style="height:auto!important;padding:0px">
+                <input id="inputAseguradora" class="form-control" placeholder="Aseguradora" name="inputAseguradora" style="border: none;">
+                {{#if render.aseguradora}}
+                    <div class="input-group-btn" style="padding:1px;display:initial">
+                      <label class="btn-xs btn-primary" style="margin-top:2px">
+                        <span class="inputAseguradora">{{render.aseguradora.aseguradora}}</span>
+                        <span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%"></span>
+                      </label>
+                    </div>
+                {{/if}}
+              </div>
             </div>
           </div>
         </div>
@@ -23,7 +42,7 @@
 
       <div class="col-md-1" style="padding-bottom:0px!important;margin-top:10px">
         <div class="form-group">
-          <button type="button" onclick="buscarInsMed();" class="btn btn-primary btn-md btn-block" id="btnSearch" ><span class='glyphicon glyphicon-search'></span></button>
+          <button type="button" onclick="realizarBusqueda(searchDiv.getBounds());" class="btn btn-primary btn-md btn-block" id="btnSearch" ><span class='glyphicon glyphicon-search'></span></button>
         </div>
       </div>
     </div>
@@ -33,8 +52,8 @@
 <section id="searchResult">
   <div class="container-fluid text-center">
     <div class="row" style="padding-bottom: 0px;">
-      <div id="buscadorResultado" class="Flama col-md-4"></div>
       <!-- empieza buscador -->
+      <div id="buscadorResultado" class="Flama col-md-4"></div>
       <div class="col-md-8">
         <div style="margin-left:-15px;margin-right:-15px">
           <div id="mapSearchDiv"></div>

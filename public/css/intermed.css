@@ -647,14 +647,14 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
 }
 
 .list-ubicaciones li .btn {
-  width: 35px;
-  height: 35px;
+  /*width: 35px;
+  height: 35px;*/
   padding: 2px 2px 0 0;
   text-align: center;
 }
 
 .list-ubicaciones li .btn .glyphicon {
-  font-size: 25px;
+  /*font-size: 25px;*/
   line-height: normal;
   top: 0;
   text-align: center;
@@ -2777,8 +2777,4 @@ hr.fc-divider.fc-widget-header{
 #searchResult img.media-object {
     height: 100px;
     width: 100px;
-}
-
-#searchResult{
-  margin-top: 100px;
 }

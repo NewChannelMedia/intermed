@@ -753,6 +753,7 @@ function CargarExtraBusqueda(){
     '</div>';
     $('#extraSearch').html(cont);
     autoCompleteEsp('inputEspecialidad');
+    autoCompleteAseg('inputAseguradora');
     autoCompletePad('inputPadecimiento');
     autoCompleteInst('inputInstitucion');
     autoCompleteAseg('inputAseguradora');
@@ -831,8 +832,8 @@ function InputAutoComplete(inputId, availableTags){
           if (agregar){
           $(this).parent().append(
             '<div class="input-group-btn" style="padding:1px;display:initial">'+
-              '<label class="btn-xs btn-warning" style="margin-top:2px">'+
-                '<span class="`+inputId+`">`+ ui.item.value +`</span>'+
+              '<label class="btn-xs btn-primary" style="margin-top:2px">'+
+                '<span class="'+inputId+'">'+ ui.item.value +'</span>'+
                 '<span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%" ></span>'+
               '</label>'+
             '</div>');
@@ -848,10 +849,12 @@ function InputAutoComplete(inputId, availableTags){
       });
 }
 function ajustarPantallaBusqueda(){
+  $('#buscadorResultado').css('overflow','scroll');
   var height = $('#buscadorFixed').height();
-  height += $('#mainNav').height();
-  $('#buscadorFixed').css('top',$('#mainNav').height()+'px');
-  $('#buscadorResultado').css('margin-top',height+'px');
+      height += $('#mainNav').height();
+  var heightDiv = $(window).height() - height;
+  $('#buscadorResultado').css('height',heightDiv);
+  $('#mapSearchDiv').css('height',heightDiv);
 }
 function buscarPaginador(id){
   var last_id = $('#maxNumPag').val();
@@ -1971,41 +1974,7 @@ function cargarListaColegasByAlf(usuario_id,letra,element,tipo){
     }
   } );
 }
-//<-------------- funciones para la busqueda de la pantalla searchMedic -------------->
 
-function cargarCiudades(id){
-  var idABuscar = $(id).val();// se saca el value del select de estados
-  // se hace la consulta se manda como parametro el id que se obtuvo de seleccionar el estado
-  $.post('/cargarCiudades',{id:idABuscar}, function(data){
-    var cont = '<option value="0" selected disabled>Selecciona municipio/ciudad</option>';
-    $.each(data,function(i, item){
-      cont += '<option value="'+item.id+'">'+item.municipio+'</option>';
-    });
-    $("#selectCiudad").html(cont);
-    $('#selectCiudad').removeClass('invisible');
-  });
-}
-function cargaEspecialidades(){
-  var html3 = "";
-  // trae todas las especialidades
-  html3 += '<option value="0">--Especialidad--</option>';
-  $.post('/cargaEspecialidades', function(data){
-    $.each(data, function(i, item){
-      html3 += '<option value="'+item.id+'">'+item.especialidad+'</option>';
-    });
-    $("#selectEspecialidad").html(html3);
-  });
-}
-function cargaPadecimiento(){
-  var html4 = "";
-  html4 += '<option value="0">--Padecimiento--</option>';
-  $.post('/cargaPadecimiento', function(data){
-    $.each(data, function( i, item){
-      html4 += '<option value="'+item.id+'">'+item.padecimiento+'</option>';
-    });
-    $("#selectPadecimiento").html(html4);
-  });
-}
 function searchingData(){
   var pagina = 1;
   var tipoBusqueda = $('#tipoBusqueda').val();
@@ -2043,6 +2012,8 @@ function searchingData(){
   $("#medResults").html('');
   mapSearchDiv();
 
+  autoCompleteEsp('inputEspecialidad');
+  autoCompleteAseg('inputAseguradora');
 }
 //<------------- FIN DE LAS FUNCIONES ---------------------------->
 function autoCompleteEsp(inputId){
@@ -2332,8 +2303,23 @@ function cargarEstados(divestados){
 
 function realizarBusqueda(bounds){
   bounds = JSON.parse(JSON.stringify(bounds));
+  var especialidades = [];
+  $('.inputEspecialidad').each(function(){
+    if ($(this).text() != ""){
+      especialidades.push($(this).text());
+    }
+  });
+  var aseguradoras = [];
+  $('.inputAseguradora').each(function(){
+    if ($(this).text() != ""){
+      aseguradoras.push($(this).text());
+    }
+  });
   $.post('/search/medico',{
-    bounds: bounds
+    bounds: bounds,
+    nombre: $('#nombreMed').val(),
+    especialidades: especialidades,
+    aseguradoras: aseguradoras
   },function(data){
     marcadoresBusqueda.forEach(function(mark){
       mark.exist = false;
@@ -2343,7 +2329,7 @@ function realizarBusqueda(bounds){
         `<div class="pagination pagination-large" style="display: inline-block;padding-left: 0;border-radius: 4px;text-align: right;width: 100%;font-size: 10px;margin-top: -15px;">
             <ul class="pager" style="text-align:right;margin:0px;"></ul>
         </div>`+
-        '<ul class="media-list" id="newStuff">';
+        '<ul class="media-list" id="ResultadoBusqueda" style="font-size:90%;text-align:left">';
 
     var height = $('#buscadorFixed').height();
     height += $('#mainNav').height();
@@ -2372,12 +2358,12 @@ function realizarBusqueda(bounds){
 
       var insigTopDr = '';
       if (topDr){
-        insigTopDr = '<span class="label label-topDr">Top Doctor</span>&nbsp;&nbsp;';
+        insigTopDr = '<span class="label label-topDr" style="font-size: 60%">Top Doctor</span>&nbsp;&nbsp;';
       }
       var medico_id = medico.id;
 
       contenido += `
-        <div class="media" id="medico_id_`+ medico_id +`">
+        <div class="media result" id="medico_id_`+ medico_id +`" style="margin-bottom: 15px; border-bottom: solid 1px #CACACA;padding-bottom: 15px;">
           <div class="media-left">
             <a href="` + base_url + usuarioUrl+`">
               <img class="media-object" src="`+ imagenPerfil + `" alt="">
@@ -2388,15 +2374,27 @@ function realizarBusqueda(bounds){
                 insigTopDr+
                 `<a href="`+ base_url + usuarioUrl+`">` + nombre + `</a>
               </h4>
-              <ul class="list-unstyled list-inline">
-                <li><strong>Alergólogo Pediatra</strong></li>
-                <li><strong>Dentista</strong></li>
+              <ul class="list-unstyled list-inline">`;
+
+
+
+        medico.MedicoEspecialidads.forEach(function(especialidad){
+          if (especialidad.subEsp == 0){
+            contenido += '<li><strong>'+especialidad.Especialidad.especialidad+'</strong></li>';
+          }
+        });
+
+        contenido += `
               </ul>
-              <ul class="list-unstyled list-inline">
-                <li><strong>Cirujano Endocrinólogo</strong></li>
-                <li><strong>Adicciones</strong></li>
-                <li><strong>Cirujano Pediatra</strong></li>
-              </ul>
+              <ul class="list-unstyled list-inline">`;
+
+        medico.MedicoEspecialidads.forEach(function(especialidad){
+          if (especialidad.subEsp == 1){
+            contenido += '<li>'+especialidad.Especialidad.especialidad+'</li>';
+          }
+        });
+
+        contenido += `</ul>
               <ul class="list-inline">
               </ul>
               <ul class="list-unstyled list-ubicaciones">`;
@@ -2409,7 +2407,7 @@ function realizarBusqueda(bounds){
           }
           contenido += `
             <li>
-              <a onclick="centrarEnMapa('`+ direccion.latitud +`','`+ direccion.longitud +`','1','17',true)"><button class="btn btn-warning"><span class="glyphicon glyphicon-map-marker"></span></button>&nbsp;&nbsp;<strong>`+ direccion.nombre +`</strong><small> `+ direccion.calle +` #`+ direccion.numero + direccion.numeroInt +`, `+ direccion.Municipio.municipio +`,`+ direccion.Municipio.Estado.estado +`<span class="glyphicon glyphicon-zoom-in"></span></small></a>
+              <a onclick="centrarEnMapa('`+ direccion.latitud +`','`+ direccion.longitud +`',`+ medico.id +`,'`+ direccion.id +`',true)"><button class="btn btn-warning"><span class="glyphicon glyphicon-map-marker"></span></button>&nbsp;&nbsp;<strong>`+ direccion.nombre +`</strong><small> `+ direccion.calle +` #`+ direccion.numero + direccion.numeroInt +`, `+ direccion.Municipio.municipio +`,`+ direccion.Municipio.Estado.estado +`<span class="glyphicon glyphicon-zoom-in"></span></small></a>
             </li>`;
 
           if (!marcadoresBusqueda[direccion.id]){
@@ -2442,6 +2440,7 @@ function realizarBusqueda(bounds){
             infoWindows.push(infowindow);
 
             marker.addListener('click', function() {
+              eventoBuscar = false;
               infoWindows.forEach(function(info){
                 info.close();
               });
@@ -2470,6 +2469,7 @@ function realizarBusqueda(bounds){
         contenido +=
               `</ul>
             </div>
+            <!--
             <div class="media-right">
               <ul class="list-unstyled">
                 <li>Costo de consulta:<strong> $1,230</strong></li>
@@ -2477,7 +2477,7 @@ function realizarBusqueda(bounds){
                 <li><a>Envía mensaje</a></li>
                 <li><a href="`+ base_url +usuarioUrl+`">Visita su perfíl</a></li>
               </ul>
-            </div>
+            </div>-->
           </div>`;
     });
     contenido += '</ul>';
@@ -2494,8 +2494,8 @@ function realizarBusqueda(bounds){
     //Paginador
 
 
-    var listElement = $('#newStuff');
-    var perPage = 4;
+    var listElement = $('#ResultadoBusqueda');
+    var perPage = 10;
     var numItems = listElement.children().size();
     var numPages = Math.ceil(numItems/perPage);
 

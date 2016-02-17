@@ -19,7 +19,6 @@ module.exports = function(sequelize, DataTypes) {
         Medico.hasOne(models.Hospital)
         Medico.hasOne(models.CalificacionCita)
         Medico.hasMany(models.ComentariosMedicos)
-        Medico.hasMany(models.Aseguradora)
         Medico.hasMany(models.CalificacionMedico)
         Medico.belongsToMany(models.Especialidad,  {through: models.MedicoEspecialidad})
         Medico.belongsToMany(models.Padecimiento,  {through: models.MedicoPadecimiento})
