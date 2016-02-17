@@ -849,12 +849,20 @@ function InputAutoComplete(inputId, availableTags){
       });
 }
 function ajustarPantallaBusqueda(){
-  $('#buscadorResultado').css('overflow','scroll');
-  var height = $('#buscadorFixed').height();
-      height += $('#mainNav').height();
-  var heightDiv = $(window).height() - height;
-  $('#buscadorResultado').css('height',heightDiv);
-  $('#mapSearchDiv').css('height',heightDiv);
+  var windowWidth =  $(window).width();
+
+  if (windowWidth>=992){
+    $('#buscadorResultado').css('overflow','scroll');
+    var height = $('#buscadorFixed').height();
+        height += $('#mainNav').height();
+    var heightDiv = $(window).height() - height;
+    $('#buscadorResultado').css('height',heightDiv);
+    $('#mapSearchDiv').css('height',heightDiv);
+  } else {
+    $('#buscadorResultado').css('overflow','none');
+    $('#buscadorResultado').css('height','auto');
+    $('#mapSearchDiv').css('height',"200px");
+  }
 }
 function buscarPaginador(id){
   var last_id = $('#maxNumPag').val();
