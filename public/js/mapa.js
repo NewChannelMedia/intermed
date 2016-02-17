@@ -530,7 +530,7 @@ var noScroll = false;
 var browserSupportFlag = false;
 var nuevaBusqueda = null;
 var marcadoresBusqueda = new Array();
-
+var firstTime= true;
 function mapSearchDiv(){
 
     var mapProp = {
@@ -540,7 +540,9 @@ function mapSearchDiv(){
         scrollwheel: true,
         mapTypeId:google.maps.MapTypeId.ROADMAP
     };
+    firstTime= true;
     searchDiv =new google.maps.Map(document.getElementById("mapSearchDiv"),mapProp);
+
 
     if(navigator.geolocation) {
       browserSupportFlag = true;
@@ -548,7 +550,15 @@ function mapSearchDiv(){
         searchDiv.setZoom(13);
         initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
         searchDiv.addListener('bounds_changed', function(res){
-          console.log('eventoBuscar: ' + eventoBuscar);
+          if (firstTime){
+            firstTime = false;
+            if ($(window).width()<992){
+              if ($('#buscadorResultado').css('visibility') == "visible"){
+                $('#mapSearchDiv').css('position','fixed');
+                $('#mapSearchDiv').css('visibility','hidden');
+              }
+            }
+          }
           if (eventoBuscar){
             if (nuevaBusqueda){
               clearTimeout(nuevaBusqueda);

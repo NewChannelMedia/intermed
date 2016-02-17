@@ -850,20 +850,66 @@ function InputAutoComplete(inputId, availableTags){
 }
 function ajustarPantallaBusqueda(){
   var windowWidth =  $(window).width();
+  var height = $('#buscadorFixed').height();
+      height += $('#mainNav').height();
+  var heightDiv = $(window).height() - height;
 
   if (windowWidth>=992){
     $('#buscadorResultado').css('overflow','scroll');
-    var height = $('#buscadorFixed').height();
-        height += $('#mainNav').height();
-    var heightDiv = $(window).height() - height;
     $('#buscadorResultado').css('height',heightDiv);
+
+    $('#buscadorResultado').css('visibility','visible');
+    $('#buscadorResultado').css('position','relative');
+
+    $('#buscadorFixed').css('visibility','visible');
+    $('#buscadorFixed').css('position','relative');
+
+    $('#regresarVistaBusqueda').css('display','none');
+
     $('#mapSearchDiv').css('height',heightDiv);
+    $('#mapSearchDiv').css('visibility','visible');
+    $('#mapSearchDiv').css('position','relative');
   } else {
     $('#buscadorResultado').css('overflow','none');
     $('#buscadorResultado').css('height','auto');
-    $('#mapSearchDiv').css('height',"200px");
+
+    heightDiv = $(window).height() - $('#mainNav').height();
+    $('#mapSearchDiv').css('height',heightDiv);
+    if ($('#buscadorResultado').css('visibility') == "visible"){
+      $('#regresarVistaBusqueda').css('display','none');
+      $('#mapSearchDiv').css('position','fixed');
+      $('#mapSearchDiv').css('visibility','hidden');
+    }
   }
 }
+
+function vistaBuscadorMapa(){
+  $('#regresarVistaBusqueda').css('top',$('#mainNav').height()+7);
+  $('#regresarVistaBusqueda').css('display','block');
+
+  $('#mapSearchDiv').css('visibility','visible');
+  $('#mapSearchDiv').css('position','relative');
+
+  $('#buscadorResultado').css('visibility','hidden');
+  $('#buscadorResultado').css('position','fixed');
+
+  $('#buscadorFixed').css('visibility','hidden');
+  $('#buscadorFixed').css('position','fixed');
+}
+
+function vistaBuscadorResultados(){
+  $('#regresarVistaBusqueda').css('display','none');
+
+  $('#mapSearchDiv').css('visibility','hidden');
+  $('#mapSearchDiv').css('position','fixed');
+
+  $('#buscadorResultado').css('visibility','visible');
+  $('#buscadorResultado').css('position','relative');
+
+  $('#buscadorFixed').css('visibility','visible');
+  $('#buscadorFixed').css('position','relative');
+}
+
 function buscarPaginador(id){
   var last_id = $('#maxNumPag').val();
   if (id == $('ul.pagination>li').not('.next').not('.last').last().find('a').text()){
@@ -2440,17 +2486,19 @@ function realizarBusqueda(bounds){
             }
 
             var contentString = `
-            <div style="width:50px; float:left">
-              <center>
-                <a href="`+ usuarioUrl +`"><img src="`+ medico.Usuario.urlFotoPerfil +`" style="width:40px;height:40px;margin-top:10px"><br>Perfil</a>
-              </center>
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 text-center">
+              <div class="row" style="padding-right:20px;">
+                  <a href="`+ usuarioUrl +`"><img src="`+ medico.Usuario.urlFotoPerfil +`" style="width:100%"></a>
+              </div>
             </div>
-            <div style="float:left;margin-left:10px;text-align:left;">
-              <h4>`+ nombre +`</h4>
-              <h5>`+ direccion.nombre +`</h5>
-              <p>`+ direccion.calle +` #`+ direccion.numero + direccion.numeroInt +`<br>`+
-              direccion.Municipio.municipio +`,`+ direccion.Municipio.Estado.estado + `</p>
-              </div>`;
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9" style="text-align:left;">
+              <div class="row">
+                <h4>`+ nombre +`</h4>
+                <h5>`+ direccion.nombre +`</h5>
+                <p>`+ direccion.calle +` #`+ direccion.numero + direccion.numeroInt +`<br>`+
+                direccion.Municipio.municipio +`,`+ direccion.Municipio.Estado.estado + `</p>
+              </div>
+            </div>`;
 
             var infowindow = new google.maps.InfoWindow({
               content: contentString
