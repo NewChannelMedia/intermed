@@ -916,7 +916,7 @@ function loginModal(){
           '<div class="alert alert-info hidden text-center text-uppercase" id="LoginError" role="alert"> <strong>Correo o contraseña incorrectos.</strong></div>'+
           '<div class="row footerBootbox" id="fin">'+
             '<div class="col-md-6 pull-right">'+
-              '<input type="submit" name="login" value="Ingresar" class="btn btn-success btn-lg btn-block">'+
+              '<input type="submit" name="login" value="Ingresar" class="btn btn-warning btn-lg btn-block">'+
             '</div>'+
             '<div class="col-md-6 pull-left">'+
               '<p class="text-center">'+
@@ -980,45 +980,220 @@ function registro(){
     backdrop: true,
     closeButton:true,
     className: 'Intermed-Bootbox',
-    title: '<span class="title">Intermed&reg | Registro</span>',
+    title: '<span class="title">Intermed<sup>&reg;</sup> | Registro</span>',
     message:
-      '<div id="CatRegModal">'+
-      '<form method="" action="">'+
-            '<div class="">'+
+    '<div id="CatRegModal">'+
+      '<ul class="nav nav-tabs nav-justified" role="tablist">'+
+        '<li role="presentation" class="active"><a href="#registroMedicos" aria-controls="registroMedicos" role="tab" data-toggle="tab">MEDICO</a></li>'+
+        '<li role="presentation"><a href="#registroPacientes" aria-controls="registroPacientes" role="tab" data-toggle="tab">PACIENTE</a></li>'+
+      '</ul>'+
+      '<div class="tab-content">'+
+        '<div role="tabpanel" class="tab-pane active" id="registroMedicos">'+
+          '<div id="RegMedModal" class="Flama-normal">'+
+            '<form method="POST" action="/reg/local" id="frm_regM">'+
               '<div class="row">'+
-                '<h3 class="Flama-bold">SELECCIONA</h3>'+
-                '<h1 class="Flama-normal">TU CATEGORÍA</h1>'+
-              '</div>'+
-              '<div class="row">'+
-                '<div class="col-md-10 col-md-offset-1">'+
-                  '<div class="iconos-servicios hi-icon-wrap hi-icon-effect hi-icon-effect-a" style="padding:0px;padding-bottom:15px;">'+
-                    '<div class="col-md-3 col-sm-3 col-xs-6">'+
-                      '<a href="#" id="regPac" class="hi-icon hi-icon-modal" onclick="bootbox.hideAll();regPaciente();">'+
-                        '<img class="hi-icon-img" src="img/BotonPacientes.png">'+
-                      '</a>'+
+                '<div class="col-lg-6 col-md-6 regFacebook">'+
+                  '<h3>Intermed <sup>&reg;</sup> es mejor'+
+                    '<br>con Facebook</h3>'+
+                  '<br>'+
+                  '<button name="registroFB" class="btn btn-facebook btn-block s20" onclick="window.location=\'/auth/facebook/request/M\'"><span class="icon icon-facebook2"></span> Regístrate con Facebook</button>'+
+                  '<br>'+
+                  '<h2 class="Flama-bold">¡En un solo click!</h2>'+
+                  '<p class="s20 flamaBook-normal">'+
+                    'Utiliza tu cuenta de Facebook para registrarte en Intermed y conectate con tus amigos y conocidos.'+
+                  '</p>'+
+                  '<p class="s15 flamaBook-normal">'+
+                    'Intermed no comparte tus datos con terceras personas ni compañias externas.'+
+                  '</p>'+
+                '</div>'+
+                '<div class="col-lg-6 col-md-6 regCorreo">'+
+                  '<h3>Regístrate con tu correo electrónico</h3>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12">'+
+                      '<div id="alertErrorM"></div>'+
                     '</div>'+
-                    '<div class="col-md-3 col-sm-3 col-xs-6">'+
-                      '<a href="#set-9" class="hi-icon hi-icon-modal" onclick="bootbox.hideAll(); regMedico();">'+
-                        '<img class="hi-icon-img" src="img/BotonMedicos.png">'+
-                      '</a>'+
+                    '<div class="col-md-12">'+
+                      '<div class="form-group">'+
+                        '<input type="hidden" name="tipoUsuario" value="M">'+
+                      '</div>'+
                     '</div>'+
-                    '<div class="col-md-3 col-sm-3 col-xs-6">'+
-                      '<a href="#set-9" class="hi-icon hi-icon-modal">'+
-                        '<img class="hi-icon-img" src="img/BotonInstituciones.png">'+
-                      '</a>'+
+                    '<div class="col-md-12">'+
+                      '<div class="form-group  has-feedback" id="emailGroup">'+
+                        '<input type="email" class="form-control" id="correoRegM" name="email" placeholder="Correo Electrónico" aria-describedby="correoRegMP">'+
+                        '<span id="emailIcon" class="" aria-hidden="true"></span>'+
+                        '<span class="sr-only" id="correoRegMP">(success)</span>'+
+                        '<div id="email-error"></div>'+
+                      '</div>'+
                     '</div>'+
-                    '<div class="col-md-3 col-sm-3 col-xs-6">'+
-                      '<a href="#set-9" class="hi-icon hi-icon-modal">'+
-                        '<img class="hi-icon-img" src="img/BotonProveedores.png">'+
-                      '</a>'+
+                    '<div class="col-md-12">'+
+                      '<div class="form-group  has-feedback" id="conemailGroup">'+
+                        '<input type="email" class="form-control" id="correoConfirmRegM" placeholder="Confirma tu correo Electrónico" aria-describedby="correoConfirmRegMP">'+
+                        '<span id="conemailIcon" class="" aria-hidden="true"></span>'+
+                        '<span class="sr-only" id="correoConfirmRegMP">(success)</span>'+
+                        '<div id="conFemail-error"></div>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="col-md-12">'+
+                      '<div class="form-group  has-feedback" id="passwordGroup">'+
+                        '<input type="password" class="form-control" id="contraseñaRegM" name="password" placeholder="Contraseña" pattern=".{6,13}" aria-describedby="contraseñaRegMP">'+
+                        '<span id="passwordIcon" class="" aria-hidden="true"></span>'+
+                        '<span class="sr-only" id="contraseñaRegMP">(success)</span>'+
+                        '<div id="pass-error"></div>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="col-md-12" id="confirmGroup">'+
+                      '<div class="form-group  has-feedback">'+
+                        '<input type="password" class="form-control" id="contraseña2RegM" placeholder="Confirma tu contraseña" pattern=".{6,13}" aria-describedby="contraseña2RegMP">'+
+                        '<span id="confirmIcon" class="" aria-hidden="true"></span>'+
+                        '<span class="sr-only" id="contraseña2RegMP">(success)</span>'+
+                        '<div id="conf-error"></div>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="col-md-12">'+
+                      '<input type="hidden" id="tiempo" name="tiempoStamp" value="tiempo" />'+
                     '</div>'+
                   '</div>'+
                 '</div>'+
-                '<div class="col-md-1"></div>'+
               '</div>'+
-        '</form>'+
+              '<div class="row footerBootbox">'+
+                '<div class="col-md-6">'+
+                  '<p class="s15 text-center">'+
+                    '<small>Al hacer clic en "Regístate", aceptas las <a href="">Condiciones</a> y confirmas que leíste nuestra <a href="">Política de datos</a>, incluido el <a href="">uso de cookies</a></small>.'+
+                  '</p>'+
+                '</div>'+
+                '<div class="col-md-6">'+
+                  '<input type="submit" id="regi" name="registroCorreo" value="Registrate" class="btn btn-warning btn-lg btn-block s20">'+
+                '</div>'+
+              '</div>'+
+            '</form>'+
+          '</div>'+
+        '</div>'+
+        '<div role="tabpanel" class="tab-pane" id="registroPacientes">'+
+          '<div id="RegPacModal" class="Flama-normal">'+
+            '<form method="POST" action="/reg/local" id="frm_regP">'+
+              '<div class="row">'+
+                '<div class="col-lg-6 col-md-6 regFacebook">'+
+                  '<h3>Intermed <sup>&reg;</sup> es mejor'+
+                    '<br>con Facebook</h3>'+
+                  '<br>'+
+                  '<button name="registroFB" class="btn btn-facebook btn-block s20" onclick="window.location=\'/auth/facebook/request/P\'"><span class="icon icon-facebook2"></span> Regístrate con Facebook</button>'+
+                  '<br>'+
+                  '<h2 class="Flama-bold">¡En un solo click!</h2>'+
+                  '<p class="s20 flamaBook-normal">'+
+                    'Utiliza tu cuenta de Facebook para registrarte en Intermed y conectate con tus amigos y conocidos.'+
+                  '</p>'+
+                  '<p class="s15 flamaBook-normal">'+
+                    'Intermed no comparte tus datos con terceras personas ni compañias externas.'+
+                  '</p>'+
+                '</div>'+
+                '<div class="col-lg-6 col-md-6 regCorreo">'+
+                  '<h3>Registrate con tu correo electrónico</h3>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12">'+
+                      '<div id="alertError"></div>'+
+                    '</div>'+
+                    '<div class="col-md-6">'+
+                      '<div class="form-group">'+
+                        '<input type="text" class="form-control" id="nombreReg"  name="first_name" placeholder="Nombre" required="true">'+
+                        '<span id="nameIcon" class="" aria-hidden="true"></span>'+
+                        '<div id="nombre-error"></div>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="col-md-6">'+
+                      '<div class="form-group" id="apellidoGroup">'+
+                        '<input type="text" class="form-control" id="ApellidoReg" name="last_name" placeholder="Apellido" required="true">'+
+                        '<span id="apellidoIcon" class="" aria-hidden="true"></span>'+
+                        '<div id="apellido-error"></div>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="col-md-12">'+
+                      '<div class="form-group" id="emailGroup">'+
+                        '<input type="email" class="form-control" id="correoReg" name="email" placeholder="Correo Electrónico" required="true">'+
+                        '<span id="emailIcon" class="" aria-hidden="true"></span>'+
+                        '<div id="email-error"></div>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="col-md-6">'+
+                      '<div class="form-group" id="passwordGroup">'+
+                        '<input type="password" class="form-control" id="contraseñaReg" name="password" placeholder="Contraseña" pattern=".{6,13}" required="true">'+
+                        '<span id="passwordIcon" class="" aria-hidden="true"></span>'+
+                        '<div id="pass-error"></div>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="col-md-6">'+
+                      '<div class="form-group" id="confirmGroup">'+
+                        '<input type="password" class="form-control" id="contraseña2Reg" name="password2" placeholder="Confirma tu contraseña" pattern=".{6,13}" required="true">'+
+                        '<span id="confirmIcon" class="" aria-hidden="true"></span>'+
+                        '<div id="conf-error"></div>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="col-md-3">'+
+                      '<br><h4>'+
+                        '<small>Nacimiento</small>'+
+                      '</h4>'+
+                    '</div>'+
+                    '<div class="col-md-3">'+
+                      '<div class="form-group" id="diaGroup">'+
+                        '<input type="text" class="form-control" id="diaNacReg" name="birthdayDay" placeholder="Dia" required="true">'+
+                        '<span id="diaIcon" class="" aria-hidden="true"></span>'+
+                        '<div id="dia-error"></div>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="col-md-3">'+
+                      '<div class="form-group" id="mesGroup">'+
+                        '<input type="text" class="form-control" id="mesNacReg" name="birthdayMonth" placeholder="Mes" required="true">'+
+                        '<span id="mesIcon" class="" aria-hidden="true"></span>'+
+                        '<div id="mes-error"></div>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="col-md-3">'+
+                      '<div class="form-group" id="añoGroup">'+
+                        '<input type="text" class="form-control" id="añoNacReg" name="birthdayYear" placeholder="Año" required="true">'+
+                        '<span id="añoIcon" class="" aria-hidden="true"></span>'+
+                        '<div id="año-error"></div>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="col-md-3">'+
+                      '<h4>'+
+                        '<small>Sexo</small>'+
+                      '</h4>'+
+                    '</div>'+
+                    '<div class="col-md-4">'+
+                      '<div class="radio">'+
+                        '<label>'+
+                          '<input type="radio" name="gender" id="sexM" value="M" checked required="true"> Masculino'+
+                        '</label>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="col-md-4">'+
+                      '<div class="radio">'+
+                        '<label>'+
+                          '<input type="radio" name="gender" id="sexF" value="F" required="true"> Femenino'+
+                        '</label>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="col-md-12">'+
+                      '<input type="hidden" id="tiempo" name="tiempoStamp" value="tiempo" />'+
+                      '<!-- TIMESTAMPS -->'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+              '<div class="row footerBootbox">'+
+                '<div class="col-md-6">'+
+                  '<p class="s15 text-center">'+
+                    '<small>Al hacer clic en "Regístate", aceptas las <a href="">Condiciones</a> y confirmas que leíste nuestra <a href="">Política de datos</a>, incluido el <a href="">uso de cookies</a></small>.'+
+                  '</p>'+
+                '</div>'+
+                '<div class="col-md-6">'+
+                  '<input type="submit" id="regi" name="registroCorreo" value="Registrate" class="btn btn-warning btn-lg btn-block s20">'+
+                '</div>'+
+              '</div>'+
+            '</form>'+
+          '</div>'+
+        '</div>'+
       '</div>'+
-      '<div class="footerBootbox"><br/></div>'
+    '</div>'
   });
 }
 

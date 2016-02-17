@@ -2350,6 +2350,10 @@ div.Slider{
   position: fixed;
 }
 
+.Intermed-Bootbox h1,.Intermed-Bootbox h2,.Intermed-Bootbox h3,
+.Intermed-Bootbox h4,.Intermed-Bootbox h5 {
+  margin: 5px auto!important;
+}
 
 .Intermed-Bootbox .modal-content {
   padding: 0;
@@ -2422,14 +2426,17 @@ div.Slider{
 }
 
 .Intermed-Bootbox .footerBootbox {
-  margin-right: 0;
-  margin-left: 0;
+  margin-right: 15px;
+  margin-left: 15px;
   padding-top: 10px;
   padding-right: 0;
   padding-bottom: 10px;
   padding-left: 0;
-  color: #fff;
-  background-color: #172c3b;
+  color: #333;
+  border-top: solid 1px #aaa;
+}
+.Intermed-Bootbox .footerBootbox p {
+  color: #333;
 }
 
 .Intermed-Bootbox hr {
@@ -2459,6 +2466,18 @@ div.Slider{
 
 .Intermed-Bootbox .tab-content {
   padding: 0;
+}
+
+.Intermed-Bootbox .nav-justified li {
+  display: table-cell!important;
+  width: 1%;
+}
+
+.Intermed-Bootbox .nav-justified a {
+  border-radius: 0!important;
+  color: #aaa;
+  font-weight: bold;
+  letter-spacing: 2px;
 }
 
 .modal-backdrop{
