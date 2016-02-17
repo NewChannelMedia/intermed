@@ -2622,8 +2622,6 @@ function encriptarPass(input1, input2){
 
 
 function iniciarSesionControl(inputEmail, inputPassword){
-  console.log(inputEmail);
-    console.log(inputPassword);
   var email = $('#'+inputEmail).val();
   var pass = hex_md5($('#'+inputPassword).val());
   $.ajax({

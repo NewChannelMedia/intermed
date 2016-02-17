@@ -707,7 +707,6 @@ function agregarComentarioErr(error_id, inputComentario){
   var comentario = $('#'+inputComentario).val();
   $('#'+inputComentario).val('')
   $('#'+inputComentario).focus();
-  console.log('Agregar comentario: ' + comentario);
   $.ajax({
     url: '/control/err/comentario/add',
     type: 'POST',

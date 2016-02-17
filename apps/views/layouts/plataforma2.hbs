@@ -144,8 +144,8 @@
               </div>
             </div>
             {{/ifSession}}
-            
-            {{#if "userIntermed"}}
+
+            {{#if userIntermed.nombre}}
               <div class="pull-right text-right" style="margin-right:10px;">
                 <h3 style="color:white">{{userIntermed.nombre}}</h3>
                 <a href="/logout">Cerrar sesión</a>
@@ -197,7 +197,7 @@
   <script src="js/star-rating.js"></script>
   <script src="js/jquery.table2excel.js"></script>
   <!-- scripts para conekta -->
-  <!--<script type="text/javascript" src="https://conektaapi.s3.amazonaws.com/v0.3.2/js/conekta.js"></script>
+  <script type="text/javascript" src="https://conektaapi.s3.amazonaws.com/v0.3.2/js/conekta.js"></script>
   <script src="js/conekta.js"></script>
   <script>Conekta.setPublishableKey("key_M9Ph2jxjJQSRszryszDsgTA");</script>
   <script src="js/md5encrypt.js"></script>
