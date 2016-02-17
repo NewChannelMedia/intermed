@@ -59,4 +59,8 @@ module.exports = function (object){
   app.post('/control/err/comentario/add', function (req, res){
     intermed.callController( 'control', 'errAddComment', req.body, req, res );
   });
+
+  app.post('/control/auth', function (req, res){
+    intermed.callController( 'control', 'auth', req.body, req, res );
+  });
 }

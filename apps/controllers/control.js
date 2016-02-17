@@ -11,7 +11,7 @@ var jsonfile = require('jsonfile')
 module.exports = {
   countPV: function ( object, req, res ) {
     try{
-      if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "A"){
+      if (req.session.passport && req.session.passport.userIntermed && req.session.passport.userIntermed.id > 0){
         models.Usuario.findAll({
           where:{
             tipoUsuario: 'M',
@@ -53,7 +53,7 @@ module.exports = {
 
   getPV: function ( object, req, res ) {
     try{
-      if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "A"){
+      if (req.session.passport && req.session.passport.userIntermed && req.session.passport.userIntermed.id > 0){
         models.Usuario.findAll({
           where:{
             tipoUsuario: 'M',
@@ -108,7 +108,7 @@ module.exports = {
 
   updatePV: function (object, req, res){
     try{
-      if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "A"){
+      if (req.session.passport && req.session.passport.userIntermed && req.session.passport.userIntermed.id > 0){
         models.Usuario.update({
           status: object.status
         },{
@@ -533,7 +533,7 @@ module.exports = {
           jsonfile.readFile(result.filePath, function(err, obj) {
             var jsonContent = JSON.parse(JSON.stringify(obj));
             var fecha = new Date().toISOString();
-            var usuarioIntermed_id = 1;
+            var usuarioIntermed_id = req.session.passport.userIntermed.id;
             var nuevoComentario = {
               datetime: fecha,
               usuarioIntermed_id: usuarioIntermed_id,
@@ -573,5 +573,28 @@ module.exports = {
     }catch ( err ) {
       req.errorHandler.report(err, req, res);
     }
+  },
+
+  auth: function (object, req, res){
+    console.log('object. '+JSON.stringify(object));
+    models.DBError_userIntermed.findOne({
+      where: {
+        correo: object.email,
+        pass: object.password
+      }
+    }).then(function(usuario){
+      if (usuario){
+        //Crear sesión
+        req.session.passport.userIntermed = usuario;
+        res.status(200).json({
+          success: true,
+          result: usuario
+        });
+      } else {
+        res.status(200).json({
+          success: false
+        });
+      }
+    });
   }
 }
