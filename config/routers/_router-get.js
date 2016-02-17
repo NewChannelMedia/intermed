@@ -122,6 +122,17 @@ module.exports = function (object){
     intermed.callController('CargosUsuarios', 'SuscripcionReanudarDatos', req, res);
   });
 
+  app.get('/control', function (req, res) {
+    routeLife( 'plataforma2', 'plataforma', hps );
+    if (req.session.passport && req.session.passport.userIntermed && req.session.passport.userIntermed.id>0){
+      res.render('control',{
+        userIntermed: req.session.passport.userIntermed
+      });
+    } else {
+      res.render('accesscontrol');
+    }
+  });
+
   /*RUTA CARGAR PERFIL (DEJAR SIEMPRE AL FINAL)*/
   /*Dejando al final se evita que cada que se entre al router se haga una consulta para ver si se trata de un usuario*/
   app.get( '/:usuario', function ( req, res, next) {

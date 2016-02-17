@@ -2619,3 +2619,35 @@ function encriptarPass(input1, input2){
   $('#'+input2).val(hex_md5($('#'+input2).val()));
   return true;
 }
+
+
+function iniciarSesionControl(inputEmail, inputPassword){
+  console.log(inputEmail);
+    console.log(inputPassword);
+  var email = $('#'+inputEmail).val();
+  var pass = hex_md5($('#'+inputPassword).val());
+  $.ajax({
+    async: false,
+    url: '/control/auth',
+    type: 'POST',
+    dataType: "json",
+    data:{'email':email,'password':pass},
+    cache: false,
+    success: function ( data ) {
+        if (data.success){
+          location.reload();
+        } else {
+          $('#LoginError').removeClass('hidden');
+          setTimeout(function(){
+            $('#LoginError').addClass('hidden');
+          },3000);
+        }
+      return false;
+    },
+    error: function(err){
+      console.log('AJAX error: ' + JSON.stringify(err));
+      return false;
+    }
+  });
+  return false;
+}

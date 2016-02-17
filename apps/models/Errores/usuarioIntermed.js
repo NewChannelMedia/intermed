@@ -3,7 +3,9 @@
 module.exports = function (sequelize, DataTypes) {
     var DBError_userIntermed = sequelize.define("DBError_userIntermed", {
         id: { type: DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
-        nombre: { type: DataTypes.STRING}
+        nombre: { type: DataTypes.STRING},
+        correo: { type: DataTypes.STRING},
+        pass: { type: DataTypes.STRING}
     }, {
       classMethods: {
         associate: function(models) {
