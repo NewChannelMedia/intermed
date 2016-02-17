@@ -2431,7 +2431,18 @@ function realizarBusqueda(bounds){
               });
             }
 
-            var contentString = '<div id="row"><div class="col-md-3"><img style="width:100%" src=\''+ medico.Usuario.urlFotoPerfil +'\'></div><div class="col-md-9"></div>'+ direccion.nombre +'</div>';
+            var contentString = `
+            <div style="width:50px; float:left">
+              <center>
+                <a href="`+ usuarioUrl +`"><img src="`+ medico.Usuario.urlFotoPerfil +`" style="width:40px;height:40px;margin-top:10px"><br>Perfil</a>
+              </center>
+            </div>
+            <div style="float:left;margin-left:10px;text-align:left;">
+              <h4>`+ nombre +`</h4>
+              <h5>`+ direccion.nombre +`</h5>
+              <p>`+ direccion.calle +` #`+ direccion.numero + direccion.numeroInt +`<br>`+
+              direccion.Municipio.municipio +`,`+ direccion.Municipio.Estado.estado + `</p>
+              </div>`;
 
             var infowindow = new google.maps.InfoWindow({
               content: contentString
