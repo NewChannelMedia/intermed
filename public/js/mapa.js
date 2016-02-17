@@ -545,7 +545,7 @@ function mapSearchDiv(){
     if(navigator.geolocation) {
       browserSupportFlag = true;
       navigator.geolocation.getCurrentPosition(function(position) {
-        searchDiv.setZoom(12);
+        searchDiv.setZoom(13);
         initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
         searchDiv.addListener('bounds_changed', function(res){
           console.log('eventoBuscar: ' + eventoBuscar);

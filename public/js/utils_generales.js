@@ -2481,6 +2481,10 @@ function realizarBusqueda(bounds){
           </div>`;
     });
     contenido += '</ul>';
+
+    contenido += `<div class="pagination pagination-large" style="display: inline-block;padding-left: 0;border-radius: 4px;text-align: right;width: 100%;font-size: 10px;margin-top: -15px;">
+        <ul class="pager" style="text-align:right;margin:0px;"></ul>
+    </div>`;
     $("#buscadorResultado").html(contenido);
 
     marcadoresBusqueda.forEach(function(mark){
@@ -2502,9 +2506,11 @@ function realizarBusqueda(bounds){
     $('.pager').data("curr",0);
 
     var curr = 0;
-    while(numPages > curr){
-      $('<li><a href="#" class="page_link" style="border: none;background: none;width: auto;padding: 3px;">'+(curr+1)+'</a></li>').appendTo('.pager');
-      curr++;
+    if (numPages > 1){
+      while(numPages > curr){
+        $('<li><a href="#" class="page_link" style="border: none;background: none;width: auto;padding: 3px;">'+(curr+1)+'</a></li>').appendTo('.pager');
+        curr++;
+      }
     }
 
     $('.pager .page_link:first').addClass('active');
