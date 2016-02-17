@@ -2390,7 +2390,7 @@ function agregarDestRecom(){
 
 function iniciarSesionLocal(inputEmail, inputPassword){
   var email = $('#'+inputEmail).val();
-  var pass = $('#'+inputPassword).val();
+  var pass = hex_md5($('#'+inputPassword).val());
   $.ajax({
     async: false,
     url: '/auth/correo',
@@ -2439,4 +2439,10 @@ function cargarEstados(divestados){
         console.log('ERROR: ' + JSON.stringify(err));
       }
   });
+}
+
+function encriptarPass(input1, input2){
+  $('#'+input1).val(hex_md5($('#'+input1).val()));
+  $('#'+input2).val(hex_md5($('#'+input2).val()));
+  return true;
 }
