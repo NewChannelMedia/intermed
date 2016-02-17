@@ -18,14 +18,13 @@ module.exports = function (object){
   //Buscador de médicos
   app.get( '/buscar', function ( req, res ) {
     routeLife( 'plataforma2', 'interno', hps );
-    intermed.callController( 'Home', 'vacio', '', req, res );
+    intermed.callController( 'Home', 'buscar', '', req, res );
   } );
 
   //Buscador de médicos (enviando por post el filtro de busqueda)
   app.post( '/buscar', function ( req, res ) {
     routeLife( 'plataforma2', 'interno', hps );
-    var busqueda = JSON.parse( JSON.stringify( req.body ) );
-    intermed.callController( 'Home', 'searching', busqueda, req, res );
+    intermed.callController( 'Home', 'searching', req.body, req, res );
   } );
 
   //Cerrar sesion

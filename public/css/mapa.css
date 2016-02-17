@@ -12,16 +12,6 @@
   float:right;
 }
 
-#buscadorFixed{
-  width: 100%;
-  position: fixed;
-  top: 100px;
-}
-
-#buscadorResultado{
-  margin-top: 470px;
-}
-
 #searchbox{
   height: 100px!important;
 }

@@ -7,18 +7,13 @@ module.exports = function ( sequelize, DataTypes ) {
       autoIncrement: true,
       primaryKey: true
     },
-    nombre: {
+    aseguradora: {
       type: DataTypes.STRING,
-      allowNull: false
-    },
-    medico_id: {
-      type: DataTypes.BIGINT,
       allowNull: false
     }
   }, {
     classMethods: {
       associate: function ( models ) {
-        Aseguradora.belongsTo( models.Medico )
       }
     },
     timestamps: false,
