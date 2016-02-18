@@ -43,4 +43,12 @@ module.exports = function (object){
     intermed.callController( 'CargosUsuarios', 'SuscripcionReanudar', req.body, req, res );
   } );
 
+  app.post('/plandecargo/intervalo/get', function (req, res){
+    intermed.callController( 'PlanDeCargo', 'getIntervalo', req.body, req, res );
+  });
+
+  app.post('/plandecargo/getAll', function (req, res){
+    intermed.callController( 'PlanDeCargo', 'getAll', req.body, req, res );
+  });
+
 }

@@ -739,3 +739,215 @@ function agregarComentarioErr(error_id, inputComentario){
   });
   return false;
 }
+
+function registrarplancargo(){
+  $.ajax({
+    url: '/registrarplancargo',
+    type: 'POST',
+    dataType: "json",
+    data: {
+      idPlan: $('#plan_id').val(),
+      intervalocargo_id: $('#intervalocargo_id').val(),
+      nombre: $('#nombrePlan').val(),
+      frecuencia: $('#frecuenciaPlan').val(),
+      monto: $('#montoPlan').val(),
+      periodoprueba: $('#periodoprueba').val()
+    },
+    cache: false,
+    async: false,
+    type: 'POST',
+    success: function( data ) {
+      if (data.success){
+        if (data.success && data.result){
+          resetFormPlan();
+          /*
+          data.result: {
+            "id":35,
+            "nombre":"Cinthia Bermudez",
+            "monto":30,
+            "intervalocargo_id":2,
+            "frecuencia":"3",
+            "periodoprueba":"0",
+            "idproveedor":"plan_EaTYxA6CDvCqn5Fw"
+          }
+          */
+          cargarPlanesDeCargo();
+
+          //Agregar nuevo plan en panel-group, limpiar el formulario para agregar otro
+          //console.log('RESULT: ' + JSON.stringify(data.result));
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      } else {
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    }
+  });
+  return false;
+}
+
+
+var intervalosCargos = [];
+function cargarPlanCarg(){
+  var contenido = `<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+  <div class="panel panel-primary"><div class="panel-heading">
+    Nuevo plan de cargo
+  </div>
+  <div class="panel-body" style="height: auto;">
+  <div class="row">
+  <form method="POST" id="plancargo" name="plancargo" onsubmit="return registrarplancargo()">
+      <input type="hidden" size="20" id="plan_id" name="plan_id" class="form-control">
+      <div class="col-md-12">
+        <div class="form-group">
+          <input type="text" size="20" id="nombrePlan" name="nombre" required class="form-control" placeholder="Nombre de plan">
+        </div>
+      </div>
+      <div class="col-md-7">
+        <div class="form-group">
+          <select name="intervalocargo_id" id="intervalocargo_id" required="required" class="form-control no-editable">
+          </select>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="form-group">
+          <input type="number" min="0" max="36"  id="frecuenciaPlan" name="frecuencia" required placeholder="Frecuencia" class="form-control no-editable">
+        </div>
+      </div>
+      <div class="col-md-7">
+        <div class="form-group">
+          <input type="number" min="0" max="10000" id="montoPlan" name="monto" required placeholder="Monto"  class="form-control">
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="form-group">
+          <input type="number" min="0" max="365" id="periodoprueba" name="periodoprueba" required placeholder="Dias de prueba" class="form-control no-editable">
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group">
+          <button type="submit" id="enviar" name="enviar" class="btn btn-primary btn-block">Registrar</button>
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group">
+          <button type="button" class="btn btn-danger btn-block hidden" onclick="resetFormPlan()">Cancelar</button>
+        </div>
+      </div>
+
+  </form>
+  </div>
+  </div></div></div>`;
+
+
+  contenido += `<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 panel-group" id="planCargoGroup"></div>`;
+
+  $('#pageAdminContent').html(contenido);
+  intervalosCargos = [];
+  $.ajax({
+    url: '/plandecargo/intervalo/get',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    async: false,
+    type: 'POST',
+    success: function( data ) {
+      var opcionesIntervalo = '';
+      if (data.success){
+        opcionesIntervalo +='<option value="" selected disabled>Intervalo</option>';
+        data.result.forEach(function(int){
+            intervalosCargos[int.id] = int.nombre;
+            opcionesIntervalo +='<option value="'+ int.id +'">'+ int.nombre +'</option>';
+        });
+      } else {
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+      $('#intervalocargo_id').html(opcionesIntervalo);
+    },
+    error: function( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    }
+  });
+  cargarPlanesDeCargo();
+
+}
+
+function cargarPlanesDeCargo(){
+    $.ajax({
+      url: '/plandecargo/getAll',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      type: 'POST',
+      success: function( data ) {
+        var contenido = '';
+        if (data.success){
+          data.result.forEach(function(plan){
+            contenido += '<div class="panel panel-info" id="plan_'+ plan.id +'"><div class="panel-heading nombre">'+ plan.nombre +'</div>'+
+            '<div class="panel-body" style="height: auto;">'+
+              '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Intervalo:</div><span class="hidden intervalo_id">'+ plan.intervalocargo_id +'</span><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right intervalo">'+ intervalosCargos[plan.intervalocargo_id] +'</div></div><hr style="margin-top: 0px;margin-bottom: 5px;">'+
+              '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Frecuencia:</div><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right frecuencia">'+ plan.frecuencia +'</div></div><hr style="margin-top: 0px;margin-bottom: 5px;">'+
+              '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Monto:</div><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right monto">'+ plan.monto +'</div></div><hr style="margin-top: 0px;margin-bottom: 5px;">'+
+              '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Dias de prueba:</div><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right periodoprueba">'+ plan.periodoprueba +'</div></div>'+
+            '</div>'+
+            '<div class="panel-footer">'+
+              '<div class="row">'+
+              '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">'+
+                '<button class="btn btn-warning btn-block" onclick="editarPlanDeCargo('+ plan.id +')">Editar</button>'+
+              '</div>'+
+              '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">'+
+                '<button class="btn btn-danger btn-block" onclick="eliminarPlanDeCargo('+ plan.id +')">Eliminar</button>'+
+              '</div>'+
+            '</div>'+
+            '</div>'+
+            '</div>';
+          });
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+        $('#planCargoGroup').html(contenido);
+      },
+      error: function( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: (registro 166) : ' + err );
+      }
+    });
+}
+
+function editarPlanDeCargo(plan_id){
+  var plan = $('#plan_'+plan_id);
+  $('#plan_id').val(plan_id);
+  $('#intervalocargo_id').val(plan.find('.intervalo_id').text())
+  $('#nombrePlan').val(plan.find('.nombre').text())
+  $('#frecuenciaPlan').val(plan.find('.frecuencia').text())
+  $('#montoPlan').val(plan.find('.monto').text())
+  $('#periodoprueba').val(plan.find('.periodoprueba').text())
+  $('#plancargo').find('.btn-primary').text('Guardar');
+  $('#plancargo').find('.btn-danger').removeClass('hidden');
+  $('#plancargo').find('.no-editable').each(function(){
+    $(this).attr('disabled',true);
+  })
+}
+
+function eliminarPlanDeCargo(plan_id){
+
+}
+
+function resetFormPlan(){
+  document.getElementById("plancargo").reset();
+  $('#plan_id').val('');
+  $('#plancargo').find('.no-editable').each(function(){
+    $(this).attr('disabled',false);
+  })
+  $('#plancargo').find('.btn-primary').text('Registrar');
+  $('#plancargo').find('.btn-danger').addClass('hidden');
+}

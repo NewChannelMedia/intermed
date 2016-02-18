@@ -12,14 +12,14 @@ exports.PlanCargoDatosRegistro = function (object, req, res) {
         attributes: ['id', 'nombre']
     })
     .then(function (intervalo) {
-        
+
         if (req.query.planId) {
             models.PlanDeCargo.findOne({
                 where: {
                     id: req.query.planId
                 }
             }).then(function (plan) {
-                
+
                 res.render('plandecargo', {
                     title: 'Plan de cargo',
                     plan: plan,
@@ -39,25 +39,27 @@ exports.PlanCargoDatosRegistro = function (object, req, res) {
     });
 }
 
-//Planes son plantillas que te permiten crear suscripciones. 
+//Planes son plantillas que te permiten crear suscripciones.
 //Dentro del plan se define la cantidad y frecuencia con el cual se generaran los cobros recurrentes a los usuarios
 exports.PlanCargoRegistrar = function (object, req, res) {
     models.IntervaloCargo.findOne({
         where: { id: object.intervalocargo_id }
     }).then(function (intervalo) {
-        if (object.idPlan == 0) {
+        if (!object.idPlan) {
             PlanCargoCrear(res, object, intervalo.id, intervalo.descripcion);
         } else {
             PlanCargoActualizar(res, object, intervalo.id, intervalo.descripcion);
         }
     }).catch(function (err) {
-        console.log('error al obtener el id del intervalo cargo');
-        console.log(err);
+      res.status(200).json({
+        success: false,
+        err: err
+      });
     });
 }
 
 function PlanCargoCrear(res, object, intervaloId, intervaloDescripcion) {
-    //registrar plan en conecta        
+    //registrar plan en conecta
     conekta.Plan.create({
         //"id": plan.idpublico,
         "name": object.nombre,
@@ -77,17 +79,27 @@ function PlanCargoCrear(res, object, intervaloId, intervaloDescripcion) {
                 idproveedor: planconekta.toObject().id
             }).then(function (plan) {
                 if (plan) {
-                    res.render('registrado', {
-                        title: 'Plan registrado'
-                    });
+                  res.status(200).json({
+                    success: true,
+                    result: plan
+                  });
+                } else {
+                  res.status(200).json({
+                    success: false,
+                    err: 'Error al crear el plan'
+                  });
                 }
             }).catch(function (err) {
-                console.log(err);
-                console.log('error al actualizar plan');
+                res.status(200).json({
+                  success: false,
+                  err: 'Error al crear el plan(catch)'
+                });
             });
         } else {
-            console.log('error');
-            console.log(err);
+          res.status(200).json({
+            success: false,
+            err: 'Error al crear el plan conekta'
+          });
         }
     });
 }
@@ -106,12 +118,11 @@ function PlanCargoActualizar(res, object, intervaloId, intervaloDescripcion) {
         }
     }
     ).then(function (datos) {
-        console.log(datos);
         models.PlanDeCargo.findOne({
             where: { id: object.idPlan },
             attributes: ['idproveedor']
         }).then(function (plan) {
-            //actualizar plan en conekta        
+            //actualizar plan en conekta
             conekta.Plan.find(plan.idproveedor, function (err, plan) {
                 if (err) {
                     console.log(err);
@@ -128,9 +139,10 @@ function PlanCargoActualizar(res, object, intervaloId, intervaloDescripcion) {
                         if (err) {
                             console.log(err);
                         } else {
-                            res.render('registrado', {
-                                title: 'Plan actualizado'
-                            });
+                          res.status(200).json({
+                            success: true,
+                            result: plan
+                          });
                         }
                     })
                 }
@@ -164,6 +176,32 @@ exports.PlanCargoEliminar = function (object, req, res) {
                 })
             }
         });
+    }).catch(function (err) {
+        console.log(err);
+    });
+}
+
+exports.getIntervalo = function (object, req, res){
+    models.IntervaloCargo.findAll().then(function (intervalos) {
+      res.status(200).json({
+        success: true,
+        result: intervalos
+      });
+    }).catch(function (err) {
+        console.log(err);
+    });
+}
+
+exports.getAll = function (object, req, res){
+    models.PlanDeCargo.findAll({
+      inlude: [{
+        model: models.IntervaloCargo
+      }]
+    }).then(function(planes){
+      res.status(200).json({
+        success: true,
+        result: planes
+      });
     }).catch(function (err) {
         console.log(err);
     });
