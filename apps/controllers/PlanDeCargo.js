@@ -159,25 +159,38 @@ function PlanCargoActualizar(res, object, intervaloId, intervaloDescripcion) {
 
 //EliminarPlan
 exports.PlanCargoEliminar = function (object, req, res) {
-    models.IntervaloCargo.destroy({
-        where: { id: object.idPlanEliminar }
-    }).then(function () {
-        console.log('eliminar c');
-        conekta.Plan.find(object.nombre.replace(' ', '') + '_' + object.id, function (err, plan) {
+    models.PlanDeCargo.findOne({
+        where: { id: object.plan_id }
+    }).then(function (planbd) {
+        conekta.Plan.find(planbd.idproveedor, function (err, plan) {
             if (err) {
-                console.log(err);
+              if (err.http_code == 404){
+                //Eliminar plan de bd
+                planbd.destroy();
+              }
+              res.status(200).json({
+                success: true,
+                result: err
+              });
             } else {
-                plan.delete(function (err, res) {
+                plan.delete(function (err, result) {
                     if (err) {
-                        console.log(err);
+                      res.status(200).json({
+                        success: false,
+                        result: err
+                      });
                     } else {
-                        console.log(res);
+                      planbd.destroy();
+                      res.status(200).json({
+                        success: true,
+                        result: result
+                      });
                     }
                 })
             }
         });
     }).catch(function (err) {
-        console.log(err);
+        console.log('ERROR: ' + err);
     });
 }
 
@@ -204,5 +217,78 @@ exports.getAll = function (object, req, res){
       });
     }).catch(function (err) {
         console.log(err);
+    });
+}
+
+exports.DeleteCondCheck = function (object, req, res){
+    models.UsuarioCargo.findAll({
+      where: {
+        planDeCargo_id: object.plan_id
+      }
+    }).then(function(usuarios){
+      if (usuarios.length>0){
+        res.status(200).json({
+          success: false,
+          result: usuarios.length
+        });
+      } else {
+        res.status(200).json({
+          success: true
+        });
+      }
+    });
+}
+
+exports.reemplazarPlan = function (object, req, res){
+    models.PlanDeCargo.findOne({
+      where: {
+        id: parseInt(object.nuevoPlan_id)
+      }
+    }).then(function(PlanNuevo){
+      console.log('Plan nuevo: ' + JSON.stringify(PlanNuevo));
+      models.UsuarioCargo.findAll({
+        where: {
+          planDeCargo_id: object.plan_id
+        }
+      }).then(function(usuarios){
+        var totalUsuarios = 0;
+        if(usuarios.length>0){
+          usuarios.forEach(function(usuario){
+            conekta.Customer.find(usuario.idUsuarioProveedor, function (err, customer) {
+              if (err){
+                res.status(200).json({
+                  success: false,
+                  result: err
+                });
+              } else {
+                customer.subscription.update({"plan_id":PlanNuevo.idproveedor}, function(err, result){
+                  if (err){
+                    res.status(200).json({
+                      success: false,
+                      line: 269,
+                      result: err
+                    });
+                  } else {
+                    usuario.update({
+                      planDeCargo_id: object.nuevoPlan_id
+                    }).then(function(){
+                      totalUsuarios++;
+                      if (totalUsuarios == usuarios.length){
+                        res.status(200).json({
+                          success: true
+                        });
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          })
+        } else {
+          res.status(200).json({
+            success: true
+          });
+        }
+      });
     });
 }

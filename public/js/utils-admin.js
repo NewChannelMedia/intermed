@@ -190,8 +190,14 @@ function cargarTipoCodigo(){
 		type: 'POST',
 		success: function( data ) {
       if (data.success){
+        var resultautocomplete = [];
         data.result.forEach(function(res){
-          $('#tipo_codigo_id').append('<option value="'+ res.id +'">'+ res.tipo +'</option>')
+          resultautocomplete.push(res.tipo);
+          //$('#tipo_codigo_id').append('<option value="'+ res.id +'">'+ res.tipo +'</option>')
+        });
+        $('#tipo_codigo_id').autocomplete({
+          minLength: 0,
+          source: resultautocomplete
         });
       }
     },
@@ -236,6 +242,7 @@ function generarCodigosEnc(){
     },
 		success: function( data ) {
       if (data.success){
+        cargarTipoCodigo();
         var contenido = '';
         var tipoPlan = $("#tipo_plan_id option:selected").text();
         var tipoCodigo = $("#tipo_codigo_id option:selected").text();
@@ -267,9 +274,7 @@ function cargarGenC(){
         '<label for="">Tipo código: </label>'+
       '</div>'+
       '<div class="col-lg-4 col-md-4 text-right">'+
-        '<select id="tipo_codigo_id" class="form-control" required>'+
-          '<option value="" selected disabled>Selecciona un tipo de código</option>'+
-        '</select>'+
+        '<input type="text" id="tipo_codigo_id" class="form-control" required>'+
       '</div>'+
     '</div>'+
 
@@ -800,7 +805,7 @@ function cargarPlanCarg(){
   <div class="panel panel-primary"><div class="panel-heading">
     Nuevo plan de cargo
   </div>
-  <div class="panel-body" style="height: auto;">
+  <div class="panel-body" style="height: auto;padding-bottom: 0px;">
   <div class="row">
   <form method="POST" id="plancargo" name="plancargo" onsubmit="return registrarplancargo()">
       <input type="hidden" size="20" id="plan_id" name="plan_id" class="form-control">
@@ -835,9 +840,9 @@ function cargarPlanCarg(){
           <button type="submit" id="enviar" name="enviar" class="btn btn-primary btn-block">Registrar</button>
         </div>
       </div>
-      <div class="col-md-12">
+      <div class="col-md-12 div-remove hidden">
         <div class="form-group">
-          <button type="button" class="btn btn-danger btn-block hidden" onclick="resetFormPlan()">Cancelar</button>
+          <button type="button" class="btn btn-danger btn-block" onclick="resetFormPlan()">Cancelar</button>
         </div>
       </div>
 
@@ -891,8 +896,9 @@ function cargarPlanesDeCargo(){
         var contenido = '';
         if (data.success){
           data.result.forEach(function(plan){
-            contenido += '<div class="panel panel-info" id="plan_'+ plan.id +'"><div class="panel-heading nombre">'+ plan.nombre +'</div>'+
+            contenido += '<div class="panel panel-info planCargo" id="plan_'+ plan.id +'"><div class="panel-heading nombre">'+ plan.nombre +'</div>'+
             '<div class="panel-body" style="height: auto;">'+
+              '<span class="hidden idCargo">'+ plan.id +'</span>'+
               '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Intervalo:</div><span class="hidden intervalo_id">'+ plan.intervalocargo_id +'</span><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right intervalo">'+ intervalosCargos[plan.intervalocargo_id] +'</div></div><hr style="margin-top: 0px;margin-bottom: 5px;">'+
               '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Frecuencia:</div><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right frecuencia">'+ plan.frecuencia +'</div></div><hr style="margin-top: 0px;margin-bottom: 5px;">'+
               '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Monto:</div><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right monto">'+ plan.monto +'</div></div><hr style="margin-top: 0px;margin-bottom: 5px;">'+
@@ -904,7 +910,7 @@ function cargarPlanesDeCargo(){
                 '<button class="btn btn-warning btn-block" onclick="editarPlanDeCargo('+ plan.id +')">Editar</button>'+
               '</div>'+
               '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">'+
-                '<button class="btn btn-danger btn-block" onclick="eliminarPlanDeCargo('+ plan.id +')">Eliminar</button>'+
+                '<button class="btn btn-danger btn-block" onclick="CondEliminarPlanDeCargo('+ plan.id +')">Eliminar</button>'+
               '</div>'+
             '</div>'+
             '</div>'+
@@ -932,14 +938,156 @@ function editarPlanDeCargo(plan_id){
   $('#montoPlan').val(plan.find('.monto').text())
   $('#periodoprueba').val(plan.find('.periodoprueba').text())
   $('#plancargo').find('.btn-primary').text('Guardar');
-  $('#plancargo').find('.btn-danger').removeClass('hidden');
+  $('#plancargo').find('.div-remove').removeClass('hidden');
   $('#plancargo').find('.no-editable').each(function(){
     $(this).attr('disabled',true);
   })
 }
 
-function eliminarPlanDeCargo(plan_id){
+function CondEliminarPlanDeCargo(plan_id){
+  $.ajax({
+    url: '/plandecargo/delete/cond',
+    type: 'POST',
+    dataType: "json",
+    data: {
+      plan_id: plan_id
+    },
+    cache: false,
+    type: 'POST',
+    success: function( data ) {
+      var contenido = '';
+      if (data.success){
+          //Modal para confirmar eliminar plan
+          bootbox.dialog({
+            onEscape: function () {
+              bootbox.hideAll();
+          },
+          className: 'Intermed-Bootbox',
+          title: '<span class="title">Eliminar plan de cargo</span>',
+          backdrop: true,
+          message:
+            '<div class="row">'+
+                '<div class="col-md-12 text-center" style="padding:30px;font-size:120%">'+
+                  '¿Está seguro de eliminar el plan de cargo \'' + $('#plan_'+plan_id).find('.nombre').text() + '\'?'+
+                '</div>'+
+            '</div>'+
 
+            '<div class="row footerBootbox" style="padding-top:20px;padding-bottom:20px">'+
+              '<div class="col-md-4 pull-right">'+
+                  '<button class="btn btn-success btn-block" onclick="eliminarPlanDeCargo('+ plan_id +')">Eliminar</button>'+
+              '</div>'+
+              '<div class="col-md-4 pull-left">'+
+                  '<button class="btn btn-danger btn-block" onclick="bootbox.hideAll()">Cancelar</button>'+
+              '</div>'+
+            '</div>'
+          });
+      } else {
+        if (data.result>0){
+          //Modal para cambiar de plan a usuarios o cancelar
+          var opcionesPlanCargo = '<option value="" selected disabled>Selecciona un plan</option>';
+          $('.planCargo').each(function(){
+            var id = $(this).find('.idCargo').text();
+            if (plan_id != id){
+              var nombre = $(this).find('.nombre').text();
+              opcionesPlanCargo += '<option value="'+ id +'">'+nombre+'</option>';
+            }
+          });
+          bootbox.dialog({
+            onEscape: function () {
+              bootbox.hideAll();
+          },
+          className: 'Intermed-Bootbox',
+          title: '<span class="title">Eliminar plan de cargo</span>',
+          backdrop: true,
+          message:
+            '<div class="row">'+
+                '<div class="col-md-12 text-center" style="padding:20px;font-size:120%">'+
+                  'El plan \''+$('#plan_'+plan_id).find('.nombre').text()+'\' tiene usuarios suscritos. <br/>Para poder eliminarlo es necesario seleccionar un plan que lo reemplace: ' +
+                '</div>'+
+                '<div class="col-md-8 col-md-offset-2 text-center" style="padding-bottom:20px;font-size:120%">'+
+                  '<select class="form-control" id="nuevoPlan_id" required>'+ opcionesPlanCargo +'</select>' +
+                '</div>'+
+            '</div>'+
+
+            '<div class="row footerBootbox" style="padding-top:20px;padding-bottom:20px">'+
+              '<div class="col-md-4 pull-right">'+
+                  '<button class="btn btn-success btn-block" onclick="reemplazarPlanDeCargo('+ plan_id +',\'nuevoPlan_id\')">Eliminar</button>'+
+              '</div>'+
+              '<div class="col-md-4 pull-left">'+
+                  '<button type="button" class="btn btn-danger btn-block" onclick="bootbox.hideAll()">Cancelar</button>'+
+              '</div>'+
+            '</div>'
+          });
+        }
+        else if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    }
+  });
+}
+
+function reemplazarPlanDeCargo(plan_id, nuevoPlan_id){
+  var nuevoplan = $('#'+nuevoPlan_id).val();
+  if (nuevoplan && nuevoplan > 0){
+    console.log(plan_id + ' - ' + $('#'+nuevoPlan_id).val());
+    $.ajax({
+      url: '/plandecargo/reemplazar',
+      type: 'POST',
+      dataType: "json",
+      data: {
+        plan_id: plan_id,
+        nuevoPlan_id: nuevoplan
+      },
+      cache: false,
+      type: 'POST',
+      success: function( data ) {
+        console.log('Result: ' + JSON.stringify(data));
+        if (data.success){
+          eliminarPlanDeCargo(plan_id);
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      },
+      error: function( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: (registro 166) : ' + err );
+      }
+    });
+  } else {
+    $('#'+nuevoPlan_id).focus();
+  }
+}
+
+function eliminarPlanDeCargo(plan_id){
+    $.ajax({
+      url: '/plandecargo/delete',
+      type: 'POST',
+      dataType: "json",
+      data: {
+        plan_id: plan_id
+      },
+      cache: false,
+      type: 'POST',
+      success: function( data ) {
+        if (data.success){
+          bootbox.hideAll();
+          resetFormPlan();
+          cargarPlanesDeCargo();
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      },
+      error: function( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: (registro 166) : ' + err );
+      }
+    });
 }
 
 function resetFormPlan(){
@@ -949,5 +1097,5 @@ function resetFormPlan(){
     $(this).attr('disabled',false);
   })
   $('#plancargo').find('.btn-primary').text('Registrar');
-  $('#plancargo').find('.btn-danger').addClass('hidden');
+  $('#plancargo').find('.div-remove').addClass('hidden');
 }

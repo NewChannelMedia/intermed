@@ -185,53 +185,24 @@ module.exports = {
 
   encCodCreate: function (object, req, res){
     try{
-      var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
-
-      var total = parseInt(object.cantidad);
-
-      var existentes = [];
-      var creados = [];
-      var totalCreados = 0;
-
-      models.DBEncuesta_encuesta.findAll({
-        attributes: ['codigo']
-      }).then(function(codigos){
-        for (var i = 1; i <= total; i++) {
-          var str = '';
-          var existe = true;
-          while(existe){
-            for( var j=0; j < 6; j++ ){
-              str += possible.charAt(Math.floor(Math.random() * possible.length));
-            }
-            existe = false;
-            codigos.forEach(function(codigo){
-              if (codigo.codigo == str){
-                existe = true;
-              }
-            });
-            if (!existe){
-              //Agregar a lista de codigos temporal
-              codigos.push({
-                'codigo': str
-              });
-              models.DBEncuesta_encuesta.create({
-                codigo: str,
-                tipoCodigo: object.tipoCodigo,
-                tipoPlan: object.tipoPlan
-              }).then(function(creado){
-                creados.push(JSON.parse(JSON.stringify(creado)));
-                totalCreados++;
-                if (totalCreados == total){
-                  res.status(200).json({
-                    success: true,
-                    result: creados
-                  });
-                }
-              });
-            }
-          }
+      models.DBEncuesta_tipoEncuesta.findOne({
+        where: {
+          tipo: object.tipoCodigo
+        }
+      }).then(function(tipoEncuesta){
+        if (tipoEncuesta){
+          object.tipoCodigo = tipoEncuesta.id;
+          crearCodigos(object, req, res);
+        } else {
+          models.DBEncuesta_tipoEncuesta.create({
+            tipo: object.tipoCodigo
+          }).then(function(tipoEncuesta){
+            object.tipoCodigo = tipoEncuesta.id;
+            crearCodigos(object, req, res);
+          });
         }
       });
+
     }catch ( err ) {
       req.errorHandler.report(err, req, res);
     }
@@ -597,4 +568,54 @@ module.exports = {
       }
     });
   }
+}
+
+function crearCodigos(object, req, res){
+  var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
+
+  var total = parseInt(object.cantidad);
+
+  var existentes = [];
+  var creados = [];
+  var totalCreados = 0;
+
+  models.DBEncuesta_encuesta.findAll({
+    attributes: ['codigo']
+  }).then(function(codigos){
+    for (var i = 1; i <= total; i++) {
+      var str = '';
+      var existe = true;
+      while(existe){
+        for( var j=0; j < 6; j++ ){
+          str += possible.charAt(Math.floor(Math.random() * possible.length));
+        }
+        existe = false;
+        codigos.forEach(function(codigo){
+          if (codigo.codigo == str){
+            existe = true;
+          }
+        });
+        if (!existe){
+          //Agregar a lista de codigos temporal
+          codigos.push({
+            'codigo': str
+          });
+          models.DBEncuesta_encuesta.create({
+            codigo: str,
+            tipoCodigo: object.tipoCodigo,
+            tipoPlan: object.tipoPlan
+          }).then(function(creado){
+            creados.push(JSON.parse(JSON.stringify(creado)));
+            totalCreados++;
+            if (totalCreados == total){
+              res.status(200).json({
+                success: true,
+                result: creados
+              });
+            }
+          });
+        }
+      }
+    }
+  });
 }

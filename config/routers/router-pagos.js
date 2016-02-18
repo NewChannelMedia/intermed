@@ -23,8 +23,8 @@ module.exports = function (object){
     intermed.callController( 'PlanDeCargo', 'PlanCargoRegistrar', req.body, req, res );
   } );
 
-  app.post( '/eliminarplancargo', function ( req, res ) {
-    intermed.callController( 'CargosUsuarios', 'PlanCargoEliminar', req.body, req, res );
+  app.post( '/plandecargo/delete', function ( req, res ) {
+    intermed.callController( 'PlanDeCargo', 'PlanCargoEliminar', req.body, req, res );
   } );
 
   app.post( '/notificacionesproveedor', function ( req, res ) {
@@ -49,6 +49,14 @@ module.exports = function (object){
 
   app.post('/plandecargo/getAll', function (req, res){
     intermed.callController( 'PlanDeCargo', 'getAll', req.body, req, res );
+  });
+
+  app.post('/plandecargo/delete/cond', function (req, res){
+    intermed.callController( 'PlanDeCargo', 'DeleteCondCheck', req.body, req, res );
+  });
+
+  app.post('/plandecargo/reemplazar', function(req, res){
+    intermed.callController( 'PlanDeCargo', 'reemplazarPlan', req.body, req, res );
   });
 
 }
