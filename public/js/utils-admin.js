@@ -190,8 +190,14 @@ function cargarTipoCodigo(){
 		type: 'POST',
 		success: function( data ) {
       if (data.success){
+        var resultautocomplete = [];
         data.result.forEach(function(res){
-          $('#tipo_codigo_id').append('<option value="'+ res.id +'">'+ res.tipo +'</option>')
+          resultautocomplete.push(res.tipo);
+          //$('#tipo_codigo_id').append('<option value="'+ res.id +'">'+ res.tipo +'</option>')
+        });
+        $('#tipo_codigo_id').autocomplete({
+          minLength: 0,
+          source: resultautocomplete
         });
       }
     },
@@ -236,6 +242,7 @@ function generarCodigosEnc(){
     },
 		success: function( data ) {
       if (data.success){
+        cargarTipoCodigo();
         var contenido = '';
         var tipoPlan = $("#tipo_plan_id option:selected").text();
         var tipoCodigo = $("#tipo_codigo_id option:selected").text();
@@ -267,9 +274,7 @@ function cargarGenC(){
         '<label for="">Tipo código: </label>'+
       '</div>'+
       '<div class="col-lg-4 col-md-4 text-right">'+
-        '<select id="tipo_codigo_id" class="form-control" required>'+
-          '<option value="" selected disabled>Selecciona un tipo de código</option>'+
-        '</select>'+
+        '<input type="text" id="tipo_codigo_id" class="form-control" required>'+
       '</div>'+
     '</div>'+
 
@@ -738,4 +743,359 @@ function agregarComentarioErr(error_id, inputComentario){
     }
   });
   return false;
+}
+
+function registrarplancargo(){
+  $.ajax({
+    url: '/registrarplancargo',
+    type: 'POST',
+    dataType: "json",
+    data: {
+      idPlan: $('#plan_id').val(),
+      intervalocargo_id: $('#intervalocargo_id').val(),
+      nombre: $('#nombrePlan').val(),
+      frecuencia: $('#frecuenciaPlan').val(),
+      monto: $('#montoPlan').val(),
+      periodoprueba: $('#periodoprueba').val()
+    },
+    cache: false,
+    async: false,
+    type: 'POST',
+    success: function( data ) {
+      if (data.success){
+        if (data.success && data.result){
+          resetFormPlan();
+          /*
+          data.result: {
+            "id":35,
+            "nombre":"Cinthia Bermudez",
+            "monto":30,
+            "intervalocargo_id":2,
+            "frecuencia":"3",
+            "periodoprueba":"0",
+            "idproveedor":"plan_EaTYxA6CDvCqn5Fw"
+          }
+          */
+          cargarPlanesDeCargo();
+
+          //Agregar nuevo plan en panel-group, limpiar el formulario para agregar otro
+          //console.log('RESULT: ' + JSON.stringify(data.result));
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      } else {
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    }
+  });
+  return false;
+}
+
+
+var intervalosCargos = [];
+function cargarPlanCarg(){
+  var contenido = `<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+  <div class="panel panel-primary"><div class="panel-heading">
+    Nuevo plan de cargo
+  </div>
+  <div class="panel-body" style="height: auto;padding-bottom: 0px;">
+  <div class="row">
+  <form method="POST" id="plancargo" name="plancargo" onsubmit="return registrarplancargo()">
+      <input type="hidden" size="20" id="plan_id" name="plan_id" class="form-control">
+      <div class="col-md-12">
+        <div class="form-group">
+          <input type="text" size="20" id="nombrePlan" name="nombre" required class="form-control" placeholder="Nombre de plan">
+        </div>
+      </div>
+      <div class="col-md-7">
+        <div class="form-group">
+          <select name="intervalocargo_id" id="intervalocargo_id" required="required" class="form-control no-editable">
+          </select>
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="form-group">
+          <input type="number" min="0" max="36"  id="frecuenciaPlan" name="frecuencia" required placeholder="Frecuencia" class="form-control no-editable">
+        </div>
+      </div>
+      <div class="col-md-7">
+        <div class="form-group">
+          <input type="number" min="0" max="10000" id="montoPlan" name="monto" required placeholder="Monto"  class="form-control">
+        </div>
+      </div>
+      <div class="col-md-5">
+        <div class="form-group">
+          <input type="number" min="0" max="365" id="periodoprueba" name="periodoprueba" required placeholder="Dias de prueba" class="form-control no-editable">
+        </div>
+      </div>
+      <div class="col-md-12">
+        <div class="form-group">
+          <button type="submit" id="enviar" name="enviar" class="btn btn-primary btn-block">Registrar</button>
+        </div>
+      </div>
+      <div class="col-md-12 div-remove hidden">
+        <div class="form-group">
+          <button type="button" class="btn btn-danger btn-block" onclick="resetFormPlan()">Cancelar</button>
+        </div>
+      </div>
+
+  </form>
+  </div>
+  </div></div></div>`;
+
+
+  contenido += `<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 panel-group" id="planCargoGroup"></div>`;
+
+  $('#pageAdminContent').html(contenido);
+  intervalosCargos = [];
+  $.ajax({
+    url: '/plandecargo/intervalo/get',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    async: false,
+    type: 'POST',
+    success: function( data ) {
+      var opcionesIntervalo = '';
+      if (data.success){
+        opcionesIntervalo +='<option value="" selected disabled>Intervalo</option>';
+        data.result.forEach(function(int){
+            intervalosCargos[int.id] = int.nombre;
+            opcionesIntervalo +='<option value="'+ int.id +'">'+ int.nombre +'</option>';
+        });
+      } else {
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+      $('#intervalocargo_id').html(opcionesIntervalo);
+    },
+    error: function( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    }
+  });
+  cargarPlanesDeCargo();
+
+}
+
+function cargarPlanesDeCargo(){
+    $.ajax({
+      url: '/plandecargo/getAll',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      type: 'POST',
+      success: function( data ) {
+        var contenido = '';
+        if (data.success){
+          data.result.forEach(function(plan){
+            contenido += '<div class="panel panel-info planCargo" id="plan_'+ plan.id +'"><div class="panel-heading nombre">'+ plan.nombre +'</div>'+
+            '<div class="panel-body" style="height: auto;">'+
+              '<span class="hidden idCargo">'+ plan.id +'</span>'+
+              '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Intervalo:</div><span class="hidden intervalo_id">'+ plan.intervalocargo_id +'</span><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right intervalo">'+ intervalosCargos[plan.intervalocargo_id] +'</div></div><hr style="margin-top: 0px;margin-bottom: 5px;">'+
+              '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Frecuencia:</div><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right frecuencia">'+ plan.frecuencia +'</div></div><hr style="margin-top: 0px;margin-bottom: 5px;">'+
+              '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Monto:</div><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right monto">'+ plan.monto +'</div></div><hr style="margin-top: 0px;margin-bottom: 5px;">'+
+              '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Dias de prueba:</div><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right periodoprueba">'+ plan.periodoprueba +'</div></div>'+
+            '</div>'+
+            '<div class="panel-footer">'+
+              '<div class="row">'+
+              '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">'+
+                '<button class="btn btn-warning btn-block" onclick="editarPlanDeCargo('+ plan.id +')">Editar</button>'+
+              '</div>'+
+              '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">'+
+                '<button class="btn btn-danger btn-block" onclick="CondEliminarPlanDeCargo('+ plan.id +')">Eliminar</button>'+
+              '</div>'+
+            '</div>'+
+            '</div>'+
+            '</div>';
+          });
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+        $('#planCargoGroup').html(contenido);
+      },
+      error: function( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: (registro 166) : ' + err );
+      }
+    });
+}
+
+function editarPlanDeCargo(plan_id){
+  var plan = $('#plan_'+plan_id);
+  $('#plan_id').val(plan_id);
+  $('#intervalocargo_id').val(plan.find('.intervalo_id').text())
+  $('#nombrePlan').val(plan.find('.nombre').text())
+  $('#frecuenciaPlan').val(plan.find('.frecuencia').text())
+  $('#montoPlan').val(plan.find('.monto').text())
+  $('#periodoprueba').val(plan.find('.periodoprueba').text())
+  $('#plancargo').find('.btn-primary').text('Guardar');
+  $('#plancargo').find('.div-remove').removeClass('hidden');
+  $('#plancargo').find('.no-editable').each(function(){
+    $(this).attr('disabled',true);
+  })
+}
+
+function CondEliminarPlanDeCargo(plan_id){
+  $.ajax({
+    url: '/plandecargo/delete/cond',
+    type: 'POST',
+    dataType: "json",
+    data: {
+      plan_id: plan_id
+    },
+    cache: false,
+    type: 'POST',
+    success: function( data ) {
+      var contenido = '';
+      if (data.success){
+          //Modal para confirmar eliminar plan
+          bootbox.dialog({
+            onEscape: function () {
+              bootbox.hideAll();
+          },
+          className: 'Intermed-Bootbox',
+          title: '<span class="title">Eliminar plan de cargo</span>',
+          backdrop: true,
+          message:
+            '<div class="row">'+
+                '<div class="col-md-12 text-center" style="padding:30px;font-size:120%">'+
+                  '¿Está seguro de eliminar el plan de cargo \'' + $('#plan_'+plan_id).find('.nombre').text() + '\'?'+
+                '</div>'+
+            '</div>'+
+
+            '<div class="row footerBootbox" style="padding-top:20px;padding-bottom:20px">'+
+              '<div class="col-md-4 pull-right">'+
+                  '<button class="btn btn-success btn-block" onclick="eliminarPlanDeCargo('+ plan_id +')">Eliminar</button>'+
+              '</div>'+
+              '<div class="col-md-4 pull-left">'+
+                  '<button class="btn btn-danger btn-block" onclick="bootbox.hideAll()">Cancelar</button>'+
+              '</div>'+
+            '</div>'
+          });
+      } else {
+        if (data.result>0){
+          //Modal para cambiar de plan a usuarios o cancelar
+          var opcionesPlanCargo = '<option value="" selected disabled>Selecciona un plan</option>';
+          $('.planCargo').each(function(){
+            var id = $(this).find('.idCargo').text();
+            if (plan_id != id){
+              var nombre = $(this).find('.nombre').text();
+              opcionesPlanCargo += '<option value="'+ id +'">'+nombre+'</option>';
+            }
+          });
+          bootbox.dialog({
+            onEscape: function () {
+              bootbox.hideAll();
+          },
+          className: 'Intermed-Bootbox',
+          title: '<span class="title">Eliminar plan de cargo</span>',
+          backdrop: true,
+          message:
+            '<div class="row">'+
+                '<div class="col-md-12 text-center" style="padding:20px;font-size:120%">'+
+                  'El plan \''+$('#plan_'+plan_id).find('.nombre').text()+'\' tiene usuarios suscritos. <br/>Para poder eliminarlo es necesario seleccionar un plan que lo reemplace: ' +
+                '</div>'+
+                '<div class="col-md-8 col-md-offset-2 text-center" style="padding-bottom:20px;font-size:120%">'+
+                  '<select class="form-control" id="nuevoPlan_id" required>'+ opcionesPlanCargo +'</select>' +
+                '</div>'+
+            '</div>'+
+
+            '<div class="row footerBootbox" style="padding-top:20px;padding-bottom:20px">'+
+              '<div class="col-md-4 pull-right">'+
+                  '<button class="btn btn-success btn-block" onclick="reemplazarPlanDeCargo('+ plan_id +',\'nuevoPlan_id\')">Eliminar</button>'+
+              '</div>'+
+              '<div class="col-md-4 pull-left">'+
+                  '<button type="button" class="btn btn-danger btn-block" onclick="bootbox.hideAll()">Cancelar</button>'+
+              '</div>'+
+            '</div>'
+          });
+        }
+        else if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    }
+  });
+}
+
+function reemplazarPlanDeCargo(plan_id, nuevoPlan_id){
+  var nuevoplan = $('#'+nuevoPlan_id).val();
+  if (nuevoplan && nuevoplan > 0){
+    console.log(plan_id + ' - ' + $('#'+nuevoPlan_id).val());
+    $.ajax({
+      url: '/plandecargo/reemplazar',
+      type: 'POST',
+      dataType: "json",
+      data: {
+        plan_id: plan_id,
+        nuevoPlan_id: nuevoplan
+      },
+      cache: false,
+      type: 'POST',
+      success: function( data ) {
+        console.log('Result: ' + JSON.stringify(data));
+        if (data.success){
+          eliminarPlanDeCargo(plan_id);
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      },
+      error: function( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: (registro 166) : ' + err );
+      }
+    });
+  } else {
+    $('#'+nuevoPlan_id).focus();
+  }
+}
+
+function eliminarPlanDeCargo(plan_id){
+    $.ajax({
+      url: '/plandecargo/delete',
+      type: 'POST',
+      dataType: "json",
+      data: {
+        plan_id: plan_id
+      },
+      cache: false,
+      type: 'POST',
+      success: function( data ) {
+        if (data.success){
+          bootbox.hideAll();
+          resetFormPlan();
+          cargarPlanesDeCargo();
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      },
+      error: function( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: (registro 166) : ' + err );
+      }
+    });
+}
+
+function resetFormPlan(){
+  document.getElementById("plancargo").reset();
+  $('#plan_id').val('');
+  $('#plancargo').find('.no-editable').each(function(){
+    $(this).attr('disabled',false);
+  })
+  $('#plancargo').find('.btn-primary').text('Registrar');
+  $('#plancargo').find('.div-remove').addClass('hidden');
 }

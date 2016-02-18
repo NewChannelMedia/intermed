@@ -287,7 +287,7 @@ exports.RegistrarCargoRecurrente = function (object, req, res) {
                 models.UsuarioCargo.create({
                     medico_id: object.usuario_id,
                     plandecargo_id: object.planid,
-                    cargosEstatus_id: 1 //Tabla estatusCargos: Sin suscripcion
+                    cargosEstatus_id: 1
                 }).then(function (usuariocargoregistrado) {
                     if (usuariocargoregistrado) {
                         RegistrarUsuarioEnProveedor(res, object.usuario_id, datos, object.conektaTokenId, object.planid);
@@ -334,7 +334,7 @@ function RegistrarUsuarioEnProveedor(res, usuario_id, datos, conektaTokenId, pla
             } else {
                 UsuarioGuardarDatosProveedor(usuario_id, resultado.toObject().id, planid, resultado.subscription.toObject().created_at, resultado.subscription.toObject().subscription_start);
                 UsuarioGuardarTarjeta(usuario_id, resultado.toObject().cards[0]);
-                
+
                 models.UsuarioCargo.update({
                     cargosEstatus_id: 2 //Tabla estatusCargos: Suscripcion activa
                 }, {
@@ -342,7 +342,7 @@ function RegistrarUsuarioEnProveedor(res, usuario_id, datos, conektaTokenId, pla
                 })
 
                 console.log('cliente registrado en proveedor');
-                
+
                 res.render('registrado', {
                     title: 'Registrado'
                 });
@@ -356,7 +356,7 @@ function RegistrarUsuarioEnProveedor(res, usuario_id, datos, conektaTokenId, pla
 function UsuarioGuardarDatosProveedor(idUsuario, idUsuarioProveedor, planid, fechaAlta, fechaProximoCargo) {
     var _fechaAlta = new Date(fechaAlta * 1000);
     var _fechaProximoCargo = new Date(fechaProximoCargo * 1000);
-    
+
     models.UsuarioCargo.update({
         idUsuarioProveedor: idUsuarioProveedor,
         planDeCargo_id: planid,
@@ -419,11 +419,11 @@ exports.SuscripcionPausarDatos = function (req, res) {
     });
 }
 
-exports.SuscripcionPausar = function (object, req, res) {    
+exports.SuscripcionPausar = function (object, req, res) {
     models.UsuarioCargo.findOne({
         where: { medico_id: object.idUsuario }
     }).then(function (usuario) {
-        if (usuario) {            
+        if (usuario) {
             if (usuario.idUsuarioProveedor) {
                 customer = conekta.Customer.find(usuario.idUsuarioProveedor, function (err, customer) {
                     customer.subscription.pause(function (err, resultado) {
@@ -438,7 +438,7 @@ exports.SuscripcionPausar = function (object, req, res) {
                             }, {
                                 where: { medico_id: object.idUsuario }
                             })
-                            
+
                             res.render('registrado', {
                                 title: 'Suscripcion pausada'
                             });
@@ -474,13 +474,13 @@ exports.SuscripcionReanudar = function (object, req, res) {
                                 title: 'Error al reanudar suscripcion'
                             });
                         } else {
-                            
+
                             models.UsuarioCargo.update({
                                 cargosEstatus_id: 2 //Tabla estatusCargos: Suscripcion activa
                             }, {
                                 where: { medico_id: object.idUsuario }
                             })
-                            
+
                             res.render('registrado', {
                                 title: 'Suscripcion reanudada'
                             });
@@ -521,7 +521,7 @@ exports.SuscripcionCancelar = function (object, req, res) {
                             }, {
                                 where: { medico_id: object.idUsuario }
                             })
-                            
+
                             res.render('registrado', {
                                 title: 'Suscripcion cancelada'
                             });

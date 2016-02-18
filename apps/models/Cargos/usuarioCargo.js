@@ -15,13 +15,13 @@ module.exports = function (sequelize, DataTypes) {
             associate: function (models) {
                 UsuarioCargo.belongsTo(models.Medico)
             }
-        },           
+        },
         timestamps: false,
         paranoid: true,
         underscored: true,
         freezeTableName: true,
         tableName: 'usuarioscargos'
     });
-    
+
     return UsuarioCargo;
 };
