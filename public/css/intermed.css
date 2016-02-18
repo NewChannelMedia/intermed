@@ -19,6 +19,35 @@ a:visited {
   text-transform: none;
 }
 
+.bg-white {
+  background-color: #ffffff;
+}
+
+input, button {
+  border-radius: 0!important;
+}
+
+.body-container {
+  position: relative;
+  display: table;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+
+.top-content {
+  display: table-cell;
+  vertical-align: top;
+}
+.center-content {
+  display: table-cell;
+  vertical-align: middle;
+}
+.bottom-content {
+  display: table-cell;
+  vertical-align: bottom;
+}
+
 .block {
   position: relative;
   clear: both;
@@ -2679,15 +2708,13 @@ th.fc-day-header.fc-widget-header{
   visibility: hidden;
 }
 
-.regSectionTitle{
-  font-size: 20px;
-  padding: 11px;
-  background-color: #172C3B;
-  margin: 10px;
-  margin-top: 20px;
+.regSectionTitle {
+  padding: 10px;
+  margin: 0 auto;
+  color: #717171;
 }
 
-.regSectionTitle .glyphicon{
+/*.regSectionTitle .glyphicon{
   background-color: white;
   color: #172C3B;
   padding: 8px;
@@ -2713,7 +2740,7 @@ th.fc-day-header.fc-widget-header{
     top: -8px;
     right: -8px;
 }
-
+*/
 .regInput{
   border-radius: 9px;
 }

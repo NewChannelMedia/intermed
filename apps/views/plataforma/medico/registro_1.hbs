@@ -1,163 +1,210 @@
-<div id="" class="container-fluid h45-light s17"  style="background-color:#6A808E;">
-  <form id="regMedStepOne" onsubmit="return saveStepOne();">
-
-  <div class="row header-section" style="min-height: 120px;height: auto;">
-        <div class="col-md-12">
-          <h4 class="h77-boldcond whiteF s30 text-center" style="margin-top: 35px;">!BIENVENIDO DR.!</h4>
-        </div>
-        <div class="col-md-4 col-md-offset-4">
-            <div class="form-group has-feedback">
-                <input type="text" class="form-control" placeholder="Ingresa aquí tu código de promoción." maxlength="6" minLength="6" id="codigoPromo" name="codigoPromo" onchange="validarCodigo(this)">
-                <span class="glyphicon form-control-feedback"></span>
-                <label for="codigoPromo" style="color:#a94442;text-align:center"></label>
-            </div>
-        </div>
-  </div>
-
-  <div class="row whiteF">
-    <div class="col-md-12">
-      <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <div class="row">
-              <div class="col-md-12">
-                <div id="alertError"></div>
-              </div>
-              <div class="col-md-12">
-                <div class="regBox">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <div class="row">
-                          <div class="regSectionTitle whiteF h77-boldcond">
-                              <span class="glyphicon glyphicon-plus"></span>REGISTRA TUS DATOS PERSONALES.
-                          </div>
-                      </div>
+<form id="regMedStepOne" onsubmit="return saveStepOne();" class="bg-white">
+  <div id="" class="container-fluid h45-light s17 bg-white">
+    <div class="row">
+      <div class="header-section">
+        <div class="body-container">
+          <div class="center-content">
+            <div class="container">
+              <div class="row">
+                <div class="col-md-12">
+                  <h1 class="h35-thin s60 text-left dark-c" style="/* margin-top: 35px; */">!Bienvenido!</h1>
+                </div>
+                <div class="col-md-6">
+                  <div class="">
+                    <p class="h45-light s30">Comienza tu registro
+                      <br>en el siguiente formulario.</p>
+                    <div class="form-group has-feedback">
+                      <input type="text" class="form-control" placeholder="Ingresa aquí tu código de promoción." maxlength="6" minlength="6" id="codigoPromo" name="codigoPromo" onchange="validarCodigo(this)">
+                      <span class="glyphicon form-control-feedback"></span>
+                      <label for="codigoPromo" style="color:#a94442;text-align:center"></label>
                     </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="s15 regInput" for="nombreRegMed">Nombres</label>
-                        <input type="text" class="form-control regInput" id="nombreRegMed" name="nombreRegMed" placeholder="Nombres" value="" required="true" >
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="s15 regInput" for="apePatRegMed">Apellido Paterno</label>
-                        <input type="text" class="form-control regInput" id="apePatRegMed" name="apePatRegMed" placeholder="Apellido Paterno" value="" required="true" >
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label class="s15 regInput" for="apePatRegMed">Apellido Materno</label>
-                        <input type="text" class="form-control regInput" id="apeMatRegMed" name="apeMatRegMed" placeholder="Apellido Materno" value="">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <label class="s15 regInput">Fecha de Nacimiento</label>
-                        </div></div><div class="row">
-                          <div class="col-md-4">
-                            <div class="form-group">
-                              <input type="number" class="form-control  regInput" id="diaNacReg" name="diaNacReg" placeholder="Dia" required="true" min="1" max="31">
-                            </div>
-                          </div>
-                          <div class="col-md-4">
-                            <div class="form-group">
-                              <input type="number" class="form-control regInput" id="mesNacReg" name="mesNacReg" placeholder="Mes" required="true" min="1" max="12">
-                            </div>
-                          </div>
-                          <div class="col-md-4">
-                            <div class="form-group">
-                              <input type="number" class="form-control regInput" id="anioNacReg" name="anioNacReg" placeholder="Año" required="true" min="1930" max="2016">
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="col-md-12">
-                          <label class="s15 regInput">Sexo</label>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="radio">
-                            <label>
-                              <input type="radio" name="gender" id="sexM" value="M" required="true" > Masculino</label>
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div class="radio">
-                              <label><input type="radio" name="gender" id="sexF" value="F" required="true" > Femenino</label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="regSectionTitle whiteF h77-boldcond">
-                            <span class="glyphicon glyphicon-plus"></span>REGISTRA TUS DATOS PROFESIONALES.
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="regBox">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <label class="s15 regInput" for="curpRegMed">CURP</label>
-                            <input type="text" class="form-control regInput" id="curpRegMed" name="curpRegMed" placeholder="CURP" value="" required="true">
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div class="form-group">
-                            <label class="s15 regInput" for="cedulaRegMed">Cedula Profesional</label>
-                            <input type="text" class="form-control regInput" id="cedulaRegMed" name="cedulaRegMed" placeholder="CEDULA" value="" required="true">
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-
-                    <hr class="separator2">
-                    <!-- Especialidades -->
-                    <div class="col-md-12">
-                      <label class="s15 regInput">Especialidades</label>
-                    </div>
-                    <div class="col-md-6 form-group">
-                      <select id="autoEspecialidad" class="form-control regInput autoEspecialidad"></select>
-                    </div>
-                    <div class="col-md-4 checkbox form-group">
-                      <label class="regInput">
-                        <input type="checkbox" id="subEspEdit" name="subEsp" value="0"/>¿Es sub especialidad?
-                      </label>
-                    </div>
-                    <div class="col-md-2 form-group">
-                      <button id="addEspecialidadMedic" onclick="editEspecialidades();" class="btn btn-primary form-control" type="button">
-                        <span class="glyphicon glyphicon-floppy-disk"></span>
-                      </button>
-                    </div>
-                    <!-- fin add Especialidades -->
-                      <div class="col-md-12" id="regmedEsp">
-
-
-                      </div>
-
-                      <div class="col-md-3 col-md-offset-9" style="margin-top:25px">
-                        <input type="submit" id="regi" name="registroCorreo" value="Guardar" class="btn btn-success btn-block btn-step" style="margin-top:10px;margin-bottom:10px">
-                      </div>
                   </div>
                 </div>
               </div>
-
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-  </form>
-
-
-</div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="col-md-12">
+          <div id="alertError"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="body-container">
+        <div class="center-content">
+          <div class="col-md-3">
+            <span class="round-number h45-light center-block">1</span>
+          </div>
+          <div class="col-md-9">
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="h45-light s20 text-uppercase regSectionTitle">
+                  datos personales
+                </h3>
+              </div>
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="s15 regInput" for="nombreRegMed">Nombres</label>
+                      <input type="text" class="form-control regInput" id="nombreRegMed" name="nombreRegMed" placeholder="Nombres" value="" required="true">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="s15 regInput" for="apePatRegMed">Apellido Paterno</label>
+                      <input type="text" class="form-control regInput" id="apePatRegMed" name="apePatRegMed" placeholder="Apellido Paterno" value="" required="true">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label class="s15 regInput" for="apePatRegMed">Apellido Materno</label>
+                      <input type="text" class="form-control regInput" id="apeMatRegMed" name="apeMatRegMed" placeholder="Apellido Materno" value="">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-7">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <label class="s15 regInput">Fecha de Nacimiento</label>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <input type="number" class="form-control  regInput" id="diaNacReg" name="diaNacReg" placeholder="Dia" required="true" min="1" max="31">
+                        </div>
+                      </div>
+                      <div class="col-md-1">
+                        <span class="s35">/</span>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <input type="number" class="form-control regInput" id="mesNacReg" name="mesNacReg" placeholder="Mes" required="true" min="1" max="12">
+                        </div>
+                      </div>
+                      <div class="col-md-1">
+                        <span class="s35">/</span>
+                      </div>
+                      <div class="col-md-3">
+                        <div class="form-group">
+                          <input type="number" class="form-control regInput" id="anioNacReg" name="anioNacReg" placeholder="Año" required="true" min="1930" max="2016">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <div class="col-md-12">
+                      <label class="s15 regInput">Sexo</label>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="gender" id="sexM" value="M" required="true"> Masculino</label>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="radio">
+                        <label>
+                          <input type="radio" name="gender" id="sexF" value="F" required="true"> Femenino</label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="body-container">
+          <div class="center-content">
+            <span class="round-number h45-light center-block">2</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="row">
+          <div class="col-md-12">
+            <h3 class="h45-light s20 text-uppercase regSectionTitle">
+              información profesional
+            </h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="s15 regInput" for="curpRegMed">CURP</label>
+              <input type="text" class="form-control regInput" id="curpRegMed" name="curpRegMed" placeholder="CURP" value="" required="true">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="s15 regInput" for="cedulaRegMed">Cedula Profesional</label>
+              <input type="text" class="form-control regInput" id="cedulaRegMed" name="cedulaRegMed" placeholder="CEDULA" value="" required="true">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <select id="autoEspecialidad" class="form-control regInput autoEspecialidad"></select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="checkbox form-group">
+              <label class="regInput">
+                <input type="checkbox" id="subEspEdit" name="subEsp" value="0" />¿Es sub especialidad?
+              </label>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <button id="addEspecialidadMedic" onclick="editEspecialidades();" class="btn btn-primary btn-block" type="button">
+              <span class="glyphicon glyphicon-floppy-disk"></span>
+            </button>
+          </div>
+          <div class="col-md-12" id="regmedEsp">
+            <label class="s15 regInput">Especialidades</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <select id="autoEspecialidad" class="form-control regInput autoEspecialidad"></select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="checkbox form-group">
+              <label class="regInput">
+                <input type="checkbox" id="subEspEdit" name="subEsp" value="0" />¿Es sub especialidad?
+              </label>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <button id="addEspecialidadMedic" onclick="editEspecialidades();" class="btn btn-primary btn-block" type="button">
+              <span class="glyphicon glyphicon-floppy-disk"></span>
+            </button>
+          </div>
+          <div class="col-md-12" id="regmedEsp">
+            <label class="s15 regInput">Especialidades</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <hr />
+      <div class="col-md-3 col-md-offset-9" style="margin-top:25px">
+        <input type="submit" id="regi" name="registroCorreo" value="Guardar" class="btn btn-success btn-block btn-step" style="margin-top:10px;margin-bottom:10px">
+      </div>
+    </div>
+  </div>
+</form>
