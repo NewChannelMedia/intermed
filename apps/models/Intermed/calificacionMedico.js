@@ -37,7 +37,7 @@ module.exports = function ( sequelize, DataTypes ) {
     paranoid: true,
     underscored: true,
     freezeTableName: true,
-    tableName: 'calificacionMedico'
+    tableName: 'calificacionmedico'
   } );
 
   return CalificacionMedico;
