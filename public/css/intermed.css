@@ -2707,12 +2707,14 @@ th.fc-day-header.fc-widget-header{
 .tab-pane:not(.active){
   visibility: hidden;
 }
+
 #regMedStepOne .header-section {
   width: 100%;
   height: 470px;
   padding: 0;
   border-bottom: solid 5px #375467;
   background-image: url('../img/plataforma/coverstepone.png');
+  background-position: top center;
 }
 
 #regMedStepOne .reg-box {
@@ -2724,20 +2726,39 @@ th.fc-day-header.fc-widget-header{
   padding-top: 15px;
   padding-bottom: 20px;
   padding-left: 30px;
-  border-left: solid 3px #717171;
   color: #717171;
+  border-left: solid 3px #717171;
 }
 
 #regMedStepOne .reg-box .round-number {
+  font-size: 100px;
   width: 150px;
   height: 150px;
-  border-radius: 100px;
-  border: solid 4px #717171;
-  padding: 20px;
   margin: 20px auto;
-  color: #717171;
-  font-size: 100px;
+  padding: 20px;
   text-align: center;
+  color: #717171;
+  border: solid 4px #717171;
+  border-radius: 100px;
+}
+
+@media (max-width:768px) {
+  #regMedStepOne .reg-box {
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding: 0;
+  }
+  #regMedStepOne .reg-box .reg {
+    padding-left: 15px;
+    border-width: 10px;
+  }
+  #regMedStepOne .reg-box .round-number {
+    font-size: 50px;
+    width: 70px;
+    height: 70px;
+    margin: 20px auto;
+    padding: 7px 0;
+  }
 }
 
 #regMedStepOne .regSectionTitle {
@@ -2853,4 +2874,26 @@ hr.fc-divider.fc-widget-header{
 #searchResult img.media-object {
     height: 100px;
     width: 100px;
+}
+
+input[type='number'].form-control::-webkit-outer-spin-button,
+input[type='number'].form-control::-webkit-inner-spin-button {
+  position: absolute;
+  top: 2px;
+  right: 17px;
+  bottom: 0;
+  width: 15px;
+  height: 30px;
+  opacity: .5;
+  background: #fff url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKUlEQVQYlWNgwAT/sYhhKPiPT+F/LJgEsHv37v+EMGkmkuImoh2NoQAANlcun/q4OoYAAAAASUVORK5CYII=) no-repeat center center;
+  -webkit-appearance: none;
+}
+input[type='number'].form-control::-webkit-inner-spin-button:hover,
+input[type='number'].form-control::-webkit-inner-spin-button:active {
+  opacity: .8;
+  box-shadow: 0 0 2px #0cf;
+}
+input:-webkit-autofill {
+  color: red;
+  background: black;
 }
