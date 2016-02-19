@@ -377,7 +377,41 @@ function seleccionarImagenPerfil(element) {
     $('#tabImagen').addClass('active');
     //cambioFotoPerfil();
     $( '#btnCrop' ).hide();
-    document.getElementById( "contenedorFoto" ).innerHTML = '<img id="fotoPerfilNueva" >';
+    $('#contenedorFoto').html('<img id="fotoPerfilNueva" >');
+    var reader = new FileReader();
+    var fotoPerfilNueva = $( '#fotoPerfilNueva' );
+    reader.onload = function ( e ) {
+      fotoPerfilNueva.attr( "src", e.target.result );
+      var x = document.getElementById( "fotoPerfilNueva" ).width;
+      var y = document.getElementById( "fotoPerfilNueva" ).height;
+      if ( x > y ) x = y;
+      fotoPerfilNueva.Jcrop( {
+        onChange: SetCoordinates,
+        onSelect: SetCoordinates,
+        boxWidth: 570,
+        aspectRatio: 1,
+        setSelect: [ x * 0.1, x * 0.1, x - ( x * 0.1 ), x - ( x * 0.1 ) ]
+      } );
+    }
+    reader.readAsDataURL( $( element )[ 0 ].files[ 0 ] );
+  }
+  else {
+    $( '#imageFile' ).val( '' );
+    alert( "La imagen es muy grande, selecciona otra" );
+  }
+}
+
+
+function seleccionarImagenUsuarioPanel(element) {
+  base64file = '';
+  var tamanio = $( element )[ 0 ].files[ 0 ].size;
+  $('#contenedorFoto').html('');
+  if ( tamanio < 1048576 ) {
+    $('#tabPerfil').removeClass('active');
+    $('#tabImagen').addClass('active');
+    cambioFotoPerfil();
+    $( '#btnCrop' ).hide();
+    $('#contenedorFoto').html('<img id="fotoPerfilNueva" >');
     var reader = new FileReader();
     var fotoPerfilNueva = $( '#fotoPerfilNueva' );
     reader.onload = function ( e ) {

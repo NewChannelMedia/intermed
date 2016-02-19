@@ -1473,7 +1473,7 @@ function cambioFotoPerfil(){
       '</div>'+
       '<div class="col-md-6 col-md-offset-2">'+
           '<div class="form-group">'+
-              '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Guardar" onclick="guardarImagenPerfil();bootbox.hideAll();">'+
+              '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Guardar" onclick="seleccionarImagenUsuario()">'+
           '</div>'+
       '</div>'+
   '</div>'

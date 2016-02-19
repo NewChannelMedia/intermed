@@ -1099,3 +1099,183 @@ function resetFormPlan(){
   $('#plancargo').find('.btn-primary').text('Registrar');
   $('#plancargo').find('.div-remove').addClass('hidden');
 }
+
+function cargarUsuariosCP(){
+    var contenido = `<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+    <div class="panel panel-primary"><div class="panel-heading">
+      Nuevo usuario
+    </div>
+    <div class="panel-body" style="height: auto;padding-bottom: 0px;">
+    <div class="row">
+      <div class="col-md-12">
+        <center>
+          <div class="profilePic header-profile-photo-link center-block">
+            <img id="imgPerfilNuevo" src="" width="200" height="200" class="img-rounded fotoPerfil">
+            <label for="imageFile">Cambiar Imagen</label><input type="file" id="imageFile" style="display:none" onchange="seleccionarImagenUsuarioPanel(this)">
+          </div>
+        </center>
+        <input type="hidden" id="imagenPerfilUs">
+      </div>
+    </div>
+    <div class="row">
+    <form method="POST" id="usuarioIntermed" name="plancargo" onsubmit="return registrarUsuarioIntermed()">
+        <input type="hidden" size="20" id="plan_id" name="plan_id" class="form-control">
+        <div class="col-md-12">
+          <div class="form-group">
+            <select id="rolUsuario" required class="form-control">
+              <option value="" selected disabled>Selecciona rol de usuario</option>
+              <option value="1">Admin</option>
+              <option value="2">Programador</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>
+              <input type="checkbox" id="activo" name="activo" checked> Activo
+            </label>
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group">
+            <input type="text" id="nombre" name="nombre" required class="form-control" placeholder="Nombre">
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group">
+            <input type="email" name="correo" id="correo" required="required" class="form-control" placeholder="Correo electrónico">
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group">
+            <input type="text" id="telefono" name="telefono" required placeholder="Telefono/Celular" class="form-control">
+          </div>
+        </div>
+        <div class="col-md-12">
+          <div class="form-group">
+            <button type="submit" id="enviar" name="enviar" class="btn btn-primary btn-block">Registrar</button>
+          </div>
+        </div>
+        <div class="col-md-12 div-remove hidden">
+          <div class="form-group">
+            <button type="button" class="btn btn-danger btn-block" onclick="resetFormPlan()">Cancelar</button>
+          </div>
+        </div>
+
+    </form>
+    </div>
+    </div></div></div>`;
+
+
+    contenido += `<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 panel-group" id="planUsuarioGroup"></div>`;
+
+    $('#pageAdminContent').html(contenido);
+
+    cargarUsuariosIntermed();
+}
+
+function registrarUsuarioIntermed(){
+  var formulario = $('#usuarioIntermed');
+  var rolusuario = formulario.find('#rolUsuario').val();
+  var base64file = $('#imagenPerfilUs').val();
+  var activo = 0;
+  if (formulario.find('#activo').is(':checked')){
+    activo = 1;
+  }
+  var nombre = formulario.find('#nombre').val();
+  var correo = formulario.find('#correo').val();
+  var telefono = formulario.find('#telefono').val();
+
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var password = "";
+
+  for( var i=0; i < 7; i++ )
+      password += possible.charAt(Math.floor(Math.random() * possible.length));
+
+  $.ajax({
+    url: '/control/user/add',
+    type: 'POST',
+    dataType: "json",
+    data: {
+      activo: activo,
+      nombre: nombre,
+      correo: correo,
+      telefono: telefono,
+      rolusuario: rolusuario,
+      base64file: base64file,
+      password: hex_md5(password),
+      passwordNotMd5: password
+    },
+    cache: false,
+    type: 'POST',
+    success: function( data ) {
+      console.log('USUARIO: ' + JSON.stringify(data));
+      if (data.success){
+        bootbox.hideAll();
+        resetFormUsuarioReg();
+        cargarUsuariosIntermed();
+      } else {
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    }
+  });
+  return false;
+}
+
+function resetFormUsuarioReg(){
+  document.getElementById("usuarioIntermed").reset();
+  $('#imagenPerfilUs').val('');
+  $('#imgPerfilNuevo').attr('src','');
+}
+
+function seleccionarImagenUsuario(){
+  $('#imagenPerfilUs').val(base64file);bootbox.hideAll();
+  $('#imgPerfilNuevo').attr("src", base64file);
+}
+
+function cargarUsuariosIntermed(){
+    $.ajax({
+      url: '/control/usuariosIntermed/getAll',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      type: 'POST',
+      success: function( data ) {
+        var contenido = '';
+        if (data.success){
+          data.result.forEach(function(usuario){
+            contenido +=
+            '<div class="panel planUsuario panel-default" id="plan_'+ usuario.id +'">'+
+              '<div class="panel-heading">'+
+                '<h4 class="panel-title">'+
+                  '<a role="button" data-toggle="collapse" data-parent="#planUsuarioGroup" href="#collapse'+ usuario.id +'" aria-expanded="true" aria-controls="collapse'+ usuario.id +'">'+ usuario.nombre +'</a>'+
+                '</h4>'+
+              '</div>'+
+              '<div id="collapse'+ usuario.id +'" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">'+
+                '<div class="panel-body" style="height: auto;">'+
+                  '<span class="hidden idUsuario">'+ usuario.id +'</span>'+
+                  '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Correo:</div><span class="hidden intervalo_id">'+ usuario.correo +'</span><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right intervalo">'+ usuario.correo +'</div></div><hr style="margin-top: 0px;margin-bottom: 5px;">'+
+                  '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Teléfono/Celular:</div><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right frecuencia">'+ usuario.celular +'</div></div><hr style="margin-top: 0px;margin-bottom: 5px;">'+
+                  '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Activo:</div><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right monto">'+ usuario.activo +'</div></div><hr style="margin-top: 0px;margin-bottom: 5px;">'+
+                  '<div class="row"><div class="col-lg-6 col-md-6 col-sm-6 col-xs-4 text-left">Rol:</div><div class="col-lg-6 col-md-6 col-sm-6 col-xs-8 text-right periodoprueba">'+ usuario.rolUsuario_id +'</div></div>'+
+                '</div>'+
+              '</div>'+
+            '</div>';
+          });
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+        $('#planUsuarioGroup').html(contenido);
+      },
+      error: function( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: (registro 166) : ' + err );
+      }
+    });
+}

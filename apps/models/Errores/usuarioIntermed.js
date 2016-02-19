@@ -5,7 +5,11 @@ module.exports = function (sequelize, DataTypes) {
         id: { type: DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
         nombre: { type: DataTypes.STRING},
         correo: { type: DataTypes.STRING},
-        pass: { type: DataTypes.STRING}
+        celular: { type: DataTypes.STRING},
+        pass: { type: DataTypes.STRING},
+        activo: {type: DataTypes.INTEGER},
+        rolUsuario_id: {type: DataTypes.INTEGER},
+        imagenUrl: {type: DataTypes.STRING}
     }, {
       classMethods: {
         associate: function(models) {

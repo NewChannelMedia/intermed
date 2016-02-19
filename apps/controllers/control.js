@@ -438,29 +438,36 @@ module.exports = {
         }
         jsonfile.readFile(result.filePath, function(err, obj) {
           result = JSON.parse(JSON.stringify(result));
-          result.jsonContent = JSON.parse(JSON.stringify(obj));
-          var total = 0;
-          if (result.jsonContent.comentarios.length>0){
-            result.jsonContent.comentarios.forEach(function(com){
-              models.DBError_userIntermed.findOne({
-                where: {
-                  id: com.usuarioIntermed_id
-                }
-              }).then(function(usuario){
-                com.usuario = usuario;
-                total++;
-                if (total == result.jsonContent.comentarios.length){
-                  res.status(200).json({
-                    success: true,
-                    result: result
-                  });
-                }
+          if (!err){
+            result.jsonContent = JSON.parse(JSON.stringify(obj));
+            var total = 0;
+            if (result.jsonContent.comentarios.length>0){
+              result.jsonContent.comentarios.forEach(function(com){
+                models.DBError_userIntermed.findOne({
+                  where: {
+                    id: com.usuarioIntermed_id
+                  }
+                }).then(function(usuario){
+                  com.usuario = usuario;
+                  total++;
+                  if (total == result.jsonContent.comentarios.length){
+                    res.status(200).json({
+                      success: true,
+                      result: result
+                    });
+                  }
+                });
               });
-            });
+            } else {
+              res.status(200).json({
+                success: true,
+                result: result
+              });
+            }
           } else {
             res.status(200).json({
-              success: true,
-              result: result
+              success: false,
+              result: err
             });
           }
         });
@@ -567,7 +574,74 @@ module.exports = {
         });
       }
     });
+  },
+
+  userAdd: function (object, req, res){
+    object.pathImagen = '';
+
+    if (object.base64file){
+      var fs = require( "fs" );
+      if ( !fs.existsSync( './public/garage/profilepics/_control' ) ) {
+        fs.mkdirSync( './public/garage/profilepics/_control', 0777 );
+      };
+
+      var newPath = '/garage/profilepics/_control/' + req.session.passport.userIntermed.id + '_' + getDateTime() + '.jpg';
+      var base64Data = object.base64file.replace( /^data:image\/png;base64,/, "" );
+      fs.writeFile( './public' + newPath, base64Data, 'base64', function ( err, succes ) {
+        if ( err ) {
+          res.send( {
+            succes: false,
+            result: err
+          } );
+        }
+        else {
+          console.log( "archivo subido: " + newPath );
+          object.pathImagen = newPath;
+          crearUsuarioIntermed(object,req,res);
+        }
+      } );
+    } else {
+      crearUsuarioIntermed(object,req,res);
+    }
+  },
+
+  userGetAll: function (object, req, res){
+    models.DBError_userIntermed.findAll().then(function(usuarios){
+      res.status(200).json({
+        success: true,
+        result: usuarios
+      });
+    });
   }
+}
+
+function crearUsuarioIntermed(object, req, res){
+
+
+  models.DBError_userIntermed.create({
+    nombre: object.nombre,
+    correo: object.correo,
+    pass: object.password,
+    activo: object.activo,
+    celular: object.telefono,
+    rolUsuario_id: object.rolusuario,
+    imagenUrl: object.pathImagen
+  }).then(function(usuario){
+    var datos = {
+      to: usuario.correo,
+      subject: 'Tu acceso a Intermed',
+      name: usuario.nombre,
+      correo: usuario.correo,
+      password: object.passwordNotMd5,
+      enlace: 'localhost:3000/control',
+    };
+    mail.send( datos, 'registroPanel' ); //se envia el correo
+
+    res.status(200).json({
+      success: true,
+      result: usuario
+    });
+  });
 }
 
 function crearCodigos(object, req, res){
@@ -618,4 +692,20 @@ function crearCodigos(object, req, res){
       }
     }
   });
+}
+
+function getDateTime() {
+  var date = new Date();
+  var hour = date.getHours();
+  hour = ( hour < 10 ? "0" : "" ) + hour;
+  var min = date.getMinutes();
+  min = ( min < 10 ? "0" : "" ) + min;
+  var sec = date.getSeconds();
+  sec = ( sec < 10 ? "0" : "" ) + sec;
+  var year = date.getFullYear();
+  var month = date.getMonth() + 1;
+  month = ( month < 10 ? "0" : "" ) + month;
+  var day = date.getDate();
+  day = ( day < 10 ? "0" : "" ) + day;
+  return year + month + day + hour + min + sec;
 }
