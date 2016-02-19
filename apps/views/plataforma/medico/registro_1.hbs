@@ -30,18 +30,27 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-        <div class="col-md-12">
-          <div id="alertError"></div>
+        <div id="alertError" class="alert alert-danger dark-c hidden">
+          <div class="row">
+            <div class="col-md-2 s20 text-uppercase">
+              <span class="glyphicon glyphicon-alert"></span> error:
+            </div>
+            <div class="col-md-10 s15 text-capitalize">
+              <p>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row reg-box">
       <div class="body-container">
         <div class="center-content">
           <div class="col-md-3">
             <span class="round-number h45-light center-block">1</span>
           </div>
-          <div class="col-md-9">
+          <div class="col-md-8 reg">
             <div class="row">
               <div class="col-md-12">
                 <h3 class="h45-light s20 text-uppercase regSectionTitle">
@@ -124,7 +133,7 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    <div class="row reg-box">
       <div class="col-md-3">
         <div class="body-container">
           <div class="center-content">
@@ -132,7 +141,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-9">
+      <div class="col-md-8 reg">
         <div class="row">
           <div class="col-md-12">
             <h3 class="h45-light s20 text-uppercase regSectionTitle">
@@ -141,13 +150,13 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-4">
             <div class="form-group">
               <label class="s15 regInput" for="curpRegMed">CURP</label>
               <input type="text" class="form-control regInput" id="curpRegMed" name="curpRegMed" placeholder="CURP" value="" required="true">
             </div>
           </div>
-          <div class="col-md-6">
+          <div class="col-md-4">
             <div class="form-group">
               <label class="s15 regInput" for="cedulaRegMed">Cedula Profesional</label>
               <input type="text" class="form-control regInput" id="cedulaRegMed" name="cedulaRegMed" placeholder="CEDULA" value="" required="true">
@@ -155,12 +164,12 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-md-4">
             <div class="form-group">
               <select id="autoEspecialidad" class="form-control regInput autoEspecialidad"></select>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 hidden">
             <div class="checkbox form-group">
               <label class="regInput">
                 <input type="checkbox" id="subEspEdit" name="subEsp" value="0" />¿Es sub especialidad?
@@ -172,7 +181,7 @@
               <span class="glyphicon glyphicon-floppy-disk"></span>
             </button>
           </div>
-          <div class="col-md-12" id="regmedEsp">
+          <div class="col-md-12" id="regmedSubEsp">
             <label class="s15 regInput">Especialidades</label>
           </div>
         </div>
@@ -182,7 +191,7 @@
               <select id="autoEspecialidad" class="form-control regInput autoEspecialidad"></select>
             </div>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-4 hidden">
             <div class="checkbox form-group">
               <label class="regInput">
                 <input type="checkbox" id="subEspEdit" name="subEsp" value="0" />¿Es sub especialidad?

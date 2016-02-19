@@ -23,7 +23,7 @@ a:visited {
   background-color: #ffffff;
 }
 
-input, button {
+input, select, button {
   border-radius: 0!important;
 }
 
@@ -2707,10 +2707,42 @@ th.fc-day-header.fc-widget-header{
 .tab-pane:not(.active){
   visibility: hidden;
 }
+#regMedStepOne .header-section {
+  width: 100%;
+  height: 470px;
+  padding: 0;
+  border-bottom: solid 5px #375467;
+  background-image: url('../img/plataforma/coverstepone.png');
+}
 
-.regSectionTitle {
-  padding: 10px;
+#regMedStepOne .reg-box {
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
+#regMedStepOne .reg-box .reg {
+  padding-top: 15px;
+  padding-bottom: 20px;
+  padding-left: 30px;
+  border-left: solid 3px #717171;
+  color: #717171;
+}
+
+#regMedStepOne .reg-box .round-number {
+  width: 150px;
+  height: 150px;
+  border-radius: 100px;
+  border: solid 4px #717171;
+  padding: 20px;
+  margin: 20px auto;
+  color: #717171;
+  font-size: 100px;
+  text-align: center;
+}
+
+#regMedStepOne .regSectionTitle {
   margin: 0 auto;
+  padding: 10px 0;
   color: #717171;
 }
 
@@ -2741,12 +2773,10 @@ th.fc-day-header.fc-widget-header{
     right: -8px;
 }
 */
-.regInput{
-  border-radius: 9px;
-}
 
 label.regInput{
-  padding-left: 6px;
+  font-weight: normal;
+  font-size: 15px;
 }
 
 span.borderCircle{
