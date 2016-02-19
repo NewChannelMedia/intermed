@@ -34,7 +34,7 @@ module.exports = function ( sequelize, DataTypes ) {
     paranoid: true,
     underscored: true,
     freezeTableName: true,
-    tableName: 'colegiosAsoc'
+    tableName: 'colegiosasoc'
   } );
 
   return Colegio;

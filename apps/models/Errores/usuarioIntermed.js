@@ -19,7 +19,7 @@ module.exports = function (sequelize, DataTypes) {
       paranoid: true,
       underscored: true,
       freezeTableName: true,
-      tableName: 'userIntermed'
+      tableName: 'userintermed'
     });
 
     return DBError_userIntermed;

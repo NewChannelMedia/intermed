@@ -23,7 +23,7 @@
       paranoid: true,
       underscored: true,
       freezeTableName: true,
-      tableName: 'PacientesPadecimientos'
+      tableName: 'Pacientespadecimientos'
     } );
     return PacientePadecimiento;
   }

@@ -28,7 +28,7 @@
       paranoid: true,
       underscored: true,
       freezeTableName: true,
-      tableName: 'pacientesAlergias'
+      tableName: 'pacientesalergias'
     } );
     return PacienteAlergia;
   }
