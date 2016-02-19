@@ -63,4 +63,12 @@ module.exports = function (object){
   app.post('/control/auth', function (req, res){
     intermed.callController( 'control', 'auth', req.body, req, res );
   });
+
+  app.post('/control/user/add', function (req, res){
+    intermed.callController( 'control', 'userAdd', req.body, req, res );
+  });
+
+  app.post('/control/usuariosIntermed/getAll', function (req, res){
+    intermed.callController( 'control', 'userGetAll', req.body, req, res );
+  });
 }
