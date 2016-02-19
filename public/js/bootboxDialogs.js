@@ -990,7 +990,7 @@ function registro(){
       '<div class="tab-content">'+
         '<div role="tabpanel" class="tab-pane active" id="registroMedicos">'+
           '<div id="RegMedModal" class="Flama-normal">'+
-            '<form method="POST" action="/reg/local" id="frm_regM">'+
+            '<form method="POST" action="/reg/local" id="frm_regM" onsubmit="return encriptarPass(\'contrasenaRegM\',\'passEncriptM\')">'+
               '<div class="row">'+
                 '<div class="col-lg-6 col-md-6 regFacebook">'+
                   '<h3>Intermed <sup>&reg;</sup> es mejor'+
@@ -1035,7 +1035,8 @@ function registro(){
                     '</div>'+
                     '<div class="col-md-12">'+
                       '<div class="form-group  has-feedback" id="passwordGroup">'+
-                        '<input type="password" class="form-control" id="contraseñaRegM" name="password" placeholder="Contraseña" pattern=".{6,13}" aria-describedby="contraseñaRegMP">'+
+                        '<input type="hidden" id="passEncriptM" name="password">'+
+                        '<input type="password" class="form-control" id="contrasenaRegM" placeholder="Contraseña" pattern=".{6,13}" aria-describedby="contraseñaRegMP">'+
                         '<span id="passwordIcon" class="" aria-hidden="true"></span>'+
                         '<span class="sr-only" id="contraseñaRegMP">(success)</span>'+
                         '<div id="pass-error"></div>'+
@@ -1043,7 +1044,7 @@ function registro(){
                     '</div>'+
                     '<div class="col-md-12" id="confirmGroup">'+
                       '<div class="form-group  has-feedback">'+
-                        '<input type="password" class="form-control" id="contraseña2RegM" placeholder="Confirma tu contraseña" pattern=".{6,13}" aria-describedby="contraseña2RegMP">'+
+                        '<input type="password" class="form-control" id="contrasena2RegM" placeholder="Confirma tu contraseña" pattern=".{6,13}" aria-describedby="contraseña2RegMP">'+
                         '<span id="confirmIcon" class="" aria-hidden="true"></span>'+
                         '<span class="sr-only" id="contraseña2RegMP">(success)</span>'+
                         '<div id="conf-error"></div>'+
@@ -1070,7 +1071,7 @@ function registro(){
         '</div>'+
         '<div role="tabpanel" class="tab-pane" id="registroPacientes">'+
           '<div id="RegPacModal" class="Flama-normal">'+
-            '<form method="POST" action="/reg/local" id="frm_regP">'+
+            '<form method="POST" action="/reg/local" id="frm_regP" onsubmit="return encriptarPass(\'contrasenaRegP\',\'passEncriptP\')">'+
               '<div class="row">'+
                 '<div class="col-lg-6 col-md-6 regFacebook">'+
                   '<h3>Intermed <sup>&reg;</sup> es mejor'+
@@ -1115,14 +1116,15 @@ function registro(){
                     '</div>'+
                     '<div class="col-md-6">'+
                       '<div class="form-group" id="passwordGroup">'+
-                        '<input type="password" class="form-control" id="contraseñaReg" name="password" placeholder="Contraseña" pattern=".{6,13}" required="true">'+
+                        '<input type="hidden" id="passEncriptP" name="password">'+
+                        '<input type="password" class="form-control" id="contrasenaRegP" placeholder="Contraseña" pattern=".{6,13}" required="true">'+
                         '<span id="passwordIcon" class="" aria-hidden="true"></span>'+
                         '<div id="pass-error"></div>'+
                       '</div>'+
                     '</div>'+
                     '<div class="col-md-6">'+
                       '<div class="form-group" id="confirmGroup">'+
-                        '<input type="password" class="form-control" id="contraseña2Reg" name="password2" placeholder="Confirma tu contraseña" pattern=".{6,13}" required="true">'+
+                        '<input type="password" class="form-control" id="contrasena2RegP" name="password2" placeholder="Confirma tu contraseña" pattern=".{6,13}" required="true">'+
                         '<span id="confirmIcon" class="" aria-hidden="true"></span>'+
                         '<div id="conf-error"></div>'+
                       '</div>'+
@@ -1256,7 +1258,8 @@ function regPaciente(){
                       '</div>'+
                       '<div class="col-md-12">'+
                         '<div class="form-group" id="passwordGroup">'+
-                          '<input type="password" class="form-control" id="contrasenaReg" name="password" placeholder="Contraseña" pattern=".{6,13}" required="true">'+
+                          '<input type="hidden" id="passEncript" name="password" >'+
+                          '<input type="password" class="form-control" id="contrasenaReg" placeholder="Contraseña" pattern=".{6,13}" required="true">'+
                           '<span id="passwordIcon" class="" aria-hidden="true"></span>'+
                           '<div id="pass-error"></div>'+
                         '</div>'+

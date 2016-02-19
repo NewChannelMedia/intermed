@@ -2649,8 +2649,7 @@ function realizarBusqueda(bounds){
 }
 
 function encriptarPass(input1, input2){
-  $('#'+input1).val(hex_md5($('#'+input1).val()));
-  $('#'+input2).val(hex_md5($('#'+input2).val()));
+  $('#'+input2).val(hex_md5($('#'+input1).val()));
   return true;
 }
 
