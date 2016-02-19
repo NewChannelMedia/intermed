@@ -2,7 +2,7 @@ var models = require('../models');
 
 //Conekta
 var conekta = require('conekta');
-conekta.api_key = "key_KP2rs6xsxH3r6jy9y7vhWg";
+conekta.api_key = "key_XsrmsHZqM6tc2Y73oHxBig";
 conekta.api_version = '1.0.0';
 conekta.locale = 'es'
 

@@ -6,7 +6,7 @@ var bitacora = require('./Bitacora');
 
 //Conekta
 var conekta = require('conekta');
-conekta.api_key = "key_KP2rs6xsxH3r6jy9y7vhWg";
+conekta.api_key = "key_XsrmsHZqM6tc2Y73oHxBig";
 conekta.api_version = '1.0.0';
 conekta.locale = 'es'
 
@@ -22,18 +22,18 @@ exports.RecibirNotificacion = function (object, req, res) {
     var proveedorProximoDescuento;
     var monto = 0;
     var guardarNotificacion = false;
-    
+
     notificacion = req.body;//typeof req.body == 'string' ? JSON.parse(req.body) : req.body;
     //Guardar informacion de la notificacion
     if (notificacion) {
         res.status(200).json({ ok: true });
-        
+
         console.log(notificacion);
-        
+
         metodoPago = 1;
         fechaCreacion = new Date(notificacion.data.object.created_at * 1000);
         proveedorProximoDescuento = new Date(notificacion.data.object.billing_cycle_end * 1000);
-        
+
         switch (notificacion.type) {
             //cuando el pago de una suscripción no ha podido ser procesado. En caso de que la suscripción no pueda ser procesada después de 3 intentos consecutivos, la suscripción será cancelada.
             case 'subscription.payment_failed':
@@ -62,14 +62,14 @@ exports.RecibirNotificacion = function (object, req, res) {
                     console.log('error al obtener el plan');
                 });
                 break;
-            case 'customer.created':  
+            case 'customer.created':
             case 'plan.created':
             case 'plan.updated':
             case 'subscription.created':
-            case 'subscription.paused': //cuando una suscripción ha sido pausada.                
-            case 'subscription.resumed': //cuando una suscripción pausada ha sido reanudada.                
-            case 'subscription.canceled': //cuando una suscripción ha sido cancelada. Aparte de que tú o el cliente haya cancelado la suscripción, también se cancelará después de varios intentos de realizar el cobro al cliente.                
-            case 'subscription.updated'://cuando una suscripción ha sido actualizada ya sea con un nuevo plan o tarjeta.        
+            case 'subscription.paused': //cuando una suscripción ha sido pausada.
+            case 'subscription.resumed': //cuando una suscripción pausada ha sido reanudada.
+            case 'subscription.canceled': //cuando una suscripción ha sido cancelada. Aparte de que tú o el cliente haya cancelado la suscripción, también se cancelará después de varios intentos de realizar el cobro al cliente.
+            case 'subscription.updated'://cuando una suscripción ha sido actualizada ya sea con un nuevo plan o tarjeta.
                 console.log('sin implementación');
                 break;
             default:
@@ -77,31 +77,31 @@ exports.RecibirNotificacion = function (object, req, res) {
                 descripcion = notificacion.data.object.description;
                 monto = notificacion.data.object.amount / 100;
                 fechaPago = new Date(notificacion.data.object.created_at * 1000);
-                              
+
         }
-        
+
         if (guardarNotificacion == true) {
             NotificacionGuardar(notificacion.data.object.id, notificacion.data.object.customer_id, estatusProveedor, metodoPago, fechaCreacion, fechaPago, descripcion, proveedorProximoDescuento, monto);
         }
-        
+
         //switch (notificacion.type) {
         //    /*estos eventos se envian cuando se hace el pago
-        //     * Solo se ejecutan despues guardar la notificacion                    
+        //     * Solo se ejecutan despues guardar la notificacion
         //    case 'charge.paid'://cuando un cargo ha sido pagado
         //        historicoCargos.HistoricoCargosRegistrar(notificacion);
         //        break;
         //     */
         //    case 'charge.created': // cargo ha sido creado pero todavía no ha sido pagado.
-        //    case 'charge.refunded': //cuando un cargo ha sido reembolsado en su totalidad al comprador.                
-        //    case 'charge.chargeback.created': //cuando el tarjetahabiente no reconoce el cargo y contacta a su banco para generar un contracargo. Para más información sobre contracargos, visita la sección de contracargos.                
-        //    case 'charge.chargeback.updated': //cuando alguien dentro de tu cuenta actualiza el contracargo con evidencia que apoya el caso de contracargo. Para más información sobre contracargos, visita la sección de contracargos.                
-        //    case 'charge.chargeback.under_review': //cuando el contracargo ha sido bloqueado y la evidencia que has proporcionado ha sido enviada al banco adquiriente para revisar el caso. Para más información sobre contracargos, visita la sección de contracargos                
-        //    case 'charge.chargeback.won': //cuando el contracargo ha sido resuelto a tu favor. En este momento, el monto del contracargo que había sido retenido será devuelto a tu saldo y será disponible para el siguiente depósito a tu cuenta. Para más información sobre contracargos, visita la sección de contracargos                
+        //    case 'charge.refunded': //cuando un cargo ha sido reembolsado en su totalidad al comprador.
+        //    case 'charge.chargeback.created': //cuando el tarjetahabiente no reconoce el cargo y contacta a su banco para generar un contracargo. Para más información sobre contracargos, visita la sección de contracargos.
+        //    case 'charge.chargeback.updated': //cuando alguien dentro de tu cuenta actualiza el contracargo con evidencia que apoya el caso de contracargo. Para más información sobre contracargos, visita la sección de contracargos.
+        //    case 'charge.chargeback.under_review': //cuando el contracargo ha sido bloqueado y la evidencia que has proporcionado ha sido enviada al banco adquiriente para revisar el caso. Para más información sobre contracargos, visita la sección de contracargos
+        //    case 'charge.chargeback.won': //cuando el contracargo ha sido resuelto a tu favor. En este momento, el monto del contracargo que había sido retenido será devuelto a tu saldo y será disponible para el siguiente depósito a tu cuenta. Para más información sobre contracargos, visita la sección de contracargos
         //    case 'charge.chargeback.lost': //cuando el contracargo ha sido resuelto a favor del tarjetahabiente. El monto del contracargo que había sido retenido será enviado al tarjetahabiente. Para más información sobre contracargos, visita la sección de contracargos
-            
-        
-        
-                   
+
+
+
+
         //    default:
         //        console.log('evento no manejado' + notificacion.type);
         //}
@@ -109,12 +109,12 @@ exports.RecibirNotificacion = function (object, req, res) {
 }
 
 function NotificacionGuardar(idNotificacion, idUsuarioProveedor, estatusProveedor, metodoPago, fechaCreacion, fechaPago, descripcion, proveedorProximoDescuento, monto) {
-    //switch (notificacion.type) {        
+    //switch (notificacion.type) {
     //    case 'subscription.payment_failed':
     //        estatusProveedor = 'subscription.payment_failed';
     //        descripcion = 'Pago de suscripción Fallido';
     //        break;
-    //    //cuando una suscripción ha sido pagada.                
+    //    //cuando una suscripción ha sido pagada.
     //    case 'subscription.paid':
     //        estatusProveedor = 'subscription.paid';
     //        descripcion = 'Cargo Recurrente';
@@ -124,9 +124,9 @@ function NotificacionGuardar(idNotificacion, idUsuarioProveedor, estatusProveedo
     //        estatusProveedor = notificacion.data.object.status;
     //        descripcion = notificacion.data.object.description;
     //        monto = notificacion.data.object.amount / 100;
-    //        fechaPago = new Date(notificacion.data.object.created_at * 1000);            
+    //        fechaPago = new Date(notificacion.data.object.created_at * 1000);
     //}
-    
+
     models.UsuarioCargo.findOne({
         where: { idusuarioproveedor: idUsuarioProveedor }
     }).then(function (usuario) {
@@ -169,7 +169,7 @@ function NotificacionRegistrar(usuarioId, notificacionId, estatusId, metodoPago,
     .then(function (datos) {
         if (datos) {
             console.log('implementar actualizacion');
-            //actualizar informacion            
+            //actualizar informacion
             //models.ProveedorNotificaciones.update({
             //    proveedornotificacionestatus_id: estatusId,
             //    fechaPago: fechaPago
@@ -210,7 +210,7 @@ function NotificacionRegistrar(usuarioId, notificacionId, estatusId, metodoPago,
 
 //    //Obtener listado de clientes que tienen fecha de primer descuento menor o igual a la fecha actual
 //    //Descartar los cientes que no estan activos
-//    //Descartar los clientes que tienen fecha de pago        
+//    //Descartar los clientes que tienen fecha de pago
 //    console.log('inicia');
 
 //    models.Medico.findAll({
@@ -228,4 +228,3 @@ function NotificacionRegistrar(usuarioId, notificacionId, estatusId, metodoPago,
 //        console.log(err);
 //    });
 //}
-
