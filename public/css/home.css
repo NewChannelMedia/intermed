@@ -3,27 +3,6 @@ body {
   background-color: #ffffff;
 }
 
-.body-container {
-  position: relative;
-  display: table;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-}
-
-.top-content {
-  display: table-cell;
-  vertical-align: top;
-}
-.center-content {
-  display: table-cell;
-  vertical-align: middle;
-}
-.bottom-content {
-  display: table-cell;
-  vertical-align: bottom;
-}
-
 #newHomeHeader .separator {
   border: solid 2px #fff;
   z-index: 0;

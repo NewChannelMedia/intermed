@@ -19,6 +19,35 @@ a:visited {
   text-transform: none;
 }
 
+.bg-white {
+  background-color: #ffffff;
+}
+
+input, select, button {
+  border-radius: 0!important;
+}
+
+.body-container {
+  position: relative;
+  display: table;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+
+.top-content {
+  display: table-cell;
+  vertical-align: top;
+}
+.center-content {
+  display: table-cell;
+  vertical-align: middle;
+}
+.bottom-content {
+  display: table-cell;
+  vertical-align: bottom;
+}
+
 .block {
   position: relative;
   clear: both;
@@ -2679,15 +2708,104 @@ th.fc-day-header.fc-widget-header{
   visibility: hidden;
 }
 
-.regSectionTitle{
-  font-size: 20px;
-  padding: 11px;
-  background-color: #172C3B;
-  margin: 10px;
-  margin-top: 20px;
+#regMedStepOne .header-section {
+  width: 100%;
+  height: 470px;
+  padding: 0;
+  border-bottom: solid 5px #375467;
+  background-image: url('../img/plataforma/coverstepone.png');
+  background-position: top center;
 }
 
-.regSectionTitle .glyphicon{
+#regMedStepOne .reg-box {
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
+#regMedStepOne .reg-box .reg {
+  padding-top: 15px;
+  padding-bottom: 20px;
+  padding-left: 30px;
+  color: #717171;
+  border-left: solid 3px #717171;
+}
+
+#regMedStepOne .reg-box .round-number {
+  font-size: 100px;
+  width: 150px;
+  height: 150px;
+  margin: 20px auto;
+  padding: 20px;
+  text-align: center;
+  color: #717171;
+  border: solid 4px #717171;
+  border-radius: 100px;
+}
+
+@media (max-width:768px) {
+  #regMedStepOne .reg-box {
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding: 0;
+  }
+  #regMedStepOne .reg-box .reg {
+    padding-left: 15px;
+    border-width: 10px;
+  }
+  #regMedStepOne .reg-box .round-number {
+    font-size: 50px;
+    width: 70px;
+    height: 70px;
+    margin: 20px auto;
+    padding: 7px 0;
+  }
+}
+
+#regMedStepOne .regSectionTitle {
+  margin: 0 auto;
+  padding: 10px 0;
+  color: #717171;
+}
+
+.lbl {
+  font-size: 15px;
+  font-weight: bold;
+  margin-right: 10px;
+  padding-top: 3px;
+  padding-right: 0!important;
+  padding-bottom: 3px;
+  padding-left: 10px!important;
+  color: #fff;
+  border-radius: 0;
+  background-color: #375467;
+}
+
+.lbl .borrar {
+  font-size: 11px;
+  margin-left: 5px;
+  padding: 0 7px;
+  border-width: 0;
+  border-color: transparent;
+  border-left: solid 2px #fff;
+  background-color: transparent;
+}
+.lbl .borrar:hover,
+.lbl .borrar:focus,
+.lbl .borrar:active,
+.lbl .borrar.active {
+  background-color: transparent;
+  border-color: #fff;
+  color: #d9534f;
+}
+
+.lbl.lbl-esp {
+
+}
+.lbl.lbl-subesp {
+
+}
+
+/*.regSectionTitle .glyphicon{
   background-color: white;
   color: #172C3B;
   padding: 8px;
@@ -2713,13 +2831,11 @@ th.fc-day-header.fc-widget-header{
     top: -8px;
     right: -8px;
 }
-
-.regInput{
-  border-radius: 9px;
-}
+*/
 
 label.regInput{
-  padding-left: 6px;
+  font-weight: normal;
+  font-size: 15px;
 }
 
 span.borderCircle{
@@ -2796,4 +2912,26 @@ hr.fc-divider.fc-widget-header{
 #searchResult img.media-object {
     height: 100px;
     width: 100px;
+}
+
+input[type='number'].form-control::-webkit-outer-spin-button,
+input[type='number'].form-control::-webkit-inner-spin-button {
+  position: absolute;
+  top: 2px;
+  right: 17px;
+  bottom: 0;
+  width: 15px;
+  height: 30px;
+  opacity: .5;
+  background: #fff url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKUlEQVQYlWNgwAT/sYhhKPiPT+F/LJgEsHv37v+EMGkmkuImoh2NoQAANlcun/q4OoYAAAAASUVORK5CYII=) no-repeat center center;
+  -webkit-appearance: none;
+}
+input[type='number'].form-control::-webkit-inner-spin-button:hover,
+input[type='number'].form-control::-webkit-inner-spin-button:active {
+  opacity: .8;
+  box-shadow: 0 0 2px #0cf;
+}
+input:-webkit-autofill {
+  color: red;
+  background: black;
 }
