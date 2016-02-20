@@ -430,7 +430,8 @@ module.exports = {
       models.DBError_registro.findOne({
         where: {
           id: object.id
-        }
+        },
+        include: [{model: models.DBError_userIntermed,attributes:['id','nombre','correo']}]
       }).then(function(result){
         if (result.status == 0){
           result.status = 1;
@@ -453,7 +454,8 @@ module.exports = {
                   if (total == result.jsonContent.comentarios.length){
                     res.status(200).json({
                       success: true,
-                      result: result
+                      result: result,
+                      usuariointermed: req.session.passport.userIntermed
                     });
                   }
                 });
@@ -461,7 +463,8 @@ module.exports = {
             } else {
               res.status(200).json({
                 success: true,
-                result: result
+                result: result,
+                usuariointermed: req.session.passport.userIntermed
               });
             }
           } else {
@@ -481,18 +484,29 @@ module.exports = {
 
   errStatusUpdate: function (object, req, res){
     try{
-      models.DBError_registro.update({
-        status: object.status
-      },{
-        where: {
-          id: object.id
-        }
-      }).then(function(result){
-        res.status(200).json({
-          success: true,
-          result: result
+      if (req.session.passport && req.session.passport.userIntermed){
+        var date = getDateTime(true);
+        models.DBError_registro.update({
+          status: object.status,
+          userIntermed_id: req.session.passport.userIntermed.id,
+          datetimeupdated: date
+        },{
+          where: {
+            id: object.id
+          }
+        }).then(function(result){
+          res.status(200).json({
+            success: true,
+            result: req.session.passport.userIntermed,
+            date: date
+          });
         });
-      });
+      } else {
+        res.status(200).json({
+          success: false,
+          result: 1
+        });
+      }
     }catch ( err ) {
       req.errorHandler.report(err, req, res);
     }
@@ -694,7 +708,7 @@ function crearCodigos(object, req, res){
   });
 }
 
-function getDateTime() {
+function getDateTime(format) {
   var date = new Date();
   var hour = date.getHours();
   hour = ( hour < 10 ? "0" : "" ) + hour;
@@ -707,5 +721,9 @@ function getDateTime() {
   month = ( month < 10 ? "0" : "" ) + month;
   var day = date.getDate();
   day = ( day < 10 ? "0" : "" ) + day;
-  return year + month + day + hour + min + sec;
+  if (format){
+    return year +'/'+ month +'/'+ day  +' '+ hour +':'+ min +':'+sec;
+  } else {
+    return year + month + day + hour + min + sec;
+  }
 }

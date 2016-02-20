@@ -3765,6 +3765,9 @@ function detallesError(error_id, element){
   var descripcion = '';
   var comentarios = '';
   var estatus = '';
+  var footerBootbox = '';
+  var contenidoatiende = '';
+  var panelcomentarios = '';
   $.ajax({
     url: '/control/err/getById',
     type: 'POST',
@@ -3778,17 +3781,77 @@ function detallesError(error_id, element){
     success: function( data ) {
       if (data.success){
         if (data.result){
+
           if (element){
+            $(element).attr('onclick', 'detallesError('+ error_id +')');
             var clone = $(element).parent().parent().clone();
             $(element).parent().parent().remove();
             $('#errNoAt').find('tbody').append(clone);
             contarErrores();
           }
-          estatus = data.result.status;
+
+          estatus = parseInt(data.result.status);
+
+          var permisos = true;
+          if (parseInt(estatus) == 2){
+            //No puede cambiar de estatus el error, ni agregar comentarios
+            if (parseInt(data.usuariointermed.rolUsuario_id) == 1){
+              permisos = true;
+            } else if (parseInt(data.result.userIntermed_id) != parseInt(data.usuariointermed.id) ){
+              permisos = false;
+            }
+          }
+          //"DBError_userIntermed":{"id":1,"nombre":"Adminitrador","correo":"admin@newchannel.mx"},
+          if (data.result.DBError_userIntermed){
+            contenidoatiende = '<a class="list-group-item disabled"><b>Atendido por:</b> '+ data.result.DBError_userIntermed.nombre  + ' [' + data.result.DBError_userIntermed.correo + '] </a>';
+            contenidoatiende += '<a class="list-group-item disabled"><b>Fecha:</b> '+ new Date(data.result.datetimeupdated).toLocaleString()  +' </a>';
+          }
+
+          if (permisos){
+            if (estatus >= 0 && estatus <= 2){
+              panelcomentarios =
+                '<div class="row" style="margin-top:20px;margin-bottom:20px" id="panelcomentarios">'+
+                  '<div class="col-md-12">'+
+                    '<form role="form" onsubmit="return agregarComentarioErr('+error_id+',\'ErrComent\')" id="addComentErr">'+
+                      '<div class="input-group">'+
+                        '<textarea class="form-control custom-control" rows="3" style="resize:none;height: 80px;" id="ErrComent" placeholder="Nuevo comentario..." required></textarea>'+
+                        '<span class="input-group-btn">'+
+                          '<button class="btn btn-primary" style="height: 80px;">Agregar</button>'+
+                        '</span>'+
+                      '</div>'+
+                    '</form>'+
+                  '</div>'+
+                '</div>';
+              var label = '';
+              var clase = '';
+              if (estatus == 0 || estatus == 1){
+                label = 'Atender log';
+                clase = 'btn-success';
+                estatus = 2;
+              } else if (estatus == 2){
+
+                estatus = 3;
+                label = 'Marcar como solucionado';
+                clase = 'btn-danger';
+              }
+              footerBootbox =
+                  '<div class="row footerBootbox" style="padding-top:20px;padding-bottom:20px">'+
+                    '<div class="col-md-12">'+
+                      '<div class="row">'+
+                        '<input type="hidden" id="estatusError" value="'+ estatus +'">'+
+                        '<button onclick="guardarEstatusError('+ error_id +',\'estatusError\',this);" class="btn '+clase+' btn-block form-control" type="button">'+ label +'</button>'+
+                      '</div>'+
+                    '</div>'+
+                  '</div>';
+            }
+          }
+
           error = data.result.err;
           fecha = data.result.datetime;
           if ( data.result.jsonContent ){
             var jsonContent = data.result.jsonContent;
+            descripcion += '<div class="list-group" id="atiendeLog">' + contenidoatiende + '</div>';
+
             descripcion += '<div class="list-group"><a href="#" class="list-group-item active"><b>Detalles de error:</b></a>';
             descripcion += '<a class="list-group-item disabled"><b>Error: </b>' + jsonContent.err +'</a>';
             if (jsonContent.usuario_id){
@@ -3868,18 +3931,7 @@ function detallesError(error_id, element){
               descripcion +
             '</div>'+
             '<div role="tabpanel" class="tab-pane" id="profile">'+
-              '<div class="row" style="margin-top:20px;">'+
-                '<div class="col-md-12">'+
-                  '<form role="form" onsubmit="return agregarComentarioErr('+error_id+',\'ErrComent\')" id="addComentErr">'+
-                    '<div class="input-group">'+
-                      '<textarea class="form-control custom-control" rows="3" style="resize:none;height: 80px;" id="ErrComent" placeholder="Nuevo comentario..." required></textarea>'+
-                      '<span class="input-group-btn">'+
-                        '<button class="btn btn-primary" style="height: 80px;">Agregar</button>'+
-                      '</span>'+
-                    '</div>'+
-                  '</form>'+
-                '</div>'+
-              '</div>'+
+              panelcomentarios +
 
               comentarios +
               '</div>'+
@@ -3888,21 +3940,7 @@ function detallesError(error_id, element){
 
       '</div>'+
 
-      '<div class="row footerBootbox" style="padding-top:20px;padding-bottom:20px">'+
-          '<div class="col-md-12">'+
-            '<div class="input-group">'+
-              '<label class="input-group-addon" style="background-color: transparent;border: none;color: white;font-weight: bold;">Estatus: </label>'+
-              '<select id="estatusError" class="form-control">'+
-                '<option value="1" >Por atender</option>'+
-                '<option value="2" >Atendido</option>'+
-                '<option value="3" >Solucionado</option>'+
-              '</select>'+
-              '<span class="input-group-btn">'+
-                '<button id="addEspecialidadMedic" onclick="guardarEstatusError('+ error_id +',\'estatusError\');" class="btn btn-primary form-control" type="button">Guardar</button>'+
-              '</span>'+
-            '</div>'+
-        '</div>'+
-      '</div>'
+      footerBootbox
     });
 
     setTimeout(function(){

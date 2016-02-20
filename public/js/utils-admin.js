@@ -664,7 +664,7 @@ $('#pageAdminContent').html(contenido);
     });
 }
 
-function guardarEstatusError(error_id,statusInput){
+function guardarEstatusError(error_id,statusInput,element){
   var status = statusInput = $('#'+statusInput).val();
   var error_id = error_id;
   $.ajax({
@@ -680,6 +680,23 @@ function guardarEstatusError(error_id,statusInput){
     success: function( data ) {
       if (data.success){
         if (data.success && data.result){
+          if (element){
+            if (status == 2){
+              var contenidoatiende = '<a class="list-group-item disabled"><b>Atendido por:</b> '+ data.result.nombre  + ' [' + data.result.correo + '] </a>';
+              contenidoatiende += '<a class="list-group-item disabled"><b>Fecha:</b> '+ new Date(data.date).toLocaleString()  +' </a>';
+
+              $('#atiendeLog').html(contenidoatiende);
+
+              $(element).removeClass('btn-success');
+              $(element).addClass('btn-danger');
+              $(element).text('Marcar como solucionado');
+              $(element).parent().find('#estatusError').val(3);
+            } else {
+              $(element).parent().parent().parent().remove();
+              $('#panelcomentarios').remove();
+            }
+          }
+
           var clone = $('tr#err_'+error_id).clone();
           $('tr#err_'+error_id).remove();
           var divid = '';
