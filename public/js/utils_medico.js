@@ -1821,21 +1821,29 @@ function traerAseguradoras(){
         $(".autoEspecialidad").html(html2);
       });
       $.post('/loadEspecialidades', function(data){
-        if ($('#regmedEsp').length>0){
+        if ($('#regmedEsp ul').length>0){
           var cont = '';
           $.each(data.MedicoEspecialidads, function( i, item ){
-            var clase = 'btn-info';
+            var clase = 'lbl-esp';
             if( item.subEsp == 1 ){
-              clase = 'btn-default';
+              clase = 'lbl-subesp';
             }
-            cont += '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
-            '<label class="btn btn-xs '+ clase +'">'+
-            '<span>'+item.Especialidad.especialidad+'</span>'+
+            cont +=
+            '<li class="lbl '+clase+'">'+
+              item.Especialidad.especialidad+'&nbsp;'+
+              '<button class="btn btn-sm borrar" type="button" onclick="deletePalabra(this)">'+
+                '<span class="glyphicon glyphicon-remove"></span>'+
+              '</button>'+
+            '</li>'
+/*
+            '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
+            '<label class="btn btn-xs '+  +'">'+
+            '<span>'++'</span>'+
             '</label>'+
             '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+item.id+'\',this);" >'+
-            '<span class="glyphicon glyphicon-remove"></span></button></div>';
+            '<span class="glyphicon glyphicon-remove"></span></button></div>'*/;
           });
-          $('#regmedEsp').html(cont);
+          $('#regmedEsp ul').html(cont);
         } else {
           var esp = '';
           var subesp = '';
@@ -1930,7 +1938,7 @@ function traerAseguradoras(){
     }
     function editEspecialidades(){
       var especial = $("#autoEspecialidad option:selected").val();
-      var checado;
+      var checado = 1;
       if( $("#subEspEdit").is(":checked") ){
         checado = 1;
       }else{
@@ -1945,7 +1953,7 @@ function traerAseguradoras(){
           $("#subEspEdit").attr('checked',false);
           loadEspecialidades();
         }else{
-          console.log("ERror al agregar la especialidad");
+          console.log("Error al agregar la especialidad");
         }
       });
     }

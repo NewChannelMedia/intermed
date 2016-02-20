@@ -2767,6 +2767,44 @@ th.fc-day-header.fc-widget-header{
   color: #717171;
 }
 
+.lbl {
+  font-size: 15px;
+  font-weight: bold;
+  margin-right: 10px;
+  padding-top: 3px;
+  padding-right: 0!important;
+  padding-bottom: 3px;
+  padding-left: 10px!important;
+  color: #fff;
+  border-radius: 0;
+  background-color: #375467;
+}
+
+.lbl .borrar {
+  font-size: 11px;
+  margin-left: 5px;
+  padding: 0 7px;
+  border-width: 0;
+  border-color: transparent;
+  border-left: solid 2px #fff;
+  background-color: transparent;
+}
+.lbl .borrar:hover,
+.lbl .borrar:focus,
+.lbl .borrar:active,
+.lbl .borrar.active {
+  background-color: transparent;
+  border-color: #fff;
+  color: #d9534f;
+}
+
+.lbl.lbl-esp {
+
+}
+.lbl.lbl-subesp {
+
+}
+
 /*.regSectionTitle .glyphicon{
   background-color: white;
   color: #172C3B;
