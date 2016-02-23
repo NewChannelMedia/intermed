@@ -568,7 +568,6 @@ function mapSearchDiv(){
             }, 1500);
           } else {
             eventoBuscar = true;
-            console.log('eventoBuscar: set true');
           }
         });
         searchDiv.setCenter(initialLocation);
@@ -596,7 +595,6 @@ function centrarEnMapa(latitud,longitud,medico_id,direccion_id, noScr){
     infoWindows.forEach(function(info){
       info.close();
     });
-    console.log('eventoBuscar: set false')
     google.maps.event.trigger(marcadoresBusqueda[direccion_id].marker, 'click');
     var pos = new google.maps.LatLng(latitud, longitud);
     eventoBuscar = false;
