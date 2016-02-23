@@ -3710,7 +3710,7 @@ function editarEspecialidades(){
                   '<div class="input-group">'+
                     '<select id="autoEsp" class="form-control autoEspecialidad"></select>'+
                     '<span class="input-group-btn">'+
-                      '<button id="addEspecialidadMedic" onclick="agregarExpecialidad(\'autoEsp\');" class="btn btn-primary form-control" type="button">'+
+                      '<button id="addEspecialidadMedic" onclick="agregarEspecialidad(\'autoEsp\');" class="btn btn-primary form-control" type="button">'+
                         '<span class="glyphicon glyphicon-plus"></span>'+
                       '</button>'+
                     '</span>'+

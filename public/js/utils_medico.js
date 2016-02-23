@@ -2971,6 +2971,7 @@ function cargarServicios(element){
       if (data.success){
         if (data.result){
           $('#ServListReg').html('');
+          var contenido = '';
           if (data.result.length>0){
             contenido = `<div class="row">
                           <div class="col-md-3"><label class="whiteF regInput">Concepto.</label></div>
@@ -3057,7 +3058,7 @@ function guardarServicio(idElement){
     element[el.name] = el.value;
   });
 
-  if ($('#idDireccion').length>0){
+  if ($('#idDireccion').length>0 && $('#idDireccion').val() != ""){
     element['direccion_id'] = $('#idDireccion').val();
   }else {
     element['direccion_id'] = $('#slc_servicios_ubi').val();
@@ -3292,7 +3293,7 @@ function guardarInformacionPersonal(){
   }
 }
 
-function agregarExpecialidad(element){
+function agregarEspecialidad(element){
   var esp = $('#'+element).val();
   $.post('/editEspecialidades',{
     especialidad:esp,
