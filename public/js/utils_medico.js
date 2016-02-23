@@ -433,7 +433,7 @@ function saveStepOne() {
   var gender = $('input[name=gender]').val();
   var curpRegMed = $('#curpRegMed').val();
   var cedulaRegMed = $('#cedulaRegMed').val();
-  if (nombreRegMed != "" && apePatRegMed != "" && gender != "" && curpRegMed != "" && cedulaRegMed != "" && $('#regmedEsp').text() != "" && fechaValida){
+  if (nombreRegMed != "" && apePatRegMed != "" && gender != "" && curpRegMed != "" && cedulaRegMed != "" && $('#especialidadesListBoot').text() != "" && fechaValida){
     $.ajax( {
       url: '/regMedPasoUno',
       type: 'POST',
@@ -465,7 +465,7 @@ function saveStepOne() {
       error = "su género";
     } else if (curpRegMed == ""){
       error = "su CURP";
-    } else if ($('#regmedEsp').text() == ""){
+    } else if ($('#especialidadesListBoot').text() == ""){
       error ="su especialidad"
     } else if (fechaValida){
       error="su fecha de nacimiento (correcta)"
@@ -1805,6 +1805,20 @@ function traerAseguradoras(){
         $("#imgPerfilMedic").attr('src',data.urlFotoPerfil);
       });
     }
+
+    function autocompleteEspecialidades(){
+      $.post('/todasEspecialidades',function(p){
+        var especialidades = [];
+        $.each(p,function(e, item){
+          especialidades.push(item.especialidad);
+        });
+        $(".autoEspecialidad").autocomplete({
+          minLength: 0,
+          source: especialidades
+        });
+      });
+    }
+
     function loadEspecialidades(){
       // carga los datos de medicoEspecialidades
       var html = "";
@@ -1812,38 +1826,23 @@ function traerAseguradoras(){
       var contador = 1;
       var contador2 = 1;
       //carga todas las especialidades
-      $.post('/todasEspecialidades',function(p){
-        var html2 = "";
-        html2 += '<option value="" selected disabled>Selecciona una</option>';
-        $.each(p,function(e, etem){
-          html2 += '<option value="'+etem.id+'">'+etem.especialidad+'</option>';
-        });
-        $(".autoEspecialidad").html(html2);
-      });
+      autocompleteEspecialidades();
       $.post('/loadEspecialidades', function(data){
         if ($('#regmedEsp ul').length>0){
-          var cont = '';
+          var contesp = '', contsubesp = '';;
           $.each(data.MedicoEspecialidads, function( i, item ){
-            var clase = 'lbl-esp';
             if( item.subEsp == 1 ){
-              clase = 'lbl-subesp';
-            }
-            cont +=
-            '<li class="lbl '+clase+'">'+
-              item.Especialidad.especialidad+'&nbsp;'+
-              '<button class="btn btn-sm borrar" type="button" onclick="deletePalabra(this)">'+
-                '<span class="glyphicon glyphicon-remove"></span>'+
-              '</button>'+
-            '</li>'
-/*
-            '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
-            '<label class="btn btn-xs '+  +'">'+
-            '<span>'++'</span>'+
-            '</label>'+
-            '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+item.id+'\',this);" >'+
-            '<span class="glyphicon glyphicon-remove"></span></button></div>'*/;
-          });
-          $('#regmedEsp ul').html(cont);
+              contsubesp += '<li class="lbl lbl-subesp">'+ item.Especialidad.especialidad + '&nbsp;'+
+              '<button class="btn btn-sm borrar" type="button" onclick="deleteEsp(\''+item.id+'\',this);">'+
+              '<span class="glyphicon glyphicon-remove"></span></button></li>';
+            } else {
+              contesp += '<li class="lbl lbl-esp">'+ item.Especialidad.especialidad + '&nbsp;'+
+              '<button class="btn btn-sm borrar" type="button" onclick="deleteEsp(\''+item.id+'\',this);">'+
+              '<span class="glyphicon glyphicon-remove"></span></button></li>';
+
+            }});
+          $('#especialidadesListBoot').html(contesp);
+          $('#subEspecialidadesListBoot').html(contsubesp);
         } else {
           var esp = '';
           var subesp = '';
@@ -1860,7 +1859,6 @@ function traerAseguradoras(){
               esp += cont;
             }
           });
-
           $('#especialidadesListBoot').html(esp);
           $('#subEspecialidadesListBoot').html(subesp);
         }
@@ -3301,12 +3299,9 @@ function agregarEspecialidad(element){
   },function( data ){
     if( data.success ){
        $('#'+element).val('');
-      var cont = '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
-      '<label class="btn btn-xs btn-info">'+
-      '<span>'+data.Especialidad.especialidad+'</span>'+
-      '</label>'+
-      '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+data.id+'\',this);" >'+
-      '<span class="glyphicon glyphicon-remove"></span></button></div>';
+       var cont = '<li class="lbl lbl-esp">'+ data.Especialidad.especialidad + '&nbsp;'+
+       '<button class="btn btn-sm borrar" type="button" onclick="deleteEsp(\''+data.id+'\',this);">'+
+       '<span class="glyphicon glyphicon-remove"></span></button></li>';
       $('#especialidadesListBoot').append(cont);
       actualizarSesion();
     }else{
@@ -3327,12 +3322,9 @@ function agregarSubespecialidad(element){
   },function( data ){
     if( data.success ){
        $('#'+element).val('');
-      var cont = '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
-      '<label class="btn btn-xs btn-info">'+
-      '<span>'+data.Especialidad.especialidad+'</span>'+
-      '</label>'+
-      '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+data.id+'\',this);" >'+
-      '<span class="glyphicon glyphicon-remove"></span></button></div>';
+       var cont = '<li class="lbl lbl-subesp">'+ data.Especialidad.especialidad + '&nbsp;'+
+       '<button class="btn btn-sm borrar" type="button" onclick="deleteEsp(\''+data.id+'\',this);">'+
+       '<span class="glyphicon glyphicon-remove"></span></button></li>';
       $('#subEspecialidadesListBoot').append(cont);
       actualizarSesion();
     }else{

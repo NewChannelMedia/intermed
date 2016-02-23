@@ -1201,34 +1201,33 @@ var _this = module.exports = {
   editEspecialidades: function( req, res ){
     try{
       if ( req.session.passport.user && req.session.passport.user.id > 0 ){
-        var usuario_id = req.session.passport.user.id;
-        models.MedicoEspecialidad.findOne({
-          where:{
-            especialidad_id: parseInt(req.body.especialidad),
-            medico_id: parseInt(req.session.passport.user.Medico_id)
-          }
-        }).then(function(esp){
-          if (esp){
-            esp['success'] = false;
-            esp['existe'] = true;
-            res.send(esp);
-          }else{
-            models.MedicoEspecialidad.create({
-              especialidad_id: parseInt(req.body.especialidad),
-              subEsp: parseInt(req.body.checado),
+        models.Especialidad.findOrCreate({
+          where: {especialidad: req.body.especialidad},
+          defaults: {especialidad: req.body.especialidad,tipoEspecialidad_id: 2}
+        }).spread(function(especialidad, created) {
+          var usuario_id = req.session.passport.user.id;
+          models.MedicoEspecialidad.findOne({
+            where:{
+              especialidad_id: parseInt(especialidad.id),
               medico_id: parseInt(req.session.passport.user.Medico_id)
-            }).then(function(creado){
-              models.MedicoEspecialidad.findOne({
-                where:{
-                  especialidad_id: parseInt(req.body.especialidad),
-                  medico_id: parseInt(req.session.passport.user.Medico_id)
-                }
+            }
+          }).then(function(esp){
+            if (esp){
+              esp['success'] = false;
+              esp['existe'] = true;
+              res.send(esp);
+            }else{
+              models.MedicoEspecialidad.create({
+                especialidad_id: parseInt(especialidad.id),
+                subEsp: parseInt(req.body.checado),
+                medico_id: parseInt(req.session.passport.user.Medico_id)
               }).then(function(creado){
-                models.Especialidad.findOne({
-                  where: {
-                    id: creado.especialidad_id
+                models.MedicoEspecialidad.findOne({
+                  where:{
+                    especialidad_id: parseInt(especialidad.id),
+                    medico_id: parseInt(req.session.passport.user.Medico_id)
                   }
-                }).then(function(especialidad){
+                }).then(function(creado){
                   creado = JSON.parse(JSON.stringify(creado));
                   creado['Especialidad'] = JSON.parse(JSON.stringify(especialidad));
                   if (especialidad){
@@ -1237,8 +1236,8 @@ var _this = module.exports = {
                   res.send(creado);
                 });
               });
-            });
-          }
+            }
+          });
         });
       } else {
         res.status(200).json({

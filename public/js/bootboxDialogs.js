@@ -3708,7 +3708,7 @@ function editarEspecialidades(){
 
                 '<div class="col-md-12">'+
                   '<div class="input-group">'+
-                    '<select id="autoEsp" class="form-control autoEspecialidad"></select>'+
+                    '<input type="text" id="autoEsp" class="form-control autoEspecialidad">'+
                     '<span class="input-group-btn">'+
                       '<button id="addEspecialidadMedic" onclick="agregarEspecialidad(\'autoEsp\');" class="btn btn-primary form-control" type="button">'+
                         '<span class="glyphicon glyphicon-plus"></span>'+
@@ -3718,8 +3718,11 @@ function editarEspecialidades(){
                 '</div>'+
 
 
-                '<div class="col-md-12 text-center" id="especialidadesListBoot" style="margin-top:5px">'+
+
+                '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="regmedEsp" style="margin-top:10px">'+
+                  '<ul class="list-inline" id="especialidadesListBoot"></ul>'+
                 '</div>'+
+
               '</div>'+
 
 
@@ -3732,7 +3735,7 @@ function editarEspecialidades(){
 
                 '<div class="col-md-12">'+
                   '<div class="input-group">'+
-                    '<select id="autoSubEsp" class="form-control autoEspecialidad"></select>'+
+                    '<input type="text" id="autoSubEsp" class="form-control autoEspecialidad">'+
                     '<span class="input-group-btn">'+
                       '<button id="addEspecialidadMedic" onclick="agregarSubespecialidad(\'autoSubEsp\');" class="btn btn-primary form-control" type="button">'+
                         '<span class="glyphicon glyphicon-plus"></span>'+
@@ -3741,8 +3744,8 @@ function editarEspecialidades(){
                   '</div>'+
                 '</div>'+
 
-
-                '<div class="col-md-12 text-center" id="subEspecialidadesListBoot" style="margin-top:5px">'+
+                '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="regmedEsp" style="margin-top:10px">'+
+                  '<ul class="list-inline" id="subEspecialidadesListBoot"></ul>'+
                 '</div>'+
 
               '</div>'+
