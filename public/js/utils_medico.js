@@ -414,12 +414,31 @@ function cambiarActual(element){
   }
 }
 $("#oficina").click(function(){
-  logEncrypt();
+  abrirHistoriales();
 });
-function createPassword(){
-  bootbox.hideAll();
-  passwordCreate();
+
+function abrirHistoriales(){
+  //Checar si existe sesión abierta y si el usuario ya tiene contraseña para historiales (con el medico_id)
+  //si existe redireccionar a historiales,
+  //si no abrir modal para iniciar sesión
+
+  $.post('/history/access',function(data){
+    console.log('RESULTADO: ' + JSON.stringify(data));
+    if (data.success){
+      //Si ya existe la sesión de historiales
+      window.location.href = '/historiales';
+    } else {
+      if (data.login){
+        logEncrypt();
+      } else {
+        passwordCreate();
+      }
+    }
+  }).fail(function(e){
+    console.log("Error:-"+JSON.stringify(e));
+  });
 }
+
 function saveStepOne() {
   var diaNac = $('#diaNacReg').val();
   var mesNac = $('#mesNacReg').val();
@@ -2643,16 +2662,18 @@ function traerAseguradoras(){
         }
       });
   }
-  function isLogin(password){
+  function isLogin(password, reload){
     var pass = $(password).val();
     // se envia la informacion
     if( pass != '' ){
       if( pass.length >= 6 ){
-        $.post('/isLogin',{pass:pass}, function(data){
-          if( data == true ){
-            $("#noAcceso").addClass('hidden');
-            $(password).val('');
-            window.location = "/historiales";
+        $.post('/history/login',{pass:hex_md5(pass)}, function(data){
+          if( data.success == true ){
+            if (reload){
+              location.reload();
+            } else {
+              window.location.href = '/historiales';
+            }
           }else{
             $("#noAcceso").removeClass('hidden');
           }
@@ -2670,7 +2691,7 @@ function traerAseguradoras(){
     if( pass.length === confirma.length ){
       if( (pass === confirma) && ( pass != '' &&  confirma != '' ) ){
         $("#noCoincidenCampos").addClass('hidden');
-        $.post('/insertPassword',{pas:confirma,modelo:'UsuarioHistorial'},function(data){
+        $.post('/insertPassword',{pas:hex_md5(confirma),modelo:'UsuarioHistorial'},function(data){
           if( data ){
             $("#Yacreado").addClass('hidden');
             $("#creado").removeClass('hidden');
@@ -2690,18 +2711,7 @@ function traerAseguradoras(){
       $("#noCoincidenCampos").removeClass('hidden');
     }
   }
-  // checa que ya tenga una contraseña si es asi quita el enlace de crear cuenta
-  function deleteLinkCrear(link){
-    $.post('/deleteLinkCrear',function(data){
-      if( data == true ){
-        $(link).addClass('hidden');
-      }else{
-        $(link).removeClass('hidden');
-      }
-    }).fail(function(e){
-      console.log("Fallo al hacer esta tarea");
-    });
-  }
+
   // cambiar password
   function confirmChangePass( password, confirm, bandera ){
     var primero = $(password).val();
