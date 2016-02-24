@@ -3333,49 +3333,48 @@ function BootboxExperienciaLaboral(){
     bootbox.dialog({
       backdrop:false,
       className: 'Intermed-Bootbox',
-      title: '<span class"title">Login</span><span class="subtitle">Ingresa a tus historiales</span>',
+      title: '<span class"title">Password</span><span class="subtitle">Ingresa a tus historiales</span>',
       message:
-      '<div class="container-fluid">'+
-        '<div class="hidden" id="noAcceso">'+
-          '<h1>'+
-            '<span class="label label-danger">'+
-            '<span class="glyphicon glyphicon-warning-sign"></span>&nbsp;'+
-            'No tiene acceso</span>'+
-          '</h1>'+
-        '</div>'+
-        '<div class="row">'+
-          '<div class="col-md-12">'+
-            '<div class="col-xs-4">'+
-              '<!-- Campo del password -->'+
-              '<div class="form-group">'+
-                '<label for="passinput" class="sr-only">Password</label>'+
-                '<span class="glyphicon glyphicon-flash">'+
-                  '<input type="password"  id="passinput" placeholder="Password"/>'+
-                '</span>'+
+        '<div class="container-fluid">'+
+          '<div class="hidden" id="noAcceso">'+
+            '<h1>'+
+              '<span class="label label-danger">'+
+              '<span class="glyphicon glyphicon-warning-sign"></span>&nbsp;'+
+              'No tiene acceso</span>'+
+            '</h1>'+
+          '</div>'+
+
+          '<div class="row">'+
+            '<div class="col-md-12">'+
+              '<div class="form-horizontal">'+
+                '<div class="form-group">'+
+                  '<div class="row">'+
+                    '<label for="inputContraseña" class="col-sm-2 control-label">Password</label>'+
+                    '<div class="col-sm-10">'+
+                      '<input type="password" class="form-control" id="passinput" placeholder="Password"/>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
               '</div>'+
             '</div>'+
-          '</div>'+
-          '<div class="col-md-12">'+
-            '<div class="col-xs-4">'+
+            '<div class="col-md-12">'+
               '<div class="form-group">'+
-                '<button class=" btn btn-danger" type="button" onclick="isLogin(\'#passinput\')">'+
-                  '<span class="glyphicon glyphicon-lock"></span>&nbsp;Entrar'+
+                '<button type="button" class="btn btn-success btn-block"  onclick="isLogin(\'#passinput\')" class="form-control">'+
+                  '<span class="glyphicon glyphicon-lock"></span>&nbsp;Ingresar'+
                 '</button>'+
               '</div>'+
-              '<div class="col-mx-4">'+
+            '</div>'+
+            '<div class="col-md-12 text-center">'+
+              '<div class="form-group">'+
                 '<a href="#" onclick="updatePassword();">'+
                   '<span class="label label-warning">¿Olvido su contraseña?</span>'+
                 '</a>'+
-                '<a href="#" id="creaCuenta" class="hidden" onclick="createPassword();">'+
-                  '&nbsp;&nbsp;&nbsp;<span class="label label-info">Crear cuenta</span>'+
-                '</a>'+
               '</div>'+
             '</div>'+
           '</div>'+
-        '</div>'+
-      '</div>'
+
+        '</div>'
     });
-    deleteLinkCrear('#creaCuenta');
   }
   function passwordCreate(){
     bootbox.dialog({

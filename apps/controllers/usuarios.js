@@ -378,7 +378,7 @@ var enviarCorreoConfirmacion = function ( usuario ) {
     token: usuario.token,
     enlace: 'localhost:3000/activar/' + usuario.token,
   };
-  mail.send( datos, 'confirmar' ); //se envia el correo
+  mail.send( datos, 'confirmar' );
 }
 
 exports.actualizarSesion = function ( object, req, res ) {

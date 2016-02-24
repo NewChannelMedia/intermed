@@ -83,6 +83,12 @@ module.exports = function (object){
     intermed.callController('/configuracion/configuraciones','index',req, res);
   });
 
+  //Vista de historiales
+  app.get('/historiales', function( req, res ){
+    routeLife( 'plataforma2', 'plataforma/medico', hps );
+    intermed.callController('historiales','index', req.body, req, res );
+  });
+
   app.get('/control', function (req, res,next){
     if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "A"){
       routeLife( 'plataforma2', 'plataforma', hps );
