@@ -2529,11 +2529,7 @@ div.Slider{
 /*Menu registra ubicaciones*/
 
 .menuRegUbic{
-  padding:0px;
-  /*width: 100%;*/
-  display: block;
-  margin: -15px;
-  margin-bottom: 0px;
+
 }
 
 .menuRegUbic li{
@@ -2585,12 +2581,10 @@ div.Slider{
   border-bottom: none;
 }
 
-.regExp{
-  background-color:#50A8DE;
-  text-align: center;
+.regExp {
   padding: 30px;
-  min-height: 80px;
-  margin-top: -2px;
+  text-align: center;
+  border: solid 2px #375467;
 }
 
 .btn-save-reg{
@@ -2766,6 +2760,15 @@ th.fc-day-header.fc-widget-header{
   padding: 10px 0;
   color: #717171;
 }
+
+#divMapRegHor .header-section {
+  height: 195px;
+  border-bottom: solid 4px #375467;
+  background: transparent;
+}
+
+
+
 
 .lbl {
   font-size: 15px;
