@@ -41,5 +41,12 @@ module.exports = {
     }catch ( err ) {
       req.errorHandler.report(err, req, res);
     }
+  },
+  getSessionType: function (object, req, res){
+    var tipoUsuario = '';
+    if (req.session.passport && req.session.passport.user){
+      tipoUsuario = req.session.passport.user.tipoUsuario;
+    }
+    res.status(200).json({'tipoUsuario':tipoUsuario});
   }
 }
