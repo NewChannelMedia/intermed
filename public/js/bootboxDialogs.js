@@ -743,76 +743,87 @@ function bootbox_modificaMedicoDetalles(tipo){
 	});
 }
 //<--------------------- RECOMENDACIONES ------------------->
-function recomendacionesBoot(){
-  var nombreUsuario = '';
+function recomendacionesBoot(usuarioMedico_id){
 
-  $.ajax( {
-    async: false,
-    url: '/usuario/traer',
-    type: 'POST',
-    dataType: "json",
-    cache: false,
-    data: {
-      'id': $('#usuarioPerfil').val()
-    },
-    success: function ( data ) {
-      if (!data.DatosGenerale.apellidoM) data.DatosGenerale.apellidoM = '';
-      nombreUsuario = 'Dr. ' + data.DatosGenerale.nombre  + ' ' + data.DatosGenerale.apellidoP + ' ' + data.DatosGenerale.apellidoM;
-    },
-    error: function (err){
-      console.log('AJAX Error: ' + JSON.stringify(err));
-    }
-  });
+  if (!usuarioMedico_id){
+    usuarioMedico_id = $('#usuarioPerfil').val();
+  }
 
-  bootbox.dialog({
-    onEscape: function () {
-        bootbox.hideAll();
-    },
-    backdrop:true,
-    closeButton:true,
-    className: 'Intermed-Bootbox h65-medium',
-    title: '<span class="title">Recomendar al '+ nombreUsuario +'</span>',
-    size:'large',
-    message:
-      '<form method="POST" onsubmit="return agregarDestRecom();" id="destRec">'+
-        '<div class="form-group col-md-5">'+
-          '<input class="form-control" type="text" placeholder="Nombre" name="nombre" id="nombreRecomendacion" required="">'+
-        '</div>'+
-        '<div class="form-group col-md-6">'+
-          '<input class="form-control" type="email" placeholder="E-mail" name="email" id="correoRecomendacion" required="">'+
-        '</div>'+
-        '<div class="form-group col-md-1">'+
-          '<button class="btn btn-warning btn-block"><span class="glyphicon glyphicon-plus"></span></button>'+
-        '</div>'+
+  //Revisar si existe sesión iniciada como paciente
+  var tipoUsuario = revisarTipoSesion();
+  if (tipoUsuario == ''){
+    //Iniciar sesión, con callback a agendarCitaBootbox
+    registrarPacienteBootbox('recomendacionesBoot', usuarioMedico_id);
+  } else {
+    var nombreUsuario = '';
+    $.ajax( {
+      async: false,
+      url: '/usuario/traer',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        'id': $('#usuarioPerfil').val()
+      },
+      success: function ( data ) {
+        if (!data.DatosGenerale.apellidoM) data.DatosGenerale.apellidoM = '';
+        nombreUsuario = 'Dr. ' + data.DatosGenerale.nombre  + ' ' + data.DatosGenerale.apellidoP + ' ' + data.DatosGenerale.apellidoM;
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
 
-        '<div class="col-md-2 white-c ag-bold s20" style="min-height:35px">'+
-          'Destinatarios:'+
-        '</div>'+
-        '<div class="form-group col-md-10"><div id="destRecomendacion" style="min-height: 30px;border-radius: 5px;"></div></div>'+
-      '</form>'+
+    bootbox.dialog({
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      backdrop:true,
+      closeButton:true,
+      className: 'Intermed-Bootbox h65-medium',
+      title: '<span class="title">Recomendar al '+ nombreUsuario +'</span>',
+      size:'large',
+      message:
+        '<form method="POST" onsubmit="return agregarDestRecom();" id="destRec">'+
+          '<div class="form-group col-md-5">'+
+            '<input class="form-control" type="text" placeholder="Nombre" name="nombre" id="nombreRecomendacion" required="">'+
+          '</div>'+
+          '<div class="form-group col-md-6">'+
+            '<input class="form-control" type="email" placeholder="E-mail" name="email" id="correoRecomendacion" required="">'+
+          '</div>'+
+          '<div class="form-group col-md-1">'+
+            '<button class="btn btn-warning btn-block"><span class="glyphicon glyphicon-plus"></span></button>'+
+          '</div>'+
 
-      '<div class="form-group">'+
-        '<div class="form-group col-md-12">'+
-           '<textarea id="mensajeRecomendar" class="form-control" rows="3" placeholder="mensaje para los recomendados" style="resize: none;margin-top: -10px;"></textarea>'+
-        '</div>'+
-     '</div>'+
+          '<div class="col-md-2 white-c ag-bold s20" style="min-height:35px">'+
+            'Destinatarios:'+
+          '</div>'+
+          '<div class="form-group col-md-10"><div id="destRecomendacion" style="min-height: 30px;border-radius: 5px;"></div></div>'+
+        '</form>'+
 
-      '<div class="row">'+
-        '<div class="form-group col-md-12">'+
-            '<div class="col-md-4">'+
-                '<div class="form-group">'+
-                    '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="bootbox.hideAll();">'+
-                '</div>'+
-            '</div>'+
-            '<div class="col-md-6 col-md-offset-2">'+
-                '<div class="form-group">'+
-                    '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Enviar" onclick="enviarRecomendacion();">'+
-                '</div>'+
-            '</div>'+
-        '</div>'+
-      '</div>'
-  });
-  recomiendaAuto();
+        '<div class="form-group">'+
+          '<div class="form-group col-md-12">'+
+             '<textarea id="mensajeRecomendar" class="form-control" rows="3" placeholder="mensaje para los recomendados" style="resize: none;margin-top: -10px;"></textarea>'+
+          '</div>'+
+       '</div>'+
+
+        '<div class="row">'+
+          '<div class="form-group col-md-12">'+
+              '<div class="col-md-4">'+
+                  '<div class="form-group">'+
+                      '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="bootbox.hideAll();">'+
+                  '</div>'+
+              '</div>'+
+              '<div class="col-md-6 col-md-offset-2">'+
+                  '<div class="form-group">'+
+                      '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Enviar" onclick="enviarRecomendacion();">'+
+                  '</div>'+
+              '</div>'+
+          '</div>'+
+        '</div>'
+    });
+    recomiendaAuto();
+  }
 }
 //<--------------------- FIN RECOMENDACIONES --------------->
 
@@ -2124,7 +2135,7 @@ function manejadorDeErrores(error){
         codigoError = 'GEN0001';
         descripcionError = 'Sesión cerrada de manera inesperada.';
         solucion = '<span class="s15">Actualiza la página para solucionar este problema.</span>';
-        accion = '<div class="col-md-12" style="color:white"><div class="row text-center"><img src="http://i55.tinypic.com/33ksub8.jpg" width="50%" style="margin-top:10px;"></div></div><button onclick="location.reload()" class="btn btn-md btn-warning" style="margin-top:20px;margin-bottom:20px;">Actualizar <span class="glyphicon glyphicon-refresh"></span></button>';
+        accion = '<div class="col-md-12" style="color:white"><div class="row text-center"></div></div><button onclick="location.reload()" class="btn btn-md btn-warning" style="margin-top:20px;margin-bottom:20px;">Actualizar <span class="glyphicon glyphicon-refresh"></span></button>';
         //No sesión
         break;
       case 101:
@@ -2420,6 +2431,9 @@ function registrarPacienteBootbox(callback, usuarioMedico_id){
 
 
 function agendarCitaBootbox(usuarioMedico_id){
+    if (!usuarioMedico_id){
+      usuarioMedico_id = $('#usuarioPerfil').val();
+    }
     //Revisar si existe sesión iniciada como paciente
     var tipoUsuario = revisarTipoSesion();
     if (tipoUsuario == ''){
@@ -2427,9 +2441,6 @@ function agendarCitaBootbox(usuarioMedico_id){
       registrarPacienteBootbox('agendarCitaBootbox', usuarioMedico_id);
     } else if (tipoUsuario == 'P'){
       //Agendar cita
-      if (!usuarioMedico_id){
-        usuarioMedico_id = $('#usuarioPerfil').val();
-      }
       bootbox.dialog({
         backdrop: true,
         onEscape: function () {
@@ -3842,11 +3853,10 @@ function CrearControlRuta(controlDiv, map) {
     directionsDisplay.setMap(null);
     directionsDisplay = null;
   } else {
-
     var controlUI = $(`<div class="panel-group" style="margin: 10px;font-size: 12px!important;">
       <div class="panel panel-default">
-        <div class="panel-heading" style="padding: 5px;">
-          <a data-toggle="collapse" href="#collapse1" class="collapsed" aria-expanded="false" style="text-decoration: none;color: black;"><span class="map-icon icon-map-signs s20"></span></a>
+        <div class="panel-heading" style="padding: 5px;text-align:center">
+          <a data-toggle="collapse" href="#collapse1" class="collapsed" aria-expanded="false" style="text-decoration: none;color: black;"><span class="map-icon icon-compass"></span></a>
         </div>
         <div id="collapse1" class="panel-collapse collapse" aria-expanded="true">
           <ul class="list-group">
@@ -3857,7 +3867,6 @@ function CrearControlRuta(controlDiv, map) {
         </div>
       </div>
     </div>`);
-
     controlDiv.append(controlUI);
   }
 }

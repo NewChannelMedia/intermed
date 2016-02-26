@@ -80,10 +80,10 @@ module.exports = {
           }
         }
 
-        models.MedicoFavorito.findOrCreate( {
+        models.MedicoFavorito.findOrCreate({
           defaults: condiciones,
           where: condiciones
-        } ).then( function ( result ) {
+        }).spread(function(result, created) {
           if ( result ) {
             if (req.session.passport.user.tipoUsuario == "P" && condiciones.medico_id){
               models.MedicoFavorito.update({

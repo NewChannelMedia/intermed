@@ -2423,6 +2423,20 @@ function cargarEstados(divestados){
   });
 }
 
+
+function cargarCiudades(id){
+  var idABuscar = $(id).val();// se saca el value del select de estados
+  // se hace la consulta se manda como parametro el id que se obtuvo de seleccionar el estado
+  $.post('/cargarCiudades',{id:idABuscar}, function(data){
+    var cont = '<option value="0">Municipio/Ciudad</option>';
+    $.each(data,function(i, item){
+      cont += '<option value="'+item.id+'">'+item.municipio+'</option>';
+    });
+    $("#selectCiudad").html(cont);
+    $("#selectCiudad").removeClass('invisible');
+  });
+}
+
 function realizarBusqueda(bounds){
   bounds = JSON.parse(JSON.stringify(bounds));
   var especialidades = [];

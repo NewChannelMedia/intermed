@@ -983,7 +983,10 @@ var _this = module.exports = {
         }).then(function(medico){
           models.MedicoAseguradora.findAll({
             where: { medico_id: medico.id},
-            order: [['orden','ASC']]
+            order: [['orden','ASC']],
+            include: [{
+              model: models.Aseguradora
+            }]
           }).then(function(expertoEn){
             res.status(200).json({'success':true, 'result':expertoEn});
           });
@@ -1048,23 +1051,24 @@ var _this = module.exports = {
 
   medicoAseguradorasActualizar: function (object, req, res){
     try{
-      if (req.session.passport.user){
-        models.Medico.findOne({
-          where: { usuario_id : req.session.passport.user.id},
-          attributes: ['id']
-        }).then(function(medico){
-          models.MedicoAseguradora.destroy({
-            where: { medico_id: medico.id}
-          }).then(function(result){
-            object.aseguradoras.forEach(function(rec){
+      if (req.session.passport.user && req.session.passport.user.Medico_id){
+        var medico_id = req.session.passport.user.Medico_id;
+        models.MedicoAseguradora.destroy({
+          where: { medico_id: medico_id}
+        }).then(function(result){
+          object.aseguradoras.forEach(function(rec){
+            models.Aseguradora.findOrCreate({
+              where: {aseguradora: rec.val},
+              defaults: {aseguradora: rec.val}
+            }).spread(function(aseguradora, created) {
               models.MedicoAseguradora.create({
-                medico_id: medico.id,
-                aseguradora: rec.val,
+                medico_id: medico_id,
+                aseguradora_id: aseguradora.id,
                 orden: rec.num
               });
             });
-            res.status(200).json({'success':true});
           });
+          res.status(200).json({'success':true});
         });
       } else {
         res.status(200).json({'success':false});
@@ -2098,7 +2102,6 @@ var _this = module.exports = {
               usuario_id: req.session.passport.user.id
             }
           }).then(function(medico){
-            console.log('Object: ' + JSON.stringify(object));
             if (object.experiencia_id != "" && parseInt(object.experiencia_id)>0){
               models.MedicoExperiencia.update( {
                 titulo:object.titulo,
@@ -2107,7 +2110,7 @@ var _this = module.exports = {
                 fechaInicio: object.fechaInicio,
                 fechaFin: object.fechaFin,
                 actual: object.actual,
-                estado_id: object.estado_id,
+                estado_id: parseInt(object.estado_id),
                 municipio_id: object.municipio_id,
                 medico_id: medico.id
               }, {
@@ -2133,6 +2136,7 @@ var _this = module.exports = {
                 fechaFin: object.fechaFin,
                 actual: object.actual,
                 municipio_id: object.municipio_id,
+                estado_id: parseInt(object.estado_id),
                 medico_id: medico.id
               } ).then( function ( datos ) {
                 res.status( 200 ).json( {
