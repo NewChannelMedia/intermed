@@ -699,7 +699,10 @@ function armarPerfilNuevo( usuario, req, res ) {
               where: {
                 medico_id: result.id
               },
-              order: [ [ 'orden', 'ASC' ] ]
+              order: [ [ 'orden', 'ASC' ] ],
+              include: [{
+                model: models.Aseguradora
+              }]
             } ).then( function ( aseguradora ) {
               plataform2.plataform2( usuario.usuarioUrl, req, res, function ( response ) {
                 medico[ 'MedicoAseguradoras' ] = aseguradora;
