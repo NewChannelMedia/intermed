@@ -88,4 +88,8 @@ module.exports = function (object){
   app.post( '/actualizarSesion', function ( req, res ) {
     intermed.callController( 'usuarios', 'actualizarSesion', req.body, req, res );
   } );
+
+  app.post('/session/tipo', function (req, res){
+    intermed.callController( 'session', 'getSessionType', req.body, req, res );
+  });
 }

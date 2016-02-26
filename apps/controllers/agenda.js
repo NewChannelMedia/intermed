@@ -47,8 +47,7 @@ exports.agregaCita = function(object, req, res) {
         }).then(function(result){
           models.MedicoPaciente.findOrCreate({
             where: {medico_id:result.id, paciente_id: req.session.passport.user.Paciente_id},
-            defaults:{medico_id:result.id, paciente_id: req.session.passport.user.Paciente_id},
-            logging:console.log
+            defaults:{medico_id:result.id, paciente_id: req.session.passport.user.Paciente_id}
           });
 
           models.MedicoFavorito.findOne({

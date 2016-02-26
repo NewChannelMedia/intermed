@@ -657,50 +657,57 @@ function getAllDoctors() {
 	} );
 }
 function agregarFavoritos( medico ) {
-  var ruta = '/agregarMedFav';
-  var medicoID = '',
-    pacienteID = '';
-  if ( $( '#MedicoId' ).val() ) medicoID = $( '#MedicoId' ).val();
-  if ( $( '#PacienteId' ).val() ) pacienteID = $( '#PacienteId' ).val();
-  $.ajax( {
-    async: false,
-    url: ruta,
-    type: 'POST',
-    dataType: "json",
-    data: {
-      medicoID: medicoID,
-      pacienteID: pacienteID
-    },
-    cache: false,
-    success: function ( data ) {
-      if ( data.success ) {
-        if ( $( '#tipoUsuario' ).val() === "P" ) {
-          if ( medicoID ) {
-            $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Elimina de favoritos');
-          }
-          else {
-            $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Invitación enviada');
-          }
-        }
-        else if ( $( '#tipoUsuario' ).val() === "M" ) {
+  //Revisar si existe sesión iniciada como paciente
+  var tipoUsuario = revisarTipoSesion();
+  if (tipoUsuario == ''){
+    registrarPacienteBootbox('agregarFavoritos', medico);
+  } else {
+    var ruta = '/agregarMedFav';
+    var medicoID = '',
+      pacienteID = '';
+    if ( $( '#MedicoId' ).val() ) medicoID = $( '#MedicoId' ).val();
+    if ( $( '#PacienteId' ).val() ) pacienteID = $( '#PacienteId' ).val();
+    $.ajax( {
+      async: false,
+      url: ruta,
+      type: 'POST',
+      dataType: "json",
+      data: {
+        medicoID: medicoID,
+        pacienteID: pacienteID
+      },
+      cache: false,
+      success: function ( data ) {
+        if ( data.success ) {
+          if ( $( '#tipoUsuario' ).val() === "P" ) {
             if ( medicoID ) {
+              $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Elimina de favoritos');
+            }
+            else {
               $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Invitación enviada');
             }
-        }
-        $( "#addFavoriteContact" ).attr( "onclick", "eliminarFavoritos()" );
+          }
+          else if ( $( '#tipoUsuario' ).val() === "M" ) {
+              if ( medicoID ) {
+                $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Invitación enviada');
+              }
+          }
+          $( "#addFavoriteContact" ).attr( "onclick", "eliminarFavoritos()" );
 
-        cargarFavCol( $( '#usuarioPerfil' ).val() );
-      }
-      else {
-        if (data.error){
-          manejadorDeErrores(data.error);
+          cargarFavCol( $( '#usuarioPerfil' ).val() );
         }
+        else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      },
+      error: function ( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: ' + err );
       }
-    },
-    error: function ( jqXHR, textStatus, err ) {
-      console.error( 'AJAX ERROR: ' + err );
-    }
-  } );
+    } );
+  }
+
 }
 function eliminarFavoritos( medico, paciente_id , notificacion_id) {
   //console.log('ENTRO');
@@ -1646,7 +1653,6 @@ function cargarClinicas(){
       if (data.success){
         var listaNueva = '';
         if (data.result){
-          console.log('CLINICAS: ' + JSON.stringify(data));
           var sub = false;
           data.result.forEach(function(rec){
             listaNueva += '<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">' +
@@ -1679,13 +1685,12 @@ function cargarAseguradoras(){
       if (data.success){
         var listaNueva = '';
         if (data.result){
-          console.log('ASEGURADORAS: ' + JSON.stringify(data));
           var sub = false;
           data.result.forEach(function(rec){
-            listaNueva += '<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">'
+            listaNueva += '<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">'+
             '<div class="menuDiv">' +
               '<span>' +
-                '<span data-id="2" class="itemTitle">' + rec.aseguradora + '</span>' +
+                '<span data-id="2" class="itemTitle">' + rec.Aseguradora.aseguradora + '</span>' +
                 '<span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">' +
                 '<span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>' +
               '</span>' +
@@ -1801,7 +1806,7 @@ function traerAseguradoras(){
           if (data.result){
             var sub = false;
             data.result.forEach(function(rec){
-              listaNueva += '<li>'+ rec.aseguradora +'</li>';
+              listaNueva += '<li>'+ rec.Aseguradora.aseguradora +'</li>';
             });
           }
           listaNueva += '</ul>';

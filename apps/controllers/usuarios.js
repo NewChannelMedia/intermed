@@ -950,10 +950,10 @@ function generarRelacion( usuario, medicopaciente_id, req, res ) {
                   paciente_id: usuarioInvito.Paciente.id
                 };
               }
-              models.MedicoFavorito.findOrCreate( {
-                defaults: condiciones,
-                where: condiciones
-              } ).then( function ( result ) {
+              models.MedicoFavorito.findOrCreate({
+                where: condiciones,
+                defaults: condiciones
+              }).spread(function(result, created) {
                 if ( result ) {
                   console.log( '________Médico/Colega/Contacto agregado' )
                 }
@@ -997,10 +997,10 @@ function generarRelacionInversa( usuario, tipoUsuario, medicopaciente_id, req, r
           paciente_id: medicopaciente_id
         };
       }
-      models.MedicoFavorito.findOrCreate( {
-        defaults: condiciones,
-        where: condiciones
-      } ).then( function ( result ) {
+      models.MedicoFavorito.findOrCreate({
+        where: condiciones,
+        defaults: condiciones
+      }).spread(function(result, created) {
         if ( result ) {
           console.log( '________Médico/Colega/Contacto agregado (inversa)' )
         }

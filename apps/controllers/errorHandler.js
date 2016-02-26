@@ -53,6 +53,9 @@ exports.report = function ( err, req, res ) {
       if (headers.length>400){
         headers = headers.substring(0,400);
       }
+      if (err.length>200){
+        err = err.substring(0,200);
+      }
 
       models.DBError_registro.create({
         type: type,

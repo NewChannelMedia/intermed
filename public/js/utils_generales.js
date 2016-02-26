@@ -2336,36 +2336,70 @@ function agregarDestRecom(){
   return false;
 }
 
-function iniciarSesionLocal(inputEmail, inputPassword){
-  var email = $('#'+inputEmail).val();
-  var pass = hex_md5($('#'+inputPassword).val());
+
+function revisarTipoSesion(){
+  var tipoSesion = '';
   $.ajax({
     async: false,
-    url: '/auth/correo',
+    url: '/session/tipo',
     type: 'POST',
     dataType: "json",
-    data:{'email':email,'password':pass},
     cache: false,
     success: function ( data ) {
-        if (data.result == "success"){
-          var usuarioUrl = data.session.usuarioUrl;
-          if (data.session.urlPersonal){
-            usuarioUrl = data.session.urlPersonal;
-          }
-          window.location.href = '/'+usuarioUrl
-        } else {
-          $('#LoginError').removeClass('hidden');
-          setTimeout(function(){
-            $('#LoginError').addClass('hidden');
-          },3000);
-        }
-      return false;
+      tipoSesion = data.tipoUsuario;
     },
     error: function(err){
       console.log('AJAX error: ' + JSON.stringify(err));
       return false;
     }
   });
+  return tipoSesion;
+}
+
+function iniciarSesionLocal(inputEmail, inputPassword, callback, usuarioMedico_id){
+  try{
+    var email = $('#'+inputEmail).val();
+    var pass = hex_md5($('#'+inputPassword).val());
+    $.ajax({
+      async: false,
+      url: '/auth/correo',
+      type: 'POST',
+      dataType: "json",
+      data:{'email':email,'password':pass},
+      cache: false,
+      success: function ( data ) {
+          if (data.result == "success"){
+            if (callback){
+              bootbox.hideAll();
+              callback = window[callback];
+              if (usuarioMedico_id){
+                callback(usuarioMedico_id);
+              } else {
+                callback();
+              }
+            } else {
+              var usuarioUrl = data.session.usuarioUrl;
+              if (data.session.urlPersonal){
+                usuarioUrl = data.session.urlPersonal;
+              }
+              window.location.href = '/'+usuarioUrl
+            }
+          } else {
+            $('#LoginError').removeClass('hidden');
+            setTimeout(function(){
+              $('#LoginError').addClass('hidden');
+            },3000);
+          }
+        return false;
+      },
+      error: function(err){
+        console.log('AJAX error: ' + JSON.stringify(err));
+        return false;
+      }
+    });
+  }catch  (e){
+    console.log('ERROR: ' + JSON.stringify(e));
+  }
   return false;
 }
 
@@ -2386,6 +2420,20 @@ function cargarEstados(divestados){
       error: function (jqXHR, textStatus, err) {
         console.log('ERROR: ' + JSON.stringify(err));
       }
+  });
+}
+
+
+function cargarCiudades(id){
+  var idABuscar = $(id).val();// se saca el value del select de estados
+  // se hace la consulta se manda como parametro el id que se obtuvo de seleccionar el estado
+  $.post('/cargarCiudades',{id:idABuscar}, function(data){
+    var cont = '<option value="0">Municipio/Ciudad</option>';
+    $.each(data,function(i, item){
+      cont += '<option value="'+item.id+'">'+item.municipio+'</option>';
+    });
+    $("#selectCiudad").html(cont);
+    $("#selectCiudad").removeClass('invisible');
   });
 }
 
@@ -2527,10 +2575,11 @@ function realizarBusqueda(bounds){
             </div>
             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9" style="text-align:left;">
               <div class="row">
-                <h4>`+ nombre +`</h4>
+                <h4><a href="`+ usuarioUrl +`">`+ nombre +`</a></h4>
                 <h5>`+ direccion.nombre +`</h5>
                 <p>`+ direccion.calle +` #`+ direccion.numero + direccion.numeroInt +`<br>`+
                 direccion.Municipio.municipio +`,`+ direccion.Municipio.Estado.estado + `</p>
+                <button class="btn btn-primary pull-right" onclick="agendarCitaBootbox(`+ medico.Usuario.id +`)">Hacer cita</button>
               </div>
             </div>`;
 
@@ -2566,6 +2615,8 @@ function realizarBusqueda(bounds){
           marcadoresBusquedaTemp[direccion.id] = marcadoresBusqueda[direccion.id];
 
         });
+
+        contenido += '<button class="btn btn-primary btn-sm pull-right" onclick="agendarCitaBootbox('+ medico.Usuario.id +')">Hacer cita</button>';
 
         contenido +=
               `</ul>
