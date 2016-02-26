@@ -2371,12 +2371,7 @@ function iniciarSesionLocal(inputEmail, inputPassword, callback, usuarioMedico_i
           if (data.result == "success"){
             if (callback){
               bootbox.hideAll();
-              callback = window[callback];
-              if (usuarioMedico_id){
-                callback(usuarioMedico_id);
-              } else {
-                callback();
-              }
+              actualizarSesion(false, callback, usuarioMedico_id);
             } else {
               var usuarioUrl = data.session.usuarioUrl;
               if (data.session.urlPersonal){

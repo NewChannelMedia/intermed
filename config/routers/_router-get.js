@@ -37,7 +37,7 @@ module.exports = function (object){
     if (!req.session.passport.user){
       res.redirect( '/' );
     }else {
-      routeLife( 'plataforma', 'plataforma', hps );
+      routeLife( 'plataforma2', 'plataforma', hps );
       intermed.callController('notificaciones','index', req.body, req, res);
     }
   });

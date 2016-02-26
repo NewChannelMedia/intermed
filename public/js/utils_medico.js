@@ -514,7 +514,7 @@ function saveStepTwo() {
     }
   } );
 }
-function actualizarSesion(refresh) {
+function actualizarSesion(refresh, callback, parametros) {
   $.ajax( {
     url: '/actualizarSesion',
     type: 'POST',
@@ -522,56 +522,164 @@ function actualizarSesion(refresh) {
     cache: false,
     success: function ( data ) {
       if ( data.result === "success" ) {
-        var fotoPerfil = '';
-        if ( data.session.registroCompleto === 1 ) {
-          $( '#registroIncompleto' ).css( 'display', 'none' );
-        }
-
-        $('#inicio').val(data.session.inicio);
-
-        if ( data.session.fotoPerfil ) fotoPerfil = data.session.fotoPerfil;
-        $( '#fotoPerfilMini' ).attr( "src", fotoPerfil );
-        $( '.fotoPerfil' ).attr( "src", fotoPerfil );
-        if ( data.session.tipoUsuario === "M" ) {
-          if ( !data.session.name ) $( '#session_nombreUsuario' ).html( 'No tenemos registrado tu nombre, por favor continua con tu registro <a onclick="registroMedicoDatosPersonales()">aquí</a>' );
-          else {
-            if ( data.session.tipoUsuario == "M" ){
-              data.session.name = 'Dr. ' + data.session.name;
-            }
-              $( '.profile-name .name' ).each(function(){
-                  $(this).text( data.session.name );
-              });
-          }
-        }
-        else {
-          $( '.profile-name .name' ).each(function(){
-            $(this).text( data.session.name );
-          });
-        }
-
-        var especialidades = '';
-        var subespecialidades = '';
-        data.session.especialidades.forEach(function(esp){
-          var contenido = '<li>'+ esp.Especialidad.especialidad +'</li>';
-          if (esp.subEsp){
-            subespecialidades += contenido;
-          } else {
-            especialidades += contenido;
-          }
-        });
-        especialidades += '<span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarEspecialidades()"></span>';
-        if (subespecialidades != ""){
-          subespecialidades = '<li>Subespecialidad:</li>' + subespecialidades;
-        }
-
-        $('.user.profile-esp').html(especialidades);
-        $('.user.profile-subesp').html(subespecialidades);
-
-        if ( data.session.ciudad ) {
-          $( '#session_ubicacion' ).html( data.session.ciudad + ', ' + data.session.estado );
-        }
         if (refresh){
           location.reload();
+        } else {
+            var fotoPerfil = '';
+            if ( data.session.registroCompleto === 1 ) {
+              $( '#registroIncompleto' ).css( 'display', 'none' );
+            }
+
+            $('#inicio').val(data.session.inicio);
+
+            if ( data.session.fotoPerfil ) fotoPerfil = data.session.fotoPerfil;
+            $( '#fotoPerfilMini' ).attr( "src", fotoPerfil );
+            $( '.fotoPerfil' ).attr( "src", fotoPerfil );
+
+            //Actualizar ciudad, si existe
+            if ( data.session.ciudad ) {
+              $( '#session_ubicacion' ).html( data.session.ciudad + ', ' + data.session.estado );
+            }
+
+            //Mostrar secciones que son solo para personas logueadas
+            $('.privateDisplay').removeClass('hidden');
+
+            if (data.session.tipoUsuario == "M"){
+                //Actualizar nombre de usuario
+                if ( !data.session.name ) $( '#session_nombreUsuario' ).html( 'No tenemos registrado tu nombre, por favor continua con tu registro <a onclick="registroMedicoDatosPersonales()">aquí</a>' );
+                else {
+                  if ( data.session.tipoUsuario == "M" ){
+                    data.session.name = 'Dr. ' + data.session.name;
+                  }
+                    $( '.profile-name .name' ).each(function(){
+                        $(this).text( data.session.name );
+                    });
+                }
+                //Actualizar especialidades
+                var especialidades = '';
+                var subespecialidades = '';
+                if (data.session.especialidades){
+                  data.session.especialidades.forEach(function(esp){
+                    var contenido = '<li>'+ esp.Especialidad.especialidad +'</li>';
+                    if (esp.subEsp){
+                      subespecialidades += contenido;
+                    } else {
+                      especialidades += contenido;
+                    }
+                  });
+                  especialidades += '<span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarEspecialidades()"></span>';
+                  if (subespecialidades != ""){
+                    subespecialidades = '<li>Subespecialidad:</li>' + subespecialidades;
+                  }
+
+                  $('.user.profile-esp').html(especialidades);
+                  $('.user.profile-subesp').html(subespecialidades);
+                }
+
+                if (data.session.id == $('#usuarioPerfil').val()){
+                  $('#rightNav').html(`
+                        <a href="#" class="first-option option">
+                          <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 hidden-xs">
+                            <span class="option-icon glyphicon h67-medcond s90 center-block text-center">+</span>
+                          </div>
+                          <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 hidden-sm">
+                            <div class="option-label">
+                              <span class="optn-lbl">NUEVO PACIENTE</span>
+                              <span class="optn-sb hidden-xs">Haz click aquí para generar un nuevo expediente.</span>
+                            </div>
+                          </div>
+                        </a>`);
+                  $('.privateDisplaySession').removeClass('hidden');
+                  $('#editPerfil').html('<span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarPerfilPersonal()"></span>');
+                  $('#editEsp').html('');
+                  $('#editInfo1').html('<span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(1)"></span>');
+                  $('#editInfo2').html('<span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(2)"></span>');
+                  $('#editInfo3').html('<span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(3)"></span>');
+
+                } else {
+                  $('a.first-option.option').remove();
+                  $('.privateDisplaySession').remove();
+                }
+
+                //Actualizar top nav
+                $('#topNav').html(`
+                <li>
+                  <a href="{{base_url}}{{#ifSessionValNN 'urlPersonal'}}{{valSession 'urlPersonal'}}{{else}}{{valSession 'usuarioUrl'}}{{/ifSessionValNN}}">Perfil</a>
+                </li>
+                <li>
+                  <a href="{{base_url}}" id="oficina">Oficina</a>
+                </li>
+
+                <li class="dropdown">
+                  <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span></a>
+                  <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
+                    <li><a href="/configuraciones">&nbsp;Configuracion</a></li>
+                    <li><a href="/configuraciones">&nbsp;Secretarias</a></li>
+                    <li><a href="/logout">&nbsp;Salir</a></li>
+                  </ul>
+                </li>
+                <li class="visible-sm dropdown navigator-dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    Buscar
+                  </a>
+                  <div class="dropdown-menu dropdown-form panel navigator-dropdown-panel">
+                    <form method="POST" action="http://localhost:3000/buscar" class="form-inline" onsubmit="return false;">
+                      <div class="input-group navbar-search navigator-inner-section-cell h65-medium">
+                        <input type="text" class="form-control input-lg ui-autocomplete-input" id="buscadorInternoDropDown" name="" placeholder="Search for people, plaasdfasdfce or things" required="" style="width:300px" autocomplete="off">
+                        <span class="input-group-btn">
+                          <button class="btn btn-default btn-lg" type="button">
+                            <span class="glyphicon glyphicon-search"></span>
+                          </button>
+                        </span>
+                      </div>
+                    </form>
+                  </div>
+                </li>`);
+            } else if (data.session.tipoUsuario == "P"){
+                //Actualizar nombre de Usuario
+                $( '.profile-name .name' ).each(function(){
+                  $(this).text( data.session.name );
+                });
+
+                //Actualizar top nav
+                $('#topNav').html(`
+                  <li>
+                    <a href="{{base_url}}{{#ifSessionValNN 'urlPersonal'}}{{valSession 'urlPersonal'}}{{else}}{{valSession 'usuarioUrl'}}{{/ifSessionValNN}}">Perfil</a>
+                  </li>
+
+                  <li class="dropdown">
+                    <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
+                      <li><a href="/configuraciones">&nbsp;Configuracion</a></li>
+                      <li><a href="/logout">&nbsp;Salir</a></li>
+                    </ul>
+                  </li>
+                  <li class="visible-sm dropdown navigator-dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                      Buscar
+                    </a>
+                    <div class="dropdown-menu dropdown-form panel navigator-dropdown-panel">
+                      <form method="POST" action="http://localhost:3000/buscar" class="form-inline" onsubmit="return false;">
+                        <div class="input-group navbar-search navigator-inner-section-cell h65-medium">
+                          <input type="text" class="form-control input-lg ui-autocomplete-input" id="buscadorInternoDropDown" name="" placeholder="Search for people, plaasdfasdfce or things" required="" style="width:300px" autocomplete="off">
+                          <span class="input-group-btn">
+                            <button class="btn btn-default btn-lg" type="button">
+                              <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                          </span>
+                        </div>
+                      </form>
+                    </div>
+                  </li>`);
+              }
+
+
+              //Si existe un callback, invocarlo
+              if (callback){
+                  bootbox.hideAll();
+                  callback = window[callback];
+                  callback(parametros);
+              }
         }
       }
       else {
@@ -656,45 +764,42 @@ function getAllDoctors() {
 		}
 	} );
 }
-function agregarFavoritos( medico ) {
+function agregarFavoritos(usuario_id) {
   //Revisar si existe sesión iniciada como paciente
   var tipoUsuario = revisarTipoSesion();
   if (tipoUsuario == ''){
-    registrarPacienteBootbox('agregarFavoritos', medico);
+    registrarPacienteBootbox('agregarFavoritos', usuario_id);
   } else {
     var ruta = '/agregarMedFav';
-    var medicoID = '',
-      pacienteID = '';
-    if ( $( '#MedicoId' ).val() ) medicoID = $( '#MedicoId' ).val();
-    if ( $( '#PacienteId' ).val() ) pacienteID = $( '#PacienteId' ).val();
+    if (!usuario_id){
+      usuario_id= $('#usuarioPerfil').val()
+    }
     $.ajax( {
       async: false,
-      url: ruta,
+      url: '/agregarMedFav',
       type: 'POST',
       dataType: "json",
       data: {
-        medicoID: medicoID,
-        pacienteID: pacienteID
+        usuario_id: usuario_id
       },
       cache: false,
       success: function ( data ) {
         if ( data.success ) {
-          if ( $( '#tipoUsuario' ).val() === "P" ) {
-            if ( medicoID ) {
+          if (tipoUsuario === "P" ) {
+            if ( $('#tipoUsuarioPerfil').val() == "M" ) {
               $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Elimina de favoritos');
             }
             else {
               $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Invitación enviada');
             }
           }
-          else if ( $( '#tipoUsuario' ).val() === "M" ) {
-              if ( medicoID ) {
+          else if ( tipoUsuario === "M" ) {
+              if ( $('#tipoUsuarioPerfil').val() == "M" ) {
                 $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Invitación enviada');
               }
           }
           $( "#addFavoriteContact" ).attr( "onclick", "eliminarFavoritos()" );
-
-          cargarFavCol( $( '#usuarioPerfil' ).val() );
+          ocultarBuscadorColegasEspecial();cargarListaEspCol( $( '#usuarioPerfil' ).val() );
         }
         else {
           if (data.error){
@@ -709,40 +814,34 @@ function agregarFavoritos( medico ) {
   }
 
 }
-function eliminarFavoritos( medico, paciente_id , notificacion_id) {
-  //console.log('ENTRO');
-  var ruta = '/eliminarMedFav';
-  var medicoID = '',
-    pacienteID = '';
-  if ( $( '#MedicoId' ).val() ) medicoID = $( '#MedicoId' ).val();
-  if ( $( '#PacienteId' ).val() ) pacienteID = $( '#PacienteId' ).val();
-  if ( !medico && paciente_id ) pacienteID = paciente_id;
-  else if ( medico && paciente_id ) medicoID = paciente_id;
+function eliminarFavoritos( usuario_id , notificacion_id) {
+  if (!usuario_id){
+    usuario_id= $('#usuarioPerfil').val()
+  }
+  var tipoUsuario = revisarTipoSesion();
   $.ajax( {
     async: false,
-    url: ruta,
+    url: '/eliminarMedFav',
     type: 'POST',
     dataType: "json",
     data: {
-      medicoID: medicoID,
-      pacienteID: pacienteID,
+      usuario_id: usuario_id,
       notificacion_id: notificacion_id
     },
     cache: false,
     success: function ( data ) {
-      console.log('Eliminar favoritos: ' + JSON.stringify(data));
       if ( data.success ) {
-        if ( $( '#tipoUsuario' ).val() === "P" ) {
-          if ( medicoID ) {
+        if ( tipoUsuario === "P" ) {
+          if ( $('#tipoUsuarioPerfil').val() == "M" ) {
             $( '#addFavoriteContact' ).html( '<span class="glyphicon h67-medcond s30">+</span> Agrega a favoritos' );
           }
           else {
             $( '#addFavoriteContact' ).html( '<span class="glyphicon h67-medcond s30">+</span> Agrega a contactos' );
           }
         }
-        else if ( $( '#tipoUsuario' ).val() === "M" ) $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">+</span> Agrega a colegas');
+        else if ( tipoUsuario === "M" ) $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">+</span> Agrega a colegas');
         $( "#addFavoriteContact" ).attr( "onclick", "agregarFavoritos()" );
-        cargarFavCol( $( '#usuarioPerfil' ).val() );
+        ocultarBuscadorColegasEspecial();cargarListaEspCol( $( '#usuarioPerfil' ).val() );
         if ( notificacion_id ) {
           $( '#pre' + notificacion_id ).html( 'Rechazaste la solicitud de amistad de ' );
           $( '#post' + notificacion_id ).html( '' );
@@ -752,6 +851,37 @@ function eliminarFavoritos( medico, paciente_id , notificacion_id) {
       else {
         if (data.error){
           manejadorDeErrores(data.error);
+        }
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+    }
+  } );
+}
+function aceptarInvitacion( usuario_id, notificacion_id ) {
+  if (!usuario_id){
+    usuario_id= $('#usuarioPerfil').val()
+  }
+  $.ajax( {
+    async: false,
+    url: '/aceptarInvitacion',
+    type: 'POST',
+    dataType: "json",
+    data: {
+      usuario_id: usuario_id,
+      notificacion_id: notificacion_id
+    },
+    cache: false,
+    success: function ( data ) {
+      if ( data.result == 'success' ) {
+        $( '#addFavoriteContact' ).html( 'Eliminar de contactos' );
+        $( "#addFavoriteContact" ).attr( "onclick", "eliminarFavoritos()" );
+        ocultarBuscadorColegasEspecial();cargarListaEspCol( $( '#usuarioPerfil' ).val() );
+        if ( notificacion_id ) {
+          $( '#pre' + notificacion_id ).html( 'Aceptaste la solicitud de amistad de ' );
+          $( '#post' + notificacion_id ).html( '' );
+          if (notificacion_id) $( '#button' + notificacion_id ).remove();
         }
       }
     },
@@ -1075,10 +1205,10 @@ function actualizarDirecciones(salir){
     cache: false,
     success: function ( data ) {
       if (data.success){
-        if (data.result.length> 0 && $('#editUbi').html() != ""){
-          $('#editUbi').html('<button class="btn btn-primary btn-xs" id="btnEditaUbi"><span class="glyphicon glyphicon-pencil"></span></button>');
+        if (data.result.length> 0){
+          $('#btnEditaUbi').removeClass('hidden');
         } else {
-          $('#editUbi').html('');
+          $('#btnEditaUbi').addClass('hidden');
         }
         var contenido = '';
         var contador = 0;

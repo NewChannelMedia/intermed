@@ -10,101 +10,165 @@ module.exports = {
   agregarFav: function ( object, req, res ) {
     try{
       if ( req.session.passport.user ) {
-        var condiciones = '';
-        if ( object.medicoID ) {
-          if (req.session.passport.user.tipoUsuario == "P"){
-            //Tipo notificacion: agregadoMedicoFavorito
-            models.Medico.findOne({
-              where: { id: object.medicoID },
-              attributes: ['id'],
-              include: [{model: models.Usuario, attributes: ['id']}]
-            }).then(function(medico){
-              models.Notificacion.create( {
-                usuario_id: medico.Usuario.id,
-                tipoNotificacion_id: 7,
-                data: req.session.passport.user.Paciente_id.toString()
-              } );
-            });
-          } else {
-            /*Si se trata de una relacion médico-médico enviamos la solicitud de amistad*/
-            models.Medico.findOne( {
-              where: {
-                id: object.medicoID
-              }
-            } ).then( function ( medico ) {
-              var usuario_id = medico.usuario_id;
-              models.MedicoFavorito.create( {
-                usuario_id: usuario_id,
-                medico_id: req.session.passport.user.Medico_id,
-                aprobado: 0
-              } );
-
-              models.Notificacion.create( {
-                usuario_id: usuario_id,
-                tipoNotificacion_id: 4,
-                data: req.session.passport.user.Medico_id.toString()
-              } );
-            } );
-          }
-          condiciones = {
-            usuario_id: req.session.passport.user.id,
-            medico_id: object.medicoID
-          };
-        }
-        else if ( object.pacienteID ) {
-          if ( req.session.passport.user.tipoUsuario == "P" ) {
-              /*Si se trata de una relacion paciente-paciente enviamos la solicitud de amistad*/
-            models.Paciente.findOne( {
-              where: {
-                id: object.pacienteID
-              }
-            } ).then( function ( paciente ) {
-              var usuario_id = paciente.usuario_id;
-              models.MedicoFavorito.create( {
-                usuario_id: usuario_id,
-                paciente_id: req.session.passport.user.Paciente_id,
-                aprobado: 0
-              } );
-
-              models.Notificacion.create( {
-                usuario_id: usuario_id,
-                tipoNotificacion_id: 1,
-                data: req.session.passport.user.Paciente_id.toString()
-              } );
-            } );
-          }
-
-          condiciones = {
-            usuario_id: req.session.passport.user.id,
-            paciente_id: object.pacienteID
-          }
-        }
-
-        models.MedicoFavorito.findOrCreate({
-          defaults: condiciones,
-          where: condiciones
-        }).spread(function(result, created) {
-          if ( result ) {
-            if (req.session.passport.user.tipoUsuario == "P" && condiciones.medico_id){
-              models.MedicoFavorito.update({
-                mutuo: 1
-              },
-              {
-                where: condiciones
-              });
+        if (req.session.passport.user.id != object.usuario_id){
+          models.Usuario.findOne({
+            where: {
+              id: object.usuario_id
+            },
+            attributes: ['id','tipoUsuario'],
+            include: [{
+              model: models.Medico,
+              attributes: ['id']
+            },{
+              model: models.Paciente,
+              attributes: ['id']
+            }]
+          }).then(function(usuario){
+            var usuario_id = usuario.id;
+            var tipoUsuario = usuario.tipoUsuario;
+            var tipoUsuario_id = '';
+            if (usuario.Medico){
+              tipoUsuario_id = usuario.Medico.id;
+            } else if (usuario.Paciente){
+              tipoUsuario_id = usuario.Paciente.id;
             }
+            if (req.session.passport.user.tipoUsuario == "P"){
+              //Paciente agrega a medico
+              if (tipoUsuario == "M"){
+                //Crear relación simple
+                models.MedicoFavorito.findOrCreate({
+                  defaults: {
+                    usuario_id: req.session.passport.user.id,
+                    medico_id: tipoUsuario_id,
+                    mutuo: 1
+                  },
+                  where:  {
+                    usuario_id: req.session.passport.user.id,
+                    medico_id: tipoUsuario_id
+                  }
+                }).spread(function(result, created) {
+                  if (created){
+                    models.Notificacion.create({
+                      usuario_id: usuario_id,
+                      tipoNotificacion_id: 7,
+                      data: req.session.passport.user.Paciente_id.toString()
+                    });
+                  }
+                  if (result){
+                    res.status(200).send( {
+                      success: true
+                    } );
+                  } else {
+                    res.status(200).send( {
+                      success: false
+                    } );
+                  }
+                });
+              } else {
+                //Paciente agrega a Paciente
+                  models.MedicoFavorito.findOrCreate({
+                    defaults: {
+                      usuario_id: req.session.passport.user.id,
+                      paciente_id: tipoUsuario_id
+                    },
+                    where:  {
+                      usuario_id: req.session.passport.user.id,
+                      paciente_id: tipoUsuario_id
+                    }
+                  }).spread(function(result, created) {
+                    if (result){
+                      models.MedicoFavorito.findOrCreate( {
+                        defaults: {
+                          usuario_id: usuario_id,
+                          paciente_id: req.session.passport.user.Medico_id,
+                        },
+                        where:  {
+                          usuario_id: usuario_id,
+                          paciente_id: req.session.passport.user.Medico_id,
+                          aprobado: 0
+                        }
+                      }).spread(function(result, created){
+                        if (created){
+                          models.Notificacion.create( {
+                            usuario_id: usuario_id,
+                            tipoNotificacion_id: 1,
+                            data: req.session.passport.user.Paciente_id.toString()
+                          } );
+                        }
+                        if (result){
+                          res.status(200).send( {
+                            success: true
+                          } );
+                        } else {
+                          res.status(200).send( {
+                            success: false
+                          } );
+                        }
+                      })
 
-            res.status(200).send( {
-              success: true
-            } );
-          }
-          else {
-            res.send( {
-              success: false,
-              error: 0
-            } );
-          }
-        } );
+                    } else {
+                      res.status(200).send( {
+                        success: false
+                      } );
+                    }
+                  });
+              }
+            } else if (req.session.passport.user.tipoUsuario == "M"){
+              //Medico agrega a medico
+              if (tipoUsuario == "M"){
+                models.MedicoFavorito.findOrCreate({
+                  defaults: {
+                    usuario_id: req.session.passport.user.id,
+                    medico_id: tipoUsuario_id
+                  },
+                  where:  {
+                    usuario_id: req.session.passport.user.id,
+                    medico_id: tipoUsuario_id
+                  }
+                }).spread(function(result, created) {
+                  if (result){
+                    models.MedicoFavorito.findOrCreate( {
+                      defaults: {
+                        usuario_id: usuario_id,
+                        medico_id: req.session.passport.user.Medico_id,
+                      },
+                      where:  {
+                        usuario_id: usuario_id,
+                        medico_id: req.session.passport.user.Medico_id,
+                        aprobado: 0
+                      }
+                    }).spread(function(result, created){
+                      if (created){
+                        models.Notificacion.create( {
+                          usuario_id: usuario_id,
+                          tipoNotificacion_id: 4,
+                          data: req.session.passport.user.Medico_id.toString()
+                        } );
+                      }
+                      if (result){
+                        res.status(200).send( {
+                          success: true
+                        } );
+                      } else {
+                        res.status(200).send( {
+                          success: false
+                        } );
+                      }
+                    })
+
+                  } else {
+                    res.status(200).send( {
+                      success: false
+                    } );
+                  }
+                });
+              }
+            }
+          });
+
+        } else {
+          res.status(200).json({success:false});
+        }
       }
       else {
         res.status(200).send( {
@@ -121,90 +185,108 @@ module.exports = {
   eliminarFav: function ( object, req, res ) {
     try{
       if ( req.session.passport.user ) {
-        var condiciones = '';
 
-        if ( object.medicoID ) {
-          if (req.session.passport.user.tipoUsuario == "M"){
-              /*Si se trata de una relacion médico-médico eliminamos las relaciones por ambos lados*/
-            models.Medico.findOne( {
-              where: {
-                id: object.medicoID
+          models.Usuario.findOne({
+            where: {
+              id: object.usuario_id
+            },
+            attributes: ['id','tipoUsuario'],
+            include: [{
+              model: models.Medico,
+              attributes: ['id']
+            },{
+              model: models.Paciente,
+              attributes: ['id']
+            }]
+          }).then(function(usuario){
+            var usuario_id = usuario.id;
+            var tipoUsuario = usuario.tipoUsuario;
+            var tipoUsuario_id = '';
+            if (usuario.Medico){
+              tipoUsuario_id = usuario.Medico.id;
+            } else if (usuario.Paciente){
+              tipoUsuario_id = usuario.Paciente.id;
+            }
+
+            if (req.session.passport.user.tipoUsuario == "P"){
+              if (tipoUsuario == "M"){
+                //Paciente deja de seguir a medico
+                models.MedicoFavorito.destroy({
+                  where: {
+                    usuario_id: req.session.passport.user.id,
+                    medico_id: tipoUsuario_id
+                  }
+                }).then(function(){
+                  res.status(200).json({success:true});
+                });
+              } else {
+                //Paciente elimina a Paciente
+                models.MedicoFavorito.destroy( {
+                  where: {
+                    usuario_id: usuario_id,
+                    paciente_id: req.session.passport.user.Paciente_id
+                  }
+                } ).then(function(){
+                  models.MedicoFavorito.destroy({
+                      where: {
+                        usuario_id: req.session.passport.user.id,
+                        paciente_id: tipoUsuario_id
+                      }
+                  }).then(function(){
+                    models.Notificacion.destroy( {
+                      where: {
+                        tipoNotificacion_id: 1,
+                        usuario_id: usuario_id,
+                        data: req.session.passport.user.Paciente_id
+                      }
+                    } ).then(function(){
+                      res.status(200).json({success:true});
+                    });
+                  });
+                });
               }
-            } ).then( function ( medico ) {
-              var usuario_id = medico.usuario_id;
-              models.MedicoFavorito.destroy( {
-                where: {
-                  usuario_id: usuario_id,
-                  medico_id: req.session.passport.user.Medico_id
-                }
-              } );
-
-              models.Notificacion.destroy( {
-                where: {
-                  tipoNotificacion_id: 4,
-                  usuario_id: usuario_id,
-                  data: req.session.passport.user.Medico_id
-                }
-              } );
-            } );
-          }
-          condiciones = {
-            usuario_id: req.session.passport.user.id,
-            medico_id: object.medicoID
-          }
-        }
-        else if ( object.pacienteID ) {
-          if ( req.session.passport.user.tipoUsuario == "P" ) {
-              /*Si se trata de una relacion paciente-paciente eliminamos las relaciones por ambos lados*/
-            models.Paciente.findOne( {
-              where: {
-                id: object.pacienteID
+            } else if (req.session.passport.user.tipoUsuario == "M"){
+              //Medico agrega a medico
+              if (tipoUsuario == "M"){
+                models.MedicoFavorito.destroy( {
+                  where: {
+                    usuario_id: usuario_id,
+                    medico_id: req.session.passport.user.Medico_id
+                  }
+                } ).then(function(){
+                  models.MedicoFavorito.destroy({
+                      where: {
+                        usuario_id: req.session.passport.user.id,
+                        medico_id: tipoUsuario_id
+                      }
+                  }).then(function(){
+                    models.Notificacion.destroy( {
+                      where: {
+                        tipoNotificacion_id: 4,
+                        usuario_id: usuario_id,
+                        data: req.session.passport.user.Medico_id
+                      }
+                    } ).then(function(){
+                      res.status(200).json({success:true});
+                    });
+                  });
+                });
               }
-            } ).then( function ( paciente ) {
-              var usuario_id = paciente.usuario_id;
-              models.MedicoFavorito.destroy( {
-                where: {
-                  usuario_id: usuario_id,
-                  paciente_id: req.session.passport.user.Paciente_id
-                }
-              } );
-
-              models.Notificacion.destroy( {
-                where: {
-                  tipoNotificacion_id: 1,
-                  usuario_id: usuario_id,
-                  data: req.session.passport.user.Paciente_id
-                }
-              } );
-            } );
-          }
-          condiciones = {
-            usuario_id: req.session.passport.user.id,
-            paciente_id: object.pacienteID
-          }
-        }
-
-        models.MedicoFavorito.destroy( {
-          where: condiciones
-        } ).then( function ( result ) {
-          res.status(200).send( {
-            success: true
-          } );
-        } );
-
-        var numNot = 0;
-        if (req.session.passport.user.tipoUsuario == "P"){
-          numNot = 8;
-        } else if (req.session.passport.user.tipoUsuario == "M"){
-          numNo = 9;
-        }
-        if (object.notificacion_id){
-          models.Notificacion.update({
-            tipoNotificacion_id: numNo
-          },{
-            where: { id: object.notificacion_id}
-          })
-        }
+            }
+            if (object.notificacion_id){
+              var numNot = 0;
+              if (req.session.passport.user.tipoUsuario == "P"){
+                numNot = 8;
+              } else if (req.session.passport.user.tipoUsuario == "M"){
+                numNo = 9;
+              }
+              models.Notificacion.update({
+                tipoNotificacion_id: numNo
+              },{
+                where: { id: object.notificacion_id}
+              })
+            }
+          });
       }
       else {
         res.status(200).send( {
@@ -273,86 +355,103 @@ module.exports = {
   aceptarInvitacion: function ( object, req, res ) {
     try{
       if ( req.session.passport.user ) {
-        var condiciones = [];
-        if (object.pacienteID){
-          condiciones = {
-            usuario_id: req.session.passport.user.id,
-            paciente_id: object.pacienteID
-          }
-        } else {
-          condiciones = {
-            usuario_id: req.session.passport.user.id,
-            medico_id: object.medicoID
-          }
-        }
-        models.MedicoFavorito.findOne( {
-          where: condiciones
-        } ).then( function ( result ) {
-          if ( result ) {
-            result.update( {
-              aprobado: 1,
-              mutuo: 1
+          models.Usuario.findOne({
+            where: {
+              id: object.usuario_id
+            },
+            attributes: ['id','tipoUsuario'],
+            include: [{
+              model: models.Medico,
+              attributes: ['id']
+            },{
+              model: models.Paciente,
+              attributes: ['id']
+            }]
+          }).then(function(usuario){
+            if (usuario.Medico){
+              object.medicoID = usuario.Medico.id;
+            } else if (usuario.Paciente){
+              object.pacienteID = usuario.Paciente.id;
+            }
+            var condiciones = [];
+            if (object.pacienteID){
+              condiciones = {
+                usuario_id: req.session.passport.user.id,
+                paciente_id: object.pacienteID
+              }
+            } else {
+              condiciones = {
+                usuario_id: req.session.passport.user.id,
+                medico_id: object.medicoID
+              }
+            }
+            models.MedicoFavorito.findOne( {
+              where: condiciones
             } ).then( function ( result ) {
-              if (req.session.passport.user.tipoUsuario == "P"){
-                  models.Usuario.findOne( {
-                    attributes: [ 'id' ],
-                    include: [ {
-                      model: models.Paciente,
-                      where: {
-                        id: object.pacienteID
-                      },
-                      attributes: [ 'id' ]
-                    } ]
-                  } ).then( function ( usuario ) {
-                    models.Notificacion.create( {
-                      usuario_id: usuario.id,
-                      tipoNotificacion_id: 2,
-                      data: req.session.passport.user.Paciente_id.toString()
-                    } );
-                    models.MedicoFavorito.update({
-                        mutuo: 1
-                      },{
-                      where: {
-                        usuario_id: usuario.id,
-                        paciente_id: req.session.passport.user.Paciente_id.toString()
-                      }
-                    });
-                    res.send( {
-                      result: 'success'
-                    } );
-                  } );
-                } else {
-                  models.Usuario.findOne( {
-                    attributes: [ 'id' ],
-                    include: [ {
-                      model: models.Medico,
-                      where: {
-                        id: object.medicoID
-                      },
-                      attributes: [ 'id' ]
-                    } ]
-                  } ).then( function ( usuario ) {
-                    models.Notificacion.create( {
-                      usuario_id: usuario.id,
-                      tipoNotificacion_id: 5,
-                      data: req.session.passport.user.Medico_id.toString()
-                    } );
-                    models.MedicoFavorito.update({
-                        mutuo: 1
-                      },{
-                      where: {
-                        usuario_id: usuario.id,
-                        medico_id: req.session.passport.user.Medico_id.toString()
-                      }
-                    });
-                    res.send( {
-                      result: 'success'
-                    } );
-                  } );
-                }
-            } )
-          }
-          else {
+              if ( result ) {
+                result.update( {
+                  aprobado: 1,
+                  mutuo: 1
+                } ).then( function ( result ) {
+                  if (req.session.passport.user.tipoUsuario == "P"){
+                      models.Usuario.findOne( {
+                        attributes: [ 'id' ],
+                        include: [ {
+                          model: models.Paciente,
+                          where: {
+                            id: object.pacienteID
+                          },
+                          attributes: [ 'id' ]
+                        } ]
+                      } ).then( function ( usuario ) {
+                        models.Notificacion.create( {
+                          usuario_id: usuario.id,
+                          tipoNotificacion_id: 2,
+                          data: req.session.passport.user.Paciente_id.toString()
+                        } );
+                        models.MedicoFavorito.update({
+                            mutuo: 1
+                          },{
+                          where: {
+                            usuario_id: usuario.id,
+                            paciente_id: req.session.passport.user.Paciente_id.toString()
+                          }
+                        });
+                        res.send( {
+                          result: 'success'
+                        } );
+                      } );
+                    } else {
+                      models.Usuario.findOne( {
+                        attributes: [ 'id' ],
+                        include: [ {
+                          model: models.Medico,
+                          where: {
+                            id: object.medicoID
+                          },
+                          attributes: [ 'id' ]
+                        } ]
+                      } ).then( function ( usuario ) {
+                        models.Notificacion.create( {
+                          usuario_id: usuario.id,
+                          tipoNotificacion_id: 5,
+                          data: req.session.passport.user.Medico_id.toString()
+                        } );
+                        models.MedicoFavorito.update({
+                            mutuo: 1
+                          },{
+                          where: {
+                            usuario_id: usuario.id,
+                            medico_id: req.session.passport.user.Medico_id.toString()
+                          }
+                        });
+                        res.send( {
+                          result: 'success'
+                        } );
+                      } );
+                    }
+              } )
+          } else {
             res.send( {
               result: 'error'
             } );
@@ -374,6 +473,7 @@ module.exports = {
             }
           } );
         }
+      });
       }
       else {
         res.send( {

@@ -2240,27 +2240,24 @@ function iniciarSesionFacebook(callback, usuarioMedico_id){
     $('#iframeId').load(function() {
         bootbox.hideAll();
         var tipoUsuario = revisarTipoSesion();
-        if (tipoUsuario == 'P'){
-          bootbox.hideAll();
-          callback = window[callback];
-          callback(usuarioMedico_id);
-        } else if (tipoUsuario == ''){
+        if (tipoUsuario == ""){
+          newWindow = window.open('/auth/facebook/request/loguin','_blank');
 
-            newWindow = window.open('/auth/facebook/request/loguin','_blank');
+          timeoutF = setInterval(function(){
+            var tipoUsuario = revisarTipoSesion();
+            if (tipoUsuario == 'P'){
+              CancelarLogin();
+              bootbox.hideAll();
+              callback = window[callback];
+              callback(usuarioMedico_id);
+            }
+          },2000);
 
-            timeoutF = setInterval(function(){
-              var tipoUsuario = revisarTipoSesion();
-              if (tipoUsuario == 'P'){
-                CancelarLogin();
-                bootbox.hideAll();
-                callback = window[callback];
-                callback(usuarioMedico_id);
-              }
-            },2000);
-
-            $('body').prepend('<div id="loadDiv" style="background-color: rgba(0,0,0,0.7);z-index: 30000;width: 100%;min-height: 100%;position: fixed;color: white;display: flex;   justify-content: center;"><div class="text-center" style="align-self: center;font-size: 40px;">Cargando...<br><button class="btn btn-danger" onclick="CancelarLogin()">Cancelar</button></div></div>');
-
+          $('body').prepend('<div id="loadDiv" style="background-color: rgba(0,0,0,0.7);z-index: 30000;width: 100%;min-height: 100%;position: fixed;color: white;display: flex;   justify-content: center;"><div class="text-center" style="align-self: center;font-size: 40px;">Cargando...<br><button class="btn btn-danger" onclick="CancelarLogin()">Cancelar</button></div></div>');
+        } else {
+          actualizarSesion(false, callback, usuarioMedico_id);
         }
+
     });
 }
 
