@@ -1832,46 +1832,48 @@ function obtenerCPModal(tipo) {
     });
 }
 function cargarListaEspCol( usuario ,tipo) {
-  var filtro = $('#buscadorEspecialInput').val();
-  $.ajax( {
-    async: false,
-    url: '/cargarListaEspCol',
-    type: 'POST',
-    data: {
-      usuario: usuario,
-      filtro: filtro
-    },
-    dataType: "json",
-    cache: false,
-    success: function ( data ) {
-      $('#especialidadesList').html('');
-      $('#listaColegas').html('');
-      $('#tipoFiltro').html('una especialidad');
-      if ( data.success ) {
-        var contenido = '';
-        var primero = '';
-        data.result.forEach(function(esp){
-          if (primero == ""){
-            primero = esp.id;
+  if (!$('#colegas').hasClass('hidden')){
+    var filtro = $('#buscadorEspecialInput').val();
+    $.ajax( {
+      async: false,
+      url: '/cargarListaEspCol',
+      type: 'POST',
+      data: {
+        usuario: usuario,
+        filtro: filtro
+      },
+      dataType: "json",
+      cache: false,
+      success: function ( data ) {
+        $('#especialidadesList').html('');
+        $('#listaColegas').html('');
+        $('#tipoFiltro').html('una especialidad');
+        if ( data.success ) {
+          var contenido = '';
+          var primero = '';
+          data.result.forEach(function(esp){
+            if (primero == ""){
+              primero = esp.id;
+            }
+            contenido += '<li>' +
+            '<a onclick="cargarListaColegasByEsp(' + usuario + ',' + esp.id + ',this,\''+tipo+'\')">' + esp.especialidad + '<span class="badge pull-right">' + esp.total + '</span></a>' +
+            '</li>';
+          });
+          $('#especialidadesList').html(contenido);
+          if (primero != ""){
+            cargarListaColegasByEsp(usuario,primero,null,tipo);
           }
-          contenido += '<li>' +
-          '<a onclick="cargarListaColegasByEsp(' + usuario + ',' + esp.id + ',this,\''+tipo+'\')">' + esp.especialidad + '<span class="badge pull-right">' + esp.total + '</span></a>' +
-          '</li>';
-        });
-        $('#especialidadesList').html(contenido);
-        if (primero != ""){
-          cargarListaColegasByEsp(usuario,primero,null,tipo);
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
         }
-      }else{
-        if (data.error){
-          manejadorDeErrores(data.error);
-        }
+      },
+      error: function ( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: ' + err );
       }
-    },
-    error: function ( jqXHR, textStatus, err ) {
-      console.error( 'AJAX ERROR: ' + err );
-    }
-  } );
+    } );
+  }
 }
 function cargarListaColegasByEsp(usuario_id,especialidad_id, element,tipo){
   var classDiv = 'class="col-lg-3 col-md-3 col-sm-4 col-xs-4"';

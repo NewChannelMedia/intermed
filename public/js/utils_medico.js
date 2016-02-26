@@ -542,6 +542,13 @@ function actualizarSesion(refresh, callback, parametros) {
             }
 
             //Mostrar secciones que son solo para personas logueadas
+            if ($('#colegas').hasClass('hidden')){
+              cargarListaEspCol( $( '#usuarioPerfil' ).val() );
+            }
+
+            if ($('#comentarios').hasClass('hidden')){
+              cargarComentariosMedico();
+            }
             $('.privateDisplay').removeClass('hidden');
 
             if (data.session.tipoUsuario == "M"){
@@ -2335,60 +2342,63 @@ function traerAseguradoras(){
       }
     });
   }
+
   function cargarComentariosMedico(){
-    var usuario_id = '';
-    if ($('#usuarioPerfil').length>0){
-      usuario_id = $('#usuarioPerfil').val();
-    }
-    $.ajax({
-        url: '/medico/cargarComentarios',
-        type: 'POST',
-        dataType: "json",
-        cache: false,
-        data: {
-          usuario_id: usuario_id,
-        },
-        type: 'POST',
-        success: function (data) {
-          if (data.success){
-            var contenido = '';
-            data.result.forEach(function(res){
-              var nombre = "Anonimo";
-              if (res.anonimo == 0){
-                if (res.Usuario.DatosGenerale.apellidoM && res.Usuario.DatosGenerale.apellidoM!=""){
-                  res.Usuario.DatosGenerale.apellidoM = ' ' + res.Usuario.DatosGenerale.apellidoM;
+    if (!$('#comentarios').hasClass('hidden')){
+      var usuario_id = '';
+      if ($('#usuarioPerfil').length>0){
+        usuario_id = $('#usuarioPerfil').val();
+      }
+      $.ajax({
+          url: '/medico/cargarComentarios',
+          type: 'POST',
+          dataType: "json",
+          cache: false,
+          data: {
+            usuario_id: usuario_id,
+          },
+          type: 'POST',
+          success: function (data) {
+            if (data.success){
+              var contenido = '';
+              data.result.forEach(function(res){
+                var nombre = "Anonimo";
+                if (res.anonimo == 0){
+                  if (res.Usuario.DatosGenerale.apellidoM && res.Usuario.DatosGenerale.apellidoM!=""){
+                    res.Usuario.DatosGenerale.apellidoM = ' ' + res.Usuario.DatosGenerale.apellidoM;
+                  } else {
+                    res.Usuario.DatosGenerale.apellidoM = '';
+                  }
+                  nombre = res.Usuario.DatosGenerale.nombre  + ' ' + res.Usuario.DatosGenerale.apellidoP + res.Usuario.DatosGenerale.apellidoM + '.';
+
+                  if (res.Usuario.Direccions[0]){
+                    nombre = nombre + ' '+ res.Usuario.Direccions[0].Municipio.municipio +', '+ res.Usuario.Direccions[0].Municipio.Estado.estado.substring(0, 3) +'.';
+                  }
+
                 } else {
-                  res.Usuario.DatosGenerale.apellidoM = '';
+                  res.Usuario.urlFotoPerfil = default_urlFotoPerfil;
                 }
-                nombre = res.Usuario.DatosGenerale.nombre  + ' ' + res.Usuario.DatosGenerale.apellidoP + res.Usuario.DatosGenerale.apellidoM + '.';
+                res.fecha = new Date(res.fecha).toLocaleDateString();
+                res.fecha = formatearFechaComentario(res.fecha.split(' ')[0]);
 
-                if (res.Usuario.Direccions[0]){
-                  nombre = nombre + ' '+ res.Usuario.Direccions[0].Municipio.municipio +', '+ res.Usuario.Direccions[0].Municipio.Estado.estado.substring(0, 3) +'.';
-                }
-
-              } else {
-                res.Usuario.urlFotoPerfil = default_urlFotoPerfil;
-              }
-              res.fecha = new Date(res.fecha).toLocaleDateString();
-              res.fecha = formatearFechaComentario(res.fecha.split(' ')[0]);
-
-              contenido += '<div class="media comment-container">';
-                contenido += '<div class="media-left"><img class="img-circle comment-img" style="width:150px;" src="'+res.Usuario.urlFotoPerfil+'"></div>';
-                contenido += '<article class="media-body">';
-                  contenido += '<div class="comment-title s30 h67-medcond">'+res.titulo+'</div>';
-                  contenido += '<p class="s15 h67-medium">'+res.comentario+'</p>';
-                  contenido += '<p class="comment-autor s15 h75-bold"><span class="capitalize">'+ nombre +'</span></p>';
-                  contenido += '<p class="comment-date s15 h67-medium text-info">'+res.fecha+'</p>';
-                contenido += '</article>';
-              contenido += '</div>';
-            });
-              $('#comentariosMedico').html(contenido);
+                contenido += '<div class="media comment-container">';
+                  contenido += '<div class="media-left"><img class="img-circle comment-img" style="width:150px;" src="'+res.Usuario.urlFotoPerfil+'"></div>';
+                  contenido += '<article class="media-body">';
+                    contenido += '<div class="comment-title s30 h67-medcond">'+res.titulo+'</div>';
+                    contenido += '<p class="s15 h67-medium">'+res.comentario+'</p>';
+                    contenido += '<p class="comment-autor s15 h75-bold"><span class="capitalize">'+ nombre +'</span></p>';
+                    contenido += '<p class="comment-date s15 h67-medium text-info">'+res.fecha+'</p>';
+                  contenido += '</article>';
+                contenido += '</div>';
+              });
+                $('#comentariosMedico').html(contenido);
+            }
+          },
+          error: function (err){
+            console.log('AJAX Error: ' + JSON.stringify(err));
           }
-        },
-        error: function (err){
-          console.log('AJAX Error: ' + JSON.stringify(err));
-        }
-      });
+        });
+    }
   }
   function agregarFormacionAcademica(){
     var form = $('#formAcademica');
