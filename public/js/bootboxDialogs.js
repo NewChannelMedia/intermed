@@ -743,76 +743,87 @@ function bootbox_modificaMedicoDetalles(tipo){
 	});
 }
 //<--------------------- RECOMENDACIONES ------------------->
-function recomendacionesBoot(){
-  var nombreUsuario = '';
+function recomendacionesBoot(usuarioMedico_id){
 
-  $.ajax( {
-    async: false,
-    url: '/usuario/traer',
-    type: 'POST',
-    dataType: "json",
-    cache: false,
-    data: {
-      'id': $('#usuarioPerfil').val()
-    },
-    success: function ( data ) {
-      if (!data.DatosGenerale.apellidoM) data.DatosGenerale.apellidoM = '';
-      nombreUsuario = 'Dr. ' + data.DatosGenerale.nombre  + ' ' + data.DatosGenerale.apellidoP + ' ' + data.DatosGenerale.apellidoM;
-    },
-    error: function (err){
-      console.log('AJAX Error: ' + JSON.stringify(err));
-    }
-  });
+  if (!usuarioMedico_id){
+    usuarioMedico_id = $('#usuarioPerfil').val();
+  }
 
-  bootbox.dialog({
-    onEscape: function () {
-        bootbox.hideAll();
-    },
-    backdrop:true,
-    closeButton:true,
-    className: 'Intermed-Bootbox h65-medium',
-    title: '<span class="title">Recomendar al '+ nombreUsuario +'</span>',
-    size:'large',
-    message:
-      '<form method="POST" onsubmit="return agregarDestRecom();" id="destRec">'+
-        '<div class="form-group col-md-5">'+
-          '<input class="form-control" type="text" placeholder="Nombre" name="nombre" id="nombreRecomendacion" required="">'+
-        '</div>'+
-        '<div class="form-group col-md-6">'+
-          '<input class="form-control" type="email" placeholder="E-mail" name="email" id="correoRecomendacion" required="">'+
-        '</div>'+
-        '<div class="form-group col-md-1">'+
-          '<button class="btn btn-warning btn-block"><span class="glyphicon glyphicon-plus"></span></button>'+
-        '</div>'+
+  //Revisar si existe sesión iniciada como paciente
+  var tipoUsuario = revisarTipoSesion();
+  if (tipoUsuario == ''){
+    //Iniciar sesión, con callback a agendarCitaBootbox
+    registrarPacienteBootbox('recomendacionesBoot', usuarioMedico_id);
+  } else {
+    var nombreUsuario = '';
+    $.ajax( {
+      async: false,
+      url: '/usuario/traer',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        'id': $('#usuarioPerfil').val()
+      },
+      success: function ( data ) {
+        if (!data.DatosGenerale.apellidoM) data.DatosGenerale.apellidoM = '';
+        nombreUsuario = 'Dr. ' + data.DatosGenerale.nombre  + ' ' + data.DatosGenerale.apellidoP + ' ' + data.DatosGenerale.apellidoM;
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
 
-        '<div class="col-md-2 white-c ag-bold s20" style="min-height:35px">'+
-          'Destinatarios:'+
-        '</div>'+
-        '<div class="form-group col-md-10"><div id="destRecomendacion" style="min-height: 30px;border-radius: 5px;"></div></div>'+
-      '</form>'+
+    bootbox.dialog({
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      backdrop:true,
+      closeButton:true,
+      className: 'Intermed-Bootbox h65-medium',
+      title: '<span class="title">Recomendar al '+ nombreUsuario +'</span>',
+      size:'large',
+      message:
+        '<form method="POST" onsubmit="return agregarDestRecom();" id="destRec">'+
+          '<div class="form-group col-md-5">'+
+            '<input class="form-control" type="text" placeholder="Nombre" name="nombre" id="nombreRecomendacion" required="">'+
+          '</div>'+
+          '<div class="form-group col-md-6">'+
+            '<input class="form-control" type="email" placeholder="E-mail" name="email" id="correoRecomendacion" required="">'+
+          '</div>'+
+          '<div class="form-group col-md-1">'+
+            '<button class="btn btn-warning btn-block"><span class="glyphicon glyphicon-plus"></span></button>'+
+          '</div>'+
 
-      '<div class="form-group">'+
-        '<div class="form-group col-md-12">'+
-           '<textarea id="mensajeRecomendar" class="form-control" rows="3" placeholder="mensaje para los recomendados" style="resize: none;margin-top: -10px;"></textarea>'+
-        '</div>'+
-     '</div>'+
+          '<div class="col-md-2 white-c ag-bold s20" style="min-height:35px">'+
+            'Destinatarios:'+
+          '</div>'+
+          '<div class="form-group col-md-10"><div id="destRecomendacion" style="min-height: 30px;border-radius: 5px;"></div></div>'+
+        '</form>'+
 
-      '<div class="row">'+
-        '<div class="form-group col-md-12">'+
-            '<div class="col-md-4">'+
-                '<div class="form-group">'+
-                    '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="bootbox.hideAll();">'+
-                '</div>'+
-            '</div>'+
-            '<div class="col-md-6 col-md-offset-2">'+
-                '<div class="form-group">'+
-                    '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Enviar" onclick="enviarRecomendacion();">'+
-                '</div>'+
-            '</div>'+
-        '</div>'+
-      '</div>'
-  });
-  recomiendaAuto();
+        '<div class="form-group">'+
+          '<div class="form-group col-md-12">'+
+             '<textarea id="mensajeRecomendar" class="form-control" rows="3" placeholder="mensaje para los recomendados" style="resize: none;margin-top: -10px;"></textarea>'+
+          '</div>'+
+       '</div>'+
+
+        '<div class="row">'+
+          '<div class="form-group col-md-12">'+
+              '<div class="col-md-4">'+
+                  '<div class="form-group">'+
+                      '<input type="button" class="btn btn-danger btn-md btn-block" id="btnRegMed" value="Cancelar" onclick="bootbox.hideAll();">'+
+                  '</div>'+
+              '</div>'+
+              '<div class="col-md-6 col-md-offset-2">'+
+                  '<div class="form-group">'+
+                      '<input type="button" class="btn btn-primary btn-md btn-block" id="btnRegMed" value="Enviar" onclick="enviarRecomendacion();">'+
+                  '</div>'+
+              '</div>'+
+          '</div>'+
+        '</div>'
+    });
+    recomiendaAuto();
+  }
 }
 //<--------------------- FIN RECOMENDACIONES --------------->
 
@@ -2124,7 +2135,7 @@ function manejadorDeErrores(error){
         codigoError = 'GEN0001';
         descripcionError = 'Sesión cerrada de manera inesperada.';
         solucion = '<span class="s15">Actualiza la página para solucionar este problema.</span>';
-        accion = '<div class="col-md-12" style="color:white"><div class="row text-center"><img src="http://i55.tinypic.com/33ksub8.jpg" width="50%" style="margin-top:10px;"></div></div><button onclick="location.reload()" class="btn btn-md btn-warning" style="margin-top:20px;margin-bottom:20px;">Actualizar <span class="glyphicon glyphicon-refresh"></span></button>';
+        accion = '<div class="col-md-12" style="color:white"><div class="row text-center"></div></div><button onclick="location.reload()" class="btn btn-md btn-warning" style="margin-top:20px;margin-bottom:20px;">Actualizar <span class="glyphicon glyphicon-refresh"></span></button>';
         //No sesión
         break;
       case 101:
@@ -2179,8 +2190,42 @@ function manejadorDeErrores(error){
   });
 }
 
+var newWindow = null;
+var timeoutF = null;
 
-function agendarCitaBootbox(){
+function registrarseFacebook(callback, usuarioMedico_id){
+  newWindow = window.open('/auth/facebook/request/P','_blank');
+
+  timeoutF = setInterval(function(){
+    var tipoUsuario = revisarTipoSesion();
+    if (tipoUsuario == 'P'){
+      //$('#loadDiv').remove();
+      CancelarLogin();
+      bootbox.hideAll();
+      callback = window[callback];
+      callback(usuarioMedico_id);
+    }
+  },2000);
+
+  $('body').prepend('<div id="loadDiv" style="background-color: rgba(0,0,0,0.7);z-index: 30000;width: 100%;min-height: 100%;position: fixed;color: white;display: flex;   justify-content: center;"><div class="text-center" style="align-self: center;font-size: 40px;">Cargando...<br><button class="btn btn-danger" onclick="CancelarLogin()">Cancelar</button></div></div>');
+}
+
+function CancelarLogin(){
+  if (timeoutF){
+    clearTimeout(timeoutF);
+    timeoutF = null;
+  }
+  if (newWindow){
+    newWindow.close();
+    newWindow = null;
+  }
+  if ($('#loadDiv').length>0){
+    $('#loadDiv').remove();
+  }
+}
+
+function iniciarSesionFacebook(callback, usuarioMedico_id){
+    bootbox.hideAll();
     bootbox.dialog({
       backdrop: true,
       onEscape: function () {
@@ -2188,53 +2233,266 @@ function agendarCitaBootbox(){
       },
       size:'large',
       className: 'Intermed-Bootbox',
-      title: '<span class="title">AGENDAR UNA CITA.</span><span class="subtitle">Selecciona el servicio para el cual quieres generar la cita, seguido de eso se desplegaran las distintas ubicaciones donde el médico brinda el servicio.</span>',
-      message:
-            '<form method="POST" name="frmRegCita" id="frmRegCita">'+
-              '<input type="hidden" id="id" name="id">'+
-              '<input type="hidden" id="medico_id" name="medico_id" value="'+ $( '#usuarioPerfil' ).val() +'">'+
-              '<input type="hidden" id="fecha" name="fecha" />'+
-              '<input type="hidden" id="fechaFin" name="fechaFin" />'+
-              '<input type="hidden" id="serviciocita_id" name="serviciocita_id" />'+
-              '<div class=col-md-12">'+
-                '<div class="col-md-2">'+
-                  '<label for="servicio_id">Servicio: </label>'+
-                '</div>'+
-                '<div class="col-md-10">'+
-                  '<select class="form-control" id="servicio_id" name="servicio_id" onchange="iniciarDivAgendaCita();">'+
-                    '<option value=""></option>'+
-                  '</select>'+
+      title: '<span class="title">Intermed<sup>&reg;</sup> | Iniciando sesión...</span>',
+      message:'<div class="container-fluid"><div class="rows"><iframe src="/auth/facebook/request/loguin" id="iframeId" style="height: 600px" class="col-md-12 hidden"></iframe></div></div>'
+    });
+
+    $('#iframeId').load(function() {
+        bootbox.hideAll();
+        var tipoUsuario = revisarTipoSesion();
+        if (tipoUsuario == ""){
+          newWindow = window.open('/auth/facebook/request/loguin','_blank');
+
+          timeoutF = setInterval(function(){
+            var tipoUsuario = revisarTipoSesion();
+            if (tipoUsuario == 'P'){
+              CancelarLogin();
+              bootbox.hideAll();
+              callback = window[callback];
+              callback(usuarioMedico_id);
+            }
+          },2000);
+
+          $('body').prepend('<div id="loadDiv" style="background-color: rgba(0,0,0,0.7);z-index: 30000;width: 100%;min-height: 100%;position: fixed;color: white;display: flex;   justify-content: center;"><div class="text-center" style="align-self: center;font-size: 40px;">Cargando...<br><button class="btn btn-danger" onclick="CancelarLogin()">Cancelar</button></div></div>');
+        } else {
+          actualizarSesion(false, callback, usuarioMedico_id);
+        }
+
+    });
+}
+
+
+function registrarPacienteBootbox(callback, usuarioMedico_id){
+
+  bootbox.dialog({
+    backdrop: true,
+    onEscape: function () {
+        bootbox.hideAll();
+    },
+    size:'large',
+    className: 'Intermed-Bootbox',
+    title: '<span class="title">Intermed<sup>&reg;</sup> | Registro</span>',
+    message:
+    '<div id="RegPacModal" class="Flama-normal">'+
+        '<div class="row">'+
+          '<div class="col-lg-6 col-md-6 regCorreo text-center">'+
+            '<form method="POST" onsubmit="return iniciarSesionLocal(\'email\',\'password\',\''+callback+'\','+ usuarioMedico_id +');">'+
+              '<h3>Inicia sesión</h3>'+
+              '<br>'+
+              '<div class="row">'+
+                '<div class="col-md-8 col-md-offset-2">'+
+                  '<div class="form-group" style="padding-top:0px">'+
+                    '<button type="button" name="loginFB" class="btn btn-facebook btn-block btn-lg" onclick="iniciarSesionFacebook(\''+ callback +'\','+usuarioMedico_id+')"><span class="icon icon-facebook2"></span> Login con Facebook</button>'+
+                  '</div>'+
                 '</div>'+
               '</div>'+
-              '<br/><br/>'+
-
-              '<div class=col-md-12" id="ubicaciones_select">'+
-                '<div class="col-md-2">'+
-                  '<label for="servicio_id">Ubicación: </label>'+
-                '</div>'+
-                '<div class="col-md-10">'+
-                  '<select class="form-control" id="ubicacion_id" name="ubicacion_id" >'+
-                    '<option value=""></option>'+
-                  '</select>'+
+              '<div class="col-lg-2 col-md-2 col-sm-2 col-xs-1"><hr class="hidden"></div>'+
+              '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-10 s15 text-uppercase text-center dark-c"><br>o ingresa con tu correo:</div>'+
+              '<div class="col-lg-2 col-md-2 col-sm-2 col-xs-1"><hr class="hidden"></div>'+
+              '<div class="row">'+
+                '<div class="col-md-8 col-md-offset-2">'+
+                  '<div class="form-group" id="emailGroup">'+
+                    '<input type="text" class="form-control input-lg" id="email" name="email" placeholder="Usuario o Correo" required="true" aria-describedby="emailP">'+
+                  '</div>'+
+                  '<div class="form-group" id="passwordGroup">'+
+                    '<input type="password" class="form-control input-lg" id="password" name="password" placeholder="Contraseña" required="true" aria-describedby="passwordP" autocomplete="off">'+
+                  '</div>'+
                 '</div>'+
               '</div>'+
-
-
-              '<div class=col-md-12" id="cita_detalles" style="visibility:hidden">'+
-                '<b>Costo del servicio: </b><span id="citaCosto"></span><br/>'+
-                '<b>Duración: </b><span id="citaDuracion"></span>'+
+              '<div class="alert alert-info hidden text-center text-uppercase" id="LoginError" role="alert"> <strong>Correo o contraseña incorrectos.</strong></div>'+
+              '<div class="row" id="fin" style="margin-top:15px">'+
+                '<div class="col-md-8 col-md-offset-2">'+
+                  '<input type="submit" name="login" value="Ingresar" class="btn btn-warning btn-lg btn-block">'+
+                '</div>'+
+                '<div class="col-md-12">'+
+                  '<p class="text-center">'+
+                    '¿Olvidaste tus datos de acceso? <br><a href="#">Haz click aqui para recuperarlos</a>'+
+                  '</p>'+
+                '</div>'+
               '</div>'+
-
-
-              '<div class="col-md-12" id="divCalendarioPadre"><div class="row"><div id="divCalendario" class="regHorMed"></div></div></div>'+
-
             '</form>'+
-            '<input type="button" class="btn btn-drop btn-sm pull-left" value="Cancelar" onclick="bootbox.hideAll();">'+
-            '<input type="button" class="btn btn-save btn-sm pull-right" value="Agendar cita" onclick="registrarCita()"><br/><br/<br/><br/>'+
-            '<span style="color:#5D9AB7">.</span><br/><br/>'
-  });
-  traerServiciosPorMedico($('#usuarioPerfil').val());
-  iniciarDivAgendaCita();
+
+          '</div>'+
+          '<div class="col-lg-6 col-md-6 regCorreo text-center">'+
+            '<form method="POST" action="/reg/local" id="frm_regP" onsubmit="return encriptarPass(\'contrasenaRegP\',\'passEncriptP\')">'+
+            '<h3>Regístrate</h3>'+
+            '<br>'+
+            '<button name="registroFB" class="btn btn-facebook btn-block s20" onclick="registrarseFacebook(\''+ callback +'\','+usuarioMedico_id+')"><span class="icon icon-facebook2"></span> Regístrate con Facebook</button>'+
+            '<h4>o</h4>'+
+            '<h3>Registrate con tu correo electrónico</h3>'+
+            '<div class="row">'+
+              '<div class="col-md-12">'+
+                '<div id="alertError"></div>'+
+              '</div>'+
+              '<div class="col-md-6">'+
+                '<div class="form-group">'+
+                  '<input type="text" class="form-control" id="nombreReg"  name="first_name" placeholder="Nombre" required="true">'+
+                  '<span id="nameIcon" class="" aria-hidden="true"></span>'+
+                  '<div id="nombre-error"></div>'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-md-6">'+
+                '<div class="form-group" id="apellidoGroup">'+
+                  '<input type="text" class="form-control" id="ApellidoReg" name="last_name" placeholder="Apellido" required="true">'+
+                  '<span id="apellidoIcon" class="" aria-hidden="true"></span>'+
+                  '<div id="apellido-error"></div>'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-md-12">'+
+                '<div class="form-group" id="emailGroup">'+
+                  '<input type="email" class="form-control" id="correoReg" name="email" placeholder="Correo Electrónico" required="true">'+
+                  '<span id="emailIcon" class="" aria-hidden="true"></span>'+
+                  '<div id="email-error"></div>'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-md-6">'+
+                '<div class="form-group" id="passwordGroup">'+
+                  '<input type="hidden" id="passEncriptP" name="password">'+
+                  '<input type="password" class="form-control" id="contrasenaRegP" placeholder="Contraseña" pattern=".{6,13}" required="true">'+
+                  '<span id="passwordIcon" class="" aria-hidden="true"></span>'+
+                  '<div id="pass-error"></div>'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-md-6">'+
+                '<div class="form-group" id="confirmGroup">'+
+                  '<input type="password" class="form-control" id="contrasena2RegP" name="password2" placeholder="Confirma tu contraseña" pattern=".{6,13}" required="true">'+
+                  '<span id="confirmIcon" class="" aria-hidden="true"></span>'+
+                  '<div id="conf-error"></div>'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-md-3">'+
+                '<br><h4>'+
+                  '<small>Nacimiento</small>'+
+                '</h4>'+
+              '</div>'+
+              '<div class="col-md-3">'+
+                '<div class="form-group" id="diaGroup">'+
+                  '<input type="text" class="form-control" id="diaNacReg" name="birthdayDay" placeholder="Dia" required="true">'+
+                  '<span id="diaIcon" class="" aria-hidden="true"></span>'+
+                  '<div id="dia-error"></div>'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-md-3">'+
+                '<div class="form-group" id="mesGroup">'+
+                  '<input type="text" class="form-control" id="mesNacReg" name="birthdayMonth" placeholder="Mes" required="true">'+
+                  '<span id="mesIcon" class="" aria-hidden="true"></span>'+
+                  '<div id="mes-error"></div>'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-md-3">'+
+                '<div class="form-group" id="añoGroup">'+
+                  '<input type="text" class="form-control" id="añoNacReg" name="birthdayYear" placeholder="Año" required="true">'+
+                  '<span id="añoIcon" class="" aria-hidden="true"></span>'+
+                  '<div id="año-error"></div>'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-md-3">'+
+                '<h4>'+
+                  '<small>Sexo</small>'+
+                '</h4>'+
+              '</div>'+
+              '<div class="col-md-4">'+
+                '<div class="radio">'+
+                  '<label>'+
+                    '<input type="radio" name="gender" id="sexM" value="M" checked required="true"> Masculino'+
+                  '</label>'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-md-4">'+
+                '<div class="radio">'+
+                  '<label>'+
+                    '<input type="radio" name="gender" id="sexF" value="F" required="true"> Femenino'+
+                  '</label>'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-md-12">'+
+                '<input type="hidden" id="tiempo" name="tiempoStamp" value="tiempo" />'+
+                '<!-- TIMESTAMPS -->'+
+              '</div>'+
+            '</div>'+
+            '<div class="col-md-12">'+
+              '<p class="s15 text-center">'+
+                '<small>Al hacer clic en "Regístate", aceptas las <a href="">Condiciones</a> y confirmas que leíste nuestra <a href="">Política de datos</a>, incluido el <a href="">uso de cookies</a></small>.'+
+              '</p>'+
+            '</div>'+
+            '<div class="col-md-12">'+
+              '<input type="submit" id="regi" name="registroCorreo" value="Registrate" class="btn btn-warning btn-lg btn-block s20">'+
+            '</div>'+
+          '</div>'+
+        '</form>'+
+      '</div>'+
+    '</div>'+
+  '</div>'
+});
+}
+
+
+function agendarCitaBootbox(usuarioMedico_id){
+    if (!usuarioMedico_id){
+      usuarioMedico_id = $('#usuarioPerfil').val();
+    }
+    //Revisar si existe sesión iniciada como paciente
+    var tipoUsuario = revisarTipoSesion();
+    if (tipoUsuario == ''){
+      //Iniciar sesión, con callback a agendarCitaBootbox
+      registrarPacienteBootbox('agendarCitaBootbox', usuarioMedico_id);
+    } else if (tipoUsuario == 'P'){
+      //Agendar cita
+      bootbox.dialog({
+        backdrop: true,
+        onEscape: function () {
+            bootbox.hideAll();
+        },
+        size:'large',
+        className: 'Intermed-Bootbox',
+        title: '<span class="title">AGENDAR UNA CITA.</span><span class="subtitle">Selecciona el servicio para el cual quieres generar la cita, seguido de eso se desplegaran las distintas ubicaciones donde el médico brinda el servicio.</span>',
+        message:
+              '<form method="POST" name="frmRegCita" id="frmRegCita">'+
+                '<input type="hidden" id="id" name="id">'+
+                '<input type="hidden" id="medico_id" name="medico_id" value="'+ usuarioMedico_id +'">'+
+                '<input type="hidden" id="fecha" name="fecha" />'+
+                '<input type="hidden" id="fechaFin" name="fechaFin" />'+
+                '<input type="hidden" id="serviciocita_id" name="serviciocita_id" />'+
+                '<div class=col-md-12">'+
+                  '<div class="col-md-2">'+
+                    '<label for="servicio_id">Servicio: </label>'+
+                  '</div>'+
+                  '<div class="col-md-10">'+
+                    '<select class="form-control" id="servicio_id" name="servicio_id" onchange="iniciarDivAgendaCita();">'+
+                      '<option value=""></option>'+
+                    '</select>'+
+                  '</div>'+
+                '</div>'+
+                '<br/><br/>'+
+
+                '<div class=col-md-12" id="ubicaciones_select">'+
+                  '<div class="col-md-2">'+
+                    '<label for="servicio_id">Ubicación: </label>'+
+                  '</div>'+
+                  '<div class="col-md-10">'+
+                    '<select class="form-control" id="ubicacion_id" name="ubicacion_id" >'+
+                      '<option value=""></option>'+
+                    '</select>'+
+                  '</div>'+
+                '</div>'+
+
+
+                '<div class=col-md-12" id="cita_detalles" style="visibility:hidden">'+
+                  '<b>Costo del servicio: </b><span id="citaCosto"></span><br/>'+
+                  '<b>Duración: </b><span id="citaDuracion"></span>'+
+                '</div>'+
+
+
+                '<div class="col-md-12" id="divCalendarioPadre"><div class="row"><div id="divCalendario" class="regHorMed"></div></div></div>'+
+
+              '</form>'+
+              '<input type="button" class="btn btn-drop btn-sm pull-left" value="Cancelar" onclick="bootbox.hideAll();">'+
+              '<input type="button" class="btn btn-save btn-sm pull-right" value="Agendar cita" onclick="registrarCita()"><br/><br/<br/><br/>'+
+              '<span style="color:#5D9AB7">.</span><br/><br/>'
+      });
+      traerServiciosPorMedico(usuarioMedico_id);
+      iniciarDivAgendaCita();
+    }
 }
 
 
@@ -2454,6 +2712,7 @@ function detalleCita(agenda_id){
   var nombreServicio = '';
   var fecha = '';
   var hora = '';
+  var result = '';
 
   $.ajax( {
     async: false,
@@ -2465,7 +2724,7 @@ function detalleCita(agenda_id){
       'agenda_id': agenda_id
     },
     success: function ( data ) {
-      console.log('Result: ' + JSON.stringify(data));
+      result = data.result;
       imagenUrl = data.result.Paciente.Usuario.urlFotoPerfil;
       if (!data.result.Paciente.Usuario.DatosGenerale.apellidoM) data.result.Paciente.Usuario.DatosGenerale.apellidoM = '';
       nombreUsuario = data.result.Paciente.Usuario.DatosGenerale.nombre  + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoM;
@@ -2490,15 +2749,22 @@ function detalleCita(agenda_id){
     message:'<div class="col-md-12" style="margin-bottom:30px;margin-top:30px">'+
           '<div class="row">'+
             '<div class="col-md-4">'+
-            '<img src="'+imagenUrl+'" style="margin-top:7px;width:100%">'+
+              '<img src="'+imagenUrl+'" style="margin-top:7px;width:100%">'+
             '</div>'+
             '<div class="col-md-8">'+
-            '<span class="pull-right"><b>Fecha: </b>'+ fecha +'</span><br/>'+
-            '<span class="pull-right"><b>Hora: </b>'+ hora +'</span><br/><br/>'+
-            '<h4><b>'+nombreUsuario+'</b></h4><br/>'+
-            '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
-            '<b>Servicio: </b>'+nombreServicio+'<br/>'+
+              '<span class="pull-right"><b>Fecha: </b>'+ fecha +'</span><br/>'+
+              '<span class="pull-right"><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+              '<h4><b>'+nombreUsuario+'</b></h4><br/>'+
+              '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
+              '<b>Servicio: </b>'+nombreServicio+'<br/>'+
             '</div>'+
+
+            '<!--<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+              '<h2>TEST</h2>'+
+              '<div class="row">'+
+                '<div id="mapaUbicacionCita" style="width:100%; height:250px; margin-top:20px;"></div>'+
+              '</div>'+
+            '</div>-->'+
           '</div>'+
         '</div>'+
 
@@ -2510,6 +2776,7 @@ function detalleCita(agenda_id){
             '</div>'+
         '</div>'
   });
+//  cargarMapaUbicacionCita(result);
 }
 
 function bootboxCalificarCita(agenda_id, notificacion_id){
@@ -3333,49 +3600,48 @@ function BootboxExperienciaLaboral(){
     bootbox.dialog({
       backdrop:false,
       className: 'Intermed-Bootbox',
-      title: '<span class"title">Login</span><span class="subtitle">Ingresa a tus historiales</span>',
+      title: '<span class"title">Password</span><span class="subtitle">Ingresa a tus historiales</span>',
       message:
-      '<div class="container-fluid">'+
-        '<div class="hidden" id="noAcceso">'+
-          '<h1>'+
-            '<span class="label label-danger">'+
-            '<span class="glyphicon glyphicon-warning-sign"></span>&nbsp;'+
-            'No tiene acceso</span>'+
-          '</h1>'+
-        '</div>'+
-        '<div class="row">'+
-          '<div class="col-md-12">'+
-            '<div class="col-xs-4">'+
-              '<!-- Campo del password -->'+
-              '<div class="form-group">'+
-                '<label for="passinput" class="sr-only">Password</label>'+
-                '<span class="glyphicon glyphicon-flash">'+
-                  '<input type="password"  id="passinput" placeholder="Password"/>'+
-                '</span>'+
+        '<div class="container-fluid">'+
+          '<div class="hidden" id="noAcceso">'+
+            '<h1>'+
+              '<span class="label label-danger">'+
+              '<span class="glyphicon glyphicon-warning-sign"></span>&nbsp;'+
+              'No tiene acceso</span>'+
+            '</h1>'+
+          '</div>'+
+
+          '<div class="row">'+
+            '<div class="col-md-12">'+
+              '<div class="form-horizontal">'+
+                '<div class="form-group">'+
+                  '<div class="row">'+
+                    '<label for="inputContraseña" class="col-sm-2 control-label">Password</label>'+
+                    '<div class="col-sm-10">'+
+                      '<input type="password" class="form-control" id="passinput" placeholder="Password"/>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
               '</div>'+
             '</div>'+
-          '</div>'+
-          '<div class="col-md-12">'+
-            '<div class="col-xs-4">'+
+            '<div class="col-md-12">'+
               '<div class="form-group">'+
-                '<button class=" btn btn-danger" type="button" onclick="isLogin(\'#passinput\')">'+
-                  '<span class="glyphicon glyphicon-lock"></span>&nbsp;Entrar'+
+                '<button type="button" class="btn btn-success btn-block"  onclick="isLogin(\'#passinput\')" class="form-control">'+
+                  '<span class="glyphicon glyphicon-lock"></span>&nbsp;Ingresar'+
                 '</button>'+
               '</div>'+
-              '<div class="col-mx-4">'+
+            '</div>'+
+            '<div class="col-md-12 text-center">'+
+              '<div class="form-group">'+
                 '<a href="#" onclick="updatePassword();">'+
                   '<span class="label label-warning">¿Olvido su contraseña?</span>'+
                 '</a>'+
-                '<a href="#" id="creaCuenta" class="hidden" onclick="createPassword();">'+
-                  '&nbsp;&nbsp;&nbsp;<span class="label label-info">Crear cuenta</span>'+
-                '</a>'+
               '</div>'+
             '</div>'+
           '</div>'+
-        '</div>'+
-      '</div>'
+
+        '</div>'
     });
-    deleteLinkCrear('#creaCuenta');
   }
   function passwordCreate(){
     bootbox.dialog({
@@ -3526,11 +3792,18 @@ function DetallesCitaPaciente(agenda_id){
                 '</div>'+
               '</div>'+
 
-              '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+              '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:20px">'+
                 '<div class="row">'+
-                  '<div id="mapaUbicacionCita" style="width:100%; height:250px; margin-top:20px;"></div>'+
+                  '<button class="btn btn-success btn-sm btn-block hidden" id="btnRutaCita"><span class="map-icon icon-map-signs"></span></button>'+
                 '</div>'+
               '</div>'+
+
+              '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+                '<div class="row">'+
+                  '<div id="mapaUbicacionCita" style="width:100%; height:250px;"></div>'+
+                '</div>'+
+              '</div>'+
+
             '</div>'+
           '</div>'+
 
@@ -3543,8 +3816,92 @@ function DetallesCitaPaciente(agenda_id){
 
         setTimeout(function(){
           cargarMapaUbicacionCita(result);
+
+          //Si se tiene la ubicacion actual del paciente, mostrar boton de ¿Como llegar?
+          if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(
+                function (position) {
+                  var latitudCita = result.Direccion.latitud;
+                  var longitudCita = result.Direccion.longitud;
+
+                  var latitudActual = position.coords.latitude;
+                  var longitudActual = position.coords.longitude;
+
+                  origen = new google.maps.LatLng(latitudActual, longitudActual);
+                  destino = new google.maps.LatLng(latitudCita, longitudCita);
+
+                 var centerControlDiv = $('<div></div>');
+                 CrearControlRuta(centerControlDiv, mapaUbicacion);
+
+                  centerControlDiv.index = 1;
+                  mapaUbicacion.controls[google.maps.ControlPosition.LEFT_TOP].push(centerControlDiv[0]);
+                });
+          };
         },500);
 }
+
+var directionsService;
+var directionsDisplay = null;
+var origen = null;
+var destino = null;
+
+function CrearControlRuta(controlDiv, map) {
+  if (directionsDisplay){
+    directionsDisplay.setMap(null);
+    directionsDisplay = null;
+  } else {
+    var controlUI = $(`<div class="panel-group" style="margin: 10px;font-size: 12px!important;">
+      <div class="panel panel-default">
+        <div class="panel-heading" style="padding: 5px;text-align:center">
+          <a data-toggle="collapse" href="#collapse1" class="collapsed" aria-expanded="false" style="text-decoration: none;color: black;"><span class="map-icon icon-compass"></span></a>
+        </div>
+        <div id="collapse1" class="panel-collapse collapse" aria-expanded="true">
+          <ul class="list-group">
+            <li class="list-group-item"><a onclick="mostrarRutaCarro()"><span class="map-icon icon-directions_car"></span></a></li>
+            <li class="list-group-item"><a onclick="mostrarRutaCaminando()"><span class="map-icon icon-directions_walk"></span></a></li>
+            <li class="list-group-item"><a onclick="mostrarRuta()"><span class="map-icon icon-close"></span></a></li>
+          </ul>
+        </div>
+      </div>
+    </div>`);
+    controlDiv.append(controlUI);
+  }
+}
+
+function mostrarRutaCarro(){
+  console.log('TRAVELMODE: ' + JSON.stringify(google.maps.TravelMode))
+  mostrarRuta(google.maps.TravelMode.DRIVING);
+}
+function mostrarRutaCaminando(){
+  mostrarRuta(google.maps.TravelMode.WALKING);
+}
+
+function mostrarRuta(travelMode){
+  if(directionsDisplay){
+    directionsDisplay.setMap(null);
+    directionsDisplay = null;
+  }
+  if (travelMode){
+    var request = {
+       origin: origen,
+       destination: destino,
+       travelMode: travelMode,
+       unitSystem: google.maps.UnitSystem.IMPERIAL,
+       provideRouteAlternatives: true
+       };
+
+    directionsService = new google.maps.DirectionsService();
+    directionsDisplay = new google.maps.DirectionsRenderer();
+
+    directionsService.route(request, function(response, status) {
+         if (status == google.maps.DirectionsStatus.OK) {
+             directionsDisplay.setMap(mapaUbicacion);
+             directionsDisplay.setDirections(response);
+         }
+     });
+  }
+}
+
 
 
 function updatePasswordIntermed(){
@@ -3708,9 +4065,9 @@ function editarEspecialidades(){
 
                 '<div class="col-md-12">'+
                   '<div class="input-group">'+
-                    '<select id="autoEsp" class="form-control autoEspecialidad"></select>'+
+                    '<input type="text" id="autoEsp" class="form-control autoEspecialidad">'+
                     '<span class="input-group-btn">'+
-                      '<button id="addEspecialidadMedic" onclick="agregarExpecialidad(\'autoEsp\');" class="btn btn-primary form-control" type="button">'+
+                      '<button id="addEspecialidadMedic" onclick="agregarEspecialidad(\'autoEsp\');" class="btn btn-primary form-control" type="button">'+
                         '<span class="glyphicon glyphicon-plus"></span>'+
                       '</button>'+
                     '</span>'+
@@ -3718,8 +4075,11 @@ function editarEspecialidades(){
                 '</div>'+
 
 
-                '<div class="col-md-12 text-center" id="especialidadesListBoot" style="margin-top:5px">'+
+
+                '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="regmedEsp" style="margin-top:10px">'+
+                  '<ul class="list-inline" id="especialidadesListBoot"></ul>'+
                 '</div>'+
+
               '</div>'+
 
 
@@ -3732,7 +4092,7 @@ function editarEspecialidades(){
 
                 '<div class="col-md-12">'+
                   '<div class="input-group">'+
-                    '<select id="autoSubEsp" class="form-control autoEspecialidad"></select>'+
+                    '<input type="text" id="autoSubEsp" class="form-control autoEspecialidad">'+
                     '<span class="input-group-btn">'+
                       '<button id="addEspecialidadMedic" onclick="agregarSubespecialidad(\'autoSubEsp\');" class="btn btn-primary form-control" type="button">'+
                         '<span class="glyphicon glyphicon-plus"></span>'+
@@ -3741,8 +4101,8 @@ function editarEspecialidades(){
                   '</div>'+
                 '</div>'+
 
-
-                '<div class="col-md-12 text-center" id="subEspecialidadesListBoot" style="margin-top:5px">'+
+                '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="regmedEsp" style="margin-top:10px">'+
+                  '<ul class="list-inline" id="subEspecialidadesListBoot"></ul>'+
                 '</div>'+
 
               '</div>'+

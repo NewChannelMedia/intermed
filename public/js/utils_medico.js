@@ -414,12 +414,31 @@ function cambiarActual(element){
   }
 }
 $("#oficina").click(function(){
-  logEncrypt();
+  abrirHistoriales();
 });
-function createPassword(){
-  bootbox.hideAll();
-  passwordCreate();
+
+function abrirHistoriales(){
+  //Checar si existe sesión abierta y si el usuario ya tiene contraseña para historiales (con el medico_id)
+  //si existe redireccionar a historiales,
+  //si no abrir modal para iniciar sesión
+
+  $.post('/history/access',function(data){
+    console.log('RESULTADO: ' + JSON.stringify(data));
+    if (data.success){
+      //Si ya existe la sesión de historiales
+      window.location.href = '/historiales';
+    } else {
+      if (data.login){
+        logEncrypt();
+      } else {
+        passwordCreate();
+      }
+    }
+  }).fail(function(e){
+    console.log("Error:-"+JSON.stringify(e));
+  });
 }
+
 function saveStepOne() {
   var diaNac = $('#diaNacReg').val();
   var mesNac = $('#mesNacReg').val();
@@ -433,7 +452,7 @@ function saveStepOne() {
   var gender = $('input[name=gender]').val();
   var curpRegMed = $('#curpRegMed').val();
   var cedulaRegMed = $('#cedulaRegMed').val();
-  if (nombreRegMed != "" && apePatRegMed != "" && gender != "" && curpRegMed != "" && cedulaRegMed != "" && $('#regmedEsp').text() != "" && fechaValida){
+  if (nombreRegMed != "" && apePatRegMed != "" && gender != "" && curpRegMed != "" && cedulaRegMed != "" && $('#especialidadesListBoot').text() != "" && fechaValida){
     $.ajax( {
       url: '/regMedPasoUno',
       type: 'POST',
@@ -465,7 +484,7 @@ function saveStepOne() {
       error = "su género";
     } else if (curpRegMed == ""){
       error = "su CURP";
-    } else if ($('#regmedEsp').text() == ""){
+    } else if ($('#especialidadesListBoot').text() == ""){
       error ="su especialidad"
     } else if (fechaValida){
       error="su fecha de nacimiento (correcta)"
@@ -495,7 +514,7 @@ function saveStepTwo() {
     }
   } );
 }
-function actualizarSesion(refresh) {
+function actualizarSesion(refresh, callback, parametros) {
   $.ajax( {
     url: '/actualizarSesion',
     type: 'POST',
@@ -503,56 +522,171 @@ function actualizarSesion(refresh) {
     cache: false,
     success: function ( data ) {
       if ( data.result === "success" ) {
-        var fotoPerfil = '';
-        if ( data.session.registroCompleto === 1 ) {
-          $( '#registroIncompleto' ).css( 'display', 'none' );
-        }
-
-        $('#inicio').val(data.session.inicio);
-
-        if ( data.session.fotoPerfil ) fotoPerfil = data.session.fotoPerfil;
-        $( '#fotoPerfilMini' ).attr( "src", fotoPerfil );
-        $( '.fotoPerfil' ).attr( "src", fotoPerfil );
-        if ( data.session.tipoUsuario === "M" ) {
-          if ( !data.session.name ) $( '#session_nombreUsuario' ).html( 'No tenemos registrado tu nombre, por favor continua con tu registro <a onclick="registroMedicoDatosPersonales()">aquí</a>' );
-          else {
-            if ( data.session.tipoUsuario == "M" ){
-              data.session.name = 'Dr. ' + data.session.name;
-            }
-              $( '.profile-name .name' ).each(function(){
-                  $(this).text( data.session.name );
-              });
-          }
-        }
-        else {
-          $( '.profile-name .name' ).each(function(){
-            $(this).text( data.session.name );
-          });
-        }
-
-        var especialidades = '';
-        var subespecialidades = '';
-        data.session.especialidades.forEach(function(esp){
-          var contenido = '<li>'+ esp.Especialidad.especialidad +'</li>';
-          if (esp.subEsp){
-            subespecialidades += contenido;
-          } else {
-            especialidades += contenido;
-          }
-        });
-        especialidades += '<span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarEspecialidades()"></span>';
-        if (subespecialidades != ""){
-          subespecialidades = '<li>Subespecialidad:</li>' + subespecialidades;
-        }
-
-        $('.user.profile-esp').html(especialidades);
-        $('.user.profile-subesp').html(subespecialidades);
-
-        if ( data.session.ciudad ) {
-          $( '#session_ubicacion' ).html( data.session.ciudad + ', ' + data.session.estado );
-        }
         if (refresh){
           location.reload();
+        } else {
+            var fotoPerfil = '';
+            if ( data.session.registroCompleto === 1 ) {
+              $( '#registroIncompleto' ).css( 'display', 'none' );
+            }
+
+            $('#inicio').val(data.session.inicio);
+
+            if ( data.session.fotoPerfil ) fotoPerfil = data.session.fotoPerfil;
+            $( '#fotoPerfilMini' ).attr( "src", fotoPerfil );
+            $( '.fotoPerfil' ).attr( "src", fotoPerfil );
+
+            //Actualizar ciudad, si existe
+            if ( data.session.ciudad ) {
+              $( '#session_ubicacion' ).html( data.session.ciudad + ', ' + data.session.estado );
+            }
+
+            //Mostrar secciones que son solo para personas logueadas
+            if ($('#colegas').hasClass('hidden')){
+              cargarListaEspCol( $( '#usuarioPerfil' ).val() );
+            }
+
+            if ($('#comentarios').hasClass('hidden')){
+              cargarComentariosMedico();
+            }
+            $('.privateDisplay').removeClass('hidden');
+
+            if (data.session.tipoUsuario == "M"){
+                //Actualizar nombre de usuario
+                if ( !data.session.name ) $( '#session_nombreUsuario' ).html( 'No tenemos registrado tu nombre, por favor continua con tu registro <a onclick="registroMedicoDatosPersonales()">aquí</a>' );
+                else {
+                  if ( data.session.tipoUsuario == "M" ){
+                    data.session.name = 'Dr. ' + data.session.name;
+                  }
+                    $( '.profile-name .name' ).each(function(){
+                        $(this).text( data.session.name );
+                    });
+                }
+                //Actualizar especialidades
+                var especialidades = '';
+                var subespecialidades = '';
+                if (data.session.especialidades){
+                  data.session.especialidades.forEach(function(esp){
+                    var contenido = '<li>'+ esp.Especialidad.especialidad +'</li>';
+                    if (esp.subEsp){
+                      subespecialidades += contenido;
+                    } else {
+                      especialidades += contenido;
+                    }
+                  });
+                  especialidades += '<span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarEspecialidades()"></span>';
+                  if (subespecialidades != ""){
+                    subespecialidades = '<li>Subespecialidad:</li>' + subespecialidades;
+                  }
+
+                  $('.user.profile-esp').html(especialidades);
+                  $('.user.profile-subesp').html(subespecialidades);
+                }
+
+                if (data.session.id == $('#usuarioPerfil').val()){
+                  $('#rightNav').html(`
+                        <a href="#" class="first-option option">
+                          <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 hidden-xs">
+                            <span class="option-icon glyphicon h67-medcond s90 center-block text-center">+</span>
+                          </div>
+                          <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 hidden-sm">
+                            <div class="option-label">
+                              <span class="optn-lbl">NUEVO PACIENTE</span>
+                              <span class="optn-sb hidden-xs">Haz click aquí para generar un nuevo expediente.</span>
+                            </div>
+                          </div>
+                        </a>`);
+                  $('.privateDisplaySession').removeClass('hidden');
+                  $('#editPerfil').html('<span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarPerfilPersonal()"></span>');
+                  $('#editEsp').html('');
+                  $('#editInfo1').html('<span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(1)"></span>');
+                  $('#editInfo2').html('<span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(2)"></span>');
+                  $('#editInfo3').html('<span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(3)"></span>');
+
+                } else {
+                  $('a.first-option.option').remove();
+                  $('.privateDisplaySession').remove();
+                }
+
+                //Actualizar top nav
+                $('#topNav').html(`
+                <li>
+                  <a href="{{base_url}}{{#ifSessionValNN 'urlPersonal'}}{{valSession 'urlPersonal'}}{{else}}{{valSession 'usuarioUrl'}}{{/ifSessionValNN}}">Perfil</a>
+                </li>
+                <li>
+                  <a href="{{base_url}}" id="oficina">Oficina</a>
+                </li>
+
+                <li class="dropdown">
+                  <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span></a>
+                  <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
+                    <li><a href="/configuraciones">&nbsp;Configuracion</a></li>
+                    <li><a href="/configuraciones">&nbsp;Secretarias</a></li>
+                    <li><a href="/logout">&nbsp;Salir</a></li>
+                  </ul>
+                </li>
+                <li class="visible-sm dropdown navigator-dropdown">
+                  <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                    Buscar
+                  </a>
+                  <div class="dropdown-menu dropdown-form panel navigator-dropdown-panel">
+                    <form method="POST" action="http://localhost:3000/buscar" class="form-inline" onsubmit="return false;">
+                      <div class="input-group navbar-search navigator-inner-section-cell h65-medium">
+                        <input type="text" class="form-control input-lg ui-autocomplete-input" id="buscadorInternoDropDown" name="" placeholder="Search for people, plaasdfasdfce or things" required="" style="width:300px" autocomplete="off">
+                        <span class="input-group-btn">
+                          <button class="btn btn-default btn-lg" type="button">
+                            <span class="glyphicon glyphicon-search"></span>
+                          </button>
+                        </span>
+                      </div>
+                    </form>
+                  </div>
+                </li>`);
+            } else if (data.session.tipoUsuario == "P"){
+                //Actualizar nombre de Usuario
+                $( '.profile-name .name' ).each(function(){
+                  $(this).text( data.session.name );
+                });
+
+                //Actualizar top nav
+                $('#topNav').html(`
+                  <li>
+                    <a href="{{base_url}}{{#ifSessionValNN 'urlPersonal'}}{{valSession 'urlPersonal'}}{{else}}{{valSession 'usuarioUrl'}}{{/ifSessionValNN}}">Perfil</a>
+                  </li>
+
+                  <li class="dropdown">
+                    <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
+                      <li><a href="/configuraciones">&nbsp;Configuracion</a></li>
+                      <li><a href="/logout">&nbsp;Salir</a></li>
+                    </ul>
+                  </li>
+                  <li class="visible-sm dropdown navigator-dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                      Buscar
+                    </a>
+                    <div class="dropdown-menu dropdown-form panel navigator-dropdown-panel">
+                      <form method="POST" action="http://localhost:3000/buscar" class="form-inline" onsubmit="return false;">
+                        <div class="input-group navbar-search navigator-inner-section-cell h65-medium">
+                          <input type="text" class="form-control input-lg ui-autocomplete-input" id="buscadorInternoDropDown" name="" placeholder="Search for people, plaasdfasdfce or things" required="" style="width:300px" autocomplete="off">
+                          <span class="input-group-btn">
+                            <button class="btn btn-default btn-lg" type="button">
+                              <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                          </span>
+                        </div>
+                      </form>
+                    </div>
+                  </li>`);
+              }
+
+
+              //Si existe un callback, invocarlo
+              if (callback){
+                  bootbox.hideAll();
+                  callback = window[callback];
+                  callback(parametros);
+              }
         }
       }
       else {
@@ -637,40 +771,89 @@ function getAllDoctors() {
 		}
 	} );
 }
-function agregarFavoritos( medico ) {
-  var ruta = '/agregarMedFav';
-  var medicoID = '',
-    pacienteID = '';
-  if ( $( '#MedicoId' ).val() ) medicoID = $( '#MedicoId' ).val();
-  if ( $( '#PacienteId' ).val() ) pacienteID = $( '#PacienteId' ).val();
+function agregarFavoritos(usuario_id) {
+  //Revisar si existe sesión iniciada como paciente
+  var tipoUsuario = revisarTipoSesion();
+  if (tipoUsuario == ''){
+    registrarPacienteBootbox('agregarFavoritos', usuario_id);
+  } else {
+    var ruta = '/agregarMedFav';
+    if (!usuario_id){
+      usuario_id= $('#usuarioPerfil').val()
+    }
+    $.ajax( {
+      async: false,
+      url: '/agregarMedFav',
+      type: 'POST',
+      dataType: "json",
+      data: {
+        usuario_id: usuario_id
+      },
+      cache: false,
+      success: function ( data ) {
+        if ( data.success ) {
+          if (tipoUsuario === "P" ) {
+            if ( $('#tipoUsuarioPerfil').val() == "M" ) {
+              $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Elimina de favoritos');
+            }
+            else {
+              $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Invitación enviada');
+            }
+          }
+          else if ( tipoUsuario === "M" ) {
+              if ( $('#tipoUsuarioPerfil').val() == "M" ) {
+                $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Invitación enviada');
+              }
+          }
+          $( "#addFavoriteContact" ).attr( "onclick", "eliminarFavoritos()" );
+          ocultarBuscadorColegasEspecial();cargarListaEspCol( $( '#usuarioPerfil' ).val() );
+        }
+        else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      },
+      error: function ( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: ' + err );
+      }
+    } );
+  }
+
+}
+function eliminarFavoritos( usuario_id , notificacion_id) {
+  if (!usuario_id){
+    usuario_id= $('#usuarioPerfil').val()
+  }
+  var tipoUsuario = revisarTipoSesion();
   $.ajax( {
     async: false,
-    url: ruta,
+    url: '/eliminarMedFav',
     type: 'POST',
     dataType: "json",
     data: {
-      medicoID: medicoID,
-      pacienteID: pacienteID
+      usuario_id: usuario_id,
+      notificacion_id: notificacion_id
     },
     cache: false,
     success: function ( data ) {
       if ( data.success ) {
-        if ( $( '#tipoUsuario' ).val() === "P" ) {
-          if ( medicoID ) {
-            $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Elimina de favoritos');
+        if ( tipoUsuario === "P" ) {
+          if ( $('#tipoUsuarioPerfil').val() == "M" ) {
+            $( '#addFavoriteContact' ).html( '<span class="glyphicon h67-medcond s30">+</span> Agrega a favoritos' );
           }
           else {
-            $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Invitación enviada');
+            $( '#addFavoriteContact' ).html( '<span class="glyphicon h67-medcond s30">+</span> Agrega a contactos' );
           }
         }
-        else if ( $( '#tipoUsuario' ).val() === "M" ) {
-            if ( medicoID ) {
-              $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">-</span> Invitación enviada');
-            }
+        else if ( tipoUsuario === "M" ) $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">+</span> Agrega a colegas');
+        $( "#addFavoriteContact" ).attr( "onclick", "agregarFavoritos()" );
+        ocultarBuscadorColegasEspecial();cargarListaEspCol( $( '#usuarioPerfil' ).val() );
+        if ( notificacion_id ) {
+          $( '#pre' + notificacion_id ).html( 'Rechazaste la solicitud de amistad de ' );
+          $( '#post' + notificacion_id ).html( '' );
+          if (notificacion_id) $( '#button' + notificacion_id ).remove();
         }
-        $( "#addFavoriteContact" ).attr( "onclick", "eliminarFavoritos()" );
-
-        cargarFavCol( $( '#usuarioPerfil' ).val() );
       }
       else {
         if (data.error){
@@ -683,49 +866,29 @@ function agregarFavoritos( medico ) {
     }
   } );
 }
-function eliminarFavoritos( medico, paciente_id , notificacion_id) {
-  //console.log('ENTRO');
-  var ruta = '/eliminarMedFav';
-  var medicoID = '',
-    pacienteID = '';
-  if ( $( '#MedicoId' ).val() ) medicoID = $( '#MedicoId' ).val();
-  if ( $( '#PacienteId' ).val() ) pacienteID = $( '#PacienteId' ).val();
-  if ( !medico && paciente_id ) pacienteID = paciente_id;
-  else if ( medico && paciente_id ) medicoID = paciente_id;
+function aceptarInvitacion( usuario_id, notificacion_id ) {
+  if (!usuario_id){
+    usuario_id= $('#usuarioPerfil').val()
+  }
   $.ajax( {
     async: false,
-    url: ruta,
+    url: '/aceptarInvitacion',
     type: 'POST',
     dataType: "json",
     data: {
-      medicoID: medicoID,
-      pacienteID: pacienteID,
+      usuario_id: usuario_id,
       notificacion_id: notificacion_id
     },
     cache: false,
     success: function ( data ) {
-      console.log('Eliminar favoritos: ' + JSON.stringify(data));
-      if ( data.success ) {
-        if ( $( '#tipoUsuario' ).val() === "P" ) {
-          if ( medicoID ) {
-            $( '#addFavoriteContact' ).html( '<span class="glyphicon h67-medcond s30">+</span> Agrega a favoritos' );
-          }
-          else {
-            $( '#addFavoriteContact' ).html( '<span class="glyphicon h67-medcond s30">+</span> Agrega a contactos' );
-          }
-        }
-        else if ( $( '#tipoUsuario' ).val() === "M" ) $( '#addFavoriteContact' ).html('<span class="glyphicon h67-medcond s30">+</span> Agrega a colegas');
-        $( "#addFavoriteContact" ).attr( "onclick", "agregarFavoritos()" );
-        cargarFavCol( $( '#usuarioPerfil' ).val() );
+      if ( data.result == 'success' ) {
+        $( '#addFavoriteContact' ).html( 'Eliminar de contactos' );
+        $( "#addFavoriteContact" ).attr( "onclick", "eliminarFavoritos()" );
+        ocultarBuscadorColegasEspecial();cargarListaEspCol( $( '#usuarioPerfil' ).val() );
         if ( notificacion_id ) {
-          $( '#pre' + notificacion_id ).html( 'Rechazaste la solicitud de amistad de ' );
+          $( '#pre' + notificacion_id ).html( 'Aceptaste la solicitud de amistad de ' );
           $( '#post' + notificacion_id ).html( '' );
           if (notificacion_id) $( '#button' + notificacion_id ).remove();
-        }
-      }
-      else {
-        if (data.error){
-          manejadorDeErrores(data.error);
         }
       }
     },
@@ -1049,10 +1212,10 @@ function actualizarDirecciones(salir){
     cache: false,
     success: function ( data ) {
       if (data.success){
-        if (data.result.length> 0 && $('#editUbi').html() != ""){
-          $('#editUbi').html('<button class="btn btn-primary btn-xs" id="btnEditaUbi"><span class="glyphicon glyphicon-pencil"></span></button>');
+        if (data.result.length> 0){
+          $('#btnEditaUbi').removeClass('hidden');
         } else {
-          $('#editUbi').html('');
+          $('#btnEditaUbi').addClass('hidden');
         }
         var contenido = '';
         var contador = 0;
@@ -1627,7 +1790,6 @@ function cargarClinicas(){
       if (data.success){
         var listaNueva = '';
         if (data.result){
-          console.log('CLINICAS: ' + JSON.stringify(data));
           var sub = false;
           data.result.forEach(function(rec){
             listaNueva += '<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">' +
@@ -1660,13 +1822,12 @@ function cargarAseguradoras(){
       if (data.success){
         var listaNueva = '';
         if (data.result){
-          console.log('ASEGURADORAS: ' + JSON.stringify(data));
           var sub = false;
           data.result.forEach(function(rec){
-            listaNueva += '<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">'
+            listaNueva += '<li style="display: list-item;" class="mjs-nestedSortable-branch mjs-nestedSortable-expanded" id="menuItem_2">'+
             '<div class="menuDiv">' +
               '<span>' +
-                '<span data-id="2" class="itemTitle">' + rec.aseguradora + '</span>' +
+                '<span data-id="2" class="itemTitle">' + rec.Aseguradora.aseguradora + '</span>' +
                 '<span title="Click to delete item." data-id="2" class="deleteMenu ui-icon ui-icon-closethick">' +
                 '<span><span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().parent().parent().parent().remove();"></span></span>' +
               '</span>' +
@@ -1782,7 +1943,7 @@ function traerAseguradoras(){
           if (data.result){
             var sub = false;
             data.result.forEach(function(rec){
-              listaNueva += '<li>'+ rec.aseguradora +'</li>';
+              listaNueva += '<li>'+ rec.Aseguradora.aseguradora +'</li>';
             });
           }
           listaNueva += '</ul>';
@@ -1805,6 +1966,20 @@ function traerAseguradoras(){
         $("#imgPerfilMedic").attr('src',data.urlFotoPerfil);
       });
     }
+
+    function autocompleteEspecialidades(){
+      $.post('/todasEspecialidades',function(p){
+        var especialidades = [];
+        $.each(p,function(e, item){
+          especialidades.push(item.especialidad);
+        });
+        $(".autoEspecialidad").autocomplete({
+          minLength: 0,
+          source: especialidades
+        });
+      });
+    }
+
     function loadEspecialidades(){
       // carga los datos de medicoEspecialidades
       var html = "";
@@ -1812,38 +1987,23 @@ function traerAseguradoras(){
       var contador = 1;
       var contador2 = 1;
       //carga todas las especialidades
-      $.post('/todasEspecialidades',function(p){
-        var html2 = "";
-        html2 += '<option value="" selected disabled>Selecciona una</option>';
-        $.each(p,function(e, etem){
-          html2 += '<option value="'+etem.id+'">'+etem.especialidad+'</option>';
-        });
-        $(".autoEspecialidad").html(html2);
-      });
+      autocompleteEspecialidades();
       $.post('/loadEspecialidades', function(data){
         if ($('#regmedEsp ul').length>0){
-          var cont = '';
+          var contesp = '', contsubesp = '';;
           $.each(data.MedicoEspecialidads, function( i, item ){
-            var clase = 'lbl-esp';
             if( item.subEsp == 1 ){
-              clase = 'lbl-subesp';
-            }
-            cont +=
-            '<li class="lbl '+clase+'">'+
-              item.Especialidad.especialidad+'&nbsp;'+
-              '<button class="btn btn-sm borrar" type="button" onclick="deletePalabra(this)">'+
-                '<span class="glyphicon glyphicon-remove"></span>'+
-              '</button>'+
-            '</li>'
-/*
-            '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
-            '<label class="btn btn-xs '+  +'">'+
-            '<span>'++'</span>'+
-            '</label>'+
-            '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+item.id+'\',this);" >'+
-            '<span class="glyphicon glyphicon-remove"></span></button></div>'*/;
-          });
-          $('#regmedEsp ul').html(cont);
+              contsubesp += '<li class="lbl lbl-subesp">'+ item.Especialidad.especialidad + '&nbsp;'+
+              '<button class="btn btn-sm borrar" type="button" onclick="deleteEsp(\''+item.id+'\',this);">'+
+              '<span class="glyphicon glyphicon-remove"></span></button></li>';
+            } else {
+              contesp += '<li class="lbl lbl-esp">'+ item.Especialidad.especialidad + '&nbsp;'+
+              '<button class="btn btn-sm borrar" type="button" onclick="deleteEsp(\''+item.id+'\',this);">'+
+              '<span class="glyphicon glyphicon-remove"></span></button></li>';
+
+            }});
+          $('#especialidadesListBoot').html(contesp);
+          $('#subEspecialidadesListBoot').html(contsubesp);
         } else {
           var esp = '';
           var subesp = '';
@@ -1860,7 +2020,6 @@ function traerAseguradoras(){
               esp += cont;
             }
           });
-
           $('#especialidadesListBoot').html(esp);
           $('#subEspecialidadesListBoot').html(subesp);
         }
@@ -2183,60 +2342,63 @@ function traerAseguradoras(){
       }
     });
   }
+
   function cargarComentariosMedico(){
-    var usuario_id = '';
-    if ($('#usuarioPerfil').length>0){
-      usuario_id = $('#usuarioPerfil').val();
-    }
-    $.ajax({
-        url: '/medico/cargarComentarios',
-        type: 'POST',
-        dataType: "json",
-        cache: false,
-        data: {
-          usuario_id: usuario_id,
-        },
-        type: 'POST',
-        success: function (data) {
-          if (data.success){
-            var contenido = '';
-            data.result.forEach(function(res){
-              var nombre = "Anonimo";
-              if (res.anonimo == 0){
-                if (res.Usuario.DatosGenerale.apellidoM && res.Usuario.DatosGenerale.apellidoM!=""){
-                  res.Usuario.DatosGenerale.apellidoM = ' ' + res.Usuario.DatosGenerale.apellidoM;
+    if (!$('#comentarios').hasClass('hidden')){
+      var usuario_id = '';
+      if ($('#usuarioPerfil').length>0){
+        usuario_id = $('#usuarioPerfil').val();
+      }
+      $.ajax({
+          url: '/medico/cargarComentarios',
+          type: 'POST',
+          dataType: "json",
+          cache: false,
+          data: {
+            usuario_id: usuario_id,
+          },
+          type: 'POST',
+          success: function (data) {
+            if (data.success){
+              var contenido = '';
+              data.result.forEach(function(res){
+                var nombre = "Anonimo";
+                if (res.anonimo == 0){
+                  if (res.Usuario.DatosGenerale.apellidoM && res.Usuario.DatosGenerale.apellidoM!=""){
+                    res.Usuario.DatosGenerale.apellidoM = ' ' + res.Usuario.DatosGenerale.apellidoM;
+                  } else {
+                    res.Usuario.DatosGenerale.apellidoM = '';
+                  }
+                  nombre = res.Usuario.DatosGenerale.nombre  + ' ' + res.Usuario.DatosGenerale.apellidoP + res.Usuario.DatosGenerale.apellidoM + '.';
+
+                  if (res.Usuario.Direccions[0]){
+                    nombre = nombre + ' '+ res.Usuario.Direccions[0].Municipio.municipio +', '+ res.Usuario.Direccions[0].Municipio.Estado.estado.substring(0, 3) +'.';
+                  }
+
                 } else {
-                  res.Usuario.DatosGenerale.apellidoM = '';
+                  res.Usuario.urlFotoPerfil = default_urlFotoPerfil;
                 }
-                nombre = res.Usuario.DatosGenerale.nombre  + ' ' + res.Usuario.DatosGenerale.apellidoP + res.Usuario.DatosGenerale.apellidoM + '.';
+                res.fecha = new Date(res.fecha).toLocaleDateString();
+                res.fecha = formatearFechaComentario(res.fecha.split(' ')[0]);
 
-                if (res.Usuario.Direccions[0]){
-                  nombre = nombre + ' '+ res.Usuario.Direccions[0].Municipio.municipio +', '+ res.Usuario.Direccions[0].Municipio.Estado.estado.substring(0, 3) +'.';
-                }
-
-              } else {
-                res.Usuario.urlFotoPerfil = default_urlFotoPerfil;
-              }
-              res.fecha = new Date(res.fecha).toLocaleDateString();
-              res.fecha = formatearFechaComentario(res.fecha.split(' ')[0]);
-
-              contenido += '<div class="media comment-container">';
-                contenido += '<div class="media-left"><img class="img-circle comment-img" style="width:150px;" src="'+res.Usuario.urlFotoPerfil+'"></div>';
-                contenido += '<article class="media-body">';
-                  contenido += '<div class="comment-title s30 h67-medcond">'+res.titulo+'</div>';
-                  contenido += '<p class="s15 h67-medium">'+res.comentario+'</p>';
-                  contenido += '<p class="comment-autor s15 h75-bold"><span class="capitalize">'+ nombre +'</span></p>';
-                  contenido += '<p class="comment-date s15 h67-medium text-info">'+res.fecha+'</p>';
-                contenido += '</article>';
-              contenido += '</div>';
-            });
-              $('#comentariosMedico').html(contenido);
+                contenido += '<div class="media comment-container">';
+                  contenido += '<div class="media-left"><img class="img-circle comment-img" style="width:150px;" src="'+res.Usuario.urlFotoPerfil+'"></div>';
+                  contenido += '<article class="media-body">';
+                    contenido += '<div class="comment-title s30 h67-medcond">'+res.titulo+'</div>';
+                    contenido += '<p class="s15 h67-medium">'+res.comentario+'</p>';
+                    contenido += '<p class="comment-autor s15 h75-bold"><span class="capitalize">'+ nombre +'</span></p>';
+                    contenido += '<p class="comment-date s15 h67-medium text-info">'+res.fecha+'</p>';
+                  contenido += '</article>';
+                contenido += '</div>';
+              });
+                $('#comentariosMedico').html(contenido);
+            }
+          },
+          error: function (err){
+            console.log('AJAX Error: ' + JSON.stringify(err));
           }
-        },
-        error: function (err){
-          console.log('AJAX Error: ' + JSON.stringify(err));
-        }
-      });
+        });
+    }
   }
   function agregarFormacionAcademica(){
     var form = $('#formAcademica');
@@ -2645,16 +2807,18 @@ function traerAseguradoras(){
         }
       });
   }
-  function isLogin(password){
+  function isLogin(password, reload){
     var pass = $(password).val();
     // se envia la informacion
     if( pass != '' ){
       if( pass.length >= 6 ){
-        $.post('/isLogin',{pass:pass}, function(data){
-          if( data == true ){
-            $("#noAcceso").addClass('hidden');
-            $(password).val('');
-            window.location = "/historiales";
+        $.post('/history/login',{pass:hex_md5(pass)}, function(data){
+          if( data.success == true ){
+            if (reload){
+              location.reload();
+            } else {
+              window.location.href = '/historiales';
+            }
           }else{
             $("#noAcceso").removeClass('hidden');
           }
@@ -2672,7 +2836,7 @@ function traerAseguradoras(){
     if( pass.length === confirma.length ){
       if( (pass === confirma) && ( pass != '' &&  confirma != '' ) ){
         $("#noCoincidenCampos").addClass('hidden');
-        $.post('/insertPassword',{pas:confirma,modelo:'UsuarioHistorial'},function(data){
+        $.post('/insertPassword',{pas:hex_md5(confirma),modelo:'UsuarioHistorial'},function(data){
           if( data ){
             $("#Yacreado").addClass('hidden');
             $("#creado").removeClass('hidden');
@@ -2692,18 +2856,7 @@ function traerAseguradoras(){
       $("#noCoincidenCampos").removeClass('hidden');
     }
   }
-  // checa que ya tenga una contraseña si es asi quita el enlace de crear cuenta
-  function deleteLinkCrear(link){
-    $.post('/deleteLinkCrear',function(data){
-      if( data == true ){
-        $(link).addClass('hidden');
-      }else{
-        $(link).removeClass('hidden');
-      }
-    }).fail(function(e){
-      console.log("Fallo al hacer esta tarea");
-    });
-  }
+
   // cambiar password
   function confirmChangePass( password, confirm, bandera ){
     var primero = $(password).val();
@@ -2971,6 +3124,7 @@ function cargarServicios(element){
       if (data.success){
         if (data.result){
           $('#ServListReg').html('');
+          var contenido = '';
           if (data.result.length>0){
             contenido = `<div class="row">
                           <div class="col-md-3"><label class="whiteF regInput">Concepto.</label></div>
@@ -3057,7 +3211,7 @@ function guardarServicio(idElement){
     element[el.name] = el.value;
   });
 
-  if ($('#idDireccion').length>0){
+  if ($('#idDireccion').length>0 && $('#idDireccion').val() != ""){
     element['direccion_id'] = $('#idDireccion').val();
   }else {
     element['direccion_id'] = $('#slc_servicios_ubi').val();
@@ -3292,7 +3446,7 @@ function guardarInformacionPersonal(){
   }
 }
 
-function agregarExpecialidad(element){
+function agregarEspecialidad(element){
   var esp = $('#'+element).val();
   $.post('/editEspecialidades',{
     especialidad:esp,
@@ -3300,12 +3454,9 @@ function agregarExpecialidad(element){
   },function( data ){
     if( data.success ){
        $('#'+element).val('');
-      var cont = '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
-      '<label class="btn btn-xs btn-info">'+
-      '<span>'+data.Especialidad.especialidad+'</span>'+
-      '</label>'+
-      '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+data.id+'\',this);" >'+
-      '<span class="glyphicon glyphicon-remove"></span></button></div>';
+       var cont = '<li class="lbl lbl-esp">'+ data.Especialidad.especialidad + '&nbsp;'+
+       '<button class="btn btn-sm borrar" type="button" onclick="deleteEsp(\''+data.id+'\',this);">'+
+       '<span class="glyphicon glyphicon-remove"></span></button></li>';
       $('#especialidadesListBoot').append(cont);
       actualizarSesion();
     }else{
@@ -3326,12 +3477,9 @@ function agregarSubespecialidad(element){
   },function( data ){
     if( data.success ){
        $('#'+element).val('');
-      var cont = '<div class="input-group-btn" style="display:inline-table;margin: 3px;">'+
-      '<label class="btn btn-xs btn-info">'+
-      '<span>'+data.Especialidad.especialidad+'</span>'+
-      '</label>'+
-      '<button class="btn btn-xs borrar" type="button"  onclick="deleteEsp(\''+data.id+'\',this);" >'+
-      '<span class="glyphicon glyphicon-remove"></span></button></div>';
+       var cont = '<li class="lbl lbl-subesp">'+ data.Especialidad.especialidad + '&nbsp;'+
+       '<button class="btn btn-sm borrar" type="button" onclick="deleteEsp(\''+data.id+'\',this);">'+
+       '<span class="glyphicon glyphicon-remove"></span></button></li>';
       $('#subEspecialidadesListBoot').append(cont);
       actualizarSesion();
     }else{

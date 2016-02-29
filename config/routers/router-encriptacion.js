@@ -9,9 +9,6 @@ module.exports = function (object){
   var url = object.url;
 
   // encriptionssss
-  app.post('/isLogin', function( req, res ){
-    intermed.callController('encryption','isLogin',req.body,req, res);
-  });
   // end encriptionss
   // inserta contraseña
   app.post('/insertPassword', function( req, res ){
@@ -47,11 +44,6 @@ module.exports = function (object){
         intermed.callController( 'encryption', 'cambiarIntermedPass', {token: tok}, req, res );
         break;
     }
-  });
-  //Vista de historiales
-  app.get('/historiales', function( req, res ){
-    routeLife( 'plataforma2', 'plataforma/medico', hps );
-    intermed.callController('encryption','historiales', req, res );
   });
   app.post('/htmlToXml',function( req, res ){
     intermed.callController( 'encryption', 'htmlToXml', req.body, req, res );

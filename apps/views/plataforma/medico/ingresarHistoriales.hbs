@@ -1,0 +1,44 @@
+<div class="container">
+<div class="row">
+  <div class="col-md-8 col-md-offset-2 text-center">
+    <h3>El acceso a este sitio es restringido, por favor ingresa tu contraseña para poder ver tus historiales clínicos.</h3>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2 hidden text-center" id="noAcceso">
+        <h3>
+          <span class="label label-danger">
+          <span class="glyphicon glyphicon-warning-sign"></span>&nbsp;
+          No tiene acceso</span>
+        </h3>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="form-horizontal">
+        <div class="form-group">
+          <label for="inputContraseña" class="col-sm-2 control-label">Password</label>
+          <div class="col-sm-10">
+            <input type="password" class="form-control" id="passinput" placeholder="Password"  autocomplete="off"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-8 col-md-offset-2">
+      <div class="form-group">
+        <button type="button" class="btn btn-success btn-block"  onclick="isLogin('#passinput',true)" class="form-control">
+          <span class="glyphicon glyphicon-lock"></span>&nbsp;Ingresar
+        </button>
+      </div>
+    </div>
+    <div class="col-md-8 col-md-offset-2 text-center">
+      <div class="form-group">
+        <a href="#" onclick="updatePassword();">
+          <span class="label label-warning">¿Olvido su contraseña?</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>

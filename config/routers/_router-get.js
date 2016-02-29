@@ -37,7 +37,7 @@ module.exports = function (object){
     if (!req.session.passport.user){
       res.redirect( '/' );
     }else {
-      routeLife( 'plataforma', 'plataforma', hps );
+      routeLife( 'plataforma2', 'plataforma', hps );
       intermed.callController('notificaciones','index', req.body, req, res);
     }
   });
@@ -81,6 +81,12 @@ module.exports = function (object){
   app.get('/configuraciones',function(req,res){
     routeLife('plataforma2','plataforma',hps);
     intermed.callController('/configuracion/configuraciones','index',req, res);
+  });
+
+  //Vista de historiales
+  app.get('/historiales', function( req, res ){
+    routeLife( 'plataforma2', 'plataforma/medico', hps );
+    intermed.callController('historiales','index', req.body, req, res );
   });
 
   app.get('/control', function (req, res,next){

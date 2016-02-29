@@ -1,122 +1,38 @@
 <div id="perfilMedico">
+  <input type="hidden" id="MedicoId" value="{{usuario.Medico.id}}" />
   <div id="sticky-anchor"></div>
   <nav id="stickyNav" class="nav-menu sticky h67-medcond">
     <div class="container-fluid nav-menu-container">
-      <div id="menuMed" class="col-lg-8 col-md-7 col-sm-6 col-xs-12">
+      <div id="menuMed" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="row nav-menu-row">
           <div class="nav-menu-inner-section">
             <ul class="nav nav-pills nav-justified nav-menu-menu h67-medcond s20">
               <li>
-                <a href="#">Perfil</a>
+                <a onclick="$(document).scrollTo( '#perfil', 800, {offset: {top:-100, left:0} });">Perfil</a>
               </li>
               <li>
-                <a href="#">Publicaciones</a>
+                <a onclick="$(document).scrollTo( '#ubicaciones', 800, {offset: {top:-100, left:0} });">Ubicaciones</a>
               </li>
               <li>
-                <a href="#">Galería</a>
+                <a onclick="$(document).scrollTo( '#info', 800, {offset: {top:-100, left:0} });">Experto en</a>
+              </li>
+
+
+              <li class="privateDisplay {{#ifSessionVal 'id'}}{{else}}hidden{{/ifSessionVal}}">
+                <a onclick="$(document).scrollTo( '#colegas', 800, {offset: {top:-100, left:0} });">Cólegas</a>
+              </li>
+              <li>
+                <a onclick="$(document).scrollTo( '#curriculum', 800, {offset: {top:-100, left:0} });">Curriculum</a>
+              </li>
+
+              <li class="privateDisplay {{#ifSessionVal 'id'}}{{else}}hidden{{/ifSessionVal}}">
+                <a onclick="$(document).scrollTo( '#comentarios', 800, {offset: {top:-100, left:0} });">Comentarios</a>
               </li>
             </ul>
           </div>
         </div>
       </div>
 
-      {{#if usuario.id}}
-        <input type="hidden" id="MedicoId" value="{{usuario.Medico.id}}" />
-        {{#if usuario.medFavCol}}
-          {{#ifTipoPaciente}}
-            <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
-              <div class="row nav-menu-row">
-                <div class="nav-menu-inner-section">
-                  <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
-                    <li>
-                      <a onclick="eliminarFavoritos(true)" id="addFavoriteContact">
-                        <span class="glyphicon h67-medcond s30">-</span> Elimina de favoritos
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          {{/ifTipoPaciente}}
-          {{#ifTipoMedico}}
-            <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
-              <div class="row nav-menu-row">
-                <div class="nav-menu-inner-section">
-                  <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
-                    <li>
-                      <a onclick="eliminarFavoritos(true)" id="addFavoriteContact">
-                        <span class="glyphicon h67-medcond s30">+</span> Eliminar de colegas</a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          {{/ifTipoMedico}}
-        {{else}}
-          {{#if usuario.invitacionEnviada}}
-            {{#ifTipoMedico}}
-              <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
-                <div class="row nav-menu-row">
-                  <div class="nav-menu-inner-section">
-                    <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
-                      <li>
-                        <a onclick="eliminarFavoritos(true)" id="addFavoriteContact">
-                          <span class="glyphicon h67-medcond s30">-</span> Invitación enviada</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            {{/ifTipoMedico}}
-          {{else}}
-            {{#if usuario.invitacionEspera}}
-              {{#ifTipoMedico}}
-                <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
-                  <div class="row nav-menu-row">
-                    <div class="nav-menu-inner-section">
-                      <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
-                        <li>
-                          <a onclick="aceptarInvitacion()" id="addFavoriteContact">
-                            <span class="glyphicon h67-medcond s30">+</span> Aceptar colega</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              {{/ifTipoMedico}}
-            {{else}}
-              {{#ifTipoPaciente}}
-                <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
-                  <div class="row nav-menu-row">
-                    <div class="nav-menu-inner-section">
-                      <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
-                        <li>
-                          <a onclick="agregarFavoritos(true)" id="addFavoriteContact">
-                            <span class="glyphicon h67-medcond s30">+</span> Agrega a favoritos</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              {{/ifTipoPaciente}}
-              {{#ifTipoMedico}}
-                <div id="addFavMed_up" class="col-lg-4 col-md-5 col-sm-6 col-xs-12 hidden-xs">
-                  <div class="row nav-menu-row">
-                    <div class="nav-menu-inner-section">
-                      <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
-                        <li>
-                          <a onclick="agregarFavoritos(true)" id="addFavoriteContact">
-                            <span class="glyphicon h67-medcond s30">+</span> Agrega a colegas</a>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              {{/ifTipoMedico}}
-            {{/if}}
-          {{/if}}
-        {{/if}}
-      {{/if}}
     </div>
   </nav>
   <div id="screens">
@@ -191,7 +107,7 @@
                         {{#if usuario.DatosGenerale}}
                           Dr. {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
                         {{/if}}
-                      </h2>
+                    </h2>
                     <h4 class="profile-location">
                       {{#if usuario.direccion}}
                           {{usuario.direccion.Municipio.municipio}}, {{usuario.direccion.Municipio.Estado.estado}}, MX.
@@ -230,7 +146,9 @@
                           No tenemos tu nombre registrado, continúa tu registro <a onclick="registroMedicoDatosPersonales()">aquí</a>.
                         {{/ifSession}}
                       </span>
-                      <span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarPerfilPersonal()"></span>
+                      <span id="editPerfil">
+                        <span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarPerfilPersonal()"></span>
+                      </span>
                     </h2>
                     <h4 class="profile-location">
                       {{#ifSession "municipio"}}
@@ -245,7 +163,9 @@
                         </li>
                         {{/unless}}
                       {{/eachValSession}}
-                      <span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarEspecialidades()"></span>
+                      <span id="editEsp">
+                        <span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarEspecialidades()"></span>
+                      </span>
                     </ul>
                     <ul class="list-inline profile-subesp user">
                       {{#ifsubEsp}}
@@ -264,26 +184,31 @@
                   {{/if}}
                 </div>
               </div>
-              <div id="addFavMed_down" class="col-xs-12 visible-xs">
-                <div class="row nav-menu-row">
-                  <div class="nav-menu-inner-section">
-                    <ul class="nav nav-pills nav-justified nav-menu-addButton h57-cond s20">
-                      <li>
-                        <a href="#">
-                          <span class="glyphicon h67-medcond s30">+</span> Agrega a
-                          <span class="hidden-xs">tus médicos </span>favoritos</a>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+
             </div>
           </div>
-          {{#if usuario.id}}
+
           <div id="profileOptions" class="header-options-container col-lg-4 col-md-5 col-sm-2 col-xs-12 h67-medcond">
             <div class="header-options-row row">
-              <div class="header-options-content">
-                {{#ifTipoPaciente}}
+              <div class="header-options-content" id="rightNav">
+              {{#if usuario.id}}
+                {{#ifTipoMedico}}
+                  {{#if ../usuario.medFavCol}}
+                    <a class="option" onclick="calificarServicioMedico()">
+                      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                        <span class="option-icon glyphicon glyphicon-check s30 center-block text-center"></span>
+                      </div>
+                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                        <div class="option-label">
+                          <span class="optn-lbl">
+                            <span class="option-icon glyphicon glyphicon-check hidden-xs">
+                            </span>&nbsp;Califica su servicio
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  {{/if}}
+                {{else}}
                   <a class="first-option option" onclick="agendarCitaBootbox()">
                     <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 hidden-xs">
                       <span class="option-icon glyphicon h67-medcond s90 center-block text-center">+</span>
@@ -295,84 +220,142 @@
                       </div>
                     </div>
                   </a>
-                  <a class="option" onclick="recomendacionesBoot();">
-                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
-                      <span class="option-icon glyphicon glyphicon-user s30 center-block text-center"></span>
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
-                      <div class="option-label">
-                        <span class="optn-lbl">
-                          <span class="option-icon glyphicon glyphicon-user hidden-xs">
-                          </span>&nbsp;Recomienda a un amigo
-                        </span>
+                {{/ifTipoMedico}}
+
+
+
+                {{#if ../usuario.medFavCol}}
+                  {{#ifTipoPaciente}}
+                    <a class="option">
+                      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                        <span class="option-icon glyphicon glyphicon-heart s30 center-block text-center"></span>
                       </div>
-                    </div>
-                  </a>
-                  <a href="{{base_url}}inbox/{{usuario.usuarioUrl}}" class="option">
-                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
-                      <span class="option-icon glyphicon glyphicon-comment s30 center-block text-center"></span>
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
-                      <div class="option-label">
-                        <span class="optn-lbl">
-                          <span class="option-icon glyphicon glyphicon-comment hidden-xs">
-                          </span>&nbsp;Envía un mensaje
-                        </span>
+                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                        <div class="option-label">
+                          <span class="optn-lbl" id="addFavoriteContact" onclick="eliminarFavoritos()">
+                            <span class="option-icon glyphicon glyphicon-minus hidden-xs">
+                            </span>&nbsp;Elimina de favoritos
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  </a>
-                  {{#if ../usuario.medPac}}
-                  <a class="option" onclick="calificarServicioMedico()">
-                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
-                      <span class="option-icon glyphicon glyphicon-check s30 center-block text-center"></span>
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
-                      <div class="option-label">
-                        <span class="optn-lbl">
-                          <span class="option-icon glyphicon glyphicon-check hidden-xs">
-                          </span>&nbsp;Califica su servicio
-                        </span>
+                    </a>
+                  {{/ifTipoPaciente}}
+                  {{#ifTipoMedico}}
+                    <a class="option">
+                      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                        <span class="option-icon glyphicon glyphicon-heart s30 center-block text-center"></span>
                       </div>
-                    </div>
-                  </a>
-                  {{/if}}
+                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                        <div class="option-label">
+                          <span class="optn-lbl" id="addFavoriteContact" onclick="eliminarFavoritos();">
+                            <span class="option-icon glyphicon glyphicon-minus hidden-xs">
+                            </span>&nbsp;Eliminar de colegas
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  {{/ifTipoMedico}}
                 {{else}}
-                  {{#if ../usuario.medFavCol}}
-                  <a class="option" onclick="calificarServicioMedico()">
-                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
-                      <span class="option-icon glyphicon glyphicon-check s30 center-block text-center"></span>
-                    </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
-                      <div class="option-label">
-                        <span class="optn-lbl">
-                          <span class="option-icon glyphicon glyphicon-check hidden-xs">
-                          </span>&nbsp;Califica su servicio
-                        </span>
-                      </div>
-                    </div>
-                  </a>
+                  {{#if ../usuario.invitacionEnviada}}
+                    {{#ifTipoMedico}}
+                      <a class="option">
+                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                          <span class="option-icon glyphicon glyphicon-heart s30 center-block text-center"></span>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                          <div class="option-label">
+                            <span class="optn-lbl" id="addFavoriteContact" onclick="eliminarFavoritos();">
+                              <span class="option-icon glyphicon glyphicon-minus hidden-xs">
+                              </span>&nbsp;Invitación enviada
+                            </span>
+                          </div>
+                        </div>
+                      </a>
+                    {{/ifTipoMedico}}
+                  {{else}}
+                    {{#if ../usuario.invitacionEspera}}
+                      {{#ifTipoMedico}}
+                        <a class="option">
+                          <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                            <span class="option-icon glyphicon glyphicon-heart s30 center-block text-center"></span>
+                          </div>
+                          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                            <div class="option-label">
+                              <span class="optn-lbl" id="addFavoriteContact" onclick="aceptarInvitacion();">
+                                <span class="option-icon glyphicon glyphicon-plus hidden-xs">
+                                </span>&nbsp;Aceptar colega
+                              </span>
+                            </div>
+                          </div>
+                        </a>
+                      {{/ifTipoMedico}}
+                    {{else}}
+                      {{#ifTipoMedico}}
+                        <a class="option">
+                          <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                            <span class="option-icon glyphicon glyphicon-heart s30 center-block text-center"></span>
+                          </div>
+                          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                            <div class="option-label">
+                              <span class="optn-lbl" id="addFavoriteContact" onclick="agregarFavoritos();">
+                                <span class="option-icon glyphicon glyphicon-plus hidden-xs">
+                                </span>&nbsp;Agrega a colegas
+                              </span>
+                            </div>
+                          </div>
+                        </a>
+                      {{else}}
+                        <a class="option">
+                          <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                            <span class="option-icon glyphicon glyphicon-heart s30 center-block text-center"></span>
+                          </div>
+                          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                            <div class="option-label">
+                              <span class="optn-lbl" id="addFavoriteContact" onclick="agregarFavoritos();">
+                                <span class="option-icon glyphicon glyphicon-plus hidden-xs">
+                                </span>&nbsp;Agrega a favoritos
+                              </span>
+                            </div>
+                          </div>
+                        </a>
+                      {{/ifTipoMedico}}
+                    {{/if}}
                   {{/if}}
-                  <a href="{{base_url}}inbox/{{usuario.usuarioUrl}}" class="option">
-                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
-                      <span class="option-icon glyphicon glyphicon-comment s30 center-block text-center"></span>
+                {{/if}}
+
+
+
+
+                <!--FIN AGREGAR A FAVORITOS-->
+                <a class="option" onclick="recomendacionesBoot();">
+                  <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                    <span class="option-icon glyphicon glyphicon-user s30 center-block text-center"></span>
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                    <div class="option-label">
+                      <span class="optn-lbl">
+                        <span class="option-icon glyphicon glyphicon-user hidden-xs">
+                        </span>&nbsp;Recomienda a un amigo
+                      </span>
                     </div>
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
-                      <div class="option-label">
-                        <span class="optn-lbl">
-                          <span class="option-icon glyphicon glyphicon-comment hidden-xs">
-                          </span>&nbsp;Envía un mensaje
-                        </span>
-                      </div>
+                  </div>
+                </a>
+                {{#if ../usuario.medPac}}
+                <a class="option" onclick="calificarServicioMedico()">
+                  <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                    <span class="option-icon glyphicon glyphicon-check s30 center-block text-center"></span>
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                    <div class="option-label">
+                      <span class="optn-lbl">
+                        <span class="option-icon glyphicon glyphicon-check hidden-xs">
+                        </span>&nbsp;Califica su servicio
+                      </span>
                     </div>
-                  </a>
-                {{/ifTipoPaciente}}
-              </div>
-            </div>
-          </div>
+                  </div>
+                </a>
+              {{/if}}
           {{else}}
-          <div id="profileOptions" class="header-options-container col-lg-4 col-md-5 col-sm-2 col-xs-12 h67-medcond">
-            <div class="header-options-row row">
-              <div class="header-options-content">
                 <a href="#" class="first-option option">
                   <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 hidden-xs">
                     <span class="option-icon glyphicon h67-medcond s90 center-block text-center">+</span>
@@ -384,6 +367,7 @@
                     </div>
                   </div>
                 </a>
+                <!--
                 <a href="#" class="option">
                   <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
                     <span class="option-icon glyphicon glyphicon-user s30 center-block text-center"></span>
@@ -422,11 +406,11 @@
                       </span>
                     </div>
                   </div>
-                </a>
-              </div>
+                </a>-->
+              {{/if}}
             </div>
           </div>
-          {{/if}}
+        </div>
         </div>
       </div>
     </section>
@@ -447,11 +431,7 @@
                         <h2 class="h67-medium s20 uppercase whiteF">Ubicaciones y contacto</h2>
                       </div>
                       <div class="col-md-3 pull-right text-right" style="margin-top:20px" >
-                        <span id="editUbi">
-                        {{#if usuario.Direccions}}
-                          <button class="btn btn-primary btn-xs" id="btnEditaUbi"><span class="glyphicon glyphicon-pencil"></span></button>
-                        {{/if}}
-                        </span>
+                        <button class="btn btn-primary btn-xs {{#unless usuario.Direccions}}hidden{{/unless}}" id="btnEditaUbi"><span class="glyphicon glyphicon-pencil"></span></button>
                         <button class="btn btn-primary btn-xs" id="btnAgregaUbi"><span class="glyphicon glyphicon-plus-sign"></span></button>
                       </div>
                     {{/if}}
@@ -536,9 +516,14 @@
                 <div class="col-md-12">
                   <div class="info-body-header h77-boldcond">
                     {{#unless usuario.id}}
-                    <div class="img-rounded info-left-icon">
-                      <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(1)"></span>
-                    </div>
+                      <div class="img-rounded info-left-icon" id="editInfo1">
+                        <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(1)"></span>
+                      </div>
+                    {{else}}
+                        {{#ifNotSession}}
+                          <div class="img-rounded info-left-icon hidden privateDisplaySession" id="editInfo1">
+                          </div>
+                        {{/ifNotSession}}
                     {{/unless}}
                     <span class="title">Experto en:</span>
                   </div>
@@ -567,9 +552,14 @@
                 <div class="col-md-12">
                   <div class="info-body-header h77-boldcond">
                     {{#unless usuario.id}}
-                    <div class="img-rounded info-left-icon">
-                      <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(2)"></span>
-                    </div>
+                      <div class="img-rounded info-left-icon" id="editInfo2">
+                        <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(2)"></span>
+                      </div>
+                    {{else}}
+                        {{#ifNotSession}}
+                          <div class="img-rounded info-left-icon hidden privateDisplaySession" id="editInfo2">
+                          </div>
+                        {{/ifNotSession}}
                     {{/unless}}
                     <span class="title">Hospitales</span>
                     <span class="sub">y clínicas</span>
@@ -590,17 +580,22 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="info-body-header h77-boldcond">
-                    {{#unless usuario.id}}
-                    <div class="img-rounded info-left-icon">
-                      <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(3)"></span>
-                    </div>
-                    {{/unless}}
+                      {{#unless usuario.id}}
+                        <div class="img-rounded info-left-icon" id="editInfo3">
+                          <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(3)"></span>
+                        </div>
+                      {{else}}
+                          {{#ifNotSession}}
+                            <div class="img-rounded info-left-icon hidden privateDisplaySession" id="editInfo3">
+                            </div>
+                          {{/ifNotSession}}
+                      {{/unless}}
                     <span class="title">Aseguradoras</span>
                   </div>
                   <div class="info-body-content h67-medcond" id="divAseg">
                     <ul>
                       {{#each medico.MedicoAseguradoras}}
-                      <li>{{aseguradora}}</li>
+                      <li>{{Aseguradora.aseguradora}}</li>
                       {{/each}}
                     </ul>
                   </div>
@@ -611,7 +606,8 @@
         </div>
       </div>
     </section>
-    <section id="colegas">
+
+    <section id="colegas" class="privateDisplay {{#ifSessionVal 'id'}}{{else}}hidden{{/ifSessionVal}}">
       <div class="container-fluid">
         <div class="row">
           <div class="container">
@@ -653,10 +649,6 @@
               </div>
             </div>
 
-            <div id="FavColPanel">
-              <div class="contList">
-              </div>
-            </div>
             <div class="row">
               <hr class="sep">
               <div id="listaEspecialidades" class="side-especialidades" >
@@ -749,7 +741,8 @@
         </div>
       </div>
     </section>
-    <section id="comentarios">
+
+    <section id="comentarios" class="privateDisplay {{#ifSessionVal 'id'}}{{else}}hidden{{/ifSessionVal}}">
       <div class="container-fluid">
         <div class="row cat-header comentarios">
           <div class="container">
@@ -811,6 +804,7 @@
             </li>
           </ul>
         </div>
+
         <div class="row logros-actions">
           <div class="container">
             <div class="center-block">
@@ -823,8 +817,8 @@
             </div>
           </div>
         </div>
-        <div class="row comentarios-row">
 
+        <div class="row comentarios-row">
           <div class="container">
             <div class="col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1" id="comentariosMedico">
             </div>

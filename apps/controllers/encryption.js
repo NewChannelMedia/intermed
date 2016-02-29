@@ -34,29 +34,6 @@
   * @param res.
   * @return true en caso de ser el password correcto
   **/
-  exports.isLogin = function(object, req, res ){
-    try{
-      var cadena = generateEncrypted( object.pass );
-      if ( req.session.passport.user && req.session.passport.user.id > 0 ){
-        var usuario_id = req.session.passport.user.id;
-        models.UsuarioHistorial.findOne({
-          where: {
-            idDr: usuario_id,
-            pass: cadena
-          }
-        }).then(function(success){
-          if (success){
-            res.send(true);
-          } else {
-            res.send(false);
-          }
-        });
-      }
-
-    }catch ( err ) {
-      req.errorHandler.report(err, req, res);
-    }
-  }
   exports.insertPassword = function( object, req, res ){
     try{
       // se inserta a la base de datos
@@ -207,14 +184,6 @@
       req.errorHandler.report(err, req, res);
     }
   }
-  // Solo renderiza la vista de historiales
-  exports.historiales = function( req, res ){
-    try{
-      res.render('historiales');
-    }catch ( err ) {
-      req.errorHandler.report(err, req, res);
-    }
-  }
   // conviertiendo a xml
   /**
   *  Esta funcion es la encargada de mandar a xml
@@ -276,7 +245,7 @@
   *
   **/
   function generateEncrypted(str){
-    const cadena = crypto.createHmac('sha512',str);
+    var cadena = crypto.createHmac('sha512',str);
     cadena.update(str);// se actualiza la cadena
     var cadena = cadena.digest('hex'); // almacena la cadena encriptada
     return cadena;

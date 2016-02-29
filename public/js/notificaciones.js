@@ -381,6 +381,7 @@ function formatearNotificacion( record , element) {
     var usuarioUrl = '';
     var fotoPerfil = '';
     var nombreCompleto = '';
+    var usuario_id = '';
 
     if ( record[ tipo ] ) {
       var usuarioUrl = record[ tipo ].Usuario.usuarioUrl;
@@ -389,30 +390,31 @@ function formatearNotificacion( record , element) {
       if ( tipo == 'medico' ) {
         nombreCompleto = 'Dr. ' + nombreCompleto;
       }
+      usuario_id = record[ tipo ].Usuario.id;
     }
 
     var mediaObjectFecha = '<div class="text-left" style="margin-top:-5px;"><span class="not-fecha hidden invisible">' + record.inicio.slice( 0, 19 ).replace( 'T', ' ' ) + '</span><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + fecha + '</span></div>';
 
     var mediaObjectImagen = '<img class="media-object img-circle" src="' + fotoPerfil + '" '+style+'>';
-    var mediaObjectFotoPerfil = '<div class="media-left"><a href= "/perfil/' + usuarioUrl + '">'+mediaObjectImagen+'</a></div>';
+    var mediaObjectFotoPerfil = '<div class="media-left"><a href= "/' + usuarioUrl + '">'+mediaObjectImagen+'</a></div>';
 
     switch ( record.tipoNotificacion_id ) {
       /*PACIENTE*/
       case 1:
         //solicitudAmistad
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/perfil/' + usuarioUrl + '"><span id="pre' + record.id + '"></span>' + nombreCompleto + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></a>' + mediaObjectFecha + '</div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + record.paciente_id + ',0,' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + record.paciente_id + ',' + record.id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>';
+        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '"><span id="pre' + record.id + '"></span>' + nombreCompleto + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></a>' + mediaObjectFecha + '</div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + usuario_id + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + usuario_id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>';
         break;
       case 2:
         //solicitudAmistadAceptada
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/perfil/' + usuarioUrl + '">' + nombreCompleto + ' aceptó tu solicitud de amistad</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">' + nombreCompleto + ' aceptó tu solicitud de amistad</a>' + mediaObjectFecha + '</div>';
         break;
       case 3:
         //solicitudesAceptadas
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/perfil/' + usuarioUrl + '">Aceptaste la solicitud de amistad de ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">Aceptaste la solicitud de amistad de ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
         break;
       case 8:
         //solicitudRechazada
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/perfil/' + usuarioUrl + '">Rechazaste la solicitud de amistad de ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">Rechazaste la solicitud de amistad de ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
         break;
       case 12:
         //medicoRecomendado
@@ -423,7 +425,7 @@ function formatearNotificacion( record , element) {
           var nombreCompleto = record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM;
           var nombreDoctor = record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.ApellidoM;
           content += '<div class="media-left">';
-          content += '<a href="/perfil/' + medicoUrl + '">';
+          content += '<a href="/' + medicoUrl + '">';
           content += mediaObjectImagen;
           content += '</div>';
           content += '<div class="media-body">' + nombreCompleto + ' Te ha recomendado al Dr.' + nombreDoctor;
@@ -457,27 +459,27 @@ function formatearNotificacion( record , element) {
         /*MEDICO*/
       case 4:
         //solicitudAmistad
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/perfil/' + usuarioUrl + '"><span id="pre' + record.id + '"></span>' + nombreCompleto + ' <span id="post' + record.id + '">quiere ser tu colega en Intermed</span></a>' + mediaObjectFecha + '</div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(0,' + record.medico_id + ',' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(true, ' + record.medico_id + ',' + record.id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>';
+        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '"><span id="pre' + record.id + '"></span>' + nombreCompleto + ' <span id="post' + record.id + '">quiere ser tu colega en Intermed</span></a>' + mediaObjectFecha + '</div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + usuario_id+ ',' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(' + usuario_id + ',' + record.id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>';
         break;
       case 5:
         //solicitudAmistadAceptada
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/perfil/' + usuarioUrl + '">' + nombreCompleto + ' ahora es tu colega en Intermed</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">' + nombreCompleto + ' ahora es tu colega en Intermed</a>' + mediaObjectFecha + '</div>';
         break;
       case 6:
         //solicitudesAceptadas
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/perfil/' + usuarioUrl + '">Aceptaste la solicitud de amistad de ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">Aceptaste la solicitud de amistad de ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
         break;
       case 7:
         //agregadoMedicoFavorito
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/perfil/' + usuarioUrl + '">' + nombreCompleto + ' te agregó a sus médicos favoritos</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">' + nombreCompleto + ' te agregó a sus médicos favoritos</a>' + mediaObjectFecha + '</div>';
         break;
-      case 8:
+      case 9:
         //solicitudRechazada
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/perfil/' + usuarioUrl + '">Rechazaste la solicitud de amistad de ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">Rechazaste la solicitud de amistad de ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
         break;
       case 13:
         //doctorRecomendado
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/perfil/' + usuarioUrl + '">' + nombreCompleto + ' Recomendo tu perfil a otro paciente</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">' + nombreCompleto + ' Recomendo tu perfil a otro paciente</a>' + mediaObjectFecha + '</div>';
         break;
       case 14:
         //pedirRecomendacion

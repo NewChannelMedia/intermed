@@ -1832,46 +1832,48 @@ function obtenerCPModal(tipo) {
     });
 }
 function cargarListaEspCol( usuario ,tipo) {
-  var filtro = $('#buscadorEspecialInput').val();
-  $.ajax( {
-    async: false,
-    url: '/cargarListaEspCol',
-    type: 'POST',
-    data: {
-      usuario: usuario,
-      filtro: filtro
-    },
-    dataType: "json",
-    cache: false,
-    success: function ( data ) {
-      $('#especialidadesList').html('');
-      $('#listaColegas').html('');
-      $('#tipoFiltro').html('una especialidad');
-      if ( data.success ) {
-        var contenido = '';
-        var primero = '';
-        data.result.forEach(function(esp){
-          if (primero == ""){
-            primero = esp.id;
+  if (!$('#colegas').hasClass('hidden')){
+    var filtro = $('#buscadorEspecialInput').val();
+    $.ajax( {
+      async: false,
+      url: '/cargarListaEspCol',
+      type: 'POST',
+      data: {
+        usuario: usuario,
+        filtro: filtro
+      },
+      dataType: "json",
+      cache: false,
+      success: function ( data ) {
+        $('#especialidadesList').html('');
+        $('#listaColegas').html('');
+        $('#tipoFiltro').html('una especialidad');
+        if ( data.success ) {
+          var contenido = '';
+          var primero = '';
+          data.result.forEach(function(esp){
+            if (primero == ""){
+              primero = esp.id;
+            }
+            contenido += '<li>' +
+            '<a onclick="cargarListaColegasByEsp(' + usuario + ',' + esp.id + ',this,\''+tipo+'\')">' + esp.especialidad + '<span class="badge pull-right">' + esp.total + '</span></a>' +
+            '</li>';
+          });
+          $('#especialidadesList').html(contenido);
+          if (primero != ""){
+            cargarListaColegasByEsp(usuario,primero,null,tipo);
           }
-          contenido += '<li>' +
-          '<a onclick="cargarListaColegasByEsp(' + usuario + ',' + esp.id + ',this,\''+tipo+'\')">' + esp.especialidad + '<span class="badge pull-right">' + esp.total + '</span></a>' +
-          '</li>';
-        });
-        $('#especialidadesList').html(contenido);
-        if (primero != ""){
-          cargarListaColegasByEsp(usuario,primero,null,tipo);
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
         }
-      }else{
-        if (data.error){
-          manejadorDeErrores(data.error);
-        }
+      },
+      error: function ( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: ' + err );
       }
-    },
-    error: function ( jqXHR, textStatus, err ) {
-      console.error( 'AJAX ERROR: ' + err );
-    }
-  } );
+    } );
+  }
 }
 function cargarListaColegasByEsp(usuario_id,especialidad_id, element,tipo){
   var classDiv = 'class="col-lg-3 col-md-3 col-sm-4 col-xs-4"';
@@ -2336,36 +2338,65 @@ function agregarDestRecom(){
   return false;
 }
 
-function iniciarSesionLocal(inputEmail, inputPassword){
-  var email = $('#'+inputEmail).val();
-  var pass = hex_md5($('#'+inputPassword).val());
+
+function revisarTipoSesion(){
+  var tipoSesion = '';
   $.ajax({
     async: false,
-    url: '/auth/correo',
+    url: '/session/tipo',
     type: 'POST',
     dataType: "json",
-    data:{'email':email,'password':pass},
     cache: false,
     success: function ( data ) {
-        if (data.result == "success"){
-          var usuarioUrl = data.session.usuarioUrl;
-          if (data.session.urlPersonal){
-            usuarioUrl = data.session.urlPersonal;
-          }
-          window.location.href = '/'+usuarioUrl
-        } else {
-          $('#LoginError').removeClass('hidden');
-          setTimeout(function(){
-            $('#LoginError').addClass('hidden');
-          },3000);
-        }
-      return false;
+      tipoSesion = data.tipoUsuario;
     },
     error: function(err){
       console.log('AJAX error: ' + JSON.stringify(err));
       return false;
     }
   });
+  return tipoSesion;
+}
+
+function iniciarSesionLocal(inputEmail, inputPassword, callback, usuarioMedico_id){
+  try{
+    var email = $('#'+inputEmail).val();
+    var pass = hex_md5($('#'+inputPassword).val());
+    $.ajax({
+      async: false,
+      url: '/auth/correo',
+      type: 'POST',
+      dataType: "json",
+      data:{'email':email,'password':pass},
+      cache: false,
+      success: function ( data ) {
+          if (data.result == "success"){
+            if (callback){
+              bootbox.hideAll();
+              actualizarSesion(false, callback, usuarioMedico_id);
+            } else {
+              var usuarioUrl = data.session.usuarioUrl;
+              if (data.session.urlPersonal){
+                usuarioUrl = data.session.urlPersonal;
+              }
+              window.location.href = '/'+usuarioUrl
+            }
+          } else {
+            $('#LoginError').removeClass('hidden');
+            setTimeout(function(){
+              $('#LoginError').addClass('hidden');
+            },3000);
+          }
+        return false;
+      },
+      error: function(err){
+        console.log('AJAX error: ' + JSON.stringify(err));
+        return false;
+      }
+    });
+  }catch  (e){
+    console.log('ERROR: ' + JSON.stringify(e));
+  }
   return false;
 }
 
@@ -2386,6 +2417,20 @@ function cargarEstados(divestados){
       error: function (jqXHR, textStatus, err) {
         console.log('ERROR: ' + JSON.stringify(err));
       }
+  });
+}
+
+
+function cargarCiudades(id){
+  var idABuscar = $(id).val();// se saca el value del select de estados
+  // se hace la consulta se manda como parametro el id que se obtuvo de seleccionar el estado
+  $.post('/cargarCiudades',{id:idABuscar}, function(data){
+    var cont = '<option value="0">Municipio/Ciudad</option>';
+    $.each(data,function(i, item){
+      cont += '<option value="'+item.id+'">'+item.municipio+'</option>';
+    });
+    $("#selectCiudad").html(cont);
+    $("#selectCiudad").removeClass('invisible');
   });
 }
 
@@ -2527,10 +2572,11 @@ function realizarBusqueda(bounds){
             </div>
             <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9" style="text-align:left;">
               <div class="row">
-                <h4>`+ nombre +`</h4>
+                <h4><a href="`+ usuarioUrl +`">`+ nombre +`</a></h4>
                 <h5>`+ direccion.nombre +`</h5>
                 <p>`+ direccion.calle +` #`+ direccion.numero + direccion.numeroInt +`<br>`+
                 direccion.Municipio.municipio +`,`+ direccion.Municipio.Estado.estado + `</p>
+                <button class="btn btn-primary pull-right" onclick="agendarCitaBootbox(`+ medico.Usuario.id +`)">Hacer cita</button>
               </div>
             </div>`;
 
@@ -2566,6 +2612,8 @@ function realizarBusqueda(bounds){
           marcadoresBusquedaTemp[direccion.id] = marcadoresBusqueda[direccion.id];
 
         });
+
+        contenido += '<button class="btn btn-primary btn-sm pull-right" onclick="agendarCitaBootbox('+ medico.Usuario.id +')">Hacer cita</button>';
 
         contenido +=
               `</ul>

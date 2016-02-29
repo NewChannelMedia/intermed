@@ -217,37 +217,6 @@ var uId ="";
       }
     } );
   }
-  function aceptarInvitacion( paciente_id, medico_id, notificacion_id ) {
-    if ( !(paciente_id > 0) ) paciente_id = $( '#PacienteId' ).val();
-    if ( !(medico_id > 0 )) medico_id = $( '#MedicoId' ).val();
-    $.ajax( {
-      async: false,
-      url: '/aceptarInvitacion',
-      type: 'POST',
-      dataType: "json",
-      data: {
-        medicoID: medico_id,
-        pacienteID: paciente_id,
-        notificacion_id: notificacion_id
-      },
-      cache: false,
-      success: function ( data ) {
-        if ( data.result == 'success' ) {
-          $( '#addFavoriteContact' ).html( 'Eliminar de contactos' );
-          $( "#addFavoriteContact" ).attr( "onclick", "eliminarFavoritos()" );
-          cargarFavCol( $( '#usuarioPerfil' ).val() );
-          if ( notificacion_id ) {
-            $( '#pre' + notificacion_id ).html( 'Aceptaste la solicitud de amistad de ' );
-            $( '#post' + notificacion_id ).html( '' );
-            if (notificacion_id) $( '#button' + notificacion_id ).remove();
-          }
-        }
-      },
-      error: function ( jqXHR, textStatus, err ) {
-        console.error( 'AJAX ERROR: ' + err );
-      }
-    } );
-  }
   function loadDatosGenerales(){
     $.post("/loadDatosGenerales",function(data){
       $('#usuarioUrlFotoPerfil').prop('src',data.urlFotoPerfil);
