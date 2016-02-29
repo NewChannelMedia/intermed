@@ -127,6 +127,13 @@ function ifSessionValNN( input, options ) {
     return options.inverse( false );
 }
 
+function ifNotSession(options){
+  if (session.length == 0)
+    return options.fn( true );
+  else
+    return options.inverse( false );
+}
+
 exports.varSession = varSession;
 exports.valSession = valSession;
 exports.ifSession = ifSession;
@@ -146,3 +153,4 @@ exports.indexBaseUno = indexBaseUno;
 exports.ifFirst = ifFirst;
 exports.Last = Last;
 exports.numLast = numLast;
+exports.ifNotSession = ifNotSession;

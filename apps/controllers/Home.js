@@ -737,7 +737,7 @@ function armarPerfilNuevo( usuario, req, res ) {
         } );
       }
       else {
-        var vista = '/nuevoPerfilMedicos';
+        var vista = '/vistaPerfilPrivado';
         if ( !( req.session.passport && req.session.passport.user && req.session.passport.user.id > 0 ) ) {
           vista = '/vistaPerfilNoRegistrado';
         }
