@@ -78,6 +78,10 @@ exports.iniciarSesion = function ( object, req, res ) {
       }
     } ).then( function ( usuario ) {
       if ( usuario ) {
+        var redirect = false;
+        if (object.redirect){
+          redirect = true;
+        }
         generarSesion( req, res, usuario.id, false , true);
       }
       else {
@@ -554,6 +558,41 @@ function cargarExtraInfo( usuario, redirect, response, req, res ) {
             req.session.passport.user.registroCompleto = 0;
           }
           req.session.passport.user.registroCompleto = 0;
+          if (response){
+            if ( redirect ) {
+              var url = req.session.passport.user.usuarioUrl;
+              if (req.session.passport.user.urlPersonal && req.session.passport.user.urlPersonal != ""){
+                  url = req.session.passport.user.urlPersonal;
+              }
+              res.redirect( '/' + url );
+            }
+            else {
+              res.send( {
+                'result': 'success',
+                'session': req.session.passport.user
+              } );
+            }
+          } else {
+            reloadPage(res);
+          }
+        } );
+    }
+    else if ( usuario.tipoUsuario === 'S' ) {
+      tipoUsuario = "Secretaria";
+      models.Secretaria.findOne( {
+          where: {
+            usuario_id: usuario.id
+          },
+          attributes: [ 'id' ],
+          include: [ {
+            model: models.MedicoSecretaria,
+            attributes: [ 'id', 'medico_id' ]
+          } ]
+        } )
+        .then( function ( extraInfo ) {
+          if ( extraInfo ) {
+            req.session.passport.user[ tipoUsuario + '_id' ] = JSON.parse( JSON.stringify( extraInfo.id ) );
+          }
           if (response){
             if ( redirect ) {
               var url = req.session.passport.user.usuarioUrl;

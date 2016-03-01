@@ -29,7 +29,7 @@ module.exports = function (object){
         //Eliminar cookie
         if (req.cookies['intermed_sesion']){
           //Revivir sesión si existe usuario con ['intermed_sesion']['id'] y ['intermed_sesion']['usuarioUrl']
-          if (req.cookies['intermed_sesion']['id'] && req.cookies['intermed_sesion']['usuario']){
+          if (req.cookies['intermed_sesion']['id'] && req.cookies['intermed_sesion']['tipoUsuario']){
             revivirSesion = true;
             intermed.callController( 'usuarios', 'revivirSesion', {id:req.cookies['intermed_sesion']['id'],usuarioUrl:req.cookies['intermed_sesion']['usuario']}, req, res );
           }

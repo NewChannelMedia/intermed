@@ -55,6 +55,7 @@ app.use( '/cambiar/historial', express.static( __dirname + '/../public' ) );
 app.use( '/cambiar/intermed', express.static( __dirname + '/../public' ) );
 app.use( '/historiales', express.static( __dirname + '/../public' ) );
 app.use( '/medico', express.static( __dirname + '/../public' ) );
+app.use( '/secretaria', express.static( __dirname + '/../public' ) );
 
 var routeLife = function ( plantilla, carpeta, helpers ) {
   app.set( 'views', __dirname + '/../apps/views/' + carpeta);
@@ -101,6 +102,7 @@ require('./routers/router-configuraciones.js')(routerObject);//router para las c
 require('./routers/router-control.js')(routerObject);
 require('./routers/router-pagos.js')(routerObject);
 require('./routers/router-historiales.js')(routerObject);
+require('./routers/router-secretaria.js')(routerObject);
 require( './routers/router-error.js' )(routerObject);
 /*FIN CARGA DE ROUTERS*/
 

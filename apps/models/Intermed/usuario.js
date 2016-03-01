@@ -52,6 +52,7 @@ module.exports = function ( sequelize, DataTypes ) {
       associate: function ( models ) {
         Usuario.hasOne( models.Medico )
         Usuario.hasOne( models.Paciente )
+        Usuario.hasOne( models.Secretaria )
         Usuario.hasOne( models.DatosGenerales )
         Usuario.hasMany( models.Direccion )
         Usuario.hasMany( models.Agenda )

@@ -1352,6 +1352,14 @@ $( document ).ready( function () {
   } else if ($( '#perfilPaciente' ).length > 0 ) {
     cargarListaEspCol( $( '#usuarioPerfil' ).val() ,'P');
     cargarCitasPaciente();
+  } else if($( '#medicoSecretaria').length > 0 ){
+    if (!$('#agregar').hasClass('hidden')){
+      //alert('agregar secretaria');
+    } else if (!$('#enEspera').hasClass('hidden')){
+      //alert('en espera de secretaria');
+    } else if (!$('#mostrar').hasClass('hidden')){
+      //alert('mostrar secretaria');
+    }
   }
 } );
 //fin de Perfil Medicos
@@ -2358,7 +2366,7 @@ function revisarTipoSesion(){
   return tipoSesion;
 }
 
-function iniciarSesionLocal(inputEmail, inputPassword, callback, usuarioMedico_id){
+function iniciarSesionLocal(inputEmail, inputPassword, callback, usuarioMedico_id, reload){
   try{
     var email = $('#'+inputEmail).val();
     var pass = hex_md5($('#'+inputPassword).val());
@@ -2375,11 +2383,15 @@ function iniciarSesionLocal(inputEmail, inputPassword, callback, usuarioMedico_i
               bootbox.hideAll();
               actualizarSesion(false, callback, usuarioMedico_id);
             } else {
-              var usuarioUrl = data.session.usuarioUrl;
-              if (data.session.urlPersonal){
-                usuarioUrl = data.session.urlPersonal;
+              if (reload){
+                window.location.reload();
+              } else {
+                var usuarioUrl = data.session.usuarioUrl;
+                if (data.session.urlPersonal){
+                  usuarioUrl = data.session.urlPersonal;
+                }
+                window.location.href = '/'+usuarioUrl
               }
-              window.location.href = '/'+usuarioUrl
             }
           } else {
             $('#LoginError').removeClass('hidden');

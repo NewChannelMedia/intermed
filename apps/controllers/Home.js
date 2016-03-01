@@ -21,27 +21,36 @@ module.exports = {
    */
   index: function ( object, req, res ) {
     try {
-
-      models.Especialidad.findAll( {
-        attributes: [ 'id', 'especialidad' ]
-      } ).then( function ( especialidades ) {
-        models.Aseguradora.findAll( {
-          attributes: [ 'id', 'aseguradora' ],
-          group: 'aseguradora',
-          order: [ [ 'aseguradora', 'ASC' ] ]
-        } ).then( function ( aseguradoras ) {
-          models.Estado.findAll( {
-            attributes: [ 'id', 'estado' ]
-          } ).then( function ( estado ) {
-            models.Ciudad.findAll( {} ).then( function ( ciudad ) {
-              res.render( 'home', {
-                especialidad: especialidades,
-                aseguradora: aseguradoras
+      if (req.session.passport && req.session.passport.user){
+        if (req.session.passport.user.tipoUsuario == "M"){
+          res.send('mostrar oficina');
+        } else if(req.session.passport.user.tipoUsuario == "P"){
+          res.send('mostrar dashboard paciente');
+        } else if(req.session.passport.user.tipoUsuario == "S"){
+          res.send('mostrar dashboard secretaria');
+        }
+      } else {
+        models.Especialidad.findAll( {
+          attributes: [ 'id', 'especialidad' ]
+        } ).then( function ( especialidades ) {
+          models.Aseguradora.findAll( {
+            attributes: [ 'id', 'aseguradora' ],
+            group: 'aseguradora',
+            order: [ [ 'aseguradora', 'ASC' ] ]
+          } ).then( function ( aseguradoras ) {
+            models.Estado.findAll( {
+              attributes: [ 'id', 'estado' ]
+            } ).then( function ( estado ) {
+              models.Ciudad.findAll( {} ).then( function ( ciudad ) {
+                res.render( 'home', {
+                  especialidad: especialidades,
+                  aseguradora: aseguradoras
+                } );
               } );
             } );
           } );
         } );
-      } );
+      }
     }
     catch ( err ) {
       req.errorHandler.report( err, req, res );

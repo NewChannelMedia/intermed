@@ -3491,3 +3491,27 @@ function agregarSubespecialidad(element){
     }
   });
 }
+
+
+function invitarSecretariaEmail(){
+  try{
+    var email = $('#secretariaEmail').val();
+    $.post('/secretaria/invitar',{
+      email:email
+    },function( data ){
+      if( data.success ){
+        //window.location.reload();
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    }).fail(function(e){
+      console.error(e);
+    });
+    return false;
+  } catch (e){
+    console.error(e);
+    return false;
+  }
+}

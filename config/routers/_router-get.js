@@ -139,6 +139,25 @@ module.exports = function (object){
     }
   });
 
+
+  app.get('/secretaria', function (req, res, next) {
+    routeLife( 'plataforma2', 'plataforma', hps );
+    if (req.session.passport && req.session.passport.user && req.session.passport.user.Medico_id>0 ){
+      intermed.callController('secretaria','index',req.body, req, res);
+    } else {
+      next();
+    }
+  });
+
+  app.get( '/secretaria/:token', function ( req, res, next ) {
+    routeLife( 'plataforma2', 'plataforma', hps );
+    if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id>0) || (req.session.passport.user.Secretaria_id>0)){
+      intermed.callController('secretaria','registrar', req.params, req, res);
+    } else {
+      next();
+    }
+  });
+
   /*RUTA CARGAR PERFIL (DEJAR SIEMPRE AL FINAL)*/
   /*Dejando al final se evita que cada que se entre al router se haga una consulta para ver si se trata de un usuario*/
   app.get( '/:usuario', function ( req, res, next) {
