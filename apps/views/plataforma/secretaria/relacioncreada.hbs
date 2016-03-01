@@ -1,0 +1,58 @@
+<form  class="bg-white" method="post" onsubmit="return registrarSecretaria()">
+  <div class="container">
+    <div class="row">
+      <div class="body-container">
+        <div class="center-content">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <!--Datos de invitación-->
+            <div class="row">
+              <div class="col-md-12 text-center">
+                <h3 class="h45-light s25 text-uppercase">
+                  ¡Bienvenido(a) {{#valSession 'name'}}{{/valSession}}!
+                </h3>
+                <p>Ahora eres secretaria del Dr. {{Usuario.DatosGenerale.nombre}} {{Usuario.DatosGenerale.apellidoP}}</p>
+              </div>
+            </div>
+            <!--Información de registro-->
+            <div class="row" style="margin-top:20px">
+              <div class="col-md-8 col-md-offset-2 text-center">
+                <div class="row">
+                  <div class="col-md-4">
+                    <img src="http://previews.123rf.com/images/cienpies/cienpies1211/cienpies121100010/16307586-Sociales-iconos-de-perfil-de-usuario-de-grupo-sobre-el-estilo-dibujo-sin-fisuras-ilustraci-n-vectori-Foto-de-archivo.jpg" style="width:100%" class="img-circle">
+                  </div>
+                  <div class="col-md-8 text-left s15">
+                    <p class="s20">Dr. {{Usuario.DatosGenerale.nombre}} {{Usuario.DatosGenerale.apellidoP}}</p>
+                    {{#if Usuario.Direccions}}
+                      {{#each Usuario.Direccions}}
+                        <p >{{Municipio.municipio}} {{Municipio.Estado.estado}}</p>
+                      {{/each}}
+                    {{/if}}
+                    <br><br>
+                    {{#if Especialidads}}
+                      <p>
+                        {{#each Especialidads}}
+                          <!--{"id":6,"especialidad":"Anestesiólogo","descripcion":null,"tipoEspecialidad_id":1,"MedicoEspecialidad":{"id":20,"subEsp":0,"medico_id":2,"especialidad_id":6}}-->
+                          {{#unless MedicoEspecialidad.subEsp}}
+                          <strong>{{especialidad}}&nbsp;&nbsp;</strong>
+                          {{/unless}}
+                        {{/each}}
+                      </p>
+                      <p>
+                        {{#each Especialidads}}
+                          <!--{"id":6,"especialidad":"Anestesiólogo","descripcion":null,"tipoEspecialidad_id":1,"MedicoEspecialidad":{"id":20,"subEsp":0,"medico_id":2,"especialidad_id":6}}-->
+                          {{#if MedicoEspecialidad.subEsp}}
+                          {{especialidad}}&nbsp;&nbsp;
+                          {{/if}}
+                        {{/each}}
+                      </p>
+                    {{/if}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

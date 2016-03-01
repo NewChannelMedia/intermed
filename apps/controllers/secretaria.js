@@ -86,9 +86,20 @@ exports.registrar = function (object, req, res){
                       attributes: ['id','usuarioUrl','urlFotoPerfil'],
                       include: [{
                         model: models.DatosGenerales
+                      },{
+                        model: models.Direccion,
+                        attributes: ['id'],
+                        order: [['principal','desc']]
+                        include: [{
+                          model: models.Municipio,
+                          include: [{model: models.Estado}]
+                        }]
                       }]
+                    },{
+                      model: models.Especialidad
                     }]
                   }).then(function(medico){
+                    res.render('secretaria/relacioncreada',medico);
                     console.log('User: ' + JSON.stringify(medico));
                     console.log('created: ' + created);
                     //res.send('Crear relación');
