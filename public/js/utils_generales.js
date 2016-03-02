@@ -2378,19 +2378,26 @@ function iniciarSesionLocal(inputEmail, inputPassword, callback, usuarioMedico_i
       data:{'email':email,'password':pass},
       cache: false,
       success: function ( data ) {
-          if (data.result == "success"){
+          if (data.success){
             if (callback){
               bootbox.hideAll();
               actualizarSesion(false, callback, usuarioMedico_id);
             } else {
+
               if (reload){
                 window.location.reload();
               } else {
+                window.location.href = '/';
+                /*
                 var usuarioUrl = data.session.usuarioUrl;
                 if (data.session.urlPersonal){
                   usuarioUrl = data.session.urlPersonal;
                 }
-                window.location.href = '/'+usuarioUrl
+                if (usuarioUrl){
+                window.location.href = '/'+usuarioUrl;
+                } else {
+                  window.location.href = '/';
+                }*/
               }
             }
           } else {

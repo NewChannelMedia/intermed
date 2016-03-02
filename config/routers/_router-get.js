@@ -8,9 +8,29 @@ module.exports = function (object){
   var passport = object.passport;
   var url = object.url;
 
+  app.get('*', function (req, res, next){
+    if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "M"){
+      if (req.session.passport.user.status == 0){
+        routeLife( 'plataforma2', 'plataforma', hps );
+        res.render('medico/registro_1');
+      } else if (req.session.passport.user.status == -1){
+        routeLife( 'plataforma2', 'plataforma', hps );
+        res.render('medico/registro_2');
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
+  });
+
   //Vista: home
   app.get( '/', function ( req, res ) {
-    routeLife( 'main', 'main', hps );
+    if (req.session.passport && req.session.passport.user){
+      routeLife( 'plataforma2', 'plataforma', hps );
+    } else {
+      routeLife( 'main', 'main', hps );
+    }
     app.set('view options', { layout: 'plataforma2' });
     intermed.callController( 'Home', 'index', req.body, req, res )
   } );
@@ -168,15 +188,11 @@ module.exports = function (object){
         where: models.Sequelize.or(
           {
             usuarioUrl: usuario,
-            tipoUsuario: {
-              $not: 'A'
-            }
+            tipoUsuario: 'M'
           },
           {
             urlPersonal: usuario,
-            tipoUsuario: {
-              $not: 'A'
-            }
+            tipoUsuario: 'M'
           }
         )
       }).then(function(us){

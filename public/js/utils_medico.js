@@ -521,7 +521,7 @@ function actualizarSesion(refresh, callback, parametros) {
     dataType: "json",
     cache: false,
     success: function ( data ) {
-      if ( data.result === "success" ) {
+      if ( data.success) {
         if (refresh){
           location.reload();
         } else {

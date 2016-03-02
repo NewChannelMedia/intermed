@@ -23,11 +23,33 @@ module.exports = {
     try {
       if (req.session.passport && req.session.passport.user){
         if (req.session.passport.user.tipoUsuario == "M"){
-          res.send('mostrar oficina');
+          module.exports.oficinaMedico(object, req, res);
         } else if(req.session.passport.user.tipoUsuario == "P"){
-          res.send('mostrar dashboard paciente');
+          //Mostrar perfil paciente
+          module.exports.nuevoPerfilMedicos(object, req, res);
         } else if(req.session.passport.user.tipoUsuario == "S"){
-          res.send('mostrar dashboard secretaria');
+          //Dashboar Secretaria
+          models.MedicoSecretaria.findAll({
+            where: {
+              secretaria_id: req.session.passport.user.Secretaria_id
+            },
+            include: [{
+              model: models.Medico,
+              attributes: ['id'],
+              include: [{
+                model: models.Usuario,
+                attributes: ['id','usuarioUrl','urlPersonal','urlFotoPerfil'],
+                include: [{
+                  model: models.DatosGenerales
+                },{
+                  model: models.Direccion,
+                  order: [['principal','DESC']]
+                }]
+              }]
+            }]
+          }).then(function(medicos){
+            res.render('secretaria/dashboard',{medicos:medicos});
+          });
         }
       } else {
         models.Especialidad.findAll( {
@@ -502,6 +524,9 @@ module.exports = {
     catch ( err ) {
       req.errorHandler.report( err, req, res );
     }
+  },
+  oficinaMedico: function (object, req, res){
+    res.render('medico/oficina');
   }
 }
 

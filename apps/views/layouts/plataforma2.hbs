@@ -72,14 +72,11 @@
                 <ul class="nav nav-pills nav-justified navigator-inner-section-menu h57-cond s20" id="topNav">
                   {{#ifTipoMedico}}
                   <li>
-                    <a href="{{base_url}}{{#ifSessionValNN 'urlPersonal'}}{{valSession 'urlPersonal'}}{{else}}{{valSession 'usuarioUrl'}}{{/ifSessionValNN}}">Perfil</a>
-                  </li>
-                  <li>
                     <a href="{{base_url}}" id="oficina">Oficina</a>
                   </li>
-
-
-
+                  <li>
+                    <a href="{{base_url}}{{#ifSessionValNN 'urlPersonal'}}{{valSession 'urlPersonal'}}{{else}}{{valSession 'usuarioUrl'}}{{/ifSessionValNN}}">Perfil</a>
+                  </li>
                   <li>
                     <a id="notificationIcon" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="mostrarNotificaciones()">
                       Not

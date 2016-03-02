@@ -82,7 +82,7 @@ exports.iniciarSesion = function ( object, req, res ) {
         if (object.redirect){
           redirect = true;
         }
-        generarSesion( req, res, usuario.id, false , true);
+        exports.generarSesion( req, res, usuario.id, false , true);
       }
       else {
         //Usuario o contraseña incorrectos
@@ -172,11 +172,11 @@ exports.registrarUsuario = function ( object, req, res ) {
             }
             else if ( usuario ) {
               usuario_id = usuario.id;
-              generarSesion( req, res, usuario_id, true );
+              exports.generarSesion( req, res, usuario_id, true );
             }
             else {
               console.log( 'El usuario no se encuentra registrado' );
-              generarSesion( req, res, '', true );
+              exports.generarSesion( req, res, '', true );
             }
           } );
         }
@@ -333,7 +333,7 @@ var crearPaciente = function ( req, res, object, usuario, t ) {
             if ( usuario.tipoRegistro == "C" ) enviarCorreoConfirmacion( usuario );
             setTimeout( function () {
               if ( object.email ) borrarInvitaciones( object.email );
-              generarSesion( req, res, usuario.id, true );
+              exports.generarSesion( req, res, usuario.id, true );
             }, 1000 );
           } );
       }
@@ -341,7 +341,7 @@ var crearPaciente = function ( req, res, object, usuario, t ) {
         if ( usuario.tipoRegistro == "C" ) enviarCorreoConfirmacion( usuario );
         setTimeout( function () {
           if ( object.email ) borrarInvitaciones( object.email );
-          generarSesion( req, res, usuario.id, true );
+          exports.generarSesion( req, res, usuario.id, true );
         }, 1000 );
       }
     } );
@@ -364,7 +364,7 @@ var crearMedico = function ( req, res, object, usuario, t ) {
 
         setTimeout( function () {
           if ( object.email ) borrarInvitaciones( object[ 'email' ] );
-          generarSesion( req, res, usuario.id, true );
+          exports.generarSesion( req, res, usuario.id, true );
         }, 1000 );
       } );
     } );
@@ -390,10 +390,10 @@ exports.actualizarSesion = function ( object, req, res ) {
   if ( req.session.passport.user ) {
     usuario_id = req.session.passport.user.id;
   }
-  generarSesion( req, res, usuario_id, false );
+  exports.generarSesion( req, res, usuario_id, false );
 }
 
-var generarSesion = function ( req, res, usuario_id, redirect , response) {
+exports.generarSesion = function ( req, res, usuario_id, redirect , response) {
   try{
     if (!(response === false)){
       response = true;
@@ -520,7 +520,7 @@ function cargarExtraInfo( usuario, redirect, response, req, res ) {
             }
             else {
               res.send( {
-                'result': 'success',
+                'success': true,
                 'session': req.session.passport.user
               } );
             }
@@ -568,7 +568,7 @@ function cargarExtraInfo( usuario, redirect, response, req, res ) {
             }
             else {
               res.send( {
-                'result': 'success',
+                'success': true,
                 'session': req.session.passport.user
               } );
             }
@@ -595,15 +595,11 @@ function cargarExtraInfo( usuario, redirect, response, req, res ) {
           }
           if (response){
             if ( redirect ) {
-              var url = req.session.passport.user.usuarioUrl;
-              if (req.session.passport.user.urlPersonal && req.session.passport.user.urlPersonal != ""){
-                  url = req.session.passport.user.urlPersonal;
-              }
-              res.redirect( '/' + url );
+              res.redirect( '/' );
             }
             else {
               res.send( {
-                'result': 'success',
+                'success': true,
                 'session': req.session.passport.user
               } );
             }
@@ -618,7 +614,7 @@ function cargarExtraInfo( usuario, redirect, response, req, res ) {
           res.redirect( '/control' );
         } else {
           res.send( {
-            'result': 'success',
+            'success': true,
             'session': req.session.passport.user
           } );
         }
@@ -1117,7 +1113,7 @@ exports.revivirSesion = function (object, req, res){
       if (usuario){
         usuario_id = usuario.id;
       }
-      generarSesion( req, res, usuario_id, false, false);
+      exports.generarSesion( req, res, usuario_id, false, false);
     });
   }catch ( err ) {
     req.errorHandler.report(err, req, res);
