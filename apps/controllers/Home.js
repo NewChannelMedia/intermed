@@ -29,26 +29,53 @@ module.exports = {
           module.exports.nuevoPerfilMedicos(object, req, res);
         } else if(req.session.passport.user.tipoUsuario == "S"){
           //Dashboar Secretaria
-          models.MedicoSecretaria.findAll({
+          models.Secretaria.findOne({
             where: {
-              secretaria_id: req.session.passport.user.Secretaria_id
+              id: req.session.passport.user.Secretaria_id
             },
             include: [{
-              model: models.Medico,
-              attributes: ['id'],
+              model: models.Usuario,
+              attributes: ['correo']
+            }]
+          }).then(function(secretaria){
+            models.MedicoSecretaria.findAll({
+              where: {
+                secretaria_id: req.session.passport.user.Secretaria_id,
+                activo:1
+              },
               include: [{
-                model: models.Usuario,
-                attributes: ['id','usuarioUrl','urlPersonal','urlFotoPerfil'],
+                model: models.Medico,
+                attributes: ['id'],
                 include: [{
-                  model: models.DatosGenerales
-                },{
-                  model: models.Direccion,
-                  order: [['principal','DESC']]
+                  model: models.Usuario,
+                  attributes: ['id','usuarioUrl','urlPersonal','urlFotoPerfil'],
+                  include: [{
+                    model: models.DatosGenerales
+                  },{
+                    model: models.Direccion,
+                    order: [['principal','DESC']]
+                  }]
                 }]
               }]
-            }]
-          }).then(function(medicos){
-            res.render('secretaria/dashboard',{medicos:medicos});
+            }).then(function(medicos){
+              models.SecretariaInvitacion.findAll({
+                where: {
+                  atendido: 0,
+                  correo: secretaria.Usuario.correo
+                },
+                include: [{
+                  model: models.Medico,
+                  include: [{
+                    model: models.Usuario,
+                    include: [{
+                      model: models.DatosGenerales
+                    }]
+                  }]
+                }]
+              }).then(function(invitaciones){
+                res.render('secretaria/dashboard',{medicos:medicos, invitaciones: invitaciones});
+              });
+            });
           });
         }
       } else {

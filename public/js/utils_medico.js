@@ -3504,11 +3504,17 @@ function invitarSecretariaEmail(){
         $('#successEmail').removeClass('hidden');
         setTimeout(function(){
           $('#successEmail').addClass('hidden');
-        },3000);
+        },6000);
         //window.location.reload();
       }else{
         if (data.error){
           manejadorDeErrores(data.error);
+        } else if (data.msg){
+          $('#errorEmail').find('.msg').text(data.msg);
+          $('#errorEmail').removeClass('hidden');
+          setTimeout(function(){
+            $('#errorEmail').addClass('hidden');
+          },6000);
         }
       }
     }).fail(function(e){
@@ -3539,6 +3545,10 @@ function filtrarBusquedaSecretaria(){
         data.missecretarias.forEach(function(sec){
           missecretarias.push(sec.secretaria_id);
         });
+        var misinvitaciones = [];
+        data.misinvitaciones.forEach(function(inv){
+          misinvitaciones.push(inv.correo);
+        });
         if (data.result.length>0){
           contenido += '<li class="list-group-item active"><strong>Resultados de tu búsqueda: </strong></li>';
           data.result.forEach(function(secretaria){
@@ -3549,6 +3559,10 @@ function filtrarBusquedaSecretaria(){
               classbtn = 'danger';
               functionbtn = 'eliminar';
               labelbtn = 'Eliminar';
+            } else if (misinvitaciones.indexOf(secretaria.Usuario.correo)>=0){
+              classbtn = 'success';
+              functionbtn = 'eliminarInvitacion';
+              labelbtn = 'Eliminar invitacion';
             }
             contenido += '<li class="media list-group-item" style="margin-top: 0px">'+
                   '<div class="media-left">'+
@@ -3628,17 +3642,43 @@ function filtrarBusquedaSecretaria(){
 }
 
 function agregarSecretaria(secretaria_id, element){
-  if (element && $(element).text() == 'Eliminar'){
-    eliminarSecretaria(secretaria_id, element);
+  if (element && $(element).text() == 'Eliminar invitacion'){
+    eliminarInvitacionSecretaria(secretaria_id, element);
   } else {
     $.post('/secretaria/agregar',{
       secretaria_id:secretaria_id
     },function( data ){
       if( data.success ){
         if (element){
-          $(element).text('Eliminar');
+          $(element).text('Eliminar invitacion');
           $(element).removeClass('btn-warning');
-          $(element).addClass('btn-danger');
+          $(element).addClass('btn-success');
+        } else {
+          window.location.reload();
+        }
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    }).fail(function(e){
+      console.error(e);
+    });
+  }
+}
+
+function eliminarInvitacionSecretaria(secretaria_id, element){
+  if (element && $(element).text() == 'Agregar'){
+    agregarSecretaria(secretaria_id, element);
+  } else {
+    $.post('/secretaria/eliminarInvitacion',{
+      secretaria_id:secretaria_id
+    },function( data ){
+      if( data.success ){
+        if (element){
+          $(element).text('Agregar');
+          $(element).addClass('btn-warning');
+          $(element).removeClass('btn-danger');
         } else {
           window.location.reload();
         }

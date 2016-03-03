@@ -1,5 +1,4 @@
-<form  class="bg-white" method="post" onsubmit="return registrarSecretaria()">
-  <div class="container">
+<div class="container">
     <div class="row">
       <div class="body-container">
         <div class="center-content">
@@ -14,19 +13,50 @@
               </div>
             </div>
 
-
                 <div class="row">
                   <div class="col-lg-3 col-md-4">
                     <div class="row">
-                      <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <img class="img-circle" alt="64x64" style="width: 90%;" src="{{#valSession 'fotoPerfil'}}{{/valSession}}" data-holder-rendered="true">
-                        </div>
-                        <div class="panel-body" style="height: auto;">
-                          <h4><strong>{{#valSession 'name'}}{{/valSession}}</strong></h4>
+                      <div class="col-lg-12 col-md-12">
+                        <div class="row">
+                          <div class="panel panel-default" style="margin-bottom: 0px">
+                            <div class="panel-heading">
+                                <img class="img-circle" alt="64x64" style="width: 90%;" src="{{#valSession 'fotoPerfil'}}{{/valSession}}" data-holder-rendered="true">
+                            </div>
+                            <div class="panel-body" style="height: auto;">
+                              <h4><strong>{{#valSession 'name'}}{{/valSession}}</strong></h4>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
+                    {{#if invitaciones}}
+                    <div class="row">
+                      <div class="col-md-12">
+                        <div class="list-group" style="margin-left:-15px; margin-right:-15px;margin-bottom:-15px">
+                          <div class="list-group-item active s20"><strong>Tus invitaciones pendientes</strong></div>
+                          {{#each invitaciones}}
+                            <div class="list-group-item media" style="margin-top:0px">
+                              <a class="media-left media-middle" href="#">
+                                  <img class="pull-left img-circle" src="{{Medico.Usuario.urlFotoPerfil}}" style="max-width:40px;min-width:20px;width100%">
+                              </a>
+                              <div class="media-body">
+                                <h4 class="media-heading s15"><strong>Dr. {{Medico.Usuario.DatosGenerale.nombre}} {{Medico.Usuario.DatosGenerale.apellidoP}} {{Medico.Usuario.DatosGenerale.apellidoM}}</strong></h4>
+                                <p style="text-right">
+                                  <span>¿Administrar a este médico?</span>
+                                </p>
+                              </div>
+                              <div class="media-right media-middle" href="#">
+                                  <button class="btn btn-success btn-xs" onclick="aceptarInvitacion({{Medico.id}},this)"><span class="glyphicon glyphicon-ok"></span></button>
+                                  <button class="btn btn-danger btn-xs" onclick="rechazarInvitacion({{Medico.id}},this)"><span class="glyphicon glyphicon-remove"></span></button>
+                              </div>
+
+                            </div>
+                          {{/each}}
+
+                        </div>
+                      </div>
+                    </div>
+                    {{/if}}
                   </div>
                   <div class="col-lg-9 col-md-8">
 
@@ -38,6 +68,7 @@
                         <p class="s15">
                           <img src="{{Medico.Usuario.urlFotoPerfil}}" style="width:30px" class="img-circle">
                           Dr. {{Medico.Usuario.DatosGenerale.nombre}} {{Medico.Usuario.DatosGenerale.apellidoP}} {{Medico.Usuario.DatosGenerale.apellidoM}}
+                          <button class="btn btn-danger btn-xs pull-right" onclick="eliminarRelacionMedico({{Medico.id}},this)">Eliminar</button>
                         </p>
 
                       </div>
@@ -51,4 +82,3 @@
       </div>
     </div>
   </div>
-</form>

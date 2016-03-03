@@ -19,7 +19,7 @@ module.exports = function ( sequelize, DataTypes ) {
       type: DataTypes.BIGINT,
       allowNull: false
     },
-    activo: {
+    atendido: {
       type: DataTypes.INTEGER,
     }
   }, {

@@ -702,18 +702,113 @@ function formatearNotificacion(result, emit, object){
               }
             });
             break;
-          case 9:
-            totalProcesados++;
-            if ( totalProcesados === result.length) {
-              object.socket.emit(emit,result);
-            }
-            break;
           case 10:
             totalProcesados++;
             if ( totalProcesados === result.length) {
               object.socket.emit(emit,result);
             }
             break;
+          case 11:
+            totalProcesados++;
+            if ( totalProcesados === result.length) {
+              object.socket.emit(emit,result);
+            }
+            break;;
+          case 33:
+            models.Secretaria.findOne({
+              where:{id:record.data},
+              include:[{
+                model: models.Usuario,
+                attributes:['id','usuarioUrl','urlFotoPerfil'],
+                include:[{
+                  model: models.DatosGenerales,
+                  attributes:['nombre','apellidoP','apellidoM']
+                }]
+              }]
+            }).then(function(secretaria){
+              totalProcesados++;
+              record[ 'secretaria' ] = JSON.parse( JSON.stringify( secretaria ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            });
+            break
+          case 34:
+            models.Secretaria.findOne({
+              where:{id:record.data},
+              include:[{
+                model: models.Usuario,
+                attributes:['id','usuarioUrl','urlFotoPerfil'],
+                include:[{
+                  model: models.DatosGenerales,
+                  attributes:['nombre','apellidoP','apellidoM']
+                }]
+              }]
+            }).then(function(secretaria){
+              totalProcesados++;
+              record[ 'secretaria' ] = JSON.parse( JSON.stringify( secretaria ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            });
+            break
+          case 35:
+            models.Secretaria.findOne({
+              where:{id:record.data},
+              include:[{
+                model: models.Usuario,
+                attributes:['id','usuarioUrl','urlFotoPerfil'],
+                include:[{
+                  model: models.DatosGenerales,
+                  attributes:['nombre','apellidoP','apellidoM']
+                }]
+              }]
+            }).then(function(secretaria){
+              totalProcesados++;
+              record[ 'secretaria' ] = JSON.parse( JSON.stringify( secretaria ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            });
+            break
+          case 31:
+            models.Medico.findOne({
+              where:{id:record.data},
+              include:[{
+                model: models.Usuario,
+                attributes:['id','usuarioUrl','urlFotoPerfil'],
+                include:[{
+                  model: models.DatosGenerales,
+                  attributes:['nombre','apellidoP','apellidoM']
+                }]
+              }]
+            }).then(function(medico){
+              totalProcesados++;
+              record[ 'medico' ] = JSON.parse( JSON.stringify( medico ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            });
+            break
+          case 32:
+            models.Medico.findOne({
+              where:{id:record.data},
+              include:[{
+                model: models.Usuario,
+                attributes:['id','usuarioUrl','urlFotoPerfil'],
+                include:[{
+                  model: models.DatosGenerales,
+                  attributes:['nombre','apellidoP','apellidoM']
+                }]
+              }]
+            }).then(function(medico){
+              totalProcesados++;
+              record[ 'medico' ] = JSON.parse( JSON.stringify( medico ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            });
+            break
         default:
             console.log('Notificacion sin procesar: [tipoNotificacion_id: '+ record.tipoNotificacion_id +']');
             totalProcesados++;

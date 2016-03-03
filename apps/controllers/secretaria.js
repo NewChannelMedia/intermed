@@ -65,7 +65,8 @@ exports.registrar = function (object, req, res){
     var token = object.token;
     models.SecretariaInvitacion.findOne({
       where: {
-        token: token
+        token: token,
+        atendido: 0
       },
       include: [{
         model: models.Medico,
@@ -80,9 +81,6 @@ exports.registrar = function (object, req, res){
       }]
     }).then(function(invitacion){
       if (invitacion){
-        if (invitacion.activo){
-          res.redirect('/')
-        } else {
           //Buscar si la secretaria ya esta registrada
           models.Usuario.findOne({
             where:{correo:invitacion.correo}
@@ -107,25 +105,20 @@ exports.registrar = function (object, req, res){
                   },
                   defaults: {
                     secretaria_id: req.session.passport.user.Secretaria_id,
-                    medico_id: invitacion.medico_id
+                    medico_id: invitacion.medico_id,
+                    activo: 1
                   }
                 }).spread(function(MedicoSecretaria, created) {
-                  if (!invitacion.activo){
-                    invitacion.update({activo:1});
+                  if (!created){
+                    MedicoSecretaria.update({activo:1});
                   }
-                  models.SecretariaPermisos.findAll().then(function(secretariaPermisos){
-                    secretariaPermisos.forEach(function(permiso){
-                      models.MedicoSecretariaPermisos.findOrCreate({
-                          where: {
-                            medico_secretarias_id: MedicoSecretaria.id,
-                            secretaria_permiso_id: permiso.id
-                          },
-                          defaults: {
-                            medico_secretarias_id: MedicoSecretaria.id,
-                            secretaria_permiso_id: permiso.id,
-                            permiso: permiso.default
-                          }
-                      });
+                  invitacion.destroy();
+                  exports.reiniciarPermisos(MedicoSecretaria, req);
+                  models.Medico.findOne({where: {id:invitacion.medico_id}, include: [{model: models.Usuario, attributes:['id']}]}).then(function(medico){
+                    models.Notificacion.create({
+                      usuario_id: medico.Usuario.id,
+                      data: req.session.passport.user.Secretaria_id.toString(),
+                      tipoNotificacion_id: 33
                     });
                   });
                   models.Medico.findOne({
@@ -152,7 +145,6 @@ exports.registrar = function (object, req, res){
                     }]
                   }).then(function(medico){
                     res.render('secretaria/relacioncreada',medico);
-                    //res.send('Crear relación');
                   });
                 });
               } else {
@@ -161,7 +153,6 @@ exports.registrar = function (object, req, res){
               }
             }
           });
-        }
       } else {
         res.send('la invitación ya no existe');
       }
@@ -233,40 +224,76 @@ exports.registrarcontoken = function (object, req, res){
 
 exports.invitar = function ( object, req, res ) {
   try{
-    var tokens = String( cryptomaniacs.doEncriptToken( req.session.passport.user.Medico_id+'-'+object.email ));
-    models.SecretariaInvitacion.findOrCreate({
-      where: {
-        correo: object.email,
-        medico_id: req.session.passport.user.Medico_id
-      },
-      defaults: {
-        correo: object.email,
-        medico_id: req.session.passport.user.Medico_id,
-        token:tokens
+    models.MedicoSecretaria.findOne({
+      where: {medico_id: req.session.passport.user.Medico_id, activo:1},
+      attributes: ['id'],
+      include: [{
+          model: models.Secretaria,
+          attributes: ['id'],
+          include: [{
+              model: models.Usuario,
+              attributes: ['id','correo'],
+              where: { correo: object.email}
+            }]
+        }]
+    }).then(function(MedicoSecretaria){
+      if (!MedicoSecretaria){
+        models.Usuario.findOne({
+          where: {
+            correo: object.email
+          }
+        }).then(function(usuario){
+          if (!usuario || usuario.tipoUsuario == "S"){
+            if (usuario){
+              models.Notificacion.create({
+                usuario_id: usuario.id,
+                tipoNotificacion_id: 31,
+                data: req.session.passport.user.Medico_id.toString()
+              });
+            }
+            var tokens = String( cryptomaniacs.doEncriptToken( req.session.passport.user.Medico_id+'-'+object.email ));
+            models.SecretariaInvitacion.findOrCreate({
+              where: {
+                correo: object.email,
+                medico_id: req.session.passport.user.Medico_id
+              },
+              defaults: {
+                correo: object.email,
+                medico_id: req.session.passport.user.Medico_id,
+                token:tokens
+              }
+            }).spread(function(invitacion, created) {
+              if (!created){
+                invitacion.update({atendido:0});
+              }
+              var nombreSesion = req.session.passport.user.name;
+              var enlace = 'localhost:3000/secretaria/'+tokens;
+
+              var objecto = {
+                to: object.email,
+                subject: 'Invitación a Intermed',
+                nombreSesion: nombreSesion,
+                enlace: enlace
+              };
+              mail.send( objecto, 'invitarSecretaria');
+
+
+              res.status(200).json({
+                success: true,
+                result: {
+                  invitacion_id: invitacion.id
+                }
+              });
+            });
+          } else {
+            res.status(200).json({success:false, msg:'El usuario con el correo \''+ object.email  +'\' no es secretaria.'});
+          }
+        });
+      } else {
+        res.status(200).json({success:false, msg:'El usuario con el correo \''+ object.email  +'\' es actualmente tu secretaria.'});
       }
-    }).spread(function(invitacion, created) {
-      //if (created){
-        //Enviar correo con el token para invitar a secretaria
-      //}
-      var nombreSesion = req.session.passport.user.name;
-      var enlace = 'localhost:3000/secretaria/'+tokens;
-
-      var objecto = {
-        to: object.email,
-        subject: 'Invitación a Intermed',
-        nombreSesion: nombreSesion,
-        enlace: enlace
-      };
-      mail.send( objecto, 'invitarSecretaria');
-
-
-      res.status(200).json({
-        success: true,
-        result: {
-          invitacion_id: invitacion.id
-        }
-      });
     });
+
   }catch ( err ) {
     req.errorHandler.report(err, req, res);
   }
@@ -279,24 +306,29 @@ exports.buscar = function (object, req, res){
         where: {medico_id: req.session.passport.user.Medico_id,activo:1},
         attributes: ['secretaria_id']
       }).then(function(missecretarias){
-        models.Secretaria.findAll({
-          include: [{
-            model: models.Usuario,
-            attributes: ['id','usuarioUrl','urlPersonal','urlFotoPerfil','correo'],
-            where: {
-              correo: {$like: '%'+ object.filtro +'%'}
-            },
-            include: [{
-              model: models.DatosGenerales
-            }]
-          },{
-            model: models.Municipio
-          },{
-            model: models.Estado
-          }]
-        }).then(function(result){
-          res.status(200).json({success:true,result: result,missecretarias:missecretarias});
-        });
+          models.SecretariaInvitacion.findAll({
+            where: {medico_id: req.session.passport.user.Medico_id,atendido:0},
+            attributes: ['correo']
+          }).then(function(misinvitaciones){
+            models.Secretaria.findAll({
+              include: [{
+                model: models.Usuario,
+                attributes: ['id','usuarioUrl','urlPersonal','urlFotoPerfil','correo'],
+                where: {
+                  correo: {$like: '%'+ object.filtro +'%'}
+                },
+                include: [{
+                  model: models.DatosGenerales
+                }]
+              },{
+                model: models.Municipio
+              },{
+                model: models.Estado
+              }]
+            }).then(function(result){
+              res.status(200).json({success:true,result: result,missecretarias:missecretarias,misinvitaciones: misinvitaciones});
+            });
+          });
       });
 
   } else if(object.tipoBusqueda == 1){
@@ -317,25 +349,50 @@ exports.buscar = function (object, req, res){
       where: {medico_id: req.session.passport.user.Medico_id,activo:1},
       attributes: ['secretaria_id']
     }).then(function(missecretarias){
-      models.Secretaria.findAll({
-        include: [{
-          model: models.Usuario,
-          attributes: ['id','usuarioUrl','urlPersonal','urlFotoPerfil','correo'],
+      models.SecretariaInvitacion.findAll({
+        where: {medico_id: req.session.passport.user.Medico_id,atendido:0},
+        attributes: ['correo']
+      }).then(function(misinvitaciones){
+        models.Secretaria.findAll({
           include: [{
-            model: models.DatosGenerales,
-            where: where
+            model: models.Usuario,
+            attributes: ['id','usuarioUrl','urlPersonal','urlFotoPerfil','correo'],
+            include: [{
+              model: models.DatosGenerales,
+              where: where
+            }]
+          },{
+            model: models.Municipio
+          },{
+            model: models.Estado
           }]
-        },{
-          model: models.Municipio
-        },{
-          model: models.Estado
-        }]
-      }).then(function(result){
-        res.status(200).json({success:true,result: result,missecretarias:missecretarias});
+        }).then(function(result){
+          res.status(200).json({success:true,result: result,missecretarias:missecretarias,misinvitaciones: misinvitaciones});
+        });
       });
     });
 
   }
+}
+
+exports.eliminarInvitacion = function (object, req, res){
+  models.Secretaria.findOne({
+    attributes: ['id'],
+    where: {id: object.secretaria_id},
+    include: [{
+      model: models.Usuario,
+      attributes: ['correo']
+    }]
+  }).then(function(result){
+    models.SecretariaInvitacion.destroy({
+      where: {
+        medico_id: req.session.passport.user.Medico_id,
+        correo: result.Usuario.correo
+      }
+    }).then(function(){
+      res.status(200).json({success:true})
+    })
+  })
 }
 
 exports.reiniciarPermisos = function (MedicoSecretaria, req, res){
@@ -349,19 +406,23 @@ exports.reiniciarPermisos = function (MedicoSecretaria, req, res){
         defaults: {medico_secretarias_id: MedicoSecretaria.id, secretaria_permiso_id: perm.id, permiso: perm.default},
       }).spread(function(MedicoSecretariaPermiso, created){
         if (!created){
-          //actualizar
+          //actualizar permisos a default si ya existian
           MedicoSecretariaPermiso.update({
             permiso: perm.default
           }).then(function(result){
             total++;
             if (total == permisos.length){
-              res.status(200).json({success:true,result: MedicoSecretaria});
+              if (res){
+                res.status(200).json({success:true,result: MedicoSecretaria});
+              }
             }
           });
         } else {
           total++;
           if (total == permisos.length){
+            if (res){
             res.status(200).json({success:true,result: MedicoSecretaria});
+            }
           }
         }
       });
@@ -370,21 +431,33 @@ exports.reiniciarPermisos = function (MedicoSecretaria, req, res){
 }
 
 exports.agregar = function (object, req, res){
-  models.MedicoSecretaria.findOrCreate({
-    where: {medico_id: req.session.passport.user.Medico_id, secretaria_id: object.secretaria_id},
-    defaults: {medico_id: req.session.passport.user.Medico_id, secretaria_id: object.secretaria_id}
-  }).spread(function(MedicoSecretaria, created) {
-    if (MedicoSecretaria){
+  models.Secretaria.findOne({
+    where: {id: object.secretaria_id},
+    include: [{
+      model: models.Usuario,
+      attributes:['correo']
+    }]
+  }).then(function(secretaria){
+    var tokens = String( cryptomaniacs.doEncriptToken( req.session.passport.user.Medico_id+'-'+secretaria.Usuario.correo ));
+    models.SecretariaInvitacion.findOrCreate({
+        where: {medico_id: req.session.passport.user.Medico_id, correo: secretaria.Usuario.correo},
+        defaults: {medico_id: req.session.passport.user.Medico_id, correo: secretaria.Usuario.correo, token:tokens}
+    }).spread(function(invitacion, created){
+        var objecto = {
+          to: secretaria.Usuario.correo,
+          subject: 'Invitación a Intermed',
+          nombreSesion: req.session.passport.user.name,
+          enlace: 'localhost:3000/secretaria/'+tokens
+        };
+        mail.send( objecto, 'invitarSecretaria');
       if (!created){
-        MedicoSecretaria.update({activo:1}).then(function(){
-          exports.reiniciarPermisos(MedicoSecretaria, req, res);
+        invitacion.update({atendido:0}).then(function(invitacion){
+          res.status(200).json({success:true})
         });
       } else {
-        exports.reiniciarPermisos(MedicoSecretaria, req, res);
+        res.status(200).json({success:true})
       }
-    } else {
-      res.status(200).json({success:false,result: MedicoSecretaria});
-    }
+    });
   });
 }
 
@@ -393,6 +466,16 @@ exports.eliminar = function (object, req, res){
     where: {medico_id: req.session.passport.user.Medico_id, secretaria_id: object.secretaria_id}
   }).then(function(MedicoSecretaria) {
     if (MedicoSecretaria){
+      models.Secretaria.findOne({
+        where: {id: object.secretaria_id},
+        attributes: ['id','usuario_id']
+      }).then(function(secretaria){
+        models.Notificacion.create({
+          usuario_id: secretaria.usuario_id,
+          tipoNotificacion_id: 32,
+          data: req.session.passport.user.Medico_id.toString()
+        });
+      })
       MedicoSecretaria.update({activo:0}).then(function(result){
         models.MedicoSecretariaPermisos.update({permiso:0},{
           where:{
@@ -428,6 +511,112 @@ exports.permisoscambiar = function (object, req, res){
     } else {
       //No existe el permiso, crear
       res.status(200).json({success:false})
+    }
+  });
+}
+
+exports.invitacionAceptar = function (object, req, res){
+  models.Usuario.findOne({
+    where: {
+      id: req.session.passport.user.id
+    }
+  }).then(function(usuario){
+    models.SecretariaInvitacion.findOne({
+      where: {
+        medico_id: object.medico_id,
+        correo: usuario.correo
+      }
+    }).then(function(invitacion){
+      if (invitacion){
+        //Crear relacion medico-secretaria
+        models.MedicoSecretaria.findOrCreate({
+          where:{secretaria_id: req.session.passport.user.Secretaria_id, medico_id: object.medico_id},
+          defaults: {secretaria_id: req.session.passport.user.Secretaria_id, medico_id: object.medico_id, activo: 1},
+        }).spread(function(MedicoSecretaria, created){
+          exports.reiniciarPermisos(MedicoSecretaria,req);
+          invitacion.destroy();
+          models.Medico.findOne({where: {id: object.medico_id}, include: [{model: models.Usuario, attributes:['id']}]}).then(function(medico){
+            models.Notificacion.create({
+              usuario_id: medico.Usuario.id,
+              data: req.session.passport.user.Secretaria_id.toString(),
+              tipoNotificacion_id: 33
+            });
+          });
+          if (!created){
+            MedicoSecretaria.update({
+              activo: 1
+            }).then(function(){
+              //Notificación a médico de secretaria aceptación invitación
+              res.status(200).json({success:true});
+            });
+          } else {
+            //Notificación a médico de secretaria aceptación invitación
+            res.status(200).json({success:true});
+          }
+        });
+      } else {
+        res.status(200).json({success:false});
+      }
+    });
+  });
+}
+
+
+exports.invitacionRechazar = function (object, req, res){
+  //Eliminar invitacion con correo de secretaria y medico_id
+  models.Usuario.findOne({
+    where: {
+      id: req.session.passport.user.id
+    }
+  }).then(function(usuario){
+    models.SecretariaInvitacion.destroy({
+      where: {
+        medico_id: object.medico_id,
+        correo: usuario.correo
+      }
+    }).then(function(invitacion){
+      models.Medico.findOne({where: {id: object.medico_id}, include: [{model: models.Usuario, attributes:['id']}]}).then(function(medico){
+        models.Notificacion.create({
+          usuario_id: medico.Usuario.id,
+          data: req.session.passport.user.Secretaria_id.toString(),
+          tipoNotificacion_id: 34
+        });
+      });
+      //Notificación a médico de secretaria rechazo invitación
+      res.status(200).json({success:true, result: invitacion});
+    });
+  });
+}
+
+exports.medicoEliminar = function (object, req, res){
+  models.MedicoSecretaria.findOne({
+    where: {
+      medico_id: object.medico_id,
+      secretaria_id: req.session.passport.user.Secretaria_id
+    },
+    include: [{
+      model: models.Medico,
+      attributes: ['id','usuario_id']
+    }]
+  }).then(function(MedicoSecretaria){
+    if (MedicoSecretaria){
+      MedicoSecretaria.update({activo:0}).then(function(MedicoSecretaria){
+          models.MedicoSecretariaPermisos.update({permiso:0},{
+            where:{
+              medico_secretarias_id: MedicoSecretaria.id
+            }
+          }).then(function(permisos){
+            models.Notificacion.create({
+              usuario_id: MedicoSecretaria.Medico.usuario_id,
+              tipoNotificacion_id: 35,
+              data: req.session.passport.user.Secretaria_id.toString()
+            });
+
+            res.status(200).json({success:true,result: MedicoSecretaria});
+          });
+      });
+    } else {
+      res.status(200).json({success:false});
     }
   });
 }

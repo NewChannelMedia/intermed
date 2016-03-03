@@ -32,4 +32,20 @@ module.exports = function (object){
   app.post('/secretaria/permisos/cambiar', function (req, res){
     intermed.callController( 'secretaria', 'permisoscambiar', req.body, req, res );
   });
+
+  app.post('/secretaria/eliminarInvitacion', function (req, res){
+    intermed.callController( 'secretaria', 'eliminarInvitacion', req.body, req, res );
+  });
+
+  app.post('/secretaria/invitacion/aceptar', function (req, res){
+    intermed.callController( 'secretaria', 'invitacionAceptar', req.body, req, res );
+  });
+
+  app.post('/secretaria/invitacion/rechazar', function (req, res){
+    intermed.callController( 'secretaria', 'invitacionRechazar', req.body, req, res );
+  });
+
+  app.post('/secretaria/medico/eliminar', function (req, res){
+    intermed.callController( 'secretaria', 'medicoEliminar', req.body, req, res );
+  });
 }
