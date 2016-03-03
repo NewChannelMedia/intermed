@@ -259,7 +259,9 @@
   */
   function doEncriptToken( value, times ) {
     if (times){
-      value += times;
+      value = value.toString() + times.toString();
+    } else {
+      value = value.toString();
     }
     return String( crypto.createHash( 'md5' ).update( value ).digest( 'hex' ) );
   }

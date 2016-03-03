@@ -5,6 +5,8 @@ function registrarSecretaria(){
           var paterno = $('#apePSec').val();
           var materno = $('#apeMSec').val();
           var correo = $('#correoSec').text();
+          var estado = $('#selectEstados').val();
+          var municipio = $('#selectCiudad').val();
           var pass = hex_md5($('#passSec').val());
           var token = $('#tokenSec').text();
           $.post('/secretaria/registrar',{
@@ -12,6 +14,8 @@ function registrarSecretaria(){
             nombre: nombre,
             paterno: paterno,
             materno: materno,
+            estado: estado,
+            municipio: municipio,
             correo: correo,
             pass: pass
           },function( data ){

@@ -18,14 +18,42 @@ exports.index = function (object, req, res){
           include: [{
             model: models.DatosGenerales
           }]
+        },{
+          model: models.Municipio,
+        },{
+          model: models.Estado
         }]
       }]
     }).then(function(secretarias){
-      console.log('Secretarias: ' + JSON.stringify(secretarias));
-      res.render('medico/secretaria',{
-        secretaria:secretarias.length,
-        secretarias: secretarias
-      });
+      var total = 0;
+      secretarias = JSON.parse(JSON.stringify(secretarias));
+      if (secretarias.length>0){
+        secretarias.forEach(function(secr){
+          //Buscar el permiso para cada uno de ellos
+          models.SecretariaPermisos.findAll({
+            include: [{
+              model: models.MedicoSecretariaPermisos,
+              where: {
+                medico_secretarias_id: secr.id
+              },
+              attributes: ['permiso']
+            }]
+          }).then(function(permisos){
+            secr.permisos = permisos;
+            total++;
+            if ( total == secretarias.length){
+              res.render('medico/secretaria',{
+                secretaria:secretarias.length,
+                secretarias: secretarias
+              });
+            }
+          });
+        });
+      } else {
+        res.render('medico/secretaria',{
+          secretaria:secretarias.length
+        });
+      }
     });
   }catch ( err ) {
     req.errorHandler.report(err, req, res);
@@ -61,7 +89,11 @@ exports.registrar = function (object, req, res){
           }).then(function(usuario){
             if (!usuario){
               //Registrar
-              res.render('secretaria/registrar',{invitacion: invitacion});
+              models.Estado.findAll({
+                order: [['id','ASC']]
+              }).then(function(estado){
+                res.render('secretaria/registrar',{invitacion: invitacion, estados: estado});
+              });
             }else {
               if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id>0)){
                 //Iniciar sesión
@@ -81,6 +113,21 @@ exports.registrar = function (object, req, res){
                   if (!invitacion.activo){
                     invitacion.update({activo:1});
                   }
+                  models.SecretariaPermisos.findAll().then(function(secretariaPermisos){
+                    secretariaPermisos.forEach(function(permiso){
+                      models.MedicoSecretariaPermisos.findOrCreate({
+                          where: {
+                            medico_secretarias_id: MedicoSecretaria.id,
+                            secretaria_permiso_id: permiso.id
+                          },
+                          defaults: {
+                            medico_secretarias_id: MedicoSecretaria.id,
+                            secretaria_permiso_id: permiso.id,
+                            permiso: permiso.default
+                          }
+                      });
+                    });
+                  });
                   models.Medico.findOne({
                     where: {
                       id: MedicoSecretaria.medico_id
@@ -150,7 +197,9 @@ exports.registrarcontoken = function (object, req, res){
                   estatusActivacion: 1
                 }, {transaction: t} ).then(function(usuario){
                   return models.Secretaria.create({
-                    usuario_id: usuario.id
+                    usuario_id: usuario.id,
+                    estado_id: object.estado,
+                    municipio_id: object.municipio
                   }, {transaction: t} ).then(function(secretaria){
                     return models.DatosGenerales.create({
                       nombre: object.nombre,
@@ -212,7 +261,7 @@ exports.invitar = function ( object, req, res ) {
 
 
       res.status(200).json({
-        success: created,
+        success: true,
         result: {
           invitacion_id: invitacion.id
         }
@@ -222,3 +271,163 @@ exports.invitar = function ( object, req, res ) {
     req.errorHandler.report(err, req, res);
   }
 };
+
+exports.buscar = function (object, req, res){
+  //console.log('Filtro: ' + JSON.stringify(object.filtro));
+  if (object.tipoBusqueda == 2){
+      models.MedicoSecretaria.findAll({
+        where: {medico_id: req.session.passport.user.Medico_id,activo:1},
+        attributes: ['secretaria_id']
+      }).then(function(missecretarias){
+        models.Secretaria.findAll({
+          include: [{
+            model: models.Usuario,
+            attributes: ['id','usuarioUrl','urlPersonal','urlFotoPerfil','correo'],
+            where: {
+              correo: {$like: '%'+ object.filtro +'%'}
+            },
+            include: [{
+              model: models.DatosGenerales
+            }]
+          },{
+            model: models.Municipio
+          },{
+            model: models.Estado
+          }]
+        }).then(function(result){
+          res.status(200).json({success:true,result: result,missecretarias:missecretarias});
+        });
+      });
+
+  } else if(object.tipoBusqueda == 1){
+    var filtros = object.filtro.toString().split(" ");
+    var where = new Array();
+
+    filtros.forEach(function(result){
+      if (result != ""){
+        where.push(models.sequelize.or(
+            {nombre: {$like: '%'+ result +'%'}},
+            {apellidoP: {$like: '%'+ result +'%'}},
+            {apellidoM: {$like: '%'+ result +'%'}}
+        ));
+      }
+    });
+
+    models.MedicoSecretaria.findAll({
+      where: {medico_id: req.session.passport.user.Medico_id,activo:1},
+      attributes: ['secretaria_id']
+    }).then(function(missecretarias){
+      models.Secretaria.findAll({
+        include: [{
+          model: models.Usuario,
+          attributes: ['id','usuarioUrl','urlPersonal','urlFotoPerfil','correo'],
+          include: [{
+            model: models.DatosGenerales,
+            where: where
+          }]
+        },{
+          model: models.Municipio
+        },{
+          model: models.Estado
+        }]
+      }).then(function(result){
+        res.status(200).json({success:true,result: result,missecretarias:missecretarias});
+      });
+    });
+
+  }
+}
+
+exports.reiniciarPermisos = function (MedicoSecretaria, req, res){
+  models.SecretariaPermisos.findAll({
+    order: [['id','ASC']]
+  }).then(function(permisos){
+    var total = 0;
+    permisos.forEach(function(perm){
+      models.MedicoSecretariaPermisos.findOrCreate({
+        where: {medico_secretarias_id: MedicoSecretaria.id, secretaria_permiso_id: perm.id},
+        defaults: {medico_secretarias_id: MedicoSecretaria.id, secretaria_permiso_id: perm.id, permiso: perm.default},
+      }).spread(function(MedicoSecretariaPermiso, created){
+        if (!created){
+          //actualizar
+          MedicoSecretariaPermiso.update({
+            permiso: perm.default
+          }).then(function(result){
+            total++;
+            if (total == permisos.length){
+              res.status(200).json({success:true,result: MedicoSecretaria});
+            }
+          });
+        } else {
+          total++;
+          if (total == permisos.length){
+            res.status(200).json({success:true,result: MedicoSecretaria});
+          }
+        }
+      });
+    });
+  });
+}
+
+exports.agregar = function (object, req, res){
+  models.MedicoSecretaria.findOrCreate({
+    where: {medico_id: req.session.passport.user.Medico_id, secretaria_id: object.secretaria_id},
+    defaults: {medico_id: req.session.passport.user.Medico_id, secretaria_id: object.secretaria_id}
+  }).spread(function(MedicoSecretaria, created) {
+    if (MedicoSecretaria){
+      if (!created){
+        MedicoSecretaria.update({activo:1}).then(function(){
+          exports.reiniciarPermisos(MedicoSecretaria, req, res);
+        });
+      } else {
+        exports.reiniciarPermisos(MedicoSecretaria, req, res);
+      }
+    } else {
+      res.status(200).json({success:false,result: MedicoSecretaria});
+    }
+  });
+}
+
+exports.eliminar = function (object, req, res){
+  models.MedicoSecretaria.findOne({
+    where: {medico_id: req.session.passport.user.Medico_id, secretaria_id: object.secretaria_id}
+  }).then(function(MedicoSecretaria) {
+    if (MedicoSecretaria){
+      MedicoSecretaria.update({activo:0}).then(function(result){
+        models.MedicoSecretariaPermisos.update({permiso:0},{
+          where:{
+            medico_secretarias_id: MedicoSecretaria.id
+          }
+        }).then(function(permisos){
+          res.status(200).json({success:true,result: MedicoSecretaria});
+        });
+      });
+    } else {
+      res.status(200).json({success:false,result: MedicoSecretaria});
+    }
+  });
+}
+
+exports.permisoscambiar = function (object, req, res){
+  models.MedicoSecretariaPermisos.findOne({
+    where: {
+      medico_secretarias_id: object.MedicoSecretariaPermisos_id,
+      secretaria_permiso_id: object.permiso_id
+    },
+    include: [{
+      model: models.MedicoSecretaria,
+      where: {
+        medico_id: req.session.passport.user.Medico_id
+      }
+    }]
+  }).then(function(permiso){
+    if (permiso){
+      permiso.update({permiso: object.permiso}).then(function(result){
+        res.status(200).json({success:true, result: result})
+      });
+    } else {
+      //No existe el permiso, crear
+      res.status(200).json({success:false})
+    }
+  });
+}

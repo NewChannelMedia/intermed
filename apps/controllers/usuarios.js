@@ -120,7 +120,6 @@ exports.registrarUsuario = function ( object, req, res ) {
     models.sequelize.transaction( {
         isolationLevel: models.Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
       }, function ( t ) {
-
         if ( object[ 'tipoRegistro' ] === 'F' ) {
 
           return models.Usuario.findOne( {

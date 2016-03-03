@@ -2444,7 +2444,7 @@ function cargarCiudades(id){
   var idABuscar = $(id).val();// se saca el value del select de estados
   // se hace la consulta se manda como parametro el id que se obtuvo de seleccionar el estado
   $.post('/cargarCiudades',{id:idABuscar}, function(data){
-    var cont = '<option value="0">Municipio/Ciudad</option>';
+    var cont = '<option value="">Municipio/Ciudad</option>';
     $.each(data,function(i, item){
       cont += '<option value="'+item.id+'">'+item.municipio+'</option>';
     });
@@ -2675,12 +2675,12 @@ function realizarBusqueda(bounds){
 
     var curr = 0;
     if (numPages > 1){
-      while(numPages > curr){
-        $('<li><a href="#" class="page_link" style="border: none;background: none;width: auto;padding: 3px;">'+(curr+1)+'</a></li>').appendTo('.pager');
-        curr++;
-      }
     }
 
+    while(numPages > curr){
+      $('<li><a href="#" class="page_link" style="border: none;background: none;width: auto;padding: 3px;">'+(curr+1)+'</a></li>').appendTo('.pager');
+      curr++;
+    }
     $('.pager .page_link:first').addClass('active');
 
     listElement.children().css('display', 'none');

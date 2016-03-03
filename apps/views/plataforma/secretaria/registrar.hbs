@@ -46,6 +46,29 @@
                   </div>
                 </div>
               </div>
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                    <div class="form-group">
+                      <label class="s15 regInput" for="nombreRegMed">Estado</label>
+                      <select type="text" class="form-control regInput" id="selectEstados" name="selectEstados" required="true" onchange="cargarCiudades('#selectEstados');">
+                        <option value="" disabled selected>Estado</option>
+                        {{#each estados}}
+                          <option value="{{id}}" >{{estado}}</option>
+                        {{/each}}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                    <div class="form-group">
+                      <label class="s15 regInput" for="apePatRegMed">Municipio/Ciudad</label>
+                      <select type="text" class="form-control regInput" id="selectCiudad" name="selectCiudad" required="true">
+                        <option value="" disabled>Municipio/Ciudad</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <!--Información de inicio-->
             <div class="row">
@@ -73,7 +96,7 @@
                   <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                     <div class="form-group">
                       <label class="s15 regInput" for="apePatRegMed">Confirmar contraseña</label>
-                      <input type="password" class="form-control regInput" id="passSec2" name="passSec2" placeholder="Confirmar contraseña" value="" autocomplete="off">
+                      <input type="password" class="form-control regInput" id="passSec2" name="passSec2" placeholder="Confirmar contraseña" value="" autocomplete="off" required="true">
                     </div>
                   </div>
                 </div>

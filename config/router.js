@@ -82,7 +82,8 @@ var routerObject = {
 
 //::Temporal::, solo para ver la información que tiene el usuario en su variable sesión
 app.get( '/informacionusuario', function ( req, res ) {
-  res.send( JSON.stringify( req.session.passport ) + '<br/><a href="/">Regresar</a>' );
+  //res.send( JSON.stringify( req.session.passport ) + '<br/><a href="/">Regresar</a>' )
+  res.send( JSON.stringify( req.session.passport ));
 } );
 //Fin temporal
 

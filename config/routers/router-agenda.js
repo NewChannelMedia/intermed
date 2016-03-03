@@ -7,11 +7,21 @@ module.exports = function (object){
   var express = object.express;
   var passport = object.passport;
   var url = object.url;
-
+/*
   app.get('/agendaMedicoVer', function(req,res){
     //routeLife('main','main',hps);
     if (req.session.passport && req.session.passport.user){
       intermed.callController('agenda', 'seleccionaAgendaMedico', {id: req.session.passport.user.id}, req, res);
+    } else {
+      res.status(200).json({success:false,error:1});
+    }
+  });*/
+
+  app.get('/agendaMedicoVer', function(req,res){
+    //routeLife('main','main',hps);
+    console.log('hgh')
+    if (req.session.passport && req.session.passport.user){
+      intermed.callController('agenda', 'seleccionaAgendaMedico', {id: req.session.passport.user.id, inicio: req.query.start, fin:req.query.end}, req, res);
     } else {
       res.status(200).json({success:false,error:1});
     }
