@@ -20,7 +20,16 @@ a:visited {
 }
 
 .bg-white {
-  background-color: #ffffff;
+  background-color: #ffffff!important;
+}
+.bg-dark {
+  background-color: #717171!important;
+}
+.bg-black {
+  background-color: #000000!important;
+}
+.bg-blue {
+  background-color: #2c8fbd!important;
 }
 
 input, select, button {
@@ -1792,14 +1801,17 @@ div::-webkit-scrollbar-thumb:window-inactive {
   color: #969ba2;
 }
 
-.ui-autocomplete{
-  padding: 0px;
+.ui-autocomplete {
+  padding: 0;
   list-style-type: none;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(100, 100, 100, .3);
+  background-color: rgb(250, 250, 250);
 }
 
 .ui-autocomplete li{
   padding: 10px;
-  background-color: white;
   color:black;
 }
 
@@ -2526,59 +2538,13 @@ div.Slider{
   border: 0;
 }
 
-/*Menu registra ubicaciones*/
-
-.menuRegUbic{
-
+.btn-reg {
+  background-color: #375467;
+  color: #ffffff;
 }
 
-.menuRegUbic li{
-  text-align: center;
-  font-weight: bold;
-  width:1%;
-  margin:0px;
-  border-radius: 0px;
-  background-color:#4F606A;
-  display: table-cell;
-  float: none;
-  border: solid 2px white;
-}
-
-.menuRegUbic li a {
-  color: white;
-  margin:0px;
-  border-radius: 0px 0px 0 0!important;
-}
-
-.menuRegUbic li a hr{
-  display: none;
-  padding: 0px;
-  margin: 0px;
-  position: relative;
-  margin-bottom: -10px;
-  margin-top: 10px;
-  margin-left: -3px;
-  border: solid 1px white;
-  margin-right: -3px;
-}
-
-.menuRegUbic li.active a hr{
-  display: block;
-}
-
-.menuRegUbic li.active a,
-.menuRegUbic li.active a:focus,
-.menuRegUbic li.active a:hover,
-.menuRegUbic li a:hover{
-  background-color:#50A8DE;
-  color:white!important;
-  border: 0px!important;
-  border-bottom: 0px!important;
-}
-
-.menuRegUbic li.active{
-  background-color:#50A8DE;
-  border-bottom: none;
+.btn-reg:hover{
+  color: #bbbbbb;
 }
 
 .regExp {
@@ -2761,19 +2727,26 @@ th.fc-day-header.fc-widget-header{
   color: #717171;
 }
 
-#divMapRegHor .header-section {
-  height: 195px;
-  border-bottom: solid 4px #375467;
-  background: transparent;
+#regMedStepOne .code-container {
+  display: block;
+  height: 115px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background-color: #3d8fb1;
 }
 
 
-
+.code-container img {
+  width: auto;
+  height: 75px;
+  margin: 0 auto;
+}
 
 .lbl {
   font-size: 15px;
   font-weight: bold;
   margin-right: 10px;
+  margin-left: 5px;
   padding-top: 3px;
   padding-right: 0!important;
   padding-bottom: 3px;
@@ -2804,9 +2777,86 @@ th.fc-day-header.fc-widget-header{
 .lbl.lbl-esp {
 
 }
+
 .lbl.lbl-subesp {
 
 }
+
+.tooltip-inner {
+  font-size: 14px;
+  font-weight: bold;
+  min-width: 200px;
+  text-align: left;
+  color: #fff;
+}
+
+#divMapRegHor {
+
+}
+
+#divMapRegHor .header-section {
+  height: 195px;
+  border-bottom: solid 4px #375467;
+  background: transparent;
+}
+
+#divMapRegHor .menuRegUbic{
+
+}
+
+#divMapRegHor .menuRegUbic li{
+  text-align: center;
+  font-weight: bold;
+  width:1%;
+  margin:0px;
+  border-radius: 0px;
+  background-color:#4F606A;
+  display: table-cell;
+  float: none;
+  border: solid 2px white;
+}
+
+#divMapRegHor .menuRegUbic li a {
+  color: white;
+  margin:0px;
+  border-radius: 0px 0px 0 0!important;
+}
+
+#divMapRegHor .menuRegUbic li a hr{
+  display: none;
+  padding: 0px;
+  margin: 0px;
+  position: relative;
+  margin-bottom: -10px;
+  margin-top: 10px;
+  margin-left: -3px;
+  border: solid 1px white;
+  margin-right: -3px;
+}
+
+#divMapRegHor .menuRegUbic li.active a hr{
+  display: block;
+}
+
+#divMapRegHor .menuRegUbic li.active a,
+#divMapRegHor.menuRegUbic li.active a:focus,
+#divMapRegHor.menuRegUbic li.active a:hover,
+#divMapRegHoro.menuRegUbic li a:hover{
+  background-color:#50A8DE;
+  color:white!important;
+  border: 0px!important;
+  border-bottom: 0px!important;
+}
+
+#divMapRegHor.menuRegUbic li.active{
+  background-color:#50A8DE;
+  border-bottom: none;
+}
+
+.noPadding {
+  padding: 0;
+}
+
 
 /*.regSectionTitle .glyphicon{
   background-color: white;

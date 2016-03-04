@@ -1257,17 +1257,17 @@ a:visited {
   display: inline-table;
 }
 
-.editar {
-  color: #fff;
-  border-color: #eea236;
-  background-color: #f0ad4e;
+.editar:hover {
+  cursor: pointer;
+}
+.tipoTelefonoIcon {
+  font-size: 13px;
 }
 
 .input-group-btn >.editar.btn:hover,
 .input-group-btn >.editar.btn:focus,
 .input-group-btn >.editar.btn:active{
-  background-color: #eea236;
-  color: #fff;
+  color: #ffffff;
 }
 
 .borrar {

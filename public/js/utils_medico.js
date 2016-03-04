@@ -68,6 +68,7 @@ function muestraMedico( id ) {
   } );
 }
 $( document ).ready( function () {
+  $('[data-toggle="tooltip"]').tooltip();
   if ($('#regMedStepOne').length>0){
 
       var nombre = '', apellidop = '', apellidom = '';
@@ -122,7 +123,7 @@ $( document ).ready( function () {
           }
         },
         error: function(err){
-          console.log('Ajax erro: ' + JSON.stringify(err));
+          console.log('Ajax error: ' + JSON.stringify(err));
         }
       });
       loadEspecialidades();

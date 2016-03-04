@@ -1,34 +1,56 @@
-﻿/*Estilos para Mapas*/
-#mapDiv{
-    width: 97%;
-    height: 360px;
-    float:right;
+/*Estilos para Mapas*/
+#mapDiv {
+  display: block;
+  width: 100%;
+  height: 270px;
 }
 
-#mapUbiDiv, #mapSearchDiv{
-  min-height: 300px;
-  height: 100%;
+#mapUbiDiv,
+#mapSearchDiv {
+  float: right;
   width: 100%!important;
-  float:right;
+  height: 100%;
+  min-height: 280px;
 }
 
-#searchbox{
+#searchbox {
   height: 100px!important;
 }
 
 #autocomplete_searchField {
-    width:300px;
+  width: 300px;
 }
 
 hr.style-white {
-    margin-bottom: 2px;
-    border: 0;
-    height: 2px;
-    background: #FFF;
+  height: 2px;
+  margin-bottom: 2px;
+  border: 0;
+  background: #fff;
 }
 
-.selectprimary{
-  background-color: #375467;
-  border-color:#375467;
+.selectprimary {
   color: white;
+  border-color: #375467;
+  background-color: #375467;
+}
+
+.mapMessage {
+  display: table;
+  width: 100%;
+  height: 45px;
+  color: #fff;
+  background-color: #375467;
+}
+
+.mapMessage p {
+  display: table-cell;
+  width: 100%;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#direccion {
+  display: none;
+  width: 0;
+  height: 0;
 }

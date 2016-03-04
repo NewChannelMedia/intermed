@@ -1,128 +1,40 @@
-<form id="regMedStepOne" onsubmit="return saveStepOne();" class="bg-white">
-  <div id="" class="container-fluid h45-light s17 bg-white">
-    <div class="row">
-      <div class="header-section">
-        <div class="body-container">
-          <div class="center-content">
-            <div class="container">
-              <div class="row">
-                <div class="col-md-12">
-                  <h1 class="h35-thin s60 text-left dark-c" style="/* margin-top: 35px; */">!Bienvenido!</h1>
-                </div>
-                <div class="col-md-6">
-                  <div class="">
-                    <p class="h45-light s30">Comienza tu registro
-                      <br>en el siguiente formulario.</p>
-                    <div class="form-group has-feedback">
-                      <input type="text" class="form-control" placeholder="Ingresa aquí tu código de promoción." maxlength="6" minlength="6" id="codigoPromo" name="codigoPromo" onchange="validarCodigo(this)">
-                      <span class="glyphicon form-control-feedback"></span>
-                      <label for="codigoPromo" style="color:#a94442;text-align:center"></label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <div id="alertError" class="alert alert-danger dark-c hidden">
-          <div class="row">
-            <div class="col-md-2 s20 text-uppercase">
-              <span class="glyphicon glyphicon-alert"></span> error:
-            </div>
-            <div class="col-md-10 s15 text-capitalize">
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="row reg-box">
-      <div class="body-container">
-        <div class="center-content">
-          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
-            <span class="round-number h45-light center-block">1</span>
-          </div>
-          <div class="col-lg-8 col-md-8 col-sm-9 col-xs-12 reg">
-            <div class="row">
-              <div class="col-md-12">
-                <h3 class="h45-light s20 text-uppercase regSectionTitle">
-                  datos personales
-                </h3>
-              </div>
-              <div class="col-md-12">
+<section id="regMedStepOne" class="bg-white">
+  <form onsubmit="return saveStepOne();">
+    <div id="" class="container-fluid h45-light s17 bg-white">
+      <div class="row">
+        <div class="header-section">
+          <div class="body-container">
+            <div class="center-content">
+              <div class="container">
                 <div class="row">
-                  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                    <div class="form-group">
-                      <label class="s15 regInput" for="nombreRegMed">Nombres</label>
-                      <input type="text" class="form-control regInput" id="nombreRegMed" name="nombreRegMed" placeholder="Nombres" value="" autocomplete="off" required="true">
-                    </div>
-                  </div>
-                  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
-                    <div class="form-group">
-                      <label class="s15 regInput" for="apePatRegMed">Apellido Paterno</label>
-                      <input type="text" class="form-control regInput" id="apePatRegMed" name="apePatRegMed" placeholder="Apellido Paterno" value="" autocomplete="off" required="true">
-                    </div>
-                  </div>
-                  <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
-                    <div class="form-group">
-                      <label class="s15 regInput" for="apePatRegMed">Apellido Materno</label>
-                      <input type="text" class="form-control regInput" id="apeMatRegMed" name="apeMatRegMed" placeholder="Apellido Materno" value="" autocomplete="off">
-                    </div>
+                  <div class="col-md-6 col-md-offset-0 col-sm-8 col-sm-offset-1 col-xs-8 col-xs-offset-1">
+                    <h1 class="h35-thin s60 text-left darkBlue-c">!Bienvenido!</h1>
                   </div>
                 </div>
                 <div class="row">
-                  <div class="col-lg-7 col-md-7 col-sm-8 col-xs-12">
+                  <div class="col-md-6 col-md-offset-0 col-sm-8 col-sm-offset-1 col-xs-8 col-xs-offset-1">
                     <div class="row">
                       <div class="col-md-12">
-                        <label class="s15 regInput">Fecha de Nacimiento</label>
+                        <p class="h45-light s30 darkBlue-c">
+                          Comienza tu registro
+                          <br>en el siguiente formulario.
+                        </p>
                       </div>
                     </div>
-                    <div class="row">
-                      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
-                        <div class="form-group">
-                          <input type="number" class="form-control  regInput" id="diaNacReg" name="diaNacReg" placeholder="Dia" required="true" min="1" max="31">
+                    <div class="row code-container">
+                      <div class="col-lg-4 col-md-4 col-sm-3 hidden-xs">
+                        <img class="img-responsive hidden-xs" src="/img/plataforma/icons/secretaria.png"/>
+                      </div>
+                      <div class="col-lg-8 col-md-8 col-sm-9 col-xs-12">
+                        <p class="h45-light s20 white-c">
+                          Ingresa tu código promocional:
+                        </p>
+                        <div class="form-group has-feedback">
+                          <input type="text" class="form-control" placeholder="Ingresa aquí tu código de promoción." maxlength="6" minlength="6" id="codigoPromo" name="codigoPromo" onchange="validarCodigo(this)">
+                          <span class="glyphicon form-control-feedback"></span>
+
                         </div>
-                      </div>
-                      <div class="col-lg-1 col-md-1 col-sm-1 hidden-xs">
-                        <span class="s35">/</span>
-                      </div>
-                      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
-                        <div class="form-group">
-                          <input type="number" class="form-control regInput" id="mesNacReg" name="mesNacReg" placeholder="Mes" required="true" min="1" max="12">
-                        </div>
-                      </div>
-                      <div class="col-lg-1 col-md-1 col-sm-1 hidden-xs">
-                        <span class="s35">/</span>
-                      </div>
-                      <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
-                        <div class="form-group">
-                          <input type="number" class="form-control regInput" id="anioNacReg" name="anioNacReg" placeholder="Año" required="true" min="1930" max="2016">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-lg-5 col-md-5 col-sm-4 col-xs-12">
-                    <div class="col-md-12">
-                      <label class="s15 regInput">Sexo</label>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-5">
-                      <div class="radio">
-                        <label>
-                          <input type="radio" name="gender" id="sexM" value="M" required="true"> Masculino</label>
-                      </div>
-                    </div>
-                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-5">
-                      <div class="radio">
-                        <label>
-                          <input type="radio" name="gender" id="sexF" value="F" required="true"> Femenino</label>
+                        <label for="codigoPromo" class="label label-warning s15"></label>
                       </div>
                     </div>
                   </div>
@@ -133,82 +45,263 @@
         </div>
       </div>
     </div>
-    <div class="row reg-box">
-      <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
-        <div class="body-container">
-          <div class="center-content">
-            <span class="round-number h45-light center-block">2</span>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <div id="alertError" class="alert alert-danger dark-c hidden">
+            <div class="row">
+              <div class="col-md-2 s20 text-uppercase">
+                <span class="glyphicon glyphicon-alert"></span> error:
+              </div>
+              <div class="col-md-10 s15 text-capitalize">
+                <p>
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-8 col-md-8 col-sm-9 col-xs-12 reg">
-        <div class="row">
-          <div class="col-md-12">
-            <h3 class="h45-light s20 text-uppercase regSectionTitle">
-              información profesional
-            </h3>
-          </div>
+      <div class="row reg-box">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
+          <span class="round-number h45-light center-block">1</span>
         </div>
-        <div class="row">
-          <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
-            <div class="form-group">
-              <label class="s15 regInput" for="curpRegMed">CURP</label>
-              <input type="text" class="form-control regInput" id="curpRegMed" name="curpRegMed" placeholder="CURP" value="" autocomplete="off" required="true">
+        <div class="col-lg-8 col-md-8 col-sm-9 col-xs-12 reg">
+          <div class="row">
+            <div class="col-md-12">
+              <h3 class="h45-light s20 text-uppercase regSectionTitle">
+                datos personales
+              </h3>
+            </div>
+            <div class="col-md-12">
+              <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                  <div class="form-group">
+                    <label class="s15 regInput" for="nombreRegMed">Nombres</label>
+                    <input type="text" class="form-control regInput" id="nombreRegMed" name="nombreRegMed" placeholder="Nombres" value="" autocomplete="off" required="true">
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                  <div class="form-group">
+                    <label class="s15 regInput" for="apePatRegMed">Apellido Paterno</label>
+                    <input type="text" class="form-control regInput" id="apePatRegMed" name="apePatRegMed" placeholder="Apellido Paterno" value="" autocomplete="off" required="true">
+                  </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                  <div class="form-group">
+                    <label class="s15 regInput" for="apePatRegMed">Apellido Materno</label>
+                    <input type="text" class="form-control regInput" id="apeMatRegMed" name="apeMatRegMed" placeholder="Apellido Materno" value="" autocomplete="off">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-7 col-md-7 col-sm-8 col-xs-12">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <label class="s15 regInput">Fecha de Nacimiento</label>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
+                      <div class="form-group">
+                        <input type="number" class="form-control  regInput" id="diaNacReg" name="diaNacReg" placeholder="Dia" required="true" min="1" max="31">
+                      </div>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-1 hidden-xs">
+                      <span class="s35">/</span>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
+                      <div class="form-group">
+                        <input type="number" class="form-control regInput" id="mesNacReg" name="mesNacReg" placeholder="Mes" required="true" min="1" max="12">
+                      </div>
+                    </div>
+                    <div class="col-lg-1 col-md-1 col-sm-1 hidden-xs">
+                      <span class="s35">/</span>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                      <div class="form-group">
+                        <input type="number" class="form-control regInput" id="anioNacReg" name="anioNacReg" placeholder="Año" required="true" min="1930" max="2016">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-5 col-md-5 col-sm-4 col-xs-12">
+                  <div class="col-md-12">
+                    <label class="s15 regInput">Sexo</label>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-12 col-xs-5">
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="gender" id="sexM" value="M" required="true"> Masculino</label>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 col-md-6 col-sm-12 col-xs-5">
+                    <div class="radio">
+                      <label>
+                        <input type="radio" name="gender" id="sexF" value="F" required="true"> Femenino</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
-            <div class="form-group">
-              <label class="s15 regInput" for="cedulaRegMed">Cedula Profesional</label>
-              <input type="text" class="form-control regInput" id="cedulaRegMed" name="cedulaRegMed" placeholder="CEDULA" value="" autocomplete="off" required="true">
+        </div>
+      </div>
+      <div class="row reg-box">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
+          <span class="round-number h45-light center-block">2</span>
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-9 col-xs-12 reg">
+          <div class="row">
+            <div class="col-md-12">
+              <h3 class="h45-light s20 text-uppercase regSectionTitle">
+                información profesional
+              </h3>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
-            <div class="form-group">
+          <div class="row">
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <div class="form-group">
+                <label class="s15 regInput" for="curpRegMed">CURP</label>
+                <input type="text" class="form-control regInput" id="curpRegMed" name="curpRegMed" placeholder="CURP" value="" autocomplete="off" required="true">
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+              <div class="form-group">
+                <label class="s15 regInput" for="cedulaRegMed">Cedula Profesional</label>
+                <input type="text" class="form-control regInput" id="cedulaRegMed" name="cedulaRegMed" placeholder="CEDULA" value="" autocomplete="off" required="true">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
               <label class="regInput">Especialidades</label>
-              <input type="text" id="inputEspecialidad" class="form-control regInput autoEspecialidad">
+              <div class="input-group">
+                <input type="text" id="inputEspecialidad" class="form-control regInput autoEspecialidad">
+                <span class="input-group-btn">
+                  <button id="addEspecialidadMedic" onclick="agregarEspecialidad('inputEspecialidad');" class="btn btn-primary btn-block" type="button">
+                    <span class="glyphicon glyphicon-plus"></span>
+                  </button>
+                </span>
+              </div>
             </div>
           </div>
-          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-            <label>&nbsp;</label>
-            <button id="addEspecialidadMedic" onclick="agregarEspecialidad('inputEspecialidad');" class="btn btn-primary btn-block" type="button">
-              <span class="glyphicon glyphicon-floppy-disk"></span>
-            </button>
+          <div class="row" id="regmedEsp">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <ul class="list-inline" id="especialidadesListBoot"></ul>
+            </div>
           </div>
-        </div>
-        <div class="row" id="regmedEsp">
-          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <ul class="list-inline" id="especialidadesListBoot"></ul>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
-            <div class="form-group">
+          <div class="row">
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
               <label class="regInput">Sub Especialidades</label>
-              <input type="text" id="inputSubEsp" class="form-control regInput autoEspecialidad">
+              <div class="input-group">
+                <input type="text" id="inputSubEsp" class="form-control regInput autoEspecialidad">
+                <span class="input-group-btn">
+                  <button id="addEspecialidadMedic" onclick="agregarSubespecialidad('inputSubEsp');" class="btn btn-primary btn-block" type="button">
+                    <span class="glyphicon glyphicon-floppy-disk"></span>
+                  </button>
+                </span>
+              </div>
             </div>
           </div>
-          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-            <label>&nbsp;</label>
-            <button id="addEspecialidadMedic" onclick="agregarSubespecialidad('inputSubEsp');" class="btn btn-primary btn-block" type="button">
-              <span class="glyphicon glyphicon-floppy-disk"></span>
-            </button>
-          </div>
-        </div>
-        <div class="row" id="regmedEsp">
-          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <ul class="list-inline" id="subEspecialidadesListBoot"></ul>
+          <div class="row" id="regmedEsp">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <ul class="list-inline" id="subEspecialidadesListBoot"></ul>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <hr />
-      <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 pull-right" style="margin-top:25px">
-        <input type="submit" id="regi" name="registroCorreo" value="Guardar" class="btn btn-info btn-block btn-step" style="margin-top:10px;margin-bottom:10px">
+      <div class="row reg-box">
+        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
+          <span class="round-number h45-light center-block">3</span>
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-9 col-xs-12 reg">
+          <div class="row">
+            <div class="col-md-12">
+              <h3 class="h45-light s20 text-uppercase regSectionTitle">
+                Tarjeta de Crédito
+              </h3>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-lg-12">
+              <form action="" method="POST" id="card-form" name="card-form">
+                <span class="card-errors"></span>
+                <input type="hidden" id="usuario_id" name="usuario_id" value="{{usuario_id}}" />
+                <div class="row">
+                  <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12">
+                    <div class="form-group">
+                      <label class="s15 regInput">Nombre como aparece en su tarjeta:</label>
+                      <input type="text" class="form-control regInput" placeholder="" autocomplete="off" required="true" data-conekta="card[name]" value="prueba" />
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8">
+                    <label class="s15 regInput">Número de tarjeta de crédito</label>
+                    <div class="input-group">
+                      <input type="password" class="form-control regInput" maxlength="16" placeholder="" autocomplete="off" required="true" data-conekta="card[number]" />
+                      <span class="input-group-addon"><span class="glyphicon glyphicon-lock"</span>
+                    </div>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+                    <label class="s15 regInput">CVV </label>
+                    <div class="input-group">
+                      <input type="password" class="form-control regInput" autocomplete="off" data-conekta="card[cvc]" minlength="3" maxlength="3" required="true" />
+                      <span class="input-group-addon" data-toggle="tooltip" data-placement="top" title="Número de seguridad que se encuentra al reverso de tu tarjeta."><span class="glyphicon glyphicon-question-sign"></span></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <label class="s15 regInput">Fecha de Expiración (MM / AAAAA)</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-2 col-md-2 col-sm-3 col-xs-5">
+                    <div class="form-group">
+                      <input type="number" class="form-control regInput" autocomplete="off" required="true" size="2" data-conekta="card[exp_month]" />
+                    </div>
+                  </div>
+                  <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1">
+                    <span class="s35">/</span>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                    <input type="number" class="form-control regInput" autocomplete="off" required="true" size="4" data-conekta="card[exp_year]" />
+                  </div>
+                </div>
+                <div class="row hidden invisible">
+                  <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12">
+                    <div class="form-row">
+                      <label>
+                        <span>Seleccionar plan de cargo</span>
+                        <select class="form-control" name="planid" id="planid" required>
+                          <option value="">Planes</option>
+                          {{#each planes}}
+                            <option value="{{id}}">{{nombre}}</option>
+                          {{/each}}
+                        </select>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6 pull-right">
+                    <button type="submit" class="btn btn-info bg-blue btn-sm white-c btn-block" id="enviar" name="enviar">Verificar Tarjeta</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <hr />
+        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6 pull-right" style="margin-top:25px">
+          <input type="submit" id="regi" name="registroCorreo" value="Guardar" class="btn btn-info btn-block btn-step" style="margin-top:10px;margin-bottom:10px">
+        </div>
       </div>
     </div>
-  </div>
-</form>
+  </form>
+</section>
