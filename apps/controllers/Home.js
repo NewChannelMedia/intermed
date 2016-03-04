@@ -51,9 +51,6 @@ module.exports = {
                   attributes: ['id','usuarioUrl','urlPersonal','urlFotoPerfil'],
                   include: [{
                     model: models.DatosGenerales
-                  },{
-                    model: models.Direccion,
-                    order: [['principal','DESC']]
                   }]
                 }]
               }]

@@ -120,3 +120,47 @@ function eliminarRelacionMedico(medico_id, element){
     }
   });
 }
+
+$(document).ready(function(){
+  if ($('#DashboarSecretaria').length>0){
+    var medicos = [];
+    $('.dia1>.heading').text(getDate());
+    $('.dia2>.heading').text(getDate(1));
+    $('.dia3>.heading').text(getDate(2));
+    $('.MedicoSecretaria').each(function(){
+      $(this).find('.panel-body').html(`<ul class="list-group" style="margin-bottom: 0px">
+        <li class="list-group-item"><strong>9:00 am</strong><br>Nombre paciente<br>Ubicación<br>Servicio</li>
+        <li class="list-group-item"><strong>9:00 am</strong><br>Nombre paciente<br>Ubicación<br>Servicio</li>
+        <li class="list-group-item"><strong>9:00 am</strong><br>Nombre paciente<br>Ubicación<br>Servicio</li>
+        <li class="list-group-item"><strong>9:00 am</strong><br>Nombre paciente<br>Ubicación<br>Servicio</li>
+        <li class="list-group-item"><strong>9:00 am</strong><br>Nombre paciente<br>Ubicación<br>Servicio</li>
+      </ul>`);
+      medicos.push($(this).attr('id').split('_')[1]);
+    });
+  }
+});
+
+function getDate(numdias, year){
+  var meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  if (!numdias){
+    numdias = 0;
+  }
+  var today = new Date(new Date().getTime() + (24*numdias) * 60 * 60 * 1000);
+  var dd = today.getDate();
+  var mm = today.getMonth();
+  if(dd<10) {
+      dd='0'+dd
+  }
+  if (year){
+    mm++; //January is 0!
+    var yyyy = today.getFullYear();
+    if(mm<10) {
+        mm='0'+mm
+    }
+    today = yyyy+'-'+mm+'/'+yyyy;
+  } else {
+    today = dd+'/'+meses[mm];
+  }
+
+  return today
+}
