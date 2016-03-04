@@ -3697,25 +3697,34 @@ function eliminarSecretaria(secretaria_id, element){
   if (element && $(element).text() == 'Agregar'){
     agregarSecretaria(secretaria_id, element);
   } else {
-    $.post('/secretaria/eliminar',{
-      secretaria_id:secretaria_id
-    },function( data ){
-      if( data.success ){
-        if (element){
-          $(element).text('Agregar');
-          $(element).addClass('btn-warning');
-          $(element).removeClass('btn-danger');
-        } else {
-          window.location.reload();
+      bootbox.confirm({
+        title: 'Confirmar eliminación',
+        message: "¿Estas seguro de querer eliminar a la secretaria?, ya no podra administrar su oficina.",
+        callback: function(result) {
+          if (result) {
+            $.post('/secretaria/eliminar',{
+              secretaria_id:secretaria_id
+            },function( data ){
+              if( data.success ){
+                if (element){
+                  $(element).text('Agregar');
+                  $(element).addClass('btn-warning');
+                  $(element).removeClass('btn-danger');
+                } else {
+                  window.location.reload();
+                }
+              }else{
+                if (data.error){
+                  manejadorDeErrores(data.error);
+                }
+              }
+            }).fail(function(e){
+              console.error(e);
+            });
+          }
         }
-      }else{
-        if (data.error){
-          manejadorDeErrores(data.error);
-        }
-      }
-    }).fail(function(e){
-      console.error(e);
-    });
+      });
+
   }
 }
 

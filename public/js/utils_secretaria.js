@@ -94,22 +94,29 @@ function rechazarInvitacion(medico_id, element){
 }
 
 function eliminarRelacionMedico(medico_id, element){
-  alert('Eliminar medico: ' + medico_id);
-  $.post('/secretaria/medico/eliminar',{
-    medico_id:medico_id
-  },function( data ){
-    if( data.success ){
-      if (element){
-        $(element).parent().parent().remove();
-      } else {
-        window.location.reload();
-      }
-    }else{
-      if (data.error){
-        manejadorDeErrores(data.error);
+  bootbox.confirm({
+    title: 'Confirmar eliminación',
+    message: "¿Estas seguro de querer eliminar al médico?, ya no podras administrarlo.",
+    callback: function(result) {
+      if (result) {
+        $.post('/secretaria/medico/eliminar',{
+        medico_id:medico_id
+      },function( data ){
+        if( data.success ){
+          if (element){
+            $(element).parent().parent().remove();
+          } else {
+            window.location.reload();
+          }
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      }).fail(function(e){
+        console.error(e);
+      });
       }
     }
-  }).fail(function(e){
-    console.error(e);
   });
 }

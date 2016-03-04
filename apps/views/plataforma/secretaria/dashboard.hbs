@@ -1,84 +1,93 @@
 <div class="container">
-    <div class="row">
-      <div class="body-container">
-        <div class="center-content">
-          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <!--Datos de invitación-->
-            <div class="row">
-              <div class="col-md-12 text-center">
-                <h3 class="h45-light s25 text-uppercase">
-                  Dashboard secretaria
-                </h3>
-                <p>Estos son tus doctores: </p>
+  <!--Datos de invitación-->
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <h3 class="h45-light s25 text-uppercase">
+        Dashboard secretaria
+      </h3>
+      <p>Estos son tus doctores: </p>
+    </div>
+  </div>
+
+      <div class="row">
+        <div class="col-lg-3 col-md-4">
+          <div class="row">
+            <div class="col-lg-12 col-md-12">
+              <div class="panel panel-default" style="margin-bottom:0px">
+                <div class="panel-heading">
+                    <img class="img-circle img-responsive center-block" alt="64x64" src="{{#valSession 'fotoPerfil'}}{{/valSession}}" data-holder-rendered="true">
+                </div>
+                <div class="panel-body" style="height: auto;">
+                  <h4><strong>{{#valSession 'name'}}{{/valSession}}</strong></h4>
+                </div>
               </div>
             </div>
-
-                <div class="row">
-                  <div class="col-lg-3 col-md-4">
-                    <div class="row">
-                      <div class="col-lg-12 col-md-12">
-                        <div class="row">
-                          <div class="panel panel-default" style="margin-bottom: 0px">
-                            <div class="panel-heading">
-                                <img class="img-circle" alt="64x64" style="width: 90%;" src="{{#valSession 'fotoPerfil'}}{{/valSession}}" data-holder-rendered="true">
-                            </div>
-                            <div class="panel-body" style="height: auto;">
-                              <h4><strong>{{#valSession 'name'}}{{/valSession}}</strong></h4>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+          </div>
+          {{#if invitaciones}}
+          <div class="row">
+            <div class="col-md-12">
+              <div class="list-group">
+                <div class="list-group-item active s20"><strong>Tus invitaciones pendientes</strong></div>
+                {{#each invitaciones}}
+                  <div class="list-group-item media" style="margin-top:0px">
+                    <a class="media-left media-middle" href="#">
+                        <img class="pull-left img-circle" src="{{Medico.Usuario.urlFotoPerfil}}" style="max-width:40px;min-width:20px;width100%">
+                    </a>
+                    <div class="media-body">
+                      <h4 class="media-heading s15"><strong>Dr. {{Medico.Usuario.DatosGenerale.nombre}} {{Medico.Usuario.DatosGenerale.apellidoP}} {{Medico.Usuario.DatosGenerale.apellidoM}}</strong></h4>
+                      <p style="text-right">
+                        <span>¿Administrar a este médico?</span>
+                      </p>
                     </div>
-                    {{#if invitaciones}}
-                    <div class="row">
-                      <div class="col-md-12">
-                        <div class="list-group" style="margin-left:-15px; margin-right:-15px;margin-bottom:-15px">
-                          <div class="list-group-item active s20"><strong>Tus invitaciones pendientes</strong></div>
-                          {{#each invitaciones}}
-                            <div class="list-group-item media" style="margin-top:0px">
-                              <a class="media-left media-middle" href="#">
-                                  <img class="pull-left img-circle" src="{{Medico.Usuario.urlFotoPerfil}}" style="max-width:40px;min-width:20px;width100%">
-                              </a>
-                              <div class="media-body">
-                                <h4 class="media-heading s15"><strong>Dr. {{Medico.Usuario.DatosGenerale.nombre}} {{Medico.Usuario.DatosGenerale.apellidoP}} {{Medico.Usuario.DatosGenerale.apellidoM}}</strong></h4>
-                                <p style="text-right">
-                                  <span>¿Administrar a este médico?</span>
-                                </p>
-                              </div>
-                              <div class="media-right media-middle" href="#">
-                                  <button class="btn btn-success btn-xs" onclick="aceptarInvitacion({{Medico.id}},this)"><span class="glyphicon glyphicon-ok"></span></button>
-                                  <button class="btn btn-danger btn-xs" onclick="rechazarInvitacion({{Medico.id}},this)"><span class="glyphicon glyphicon-remove"></span></button>
-                              </div>
-
-                            </div>
-                          {{/each}}
-
-                        </div>
-                      </div>
+                    <div class="media-right media-middle" href="#">
+                        <button class="btn btn-success btn-xs" onclick="aceptarInvitacion({{Medico.id}},this)"><span class="glyphicon glyphicon-ok"></span></button>
+                        <button class="btn btn-danger btn-xs" onclick="rechazarInvitacion({{Medico.id}},this)"><span class="glyphicon glyphicon-remove"></span></button>
                     </div>
-                    {{/if}}
+
                   </div>
-                  <div class="col-lg-9 col-md-8">
+                {{/each}}
 
-                    <div class="list-group">
-                      <div class="list-group-item active s20"><strong>Tus doctores</strong></div>
+              </div>
+            </div>
+          </div>
+          {{/if}}
+        </div>
+        <div class="col-lg-9 col-md-8">
 
-                      {{#each medicos}}
-                      <div class="list-group-item">
-                        <p class="s15">
+          <div class="list-group">
+            <div class="list-group-item active s20"><strong>Tus doctores</strong></div>
+
+            {{#each medicos}}
+            <div class="list-group-item" style="padding-top:0px;padding-bottom:0px">
+                <div class="row s15" style="padding:0px">
+                  <div class="col-md-6" style="padding:15px">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <p>
                           <img src="{{Medico.Usuario.urlFotoPerfil}}" style="width:30px" class="img-circle">
                           Dr. {{Medico.Usuario.DatosGenerale.nombre}} {{Medico.Usuario.DatosGenerale.apellidoP}} {{Medico.Usuario.DatosGenerale.apellidoM}}
                           <button class="btn btn-danger btn-xs pull-right" onclick="eliminarRelacionMedico({{Medico.id}},this)">Eliminar</button>
                         </p>
-
                       </div>
-
-                      {{/each}}
                     </div>
                   </div>
-                </div>
+                  <div class="col-md-6">
+                    <div class="row" style="padding-bottom:0px">
+                      <div class="col-md-4" style="border-left: 1px solid rgba(0,0,0,0.1);padding:0px;height:100px">
+                        Test
+                      </div>
+                      <div class="col-md-4" style="border-left: 1px solid rgba(0,0,0,0.1);padding:0px;height:100px">
+                        Test
+                      </div>
+                      <div class="col-md-4" style="border-left: 1px solid rgba(0,0,0,0.1);padding:0px;height:100px">
+                        Test
+                      </div>
+                    </div>
+                  </div>
+              </div>
+          </div>
+            {{/each}}
           </div>
         </div>
       </div>
-    </div>
   </div>
