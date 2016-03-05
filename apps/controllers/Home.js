@@ -21,27 +21,82 @@ module.exports = {
    */
   index: function ( object, req, res ) {
     try {
-
-      models.Especialidad.findAll( {
-        attributes: [ 'id', 'especialidad' ]
-      } ).then( function ( especialidades ) {
-        models.Aseguradora.findAll( {
-          attributes: [ 'id', 'aseguradora' ],
-          group: 'aseguradora',
-          order: [ [ 'aseguradora', 'ASC' ] ]
-        } ).then( function ( aseguradoras ) {
-          models.Estado.findAll( {
-            attributes: [ 'id', 'estado' ]
-          } ).then( function ( estado ) {
-            models.Ciudad.findAll( {} ).then( function ( ciudad ) {
-              res.render( 'home', {
-                especialidad: especialidades,
-                aseguradora: aseguradoras
+      if (req.session.passport && req.session.passport.user){
+        if (req.session.passport.user.tipoUsuario == "M"){
+          module.exports.oficinaMedico(object, req, res);
+        } else if(req.session.passport.user.tipoUsuario == "P"){
+          //Mostrar perfil paciente
+          module.exports.nuevoPerfilMedicos(object, req, res);
+        } else if(req.session.passport.user.tipoUsuario == "S"){
+          //Dashboar Secretaria
+          models.Secretaria.findOne({
+            where: {
+              id: req.session.passport.user.Secretaria_id
+            },
+            include: [{
+              model: models.Usuario,
+              attributes: ['correo']
+            }]
+          }).then(function(secretaria){
+            models.MedicoSecretaria.findAll({
+              where: {
+                secretaria_id: req.session.passport.user.Secretaria_id,
+                activo:1
+              },
+              include: [{
+                model: models.Medico,
+                attributes: ['id'],
+                include: [{
+                  model: models.Usuario,
+                  attributes: ['id','usuarioUrl','urlPersonal','urlFotoPerfil'],
+                  include: [{
+                    model: models.DatosGenerales
+                  }]
+                }]
+              }]
+            }).then(function(medicos){
+              models.SecretariaInvitacion.findAll({
+                where: {
+                  atendido: 0,
+                  correo: secretaria.Usuario.correo
+                },
+                include: [{
+                  model: models.Medico,
+                  include: [{
+                    model: models.Usuario,
+                    include: [{
+                      model: models.DatosGenerales
+                    }]
+                  }]
+                }]
+              }).then(function(invitaciones){
+                res.render('secretaria/dashboard',{medicos:medicos, invitaciones: invitaciones});
+              });
+            });
+          });
+        }
+      } else {
+        models.Especialidad.findAll( {
+          attributes: [ 'id', 'especialidad' ]
+        } ).then( function ( especialidades ) {
+          models.Aseguradora.findAll( {
+            attributes: [ 'id', 'aseguradora' ],
+            group: 'aseguradora',
+            order: [ [ 'aseguradora', 'ASC' ] ]
+          } ).then( function ( aseguradoras ) {
+            models.Estado.findAll( {
+              attributes: [ 'id', 'estado' ]
+            } ).then( function ( estado ) {
+              models.Ciudad.findAll( {} ).then( function ( ciudad ) {
+                res.render( 'home', {
+                  especialidad: especialidades,
+                  aseguradora: aseguradoras
+                } );
               } );
             } );
           } );
         } );
-      } );
+      }
     }
     catch ( err ) {
       req.errorHandler.report( err, req, res );
@@ -493,6 +548,9 @@ module.exports = {
     catch ( err ) {
       req.errorHandler.report( err, req, res );
     }
+  },
+  oficinaMedico: function (object, req, res){
+    res.render('medico/oficina');
   }
 }
 

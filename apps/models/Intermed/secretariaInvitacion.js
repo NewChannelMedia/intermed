@@ -1,41 +1,39 @@
 "use strict";
 
 module.exports = function ( sequelize, DataTypes ) {
-  var Secretaria = sequelize.define( "Secretaria", {
+  var SecretariaInvitacion = sequelize.define( "SecretariaInvitacion", {
     id: {
       type: DataTypes.BIGINT,
       autoIncrement: true,
       primaryKey: true
     },
-    usuario_id: {
+    token: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    correo: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    medico_id: {
       type: DataTypes.BIGINT,
       allowNull: false
     },
-    estado_id: {
-      type: DataTypes.BIGINT,
-      allowNull: false
-    },
-    municipio_id: {
-      type: DataTypes.BIGINT,
-      allowNull: false
+    atendido: {
+      type: DataTypes.INTEGER,
     }
   }, {
     classMethods: {
       associate: function ( models ) {
-        Secretaria.belongsTo( models.Usuario )
-        Secretaria.hasMany( models.MedicoSecretaria, {
-          foreignKey: 'secretaria_id'
-        } )
-        Secretaria.belongsTo(models.Municipio);
-        Secretaria.belongsTo(models.Estado);
+        SecretariaInvitacion.belongsTo( models.Medico )
       }
     },
     timestamps: false,
     paranoid: true,
     underscored: true,
     freezeTableName: true,
-    tableName: 'secretarias'
+    tableName: 'secretaria-invitacion'
   } );
 
-  return Secretaria;
+  return SecretariaInvitacion;
 };

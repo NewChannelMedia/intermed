@@ -1,0 +1,38 @@
+<div class="container">
+    <form onsubmit="return iniciarSesionLocal('email','password',null,null,true);" style="margin-top:50px">
+
+      <div class="row">
+        <div class="col-md-12 text-center">
+          <h3 class="h45-light s25 text-uppercase">
+            ¡Bienvenido(a)!
+          </h3>
+          <h4>
+            Para acceder al recurso es necesario que inicies sesión.
+          </h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+          <div class="form-group" id="emailGroup">
+            <input type="text" class="form-control input-lg" id="email" name="email" placeholder="Usuario o Correo" required="true" aria-describedby="emailP">
+          </div>
+          <div class="form-group" id="passwordGroup">
+            <input type="password" class="form-control input-lg" id="password" name="password" placeholder="Contraseña" required="true" aria-describedby="passwordP">
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-info hidden text-center text-uppercase" id="LoginError" role="alert">
+        <strong>Correo o contraseña incorrectos.</strong>
+      </div>
+      <div class="row footerBootbox" id="fin">
+        <div class="col-md-4 col-md-offset-2">
+          <p class="text-center">¿Olvidaste tus datos de acceso? <br>
+            <a class="whiteF" href="#">Haz click aqui para recuperarlos</a>
+          </p>
+        </div>
+        <div class="col-md-4">
+          <input type="submit" name="login" value="Ingresar" class="btn btn-warning btn-lg btn-block">
+        </div>
+      </div>
+    </form>
+</div>

@@ -21,7 +21,6 @@ module.exports = function (object){
     intermed.callController( 'ubicacion', 'encontrarPorCP', req.body, req, res );
   } );
   app.post('/registrarubicacion', function (req, res) {
-    console.log('Test');
     intermed.callController('ubicacion', 'registrarUbicacion', req.body, req, res);
   });
 

@@ -1352,6 +1352,14 @@ $( document ).ready( function () {
   } else if ($( '#perfilPaciente' ).length > 0 ) {
     cargarListaEspCol( $( '#usuarioPerfil' ).val() ,'P');
     cargarCitasPaciente();
+  } else if($( '#medicoSecretaria').length > 0 ){
+    if (!$('#agregar').hasClass('hidden')){
+      //alert('agregar secretaria');
+    } else if (!$('#enEspera').hasClass('hidden')){
+      //alert('en espera de secretaria');
+    } else if (!$('#mostrar').hasClass('hidden')){
+      //alert('mostrar secretaria');
+    }
   }
 } );
 //fin de Perfil Medicos
@@ -2358,7 +2366,7 @@ function revisarTipoSesion(){
   return tipoSesion;
 }
 
-function iniciarSesionLocal(inputEmail, inputPassword, callback, usuarioMedico_id){
+function iniciarSesionLocal(inputEmail, inputPassword, callback, usuarioMedico_id, reload){
   try{
     var email = $('#'+inputEmail).val();
     var pass = hex_md5($('#'+inputPassword).val());
@@ -2370,16 +2378,27 @@ function iniciarSesionLocal(inputEmail, inputPassword, callback, usuarioMedico_i
       data:{'email':email,'password':pass},
       cache: false,
       success: function ( data ) {
-          if (data.result == "success"){
+          if (data.success){
             if (callback){
               bootbox.hideAll();
               actualizarSesion(false, callback, usuarioMedico_id);
             } else {
-              var usuarioUrl = data.session.usuarioUrl;
-              if (data.session.urlPersonal){
-                usuarioUrl = data.session.urlPersonal;
+
+              if (reload){
+                window.location.reload();
+              } else {
+                window.location.href = '/';
+                /*
+                var usuarioUrl = data.session.usuarioUrl;
+                if (data.session.urlPersonal){
+                  usuarioUrl = data.session.urlPersonal;
+                }
+                if (usuarioUrl){
+                window.location.href = '/'+usuarioUrl;
+                } else {
+                  window.location.href = '/';
+                }*/
               }
-              window.location.href = '/'+usuarioUrl
             }
           } else {
             $('#LoginError').removeClass('hidden');
@@ -2425,7 +2444,7 @@ function cargarCiudades(id){
   var idABuscar = $(id).val();// se saca el value del select de estados
   // se hace la consulta se manda como parametro el id que se obtuvo de seleccionar el estado
   $.post('/cargarCiudades',{id:idABuscar}, function(data){
-    var cont = '<option value="0">Municipio/Ciudad</option>';
+    var cont = '<option value="">Municipio/Ciudad</option>';
     $.each(data,function(i, item){
       cont += '<option value="'+item.id+'">'+item.municipio+'</option>';
     });
@@ -2656,12 +2675,12 @@ function realizarBusqueda(bounds){
 
     var curr = 0;
     if (numPages > 1){
-      while(numPages > curr){
-        $('<li><a href="#" class="page_link" style="border: none;background: none;width: auto;padding: 3px;">'+(curr+1)+'</a></li>').appendTo('.pager');
-        curr++;
-      }
     }
 
+    while(numPages > curr){
+      $('<li><a href="#" class="page_link" style="border: none;background: none;width: auto;padding: 3px;">'+(curr+1)+'</a></li>').appendTo('.pager');
+      curr++;
+    }
     $('.pager .page_link:first').addClass('active');
 
     listElement.children().css('display', 'none');

@@ -4307,3 +4307,105 @@ function detallesError(error_id, element){
       $('#estatusError').val(estatus);
     },300);
 }
+
+function detalleCitaSecretaria(agenda_id){
+    var imagenUrl = '';
+    var nombreUsuario = '';
+    var nombreUbicacion = '';
+    var nombreServicio = '';
+    var fecha = '';
+    var hora = '';
+    var result = '';
+    var nota = '';
+
+    $.ajax( {
+      async: true,
+      url: '/secretaria/detalleCita',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        'agenda_id': agenda_id
+      },
+      success: function ( data ) {
+        if (data.result){
+          result = data.result;
+          imagenUrl = data.result.Usuario.Agendas[0].Paciente.Usuario.urlFotoPerfil;
+          if (!data.result.Usuario.Agendas[0].Paciente.Usuario.DatosGenerale.apellidoM) data.result.Usuario.Agendas[0].Paciente.Usuario.DatosGenerale.apellidoM = '';
+          nombreUsuario = data.result.Usuario.Agendas[0].Paciente.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.Agendas[0].Paciente.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Usuario.Agendas[0].Paciente.Usuario.DatosGenerale.apellidoM;
+          nombreUbicacion = data.result.Usuario.Agendas[0].Direccion.nombre;
+          nombreServicio = data.result.Usuario.Agendas[0].CatalogoServicio.concepto;
+          fecha = data.result.Usuario.Agendas[0].fechaHoraInicio.split('T')[0];
+          hora = data.result.Usuario.Agendas[0].fechaHoraInicio.split('T')[1].split(':00.')[0];
+
+          if (data.result.Usuario.Agendas[0].nota){
+            nota = data.result.Usuario.Agendas[0].nota;
+          }
+
+          bootbox.dialog({
+            backdrop: true,
+            onEscape: function () {
+                bootbox.hideAll();
+            },
+            className: 'Intermed-Bootbox',
+            title: '',
+            message:
+                '<div class="row">'+
+                  '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                    '<img src="'+imagenUrl+'" class="img-rounded img-responsive" style="margin-top:20px;">'+
+                  '</div>'+
+                  '<div class="col-md-9 col-sm-9 col-xs-9">'+
+                    '<div class="body-container"><div class="center-content">'+
+                      '<h2><strong>'+nombreUsuario+'</strong></h2>'+
+                    '</div></div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="row">'+
+                  '<div class="col-md-8 col-sm-8 s20">'+
+                    '<span><b>Fecha: </b>'+ fecha +'</span><br/>'+
+                    '<span><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+                    '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
+                    '<b>Servicio: </b>'+nombreServicio+'<br/>'+
+                  '</div>'+
+                  '<div class="col-md-4 col-sm-4">'+
+                    '<button class="btn btn-default btn-block s20" style="color: #5cb85c;font-weight: bold;">Reagendar</button>'+
+                    '<button class="btn btn-default btn-block s20" style="color: #f0ad4e;font-weight: bold;">Retrasar</button>'+
+                    '<button class="btn btn-default btn-block s20" style="color: #d43f3a;font-weight: bold;">Cancelar</button>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="row">'+
+                  '<div class="col-md-12 s20">'+
+                    '<label for="inputNotasCita">Notas: </label>'+
+                  '</div>'+
+                  '<div class="col-md-12 s20">'+
+                      '<textarea class="form-control custom-control s20" rows="7" style="resize:none" id="inputNotasCita" maxlength="250">'+ nota +'</textarea>'+
+                  '</div>'+
+
+                  '<div class="col-md-6 col-sm-4 col-xs-4 pull-right">'+
+                      '<div class="form-group">'+
+                          '<button class="btn btn-primary btn-md btn-block" id="btnRegMed"  onclick="guardarNotaSecretaria('+agenda_id+',\'inputNotasCita\')">Guardar</button>'+
+                      '</div>'+
+                  '</div>'+
+
+                  '<div class="col-md-2 col-sm-4 col-xs-4 pull-left">'+
+                      '<div class="form-group">'+
+                          '<button class="btn btn-danger btn-block" id="btnRegMed" onclick="bootbox.hideAll()">Cerrar</button>'+
+                      '</div>'+
+                  '</div>'+
+                '</div>'
+          });
+
+          $('.bootbox-close-button').css('margin-top','0px');
+          $('.bootbox-close-button').css('margin-right','5px');
+
+        }
+      },
+      error: function (err){
+        console.log('AJAX Error: ' + JSON.stringify(err));
+      }
+    });
+  //  alert(data.split("|")[0]);
+
+}
