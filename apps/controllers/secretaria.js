@@ -58,7 +58,7 @@ exports.index = function (object, req, res){
   }catch ( err ) {
     req.errorHandler.report(err, req, res);
   }
-};
+}
 
 exports.registrar = function (object, req, res){
   try{
@@ -219,7 +219,6 @@ exports.registrarcontoken = function (object, req, res){
   }catch ( err ) {
     req.errorHandler.report(err, req, res);
   }
-
 }
 
 exports.invitar = function ( object, req, res ) {
@@ -297,7 +296,7 @@ exports.invitar = function ( object, req, res ) {
   }catch ( err ) {
     req.errorHandler.report(err, req, res);
   }
-};
+}
 
 exports.buscar = function (object, req, res){
   //console.log('Filtro: ' + JSON.stringify(object.filtro));
@@ -371,7 +370,6 @@ exports.buscar = function (object, req, res){
         });
       });
     });
-
   }
 }
 
@@ -756,8 +754,24 @@ exports.medicoOficina = function (object, req, res){
       attributes: ['id']
     }]
   }).then(function(usuariomedico){
+    /*
+    UsuarioMedico: {
+      "usuarioUrl":"0000001",
+      "urlPersonal":null,
+      "urlFotoPerfil":"/garage/profilepics/dpp.png",
+      "DatosGenerale":{
+        "id":2,
+        "nombre":"Medico",
+        "apellidoP":"De Prueba",
+        "apellidoM":"Uno",
+        "usuario_id":1
+      },
+      "Medico":{
+        "id":1
+      }
+    }
+    */
     console.log('UsuarioMedico: ' + JSON.stringify(usuariomedico));
     res.render('secretaria/oficinaMedico',usuariomedico);
-    //res.send('ver oficina medico ' + JSON.stringify(usuariomedico));
   });
 }
