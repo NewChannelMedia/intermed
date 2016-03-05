@@ -48,4 +48,16 @@ module.exports = function (object){
   app.post('/secretaria/medico/eliminar', function (req, res){
     intermed.callController( 'secretaria', 'medicoEliminar', req.body, req, res );
   });
+
+  app.post('/secretaria/medicos/traerCitasProximas', function (req, res){
+    intermed.callController( 'secretaria', 'citasProximas', req.body, req, res );
+  });
+
+  app.post('/secretaria/detalleCita', function (req, res){
+    intermed.callController( 'secretaria', 'detalleCita', req.body, req, res );
+  });
+
+  app.post('/secretaria/cita/guardarNota',function (req, res){
+    intermed.callController( 'secretaria', 'citaGuardarNota', req.body, req, res );
+  });
 }

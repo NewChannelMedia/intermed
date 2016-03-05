@@ -178,6 +178,37 @@ module.exports = function (object){
     }
   });
 
+  app.get( '/s/:usuarioUrl', function ( req, res, next ) {
+    routeLife( 'plataforma2', 'plataforma', hps );
+    if (req.session.passport && req.session.passport.user.id && req.session.passport.user.Secretaria_id>0){
+      models.MedicoSecretaria.findOne({
+        where: {
+          activo: 1,
+          secretaria_id: req.session.passport.user.Secretaria_id
+        },
+        include: [{
+          model: models.Medico,
+          attributes: ['id'],
+          include: [{
+            model: models.Usuario,
+            attributes: ['usuarioUrl'],
+            where: {
+              usuarioUrl: req.params.usuarioUrl
+            }
+          }]
+        }]
+      }).then(function(MedicoSecretaria){
+        if (MedicoSecretaria){
+          intermed.callController('secretaria','medicoOficina', req.params, req, res);
+        } else {
+          next();
+        }
+      });
+    } else {
+      next();
+    }
+  });
+
   /*RUTA CARGAR PERFIL (DEJAR SIEMPRE AL FINAL)*/
   /*Dejando al final se evita que cada que se entre al router se haga una consulta para ver si se trata de un usuario*/
   app.get( '/:usuario', function ( req, res, next) {

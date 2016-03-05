@@ -55,6 +55,7 @@ app.use( '/cambiar/historial', express.static( __dirname + '/../public' ) );
 app.use( '/cambiar/intermed', express.static( __dirname + '/../public' ) );
 app.use( '/historiales', express.static( __dirname + '/../public' ) );
 app.use( '/medico', express.static( __dirname + '/../public' ) );
+app.use( '/s', express.static( __dirname + '/../public' ) );
 app.use( '/secretaria', express.static( __dirname + '/../public' ) );
 
 var routeLife = function ( plantilla, carpeta, helpers ) {

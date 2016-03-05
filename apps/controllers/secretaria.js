@@ -463,7 +463,7 @@ exports.agregar = function (object, req, res){
 
 exports.eliminar = function (object, req, res){
   models.MedicoSecretaria.findOne({
-    where: {medico_id: req.session.passport.user.Medico_id, secretaria_id: object.secretaria_id}
+    where: {medico_id: req.session.passport.user.Medico_id, secretaria_id: object.secretaria_id, activo:1}
   }).then(function(MedicoSecretaria) {
     if (MedicoSecretaria){
       models.Secretaria.findOne({
@@ -618,5 +618,146 @@ exports.medicoEliminar = function (object, req, res){
     } else {
       res.status(200).json({success:false});
     }
+  });
+}
+
+exports.citasProximas = function (object, req, res){
+  models.Medico.findAll({
+    attributes: ['id'],
+    include: [{
+      model: models.MedicoSecretaria,
+      where: {
+        medico_id: {
+          $in: object.medicos
+        },
+        activo: 1,
+        secretaria_id: req.session.passport.user.Secretaria_id
+      },
+      attributes: ['id']
+    },{
+      model: models.Usuario,
+      attributes: ['id'],
+      include: [{
+        model: models.Agenda,
+        where: {
+          fechaHoraInicio: {
+            $between: [object.fechainicio,object.fechafin]
+          }
+        },
+        include: [{
+          model: models.Direccion,
+          attributes: ['nombre'],
+        },{
+          model: models.CatalogoServicios,
+          attributes: ['concepto'],
+        },{
+          model: models.Paciente,
+          attributes: ['id'],
+          include: [{
+            model: models.Usuario,
+            attributes: ['id'],
+            include: [{
+              model: models.DatosGenerales
+            }]
+          }]
+        }]
+      }]
+    }]
+  }).then(function(result){
+      res.status(200).json({success:true,result:result});
+  });
+}
+
+exports.detalleCita = function (object, req, res){
+  models.Medico.findOne({
+    attributes: ['id'],
+    include: [{
+      model: models.MedicoSecretaria,
+      where: {
+        secretaria_id: req.session.passport.user.Secretaria_id,
+        activo: 1
+      },
+      attributes: ['id']
+    },{
+      model: models.Usuario,
+      attributes: ['id'],
+      include: [{
+        model: models.Agenda,
+        where: {
+          id: object.agenda_id
+        },
+        include: [{
+          model: models.Direccion,
+          attributes: ['nombre'],
+        },{
+          model: models.CatalogoServicios,
+          attributes: ['concepto'],
+        },{
+          model: models.Paciente,
+          attributes: ['id'],
+          include: [{
+            model: models.Usuario,
+            attributes: ['id','urlFotoPerfil'],
+            include: [{
+              model: models.DatosGenerales
+            }]
+          }]
+        }]
+      }]
+    }]
+  }).then(function(result){
+      res.status(200).json({success:true,result:result});
+  });
+}
+
+exports.citaGuardarNota = function (object, req, res){
+  models.Agenda.findOne({
+    where: {
+      id: object.agenda_id
+    },
+    include: [{
+      model: models.Usuario,
+      attributes: ['id'],
+      include: [{
+        model: models.Medico,
+        attributes: ['id'],
+        include: [{
+          model: models.MedicoSecretaria,
+          attributes: ['id'],
+          where:{
+            secretaria_id: req.session.passport.user.Secretaria_id,
+            activo: 1
+          }
+        }]
+      }]
+    }]
+  }).then(function(agenda){
+    if (agenda){
+      agenda.update({nota:object.nota}).then(function(result){
+        res.status(200).json({success:true,result:result});
+      });
+    } else {
+      res.status(200).json({success:false,result:agenda});
+    }
+  });
+}
+
+exports.medicoOficina = function (object, req, res){
+  var usuarioUrl = object.usuarioUrl;
+  models.Usuario.findOne({
+    where: {
+      usuarioUrl: usuarioUrl
+    },
+    attributes: ['usuarioUrl','urlPersonal','urlFotoPerfil'],
+    include: [{
+      model: models.DatosGenerales
+    },{
+      model: models.Medico,
+      attributes: ['id']
+    }]
+  }).then(function(usuariomedico){
+    console.log('UsuarioMedico: ' + JSON.stringify(usuariomedico));
+    res.render('secretaria/oficinaMedico',usuariomedico);
+    //res.send('ver oficina medico ' + JSON.stringify(usuariomedico));
   });
 }
