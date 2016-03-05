@@ -10,8 +10,8 @@
 
     <form method="POST" name="frmRegCita" id="frmRegCita">
       <input type="hidden" id="id" name="id">
-      <input type="hidden" id="paciente_id" name="paciente_id" value="2">
-      <input type="hidden" id="medico_id" name="medico_id" value="1">
+      <input type="hidden" id="paciente_id" name="paciente_id" value="3">
+      <input type="hidden" id="usuario_id" name="usuario_id" value="1">
       <input type="hidden" id="fecha" name="fecha" />
       <input type="hidden" id="fechaFin" name="fechaFin" />
 
@@ -111,22 +111,20 @@ function generarCalendario()
       slotLabelInterval : duracionServicio.substring(0, 5),
       slotDuration: '00:30',
       header: {
-          center: false,
-          right: false,
-          left: false
-      },
+				left: 'prev,next today',
+				center: 'title',
+				right: 'agendaWeek'
+			},
       events: {
         url: '/seleccionaHorarios/' +  $('#lstUbicacion').val() +  "/" + $('#paciente_id').val()
+        //url: '/seleccionaHorarios/' +  $('#lstUbicacion').val()
       },
-      /*
-      minTime: '6:00',
-      maxTime: '24:00',*/
       defaultDate: new Date(),
       lang: 'es',
-      selectable: true,
+      selectable: false,
       selectHelper: false,
       displayEventTime: true,
-      editable: true,
+      editable: false,
       eventLimit: true,
       overlap: false,
       slotEventOverlap: false,
@@ -138,11 +136,12 @@ function generarCalendario()
         var fechaInicial = new Date(date)
         var final = fecha.add(horas[0], 'h');
         var final = final.add(horas[1], 'm');
+        //var fechaFinal = new Date(final)
 
         fecha = new Date(date)
         fecha.setHours(fecha.getHours()  +  6);
 
-        if ( validaEvento(fecha, final)) {
+        if ( validaEvento(fechaInicial, final)) {
           var validacionAgenda =  validaAgenda(fecha, final);
 
           if ( validacionAgenda == 1 ) {
@@ -184,7 +183,6 @@ function generarCalendario()
         }
       },
       eventMouseover: function (event, jsEvent, view) {
-        console.log(event.title);
         if (event.id != null && event.id.substring(0,4) != 'cita' && (event.title != 'Cancelada' && event.title != 'No disponible')) {
           $(this).append('<span id=\"' + event._id + '\">Clic para eliminar</span>');
         }
@@ -196,7 +194,11 @@ function generarCalendario()
       },
       eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
         revertFunc();
-      }
+      },
+      eventOverlap: function(stillEvent, movingEvent) {
+       //return stillEvent.allDay && movingEvent.allDay;
+       revertFunc();
+     }
   });
 }
 
@@ -229,10 +231,20 @@ function validaAgenda(inicioEvento, finEvento) {
   {
       for (i = 0; i <= h.length-1; i++) {
           evento = h[i];
+            var fechaInicio =  new Date(evento.start);
+            var fechaFin =  new Date(evento.end);
+            var fechaFinEvento =  new Date(finEvento);
+            //finEvento = new Date(finEvento);
+
+            fechaInicio.setHours(fechaInicio.getHours()+6);
+            fechaFin.setHours(fechaFin.getHours()+6);
+            fechaFinEvento.setHours(fechaFinEvento.getHours()+6);
+            //finEvento.setHours(finEvento.getHours()+6);
           // Citas de otros pacientes
-          if ((evento.rendering != 'background') && (evento.id.substring(0,4) == 'cita'))
+          if ((evento.rendering != 'background') && (evento.id != null) && (evento.id.substring(0,4) == 'cita'))
           {
-              if ( !((inicioEvento < evento.start ) &&  ( finEvento <= evento.start )) || (inicioEvento >= evento.end ) )
+              console.log(inicioEvento + ' ' + fechaFinEvento +  ' ' + fechaInicio +  ' ' + fechaFin +  ' ' + evento.id)
+              if ((fechaFinEvento > fechaInicio ) && (inicioEvento <= fechaFin))
               {
                 valido = 3;
                 break;
@@ -240,13 +252,14 @@ function validaAgenda(inicioEvento, finEvento) {
           }
 
           // Citas del mismo paciente
-          if ((evento.rendering != 'background') && (evento.id.substring(0,4) != 'cita')  &&  (evento.title != 'Cancelada'))
+          if ((evento.rendering != 'background') && (evento.id != null) && (evento.id.substring(0,4) != 'cita')  &&  (evento.title != 'Cancelada'))
           {
-            var fechaEv =  new Date(evento.start);
-            if  (  fechaEv.getDay() == inicioEvento.getDay())
+            if  (   fechaInicio.getFullYear() == inicioEvento.getFullYear() &&
+                    fechaInicio.getMonth() == inicioEvento.getMonth() &&
+                    fechaInicio.getDate() == inicioEvento.getDate())
             {
-                valido = 4;
-                break;
+              //  valido = 4;
+              //  break;
             }
           }
       };
@@ -261,10 +274,9 @@ function validaEvento(inicioEvento, finEvento) {
 
   for (i = 0; i <= h.length-1; i++) {
       evento = h[i];
-
       if (evento.rendering == 'background')
       {
-            if (( inicioEvento >= evento.start ) &&  ( finEvento <= evento.end ))
+            if (( moment(inicioEvento) >= evento.start ) &&  ( moment(finEvento) <= evento.end ))
             {
               valido = true;
               break;
@@ -307,8 +319,7 @@ function obtenerHorarios() {
                   fin: evento.end.format('YYYY-M-D') + " "  + fin.format('HH:mm'),
               };
               objhorarios.push(horario);
-
-              console.log('horarios' +   evento.start)
+            //  console.log('horarios' +   evento.start)
           }
         }
     };
@@ -324,7 +335,7 @@ function cancelaCita(id) {
     data: {
       id: id,
       paciente_id: $('#paciente_id').val(),
-      usuario_id: $('#medico_id').val(),
+      usuario_id: $('#usuario_id').val(),
     },
     success: function ( data ) {
       if  ( data.err != null){

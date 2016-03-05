@@ -967,7 +967,7 @@ exports.informacionUsuario = function (object, req, res){
         res.send(JSON.parse(JSON.stringify([])));
       }
   });
-},
+}
 
 exports.revivirSesion = function (object, req, res){
   models.Usuario.findOne({
@@ -980,7 +980,3 @@ exports.revivirSesion = function (object, req, res){
     generarSesion( req, res, usuario_id, false, false);
   });
 }
-
-,
-
-    

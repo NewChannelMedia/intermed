@@ -8,10 +8,36 @@
 <section id="principal">
   <div class="container">
 
+
+    <div id="createEventModal" class="modal hide" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3 id="myModalLabel1">Aplazar Cita</h3>
+        </div>
+        <div class="modal-body">
+        <form id="createAppointmentForm" class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="inputPatient">Patient:</label>
+                <div class="controls">
+                    <input type="text" name="timpo" id="tiempo" tyle="margin: 0 auto;">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="when">When:</label>
+                <div class="controls controls-row" id="when" style="margin-top:5px;">
+                </div>
+            </div>
+        </form>
+        </div>
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary" id="submitButton">Aplazar</button>
+        </div>
+    </div>
+
     <form method="POST" name="frmRegCita" id="frmRegCita">
       <input type="hidden" id="id" name="id">
       <input type="hidden" id="paciente_id" name="paciente_id" value="1">
-      <input type="hidden" id="medico_id" name="medico_id" value="{{id}}">
+      <input type="hidden" id="usuario_id" name="usuario_id" value="{{id}}">
       <input type="hidden" id="fecha" name="fecha" />
       <input type="hidden" id="fechaFin" name="fechaFin" />
 
@@ -64,7 +90,7 @@
 <script>
 
   var valido = true;
-  var duracionServicio = '02:00';
+  var duracionServicio = '01:00';
   var precioServicio = 0;
   var horariosDireccion = 0;
   var horariosMedico = 0;
@@ -73,6 +99,10 @@ $(document).ready(function () {
     generarCalendario();
 });
 
+function mostrarForma()
+{
+  $('#createEventModal').modal('show');
+}
 
 function generarCalendario()
 {
@@ -80,25 +110,18 @@ function generarCalendario()
       firstDay:1,
       defaultView: 'agendaWeek',
       height: 350,
-      allDaySlot: false,
-      defaultDate: moment().format("YYYY-MM-DD"),
+      //allDaySlot: false,
       slotLabelFormat: 'h:mm a',
       businessHours: true,
       slotLabelInterval : duracionServicio.substring(0, 5),
-      /*businessHours: {
-            start: '06:00',
-            end: '22:59',
-            dow: [ 1, 2, 3, 4, 5, 6, 7 ]
-      },*/
       slotDuration: '00:30',
-      //columnFormat: 'dddd',
       header: {
-          center: false,
-          right: false,
-          left: false
+        left: 'prev,next today',
+        center: 'title',
+        right: 'agendaWeek'
       },
       events: {
-        url: '/agendaMedico/' +  $('#medico_id').val()
+        url: '/agendaMedico/' +  $('#usuario_id').val()
       },
       /*
       minTime: '6:00',
@@ -106,39 +129,82 @@ function generarCalendario()
       defaultDate: new Date(),
       lang: 'es',
       selectable: true,
-      selectHelper: false,
+      selectHelper: true,
       displayEventTime: true,
       editable: true,
       eventLimit: true,
-      overlap: false,
-      slotEventOverlap: false,
+      durationEditable: true,
+      //slotEventOverlap: false,
       dayClick: function (date, allDay, jsEvent, view) {
-        revertFunc();
-        $('#calendar').fullCalendar('unselect');
+        var title = prompt('Evento:');
+        var eventData;
+        if (title) {
+        	eventData = {
+        		title: title,
+        		start: start,
+            end: end,
+            color: '#000000'
+          }
+          registraEvento(eventData);
+          $('#calendar').fullCalendar('removeEvents');
+          $('#calendar').fullCalendar('refetchEvents');
+        }
       },
       eventClick: function (event, jsEvent, view) {
-        //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
-        var r = confirm("Esta seguro de cancelar la cita ?");
-        if  ( r == true)
-        {
-            if  (cancelaCita(event._id))
-            {
-              $('#calendar').fullCalendar('removeEvents', event._id);
-              $('#calendar').fullCalendar('unselect');
-            }
+        var tiempo = prompt('Tiempo:');
+        if (tiempo) {
+          aplazaCita(tiempo, event);
+          alert('Se ha enviado al solicitud de cambio de Cita !');
         }
-        //}
+        /*
+        $('#createEventModal').modal('show');
+        */
+        /*
+        if (event.id != null && event.id.substring(0,4) == 'Cita' && event.title != 'Cancelada') {
+          var r = confirm("Esta seguro de cancelar la cita ?");
+          if  ( r == true)
+          {
+              if  (cancelaCita(event._id))
+              {
+                $('#calendar').fullCalendar('removeEvents', event._id);
+                $('#calendar').fullCalendar('unselect');
+              }
+          }
+        }*/
+      },
+      select: function (start, end) {
+        var title = prompt('Evento:');
+        var eventData;
+        if (title) {
+        	eventData = {
+        		title: title,
+        		start: start,
+            end: end,
+            color: '#000000'
+          }
+          registraEvento(eventData);
+          $('#calendar').fullCalendar('removeEvents');
+          $('#calendar').fullCalendar('refetchEvents');
+        }
       },
       eventMouseover: function (event, jsEvent, view) {
-        //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
+        if (event.id != null && event.id.substring(0,4) == 'Cita' && event.title != 'Cancelada') {
           $(this).append('<span id=\"' + event._id + '\">Clic para cancelar</span>');
-        //}
+          //$(this).append('<span id=\"ev_' + event._id + '\" onClick=mostrarForma();>Clic para aplazar</span>');
+        }
       },
       eventMouseout: function (event, jsEvent, view) {
           $('#' + event._id).remove();
+          $('#ev_' + event._id).remove();
       },
-      eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
-        revertFunc();
+      eventResize: function(event, delta, revertFunc) {
+        //alert(event.title + " end is now " + event.end.format());
+        if (!confirm("Desea Modificar el Evento ?")) {
+            revertFunc();
+        }
+        else {
+
+        }
       }
   });
 }
@@ -158,42 +224,125 @@ function quitaEventos() {
   };
 }
 
-function obtenerHorarios() {
-    var objhorarios = [];
-    var h = $('#calendar').fullCalendar('clientEvents');
-    var evento;
-    var i;
-    var inicio = new moment();
-    var fin = new moment();
-    var fecha;
+function aplazaCita(tiempo, evento)
+{
+  var inicio = new moment(evento.start);
+  var aplazoInicio = new moment(evento.start);
+  var fin = new moment(evento.end);
+  var aplazoFin = new moment(evento.end);
+  var hora  =  tiempo.split(':');
 
-    objhorarios = [];
-    for (i = 0; i <= h.length-1; i++) {
-        evento = h[i];
+  aplazo = inicio.add(hora[0], 'hours');
+  aplazo = inicio.add(hora[1], 'minutes');
 
-        if (evento.rendering != 'background')
-        {
-          if  (evento.id == undefined )
-          {
-              inicio.hours(evento.start._d.getUTCHours());
-              inicio.minute(evento.start._d.getUTCMinutes());
+  aplazoFin = fin.add(hora[0], 'hours');
+  aplazoFin = fin.add(hora[1], 'minutes');
 
-              fin.hours(evento.end._d.getUTCHours());
-              fin.minute(evento.end._d.getUTCMinutes());
+  var datos =  {
+    id: evento.id,
+    tiempo: tiempo,
+    fecha : aplazo.format('YYYY-M-D') + " "  + aplazo.format('HH:mm'),
+    fechaFin:  aplazoFin.format('YYYY-M-D') + " "  + aplazoFin.format('HH:mm'),
+  }
 
-              fin = fin.subtract(6, 'hours');
-              inicio = inicio.subtract(6, 'hours');
+  $.ajax({
+    url: '/aplazaCita',
+    type: 'POST',
+    dataType: "json",
+    data: datos,
+    cache: false,
+    success: function( data ) {
+      if ( data.error == null ) {
+           alert("Se ha enviado la solicitud de aplazo !");
+           return true;
+      }
+      else {
+        return false;
+      }
+    },
+    error: function( jqXHR, textStatus, err ) {
+    //  console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    }
+  })
+}
 
-              var horario = {
-                  inicio: inicio.format('YYYY-M-D') + " "  + inicio.format('HH:mm'),
-                  fin: fin.format('YYYY-M-D') + " "  + fin.format('HH:mm'),
-              };
-              objhorarios.push(horario);
-          }
-        }
-    };
-    return objhorarios;
-};
+function registraEvento(evento)
+{
+  var inicio = new moment(evento.start);
+  var fin = new moment(evento.end);
+
+  fin = fin.subtract(6, 'hours');
+  inicio = inicio.subtract(6, 'hours');
+
+  var datos =  {
+    id: $('#usuario_id').val(),
+    fecha : inicio.format('YYYY-M-D') + " "  + inicio.format('HH:mm'),
+    fechaFin:  fin.format('YYYY-M-D') + " "  + fin.format('HH:mm'),
+    titulo: evento.title
+  }
+
+  $.ajax({
+    url: '/agregaEventoMedico',
+    type: 'POST',
+    dataType: "json",
+    data: datos,
+    cache: false,
+    success: function( data ) {
+      if ( data.error == null ) {
+           alert("Se ha guardado el evento !");
+           $('#calendar').fullCalendar('removeEvents');
+           $('#calendar').fullCalendar('refetchEvents');
+           return true;
+      }
+      else {
+        return false;
+      }
+    },
+    error: function( jqXHR, textStatus, err ) {
+    //  console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    }
+  })
+}
+
+function modificaEvento(evento)
+{
+  //console.log(evento)
+  var inicio = new moment(evento.start);
+  var fin = new moment(evento.end);
+
+  fin = fin.subtract(6, 'hours');
+  inicio = inicio.subtract(6, 'hours');
+
+  var datos =  {
+    fecha : inicio.format('YYYY-M-D') + " "  + inicio.format('HH:mm'),
+    fechaFin:  fin.format('YYYY-M-D') + " "  + fin.format('HH:mm'),
+    titulo: evento.title,
+    id: evento.id,
+  }
+
+  $.ajax({
+    url: '/cambiaEventoMedico',
+    type: 'POST',
+    dataType: "json",
+    data: datos,
+    cache: false,
+    success: function( data ) {
+      if ( data.error == null ) {
+           alert("Se ha guardado el evento !");
+           //$('#calendar').fullCalendar('removeEvents');
+           //$('#calendar').fullCalendar('refetchEvents');
+           return true;
+      }
+      else {
+      //  alert(data.error.message);
+        return false;
+      }
+    },
+    error: function( jqXHR, textStatus, err ) {
+    //  console.error( 'AJAX ERROR: (registro 166) : ' + err );
+    }
+  })
+}
 
 function cancelaCita(id) {
   $.ajax( {
@@ -203,7 +352,7 @@ function cancelaCita(id) {
     cache: false,
     data: {
       id: id,
-      usuario_id: $('#medico_id').val(),
+      usuario_id: $('#usuario_id').val(),
     },
     success: function ( data ) {
       if  ( data.err != null){

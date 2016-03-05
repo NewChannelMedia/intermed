@@ -9,7 +9,7 @@ exports.index = function (req, res) {
 exports.mostrar = function (req, res) {
     models.Especialidades.findAll().then(function (datos) {
         res.render('registrado', {
-            title: 'REgistrado'            
+            title: 'REgistrado'
         });
     });
 };

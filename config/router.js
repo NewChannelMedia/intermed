@@ -999,7 +999,7 @@ var iniciar = function () {
 
   //Muestra la pantalla para generar una cita
   app.get('/generarCita', function(req, res) {
-    var datos =  { id : 1}
+    var datos =  { id : 12}
     rutas.routeLife('main','main',hps);
     intermed.callController('agenda','generarCita', datos, req, res);
   });
@@ -1308,12 +1308,12 @@ var iniciar = function () {
 
     //Obtiene Horarios por direccion
     app.get('/seleccionaHorarios/:id', function(req, res) {
-      intermed.callController('agenda','seleccionaHorarios', {id: req.params.id}, req, res);
+      intermed.callController('agenda','seleccionaHorarios', {id: req.params.id, inicio: req.query.start, fin:req.query.end }, req, res);
     });
 
     //Obtiene Horarios por direccion
     app.get('/seleccionaHorarios/:id/:paciente', function(req, res) {
-      intermed.callController('agenda','seleccionaHorarios', {id: req.params.id, paciente_id: req.params.paciente}, req, res);
+      intermed.callController('agenda','seleccionaHorarios', {id: req.params.id, paciente_id: req.params.paciente, inicio: req.query.start,  fin:req.query.end }, req, res);
     });
 
     //Obtiene Horarios por usuario
@@ -1615,11 +1615,11 @@ var iniciar = function () {
 
     app.get('/agendaMedico/:id', function(req,res){
         //rutas.routeLife('main','main',hps);
-        intermed.callController('agenda', 'seleccionaAgendaMedico', {id: req.params.id}, req, res);
+        intermed.callController('agenda', 'seleccionaAgendaMedico', {id: req.params.id, inicio: req.query.start, fin:req.query.end}, req, res);
     });
 
     app.get('/muestraAgendaMedico', function(req,res){
-        var datos =  { id : 1}
+        var datos =  { id : 12}
         rutas.routeLife('main','main',hps);
         intermed.callController('agenda','muestraAgendaMedico', datos, req, res);
     });
@@ -1679,6 +1679,37 @@ var iniciar = function () {
     });
     //fin rutas cargos
 
+
+    // Inserta el evento
+    app.post('/agregaEventoMedico', function(req, res) {
+      intermed.callController('agenda','agregaEvento', req.body, req, res);
+    });
+
+    // modifica el evento
+    app.post('/cambioEventoMedico', function(req, res) {
+      intermed.callController('agenda','modificaEvento', req.body, req, res);
+    });
+
+    // cancela el evento
+    app.post('/cancelaEventoMedico', function(req, res) {
+      intermed.callController('agenda','cancelaEvento', req.body, req, res);
+    });
+
+    // aplaza la cita
+    app.post('/aplazaCita', function(req, res) {
+      intermed.callController('agenda','solicitarCambioCita', req.body, req, res);
+    });
+
+    app.get('/aceptarCambioCita/:id', function(req, res) {
+     intermed.callController('agenda','aceptarCambioCita', {id: req.params.id, usuario_id:12}, req, res);
+    });
+
+    app.get('/rechazarCambioCita/:id', function(req, res) {
+     intermed.callController('agenda','rechazarCambioCita', {id: req.params.id, usuario_id:12}, req, res);
+    });
+
+
+
 }
 
 var manejarPerfiles = function(){
@@ -1723,6 +1754,8 @@ var manejarPerfiles = function(){
   app.post('/EstatusCargoRechazadoSelecciona', function (req, res) {
       intermed.callController('CargosUsuarios', 'EstatusCargoRechazadoSelecciona', req.body, req, res);
   });
+
+
 
 }
 
