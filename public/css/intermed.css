@@ -32,6 +32,10 @@ a:visited {
   background-color: #2c8fbd!important;
 }
 
+.noPadding {
+  padding: 0!important;
+}
+
 input, select, button {
   border-radius: 0!important;
 }
@@ -1836,8 +1840,8 @@ hr {
   -moz-border-top-colors: none;
   border: 0;
   height: 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #717171;
+  border-bottom: 0;
 }
 #recomendarA tr td img{
   height: 30px;
@@ -2735,6 +2739,10 @@ th.fc-day-header.fc-widget-header{
   background-color: #3d8fb1;
 }
 
+#regMedStepOne #tipodepagoTabs .active .btn{
+  background-color: #2c8fbd;
+  color: #ffffff;
+}
 
 .code-container img {
   width: auto;
@@ -2852,11 +2860,6 @@ th.fc-day-header.fc-widget-header{
   background-color:#50A8DE;
   border-bottom: none;
 }
-
-.noPadding {
-  padding: 0;
-}
-
 
 /*.regSectionTitle .glyphicon{
   background-color: white;
