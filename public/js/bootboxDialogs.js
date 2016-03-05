@@ -4369,6 +4369,7 @@ function detalleCitaSecretaria(agenda_id){
                     '<b>Servicio: </b>'+nombreServicio+'<br/>'+
                   '</div>'+
                   '<div class="col-md-4 col-sm-4">'+
+                    '<button class="btn btn-default btn-block s20" style="color: #5cb85c;font-weight: bold;">Reagendar</button>'+
                     '<button class="btn btn-default btn-block s20" style="color: #f0ad4e;font-weight: bold;">Retrasar</button>'+
                     '<button class="btn btn-default btn-block s20" style="color: #d43f3a;font-weight: bold;">Cancelar</button>'+
                   '</div>'+
