@@ -72,14 +72,11 @@
                 <ul class="nav nav-pills nav-justified navigator-inner-section-menu h57-cond s20" id="topNav">
                   {{#ifTipoMedico}}
                   <li>
-                    <a href="{{base_url}}{{#ifSessionValNN 'urlPersonal'}}{{valSession 'urlPersonal'}}{{else}}{{valSession 'usuarioUrl'}}{{/ifSessionValNN}}">Perfil</a>
-                  </li>
-                  <li>
                     <a href="{{base_url}}" id="oficina">Oficina</a>
                   </li>
-
-
-
+                  <li>
+                    <a href="{{base_url}}{{#ifSessionValNN 'urlPersonal'}}{{valSession 'urlPersonal'}}{{else}}{{valSession 'usuarioUrl'}}{{/ifSessionValNN}}">Perfil</a>
+                  </li>
                   <li>
                     <a id="notificationIcon" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="mostrarNotificaciones()">
                       Not
@@ -99,7 +96,7 @@
                     <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span></a>
                     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
                       <li><a href="/configuraciones">&nbsp;Configuracion</a></li>
-                      <li><a href="/configuraciones">&nbsp;Secretarias</a></li>
+                      <li><a href="/secretaria">&nbsp;Secretarias</a></li>
                       <li><a href="/logout">&nbsp;Salir</a></li>
                     </ul>
                   </li>
@@ -120,39 +117,82 @@
                       </form>
                     </div>
                   </li>
-
-                  {{else}}
-                      {{#ifTipoPaciente}}
-                      <li>
-                        <a href="{{base_url}}{{#ifSessionValNN 'urlPersonal'}}{{valSession 'urlPersonal'}}{{else}}{{valSession 'usuarioUrl'}}{{/ifSessionValNN}}">Perfil</a>
-                      </li>
-
-                      <li class="dropdown">
-                        <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span></a>
-                        <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
-                          <li><a href="/configuraciones">&nbsp;Configuracion</a></li>
-                          <li><a href="/logout">&nbsp;Salir</a></li>
-                        </ul>
-                      </li>
-                      <li class="visible-sm dropdown navigator-dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-                          Buscar
-                        </a>
-                        <div class="dropdown-menu dropdown-form panel navigator-dropdown-panel">
-                          <form method="POST" action="http://localhost:3000/buscar" class="form-inline" onsubmit="return false;">
-                            <div class="input-group navbar-search navigator-inner-section-cell h65-medium">
-                              <input type="text" class="form-control input-lg ui-autocomplete-input" id="buscadorInternoDropDown" name="" placeholder="Search for people, plaasdfasdfce or things" required="" style="width:300px" autocomplete="off">
-                              <span class="input-group-btn">
-                                <button class="btn btn-default btn-lg" type="button">
-                                  <span class="glyphicon glyphicon-search"></span>
-                                </button>
-                              </span>
-                            </div>
-                          </form>
-                        </div>
-                      </li>
-                      {{/ifTipoPaciente}}
                   {{/ifTipoMedico}}
+
+                  {{#ifTipoPaciente}}
+                  <li>
+                    <a href="{{base_url}}{{#ifSessionValNN 'urlPersonal'}}{{valSession 'urlPersonal'}}{{else}}{{valSession 'usuarioUrl'}}{{/ifSessionValNN}}">Perfil</a>
+                  </li>
+
+                  <li>
+                    <a id="notificationIcon" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="mostrarNotificaciones()">
+                      Not
+                      <span id="totalNotificaciones" class="badge" style="position:absolute; margin-top:-38px; right:0px"></span>
+                    </a>
+                    <ul class="dropdown-menu notificationDropdown media-list" style="left:auto;right:0;margin-right:0px;">
+                      <div  id="notificacinesList">
+
+                      </div>
+                      <div style="padding:10px;background-color:#DDD;margin-bottom:-5px;margin-top:10px;">
+                        <a href="{{base_url}}notificaciones" class="text-center" style="text-align:center">Ver todas</a>
+                      </div>
+                    </ul>
+                  </li>
+
+                  <li class="dropdown">
+                    <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
+                      <li><a href="/configuraciones">&nbsp;Configuracion</a></li>
+                      <li><a href="/logout">&nbsp;Salir</a></li>
+                    </ul>
+                  </li>
+                  <li class="visible-sm dropdown navigator-dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                      Buscar
+                    </a>
+                    <div class="dropdown-menu dropdown-form panel navigator-dropdown-panel">
+                      <form method="POST" action="http://localhost:3000/buscar" class="form-inline" onsubmit="return false;">
+                        <div class="input-group navbar-search navigator-inner-section-cell h65-medium">
+                          <input type="text" class="form-control input-lg ui-autocomplete-input" id="buscadorInternoDropDown" name="" placeholder="Search for people, plaasdfasdfce or things" required="" style="width:300px" autocomplete="off">
+                          <span class="input-group-btn">
+                            <button class="btn btn-default btn-lg" type="button">
+                              <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                          </span>
+                        </div>
+                      </form>
+                    </div>
+                  </li>
+                  {{/ifTipoPaciente}}
+
+                  {{#ifTipoSecretaria}}
+
+                  <li>
+                    <a href="{{base_url}}">Dashboard</a>
+                  </li>
+
+                  <li>
+                    <a id="notificationIcon" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="mostrarNotificaciones()">
+                      Not
+                      <span id="totalNotificaciones" class="badge" style="position:absolute; margin-top:-38px; right:0px"></span>
+                    </a>
+                    <ul class="dropdown-menu notificationDropdown media-list" style="left:auto;right:0;margin-right:0px;">
+                      <div  id="notificacinesList">
+
+                      </div>
+                      <div style="padding:10px;background-color:#DDD;margin-bottom:-5px;margin-top:10px;">
+                        <a href="{{base_url}}notificaciones" class="text-center" style="text-align:center">Ver todas</a>
+                      </div>
+                    </ul>
+                  </li>
+                  <li class="dropdown">
+                    <a data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span></a>
+                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
+                      <li><a href="/configuraciones">&nbsp;Configuracion</a></li>
+                      <li><a href="/logout">&nbsp;Salir</a></li>
+                    </ul>
+                  </li>
+                  {{/ifTipoSecretaria}}
                 </ul>
               </div>
             </div>
@@ -198,6 +238,7 @@
   <script src="js/utils_generales.js"></script>
   <script src="js/utils_medico.js"></script>
   <script src="js/utils_paciente.js"></script>
+  <script src="js/utils_secretaria.js"></script>
   <script src="js/configuraciones.js"></script>
   <script src="js/utils-admin.js"></script>
   <link href="css/fullcalendar.min.css" rel="stylesheet" />

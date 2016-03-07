@@ -78,7 +78,11 @@ exports.iniciarSesion = function ( object, req, res ) {
       }
     } ).then( function ( usuario ) {
       if ( usuario ) {
-        generarSesion( req, res, usuario.id, false , true);
+        var redirect = false;
+        if (object.redirect){
+          redirect = true;
+        }
+        exports.generarSesion( req, res, usuario.id, false , true);
       }
       else {
         //Usuario o contraseña incorrectos
@@ -116,7 +120,6 @@ exports.registrarUsuario = function ( object, req, res ) {
     models.sequelize.transaction( {
         isolationLevel: models.Sequelize.Transaction.ISOLATION_LEVELS.SERIALIZABLE
       }, function ( t ) {
-
         if ( object[ 'tipoRegistro' ] === 'F' ) {
 
           return models.Usuario.findOne( {
@@ -168,11 +171,11 @@ exports.registrarUsuario = function ( object, req, res ) {
             }
             else if ( usuario ) {
               usuario_id = usuario.id;
-              generarSesion( req, res, usuario_id, true );
+              exports.generarSesion( req, res, usuario_id, true );
             }
             else {
               console.log( 'El usuario no se encuentra registrado' );
-              generarSesion( req, res, '', true );
+              exports.generarSesion( req, res, '', true );
             }
           } );
         }
@@ -329,7 +332,7 @@ var crearPaciente = function ( req, res, object, usuario, t ) {
             if ( usuario.tipoRegistro == "C" ) enviarCorreoConfirmacion( usuario );
             setTimeout( function () {
               if ( object.email ) borrarInvitaciones( object.email );
-              generarSesion( req, res, usuario.id, true );
+              exports.generarSesion( req, res, usuario.id, true );
             }, 1000 );
           } );
       }
@@ -337,7 +340,7 @@ var crearPaciente = function ( req, res, object, usuario, t ) {
         if ( usuario.tipoRegistro == "C" ) enviarCorreoConfirmacion( usuario );
         setTimeout( function () {
           if ( object.email ) borrarInvitaciones( object.email );
-          generarSesion( req, res, usuario.id, true );
+          exports.generarSesion( req, res, usuario.id, true );
         }, 1000 );
       }
     } );
@@ -360,7 +363,7 @@ var crearMedico = function ( req, res, object, usuario, t ) {
 
         setTimeout( function () {
           if ( object.email ) borrarInvitaciones( object[ 'email' ] );
-          generarSesion( req, res, usuario.id, true );
+          exports.generarSesion( req, res, usuario.id, true );
         }, 1000 );
       } );
     } );
@@ -386,10 +389,10 @@ exports.actualizarSesion = function ( object, req, res ) {
   if ( req.session.passport.user ) {
     usuario_id = req.session.passport.user.id;
   }
-  generarSesion( req, res, usuario_id, false );
+  exports.generarSesion( req, res, usuario_id, false );
 }
 
-var generarSesion = function ( req, res, usuario_id, redirect , response) {
+exports.generarSesion = function ( req, res, usuario_id, redirect , response) {
   try{
     if (!(response === false)){
       response = true;
@@ -516,7 +519,7 @@ function cargarExtraInfo( usuario, redirect, response, req, res ) {
             }
             else {
               res.send( {
-                'result': 'success',
+                'success': true,
                 'session': req.session.passport.user
               } );
             }
@@ -564,7 +567,38 @@ function cargarExtraInfo( usuario, redirect, response, req, res ) {
             }
             else {
               res.send( {
-                'result': 'success',
+                'success': true,
+                'session': req.session.passport.user
+              } );
+            }
+          } else {
+            reloadPage(res);
+          }
+        } );
+    }
+    else if ( usuario.tipoUsuario === 'S' ) {
+      tipoUsuario = "Secretaria";
+      models.Secretaria.findOne( {
+          where: {
+            usuario_id: usuario.id
+          },
+          attributes: [ 'id' ],
+          include: [ {
+            model: models.MedicoSecretaria,
+            attributes: [ 'id', 'medico_id' ]
+          } ]
+        } )
+        .then( function ( extraInfo ) {
+          if ( extraInfo ) {
+            req.session.passport.user[ tipoUsuario + '_id' ] = JSON.parse( JSON.stringify( extraInfo.id ) );
+          }
+          if (response){
+            if ( redirect ) {
+              res.redirect( '/' );
+            }
+            else {
+              res.send( {
+                'success': true,
                 'session': req.session.passport.user
               } );
             }
@@ -579,7 +613,7 @@ function cargarExtraInfo( usuario, redirect, response, req, res ) {
           res.redirect( '/control' );
         } else {
           res.send( {
-            'result': 'success',
+            'success': true,
             'session': req.session.passport.user
           } );
         }
@@ -1078,7 +1112,7 @@ exports.revivirSesion = function (object, req, res){
       if (usuario){
         usuario_id = usuario.id;
       }
-      generarSesion( req, res, usuario_id, false, false);
+      exports.generarSesion( req, res, usuario_id, false, false);
     });
   }catch ( err ) {
     req.errorHandler.report(err, req, res);

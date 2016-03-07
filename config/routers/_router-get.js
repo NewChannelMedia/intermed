@@ -8,9 +8,29 @@ module.exports = function (object){
   var passport = object.passport;
   var url = object.url;
 
+  app.get('*', function (req, res, next){
+    if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "M"){
+      if (req.session.passport.user.status == 0){
+        routeLife( 'plataforma2', 'plataforma', hps );
+        res.render('medico/registro_1');
+      } else if (req.session.passport.user.status == -1){
+        routeLife( 'plataforma2', 'plataforma', hps );
+        res.render('medico/registro_2');
+      } else {
+        next();
+      }
+    } else {
+      next();
+    }
+  });
+
   //Vista: home
   app.get( '/', function ( req, res ) {
-    routeLife( 'main', 'main', hps );
+    if (req.session.passport && req.session.passport.user){
+      routeLife( 'plataforma2', 'plataforma', hps );
+    } else {
+      routeLife( 'main', 'main', hps );
+    }
     app.set('view options', { layout: 'plataforma2' });
     intermed.callController( 'Home', 'index', req.body, req, res )
   } );
@@ -139,6 +159,56 @@ module.exports = function (object){
     }
   });
 
+
+  app.get('/secretaria', function (req, res, next) {
+    routeLife( 'plataforma2', 'plataforma', hps );
+    if (req.session.passport && req.session.passport.user && req.session.passport.user.Medico_id>0 ){
+      intermed.callController('secretaria','index',req.body, req, res);
+    } else {
+      next();
+    }
+  });
+
+  app.get( '/secretaria/:token', function ( req, res, next ) {
+    routeLife( 'plataforma2', 'plataforma', hps );
+    if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id>0) || (req.session.passport.user.Secretaria_id>0)){
+      intermed.callController('secretaria','registrar', req.params, req, res);
+    } else {
+      next();
+    }
+  });
+
+  app.get( '/s/:usuarioUrl', function ( req, res, next ) {
+    routeLife( 'plataforma2', 'plataforma', hps );
+    if (req.session.passport && req.session.passport.user.id && req.session.passport.user.Secretaria_id>0){
+      models.MedicoSecretaria.findOne({
+        where: {
+          activo: 1,
+          secretaria_id: req.session.passport.user.Secretaria_id
+        },
+        include: [{
+          model: models.Medico,
+          attributes: ['id'],
+          include: [{
+            model: models.Usuario,
+            attributes: ['usuarioUrl'],
+            where: {
+              usuarioUrl: req.params.usuarioUrl
+            }
+          }]
+        }]
+      }).then(function(MedicoSecretaria){
+        if (MedicoSecretaria){
+          intermed.callController('secretaria','medicoOficina', req.params, req, res);
+        } else {
+          next();
+        }
+      });
+    } else {
+      next();
+    }
+  });
+
   /*RUTA CARGAR PERFIL (DEJAR SIEMPRE AL FINAL)*/
   /*Dejando al final se evita que cada que se entre al router se haga una consulta para ver si se trata de un usuario*/
   app.get( '/:usuario', function ( req, res, next) {
@@ -149,15 +219,11 @@ module.exports = function (object){
         where: models.Sequelize.or(
           {
             usuarioUrl: usuario,
-            tipoUsuario: {
-              $not: 'A'
-            }
+            tipoUsuario: 'M'
           },
           {
             urlPersonal: usuario,
-            tipoUsuario: {
-              $not: 'A'
-            }
+            tipoUsuario: 'M'
           }
         )
       }).then(function(us){

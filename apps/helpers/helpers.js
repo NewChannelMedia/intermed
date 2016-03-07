@@ -53,6 +53,15 @@ function ifTipoPaciente( options ) {
     return options.inverse( true );
   }
 }
+
+function ifTipoSecretaria( options ) {
+  if ( session.tipoUsuario == 'S' ) {
+    return options.fn( true );
+  }
+  else {
+    return options.inverse( true );
+  }
+}
 /*
 function ifPaciente( value, options ) {
   if ( value && session.tipoUsuario == 'P' ) {
@@ -143,6 +152,7 @@ exports.unlessSessionVal = unlessSessionVal;
 exports.ifID = ifID;
 exports.ifTipoMedico = ifTipoMedico;
 exports.ifTipoPaciente = ifTipoPaciente;
+exports.ifTipoSecretaria = ifTipoSecretaria;
 //exports.ifPaciente = ifPaciente;
 exports.eachValSession = eachValSession;
 exports.ifsubEsp = ifsubEsp;

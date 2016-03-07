@@ -359,6 +359,8 @@ function formatearNotificacion( record , element) {
   }
   else if ( record.paciente ) {
     tipo = 'paciente';
+  } else if (record.secretaria){
+    tipo = 'secretaria';
   }
 
   var style = 'style="width: 40px;height:40px"';
@@ -511,14 +513,33 @@ function formatearNotificacion( record , element) {
           break;
       case 9:
           //medico tiene solicitud de cita
-          not += '<div class="media-left"><a>INTERMED</a></div><div class="media-body"><a onclick="location.reload();">Tu cédula ha sido aceptada.</a>' + mediaObjectFecha + '</div>';
-          actualizarSesion();
+          not += '<div class="media-left"><a>INTERMED</a></div><div class="media-body"><a onclick="actualizarSesion();location.reload();">Tu cédula ha sido aceptada.</a>' + mediaObjectFecha + '</div>';
           break;
       case 10:
-          not += '<div class="media-left"><a>INTERMED</a></div><div class="media-body"><a onclick="location.reload();">Tu cédula ha sido rechazada.</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left"><a>INTERMED</a></div><div class="media-body"><a onclick="actualizarSesion();location.reload();">Tu cédula ha sido rechazada.</a>' + mediaObjectFecha + '</div>';
           actualizarSesion();
           //medico tiene solicitud de cita
           //not += '<div class="media-left"><a onclick="detalleCita(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body"><a onclick="detalleCita(\''+record.data+'\')">El paciente ' + nombreCompleto + ' ha generado una cita.</a>' + mediaObjectFecha + '</div>';
+          break;
+      case 31:
+          //Medico envio invitación a secretaria
+          not += '<div class="media-left"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a>' + nombreCompleto + ' te ha invitado a ser su secretaria.</a>' + mediaObjectFecha + '</div>';
+          break;
+      case 32:
+          //Medico elimino a secretaria
+          not += '<div class="media-left"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a>' + nombreCompleto + ' te ha eliminado de sus secretarias.</a>' + mediaObjectFecha + '</div>';
+          break;
+      case 33:
+          //Secretaria acepto invitación
+          not += '<div class="media-left"><a href="/secretaria" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="/secretaria" >' + nombreCompleto + ' ha aceptado la invitación para ser tu secretaria, ¡Asígnale sus permisos!.</a>' + mediaObjectFecha + '</div>';
+          break;
+      case 34:
+          //Secretaria rechazo invitación
+          not += '<div class="media-left"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a>' + nombreCompleto + ' ha rechazado la invitación para ser tu secretaria.</a>' + mediaObjectFecha + '</div>';
+          break;
+      case 35:
+          //Secretaria elimino a médico
+          not += '<div class="media-left"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a>' + nombreCompleto + ' dejó de ser tu secretaria.</a>' + mediaObjectFecha + '</div>';
           break;
     }
     not += '</div>';

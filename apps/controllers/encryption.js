@@ -257,9 +257,13 @@
    * @param times
    * @return ecript token
   */
-  function doEncriptToken( id, times ) {
-    var concatenando = id + times;
-    return String( crypto.createHash( 'md5' ).update( concatenando ).digest( 'hex' ) );
+  function doEncriptToken( value, times ) {
+    if (times){
+      value = value.toString() + times.toString();
+    } else {
+      value = value.toString();
+    }
+    return String( crypto.createHash( 'md5' ).update( value ).digest( 'hex' ) );
   }
   // funciones que se podrán exportar
   exports.doEncriptToken = doEncriptToken;

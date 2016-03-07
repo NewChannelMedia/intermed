@@ -522,7 +522,7 @@ function actualizarSesion(refresh, callback, parametros) {
     dataType: "json",
     cache: false,
     success: function ( data ) {
-      if ( data.result === "success" ) {
+      if ( data.success) {
         if (refresh){
           location.reload();
         } else {
@@ -3490,5 +3490,261 @@ function agregarSubespecialidad(element){
         }
       }
     }
+  });
+}
+
+
+function invitarSecretariaEmail(){
+  try{
+    var email = $('#secretariaEmail').val();
+    $.post('/secretaria/invitar',{
+      email:email
+    },function( data ){
+      if( data.success ){
+        $('#secretariaEmail').val('');
+        $('#successEmail').removeClass('hidden');
+        setTimeout(function(){
+          $('#successEmail').addClass('hidden');
+        },6000);
+        //window.location.reload();
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        } else if (data.msg){
+          $('#errorEmail').find('.msg').text(data.msg);
+          $('#errorEmail').removeClass('hidden');
+          setTimeout(function(){
+            $('#errorEmail').addClass('hidden');
+          },6000);
+        }
+      }
+    }).fail(function(e){
+      console.error(e);
+    });
+    return false;
+  } catch (e){
+    console.error(e);
+    return false;
+  }
+}
+
+
+function filtrarBusquedaSecretaria(){
+  var filtro = $('#inputBusquedaSecretaria').val();
+  if (filtro.replace(" ","").length<3) return false;
+  else {
+    $.post('/secretaria/buscar',{
+      filtro:filtro,
+      tipoBusqueda: $('#tipoBusqueda').val()
+    },function( data ){
+      if( data.success ){
+        var contenido = '';
+        /*
+        [{"id":11,"usuario_id":20,"Usuario":{"id":20,"usuarioUrl":null,"urlPersonal":null,"urlFotoPerfil":"/garage/profilepics/dpp.png","correo":"bmdz.acos@gmail.com","DatosGenerale":{"id":18,"nombre":"Secretaria","apellidoP":"De Prueba","apellidoM":"Uno","usuario_id":20}}}
+        */
+        var missecretarias = [];
+        data.missecretarias.forEach(function(sec){
+          missecretarias.push(sec.secretaria_id);
+        });
+        var misinvitaciones = [];
+        data.misinvitaciones.forEach(function(inv){
+          misinvitaciones.push(inv.correo);
+        });
+        if (data.result.length>0){
+          contenido += '<li class="list-group-item active"><strong>Resultados de tu búsqueda: </strong></li>';
+          data.result.forEach(function(secretaria){
+            var classbtn = 'warning';
+            var functionbtn = 'agregar';
+            var labelbtn = 'Agregar';
+            if (missecretarias.indexOf(secretaria.id) >= 0){
+              classbtn = 'danger';
+              functionbtn = 'eliminar';
+              labelbtn = 'Eliminar';
+            } else if (misinvitaciones.indexOf(secretaria.Usuario.correo)>=0){
+              classbtn = 'success';
+              functionbtn = 'eliminarInvitacion';
+              labelbtn = 'Eliminar invitacion';
+            }
+            contenido += '<li class="media list-group-item" style="margin-top: 0px">'+
+                  '<div class="media-left">'+
+                    '<img class="media-object" alt="'+ secretaria.Usuario.DatosGenerale.nombre + ' ' + secretaria.Usuario.DatosGenerale.apellidoP+ ' ' + secretaria.Usuario.DatosGenerale.apellidoM +'" style="width: 45px; height: 45px;" src="'+ secretaria.Usuario.urlFotoPerfil +'" data-holder-rendered="true">'+
+                  '</div>'+
+                  '<div class="media-body">'+
+                    '<h4 class="media-heading"><b>'+ secretaria.Usuario.DatosGenerale.nombre + ' ' + secretaria.Usuario.DatosGenerale.apellidoP+ ' ' + secretaria.Usuario.DatosGenerale.apellidoM +'</b>. <span style="font-size:70%">'+ secretaria.Municipio.municipio +', '+ secretaria.Estado.estado +'</span></h4>'+
+                    '<p>'+ secretaria.Usuario.correo +'</p>'+
+                  '</div>'+
+                  '<div class="media-right">'+
+                    '<button class="btn btn-'+classbtn+' btn-block" onclick="'+functionbtn+'Secretaria('+ secretaria.id +',this)">'+labelbtn+'</button>'+
+                  '</div>'+
+                '</li>';
+          });
+        } else {
+          contenido += '<li class="list-group-item list-group-item-danger"><strong>No existen secretarias registradas con los criterios de tu búsqueda. </strong></li>'
+        }
+
+        $('#filtroSecretariaResult').html(contenido);
+
+          var listElement = $('#filtroSecretariaResult');
+          var perPage = 10;
+          var numItems = listElement.children().size();
+          var numPages = Math.ceil(numItems/perPage);
+
+          $('.pager').data("curr",0);
+
+          var curr = 0;
+          if (numPages > 1){
+            while(numPages > curr){
+              $('<li><a href="#" class="page_link" style="border: none;background: none;width: auto;padding: 3px;">'+(curr+1)+'</a></li>').appendTo('.pager');
+              curr++;
+            }
+          }
+
+          $('.pager .page_link:first').addClass('active');
+
+          listElement.children().css('display', 'none');
+          listElement.children().slice(0, perPage).css('display', 'block');
+
+          $('.pager li a').click(function(){
+            var clickedPage = $(this).html().valueOf() - 1;
+            goTo(clickedPage,perPage);
+          });
+
+          function previous(){
+            var goToPage = parseInt($('.pager').data("curr")) - 1;
+            if($('.active').prev('.page_link').length==true){
+              goTo(goToPage);
+            }
+          }
+
+          function next(){
+            goToPage = parseInt($('.pager').data("curr")) + 1;
+            if($('.active_page').next('.page_link').length==true){
+              goTo(goToPage);
+            }
+          }
+
+          function goTo(page,perPage){
+            var startAt = page * perPage,
+              endOn = startAt + perPage;
+
+            listElement.children().css('display','none').slice(startAt, endOn).css('display','block');
+            $('.pager').attr("curr",page);
+          }
+        //window.location.reload();
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    }).fail(function(e){
+      console.error(e);
+    });
+  }
+}
+
+function agregarSecretaria(secretaria_id, element){
+  if (element && $(element).text() == 'Eliminar invitacion'){
+    eliminarInvitacionSecretaria(secretaria_id, element);
+  } else {
+    $.post('/secretaria/agregar',{
+      secretaria_id:secretaria_id
+    },function( data ){
+      if( data.success ){
+        if (element){
+          $(element).text('Eliminar invitacion');
+          $(element).removeClass('btn-warning');
+          $(element).addClass('btn-success');
+        } else {
+          window.location.reload();
+        }
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    }).fail(function(e){
+      console.error(e);
+    });
+  }
+}
+
+function eliminarInvitacionSecretaria(secretaria_id, element){
+  if (element && $(element).text() == 'Agregar'){
+    agregarSecretaria(secretaria_id, element);
+  } else {
+    $.post('/secretaria/eliminarInvitacion',{
+      secretaria_id:secretaria_id
+    },function( data ){
+      if( data.success ){
+        if (element){
+          $(element).text('Agregar');
+          $(element).addClass('btn-warning');
+          $(element).removeClass('btn-danger');
+        } else {
+          window.location.reload();
+        }
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    }).fail(function(e){
+      console.error(e);
+    });
+  }
+}
+
+function eliminarSecretaria(secretaria_id, element){
+  if (element && $(element).text() == 'Agregar'){
+    agregarSecretaria(secretaria_id, element);
+  } else {
+      bootbox.confirm({
+        title: 'Confirmar eliminación',
+        message: "¿Estas seguro de querer eliminar a la secretaria?, ya no podra administrar su oficina.",
+        callback: function(result) {
+          if (result) {
+            $.post('/secretaria/eliminar',{
+              secretaria_id:secretaria_id
+            },function( data ){
+              if( data.success ){
+                if (element){
+                  $(element).text('Agregar');
+                  $(element).addClass('btn-warning');
+                  $(element).removeClass('btn-danger');
+                } else {
+                  window.location.reload();
+                }
+              }else{
+                if (data.error){
+                  manejadorDeErrores(data.error);
+                }
+              }
+            }).fail(function(e){
+              console.error(e);
+            });
+          }
+        }
+      });
+
+  }
+}
+
+function cambiarPermisoSecretaria(MedicoSecretariaPermisos_id,permiso_id,element){
+  var permiso = 0;
+  if ($(element).is(':checked')){
+    permiso = 1;
+  }
+  $.post('/secretaria/permisos/cambiar',{
+    MedicoSecretariaPermisos_id:MedicoSecretariaPermisos_id,
+    permiso_id: permiso_id,
+    permiso: permiso
+  },function( data ){
+    if( !data.success ){
+      if (data.error){
+        manejadorDeErrores(data.error);
+      }
+    }
+  }).fail(function(e){
+    console.error(e);
   });
 }
