@@ -2552,18 +2552,27 @@ div.Slider{
 }
 
 .regExp {
+  display: inline-block;
+  width: 100%;
+  height: auto;
+  margin: 10px auto;
   padding: 30px;
   text-align: center;
-  border: solid 2px #375467;
+  border: solid 1px #375467;
 }
 
-.btn-save-reg{
+.btn-save-reg {
+  font-size: 150%;
   font-weight: bold;
   height: 65px;
-  border-radius: 15px;
-  background-color: #50A8DE;
   border-color: transparent;
-  font-size: 150%;
+  border-radius: 15px;
+  background-color: #50a8de;
+}
+
+.btn-siguiente {
+  border: none;
+  background-color: none;
 }
 
 #divCalendario.regHorMed .fc-widget-content .fc-time-grid-container{
@@ -2808,58 +2817,83 @@ th.fc-day-header.fc-widget-header{
   background: transparent;
 }
 
-#divMapRegHor .menuRegUbic{
-
+@media (max-width: 767px) {
+  #divMapRegHor .header-section {
+    min-height: 150px;
+    height: auto;
+  }
 }
 
-#divMapRegHor .menuRegUbic li{
+.menuRegStep2 {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 0;
+  border: none;
+  width: 100%;
+}
+
+.reg2Step {
+  display: table-cell!important;
+  float: none!important;
+  width: 1%;
+  margin: 0!important;
+  vertical-align: middle;
+}
+
+.menuRegStep2 > li.active > a,
+.menuRegStep2 > li.active > a:focus,
+.menuRegStep2 > li.active > a:hover {
+  color: #717171;
+  border: none;
+}
+
+.menuRegStep2 > li.active > a .stepCircle,
+.menuRegStep2 > li.active > a:focus .stepCircle,
+.menuRegStep2 > li.active > a:hover .stepCircle {
+  color: #fff;
+  border-color: #375467;
+  background-color: #375467;
+}
+
+.menuRegStep2 > li > a {
+  color: #717171;
+  border: none;
+  background-color: transparent;
+}
+
+.menuRegStep2 > li > a:focus,
+.menuRegStep2 > li > a:hover {
+  color: #717171;
+  border: none;
+  background-color: transparent;
+}
+
+.menuRegStep2 > li > a:focus .stepCircle,
+.menuRegStep2 > li > a:hover .stepCircle {
+  color: #fff;
+  border-color: #375467;
+  background-color: #375467;
+}
+
+.stepCircle {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  padding: 13px;
   text-align: center;
-  font-weight: bold;
-  width:1%;
-  margin:0px;
-  border-radius: 0px;
-  background-color:#4F606A;
-  display: table-cell;
-  float: none;
-  border: solid 2px white;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #808080;
+  border-radius: 100px;
 }
 
-#divMapRegHor .menuRegUbic li a {
-  color: white;
-  margin:0px;
-  border-radius: 0px 0px 0 0!important;
+.stepContent {
+  display: inline-block;
+  height: 50px;
+  margin-left: 15px;
+  vertical-align: middle;
 }
 
-#divMapRegHor .menuRegUbic li a hr{
-  display: none;
-  padding: 0px;
-  margin: 0px;
-  position: relative;
-  margin-bottom: -10px;
-  margin-top: 10px;
-  margin-left: -3px;
-  border: solid 1px white;
-  margin-right: -3px;
-}
-
-#divMapRegHor .menuRegUbic li.active a hr{
-  display: block;
-}
-
-#divMapRegHor .menuRegUbic li.active a,
-#divMapRegHor.menuRegUbic li.active a:focus,
-#divMapRegHor.menuRegUbic li.active a:hover,
-#divMapRegHoro.menuRegUbic li a:hover{
-  background-color:#50A8DE;
-  color:white!important;
-  border: 0px!important;
-  border-bottom: 0px!important;
-}
-
-#divMapRegHor.menuRegUbic li.active{
-  background-color:#50A8DE;
-  border-bottom: none;
-}
 
 /*.regSectionTitle .glyphicon{
   background-color: white;

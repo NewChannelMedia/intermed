@@ -16,10 +16,22 @@
     </div>
   </div>
   <div class="container">
-    <ul class="nav nav-tabs menuRegUbic h77-boldcond whiteF s20">
-      <li class="active"><a data-toggle="tab" href="#home"><span class="borderCircle">1</span>UBICACIONES</a></li>
-      <li><a data-toggle="tab" href="#menu1" onclick="cargarServicios($('#slc_servicios_ubi'))"><span class="borderCircle">2</span>SERVICIOS</a></li>
-      <li><a data-toggle="tab" href="#menu2" onclick="cargarHorario($('#slc_horarios_ubi'))"><span class="borderCircle">3</span>HORARIOS</a></li>
+    <ul class="nav nav-tabs menuRegStep2">
+      <li class="reg2Step active">
+        <a data-toggle="tab" href="#home" class="h45-light s20">
+          <span class="h65-medium s50 stepCircle">1</span><span class="stepContent text-uppercase">ubicaciones</span>
+        </a>
+      </li>
+      <li class="reg2Step">
+        <a data-toggle="tab" href="#menu1" class="h45-light s20" onclick="cargarServicios($('#slc_servicios_ubi'))">
+          <span class="h65-medium s50 stepCircle">2</span><span class="stepContent text-uppercase">servicios</span>
+        </a>
+      </li>
+      <li class="reg2Step">
+        <a data-toggle="tab" href="#menu2" class="h45-light s20" onclick="cargarHorario($('#slc_horarios_ubi'))">
+          <span class="h65-medium s50 stepCircle">3</span><span class="stepContent text-uppercase">horarios</span>
+        </a>
+      </li>
     </ul>
     <div class="tab-content ">
       <div id="home" class="tab-pane fade in active">
@@ -175,16 +187,20 @@
         <hr />
         <div class="row">
           <div class="col-lg-3 col-md-3 pull-right">
-            <a data-toggle="tab" href="#menu1" onclick="cargarServicios($('#slc_servicios_ubi'))" class="btn btn-default btn-lg btn-block">siguiente</a>
+            <a data-toggle="tab" href="#menu1" onclick="cargarServicios($('#slc_servicios_ubi'))" class="btn btn-siguiente btn-lg btn-block h35-thin s45 darkBlue-c">Siguiente <span class="glyphicon glyphicon-share-alt"></span></a>
           </div>
         </div>
       </div>
       <div id="menu1" class="tab-pane fade">
         <div class="row">
           <div class="regExp h77-boldcond">
-            <div class="col-lg-6 col-md-6">CONFIGURAR SERVICIOS PARA LA UBICACIÓN: </div>
-            <div class="col-lg-6 col-md-6 whiteF ">
-              <select class="form-control inputTransparent slc_ubicReg" style="margin-top:-10px" onchange="cargarServicios(this);" id="slc_servicios_ubi">
+            <div class="col-lg-12 col-md-12">
+              <p class="h45-light s20 darkGrey-c">
+                CONFIGURA LOS SERVICIOS PARA LA UBICACIÓN:
+              </p>
+            </div>
+            <div class="col-lg-4 col-md-4 col-lg-offset-4 col-md-offset-4 darkBlue-c">
+              <select class="form-control slc_ubicReg" onchange="cargarServicios(this);" id="slc_servicios_ubi">
                 <option value="" disabled selected>REGISTRA UNA UBICACIÓN</option>
               </select>
             </div>
@@ -192,16 +208,11 @@
         </div>
         <div class="row UbicHidden">
           <div class="col-lg-12">
-            <div class="regSectionTitle whiteF h77-boldcond">
-              <span class="glyphicon glyphicon-plus"></span>DA DE ALTA UN SERVICIO
-            </div>
-          </div>
-          <div class="col-lg-12">
             <form method="POST" onsubmit="return guardarServicio('frmRegServ');" id="frmRegServ">
               <div class="col-md-3">
                 <div class="row">
                   <div class="col-md-12">
-                    <label class="whiteF regInput">Concepto.</label>
+                    <label class="darkGrey-c regInput">Concepto.</label>
                   </div>
                   <div class="col-md-12">
                     <input type="text" class="form-control regInput" id="conceptServ" name="concepto" required="required">
@@ -211,7 +222,7 @@
               <div class="col-md-4">
                 <div class="row">
                   <div class="col-md-12">
-                    <label class="whiteF regInput">Descripción.</label>
+                    <label class="darkGrey-c regInput">Descripción.</label>
                   </div>
                   <div class="col-md-12">
                     <input type="text" class="form-control regInput" id="decriptServ" name="descripcion" required="required">
@@ -221,7 +232,7 @@
               <div class="col-md-2">
                 <div class="row">
                   <div class="col-md-12">
-                    <label class="whiteF regInput">Costo.</label>
+                    <label class="darkGrey-c regInput">Costo.</label>
                   </div>
                   <div class="col-md-12">
                     <input type="text" class="form-control regInput" id="precServ" name="precio" required="required">
@@ -231,7 +242,7 @@
               <div class="col-md-2">
                 <div class="row">
                   <div class="col-md-12">
-                    <label class="whiteF regInput">Duración.</label>
+                    <label class="darkGrey-c regInput">Duración.</label>
                   </div>
                   <div class="col-md-12">
                     <select id="duraServ" class="form-control regInput" name="duracion" required="required">
@@ -262,7 +273,7 @@
               <div class="col-md-1">
                 <div class="row">
                   <div class="col-md-12">
-                    <label class="whiteF">&nbsp;</label>
+                    <label class="darkGrey-c">&nbsp;</label>
                   </div>
                   <div class="col-md-12">
                     <button type="submit" class="btn btn-primary regInput">
@@ -276,7 +287,7 @@
         </div>
         <div class="row UbicHidden">
           <div class="col-lg-12">
-            <div class="regSectionTitle whiteF h77-boldcond">
+            <div class="regSectionTitle darkGrey-c h77-boldcond">
               <span class="glyphicon glyphicon-pencil"></span>EDITA TUS SERVICIOS
             </div>
           </div>
@@ -289,7 +300,7 @@
       <div id="menu2" class="tab-pane fade" style="background-color:#6A808E;position: absolute;width: 100%;">
         <div class="regExp h77-boldcond">
           <div class="col-lg-6 col-md-6">CONFIGURAR EL HORARIO DE ATENCIÓN PARA LA UBICACIÓN: </div>
-          <div class="col-lg-6 col-md-6 whiteF ">
+          <div class="col-lg-6 col-md-6 darkGrey-c ">
             <select class="form-control inputTransparent slc_ubicReg" style="margin-top:-10px" onchange="cargarHorario(this);" id="slc_horarios_ubi">
               <option value="" disabled selected>REGISTRA UNA UBICACIÓN</option>
             </select>
@@ -319,7 +330,7 @@
               <div id="divCalendario" class="regHorMed"></div>
             </div>
             <div class="col-md-2 col-md-offset-10">
-              <button type="button" class="btn btn-save-reg btn-block h77-boldcond whiteF" id="btnRegHorarios" onclick="regHorarios($('#slc_horarios_ubi').val())">Guardar.</button>
+              <button type="button" class="btn btn-save-reg btn-block h77-boldcond darkGrey-c" id="btnRegHorarios" onclick="regHorarios($('#slc_horarios_ubi').val())">Guardar.</button>
             </div>
           </div>
         </form>
