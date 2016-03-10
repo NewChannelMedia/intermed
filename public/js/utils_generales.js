@@ -543,13 +543,13 @@ function funcionesTelefonos(){
     if ($('#divTelefono')){
       switch($('#tipoTelefono').val()) {
       case "celular":
-          $('#divTelefono').html('<div class="form-group"><input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" maxlength="12" onpaste="soloNumeros()" ></div>');
+          $('#divTelefono').html('<input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" onpaste="soloNumeros()" maxlength="12">');
           break;
       case "oficina":
-          $('#divTelefono').html('<div class="col-md-8"><div class="row" style="margin-right:2px;"><div class="form-group"><input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" maxlength="12" onpaste="soloNumeros()" ></div></div></div><div class="col-md-4"><div class="row"><div class="form-group"><input type="text" id="extTelefono" class="form-control solo-numero" placeholder="Ext:" maxlength="10" onpaste="soloNumeros()" ></div></div></div>');
+          $('#divTelefono').html('<div class="row noPadding"><div class="col-md-8"><input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" maxlength="12" onpaste="soloNumeros()" ></div><div class="col-md-4"><input type="text" id="extTelefono" class="form-control solo-numero" placeholder="Ext:" maxlength="10" onpaste="soloNumeros()" ></div></div>');
           break;
       case "localizador":
-        $('#divTelefono').html('<div class="col-md-7"><div class="row" style="margin-right:2px;"><div class="form-group"><input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" maxlength="10" onpaste="soloNumeros()" ></div></div></div><div class="col-md-5"><div class="row"><div class="form-group"><input type="text" id="extTelefono" class="form-control solo-numero" placeholder="Localizador:" maxlength="10" onpaste="soloNumeros()" ></div></div></div>');
+        $('#divTelefono').html('<div class="row noPadding"><div class="col-md-7"><input type="text" id="numTelefono" class="form-control solo-numero" placeholder="Número:" maxlength="10" onpaste="soloNumeros()" ></div><div class="col-md-5"><input type="text" id="extTelefono" class="form-control solo-numero" placeholder="Localizador:" maxlength="10" onpaste="soloNumeros()" ></div></div>');
         break;
       default:
           console.log('El tipo de telefono no existe');
@@ -595,29 +595,29 @@ function funcionesTelefonos(){
       idTemp++;
       var ext = '';
       if ($('#extTelefono') && $('#extTelefono').val()) ext = $('#extTelefono').val();
-      $('#divTelefonoAgregado').append('<div class="input-group-btn numeroTelefono">'+
+      $('#divTelefonoAgregado').append('<li class="lbl lbl-tel numeroTelefono" data-toggle="tooltip" data-placement="bottom" title="Haz click para editar / borrar.">'+
         '<input type="hidden" class="idTelefono" value="">' +
         '<input type="hidden" class="idTempTelefono" value="' + idTemp + '">' +
-          '<label class="btn btn-sm editar btnChk">' +
-            '<input type="radio" autocomplete="off">' +
+          '<span class="editar btnChk">' +
             '<span class="tipoTelefono hidden">' + $('#tipoTelefono').val() + '</span>' +
-            '<span class="tipoTelefonoIcon"><span class="glyphicon ' + clase + '"></span></span>' +
+            '<span class="tipoTelefonoIcon"><span class="glyphicon ' + clase + '"></span>&nbsp;</span>' +
             '<span class="numTelefono">' + $('#numTelefono').val() + '</span>' +
             '<span class="extTelefono">' + ext + '</span>' +
-          '</label>' +
-          '<button class="btn btn-sm borrar" disabled="true" onclick="eliminarTelefono(this)">' +
+          '</span>' +
+          '<button type="button" class="btn btn-sm borrar" disabled="true" onclick="eliminarTelefono(this)">' +
             '<span class="glyphicon glyphicon-remove"></span>' +
           '</button>' +
-        '</div>'
+        '</li>'
       );
+      $('[data-toggle="tooltip"]').tooltip();
       funcionesTelefonos();
       $('#tipoTelefono').prop('selectedIndex', 0);
       $('#tipoTelefono').change();
     }
   });
 
-  $('label.editar').unbind();
-  $('label.editar').click(function(){
+  $('span.editar').unbind();
+  $('span.editar').click(function(){
     if ($('#btnGuardar').val() != "Editar"){
       if ($(this).hasClass('editando')){
         $(this).removeClass('editando');
@@ -1193,6 +1193,7 @@ function repositionTooltip( e, ui ){
     $(div).find(".tooltip").css('background-color','red');
     $(div).css('z-index','30000');
 }
+
 $( document ).ready( function () {
   //console.log('length: '+$( '#perfilMedico' ).length);
   if ( $( '#perfilMedico' ).length > 0 ) {

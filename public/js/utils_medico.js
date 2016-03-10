@@ -68,6 +68,7 @@ function muestraMedico( id ) {
   } );
 }
 $( document ).ready( function () {
+  $('[data-toggle="tooltip"]').tooltip();
   if ($('#regMedStepOne').length>0){
 
       var nombre = '', apellidop = '', apellidom = '';
@@ -122,7 +123,7 @@ $( document ).ready( function () {
           }
         },
         error: function(err){
-          console.log('Ajax erro: ' + JSON.stringify(err));
+          console.log('Ajax error: ' + JSON.stringify(err));
         }
       });
       loadEspecialidades();
@@ -1134,6 +1135,7 @@ function regUbicacion(salir) {
 }
 //Registrar Ubicacion
 function regHorarios(direccion_id) {
+  terminarReg2();
     if (!direccion_id){
       direccion_id = $('#direccion_id').val();
     }
@@ -3111,7 +3113,25 @@ function obtenerDirecciones(){
 	});
 }
 
-function cargarServicios(element){
+function menuRegActiveTab(obj) {
+  //cambia los tabs del menu en registro Step2 a traves de los botones Siguiente y Anterior
+  var currentTab = $(".menuRegStep2 .reg2Step.active");
+  if( $(obj).parent().hasClass('cargarSiguiente')) {
+    $(currentTab).removeClass("active");
+    $(currentTab).next(".reg2Step").addClass("active");
+  }
+  else if( $(obj).parent().hasClass('cargarAnterior')) {
+    $(currentTab).removeClass("active");
+    $(currentTab).prev(".reg2Step").addClass("active");
+  }
+}
+
+function terminarReg2() {
+  $(this).scrollTo($('#btnEndReg'), 800);
+}
+
+function cargarServicios(element,obj){
+  menuRegActiveTab(obj);
   var direccion_id = $(element).val();
 	$.ajax({
 		url: '/medicos/serv/getByAddr',
@@ -3199,7 +3219,8 @@ function cargarServicios(element){
 	});
 }
 
-function cargarHorario(element){
+function cargarHorario(element,obj){
+  menuRegActiveTab(obj);
   var direccion_id = $(element).val();
   iniciarDivCalendario(direccion_id);
 }
