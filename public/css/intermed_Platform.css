@@ -33,6 +33,14 @@ a:visited {
   background-color: #375467;
 }
 
+footer {
+  height: 90px;
+}
+
+footer .logoIntermed {
+  height: 40px;
+}
+
 .navigator-inner{
   padding: 0;
 }

@@ -604,7 +604,7 @@ function funcionesTelefonos(){
             '<span class="numTelefono">' + $('#numTelefono').val() + '</span>' +
             '<span class="extTelefono">' + ext + '</span>' +
           '</span>' +
-          '<button class="btn btn-sm borrar" disabled="true" onclick="eliminarTelefono(this)">' +
+          '<button type="button" class="btn btn-sm borrar" disabled="true" onclick="eliminarTelefono(this)">' +
             '<span class="glyphicon glyphicon-remove"></span>' +
           '</button>' +
         '</li>'
@@ -1193,6 +1193,7 @@ function repositionTooltip( e, ui ){
     $(div).find(".tooltip").css('background-color','red');
     $(div).css('z-index','30000');
 }
+
 $( document ).ready( function () {
   //console.log('length: '+$( '#perfilMedico' ).length);
   if ( $( '#perfilMedico' ).length > 0 ) {

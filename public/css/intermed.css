@@ -32,8 +32,34 @@ a:visited {
   background-color: #2c8fbd!important;
 }
 
+.bg-darkBlue{
+  background-color: #375467!important;
+}
+
+.bg-orange {
+  background-color: #ff8a00!important;
+}
+
 .noPadding {
   padding: 0!important;
+}
+.noMargin {
+  margin: 0!important;
+}
+
+.alert {
+  border-radius: 0;
+}
+
+.btn {
+  border-radius: 0;
+}
+
+.btn-white {
+  background-color: #ffffff;
+  border-width: 1px;
+  border-color: #8f8f8f;
+  color: #5c5c5c;
 }
 
 input, select, button {
@@ -422,10 +448,6 @@ input, select, button {
 
 
 /* ----- */
-
-.btn {
-  border-radius: 0;
-}
 
 #myCarousel {
   height: 600px;
@@ -2555,10 +2577,16 @@ div.Slider{
   display: inline-block;
   width: 100%;
   height: auto;
-  margin: 10px auto;
-  padding: 30px;
+  margin: 0 auto;
+  margin-bottom: 40px;
+  padding: 20px;
   text-align: center;
   border: solid 1px #375467;
+}
+
+.regExp p {
+  padding: 0;
+  margin: 0;
 }
 
 .btn-save-reg {
@@ -2570,10 +2598,39 @@ div.Slider{
   background-color: #50a8de;
 }
 
-.btn-siguiente {
+.nav-nextprev {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 0;
+}
+
+.btn-nextprev {
   border: none;
   background-color: none;
 }
+
+.btn-nextprev .icon {
+  position: relative;
+  top: 11px;
+  display: inline-block;
+  width: 77px;
+  height: 50px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: auto 100%;
+}
+
+.btn-nextprev .anterior-icon {
+  background-image: url('../img/plataforma/icons/anterior.png');
+}
+
+.btn-nextprev .siguiente-icon {
+  background-image: url('../img/plataforma/icons/siguiente.png');
+}
+
+
 
 #divCalendario.regHorMed .fc-widget-content .fc-time-grid-container{
   height: auto!important;
@@ -2715,7 +2772,7 @@ th.fc-day-header.fc-widget-header{
   border-radius: 100px;
 }
 
-@media (max-width:768px) {
+@media (max-width:767px) {
   #regMedStepOne .reg-box {
     margin-top: 0;
     margin-bottom: 20px;
@@ -2825,12 +2882,14 @@ th.fc-day-header.fc-widget-header{
 }
 
 .menuRegStep2 {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 40px;
+  margin-bottom: 40px;
   padding: 0;
   border: none;
   width: 100%;
 }
+
+
 
 .reg2Step {
   display: table-cell!important;
@@ -2871,8 +2930,15 @@ th.fc-day-header.fc-widget-header{
 .menuRegStep2 > li > a:focus .stepCircle,
 .menuRegStep2 > li > a:hover .stepCircle {
   color: #fff;
-  border-color: #375467;
-  background-color: #375467;
+  border-color: #ff8a00;
+  background-color: #ff8a00;
+}
+
+.contentRegStep2 {
+  position: relative;
+  min-height: 600px;
+  margin-bottom: 40px;
+  padding-bottom: 50px;
 }
 
 .stepCircle {
@@ -2880,6 +2946,7 @@ th.fc-day-header.fc-widget-header{
   width: 80px;
   height: 80px;
   padding: 13px;
+  font-size: 50px;
   text-align: center;
   border-width: 2px;
   border-style: solid;
@@ -2892,6 +2959,30 @@ th.fc-day-header.fc-widget-header{
   height: 50px;
   margin-left: 15px;
   vertical-align: middle;
+}
+
+@media (max-width:767px) {
+  .menuRegStep2 > li > a {
+    padding: 0px;
+    margin: 0 auto;
+  }
+  .reg2Step {
+    text-align: center;
+  }
+  .stepCircle {
+    font-size: 30px;
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
+    display: block;
+  }
+  .stepContent {
+    font-size: 15px;
+    height: auto;
+    margin: 10px auto;
+    text-align: center;
+    display: block;
+  }
 }
 
 
@@ -2939,47 +3030,41 @@ span.borderCircle{
   margin-right: 20px;
 }
 
-.divActionsUbic>div.action{
-  font-weight: bold;
+.action {
+  width: 250px;
   text-align: center;
-  color:white;
-  padding: 20px;
-  border-top: solid 3px #FFF;
-  border-bottom: solid 3px #FFF;
-  height: 65px;
-  overflow: hidden;
-  cursor: pointer;
 }
 
-div.action-All{
-  background-color: #FF9600;
-}
-
-div.action-Busy{
-  background-color: #30424F;
-}
-
-div.action-Office{
-  background-color: #3D5A6E;
-}
-
-div.action-All>.glyphicon{
-  margin-top: -15px;
-  margin-bottom: -10px;
-  font-weight: lighter;
+.action .btnicon {
+  position: relative;
+  top: 3px;
+  display: inline-block;
+  width: 37px;
+  height: 36px;
   margin-right: 15px;
-  border-radius: 5px;
-  background-color: transparent;
-  border: solid 3px white;
-  color: white;
-  padding: 11px;
-  font-size: 25px;
+  background-color: none;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 95%;
 }
 
-div.action-All>.glyphicon:before {
-    position: absolute;
-    top: -5px;
-    right: -6px;
+.btnicon.disponible{
+  background-image: url('../img/plataforma/icons/disponible.png');
+}
+.btnicon.ocupado{
+  background-image: url('../img/plataforma/icons/ocupado.png');
+}
+.btnicon.oficina{
+  background-image: url('../img/plataforma/icons/hoficina.png');
+}
+
+
+.action .btnlbl {
+  font-size: 19px;
+  position: relative;
+  top: -9px;
+  display: inline-block;
+  color: #5c5c5c;
 }
 
 .editIcon{
@@ -3024,4 +3109,9 @@ input[type='number'].form-control::-webkit-inner-spin-button:active {
 input:-webkit-autofill {
   color: red;
   background: black;
+}
+
+iframe {
+  display: none;
+  visibility: hidden;
 }
