@@ -20,46 +20,7 @@ a:visited {
 }
 
 .bg-white {
-  background-color: #ffffff!important;
-}
-.bg-dark {
-  background-color: #717171!important;
-}
-.bg-black {
-  background-color: #000000!important;
-}
-.bg-blue {
-  background-color: #2c8fbd!important;
-}
-
-.bg-darkBlue{
-  background-color: #375467!important;
-}
-
-.bg-orange {
-  background-color: #ff8a00!important;
-}
-
-.noPadding {
-  padding: 0!important;
-}
-.noMargin {
-  margin: 0!important;
-}
-
-.alert {
-  border-radius: 0;
-}
-
-.btn {
-  border-radius: 0;
-}
-
-.btn-white {
   background-color: #ffffff;
-  border-width: 1px;
-  border-color: #8f8f8f;
-  color: #5c5c5c;
 }
 
 input, select, button {
@@ -448,6 +409,10 @@ input, select, button {
 
 
 /* ----- */
+
+.btn {
+  border-radius: 0;
+}
 
 #myCarousel {
   height: 600px;
@@ -1827,17 +1792,14 @@ div::-webkit-scrollbar-thumb:window-inactive {
   color: #969ba2;
 }
 
-.ui-autocomplete {
-  padding: 0;
+.ui-autocomplete{
+  padding: 0px;
   list-style-type: none;
-  border-width: 1px;
-  border-style: solid;
-  border-color: rgba(100, 100, 100, .3);
-  background-color: rgb(250, 250, 250);
 }
 
 .ui-autocomplete li{
   padding: 10px;
+  background-color: white;
   color:black;
 }
 
@@ -1862,8 +1824,8 @@ hr {
   -moz-border-top-colors: none;
   border: 0;
   height: 0;
-  border-top: 2px solid #717171;
-  border-bottom: 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 #recomendarA tr td img{
   height: 30px;
@@ -2341,8 +2303,8 @@ ol.sortable,ol.sortable ol {
   color: white;
 }
 #divCalendario.calCita .fc-axis.fc-time.fc-widget-content{
-  /*padding-top: 5px;
-  padding-bottom: 5px;*/
+  padding-top: 5px;
+  padding-bottom: 5px;
 }
 
 #divCalendario.calAgenda td{
@@ -2564,82 +2526,88 @@ div.Slider{
   border: 0;
 }
 
-.btn-reg {
-  background-color: #375467;
-  color: #ffffff;
+/*Menu registra ubicaciones*/
+
+.menuRegUbic{
+  padding:0px;
+  /*width: 100%;*/
+  display: block;
+  margin: -15px;
+  margin-bottom: 0px;
 }
 
-.btn-reg:hover{
-  color: #bbbbbb;
-}
-
-.regExp {
-  display: inline-block;
-  width: 100%;
-  height: auto;
-  margin: 0 auto;
-  margin-bottom: 40px;
-  padding: 20px;
+.menuRegUbic li{
   text-align: center;
-  border: solid 1px #375467;
+  font-weight: bold;
+  width:1%;
+  margin:0px;
+  border-radius: 0px;
+  background-color:#4F606A;
+  display: table-cell;
+  float: none;
+  border: solid 2px white;
 }
 
-.regExp p {
-  padding: 0;
-  margin: 0;
+.menuRegUbic li a {
+  color: white;
+  margin:0px;
+  border-radius: 0px 0px 0 0!important;
 }
 
-.btn-save-reg {
-  font-size: 150%;
+.menuRegUbic li a hr{
+  display: none;
+  padding: 0px;
+  margin: 0px;
+  position: relative;
+  margin-bottom: -10px;
+  margin-top: 10px;
+  margin-left: -3px;
+  border: solid 1px white;
+  margin-right: -3px;
+}
+
+.menuRegUbic li.active a hr{
+  display: block;
+}
+
+.menuRegUbic li.active a,
+.menuRegUbic li.active a:focus,
+.menuRegUbic li.active a:hover,
+.menuRegUbic li a:hover{
+  background-color:#50A8DE;
+  color:white!important;
+  border: 0px!important;
+  border-bottom: 0px!important;
+}
+
+.menuRegUbic li.active{
+  background-color:#50A8DE;
+  border-bottom: none;
+}
+
+.regExp{
+  background-color:#50A8DE;
+  text-align: center;
+  padding: 30px;
+  min-height: 80px;
+  margin-top: -2px;
+}
+
+.btn-save-reg{
   font-weight: bold;
   height: 65px;
-  border-color: transparent;
   border-radius: 15px;
-  background-color: #50a8de;
+  background-color: #50A8DE;
+  border-color: transparent;
+  font-size: 150%;
 }
-
-.nav-nextprev {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding: 0;
-}
-
-.btn-nextprev {
-  border: none;
-  background-color: none;
-}
-
-.btn-nextprev .icon {
-  position: relative;
-  top: 11px;
-  display: inline-block;
-  width: 77px;
-  height: 50px;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: auto 100%;
-}
-
-.btn-nextprev .anterior-icon {
-  background-image: url('../img/plataforma/icons/anterior.png');
-}
-
-.btn-nextprev .siguiente-icon {
-  background-image: url('../img/plataforma/icons/siguiente.png');
-}
-
-
 
 #divCalendario.regHorMed .fc-widget-content .fc-time-grid-container{
   height: auto!important;
 }
 
 #divCalendario.regHorMed .fc-bgevent{
-  /*opacity: .5;*/
-  /*background-image: url('../img/plataforma/columnBG.png');*/
-  background-repeat: repeat;
+  opacity: .8;
 }
 
 #divCalendario.regHorMed div.fc-content-skeleton table{
@@ -2647,17 +2615,17 @@ div.Slider{
 }
 
 #divCalendario.regHorMed div.fc-content-skeleton table tr td{
-  border: solid 5px #FFFFFF!important;
+  border: solid 5px #6A808E!important;
 }
 
 #divCalendario.regHorMed .fc-slats td.fc-widget-content{
-  background-color: transparent;
+  background-color: #2F424F;
 }
 
 #divCalendario.regHorMed .fc-slats td.fc-time,
 #divCalendario.regHorMed thead {
     background-color: transparent;
-    color: black!important;
+    color: white;
     border: none;
 }
 
@@ -2670,11 +2638,11 @@ div.Slider{
 }
 
 #divCalendario.regHorMed div.fc-slats td.fc-widget-content{
-  height: 12px;
+  height: 10px;
 }
 
 #divCalendario.regHorMed div.fc-slats td.fc-widget-content:not(.fc-time){
-  /*border: solid 2px #6A808E!important;*/
+  border: solid 2px #6A808E!important;
 }
 
 #divCalendario.regHorMed .fc-body{
@@ -2682,8 +2650,8 @@ div.Slider{
 }
 
 #divCalendario.regHorMed div.fc-event-container{
-  margin-top: 0px;
-  height: 0px;
+  margin-top: -6px;
+  height: 1px;
   width: 100%;
   margin-left: 0px;
 }
@@ -2696,32 +2664,15 @@ div.Slider{
   border-radius: 0px;
 }
 
+#divCalendario.regHorMed div.fc-event-container a.fc-time-grid-event:not(.notBG)
 #divCalendario.regHorMed div.fc-event-container a.fc-time-grid-event:not(.notBG),
-#divCalendario.regHorMed div.fc-event-container a.fc-time-grid-event:not(.notBG),
-#divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg,
-#divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg,
-#divCalendario.regHorMed div.fc-event-container .fc-event {
+#divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg:not(.notBG),
+#divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg:not(.notBG){
   background-color: rgb(255,149,0);
-  color: #6A6A6A;
-  font-weight: bold;
-  border: none;
-}
-
-#divCalendario.regHorMed div.fc-event-container .fc-event.citaPast,
-#divCalendario.regHorMed div.fc-event-container .fc-event.citaPast .fc-bg{
-  background-color: #000;
-  color: white!important;
-}
-
-#divCalendario.regHorMed div.fc-event-container .fc-event.citaPend,
-#divCalendario.regHorMed div.fc-event-container .fc-event.citaPend .fc-bg{
-  background-color: #FFF;
-}
-
-#divCalendario.regHorMed div.fc-event-container .fc-event.citaCanc,
-#divCalendario.regHorMed div.fc-event-container .fc-event.citaCanc .fc-bg{
-  background-color: #8A1E1E;
-  color:white!important;
+  background-image: url('../img/plataforma/agenda-bg.png');
+  background-position: top;
+  background-repeat: repeat-y;
+  background-size: 100% 27px;
 }
 
 #divCalendario.regHorMed.regBack div.fc-event-container a.fc-time-grid-event,
@@ -2791,7 +2742,7 @@ th.fc-day-header.fc-widget-header{
   border-radius: 100px;
 }
 
-@media (max-width:767px) {
+@media (max-width:768px) {
   #regMedStepOne .reg-box {
     margin-top: 0;
     margin-bottom: 20px;
@@ -2816,30 +2767,10 @@ th.fc-day-header.fc-widget-header{
   color: #717171;
 }
 
-#regMedStepOne .code-container {
-  display: block;
-  height: 115px;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  background-color: #3d8fb1;
-}
-
-#regMedStepOne #tipodepagoTabs .active .btn{
-  background-color: #2c8fbd;
-  color: #ffffff;
-}
-
-.code-container img {
-  width: auto;
-  height: 75px;
-  margin: 0 auto;
-}
-
 .lbl {
   font-size: 15px;
   font-weight: bold;
   margin-right: 10px;
-  margin-left: 5px;
   padding-top: 3px;
   padding-right: 0!important;
   padding-bottom: 3px;
@@ -2870,140 +2801,9 @@ th.fc-day-header.fc-widget-header{
 .lbl.lbl-esp {
 
 }
-
 .lbl.lbl-subesp {
 
 }
-
-.tooltip-inner {
-  font-size: 14px;
-  font-weight: bold;
-  min-width: 200px;
-  text-align: left;
-  color: #fff;
-}
-
-#divMapRegHor {
-
-}
-
-#divMapRegHor .header-section {
-  height: 195px;
-  border-bottom: solid 4px #375467;
-  background: transparent;
-}
-
-@media (max-width: 767px) {
-  #divMapRegHor .header-section {
-    min-height: 150px;
-    height: auto;
-  }
-}
-
-.menuRegStep2 {
-  margin-top: 40px;
-  margin-bottom: 40px;
-  padding: 0;
-  border: none;
-  width: 100%;
-}
-
-
-
-.reg2Step {
-  display: table-cell!important;
-  float: none!important;
-  width: 1%;
-  margin: 0!important;
-  vertical-align: middle;
-}
-
-.menuRegStep2 > li.active > a,
-.menuRegStep2 > li.active > a:focus,
-.menuRegStep2 > li.active > a:hover {
-  color: #717171;
-  border: none;
-}
-
-.menuRegStep2 > li.active > a .stepCircle,
-.menuRegStep2 > li.active > a:focus .stepCircle,
-.menuRegStep2 > li.active > a:hover .stepCircle {
-  color: #fff;
-  border-color: #375467;
-  background-color: #375467;
-}
-
-.menuRegStep2 > li > a {
-  color: #717171;
-  border: none;
-  background-color: transparent;
-}
-
-.menuRegStep2 > li > a:focus,
-.menuRegStep2 > li > a:hover {
-  color: #717171;
-  border: none;
-  background-color: transparent;
-}
-
-.menuRegStep2 > li > a:focus .stepCircle,
-.menuRegStep2 > li > a:hover .stepCircle {
-  color: #fff;
-  border-color: #ff8a00;
-  background-color: #ff8a00;
-}
-
-.contentRegStep2 {
-  position: relative;
-  min-height: 600px;
-  margin-bottom: 40px;
-  padding-bottom: 50px;
-}
-
-.stepCircle {
-  display: inline-block;
-  width: 80px;
-  height: 80px;
-  padding: 13px;
-  font-size: 50px;
-  text-align: center;
-  border-width: 2px;
-  border-style: solid;
-  border-color: #808080;
-  border-radius: 100px;
-}
-
-.stepContent {
-  display: inline-block;
-  height: 50px;
-  margin-left: 15px;
-  vertical-align: middle;
-}
-
-@media (max-width:767px) {
-  .menuRegStep2 > li > a {
-    padding: 0px;
-    margin: 0 auto;
-  }
-  .reg2Step {
-    text-align: center;
-  }
-  .stepCircle {
-    font-size: 30px;
-    width: 60px;
-    height: 60px;
-    margin: 0 auto;
-    display: block;
-  }
-  .stepContent {
-    font-size: 15px;
-    height: auto;
-    margin: 10px auto;
-    text-align: center;
-    display: block;
-  }
-}
-
 
 /*.regSectionTitle .glyphicon{
   background-color: white;
@@ -3049,41 +2849,47 @@ span.borderCircle{
   margin-right: 20px;
 }
 
-.action {
-  width: 250px;
+.divActionsUbic>div.action{
+  font-weight: bold;
   text-align: center;
+  color:white;
+  padding: 20px;
+  border-top: solid 3px #FFF;
+  border-bottom: solid 3px #FFF;
+  height: 65px;
+  overflow: hidden;
+  cursor: pointer;
 }
 
-.action .btnicon {
-  position: relative;
-  top: 3px;
-  display: inline-block;
-  width: 37px;
-  height: 36px;
+div.action-All{
+  background-color: #FF9600;
+}
+
+div.action-Busy{
+  background-color: #30424F;
+}
+
+div.action-Office{
+  background-color: #3D5A6E;
+}
+
+div.action-All>.glyphicon{
+  margin-top: -15px;
+  margin-bottom: -10px;
+  font-weight: lighter;
   margin-right: 15px;
-  background-color: none;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 95%;
+  border-radius: 5px;
+  background-color: transparent;
+  border: solid 3px white;
+  color: white;
+  padding: 11px;
+  font-size: 25px;
 }
 
-.btnicon.disponible{
-  background-image: url('../img/plataforma/icons/disponible.png');
-}
-.btnicon.ocupado{
-  background-image: url('../img/plataforma/icons/ocupado.png');
-}
-.btnicon.oficina{
-  background-image: url('../img/plataforma/icons/hoficina.png');
-}
-
-
-.action .btnlbl {
-  font-size: 19px;
-  position: relative;
-  top: -9px;
-  display: inline-block;
-  color: #5c5c5c;
+div.action-All>.glyphicon:before {
+    position: absolute;
+    top: -5px;
+    right: -6px;
 }
 
 .editIcon{
@@ -3129,37 +2935,3 @@ input:-webkit-autofill {
   color: red;
   background: black;
 }
-
-iframe {
-  display: none;
-  visibility: hidden;
-}
-
-.fc-event .fc-bg {
-  opacity: 1!important;
-}
-
-.fc-bgevent{
-  background-color: transparent;
-}
-
-tr.fc-minor .fc-widget-content:not(.fc-time) {
-  border-bottom: 3px solid white!important;
-}
-
-.fc-time-grid .fc-slats, .fc-time-grid>hr {
-    z-index: 300!important;
-}
-.fc-time-grid .fc-content-skeleton {
-    z-index: 301!important;
-}
-td.fc-day.fc-widget-content {
-    background-color: #375467;
-}
-/*
-.fc-toolbar .fc-left {
-    font-size: 35px;
-    margin-left: 15px;
-    font-weight: bold;
-}
-*/

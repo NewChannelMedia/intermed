@@ -122,57 +122,66 @@ function eliminarRelacionMedico(medico_id, element){
 }
 
 $(document).ready(function(){
-  if ($('#DashboarSecretaria').length>0){
-    var medicos = [];
-    $('.dia1>.heading').text(getDate());
-    $('.dia2>.heading').text(getDate(1));
-    $('.dia3>.heading').text(getDate(2));
-    $('.MedicoSecretaria').each(function(){
-      medicos.push($(this).attr('id').split('_')[1]);
-    });
-    var fechainicio = getDate(0,true);
-    var fechafin = getDate(3,true);
-    var dia1 = fechainicio;
-    var dia2 = getDate(1,true);
-    var dia3 = getDate(2,true);
+  cargarCitasProximasSecretaria();
+});
 
-    //Traer citas de medicos de proximos 3 dias
-    $.post('/secretaria/medicos/traerCitasProximas',{
-      medicos:medicos,
-      fechainicio: fechainicio,
-      fechafin: fechafin
-    },function( data ){
-      $('.panel-body.contenidoagenda').html('<ul class="list-group" style="margin-bottom: 0px"></ul>');
-      if( data.success ){
-        data.result.forEach(function(res){
-          var div = 'MedicoSecretaria_'+res.id;
-          res.Usuario.Agendas.forEach(function(ag){
+function cargarCitasProximasSecretaria(){
+
+    if ($('#DashboarSecretaria').length>0){
+      var medicos = [];
+      $('.dia1>.heading').text(getDate());
+      $('.dia2>.heading').text(getDate(1));
+      $('.dia3>.heading').text(getDate(2));
+      $('.MedicoSecretaria').each(function(){
+        medicos.push($(this).attr('id').split('_')[1]);
+      });
+      var fechainicio = getDate(0,true);
+      var fechafin = getDate(3,true);
+      var dia1 = fechainicio;
+      var dia2 = getDate(1,true);
+      var dia3 = getDate(2,true);
+
+      //Traer citas de medicos de proximos 3 dias
+      $.post('/secretaria/medicos/traerCitasProximas',{
+        medicos:medicos,
+        fechainicio: fechainicio,
+        fechafin: fechafin
+      },function( data ){
+        $('.panel-body.contenidoagenda').html('<ul class="list-group" style="margin-bottom: 0px"></ul>');
+        if( data.success ){
+          data.result.forEach(function(res){
+            var div = 'MedicoSecretaria_'+res.Usuario.Medico.id;
             var dia = 'dia';
-            if (ag.fechaHoraInicio.split('T')[0] == dia1){
+            if (res.fechaHoraInicio.split('T')[0] == dia1){
               dia += '1';
-            } else if (ag.fechaHoraInicio.split('T')[0] == dia2){
+            } else if (res.fechaHoraInicio.split('T')[0] == dia2){
               dia += '2';
-            } else if (ag.fechaHoraInicio.split('T')[0] == dia3){
+            } else if (res.fechaHoraInicio.split('T')[0] == dia3){
               dia += '3';
             }
-            $('#'+div + ' .'+dia+' .panel-body ul').append('<li class="list-group-item" style="background-color:white;cursor:pointer" onclick="detalleCitaSecretaria('+ ag.id +')"><strong>'+ formatearHora(ag.fechaHoraInicio.split('T')[1]) +'</strong><br>'+ ag.Paciente.Usuario.DatosGenerale.nombre + ' ' + ag.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + ag.Paciente.Usuario.DatosGenerale.apellidoM + '<br>'+ ag.Direccion.nombre +'<br>'+ ag.CatalogoServicio.concepto +'</li>')
+            var nombrePaciente = '';
+            if (res.Paciente){
+              nombrePaciente = res.Paciente.Usuario.DatosGenerale.nombre + ' ' + res.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + res.Paciente.Usuario.DatosGenerale.apellidoM;
+            } else if (res.PacienteTemporal){
+              nombrePaciente = res.PacienteTemporal.nombres  + ' ' + res.PacienteTemporal.apellidos;
+            }
+            $('#'+div + ' .'+dia+' .panel-body ul').append('<li class="list-group-item" style="background-color:white;cursor:pointer" onclick="detalleCitaSecretaria('+ res.id +')"><strong>'+ formatearHora(res.fechaHoraInicio.split('T')[1]) +'</strong><br>'+ nombrePaciente + '<br>'+ res.Direccion.nombre +'<br>'+ res.CatalogoServicio.concepto +'</li>');
           });
+        }else{
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+        $('.panel-body.contenidoagenda ul').each(function(){
+          if ($(this).text() == ""){
+            $(this).parent().html('<div class="body-container"><div class="center-content text-center" style="padding: 15px;font-weight: bold;color: #DDD;"><span class="s20" >Sin citas agendadas</span></div></div>');
+          }
         });
-      }else{
-        if (data.error){
-          manejadorDeErrores(data.error);
-        }
-      }
-      $('.panel-body.contenidoagenda ul').each(function(){
-        if ($(this).text() == ""){
-          $(this).parent().html('<div class="body-container"><div class="center-content text-center" style="padding: 15px;font-weight: bold;color: #DDD;"><span class="s20" >Sin citas agendadas</span></div></div>');
-        }
+      }).fail(function(e){
+        console.error(e);
       });
-    }).fail(function(e){
-      console.error(e);
-    });
-  }
-});
+    }
+}
 
 function formatearHora(horasminutos){
   var hora = horasminutos.split(':')[0];//16:30:00.000Z
@@ -228,5 +237,88 @@ function guardarNotaSecretaria(agenda_id, input){
     }
   }).fail(function(e){
     console.error(e);
+  });
+}
+
+function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, paciente_id){
+  try{
+    if (!paciente_id){
+      $('#dangerMsg').addClass('hidden').text('');
+      var nombre = $('#nombrePaciente').val();
+      var apellido = $('#apellidoPaciente').val();
+      var correo = $('#correoPaciente').val();
+      var celular = $('#celularPaciente').val();
+      if (correo != "" || celular != ""){
+        var datos = {
+          nombre: nombre,
+          apellido: apellido,
+          correo: correo,
+          celular: celular,
+          inicio: formatearFecha(inicio),
+          fin: formatearFecha(fin),
+          medico_id: medico,
+          servicio_id: servicio_id
+        }
+        $.post('/secretaria/crearCita',datos, function(data){
+          if (data.success){
+            $('#divCalendario').fullCalendar('removeEvents');
+            $('#divCalendario').fullCalendar('refetchEvents');
+            activarDesactivarAgregarCita($('#btnAddCita'));
+            cargarCitasProximasSecretaria();
+            secondaryBootbox.hide();
+          }
+        }).fail(function(e){
+          console.error("Post error: "+JSON.stringify(e));
+        });
+      } else {
+        $('#dangerMsg').removeClass('hidden').text('Es necesario el correo o el teléfono del paciente.');
+        setTimeout(function(){
+          $('#dangerMsg').addClass('hidden').text('');
+        },5000);
+      }
+    } else {
+      $.post('/secretaria/crearCita',{
+        paciente_id: paciente_id,
+        inicio: formatearFecha(inicio),
+        fin: formatearFecha(fin),
+        medico_id: medico,
+        servicio_id: servicio_id
+      }, function(data){
+        if (data.success){
+          $('#divCalendario').fullCalendar('removeEvents');
+          $('#divCalendario').fullCalendar('refetchEvents');
+          activarDesactivarAgregarCita($('#btnAddCita'));
+          cargarCitasProximasSecretaria();
+          secondaryBootbox.hide();
+        }
+      }).fail(function(e){
+        console.error("Post error: "+JSON.stringify(e));
+      });
+    }
+    return false;
+  }catch(e){
+    console.log('ERROR: ' + JSON.stringify(e))
+    return false;
+  }
+}
+
+function secretariaCancelaCita(agenda_id, medico){
+  $.post('/secretaria/cita/cancelar',{
+      agenda_id: agenda_id,
+      medico: medico
+    }, function(data){
+      console.log('CANCELACIÓN: ' + JSON.stringify(data));
+    if (data.success){
+      $('#divCalendario').fullCalendar('removeEvents');
+      $('#divCalendario').fullCalendar('refetchEvents');
+      cargarCitasProximasSecretaria();
+      if (bootSec){
+        bootSec.hide();
+      } else {
+        bootbox.hideAll();
+      }
+    }
+  }).fail(function(e){
+    console.error("Post error: "+JSON.stringify(e));
   });
 }

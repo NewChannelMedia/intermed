@@ -3130,11 +3130,12 @@ input:-webkit-autofill {
   background: black;
 }
 
+<<<<<<< HEAD
 iframe {
   display: none;
   visibility: hidden;
 }
-
+=======
 .fc-event .fc-bg {
   opacity: 1!important;
 }
@@ -3163,3 +3164,4 @@ td.fc-day.fc-widget-content {
     font-weight: bold;
 }
 */
+>>>>>>> dev3_070316_secretariaAdministraMedico

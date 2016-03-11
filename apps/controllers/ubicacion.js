@@ -433,13 +433,17 @@ exports.ubicacionObtener = function (objects, req, res) {
 exports.horariosObtener = function (objects, req, res) {
   try{
     var resultado = [];
+    //direccion_id: objects.direccion_id
     models.Horarios.findAll({
-        where: {
-            direccion_id: objects.direccion_id
-        },
-        attributes: ['dia', 'horaInicio', 'horaFin']
+        attributes: ['dia', 'horaInicio', 'horaFin'],
+        include: [{
+          model: models.Direccion,
+          where: {
+            usuario_id: req.session.passport.user.id
+          }
+        }],
+        logging: console.log
     }).then(function (datos) {
-
         var horaInicio;
         var horaFin;
         //se usa hardcode en la fecha, la fecha debe de ser lunes
@@ -474,11 +478,21 @@ exports.horariosObtener = function (objects, req, res) {
                     horaFin = '2015-11-07 ' + datos[i].dataValues.horaFin;
                     break;
             };
+            var horario = '';
+            if (parseInt(objects.direccion_id) == parseInt(datos[i].Direccion.id)){
+              horario = {
+                  start: horaInicio,
+                  end: horaFin
+              };
+            } else {
+              horario = {
+                  start: horaInicio,
+                  end: horaFin,
+                  color: '#000000',
+                  rendering: 'background'
+              };
+            }
 
-            var horario = {
-                start: horaInicio,
-                end: horaFin
-            };
             resultado.push(horario);
         };
 
