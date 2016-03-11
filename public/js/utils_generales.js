@@ -1198,7 +1198,9 @@ $( document ).ready( function () {
   //console.log('length: '+$( '#perfilMedico' ).length);
   if ( $( '#perfilMedico' ).length > 0 ) {
 
-    //console.log('cargo perfilMedico');
+    if($(window).width() < 767){
+      $('body').css('margin-bottom','60px')
+    }
 
     MostrarUbicaciones();
 
@@ -1218,112 +1220,6 @@ $( document ).ready( function () {
       moveSlides: 1,
       slideMargin: 50,
     } );
-
-    $( '#1bg-perfil .float.down' ).click( function(){
-      $(this).scrollTo( '#ubicaciones', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
-    })
-
-    $( '#2bg-ubicaciones .float.up' ).click( function(){
-      $(this).scrollTo( '#perfil', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
-    })
-    $( '#2bg-ubicaciones .float.down' ).click( function(){
-      $(this).scrollTo( '#info', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
-    })
-
-    $( '#3bg-info .float.up' ).click( function(){
-      $(this).scrollTo( '#ubicaciones', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
-    })
-    $( '#3bg-info .float.down' ).click( function(){
-      $(this).scrollTo( '#colegas', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
-    })
-
-    $( '#4bg-colegas .float.up' ).click( function(){
-      $(this).scrollTo( '#info', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
-    })
-    $( '#4bg-colegas .float.down' ).click( function(){
-      $(this).scrollTo( '#curriculum', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
-    })
-
-    $( '#5bg-curriculum .float.up' ).click( function(){
-      $(this).scrollTo( '#colegas', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
-    })
-    $( '#5bg-curriculum .float.down' ).click( function(){
-      $(this).scrollTo( '#comentarios', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
-    })
-
-    $( '#6bg-comentarios .float.up' ).click( function(){
-      $(this).scrollTo( '#curriculum', 800, {offset: {top:-60, left:0} } /*{offset: function() { return {top:-60}; }}*/ );
-    })
-
-    $( window ).scroll( function() {
-      hidenavbuttons();
-    });
-
-    function hidenavbuttons() {
-      var h = $( window ).height(),
-        halfHeight = Math.round(h / 2),
-        scrollTop = $( window ).scrollTop(),
-        pOffset = $( '#perfil' ).offset().top,
-        pX = pOffset - scrollTop,
-        uOffset = $( '#ubicaciones' ).offset().top,
-        uX = uOffset - scrollTop,
-        iOffset = $( '#info' ).offset().top,
-        iX = iOffset - scrollTop,
-        cOffset = $( '#colegas' ).offset().top,
-        cX = cOffset - scrollTop,
-        cvOffset = $( '#curriculum' ).offset().top,
-        cvX = cvOffset - scrollTop,
-        coOffset = $( '#comentarios' ).offset().top,
-        coX = coOffset - scrollTop;
-      if ( pX >= 0 ) {
-        $('#1bg-perfil' ).removeClass( 'hidden' );
-        $('#2bg-ubicaciones' ).addClass( 'hidden' );
-        $('#3bg-info' ).addClass( 'hidden' );
-        $('#4bg-colegas' ).addClass( 'hidden' );
-        $('#5bg-curriculum' ).addClass( 'hidden' );
-        $('#6bg-comentarios' ).addClass( 'hidden' );
-      }
-      else if( uX <= halfHeight && uX >= 0 ) {
-        $( '#1bg-perfil' ).addClass( 'hidden' );
-        $( '#2bg-ubicaciones' ).removeClass( 'hidden' );
-        $( '#3bg-info' ).addClass( 'hidden' );
-        $( '#4bg-colegas' ).addClass( 'hidden' );
-        $( '#5bg-curriculum' ).addClass( 'hidden' );
-        $( '#6bg-comentarios' ).addClass( 'hidden' );
-      }
-      else if( iX <= halfHeight && iX >= 0 ) {
-        $( '#1bg-perfil').addClass( 'hidden' );
-        $( '#2bg-ubicaciones').addClass( 'hidden' );
-        $( '#3bg-info').removeClass( 'hidden' );
-        $( '#4bg-colegas').addClass( 'hidden' );
-        $( '#5bg-curriculum').addClass( 'hidden' );
-        $( '#6bg-comentarios').addClass( 'hidden' );
-      }
-      else if( cX <= halfHeight && cX >= 0 ) {
-        $( '#1bg-perfil' ).addClass( 'hidden' );
-        $( '#2bg-ubicaciones' ).addClass( 'hidden' );
-        $( '#3bg-info' ).addClass( 'hidden' );
-        $( '#4bg-colegas' ).removeClass( 'hidden' );
-        $( '#5bg-curriculum' ).addClass( 'hidden' );
-        $( '#6bg-comentarios' ).addClass( 'hidden' );
-      }
-      else if( cvX <= halfHeight && cvX >= 0 ) {
-        $( '#1bg-perfil' ).addClass( 'hidden' );
-        $( '#2bg-ubicaciones' ).addClass( 'hidden' );
-        $( '#3bg-info' ).addClass( 'hidden' );
-        $( '#4bg-colegas' ).addClass( 'hidden' );
-        $( '#5bg-curriculum' ).removeClass( 'hidden' );
-        $( '#6bg-comentarios' ).addClass( 'hidden' );
-      }
-      else if( coX <= halfHeight && coX >= 0 ) {
-        $( '#1bg-perfil' ).addClass( 'hidden' );
-        $( '#2bg-ubicaciones' ).addClass( 'hidden' );
-        $( '#3bg-info' ).addClass( 'hidden' );
-        $( '#4bg-colegas' ).addClass( 'hidden' );
-        $( '#5bg-curriculum' ).addClass( 'hidden' );
-        $( '#6bg-comentarios' ).removeClass( 'hidden' );
-      }
-    }
 
     $( 'html' ).scrollLock( 'on', 'div' );
     /*$( 'html' ).niceScroll({background: 'none'});

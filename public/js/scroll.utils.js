@@ -162,55 +162,238 @@ jQuery(function( $ ){
 });
 
 
+function checkTop () {
+  var topOffset;
+  if( $(window).width() < 767 ){
+    topOffset = 60;
+  }
+  else {
+    topOffset = 0;
+  }
+  return topOffset;
+}
+
+function toTop(){
+  event.preventDefault();
+  $body.scrollTo($('body'), 1000, { offset:{ top:0, left:0 } });
+}
+function toPerfil(){
+  event.preventDefault();
+  $body.scrollTo($('#perfil'), 1000, { offset:{ top:0, left:0 } });
+}
+function toUbicaciones() {
+  event.preventDefault();
+  $body.scrollTo($('#ubicaciones'), 1000, { offset:{ top:-(60+checkTop()), left:0 } });
+}
+function toInfo(){
+  event.preventDefault();
+  $body.scrollTo($('#info'), 1000, { offset:{ top:-(60+checkTop()), left:0 } });
+}
+function toCV(){
+  event.preventDefault();
+  $body.scrollTo($('#curriculum'), 1000, { offset:{ top:-(60+checkTop()), left:0 } });
+}
+function toColegas(){
+  event.preventDefault();
+  $body.scrollTo($('#colegas'), 1000, { offset:{ top:-(60+checkTop()), left:0 } });
+}
+function toComentarios(){
+  event.preventDefault();
+  $body.scrollTo($('#comentarios'), 1000, { offset:{ top:-(60+checkTop()), left:0 } });
+}
 
 
-/*
+
 var $body = $('body');
 $('body a').click(function() {
   $body.stop(true);
 });
 
-$('#profile .float.down').click(function() {
-  event.preventDefault();
-  $body.scrollTo($('#ubicaciones'), 1000, { offset:{ top:-120, left:0 } });
+$('#toPerfil').click(function() {
+  toPerfil();
 });
-$('#ubicaciones .float.down').click(function() {
-  event.preventDefault();
-  $body.scrollTo($('#info'), 1000, { offset:{ top:-60, left:0 } });
+$('#toUbicaciones').click(function() {
+  toUbicaciones();
 });
-$('#info .float.down').click(function() {
-  event.preventDefault();
-  $body.scrollTo($('#colegas'), 1000, { offset:{ top:-60, left:0 } });
+$('#toInfo').click(function() {
+  toInfo();
 });
-$('#colegas .float.down').click(function() {
-  event.preventDefault();
-  $body.scrollTo($('#curriculum'), 1000, { offset:{ top:-60, left:0 } });
+$('#toCurriculum').click(function() {
+  toCV();
 });
-$('#curriculum .float.down').click(function() {
-  event.preventDefault();
-  $body.scrollTo($('#comentarios'), 1000, { offset:{ top:-60, left:0 } });
+$('#toColegas').click(function() {
+  toColegas();
+});
+$('#toComentarios').click(function() {
+  toComentarios();
 });
 
-$('#ubicaciones .float.up').click(function() {
-  event.preventDefault();
-  $body.scrollTo($('#profile'), 1000, { offset:{ top:-60, left:0 } });
-});
-$('#info .float.up').click(function() {
-  event.preventDefault();
-  $body.scrollTo($('#ubicaciones'), 1000, { offset:{ top:-60, left:0 } });
-});
-$('#colegas .float.up').click(function() {
-  event.preventDefault();
-  $body.scrollTo($('#info'), 1000, { offset:{ top:-60, left:0 } });
-});
-$('#curriculum .float.up').click(function() {
-  event.preventDefault();
-  $body.scrollTo($('#colegas'), 1000, { offset:{ top:-60, left:0 } });
-});
-$('#comentarios .float.up').click(function() {
-  event.preventDefault();
-  $body.scrollTo($('#curriculum'), 1000, { offset:{ top:-60, left:0 } });
-});*/
+
+$( '#2bg-ubicaciones .float.up' ).click( function(){
+  toPerfil();
+})
+$( '#3bg-info .float.up' ).click( function(){
+  toUbicaciones();
+})
+$( '#5bg-curriculum .float.up' ).click( function(){
+  toInfo();
+})
+$( '#4bg-colegas .float.up' ).click( function(){
+  toCV();
+})
+$( '#6bg-comentarios .float.up' ).click( function(){
+  toColegas();
+})
+
+$( '#1bg-perfil .float.down' ).click( function(){
+  toUbicaciones();
+})
+$( '#2bg-ubicaciones .float.down' ).click( function(){
+  toInfo();
+})
+$( '#3bg-info .float.down' ).click( function(){
+  toCV();
+})
+$( '#5bg-curriculum .float.down' ).click( function(){
+  toColegas();
+})
+$( '#4bg-colegas .float.down' ).click( function(){
+  toComentarios();
+})
+
+
+  $( window ).scroll( function() {
+    hidenavbuttons();
+  });
+
+  /*
+  <nav id="navSections" class="center-block text-center bg-darkBlue hidden-lg hidden-md hidden-sm">
+    <div id="1bg-perfil" class="">
+      <a href="#" class="btn float up invisible">
+        <span class="glyphicon glyphicon-arrow-up"></span>
+      </a>
+      <a href="#ubicaciones" class="btn float down">
+        <span class="glyphicon glyphicon-arrow-down"></span>
+      </a>
+    </div>
+    <div id="2bg-ubicaciones" class="hidden">
+      <a href="#perfil" class="btn float up">
+        <span class="glyphicon glyphicon-arrow-up"></span>
+      </a>
+      <a href="#info" class="btn float down">
+        <span class="glyphicon glyphicon-arrow-down"></span>
+      </a>
+    </div>
+    <div id="3bg-info" class="hidden">
+      <a href="#ubicaciones" class="btn float up">
+        <span class="glyphicon glyphicon-arrow-up"></span>
+      </a>
+      <a href="#colegas" class="btn float down">
+        <span class="glyphicon glyphicon-arrow-down"></span>
+      </a>
+    </div>
+    <div id="4bg-colegas" class="hidden">
+      <a href="#info" class="btn float up">
+        <span class="glyphicon glyphicon-arrow-up"></span>
+      </a>
+      <a href="#curriculum" class="btn float down">
+        <span class="glyphicon glyphicon-arrow-down"></span>
+      </a>
+    </div>
+
+    <div id="5bg-curriculum" class="hidden">
+      <a href="#colegas" class="btn float up">no
+        <span class="glyphicon glyphicon-arrow-up"></span>
+      </a>
+      <a href="#comentarios" class="btn float down">
+        <span class="glyphicon glyphicon-arrow-down"></span>
+      </a>
+    </div>
+
+    <div id="6bg-comentarios" class="hidden">
+      <a href="#curriculum" class="btn float up">no
+        <span class="glyphicon glyphicon-arrow-up"></span>
+      </a>
+      <a href="#" class="btn float down text-center" onclick="toTop();">TOP</span>
+      </a>
+    </div>
+
+  </nav>
+  */
+
+  function hidenavbuttons() {
+    var h = $( window ).height(),
+      halfHeight = Math.round(h / 2),
+      scrollTop = $( window ).scrollTop(),
+
+      pOffset = $( '#perfil' ).offset().top,
+      pX = pOffset - scrollTop,
+
+      uOffset = $( '#ubicaciones' ).offset().top,
+      uX = uOffset - scrollTop,
+
+      iOffset = $( '#info' ).offset().top,
+      iX = iOffset - scrollTop,
+
+      cOffset = $( '#curriculum' ).offset().top,
+      cX = cOffset - scrollTop,
+
+      cvOffset = $( '#colegas' ).offset().top,
+      cvX = cvOffset - scrollTop,
+
+      coOffset = $( '#comentarios' ).offset().top,
+      coX = coOffset - scrollTop;
+
+    if ( pX >= 0 ) {
+      $('#1bg-perfil' ).removeClass( 'hidden' );
+      $('#2bg-ubicaciones' ).addClass( 'hidden' );
+      $('#3bg-info' ).addClass( 'hidden' );
+      $('#4bg-colegas' ).addClass( 'hidden' );
+      $('#5bg-curriculum' ).addClass( 'hidden' );
+      $('#6bg-comentarios' ).addClass( 'hidden' );
+    }
+    else if( uX <= halfHeight && uX >= 0 ) {
+      $( '#1bg-perfil' ).addClass( 'hidden' );
+      $( '#2bg-ubicaciones' ).removeClass( 'hidden' );
+      $( '#3bg-info' ).addClass( 'hidden' );
+      $( '#4bg-colegas' ).addClass( 'hidden' );
+      $( '#5bg-curriculum' ).addClass( 'hidden' );
+      $( '#6bg-comentarios' ).addClass( 'hidden' );
+    }
+    else if( iX <= halfHeight && iX >= 0 ) {
+      $( '#1bg-perfil').addClass( 'hidden' );
+      $( '#2bg-ubicaciones').addClass( 'hidden' );
+      $( '#3bg-info').removeClass( 'hidden' );
+      $( '#4bg-colegas').addClass( 'hidden' );
+      $( '#5bg-curriculum').addClass( 'hidden' );
+      $( '#6bg-comentarios').addClass( 'hidden' );
+    }
+    else if( cX <= halfHeight && cX >= 0 ) {
+      $( '#1bg-perfil' ).addClass( 'hidden' );
+      $( '#2bg-ubicaciones' ).addClass( 'hidden' );
+      $( '#3bg-info' ).addClass( 'hidden' );
+      $( '#4bg-colegas' ).addClass( 'hidden' );
+      $( '#5bg-curriculum' ).removeClass( 'hidden' );
+      $( '#6bg-comentarios' ).addClass( 'hidden' );
+    }
+    else if( cvX <= halfHeight && cvX >= 0 ) {
+      $( '#1bg-perfil' ).addClass( 'hidden' );
+      $( '#2bg-ubicaciones' ).addClass( 'hidden' );
+      $( '#3bg-info' ).addClass( 'hidden' );
+      $( '#4bg-colegas' ).removeClass( 'hidden' );
+      $( '#5bg-curriculum' ).addClass( 'hidden' );
+      $( '#6bg-comentarios' ).addClass( 'hidden' );
+    }
+    else if( coX <= halfHeight && coX >= 0 ) {
+      $( '#1bg-perfil' ).addClass( 'hidden' );
+      $( '#2bg-ubicaciones' ).addClass( 'hidden' );
+      $( '#3bg-info' ).addClass( 'hidden' );
+      $( '#4bg-colegas' ).addClass( 'hidden' );
+      $( '#5bg-curriculum' ).addClass( 'hidden' );
+      $( '#6bg-comentarios' ).removeClass( 'hidden' );
+    }
+  }
+
 
 
 
