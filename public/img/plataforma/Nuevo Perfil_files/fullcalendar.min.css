@@ -51,8 +51,8 @@ body .fc {
 }
 
 .fc-bgevent {
-  background: #375467;
-  opacity: 1;
+  background: #8fdf82;
+  opacity: .3;
   filter: alpha(opacity=30)
 }
 

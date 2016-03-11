@@ -9,13 +9,17 @@ module.exports = function (object){
   var url = object.url;
 
   app.get('*', function (req, res, next){
-    if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "M"){
-      if (req.session.passport.user.status == 0){
-        routeLife( 'plataforma2', 'plataforma', hps );
-        res.render('medico/registro_1');
-      } else if (req.session.passport.user.status == -1){
-        routeLife( 'plataforma2', 'plataforma', hps );
-        res.render('medico/registro_2');
+    if (req.url != '/logout'){
+      if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "M"){
+        if (req.session.passport.user.status == 0){
+          routeLife( 'plataforma2', 'plataforma', hps );
+          res.render('medico/registro_1');
+        } else if (req.session.passport.user.status == -1){
+          routeLife( 'plataforma2', 'plataforma', hps );
+          res.render('medico/registro_2');
+        } else {
+          next();
+        }
       } else {
         next();
       }

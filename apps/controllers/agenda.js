@@ -27,7 +27,6 @@ exports.agregaCita = function(object, req, res) {
     var fechaFinNotificacion = new Date(object.fechaFin);
     fechaNotificacion.setMinutes(fechaNotificacion.getMinutes() + 30);
     fechaFinNotificacion.setMinutes(fechaNotificacion.getDay() + 7);
-    console.log('paciente_id: '+req.session.passport.user.Paciente_id);
     //console.log(object.fecha)
     models.Agenda.create({
         fechaHoraInicio:  object.fecha,
@@ -39,7 +38,6 @@ exports.agregaCita = function(object, req, res) {
         usuario_id : object.medico_id,
         status : true
     }).then(function(datos) {
-      console.log('Datos: ' + datos);
         models.Medico.findOne({
           where:{
             usuario_id: object.medico_id
@@ -70,7 +68,6 @@ exports.agregaCita = function(object, req, res) {
 
         //Agregar a pacientes que atiende el médico
 
-        console.log('notificacion paciente');
         models.Notificacion.create({
             inicio: formatearFecha(fechaNotificacion),
             fin:  formatearFecha(fechaFinNotificacion),
@@ -78,7 +75,7 @@ exports.agregaCita = function(object, req, res) {
             tipoNotificacion_id : 21,
             usuario_id : req.session.passport.user.id
         });
-        console.log('notificacion medico');
+
         models.Notificacion.create({
             usuario_id : object.medico_id,
             fin: formatearFecha(new Date(object.fecha)),
@@ -117,8 +114,9 @@ exports.modificaCita = function(object, req, res) {
 exports.cancelaCitaMedico = function(object, req, res) {
   try{
     var id = object.id.replace("cita_", "");
+    //Cancelado por medico
     models.Agenda.update({
-        status: 0
+        status: 2
       }, { where : {  id: id }
     }).then(function(datos) {
         models.Agenda.findOne({
@@ -190,7 +188,10 @@ exports.cancelaCita = function(object, req, res) {
     ).then(function(agenda){
       var infoAgenda = JSON.parse(JSON.stringify(agenda));
       var usuario_id = agenda.usuario_id;
-      models.Agenda.destroy({where:{id:id}
+      //Cancelado por paciente
+      models.Agenda.update({
+          status: 0
+        }, { where : {  id: id }
       }).then(function(datos) {
           models.Notificacion.create({
               data : req.session.passport.user.Paciente_id+'|'+infoAgenda.fechaHoraInicio+'|'+infoAgenda.fechaHoraFin+'|'+infoAgenda.direccion_id+'|'+infoAgenda.servicio_id,

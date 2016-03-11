@@ -4306,8 +4306,6 @@ function detallesError(error_id, element){
     },300);
 }
 
-var bootSec = null;
-var popover = null;
 function detalleCitaSecretaria(agenda_id){
     var imagenUrl = '';
     var nombreUsuario = '';
@@ -4330,117 +4328,71 @@ function detalleCitaSecretaria(agenda_id){
       success: function ( data ) {
         if (data.result){
           result = data.result;
-          if (data.result.Paciente){
-            imagenUrl = data.result.Paciente.Usuario.urlFotoPerfil;
-            if (!data.result.Paciente.Usuario.DatosGenerale.apellidoM) data.result.Paciente.Usuario.DatosGenerale.apellidoM = '';
-            nombreUsuario = data.result.Paciente.Usuario.DatosGenerale.nombre  + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoM;
-          } else {
-            nombreUsuario = data.result.PacienteTemporal.nombres  + ' ' + data.result.PacienteTemporal.apellidos;
-          }
-          nombreUbicacion = data.result.Direccion.nombre;
-          nombreServicio = data.result.CatalogoServicio.concepto;
-          fecha = data.result.fechaHoraInicio.split('T')[0];
-          hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+          imagenUrl = data.result.Usuario.Agendas[0].Paciente.Usuario.urlFotoPerfil;
+          if (!data.result.Usuario.Agendas[0].Paciente.Usuario.DatosGenerale.apellidoM) data.result.Usuario.Agendas[0].Paciente.Usuario.DatosGenerale.apellidoM = '';
+          nombreUsuario = data.result.Usuario.Agendas[0].Paciente.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.Agendas[0].Paciente.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Usuario.Agendas[0].Paciente.Usuario.DatosGenerale.apellidoM;
+          nombreUbicacion = data.result.Usuario.Agendas[0].Direccion.nombre;
+          nombreServicio = data.result.Usuario.Agendas[0].CatalogoServicio.concepto;
+          fecha = data.result.Usuario.Agendas[0].fechaHoraInicio.split('T')[0];
+          hora = data.result.Usuario.Agendas[0].fechaHoraInicio.split('T')[1].split(':00.')[0];
 
-          if (data.result.nota){
-            nota = data.result.nota;
+          if (data.result.Usuario.Agendas[0].nota){
+            nota = data.result.Usuario.Agendas[0].nota;
           }
 
-          var editar = true;
-          var estatus = '';
-          if ((data.result.status != 1)){
-            editar = false;
-            if (data.result.status == 2){
-              estatus = 'Cancelada por el médico.';
-            } else if (data.result.status == 1){
-              estatus = 'Cancelada por el paciente.';
-            }
-          } else if (formatearTimestampAgenda(new Date(data.result.fechaHoraInicio).getTime()) < formatearFecha(new Date())){
-            estatus = "La cita ya finalizo.";
-            editar = false;
-          }
-
-          var modal = '<div class="row">'+
-            '<div class="col-md-3 col-sm-3 col-xs-3">'+
-              '<img src="'+imagenUrl+'" class="img-rounded img-responsive" style="margin-top:20px;">'+
-            '</div>'+
-            '<div class="col-md-9 col-sm-9 col-xs-9">'+
-              '<div class="body-container"><div class="center-content">'+
-                '<h2><strong>'+nombreUsuario+'</strong></h2>'+
-              '</div></div>'+
-            '</div>'+
-          '</div>'+
-
-          '<div class="row">'+
-            '<div class="col-md-8 col-sm-8 s20">'+
-              '<span><b>Fecha: </b>'+ fecha +'</span><br/>'+
-              '<span><b>Hora: </b>'+ hora +'</span><br/><br/>'+
-              '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
-              '<b>Servicio: </b>'+nombreServicio+'<br/>'+
-            '</div>';
-
-          if (editar){
-            modal += '<div class="col-md-4 col-sm-4">'+
-                '<button class="btn btn-default btn-block s20" style="color: #5cb85c;font-weight: bold;">Reagendar</button>'+
-                '<button class="btn btn-default btn-block s20" style="color: #f0ad4e;font-weight: bold;">Retrasar</button>'+
-                '<div class="btn-group btn-block">'+
-                    '<button type="button" class="btn btn-default btn-block s20 dropdown-toggle" style="color: #d43f3a;font-weight: bold;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cancelar</button>'+
-                    '<ul class="dropdown-menu" style="width:100%">'+
-                      '<li class="text-center" ><strong>¿Quién cancela?</strong></li>'+
-                      '<li role="separator" class="divider"></li>'+
-                      '<li class="text-center" style="cursor:pointer" onclick="secretariaCancelaCita('+agenda_id+',true)">Médico</li>'+
-                      '<li role="separator" class="divider"></li>'+
-                      '<li class="text-center" style="cursor:pointer" onclick="secretariaCancelaCita('+agenda_id+')">Paciente</li>'+
-                    '</ul>'+
-                  '</div>'+
-              '</div>'+
-            '</div>'+
-            '<div class="row">'+
-              '<div class="col-md-12 s20">'+
-                '<label for="inputNotasCita">Notas: </label>'+
-              '</div>'+
-              '<div class="col-md-12 s20">'+
-                  '<textarea class="form-control custom-control s20" rows="7" style="resize:none" id="inputNotasCita" maxlength="250">'+ nota +'</textarea>'+
-              '</div>';
-          } else {
-            modal += '<div class="col-md-8 col-sm-8 s20">'+
-              '<br><span><b>Estatus: </b><span style="color: red;font-weight:bold">'+ estatus +'</span></span><br/>'+
-            '</div>';
-          }
-
-          if (editar){
-            modal += '<div class="col-md-6 col-sm-4 col-xs-4 pull-right">'+
-                  '<div class="form-group">'+
-                      '<button class="btn btn-primary btn-md btn-block" id="btnRegMed"  onclick="guardarNotaSecretaria('+agenda_id+',\'inputNotasCita\')">Guardar</button>'+
-                  '</div>'+
-              '</div>'+
-
-              '<div class="col-md-2 col-sm-4 col-xs-4 pull-left">'+
-                  '<div class="form-group">'+
-                      '<button class="btn btn-danger btn-block" id="btnRegMed" onclick="bootSec.hide()">Cerrar</button>'+
-                  '</div>'+
-              '</div>'+
-            '</div>';
-          } else {
-            modal += '<div class="col-md-12">'+
-                  '<div class="form-group">'+
-                      '<button class="btn btn-danger btn-block" id="btnRegMed" onclick="bootSec.hide()">Cerrar</button>'+
-                  '</div>'+
-              '</div>'+
-            '</div>';
-          }
-
-
-
-
-          bootSec =  bootbox.dialog({
-              onEscape: function () {
-                bootSec.hide();
+          bootbox.dialog({
+            backdrop: true,
+            onEscape: function () {
+                bootbox.hideAll();
             },
-            backdrop: false,
             className: 'Intermed-Bootbox',
             title: '',
-            message: modal
+            message:
+                '<div class="row">'+
+                  '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                    '<img src="'+imagenUrl+'" class="img-rounded img-responsive" style="margin-top:20px;">'+
+                  '</div>'+
+                  '<div class="col-md-9 col-sm-9 col-xs-9">'+
+                    '<div class="body-container"><div class="center-content">'+
+                      '<h2><strong>'+nombreUsuario+'</strong></h2>'+
+                    '</div></div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="row">'+
+                  '<div class="col-md-8 col-sm-8 s20">'+
+                    '<span><b>Fecha: </b>'+ fecha +'</span><br/>'+
+                    '<span><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+                    '<b>Ubicacion: </b>'+nombreUbicacion+'<br/>'+
+                    '<b>Servicio: </b>'+nombreServicio+'<br/>'+
+                  '</div>'+
+                  '<div class="col-md-4 col-sm-4">'+
+                    '<button class="btn btn-default btn-block s20" style="color: #5cb85c;font-weight: bold;">Reagendar</button>'+
+                    '<button class="btn btn-default btn-block s20" style="color: #f0ad4e;font-weight: bold;">Retrasar</button>'+
+                    '<button class="btn btn-default btn-block s20" style="color: #d43f3a;font-weight: bold;">Cancelar</button>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="row">'+
+                  '<div class="col-md-12 s20">'+
+                    '<label for="inputNotasCita">Notas: </label>'+
+                  '</div>'+
+                  '<div class="col-md-12 s20">'+
+                      '<textarea class="form-control custom-control s20" rows="7" style="resize:none" id="inputNotasCita" maxlength="250">'+ nota +'</textarea>'+
+                  '</div>'+
+
+                  '<div class="col-md-6 col-sm-4 col-xs-4 pull-right">'+
+                      '<div class="form-group">'+
+                          '<button class="btn btn-primary btn-md btn-block" id="btnRegMed"  onclick="guardarNotaSecretaria('+agenda_id+',\'inputNotasCita\')">Guardar</button>'+
+                      '</div>'+
+                  '</div>'+
+
+                  '<div class="col-md-2 col-sm-4 col-xs-4 pull-left">'+
+                      '<div class="form-group">'+
+                          '<button class="btn btn-danger btn-block" id="btnRegMed" onclick="bootbox.hideAll()">Cerrar</button>'+
+                      '</div>'+
+                  '</div>'+
+                '</div>'
           });
 
           $('.bootbox-close-button').css('margin-top','0px');
@@ -4473,8 +4425,6 @@ function secretariaAgendaMedico(medico_id){
             '<div class="col-md-12">'+
               '<form method="POST" name="frmRegCita" id="frmRegCita">'+
                 '<input type="hidden" id="medico_id" name="medico_id" value="'+ medico_id +'">'+
-                '<div class="col-md-10 text-left"><div class="btn-group" ><button type="button" class="btn btn-default direccionlist active" onclick="destacarDireccion(this)">VER TODAS</button><button type="button" class="btn btn-default direccionlist" onclick="destacarDireccion(this,\'direccion_0\')">Dirección 1</button><button type="button" class="btn btn-default direccionlist" onclick="destacarDireccion(this,\'direccion_1\')">Dirección 2</button><button type="button" class="btn btn-default direccionlist" onclick="destacarDireccion(this,\'direccion_2\')">Dirección 3</button></div></div>'+
-                '<div class="col-md-2"><div class="row"><button type="button" class="btn btn-default btn-md pull-right" onclick="activarDesactivarAgregarCita(this)" id="btnAddCita">Agregar cita</button></div></div>'+
                 '<div class="col-md-12" id="divCalendarioPadre"><div class="row"><div id="divCalendario" class="regHorMed"></div></div></div>'+
               '</form>'+
             '</div>'+
@@ -4489,150 +4439,4 @@ function secretariaAgendaMedico(medico_id){
           '</div>'
   });
   horariosAgendaSecretariaMedico(medico_id);
-}
-
-var secondaryBootbox = null;
-
-function agregarCitaPorServicio(servicios){
-  var contenido = '';
-  servicios.forEach(function(servicio){
-    contenido += '<option value="'+ servicio.id +'">'+ servicio.concepto + '  (' + servicio.duracion +')</option>';
-  });
-  secondaryBootbox = bootbox.dialog({
-    backdrop: false,
-    size:'large',
-    className: 'Intermed-Bootbox',
-    title: '<span class="title">Selecciona paciente</span>',
-    message:
-          '<div class="row">'+
-            '<div class="col-md-12">'+
-              '<select class="form-control"><option value="" disabled selected></option>'+ contenido + '</select>'+
-            '</div>'+
-          '</div>'+
-          '<div class="row">'+
-            '<div class="col-md-4 pull-left">'+
-              '<input type="button" class="btn btn-drop btn-block " value="Cancelar" onclick="secondaryBootbox.hide();">'+
-            '</div>'+
-            '<div class="col-md-4 pull-right">'+
-              '<input type="button" class="btn btn-save btn-block " value="Seleccionar" onclick="registrarCita()">'+
-            '</div>'+
-          '</div>'
-  });
-}
-
-
-function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id){
-  //Modal para seleccionar paciente o introducir uno que no existe
-
-  secondaryBootbox = bootbox.dialog({
-    backdrop: false,
-    size:'large',
-    className: 'Intermed-Bootbox',
-    title: '<span class="title text-center" style="font-weight:bold">¿Quién es el paciente?</span>',
-    message:
-      '<form method="post" onsubmit="return registrarCitaPacienteTemporal('+inicio+','+fin+','+medico+','+servicio_id+')">'+
-          '<div class="row">'+
-            '<div class="col-md-6">'+
-                '<div class="input-group">'+
-                  '<input type="text" id="inputBusquedaPaciente" class="form-control" placeholder="Encuentralo en Intermed..."  onchange="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\')">'+
-                  '<span class="input-group-btn">'+
-                    '<button type="button" class="btn btn-secondary" type="button"  onclick="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\')">Buscar</button>'+
-                  '</span>'+
-                '</div>'+
-                '<ul class="list-group" id="resultadosBusquedaPaciente">'+
-                  '<li class="list-group-item media" style="margin-top:0px">'+
-                      '<div class="media-left"><a href="#"><img class="media-object" src="https://image.freepik.com/iconos-gratis/perfil-macho-sombra-de-usuario_318-40244.jpg" alt="..." style="width:40px"></a></div>'+
-                      '<div class="media-body"><h4 class="media-heading">Nombre del paciente</h4><small>Zapopan, Jalisco.</small></div>'+
-                      '<div class="media-right"><button type="button" class="btn btn-primary btn-sm" onclick="registrarCitaPacienteTemporal('+inicio+','+fin+','+medico+','+servicio_id+',2)">Seleccionar</button></div>'+
-                  '</li>'+
-                  '<li class="list-group-item media" style="margin-top:0px">'+
-                      '<div class="media-left"><a href="#"><img class="media-object" src="https://image.freepik.com/iconos-gratis/perfil-macho-sombra-de-usuario_318-40244.jpg" alt="..." style="width:40px"></a></div>'+
-                      '<div class="media-body"><h4 class="media-heading">Nombre del paciente</h4><small>Zapopan, Jalisco.</small></div>'+
-                      '<div class="media-right"><button type="button" class="btn btn-primary btn-sm">Seleccionar</button></div>'+
-                  '</li>'+
-                  '<li class="list-group-item media" style="margin-top:0px">'+
-                      '<div class="media-left"><a href="#"><img class="media-object" src="https://image.freepik.com/iconos-gratis/perfil-macho-sombra-de-usuario_318-40244.jpg" alt="..." style="width:40px"></a></div>'+
-                      '<div class="media-body"><h4 class="media-heading">Nombre del paciente</h4><small>Zapopan, Jalisco.</small></div>'+
-                      '<div class="media-right"><button type="button" class="btn btn-primary btn-sm">Seleccionar</button></div>'+
-                  '</li>'+
-                  '<li class="list-group-item media" style="margin-top:0px">'+
-                      '<div class="media-left"><a href="#"><img class="media-object" src="https://image.freepik.com/iconos-gratis/perfil-macho-sombra-de-usuario_318-40244.jpg" alt="..." style="width:40px"></a></div>'+
-                      '<div class="media-body"><h4 class="media-heading">Nombre del paciente</h4><small>Zapopan, Jalisco.</small></div>'+
-                      '<div class="media-right"><button type="button" class="btn btn-primary btn-sm">Seleccionar</button></div>'+
-                  '</li>'+
-                '</ul>'+
-            '</div>'+
-            '<div class="col-lg-6 col-md-6 regCorreo">'+
-              '<h3>Regístrate con tu correo electrónico</h3>'+
-              '<div class="row">'+
-                '<div class="col-md-12">'+
-                  '<div class="form-group">'+
-                    '<div class="alert alert-danger hidden" id="dangerMsg" role="alert"></div>'+
-                  '</div>'+
-                '</div>'+
-              '</div>'+
-              '<div class="row">'+
-                '<div class="col-md-12">'+
-                  '<div class="form-group">'+
-                    '<input type="text" class="form-control" placeholder="Nombre(s)" required id="nombrePaciente">'+
-                  '</div>'+
-                '</div>'+
-              '</div>'+
-              '<div class="row">'+
-                '<div class="col-md-12">'+
-                  '<div class="form-group">'+
-                    '<input type="text" class="form-control" placeholder="Apellido(s)" id="apellidoPaciente">'+
-                  '</div>'+
-                '</div>'+
-              '</div>'+
-              '<div class="row">'+
-                '<div class="col-md-12">'+
-                  '<div class="form-group">'+
-                    '<input type="email" class="form-control" placeholder="Correo electrónico" id="correoPaciente">'+
-                  '</div>'+
-                '</div>'+
-              '</div>'+
-              '<div class="row">'+
-                '<div class="col-md-12">'+
-                  '<div class="form-group">'+
-                    '<input type="text" class="form-control" placeholder="Celular" id="celularPaciente">'+
-                  '</div>'+
-                '</div>'+
-              '</div>'+
-            '</div>'+
-          '</div>'+
-          '<div class="row">'+
-            '<div class="col-md-4 pull-left">'+
-              '<input type="button" class="btn btn-drop btn-block " value="Cancelar" onclick="secondaryBootbox.hide();">'+
-            '</div>'+
-            '<div class="col-md-4 pull-right">'+
-              '<input type="submit" class="btn btn-save btn-block " value="Guardar">'+
-            '</div>'+
-          '</div>'+
-        '</form>'
-  });
-
-  /*
-  console.log('--------------------');
-  console.log('Inicio: ' + inicio);
-  console.log('Fin: ' + fin);
-  console.log('Medico: ' + medico);
-  console.log('Servicio: ' + servicio_id);
-
-  $.post('/secretaria/crearCita',{
-    paciente_id: 2,
-    usuario_id: 6,
-    inicio: formatearFecha(inicio),
-    fin: formatearFecha(fin),
-    medico_id: medico,
-    servicio_id: servicio_id
-  }, function(data){
-    if (data.success){
-      $('#divCalendario').fullCalendar('removeEvents');
-      $('#divCalendario').fullCalendar('refetchEvents');
-      activarDesactivarAgregarCita($('#btnAddCita'));
-    }
-  }).fail(function(e){
-    console.error("Post error: "+JSON.stringify(e));
-  });*/
 }
