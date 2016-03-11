@@ -166,11 +166,9 @@ function checkTop () {
   var topOffset;
   if( $(window).width() < 767 ){
     topOffset = 60;
-    console.log('offset 60');
   }
   else {
     topOffset = 0;
-    console.log('offset 0');
   }
   return topOffset;
 }

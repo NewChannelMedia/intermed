@@ -74,6 +74,10 @@ input, select, button {
   padding: 0;
 }
 
+.body-container .row {
+  padding: 0;
+}
+
 .top-content {
   display: table-cell;
   vertical-align: top;
@@ -765,11 +769,6 @@ Need to override the 3.3 new styles for modern browsers & apply opacity
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, .2);
 }
 
-#buscador .form-control {
-  color: #fff;
-  border: none;
-  background-color: #5288ac;
-}
 
 #buscador #sel-busqueda.form-control,
 #buscador #tipoBusqueda {
