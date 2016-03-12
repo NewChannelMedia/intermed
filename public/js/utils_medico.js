@@ -3768,3 +3768,37 @@ function cambiarPermisoSecretaria(MedicoSecretariaPermisos_id,permiso_id,element
     console.error(e);
   });
 }
+
+function validarCedula(element){
+  var cedula = $(element).val();
+  console.log('CEDULA: ' + cedula);
+
+  $.ajax( {
+    async: false,
+    url: 'http://www.cedulaprofesional.sep.gob.mx/cedula/buscaCedulaJson.action',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      maxResult: 1000,
+      idCedula: "2228631956",
+      nombre:"",
+      paterno:"",
+      materno:"",
+      h_genero:"",
+      genero:"",
+      annioInit:"",
+      annioEnd:"",
+      insedo:"",
+      inscons:"",
+      institucion:"",
+      TODAS:""
+    },
+    success: function ( data ) {
+      console.log('RESPONSE POST: ' + JSON.stringify(data));
+    },
+    error: function(err){
+      console.log('Ajax error: ' + JSON.stringify(err));
+    }
+  });
+}

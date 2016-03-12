@@ -143,6 +143,14 @@
                   </div>
                 </div>
               </div>
+              <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                  <div class="form-group">
+                    <label class="s15 regInput" for="curpRegMed">CURP</label>
+                    <input type="text" class="form-control regInput" id="curpRegMed" name="curpRegMed" placeholder="CURP" value="" autocomplete="off" required="true">
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -161,52 +169,36 @@
           </div>
           <div class="row">
             <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-              <div class="form-group">
-                <label class="s15 regInput" for="curpRegMed">CURP</label>
-                <input type="text" class="form-control regInput" id="curpRegMed" name="curpRegMed" placeholder="CURP" value="" autocomplete="off" required="true">
-              </div>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
-              <div class="form-group">
-                <label class="s15 regInput" for="cedulaRegMed">Cedula Profesional</label>
-                <input type="text" class="form-control regInput" id="cedulaRegMed" name="cedulaRegMed" placeholder="CEDULA" value="" autocomplete="off" required="true">
+              <div class="form-group has-feedback">
+                <label class="s15 regInput" for="cedulaRegMed">Cedula general (*Obligatoria)</label>
+                <input type="text" class="form-control regInput" id="cedulaRegMed" name="cedulaRegMed" placeholder="CEDULA" value="" autocomplete="off" required="true" id="cedulamedicovalidar">
+                <button class="btn btn-primary" onclick="validarCedula($('cedulamedicovalidar'))">Validar</button>
+                <span class="glyphicon glyphicon-ok form-control-feedback hidden" aria-hidden="true"></span>
+                <span class="glyphicon glyphicon-remove form-control-feedback hidden" aria-hidden="true"></span>
+                <span id="inputError2Status" class="sr-only">(error)</span>
               </div>
             </div>
           </div>
           <div class="row">
-            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-              <label class="regInput">Especialidades</label>
+            <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
               <div class="input-group">
-                <input type="text" id="inputEspecialidad" class="form-control regInput autoEspecialidad">
+                <span class="input-group-addon" id="basic-addon3">¿Tienes especialidad?</span>
+                <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" placeholder="Cédula de especialidad">
                 <span class="input-group-btn">
-                  <button id="addEspecialidadMedic" onclick="agregarEspecialidad('inputEspecialidad');" class="btn btn-primary btn-block" type="button">
-                    <span class="glyphicon glyphicon-plus"></span>
-                  </button>
-                </span>
+                <button class="btn btn-primary" type="button">Validar</button>
+              </span>
               </div>
-            </div>
-          </div>
-          <div class="row" id="regmedEsp">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <ul class="list-inline" id="especialidadesListBoot"></ul>
             </div>
           </div>
           <div class="row">
-            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-              <label class="regInput">Sub Especialidades</label>
+            <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
               <div class="input-group">
-                <input type="text" id="inputSubEsp" class="form-control regInput autoEspecialidad">
+                <span class="input-group-addon" id="basic-addon3">¿Estás estudiando una especialidad?</span>
+                <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" placeholder="Nombre de la especialidad">
                 <span class="input-group-btn">
-                  <button id="addEspecialidadMedic" onclick="agregarSubespecialidad('inputSubEsp');" class="btn btn-primary btn-block" type="button">
-                    <span class="glyphicon glyphicon-plus"></span>
-                  </button>
-                </span>
+                <button class="btn btn-primary" type="button">Añadir</button>
+              </span>
               </div>
-            </div>
-          </div>
-          <div class="row" id="regmedEsp">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <ul class="list-inline" id="subEspecialidadesListBoot"></ul>
             </div>
           </div>
         </div>
