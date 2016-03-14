@@ -3769,36 +3769,22 @@ function cambiarPermisoSecretaria(MedicoSecretariaPermisos_id,permiso_id,element
   });
 }
 
-function validarCedula(element){
-  var cedula = $(element).val();
-  console.log('CEDULA: ' + cedula);
+function validarCedulaGeneral(){
+  alert('test');
+  var settings = {
+    "async": true,
+    "crossDomain": true,
+    "url": "http://www.cedulaprofesional.sep.gob.mx/cedula/buscaCedulaJson.action",
+    "method": "POST",
+    "headers": {
+      "content-type": "application/x-www-form-urlencoded; charset=utf-8",
+      "cache-control": "no-cache",
+      "postman-token": "213d4147-3479-258f-8be1-d70838b43080"
+    },
+    "data": "json=%7B%22maxResult%22%3A%221000%22%2C%22idCedula%22%3A%2228631956%22%2C%22nombre%22%3A%22%22%2C%22paterno%22%3A%22%22%2C%22materno%22%3A%22%22%2C%22h_genero%22%3A%22%22%2C%22genero%22%3A%22%22%2C%22annioInit%22%3A%22%22%2C%22annioEnd%22%3A%22%22%2C%22insedo%22%3A%22%22%2C%22inscons%22%3A%22%22%2C%22institucion%22%3A%22TODAS%22%7D"
+  }
 
-  $.ajax( {
-    async: false,
-    url: 'http://www.cedulaprofesional.sep.gob.mx/cedula/buscaCedulaJson.action',
-    type: 'POST',
-    dataType: "json",
-    cache: false,
-    data: {
-      maxResult: 1000,
-      idCedula: "2228631956",
-      nombre:"",
-      paterno:"",
-      materno:"",
-      h_genero:"",
-      genero:"",
-      annioInit:"",
-      annioEnd:"",
-      insedo:"",
-      inscons:"",
-      institucion:"",
-      TODAS:""
-    },
-    success: function ( data ) {
-      console.log('RESPONSE POST: ' + JSON.stringify(data));
-    },
-    error: function(err){
-      console.log('Ajax error: ' + JSON.stringify(err));
-    }
+  $.ajax(settings).done(function (response) {
+    console.log('RESPONSE: ' + response);
   });
 }
