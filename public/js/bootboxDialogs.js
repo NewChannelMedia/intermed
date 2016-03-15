@@ -3281,24 +3281,83 @@ function dejarComentarioMedico(){
       className: 'Intermed-Bootbox',
       title: '<span class="title">DEJAR COMENTARIO.</span>',
       message:
+      '<style>span.Slider {float:left;}</style>'+
+      '<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">'+
+      '<form method="POST" onsubmit="return calificarServMedico();">'+
       '<div class="col-md-12 col-sm-12 col-xs-12" style="margin-bottom:15px;margin-top:20px">'+
         '<div class="row">'+
-          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:-15px;margin-bottom:5px;">'+
-            '<h4><b>'+nombreUsuario+'</b></h4>'+
-          '</div>'+
-
-          '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;">'+
-            '<div class="col-md-6 col-sm-6 col-xs-6 col-md-offset-3 col-sm-offset-3 col-xs-offset-3">'+
-              '<img src="'+imagenUrl+'" style="width:100%;" class="img-thumbnail">'+
+            '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:-15px;margin-bottom:5px;">'+
+              '<h4><b>'+nombreUsuario+'</b></h4>'+
             '</div>'+
-          '</div>'+
 
-          '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:20px">'+
-              '<input type="text" id="tituloComentario" class="form-control" rows="3" placeholder="Titulo del comentario">'+
-          '</div>'+
+            '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-bottom:5px;">'+
+              '<div class="col-md-6 col-sm-6 col-xs-6 col-md-offset-3 col-sm-offset-3 col-xs-offset-3">'+
+                '<img src="'+imagenUrl+'" style="width:100%;" class="img-thumbnail">'+
+              '</div>'+
+            '</div>'+
+
+            '<div class="col-md-6 col-sm-6 col-xs-10 col-md-offset-3 col-sm-offset-3 col-xs-offset-1" style="margin-top:20px">'+
+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider"  id="cal_efect"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-ok"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider"  id="cal_tratoper"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-heart"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider"  id="cal_pres"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-user"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider"  id="cal_hig"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-trash"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+            '</div>'+
+
+            '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:20px">'+
+                '<input type="text" id="tituloComentario" class="form-control" rows="3" placeholder="Titulo del comentario" required>'+
+            '</div>'+
 
           '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:5px">'+
-              '<textarea id="comentarioMedico" class="form-control" rows="3" placeholder="Comentario..." style="resize: none;"></textarea>'+
+              '<textarea id="comentarioMedico" class="form-control" rows="3" placeholder="Comentario..." style="resize: none;" required></textarea>'+
           '</div>'+
 
           '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
@@ -3308,14 +3367,13 @@ function dejarComentarioMedico(){
               '</label>'+
             '</div>'+
           '</div>'+
-
         '</div>'+
       '</div>'+
       '<div class="row">'+
         '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
           '<div class="col-md-6 col-sm-6 col-xs-12 pull-right">'+
               '<div class="form-group">'+
-                  '<input type="button" style="font-weight:bold" class="btn btn-danger btn-block" value="Enviar" onclick="dejarComentario();">'+
+                  '<input type="submit" style="font-weight:bold" class="btn btn-danger btn-block" value="Enviar">'+
               '</div>'+
           '</div>'+
           '<div class="col-md-3 col-sm-3 col-xs-12 pull-left">'+
@@ -3324,7 +3382,38 @@ function dejarComentarioMedico(){
               '</div>'+
           '</div>'+
         '</div>'+
-      '</div>'
+      '</div>'+
+      '</form>'
+    });
+
+
+    $(".rating").rating();
+
+    $('.clear-rating').css('display','none');
+    $('.caption').css('display','none');
+
+    $( "span.Slider" ).each(function() {
+      var id = $(this).prop('id');
+
+      $('#'+id ).slider({
+        value: 50,
+        min: -10,
+        max: 110,
+        step: 10,
+        animate: true,
+        orientation: "vertical",
+        slide: repositionTooltip,
+        start: function( e, ui ){
+          $('#'+id +" .ui-slider-handle:first").tooltip('show');
+          repositionTooltip(e,ui);
+        },
+        stop: function(){
+          $('#'+id +" .ui-slider-handle:first").tooltip('hide');
+        }
+      });
+
+      $('#'+id +" .ui-slider-handle:first").tooltip( {placement:"top",title: $('#'+id).slider("value"),trigger:"manual"});
+
     });
 }
 
