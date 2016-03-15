@@ -115,10 +115,22 @@ $( document ).ready( function () {
             //Registrado el curp
             if ( data.result.Medico && data.result.Medico.curp) {
               $('#curpRegMed').val(data.result.Medico.curp);
+              $('#regMedDG input').attr('disabled','true');
+            } else {
+              $('#regMedDG button').removeClass('hidden');
             }
             //Registrada la cedula
             if ( data.result.Medico && data.result.Medico.cedula) {
-              $('#cedulaRegMed').val(data.result.Medico.cedula);
+              $('#inputCedulaGeneral').val(data.result.Medico.cedula);
+
+              $('#inputCedulaGeneral').attr('disabled','true');
+              $('#addCedulaGen').attr('disabled','true');
+
+              $('#addCedulaGen').click();
+
+              //$('.addEspecialidadDiv').removeClass('hidden');
+            } else {
+              $('#regMedProf button').removeClass('hidden');
             }
           }
         },
@@ -3007,7 +3019,7 @@ function isValidDate(anio, mes, dia){
   var date = new Date(parseInt(anio), parseInt(mes) , parseInt(dia)).toISOString();
   date = date.split('T')[0];
   date = date.split('-');
-  if (parseInt(date[1]) == (parseInt(mes)+1)){
+  if (parseInt(date[1]) == parseInt(mes+1)){
     return true;
   } else {
     return false;
@@ -3769,22 +3781,168 @@ function cambiarPermisoSecretaria(MedicoSecretariaPermisos_id,permiso_id,element
   });
 }
 
-function validarCedulaGeneral(){
-  alert('test');
-  var settings = {
-    "async": true,
-    "crossDomain": true,
-    "url": "http://www.cedulaprofesional.sep.gob.mx/cedula/buscaCedulaJson.action",
-    "method": "POST",
-    "headers": {
-      "content-type": "application/x-www-form-urlencoded; charset=utf-8",
-      "cache-control": "no-cache",
-      "postman-token": "213d4147-3479-258f-8be1-d70838b43080"
-    },
-    "data": "json=%7B%22maxResult%22%3A%221000%22%2C%22idCedula%22%3A%2228631956%22%2C%22nombre%22%3A%22%22%2C%22paterno%22%3A%22%22%2C%22materno%22%3A%22%22%2C%22h_genero%22%3A%22%22%2C%22genero%22%3A%22%22%2C%22annioInit%22%3A%22%22%2C%22annioEnd%22%3A%22%22%2C%22insedo%22%3A%22%22%2C%22inscons%22%3A%22%22%2C%22institucion%22%3A%22TODAS%22%7D"
-  }
+function validarCedulaGeneral(element, button){
+  if (element.val().length>0){
+    var nombreMedico = $('#nombreRegMed').val();
+    var paterno = $('#apePatRegMed').val();
+    var materno = $('#apeMatRegMed').val();
+    var sexF = $('#sexF').is(':checked');
+    var sexM = $('#sexM').is(':checked');
+    var diaNac = $('#diaNacReg').val();
+    var mesNac = $('#mesNacReg').val();
+    var anioNac = $('#anioNacReg').val();
+    var curp = $('#curpRegMed').val();
 
-  $.ajax(settings).done(function (response) {
-    console.log('RESPONSE: ' + response);
-  });
+    var matchCurp = curp.match(/^([a-z]{4})([0-9]{6})([a-z]{6})([0-9]{2})$/i)
+
+    var validDate = false;
+    if (anioNac && mesNac && diaNac){
+      validDate = isValidDate(parseInt(anioNac),parseInt(mesNac)-1,parseInt(diaNac));
+    }
+    var genero = 1;
+    if (sexF){
+      genero = 2;
+    }
+    if (nombreMedico != "" && paterno != "" && curp != "" && matchCurp && (sexF || sexM) && validDate){
+      $.post('/medicos/cedula/general',{
+        cedula: element.val(),
+        nombreMedico: nombreMedico,
+        paterno: paterno,
+        materno: materno,
+        genero : genero,
+        tipo: 'C1'
+      },function( data ){
+        if (data.success){
+          if (data.result.tipo == "C1"){
+              element.attr('disabled','true');
+              $(button).attr('disabled','true');
+
+              $('#regMedDG input').attr('disabled','true');
+              $('#spanCedulaGeneral').text(data.result.cedula + ': ' + data.result.titulo);
+
+              $('.addEspecialidadDiv').removeClass('hidden');
+
+          } else {
+            alert('No es tipo licenciatura');
+          }
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          } else{
+            if (data.exists){
+              alert('La cedula no corresponde a la persona de registro');
+            } else {
+            //Has error, cedula no existe
+            }
+          }
+        }
+      }).fail(function(e){
+        console.error(e);
+      });
+    } else {
+      if (nombreMedico != "" && paterno != "" && curp != "" && matchCurp && (sexF || sexM) && (anioNac && mesNac && diaNac)){
+        alert('Debes de ingresar una fecha de nacimiento correcta');
+      } else if (curp != "" && !matchCurp){
+        alert('Formato incorrecto de curp');
+        $('#curpRegMed')[0].focus();
+      } else {
+        alert('Debes de ingresar tus datos personales primero');
+        $('#nombreRegMed')[0].focus();
+      }
+    }
+  } else {
+    element[0].focus();
+  }
+}
+
+
+function validarCedulaEspecialidad(element){
+  if (element.val().length>0){
+      var nombreMedico = 'Valente Armando';
+      var paterno = 'Maldonado';
+      var materno = 'Rios';
+      var genero = 1;
+      $.post('/medicos/cedula/general',{
+        cedula: element.val(),
+        nombreMedico: nombreMedico,
+        paterno: paterno,
+        materno: materno,
+        genero : genero
+      },function( data ){
+        if (data.success){
+          if (data.result.tipo == "A1"){
+            element.val('');
+            $('#spanCedulaEspecialidad').append('<br><span class="especialidad"><span class="cedula">'+ data.result.cedula + '</span>: <span class="tituloEsp">' + data.result.titulo +'</span></span>');
+          } else {
+            alert('No es tipo licenciatura');
+          }
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          } else{
+            if (data.exists){
+              alert('La cedula no corresponde a la persona de registro');
+            } else {
+            //Has error, cedula no existe
+            }
+          }
+        }
+      }).fail(function(e){
+        console.error(e);
+      });
+  } else {
+    element[0].focus();
+  }
+}
+
+function regMedDatosGenerales(){
+  try{
+    var nombre = $('#nombreRegMed').val();
+    var paterno = $('#apePatRegMed').val();
+    var materno = $('#apeMatRegMed').val();
+
+    var validDate = isValidDate(parseInt($('#anioNacReg').val()),parseInt($('#mesNacReg').val())-1,parseInt($('#diaNacReg').val()));
+
+    var matchCurp = $('#curpRegMed').val().match(/^([a-z]{4})([0-9]{6})([a-z]{6})([0-9]{2})$/i)
+
+    var genero = "";
+    if ($('#sexF').is(':checked')){
+      genero = $('#sexF').val();
+    } else if($('#sexM').is(':checked')){
+      genero = $('#sexM').val();
+    }
+
+    var fechaNac = $('#anioNacReg').val() + '-' + $('#mesNacReg').val() + '-' + $('#diaNacReg').val();
+    console.log('DATE: ' + fechaNac);
+
+    if (validDate && matchCurp && genero != ""){
+      $.post('/medicos/registrar/datosgenerales',{
+        nombre: nombre,
+        paterno: paterno,
+        materno: materno,
+        fechaNac: fechaNac,
+        genero : genero,
+        curp: $('#curpRegMed').val()
+      },function( data ){
+        console.log('Result: ' + JSON.stringify(data));
+        if (data.success){
+          $('#regMedDG input').attr('disabled','true');
+          $('#regMedDG button').attr('disabled','true');
+        } else if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }).fail(function(e){
+        console.error(e);
+      });
+    } else if (!validDate){
+      console.log('La fecha no existe');
+    } else if (!matchCurp){
+      console.log('Formato incorrecto de curp');
+    } else if (genero == ""){
+      console.log('Falta seleccionar genero');
+    }
+  } catch(e){
+    console.log('ERROR: ' + e);
+  }
+  return false;
 }

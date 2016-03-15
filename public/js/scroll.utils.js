@@ -263,7 +263,9 @@ $( '#4bg-colegas .float.down' ).click( function(){
 
 
   $( window ).scroll( function() {
-    hidenavbuttons();
+    if (!$("#regMedStepOne").length){
+      hidenavbuttons();
+    }
   });
 
   /*
