@@ -262,12 +262,30 @@
                       {{/ifTipoSecretaria}}
                       {{#if userIntermed.nombre}}
                         <li>
-                          <div class="pull-right text-right" style="margin-right:10px;">
-                            <h3 style="color:white">{{userIntermed.nombre}}</h3>
-                            <a href="/logout">Cerrar sesión</a>
-                          </div>
+                          <li><span class="grey1-c">Bienvenido: </span>
+                            <a class="white-c" href="{{base_url}}">
+                              <img class="nav-profile-photo-img" src="{{valSession 'fotoPerfil'}}" alt="perfil" />
+                              <span class="text-capitalize">{{userIntermed.nombre}}</span>
+                            </a>
+                          </li>
+                          <li>
+                            <span class="white-c">|</span>
+                          </li>
+                          <li>
+                            <a class="white-c" href="{{base_url}}logout">
+                              <span class="glyphicon glyphicon-log-out"></span>
+                            </a>
+                          </li>
                         </li>
                       {{/if}}
+                      {{#else}}
+                        <li>
+                          <a class="btn btn-info bg-blue h45-light white-c text-capitalize login" href="#" id="logMod">Log In</a>
+                        </li>
+                        <li>
+                          <a class="btn btn-warning bg-orange h45-light white-c text-capitalize reg" href="#" onclick="registro();">Registro</a>
+                        </li>
+                      {{/else}}
                     </ul>
                   </div>
                 </div>
