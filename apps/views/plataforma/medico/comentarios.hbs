@@ -8,80 +8,48 @@
 <div class="container-fluid">
     <div class="col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1">
 
-      <div class="comentario row">
-    <div class="col-lg-9 col-md-9 col-sm-10 col-xs-10 pull-left">
-      <div class="media comment-container">
-        <div class="media-left">
-          <img class="img-circle comment-img" style="width: 150px;" src="/garage/profilepics/dpp.png">
-        </div>
-        <article class="media-body">
-          <div class="text-uppercase s30 h67-medcond">el doctor esta guapo</div>
-          <p class="s15 h67-medium">Se parece a miguel Hidalgo pero eso me gusta, desde niño lo veo en los libros y tengo un crush con el</p>
-          <p class="comment-autor s15 h75-bold noMargin">
-            <span class="text-capitalize">paciente  uno.</span>
-          </p>
-          <p class="comment-date s15 h67-medium text-info noMargin">15 de Marzo de 2016</p>
-        </article>
-      </div>
-    </div>
-    <div class="col-lg-9 col-md-9 col-sm-10 col-xs-10 pull-right">
-      <div class="media comment-container">
-        <article class="media-body text-right">
-          <p class="s15 h67-medium">Le gradezco el comentario, tengo disponible despues de las 4pm los jueves, llámeme ;)</p>
-          <p class="comment-autor s15 h75-bold noMargin">
-            <span class="text-capitalize">Dr. Miguel Hidalgo</span>
-          </p>
-          <p class="comment-date s15 h67-medium text-info noMargin">15 de Marzo de 2016</p>
-        </article>
-        <div class="media-right">
-          <img class="img-circle comment-img noMargin" style="width:70px;" src="/garage/profilepics/dpp.png">
-        </div>
-      </div>
-    </div>
-  </div>
-
       {{#each comentarios}}
         <div class="comentario row">
-          <div class="col-lg-9 col-md-9 col-sm-10 col-xs-10 pull-left">
-            <div class="media comment-container">
-              <div class="media-left">
-                <img class="img-circle comment-img" style="width: 150px;" src="{{Usuario.urlFotoPerfil}}">
-              </div>
-              <article class="media-body">
-                <div class="text-uppercase s30 h67-medcond">{{titulo}}</div>
-                <p class="s15 h67-medium">{{comentario}}</p>
-                <p class="comment-autor s15 h75-bold noMargin">
-                  <span class="text-capitalize">
+          <div class="col-lg-9 col-md-9 col-sm-10 col-xs-10 pull-left">
+            <div class="media comment-container">
+              <div class="media-left">
+                <img class="img-circle comment-img" style="width: 150px;" src="/garage/profilepics/dpp.png">
+              </div>
+              <article class="media-body">
+                <div class="text-uppercase s30 h67-medcond">{{titulo}}</div>
+                <p class="s15 h67-medium">{{comentario}}</p>
+                <p class="comment-autor s15 h75-bold noMargin">
+                  <span class="text-capitalize">
                   {{#if anonimo}}
                     Anonimo
                   {{else}}
                     {{Usuario.DatosGenerale.nombre}} {{Usuario.DatosGenerale.apellidoP}} {{Usuario.DatosGenerale.apellidoM}}
                   {{/if}}
                   .</span>
-                </p>
-                <p class="comment-date s15 h67-medium text-info noMargin">{{#formatearFechaComentario fecha}}{{/formatearFechaComentario}}</p>
-              </article>
-            </div>
-          </div>
-          {{#if respuesta}}
-          <div class="col-lg-9 col-md-9 col-sm-10 col-xs-10 pull-right">
-            <div class="media comment-container">
-              <article class="media-body text-right">
-                <p class="s15 h67-medium">{{respuesta}}</p>
-                <p class="comment-autor s15 h75-bold noMargin">
-                  <span class="text-capitalize">Dr. {{#valSession 'name'}}{{/valSession}}</span>
-                </p>
-                <p class="comment-date s15 h67-medium text-info noMargin">{{#formatearFechaComentario fecharespuesta}}{{/formatearFechaComentario}}</p>
-              </article>
-              <div class="media-right">
-                <img class="img-circle comment-img noMargin" style="width:70px;" src="{{#valSession 'fotoPerfil'}}{{/valSession}}">
-              </div>
-            </div>
+                </p>
+                <p class="comment-date s15 h67-medium text-info noMargin">{{#formatearFechaComentario fecha}}{{/formatearFechaComentario}}</p>
+              </article>
+            </div>
           </div>
-          {{else}}
-          <a href="">Responder</a>
-          {{/if}}
-        </div>
-      {{/each}}
+          <div class="col-lg-9 col-md-9 col-sm-10 col-xs-10 pull-right">
+            {{#if respuesta}}
+              <div class="media comment-container">
+                <article class="media-body text-right">
+                  <p class="s15 h67-medium">{{respuesta}}</p>
+                  <p class="comment-autor s15 h75-bold noMargin">
+                    <span class="text-capitalize">Dr. {{#valSession 'name'}}{{/valSession}}</span>
+                  </p>
+                  <p class="comment-date s15 h67-medium text-info noMargin">{{#formatearFechaComentario fecharespuesta}}{{/formatearFechaComentario}}</p>
+                </article>
+                <div class="media-right">
+                  <img class="img-circle comment-img noMargin" style="width:70px;" src="{{#valSession 'fotoPerfil'}}{{/valSession}}">
+                </div>
+              </div>
+            {{else}}
+            
+            {{/if}}
+          </div>
+        </div>
+        {{/each}}
     </div>
 </div>
