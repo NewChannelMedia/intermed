@@ -2375,7 +2375,7 @@ function traerAseguradoras(){
                   } else {
                     res.Usuario.DatosGenerale.apellidoM = '';
                   }
-                  nombre = res.Usuario.DatosGenerale.nombre  + ' ' + res.Usuario.DatosGenerale.apellidoP + res.Usuario.DatosGenerale.apellidoM + '.';
+                  nombre = res.Usuario.DatosGenerale.nombre  + ' ' + res.Usuario.DatosGenerale.apellidoP + res.Usuario.DatosGenerale.apellidoM;
 
                   if (res.Usuario.Direccions[0]){
                     nombre = nombre + ' '+ res.Usuario.Direccions[0].Municipio.municipio +', '+ res.Usuario.Direccions[0].Municipio.Estado.estado.substring(0, 3) +'.';
@@ -2420,7 +2420,7 @@ function traerAseguradoras(){
                     '<article class="media-body text-right">'+
                       '<p class="s15 h67-medium">'+ res.respuesta +'</p>'+
                       '<p class="comment-autor s15 h75-bold noMargin">'+
-                        '<span class="text-capitalize">Dr. '+ nombreDoctor +'</span>'+
+                        '<span class="text-capitalize">Dr. '+ nombreDoctor +'.</span>'+
                       '</p>'+
                       '<p class="comment-date s15 h67-medium text-info noMargin">'+ res.fecharespuesta +'</p>'+
                     '</article>'+
