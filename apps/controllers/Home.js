@@ -557,12 +557,11 @@ module.exports = {
   }
 }
 
-function capitalize(s)
-{
+function capitalize(s) {
   s = s.split(" ");
   var frase = '';
   s.forEach(function(palabra){
-    if(palabara) {
+    if(palabra) {
       if (frase != ""){
         frase += " ";
       }
