@@ -462,8 +462,18 @@ exports.generarSesion = function ( req, res, usuario_id, redirect , response) {
             if ( !usuario.DatosGenerale ) req.session.passport.user.registroCompleto = 0;
             if ( !usuario.Direccions ) req.session.passport.user.registroCompleto = 0;
             if ( !usuario.Biometrico || !usuario.Biometrico.genero ) req.session.passport.user.registroCompleto = 0;
-            if ( usuario.DatosGenerale ) req.session.passport.user.name = usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM;
+            if ( usuario.DatosGenerale ){
+              req.session.passport.user.name = capitalize(usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM);
+            }
             else req.session.passport.user.name = '';
+            if ( usuario.DatosGenerale ){
+              req.session.passport.user.firstName = capitalize(usuario.DatosGenerale.nombre);
+            }
+            else req.session.passport.user.firstName = '';
+            if ( usuario.DatosGenerale ){
+              req.session.passport.user.lastName = capitalize(usuario.DatosGenerale.apellidoP);
+            }
+            else req.session.passport.user.lastName = '';
             req.session.passport.user.fotoPerfil = usuario.urlFotoPerfil;
             cargarExtraInfo( usuario, redirect, response, req, res );
           } );
@@ -489,6 +499,21 @@ exports.generarSesion = function ( req, res, usuario_id, redirect , response) {
     req.errorHandler.report(err, req, res);
   }
 };
+
+function capitalize(s)
+{
+  s = s.split(" ");
+  var frase = '';
+  s.forEach(function(palabra){
+    if(palabra){
+      if (frase != ""){
+        frase += " ";
+      }
+      frase += palabra[0].toUpperCase() + palabra.slice(1);
+    }    
+  });
+  return frase;
+}
 
 function cargarExtraInfo( usuario, redirect, response, req, res ) {
   try{

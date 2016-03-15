@@ -1198,10 +1198,6 @@ $( document ).ready( function () {
   //console.log('length: '+$( '#perfilMedico' ).length);
   if ( $( '#perfilMedico' ).length > 0 ) {
 
-    if($(window).width() < 767){
-      $('body').css('margin-bottom','60px')
-    }
-
     MostrarUbicaciones();
 
     $( function () {
