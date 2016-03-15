@@ -2231,4 +2231,25 @@ var _this = module.exports = {
     }
   },
 
+  comentarios: function (object, req, res){
+    try{
+      models.ComentariosMedicos.findAll( {
+        include: [ {
+          model: models.Usuario,
+          attributes: ['id','urlFotoPerfil','usuarioUrl','tipoUsuario'],
+          include:[{
+            model: models.DatosGenerales
+          }]
+        } ],
+        where: {
+          medico_id: req.session.passport.user.Medico_id
+        }
+      } ).then( function ( comentarios ) {
+        res.render('medico/comentarios',{comentarios:comentarios});
+      } );
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
+  }
+
 }

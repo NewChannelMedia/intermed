@@ -182,6 +182,15 @@ module.exports = function (object){
     }
   });
 
+  app.get('/comentarios',function(req, res, next){
+    if (req.session.passport && req.session.passport.user && req.session.passport.user.Medico_id>0 ){
+      routeLife( 'plataforma2', 'plataforma', hps );
+      intermed.callController('medicos','comentarios',req.body, req, res);
+    } else {
+      next();
+    }
+  });
+
   app.get( '/s/:usuarioUrl', function ( req, res, next ) {
     routeLife( 'plataforma2', 'plataforma', hps );
     if (req.session.passport && req.session.passport.user.id && req.session.passport.user.Secretaria_id>0){

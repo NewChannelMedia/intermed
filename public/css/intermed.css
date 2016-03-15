@@ -3157,3 +3157,10 @@ td.fc-day.fc-widget-content {
     font-weight: bold;
 }
 */
+
+#comentariosMedico {
+  height: auto;
+  max-height: 500px;
+  overflow: hidden;
+  overflow-y: auto;
+}
