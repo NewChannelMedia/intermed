@@ -23,16 +23,39 @@ a:visited {
   text-transform: none;
 }
 
-#mainNav {
+#newMainNav {
+  height: 60px;
+}
 
+.nav-element {
+  height: 45px;
+  padding-top: 6px;
+}
+
+.intermed-logo {
+  position: relative;
+  top: -1px;
+  height: 40px;
+}
+
+.nav-profile-photo-img {
+  width: 35px;
+  height: 35px;
+  border-radius: 150px;
 }
 
 @media (max-width:767px) {
-  #mainNav {
+  #mainNav,
+  #newMainNav {
     position: fixed;
+    z-index: 1000;
     top: 0;
-    left: 0;
     right: 0;
+    left: 0;
+  }
+  .intermed-logo {
+    width: auto;
+    height: 35px;
   }
 }
 
@@ -197,14 +220,15 @@ footer .logoIntermed {
 
 @media (max-width: 991px) and (min-width: 0px) {
   .navigator {
-    min-height: 60px;
+    height: 60px;
   }
   .nav-logo {
     height: 60px;
   }
   .nav-logo img {
     height: 40px;
-    margin-top: 14px
+    top: 5px;
+    position: relative;
   }
   .btn-menu {
     height: 30px;
@@ -303,7 +327,7 @@ footer .logoIntermed {
 
 @media (max-width:767px){
   .nav-menu-menu li a {
-    font-size: 25px;
+    font-size: 20px;
     padding-top: 5px;
   }
 }

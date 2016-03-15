@@ -367,6 +367,9 @@ module.exports = {
                   } ]
         } ).then( function ( usuario ) {
           if ( usuario ) {
+            usuario.DatosGenerale.nombre = capitalize(usuario.DatosGenerale.nombre);
+            usuario.DatosGenerale.apellidoP = capitalize(usuario.DatosGenerale.apellidoP);
+            usuario.DatosGenerale.apellidoM = capitalize(usuario.DatosGenerale.apellidoM);
             models.Direccion.findAll( {
               where: {
                 usuario_id: usuario.id
@@ -552,6 +555,21 @@ module.exports = {
   oficinaMedico: function (object, req, res){
     res.render('medico/oficina');
   }
+}
+
+function capitalize(s)
+{
+  s = s.split(" ");
+  var frase = '';
+  s.forEach(function(palabra){
+    if(palabara) {
+      if (frase != ""){
+        frase += " ";
+      }
+      frase += palabra[0].toUpperCase() + palabra.slice(1);
+    }
+  });
+  return frase;
 }
 
 function armarPerfil( usuario, req, res ) {
