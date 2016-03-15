@@ -1537,6 +1537,17 @@ footer .logoIntermed {
   }
 }
 
+#comentariosMedico {
+  height: auto;
+  max-height: 750px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.comentario {
+  padding: 25px 0;
+}
+
 .comentarios-row {
   background-color: #ededed;
   padding-top: 70px;
@@ -1544,7 +1555,7 @@ footer .logoIntermed {
 }
 
 .comment-container {
-  margin-bottom: 70px;
+  margin-bottom: 15px;
 }
 
 .comment-img{
