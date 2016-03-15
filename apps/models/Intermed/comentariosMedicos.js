@@ -24,7 +24,13 @@ module.exports = function ( sequelize, DataTypes ) {
       type: DataTypes.BIGINT,
       allowNull: false
     },
-    fecha: {type: DataTypes.DATE}
+    visto: {
+      type: DataTypes.INTEGER
+    },
+    fecha: {type: DataTypes.DATE},
+    respuesta: {type: DataTypes.STRING},
+    fecharespuesta: {type: DataTypes.DATE},
+    visible: {type: DataTypes.INTEGER}
   }, {
     classMethods: {
       associate: function ( models ) {

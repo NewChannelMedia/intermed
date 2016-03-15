@@ -134,6 +134,10 @@ $( document ).ready( function () {
     obtenerDirecciones();
 
     checkUbicMinConf();
+  } else if ($('#moderarComentarios').length>0){
+    setTimeout(function(){
+      socket.emit('verComentarios');
+    },3000);
   }
 
   if ( $( "#tarjetaOptReg" ).is( ":checked" ) ) {
@@ -2383,15 +2387,53 @@ function traerAseguradoras(){
                 res.fecha = new Date(res.fecha).toLocaleDateString();
                 res.fecha = formatearFechaComentario(res.fecha.split(' ')[0]);
 
-                contenido += '<div class="media comment-container">';
-                  contenido += '<div class="media-left"><img class="img-circle comment-img" style="width:150px;" src="'+res.Usuario.urlFotoPerfil+'"></div>';
-                  contenido += '<article class="media-body">';
-                    contenido += '<div class="comment-title s30 h67-medcond">'+res.titulo+'</div>';
-                    contenido += '<p class="s15 h67-medium">'+res.comentario+'</p>';
-                    contenido += '<p class="comment-autor s15 h75-bold"><span class="capitalize">'+ nombre +'</span></p>';
-                    contenido += '<p class="comment-date s15 h67-medium text-info">'+res.fecha+'</p>';
-                  contenido += '</article>';
+                contenido += '<div class="comentario row">'+
+                                '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">'+
+                                  '<div class="media comment-container">'+
+                                    '<div class="media-left">'+
+                                      '<img class="img-circle comment-img" style="width: 150px;" src="'+ res.Usuario.urlFotoPerfil +'">'+
+                                    '</div>'+
+                                    '<article class="media-body">'+
+                                      '<div class="text-uppercase s30 h67-medcond">'+ res.titulo +'</div>'+
+                                      '<p class="s15 h67-medium">'+ res.comentario +'</p>'+
+                                      '<p class="comment-autor s15 h75-bold noMargin">'+
+                                        '<span class="text-capitalize">'+ nombre +'.</span>'+
+                                      '</p>'+
+                                      '<p class="comment-date s15 h67-medium text-info noMargin">'+ res.fecha +'</p>'+
+                                    '</article>'+
+                                  '</div>'+
+                                '</div>';
+
+                if (res.respuesta  && res.respuesta != ""){
+                  if (!res.Medico.Usuario.DatosGenerale.apellidoM){
+                    res.Medico.Usuario.DatosGenerale.apellidoM  = '';
+                  } else {
+                    res.Medico.Usuario.DatosGenerale.apellidoM  = ' ' + res.Medico.Usuario.DatosGenerale.apellidoM;
+                  }
+                  var nombreDoctor = res.Medico.Usuario.DatosGenerale.nombre + ' ' + res.Medico.Usuario.DatosGenerale.apellidoP + res.Medico.Usuario.DatosGenerale.apellidoM;
+
+                  res.fecharespuesta = new Date(res.fecharespuesta).toLocaleDateString();
+                  res.fecharespuesta = formatearFechaComentario(res.fecharespuesta.split(' ')[0]);
+
+                  contenido += '<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 pull-right">'+
+                  '<div class="media comment-container">'+
+                    '<article class="media-body text-right">'+
+                      '<p class="s15 h67-medium">'+ res.respuesta +'</p>'+
+                      '<p class="comment-autor s15 h75-bold noMargin">'+
+                        '<span class="text-capitalize">Dr. '+ nombreDoctor +'</span>'+
+                      '</p>'+
+                      '<p class="comment-date s15 h67-medium text-info noMargin">'+ res.fecharespuesta +'</p>'+
+                    '</article>'+
+                    '<div class="media-right">'+
+                      '<img class="img-circle comment-img noMargin" style="width:70px;" src="'+ res.Medico.Usuario.urlFotoPerfil +'">'+
+                    '</div>'+
+                  '</div>'+
+                  '</div>';
+                }
+
                 contenido += '</div>';
+
+
               });
                 $('#comentariosMedico').html(contenido);
             }
@@ -3767,4 +3809,74 @@ function cambiarPermisoSecretaria(MedicoSecretariaPermisos_id,permiso_id,element
   }).fail(function(e){
     console.error(e);
   });
+}
+
+function cambiarComentarioVisible(element,comentario_id){
+  var visible = 0;
+  if ($(element).is(':checked')){
+    visible = 1;
+  }
+  $.post('/medico/comentario/visible',{
+    comentario_id:comentario_id,
+    visible: visible
+  },function( data ){
+    if(!data.success){
+      $(element).attr('checked',(!$(element).is(':checked')));
+    }
+  }).fail(function(e){
+    console.error(e);
+  });
+  return false;
+}
+
+function responderComentario(comentario_id){
+  var respuesta = $('#textComment_'+comentario_id).val();
+  if (respuesta.replace(' ','').length>0){
+    $.post('/medico/comentario/responder',{
+      comentario_id:comentario_id,
+      respuesta: respuesta
+    },function( data ){
+      console.log('Data.response: ' + JSON.stringify(data));
+      var divContenedor = $('#textComment_'+comentario_id).parent().parent();
+      /*
+      {"success":true,
+      "result":{"id":11,"respuesta":"test","fecharespuesta":"2016-03-15T19:35:57.961Z",
+        "Medico":{"id":1
+          "Usuario":{"urlFotoPerfil":"/garage/profilepics/dpp.png",
+            "DatosGenerale":{"id":2,"nombre":"Medico","apellidoP":"De Prueba","apellidoM":"Uno","usuario_id":1}}}}}
+      */
+
+      data.result.fecharespuesta = new Date(data.result.fecharespuesta).toLocaleDateString();
+      data.result.fecharespuesta = formatearFechaComentario(data.result.fecharespuesta.split(' ')[0]);
+
+      var contenido = '<div class="media comment-container">'+
+                        '<article class="media-body text-right">'+
+                          '<p class="s15 h67-medium respuesta">'+ data.result.respuesta +'</p>'+
+                          '<p class="comment-autor s15 h75-bold noMargin">'+
+                            '<span class="text-capitalize">Dr. '+ data.result.Medico.Usuario.DatosGenerale.nombre + ' ' +  data.result.Medico.Usuario.DatosGenerale.apellidoP + ' ' +  data.result.Medico.Usuario.DatosGenerale.apellidoM + '</span>'+
+                          '</p>'+
+                          '<p class="comment-date s15 h67-medium text-info noMargin">'+ data.result.fecharespuesta +  '</p>'+
+                          '<button class="btn btn-default btn-xs" onclick="editarComentario('+ data.result.id +', this)">Editar</button>'+
+                        '</article>'+
+                        '<div class="media-right">'+
+                          '<img class="img-circle comment-img noMargin" style="width:70px;" src="'+ data.result.Medico.Usuario.urlFotoPerfil +'">'+
+                        '</div>'+
+                      '</div>';
+
+      divContenedor.html(contenido);
+    }).fail(function(e){
+      console.error(e);
+    });
+  } else {
+    $('#textComment_'+comentario_id)[0].focus();
+  }
+}
+
+function editarComentario(comentario_id, element){
+    var respuesta = $(element).parent().find('.respuesta').text();
+   var divContenedor = $(element).parent().parent().parent();
+   divContenedor.html('<div class="input-group">'+
+       '<textarea class="form-control" style="resize:none;" rows="3" id="textComment_'+ comentario_id +'">'+ respuesta +'</textarea>'+
+       '<span class="input-group-btn top-content" style=""><button class="btn btn-default" onclick="responderComentario('+ comentario_id +');">Responder</button></span>'+
+   '</div>');
 }

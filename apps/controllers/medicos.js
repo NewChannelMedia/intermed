@@ -1652,7 +1652,8 @@ var _this = module.exports = {
           if (medico){
             models.ComentariosMedicos.findAll({
               where:{
-                medico_id: medico.id
+                medico_id: medico.id,
+                visible: 1
               },
               order:[['fecha','DESC']],
               include: [{
@@ -1669,6 +1670,16 @@ var _this = module.exports = {
                       include :[{ model : models.Estado}]
                     }
                   ]
+                }]
+              },{
+                model: models.Medico,
+                attributes: ['id'],
+                include: [{
+                  model: models.Usuario,
+                  attributes: ['id','urlFotoPerfil'],
+                  include: [{
+                    model: models.DatosGenerales
+                  }]
                 }]
               }]
             }).then(function(result){
@@ -2241,6 +2252,7 @@ var _this = module.exports = {
             model: models.DatosGenerales
           }]
         } ],
+        order:[['fecha','DESC']],
         where: {
           medico_id: req.session.passport.user.Medico_id
         }
@@ -2250,6 +2262,90 @@ var _this = module.exports = {
     }catch ( err ) {
       req.errorHandler.report(err, req, res);
     }
+  },
+
+  comentarioVisible: function (object, req, res){
+    if (req.session.passport && req.session.passport.user && req.session.passport.user.Medico_id){
+        models.ComentariosMedicos.findOne( {
+          attributes: ['id','visible'],
+          where: {
+            medico_id: req.session.passport.user.Medico_id,
+            id: object.comentario_id
+          }
+        } ).then( function ( comentario ) {
+          if (comentario){
+            comentario.update({visible: object.visible}).then(function(result){
+                res.status(200).json({
+                  success:true,
+                  result: result
+                })
+            });
+          } else {
+            res.status(200).json({
+              success:false
+            })
+          }
+        } );
+    } else {
+      res.status(200).json({
+        success:false
+      })
+    }
+  },
+
+  comentarioResponder: function (object, req, res){
+    //{"comentario_id":"12","respuesta":"hola"}
+      if (req.session.passport && req.session.passport.user && req.session.passport.user.Medico_id){
+          models.ComentariosMedicos.findOne( {
+            attributes: ['id','respuesta','fecharespuesta','usuario_id'],
+            where: {
+              medico_id: req.session.passport.user.Medico_id,
+              id: object.comentario_id
+            },
+            include: [{
+              model: models.Medico,
+              attributes: ['id'],
+              include: [{
+                model: models.Usuario,
+                attributes: ['urlFotoPerfil'],
+                include: [{
+                  model: models.DatosGenerales
+                }]
+              }]
+            }]
+          } ).then( function ( comentario ) {
+            if (comentario){
+              comentario.update({respuesta: object.respuesta,fecharespuesta:new Date().toISOString()}).then(function(result){
+                  //Crear notificacion para Paciente
+                  models.Notificacion.findOrCreate({
+                    where: {
+                      tipoNotificacion_id: 16,
+                      usuario_id: comentario.usuario_id,
+                      data: object.comentario_id
+                    },
+                    defaults: {
+                      tipoNotificacion_id: 16,
+                      usuario_id: comentario.usuario_id,
+                      data: object.comentario_id
+                    }
+                  });
+
+                  res.status(200).json({
+                    success:true,
+                    result: result
+                  })
+              });
+            } else {
+              res.status(200).json({
+                success:false
+              })
+            }
+          } );
+      } else {
+        res.status(200).json({
+          success:false
+        })
+      }
   }
 
 }

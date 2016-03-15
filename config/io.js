@@ -77,6 +77,18 @@ var io = function ( io, bundle, ioPassport ) {
         intermed.callController( 'notificaciones', 'verNotificacionesInbox', req );
       } );
 
+
+      socket.on( 'verComentarios', function () {
+        //console.log( 'socket_id: ' + socket.id + ' [Buscar: verNotificaciones]' );
+        var req = {
+          socket: socket,
+          usuario_id: socket.request.cookies.intermed_sesion.id,
+          tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario
+        };
+
+        intermed.callController( 'notificaciones', 'verComentarios', req );
+      } );
+
       socket.on('inbox',function () {
         var req = {
           socket: socket,

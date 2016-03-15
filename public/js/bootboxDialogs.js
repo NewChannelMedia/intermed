@@ -4700,28 +4700,79 @@ function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id){
           '</div>'+
         '</form>'
   });
+}
 
-  /*
-  console.log('--------------------');
-  console.log('Inicio: ' + inicio);
-  console.log('Fin: ' + fin);
-  console.log('Medico: ' + medico);
-  console.log('Servicio: ' + servicio_id);
+function verDetalleComentario(comentario_id){
+    $.post('/paciente/detallesComentario',{
+      comentario_id: comentario_id
+    }, function(data){
+      if (data.success){
+        if (data.result){
+          data.result.fecha = formatearFechaComentario(new Date(data.result.fecha).toLocaleDateString().split(' ')[0]);
+          data.result.fecharespuesta = formatearFechaComentario(new Date(data.result.fecharespuesta).toLocaleDateString().split(' ')[0]);
 
-  $.post('/secretaria/crearCita',{
-    paciente_id: 2,
-    usuario_id: 6,
-    inicio: formatearFecha(inicio),
-    fin: formatearFecha(fin),
-    medico_id: medico,
-    servicio_id: servicio_id
-  }, function(data){
-    if (data.success){
-      $('#divCalendario').fullCalendar('removeEvents');
-      $('#divCalendario').fullCalendar('refetchEvents');
-      activarDesactivarAgregarCita($('#btnAddCita'));
-    }
-  }).fail(function(e){
-    console.error("Post error: "+JSON.stringify(e));
-  });*/
+          if (data.result.Medico.Usuario.DatosGenerale.apellidoM && data.result.Medico.Usuario.DatosGenerale.apellidoM != ""){
+            data.result.Medico.Usuario.DatosGenerale.apellidoM = ' ' +data.result.Medico.Usuario.DatosGenerale.apellidoM;
+          } else {
+            data.result.Medico.Usuario.DatosGenerale.apellidoM = '';
+          }
+
+          if (data.result.Usuario.DatosGenerale.apellidoM && data.result.Usuario.DatosGenerale.apellidoM != ""){
+            data.result.Usuario.DatosGenerale.apellidoM = ' ' + data.result.Usuario.DatosGenerale.apellidoM;
+          } else {
+            data.result.Usuario.DatosGenerale.apellidoM = '';
+          }
+
+          var nombreMedico = data.result.Medico.Usuario.DatosGenerale.nombre + ' ' + data.result.Medico.Usuario.DatosGenerale.apellidoP + data.result.Medico.Usuario.DatosGenerale.apellidoM;
+          var nombrePaciente = data.result.Usuario.DatosGenerale.nombre + ' ' + data.result.Usuario.DatosGenerale.apellidoP + data.result.Usuario.DatosGenerale.apellidoM;
+
+          secondaryBootbox = bootbox.dialog({
+            backdrop: true,
+            size:'large',
+            className: 'Intermed-Bootbox',
+            title: '<span class="title text-center" style="font-weight:bold"></span>',
+            message:
+                  '<div class="row">'+
+                    '<div class="col-md-12">'+
+                      '<div class="comentario row">'+
+                        '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">'+
+                          '<div class="media comment-container">'+
+                            '<div class="media-left">'+
+                              '<img class="img-circle comment-img" style="width: 150px;" src="'+ data.result.Usuario.urlFotoPerfil +'">'+
+                            '</div>'+
+                            '<article class="media-body">'+
+                              '<div class="text-uppercase s30 h67-medcond">'+ data.result.titulo +'</div>'+
+                              '<p class="s15 h67-medium">'+ data.result.comentario +'</p>'+
+                              '<p class="comment-autor s15 h75-bold noMargin">'+
+                                '<span class="text-capitalize">'+ nombrePaciente +'</span>'+
+                              '</p>'+
+                              '<p class="comment-date s15 h67-medium text-info noMargin">'+ data.result.fecha +'</p>'+
+                            '</article>'+
+                          '</div>'+
+                        '</div>'+
+                        '<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 pull-right">'+
+                          '<div class="media comment-container">'+
+                            '<article class="media-body text-right">'+
+                              '<p class="s15 h67-medium">'+ data.result.respuesta +'</p>'+
+                              '<p class="comment-autor s15 h75-bold noMargin">'+
+                              '<span class="text-capitalize">'+ nombreMedico +'</span></p>'+
+                              '<p class="comment-date s15 h67-medium text-info noMargin">' + data.result.fecharespuesta + '</p>'+
+                            '</article>'+
+                            '<div class="media-right">'+
+                            '<img class="img-circle comment-img noMargin" style="width:70px;" src="'+ data.result.Medico.Usuario.urlFotoPerfil +'">'+
+                          '</div>'+
+                        '</div>'+
+                      '</div>'+
+                    '</div>'+
+                '</div>'
+          });
+        }
+      } else {
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    }).fail(function(e){
+      console.error("Post error: "+JSON.stringify(e));
+    });
 }

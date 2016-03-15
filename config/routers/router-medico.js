@@ -214,4 +214,12 @@ module.exports = function (object){
   app.post('/medico/experienciaLaboral/cargar', function (req, res){
     intermed.callController('medicos','cargarExperienciaLaboral', req.body, req, res);
   });
+
+  app.post('/medico/comentario/visible', function(req, res){
+    intermed.callController('medicos','comentarioVisible', req.body, req, res);
+  });
+
+  app.post('/medico/comentario/responder', function (req, res){
+    intermed.callController('medicos','comentarioResponder', req.body, req, res);
+  });
 }

@@ -1,55 +1,69 @@
-<!--
-
-,{"id":2,"titulo":"","comentario":"","anonimo":0,"medico_id":1,"usuario_id":5,"fecha":"2016-03-15T16:35:42.000Z",
-"Usuario":{"id":5,"urlFotoPerfil":"/garage/profilepics/dpp.png","usuarioUrl":"0000005","tipoUsuario":"P",
-"DatosGenerale":{"id":1,"nombre":"Paciente","apellidoP":"De Prueba Uno","apellidoM":"","usuario_id":5}}}
-
--->
-<div class="container-fluid">
+<div class="container-fluid" id="moderarComentarios">
     <div class="col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1">
 
-      {{#each comentarios}}
-        <div class="comentario row">
-          <div class="col-lg-9 col-md-9 col-sm-10 col-xs-10 pull-left">
-            <div class="media comment-container">
-              <div class="media-left">
-                <img class="img-circle comment-img" style="width: 150px;" src="/garage/profilepics/dpp.png">
-              </div>
-              <article class="media-body">
-                <div class="text-uppercase s30 h67-medcond">{{titulo}}</div>
-                <p class="s15 h67-medium">{{comentario}}</p>
-                <p class="comment-autor s15 h75-bold noMargin">
-                  <span class="text-capitalize">
-                  {{#if anonimo}}
-                    Anonimo
-                  {{else}}
-                    {{Usuario.DatosGenerale.nombre}} {{Usuario.DatosGenerale.apellidoP}} {{Usuario.DatosGenerale.apellidoM}}
-                  {{/if}}
-                  .</span>
-                </p>
-                <p class="comment-date s15 h67-medium text-info noMargin">{{#formatearFechaComentario fecha}}{{/formatearFechaComentario}}</p>
-              </article>
-            </div>
-          </div>
-          <div class="col-lg-9 col-md-9 col-sm-10 col-xs-10 pull-right">
-            {{#if respuesta}}
-              <div class="media comment-container">
-                <article class="media-body text-right">
-                  <p class="s15 h67-medium">{{respuesta}}</p>
-                  <p class="comment-autor s15 h75-bold noMargin">
-                    <span class="text-capitalize">Dr. {{#valSession 'name'}}{{/valSession}}</span>
-                  </p>
-                  <p class="comment-date s15 h67-medium text-info noMargin">{{#formatearFechaComentario fecharespuesta}}{{/formatearFechaComentario}}</p>
-                </article>
-                <div class="media-right">
-                  <img class="img-circle comment-img noMargin" style="width:70px;" src="{{#valSession 'fotoPerfil'}}{{/valSession}}">
-                </div>
-              </div>
-            {{else}}
-            
-            {{/if}}
-          </div>
-        </div>
-        {{/each}}
+      <table class="table table-striped table-bordered" style="background-color: #eaeaea;">
+        <tbody>
+            {{#each comentarios}}
+              <tr>
+                <td>
+                  <div class="comentario row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                      <div class="media comment-container">
+                        <div class="media-left">
+                          <img class="img-circle comment-img" style="width: 150px;" src="{{Usuario.urlFotoPerfil}}">
+                        </div>
+                        <article class="media-body">
+                          <div class="text-uppercase s30 h67-medcond">{{titulo}}</div>
+                          <p class="s15 h67-medium text-justify">{{comentario}}</p>
+                          <p class="comment-autor s15 h75-bold noMargin">
+                            <span class="text-capitalize">
+                            {{#if anonimo}}
+                              Anonimo
+                            {{else}}
+                              {{Usuario.DatosGenerale.nombre}} {{Usuario.DatosGenerale.apellidoP}} {{Usuario.DatosGenerale.apellidoM}}
+                            {{/if}}
+                            .</span>
+                          </p>
+                          <p class="comment-date s15 h67-medium text-info noMargin">{{#formatearFechaComentario fecha}}{{/formatearFechaComentario}}</p>
+                        </article>
+                        <div class="media-right">
+                            <div class="onoffswitch">
+                              <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="onoffvisible_{{this.id}}" {{#if visible}}checked{{/if}} onchange="cambiarComentarioVisible(this,'{{this.id}}')">
+                              <label class="onoffswitch-label" for="onoffvisible_{{this.id}}">
+                                  <span class="onoffswitch-inner"></span>
+                                  <span class="onoffswitch-switch"></span>
+                              </label>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-lg-9 col-md-9 col-sm-10 col-xs-10 pull-right">
+                      {{#if respuesta}}
+                        <div class="media comment-container">
+                          <article class="media-body text-right">
+                            <p class="s15 h67-medium respuesta">{{respuesta}}</p>
+                            <p class="comment-autor s15 h75-bold noMargin">
+                              <span class="text-capitalize">Dr. {{#valSession 'name'}}{{/valSession}}</span>
+                            </p>
+                            <p class="comment-date s15 h67-medium text-info noMargin">{{#formatearFechaComentario fecharespuesta}}{{/formatearFechaComentario}}</p>
+                            <button class="btn btn-default btn-xs" onclick="editarComentario({{this.id}}, this)">Editar</button>
+                          </article>
+                          <div class="media-right">
+                            <img class="img-circle comment-img noMargin" style="width:70px;" src="{{#valSession 'fotoPerfil'}}{{/valSession}}">
+                          </div>
+                        </div>
+                      {{else}}
+                        <div class="input-group">
+                          	<textarea class="form-control" style="resize:none;" rows="3" id="textComment_{{this.id}}"></textarea>
+                            <span class="input-group-btn top-content" style=""><button class="btn btn-default" onclick="responderComentario({{this.id}});">Responder</button></span>
+                        </div>
+                      {{/if}}
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            {{/each}}
+          </tbody>
+      </table>
     </div>
 </div>

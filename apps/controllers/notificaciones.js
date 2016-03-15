@@ -224,10 +224,48 @@ exports.contarNuevasNotificaciones = function (object){
       attributes: [ 'id', 'tipoNotificacion_id' ,'data', 'inicio', 'visto' ],
       order: 'inicio DESC'
     } ).then( function ( result ) {
+        if (object.tipoUsuario == "M"){
+          exports.contarNuevosComentarios(object);
+        }
         object.socket.emit('contarNuevasNotificaciones',result.length);
     } );
 }
 
+exports.contarNuevosComentarios = function (object){
+    models.Medico.findOne({
+      where:{
+        usuario_id: object.usuario_id
+      }
+    }).then(function(medico){
+      models.ComentariosMedicos.findAll( {
+        where: {
+          medico_id: medico.id,
+          visto: 0
+        },
+        attributes: [ 'id']
+      } ).then( function ( result ) {
+        object.socket.emit('contarNuevosComentarios',result.length);
+      } );
+    });
+}
+
+exports.verComentarios = function (object){
+    models.Medico.findOne({
+      where:{
+        usuario_id: object.usuario_id
+      }
+    }).then(function(medico){
+      models.ComentariosMedicos.update( {
+        visto: 1
+      },{
+        where: {
+          medico_id: medico.id,
+          visto: 0
+        },
+        attributes: [ 'id']
+      } );
+    });
+}
 
 exports.buscarNotificaciones = function (object){
   models.Notificacion.findAll( {
@@ -804,6 +842,36 @@ function formatearNotificacion(result, emit, object){
             }).then(function(medico){
               totalProcesados++;
               record[ 'medico' ] = JSON.parse( JSON.stringify( medico ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            });
+            break
+          case 16:
+            models.ComentariosMedicos.findOne({
+              where:{id:record.data},
+              include:[{
+                model: models.Usuario,
+                attributes:['id','usuarioUrl','urlFotoPerfil'],
+                include:[{
+                  model: models.DatosGenerales,
+                  attributes:['nombre','apellidoP','apellidoM']
+                }]
+              },{
+                model: models.Medico,
+                attributes:['id'],
+                include: [{
+                  model: models.Usuario,
+                  attributes: ['id','usuarioUrl','urlFotoPerfil','urlPersonal'],
+                  include:[{
+                    model: models.DatosGenerales,
+                    attributes:['nombre','apellidoP','apellidoM']
+                  }]
+                }]
+              }]
+            }).then(function(ComentariosMedicos){
+              totalProcesados++;
+              record[ 'comentario' ] = JSON.parse( JSON.stringify( ComentariosMedicos ) );
               if ( totalProcesados === result.length) {
                 object.socket.emit(emit,result);
               }

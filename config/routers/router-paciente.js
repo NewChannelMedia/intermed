@@ -59,4 +59,8 @@ module.exports = function (object){
     intermed.callController('ubicacion','registrarubicacionPaciente',req.body,req, res);
   });
 
+  app.post('/paciente/detallesComentario', function (req, res){
+    intermed.callController('pacientes','detallesComentario',req.body,req, res);
+  });
+
 }
