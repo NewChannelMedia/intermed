@@ -3211,3 +3211,15 @@ td.fc-day.fc-widget-content {
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
     right: 0px;
 }
+
+#newMainNav li {
+    position: relative;
+}
+
+.navBadge {
+    position: absolute;
+    bottom: -8px;
+    right: -5px;
+    background-color: #ff8a00;
+    padding-top: 5px;
+}

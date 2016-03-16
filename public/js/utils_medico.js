@@ -430,9 +430,11 @@ function cambiarActual(element){
     $('#divGrado').removeClass('hidden');
   }
 }
+/*
 $("#oficina").click(function(){
   abrirHistoriales();
 });
+*/
 
 function abrirHistoriales(){
   //Checar si existe sesión abierta y si el usuario ya tiene contraseña para historiales (con el medico_id)
