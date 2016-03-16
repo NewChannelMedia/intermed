@@ -396,7 +396,13 @@ var _this = module.exports = {
           include: [ {
             model: models.DatosGenerales
                   }, {
-            model: models.Medico
+            model: models.Medico,
+                    include: [{
+                      model: models.MedicoEspecialidad,
+                      include: [{
+                        model: models.Especialidad
+                      }]
+                    }]
                   }, {
             model: models.Biometrico
                   }, {
@@ -2351,6 +2357,7 @@ var _this = module.exports = {
         })
       }
   },
+
   cedulaGeneral: function (object, req, res){
     var request = require("request");
     iconv  = require('iconv-lite');
@@ -2434,24 +2441,71 @@ var _this = module.exports = {
           }
 
           if (object.nombreMedico.toUpperCase().replace(' ','') == nombre.toUpperCase().replace(' ','') && object.paterno.toUpperCase().replace(' ','') == paterno.toUpperCase().replace(' ','') && object.materno.toUpperCase().replace(' ','') == materno.toUpperCase().replace(' ','') && object.genero == sexo){
-            if (object.tipo == "C1" && object.tipo == resultArray.tipo){
-              console.log('Insertar cedula en médico');
-              models.Medico.update({
-                cedula: object.cedula
-              },{
-                where: {
-                  usuario_id: req.session.passport.user.id
-                }
-              }).then(function(cedula){
-                console.log('Cedula actualizada: ' + JSON.stringify(cedula));
-              })
+            if (object.tipo == resultArray.tipo){
+              if (object.tipo == "C1"){
+                models.Medico.update({
+                  cedula: object.cedula,
+                  titulo: resultArray.titulo
+                },{
+                  where: {
+                    usuario_id: req.session.passport.user.id
+                  }
+                }).then(function(result){
+                  res.status(200).json({
+                    success:true,
+                    exists: true,
+                    result: resultArray
+                  });
+                });
+              } else {
+                models.MedicoEspecialidad.findOne({
+                  where: {
+                    cedula: object.cedula
+                  }
+                }).then(function(MedicoEspecialidad){
+                  if (!MedicoEspecialidad){
+                    console.log('Insertar especialidad');
+                    models.Especialidad.findOrCreate({
+                      where:{
+                        especialidad: resultArray.titulo
+                      },
+                      defaults: {
+                        especialidad: resultArray.titulo
+                      }
+                    }).spread(function(especialidad,created){
+                      console.log('Especialidad: ' + JSON.stringify(especialidad));
+                      models.MedicoEspecialidad.create({
+                        medico_id: req.session.passport.user.Medico_id,
+                        cedula: object.cedula,
+                        especialidad_id: especialidad.id,
+                        anio: resultArray.anio
+                      }).then(function(MedicoEspecialidad){
+                        console.log('MedicoEspecialidad: ' + MedicoEspecialidad);
+                      });
+                    });
+                    res.status(200).json({
+                      success:true,
+                      exists: true,
+                      result: resultArray
+                    });
+                  } else {
+                    res.status(200).json({
+                      success:false,
+                      exists: true,
+                      repeat: true,
+                      result: resultArray
+                    });
+                  }
+                });
+              }
+            } else {
+              res.status(200).json({
+                success:false,
+                exists: true,
+                tipo: true,
+                result: resultArray
+              });
             }
-
-            res.status(200).json({
-              success:true,
-              exists: true,
-              result: resultArray
-            });
           } else {
             res.status(200).json({
               success:false,

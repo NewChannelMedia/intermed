@@ -121,14 +121,18 @@ $( document ).ready( function () {
             }
             //Registrada la cedula
             if ( data.result.Medico && data.result.Medico.cedula) {
+              console.log('medico: ' + JSON.stringify(data.result.Medico));
+              $('#spanCedulaGeneral').text(data.result.Medico.cedula + ':'+data.result.Medico.titulo);
               $('#inputCedulaGeneral').val(data.result.Medico.cedula);
 
               $('#inputCedulaGeneral').attr('disabled','true');
               $('#addCedulaGen').attr('disabled','true');
 
-              $('#addCedulaGen').click();
+              $('.addEspecialidadDiv').removeClass('hidden');
+              data.result.Medico.MedicoEspecialidads.forEach(function(esp){
+                $('#spanCedulaEspecialidad').append('<br><span class="especialidad"><span class="cedula">'+ esp.cedula + '</span>: <span class="tituloEsp">' + esp.Especialidad.especialidad +'</span></span>');
+              });
 
-              //$('.addEspecialidadDiv').removeClass('hidden');
             } else {
               $('#regMedProf button').removeClass('hidden');
             }
@@ -138,7 +142,7 @@ $( document ).ready( function () {
           console.log('Ajax error: ' + JSON.stringify(err));
         }
       });
-      loadEspecialidades();
+      //loadEspecialidades();
   } else if ($('#divMapRegHor').length>0){
     cargarMapa(0);
     cargarTelefonos();
@@ -3981,7 +3985,8 @@ function validarCedulaEspecialidad(element){
         nombreMedico: nombreMedico,
         paterno: paterno,
         materno: materno,
-        genero : genero
+        genero : genero,
+        tipo: 'A1'
       },function( data ){
         if (data.success){
           if (data.result.tipo == "A1"){
@@ -3995,7 +4000,13 @@ function validarCedulaEspecialidad(element){
             manejadorDeErrores(data.error);
           } else{
             if (data.exists){
-              alert('La cedula no corresponde a la persona de registro');
+              if (data.repeat){
+                alert('La cedula ya se encuentra registrada');
+              } else if (data.tipo){
+                alert('La cedula no corresponde al tipo buscado');
+              } else {
+                alert('La cedula no corresponde a la persona de registro');
+              }
             } else {
             //Has error, cedula no existe
             }
