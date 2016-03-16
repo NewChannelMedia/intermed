@@ -1310,7 +1310,6 @@ var _this = module.exports = {
             medico_id:medico.id,
             padecimiento_id:parseInt(req.body.padecimiento)
           }).then(function(creado){
-            console.log("CREADO: "+JSON.stringify(creado));
             res.send(creado);
           });
         });
@@ -1374,39 +1373,62 @@ var _this = module.exports = {
   calificar: function(object, req, res){
     try{
       if (req.session.passport && req.session.passport.user){
-        models.Medico.findOne({
-          where: {
-            usuario_id: object.usuario_id
-          }
-        }).then(function(medico){
-          if (medico){
+          models.Medico.findOne({
+            where: {
+              usuario_id: object.usuario_id
+            }
+          }).then(function(medico){
             object.medico_id = medico.id;
-            object.usuario_id = req.session.passport.user.id;
-            models.CalificacionMedico.findOne({
+            models.CalificacionMedico.findOrCreate({
               where: {
-                medico_id: object.medico_id,
-                usuario_id: object.usuario_id
+                usuario_id: req.session.passport.user.id,
+                medico_id: medico.id
+              },
+              defaults: {
+                usuario_id: req.session.passport.user.id,
+                medico_id: medico.id
               }
-            }).then(function(calificacion){
-              if (calificacion){
-                //Eliminar calificacion actual
-                models.CalificacionMedico.destroy({
+            }).spread(function(CalificacionMedico,created){
+              if (CalificacionMedico){
+                models.PreguntasMedico.findOrCreate({
                   where: {
+                    calificacionmedico_id: CalificacionMedico.id
+                  },
+                  defaults: {
                     medico_id: object.medico_id,
-                    usuario_id: object.usuario_id
+                    calificacionmedico_id: CalificacionMedico.id,
+                    higiene: object.respuestas.higiene,
+                    puntualidad: object.respuestas.puntualidad,
+                    instalaciones: object.respuestas.instalaciones,
+                    tratoPersonal: object.respuestas.tratoPersonal,
+                    satisfaccionGeneral: object.respuestas.satisfaccionGeneral,
+                    costo: object.respuestas.costo
                   }
-                }).then(function(result){
-                  _this.insertarCalificacionMedico(object, req, res, true);
+                }).spread(function(PreguntasMedico, created){
+                  if (!created){
+                    //Actualizar resultados
+                    PreguntasMedico.update({
+                      medico_id: object.medico_id,
+                      higiene: object.respuestas.higiene,
+                      puntualidad: object.respuestas.puntualidad,
+                      instalaciones: object.respuestas.instalaciones,
+                      tratoPersonal: object.respuestas.tratoPersonal,
+                      satisfaccionGeneral: object.respuestas.satisfaccionGeneral,
+                      costo: object.respuestas.costo
+                    }).then(function(result){
+                      _this.calcularCalificacionMedico(object, req, res, true);
+                    });
+                  } else {
+                    _this.calcularCalificacionMedico(object, req, res, false);
+                  }
                 });
               } else {
-                _this.insertarCalificacionMedico(object,req, res, false);
+                res.status(200).json({
+                  success: false
+                });
               }
             });
-          } else {
-            //No existe el médico
-            res.status(200).json({error:1});
-          }
-        });
+          });
       } else {
         res.status(200).json({error:1});
       }
@@ -1415,42 +1437,24 @@ var _this = module.exports = {
     }
   },
 
-  insertarCalificacionMedico: function(object, req, res, modificacion){
+  calcularCalificacionMedico: function(object, req, res, modificacion){
     try{
-      models.CalificacionMedico.create(object).then(function(result){
-        var success = false;
-        if (result){
-          success = true;
-            models.Medico.findById(object.medico_id).then(function(medico){
-              var promedio = 0;
-              if (!modificacion){
-                promedio =  ((parseInt(object.efectividad) + parseInt(object.tratoPersonal) + parseInt(object.higiene) + parseInt(object.presentacion)) / 4);
-                if (medico.calificacion !=  null){
-                  calificacion = medico.calificacion;
-                  promedio = ((parseInt(calificacion) + promedio) / 2);
-                }
-                medico.update({calificacion :  promedio});
-              } else {
-                //Se debe de recalcular el promedio, porque el usuario modifico su calificación
-                models.CalificacionMedico.findAll({
-                  where:{
-                    medico_id: object.medico_id,
-                    usuario_id: object.usuario_id
-                  }
-                }).then(function(calificaciones){
-                  calificaciones.forEach(function(cal){
-                      promedio +=  ((parseInt(cal.efectividad) + parseInt(cal.tratoPersonal) + parseInt(cal.higiene) + parseInt(cal.presentacion)) / 4);
-                  });
-                  promedio = promedio/calificaciones.length;
-                  medico.update({calificacion :  promedio});
-                });
-              }
-            });
-        }
-        res.status(200).json({
-          success: success,
-          result: result
+      models.Medico.findById(object.medico_id).then(function(medico){
+        var promedio = 0;
+        models.PreguntasMedico.findAll({
+          where: {
+            medico_id: object.medico_id
+          }
+        }).then(function(calificaciones){
+          calificaciones.forEach(function(cal){
+              promedio +=  ((parseInt(cal.higiene) + parseInt(cal.puntualidad) + parseInt(cal.instalaciones) + parseInt(cal.tratoPersonal) + parseInt(cal.satisfaccionGeneral) + parseInt(cal.costo)) / 6);
+          });
+          promedio = promedio/calificaciones.length;
+          medico.update({calificacion :  promedio});
         });
+        res.status(200).json({
+          success:true
+        })
       });
     }catch ( err ) {
       req.errorHandler.report(err, req, res);

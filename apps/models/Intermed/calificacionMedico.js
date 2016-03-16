@@ -7,18 +7,6 @@ module.exports = function ( sequelize, DataTypes ) {
       autoIncrement: true,
       primaryKey: true
     },
-    efectividad: {
-      type: DataTypes.INTEGER
-    },
-    tratoPersonal: {
-      type: DataTypes.INTEGER
-    },
-    presentacion: {
-      type: DataTypes.INTEGER
-    },
-    higiene: {
-      type: DataTypes.INTEGER
-    },
     medico_id: {
       type: DataTypes.BIGINT,
       allowNull: false

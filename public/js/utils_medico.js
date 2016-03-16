@@ -2375,7 +2375,7 @@ function traerAseguradoras(){
                   } else {
                     res.Usuario.DatosGenerale.apellidoM = '';
                   }
-                  nombre = res.Usuario.DatosGenerale.nombre  + ' ' + res.Usuario.DatosGenerale.apellidoP + res.Usuario.DatosGenerale.apellidoM;
+                  nombre = res.Usuario.DatosGenerale.nombre  + ' ' + res.Usuario.DatosGenerale.apellidoP + res.Usuario.DatosGenerale.apellidoM + '.';
 
                   if (res.Usuario.Direccions[0]){
                     nombre = nombre + ' '+ res.Usuario.Direccions[0].Municipio.municipio +', '+ res.Usuario.Direccions[0].Municipio.Estado.estado.substring(0, 3) +'.';

@@ -1147,7 +1147,7 @@ function repositionTooltip( e, ui ){
     var comp = '';
     switch (id) {
       case 'cal_higiene':
-          comp = "Higiene del lugar";
+          comp = "Higiene";
           break;
       case 'cal_puntualidad':
           comp = "Puntualidad";
@@ -1158,17 +1158,11 @@ function repositionTooltip( e, ui ){
       case 'cal_trato':
           comp = "Trato personal";
           break;
-      case 'cal_tratoper':
-          comp = "Trato personal";
+      case 'cal_costo':
+          comp = "Costo";
           break;
-      case 'cal_pres':
-          comp = "Presentación";
-          break;
-      case 'cal_efect':
-          comp = "Efectividad";
-          break;
-      case 'cal_hig':
-          comp = "Higiene";
+      case 'cal_satisfaccion':
+          comp = "Satisfacción";
           break;
       }
 
@@ -1182,12 +1176,16 @@ function repositionTooltip( e, ui ){
 
     tp.left = tp.left - (parseInt($(div).find(".tooltip-inner").css('width'))/2) + 10;
 
-    if (parseInt(ant) > parseInt(ui.value)){
-      tp.top = parseFloat(tp.top) - 22 - (parseInt($(div).find(".tooltip-inner").css('height')) - 17);
-    } else if (parseInt(ant) < parseInt(ui.value)){
-      tp.top = parseFloat(tp.top) - 35 - (parseInt($(div).find(".tooltip-inner").css('height')) - 17);
+    if (id != "cal_satisfaccion"){
+      if (parseInt(ant) > parseInt(ui.value)){
+        tp.top = parseFloat(tp.top) - 22 - (parseInt($(div).find(".tooltip-inner").css('height')) - 17);
+      } else if (parseInt(ant) < parseInt(ui.value)){
+        tp.top = parseFloat(tp.top) - 35 - (parseInt($(div).find(".tooltip-inner").css('height')) - 17);
+      } else {
+        tp.top = parseFloat(tp.top) - 30 - (parseInt($(div).find(".tooltip-inner").css('height')) - 17);
+      }
     } else {
-      tp.top = parseFloat(tp.top) - 30 - (parseInt($(div).find(".tooltip-inner").css('height')) - 17);
+      tp.top = parseFloat(tp.top) - 22 - (parseInt($(div).find(".tooltip-inner").css('height')) - 17);
     }
     $(div).offset(tp);
     $(div).find(".tooltip").css('background-color','red');
