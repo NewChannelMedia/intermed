@@ -1719,13 +1719,15 @@ footer .logoIntermed {
   bottom: 0;
   overflow: hidden;
   overflow-y: auto;
-  padding-top: 15px;
-  padding-bottom: 15px;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 
 .agendaElement {
-  height: 400px;
-  min-height: 400px;
+  height: 550px;
+  min-height: 550px;
 }
 
 .agendaMonth {
