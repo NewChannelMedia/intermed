@@ -1676,3 +1676,26 @@ footer .logoIntermed {
   right: 0;
   left: 50%;
 }
+
+
+#feedback {
+  padding-top: 15px;
+  background-color: #ffffff;
+}
+
+#feedback .panel {
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none!important;
+}
+
+.stats {
+  height: 300px;
+}
+
+@media (max-width: 767px) {
+  #feedback {
+    padding-top: 75px;
+  }
+}
