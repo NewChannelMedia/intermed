@@ -77,6 +77,17 @@ footer .logoIntermed {
   height: 40px;
 }
 
+@media (max-width: 767px) {
+  footer, footer.navigator {
+    height: 60px!important;
+    min-height: 60px!important;
+  }
+
+  footer .logoIntermed {
+    height: 30px;
+  }
+}
+
 .navigator-inner{
   padding: 0;
 }
@@ -1695,23 +1706,26 @@ footer .logoIntermed {
 
 .agendaBody {
   position: relative;
-  min-height: 500px;
+  min-height: 400px;
+  height: auto;
   border-bottom: solid 2px #fff;
   background-color: #6a808e;
 }
 
 .agendaDay {
-  position: absolute;
+  position: relative;;
   top: 0;
   right: 0;
   bottom: 0;
   overflow: hidden;
   overflow-y: auto;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 .agendaElement {
-  height: 500px;
-  min-height: 500px;
+  height: 400px;
+  min-height: 400px;
 }
 
 .agendaMonth {
@@ -1721,12 +1735,29 @@ footer .logoIntermed {
   background-size: cover;
 }
 
+.agendaOverview {
+}
+
+.agenda-left {
+  height: 780px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.overview-on-Mobile {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  right: 0;
+  height: 300px;
+  z-index: 1000;
+}
 
 @media (max-width:767px) {
   #oficinaMedico {
     padding-top: 60px;
   }
-  .agendaDay {
-    position: relative;
+  .agendaOverview{
+    height: 0;
   }
 }

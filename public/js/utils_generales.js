@@ -1259,8 +1259,33 @@ $( document ).ready( function () {
       //alert('mostrar secretaria');
     }
   } else if( $('#oficinaMedico').length > 0 ) {
-    var h = $(window).height() - $('#newMainNav').height() - $('.agendaTopContainer').height()-2;/*- $('footer').height()*/
-    $('.agendaBody').css('min-height',h+'px');
+
+    if ( $( window ).width() > 768 ) {
+      var h = $( window ).height() - $( '#newMainNav' ).height() - $( '.agendaTopContainer' ).height() - 2; /*- $('footer').height()*/
+      $( '.agendaDay' ).css( 'height', h + 'px' );
+    }
+    else if ( $( window ).width() < 767 ) {
+      var h = $( window ).height() - $( '#newMainNav' ).height() - 2;
+      $( '.agendaDay' ).css( 'height', h + 'px' );
+      $( '.agendaMonth' ).css( 'height', h - $( '.agendaTopContainer' ).height() + 'px' );
+      $( '.agendaOverview' ).css( 'height', ( h - $( '.agendaTopContainer' ).height() + 60 ) / 2 + 'px' );
+      $( '.agendaOverview' ).addClass('overview-on-Mobile hidden');
+      $( '.agendaDay .day' ).addClass('openOverview');
+      $( '.agendaOverview .closeOverview' ).removeClass('hidden');
+    }
+
+    $('.openOverview').click(function(){
+      openOverview();
+    })
+    $('.closeOverview').click(function(){
+      closeOverview();
+    })
+    function openOverview (){
+      $( '.agendaOverview' ).removeClass('hidden', 100);
+    }
+    function closeOverview() {
+      $( '.agendaOverview' ).addClass('hidden', 100);
+    }
   }
 } );
 //fin de Perfil Medicos
