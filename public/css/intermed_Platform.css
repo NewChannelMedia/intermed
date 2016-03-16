@@ -1678,11 +1678,7 @@ footer .logoIntermed {
 
 }
 
-@media (max-width:767px) {
-  #oficinaMedico {
-    padding-top: 60px;
-  }
-}
+
 
 .agendaTopContainer {
   border-bottom: solid 2px #fff;
@@ -1704,11 +1700,33 @@ footer .logoIntermed {
   background-color: #6a808e;
 }
 
-.agenda-day {
+.agendaDay {
   position: absolute;
   top: 0;
   right: 0;
   bottom: 0;
   overflow: hidden;
   overflow-y: auto;
+}
+
+.agendaElement {
+  height: 500px;
+  min-height: 500px;
+}
+
+.agendaMonth {
+  background-image: url('../img/profileBG.png');
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: cover;
+}
+
+
+@media (max-width:767px) {
+  #oficinaMedico {
+    padding-top: 60px;
+  }
+  .agendaDay {
+    position: relative;
+  }
 }

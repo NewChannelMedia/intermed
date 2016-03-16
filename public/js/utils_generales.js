@@ -1260,7 +1260,7 @@ $( document ).ready( function () {
     }
   } else if( $('#oficinaMedico').length > 0 ) {
     var h = $(window).height() - $('#newMainNav').height() - $('.agendaTopContainer').height()-2;/*- $('footer').height()*/
-    $('.agendaBody').css('height',h+'px');
+    $('.agendaBody').css('min-height',h+'px');
   }
 } );
 //fin de Perfil Medicos
