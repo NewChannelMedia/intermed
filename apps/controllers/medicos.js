@@ -2350,8 +2350,7 @@ var _this = module.exports = {
           success:false
         })
       }
-  }
-
+  },
   cedulaGeneral: function (object, req, res){
     var request = require("request");
     iconv  = require('iconv-lite');
