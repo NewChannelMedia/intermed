@@ -2260,7 +2260,7 @@ function iniciarSesionFacebook(callback, usuarioMedico_id){
 }
 
 
-function registrarPacienteBootbox(callback, usuarioMedico_id){
+function registrarPacienteBootbox(callback, usuarioMedico_id, refresh){
 
   bootbox.dialog({
     backdrop: true,
@@ -2778,7 +2778,7 @@ function detalleCita(agenda_id){
 }
 
 function bootboxCalificarCita(agenda_id, notificacion_id){
-
+  
     var imagenUrl = '';
     var nombreUsuario = '';
     var nombreUbicacion = '';
@@ -2837,15 +2837,16 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
 
           '<div class="col-md-6 col-sm-6 col-xs-10 col-md-offset-3 col-sm-offset-3 col-xs-offset-1" style="margin-top:20px">'+
             '<div class="row">'+
-              '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción general: </div>'+
+              '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción cita: </div>'+
               '<div class="col-md-12 col-sm-12 col-xs-12"><input id="input-21d" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>'+
             '</div>'+
 
             '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
-                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+
+                '<div class="col-md-2 col-sm-2 col-xs-2 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'+
                   '<div class="row">'+
                     '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                        '<span class="Slider" id="cal_higiene"></span>'+
+                        '<span class="Slider vertical" id="cal_higiene"></span>'+
                     '</div>'+
                   '</div>'+
                   '<div class="row">'+
@@ -2855,10 +2856,10 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
                   '</div>'+
                 '</div>'+
 
-                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                '<div class="col-md-2 col-sm-2 col-xs-2">'+
                   '<div class="row">'+
                     '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                        '<span class="Slider" id="cal_puntualidad"></span>'+
+                        '<span class="Slider vertical" id="cal_puntualidad"></span>'+
                     '</div>'+
                   '</div>'+
                   '<div class="row">'+
@@ -2868,10 +2869,10 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
                   '</div>'+
                 '</div>'+
 
-                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                '<div class="col-md-2 col-sm-2 col-xs-2">'+
                   '<div class="row">'+
                     '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                        '<span class="Slider"  id="cal_instalaciones"></span>'+
+                        '<span class="Slider vertical"  id="cal_instalaciones"></span>'+
                     '</div>'+
                   '</div>'+
                   '<div class="row">'+
@@ -2881,10 +2882,10 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
                   '</div>'+
                 '</div>'+
 
-                '<div class="col-md-3 col-sm-3 col-xs-3">'+
+                '<div class="col-md-2 col-sm-2 col-xs-2">'+
                   '<div class="row">'+
                     '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                        '<span class="Slider"  id="cal_trato"></span>'+
+                        '<span class="Slider vertical"  id="cal_trato"></span>'+
                     '</div>'+
                   '</div>'+
                   '<div class="row">'+
@@ -2892,6 +2893,29 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
                       '<span class="glyphicon glyphicon-user"></span>'+
                     '</div>'+
                   '</div>'+
+                '</div>'+
+
+                '<div class="col-md-2 col-sm-2 col-xs-2">'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                        '<span class="Slider vertical"  id="cal_costo"></span>'+
+                    '</div>'+
+                  '</div>'+
+                  '<div class="row">'+
+                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                      '<span class="glyphicon glyphicon-usd"></span>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+
+            '</div>'+
+
+            '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
+
+                '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción cita: </div>'+
+
+                '<div class="col-md-10 col-sm-10 col-xs-10 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'+
+                  '<span class="Slider horizontal" id="cal_satisfaccion" style="width:100%!important"></span>'+
                 '</div>'+
 
             '</div>'+
@@ -2924,30 +2948,55 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
 
 
 
-      $( "span.Slider" ).each(function() {
+        $( "span.Slider.vertical" ).each(function() {
 
-        var id = $(this).prop('id');
+          var id = $(this).prop('id');
 
-        $('#'+id ).slider({
-          value: 50,
-          min: -10,
-          max: 110,
-          step: 10,
-          animate: true,
-          orientation: "vertical",
-          slide: repositionTooltip,
-          start: function( e, ui ){
-            $('#'+id +" .ui-slider-handle:first").tooltip('show');
-            repositionTooltip(e,ui);
-          },
-          stop: function(){
-            $('#'+id +" .ui-slider-handle:first").tooltip('hide');
-          }
+          $('#'+id ).slider({
+            value: 50,
+            min: -10,
+            max: 110,
+            step: 10,
+            animate: true,
+            orientation: "vertical",
+            slide: repositionTooltip,
+            start: function( e, ui ){
+              $('#'+id +" .ui-slider-handle:first").tooltip('show');
+              repositionTooltip(e,ui);
+            },
+            stop: function(){
+              $('#'+id +" .ui-slider-handle:first").tooltip('hide');
+            }
+          });
+
+          $('#'+id +" .ui-slider-handle:first").tooltip( {placement:"top",title: $('#'+id).slider("value"),trigger:"manual"});
+
         });
 
-        $('#'+id +" .ui-slider-handle:first").tooltip( {placement:"top",title: $('#'+id).slider("value"),trigger:"manual"});
 
-      });
+        $( "span.Slider.horizontal" ).each(function() {
+
+          var id = $(this).prop('id');
+
+          $('#'+id ).slider({
+            value: 50,
+            min: 0,
+            max: 100,
+            step: 10,
+            animate: true,
+            slide: repositionTooltip,
+            start: function( e, ui ){
+              $('#'+id +" .ui-slider-handle:first").tooltip('show');
+              repositionTooltip(e,ui);
+            },
+            stop: function(){
+              $('#'+id +" .ui-slider-handle:first").tooltip('hide');
+            }
+          });
+
+          $('#'+id +" .ui-slider-handle:first").tooltip( {placement:"top",title: $('#'+id).slider("value"),trigger:"manual"});
+
+        });
 }
 
 function calificarServicioMedico(){
@@ -2996,64 +3045,86 @@ function calificarServicioMedico(){
               '<img src="'+imagenUrl+'" style="width:100%;" class="img-thumbnail">'+
             '</div>'+
           '</div>'+
+        '</div>'+
+        '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
 
-          '<div class="col-md-6 col-sm-6 col-xs-10 col-md-offset-3 col-sm-offset-3 col-xs-offset-1" style="margin-top:20px">'+
-
-              '<div class="col-md-3 col-sm-3 col-xs-3">'+
-                '<div class="row">'+
-                  '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                      '<span class="Slider"  id="cal_efect"></span>'+
-                  '</div>'+
-                '</div>'+
-                '<div class="row">'+
-                  '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
-                    '<span class="glyphicon glyphicon-ok"></span>'+
-                  '</div>'+
+            '<div class="col-md-2 col-sm-2 col-xs-2 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'+
+              '<div class="row">'+
+                '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                    '<span class="Slider vertical" id="cal_higiene"></span>'+
                 '</div>'+
               '</div>'+
-
-              '<div class="col-md-3 col-sm-3 col-xs-3">'+
-                '<div class="row">'+
-                  '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                      '<span class="Slider"  id="cal_tratoper"></span>'+
-                  '</div>'+
-                '</div>'+
-                '<div class="row">'+
-                  '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
-                    '<span class="glyphicon glyphicon-heart"></span>'+
-                  '</div>'+
+              '<div class="row">'+
+                '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                  '<span class="glyphicon glyphicon-trash" ></span>'+
                 '</div>'+
               '</div>'+
+            '</div>'+
 
-              '<div class="col-md-3 col-sm-3 col-xs-3">'+
-                '<div class="row">'+
-                  '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                      '<span class="Slider"  id="cal_pres"></span>'+
-                  '</div>'+
-                '</div>'+
-                '<div class="row">'+
-                  '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
-                    '<span class="glyphicon glyphicon-user"></span>'+
-                  '</div>'+
+            '<div class="col-md-2 col-sm-2 col-xs-2">'+
+              '<div class="row">'+
+                '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                    '<span class="Slider vertical" id="cal_puntualidad"></span>'+
                 '</div>'+
               '</div>'+
-
-              '<div class="col-md-3 col-sm-3 col-xs-3">'+
-                '<div class="row">'+
-                  '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                      '<span class="Slider"  id="cal_hig"></span>'+
-                  '</div>'+
-                '</div>'+
-                '<div class="row">'+
-                  '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
-                    '<span class="glyphicon glyphicon-trash"></span>'+
-                  '</div>'+
+              '<div class="row">'+
+                '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                  '<span class="glyphicon glyphicon-time"></span>'+
                 '</div>'+
               '</div>'+
+            '</div>'+
 
-          '</div>'+
+            '<div class="col-md-2 col-sm-2 col-xs-2">'+
+              '<div class="row">'+
+                '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                    '<span class="Slider vertical"  id="cal_instalaciones"></span>'+
+                '</div>'+
+              '</div>'+
+              '<div class="row">'+
+                '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                  '<span class="glyphicon glyphicon-home"></span>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+
+            '<div class="col-md-2 col-sm-2 col-xs-2">'+
+              '<div class="row">'+
+                '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                    '<span class="Slider vertical"  id="cal_trato"></span>'+
+                '</div>'+
+              '</div>'+
+              '<div class="row">'+
+                '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                  '<span class="glyphicon glyphicon-user"></span>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+
+            '<div class="col-md-2 col-sm-2 col-xs-2">'+
+              '<div class="row">'+
+                '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                    '<span class="Slider vertical"  id="cal_costo"></span>'+
+                '</div>'+
+              '</div>'+
+              '<div class="row">'+
+                '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                  '<span class="glyphicon glyphicon-usd"></span>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
 
         '</div>'+
+
+        '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
+
+            '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción cita: </div>'+
+
+            '<div class="col-md-10 col-sm-10 col-xs-10 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'+
+              '<span class="Slider horizontal" id="cal_satisfaccion" style="width:100%!important"></span>'+
+            '</div>'+
+
+        '</div>'+
+
       '</div>'+
       '<div class="row">'+
           '<div class="col-md-12 col-sm-12 col-xs-12">'+
@@ -3295,62 +3366,89 @@ function dejarComentarioMedico(){
                 '<img src="'+imagenUrl+'" style="width:100%;" class="img-thumbnail">'+
               '</div>'+
             '</div>'+
+          '</div>'+
 
-            '<div class="col-md-6 col-sm-6 col-xs-10 col-md-offset-3 col-sm-offset-3 col-xs-offset-1" style="margin-top:20px">'+
+          '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
 
-                '<div class="col-md-3 col-sm-3 col-xs-3">'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                        '<span class="Slider"  id="cal_efect"></span>'+
-                    '</div>'+
-                  '</div>'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
-                      '<span class="glyphicon glyphicon-ok"></span>'+
-                    '</div>'+
+              '<div class="col-md-2 col-sm-2 col-xs-2 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                      '<span class="Slider vertical" id="cal_higiene"></span>'+
                   '</div>'+
                 '</div>'+
-
-                '<div class="col-md-3 col-sm-3 col-xs-3">'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                        '<span class="Slider"  id="cal_tratoper"></span>'+
-                    '</div>'+
-                  '</div>'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
-                      '<span class="glyphicon glyphicon-heart"></span>'+
-                    '</div>'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                    '<span class="glyphicon glyphicon-trash" ></span>'+
                   '</div>'+
                 '</div>'+
+              '</div>'+
 
-                '<div class="col-md-3 col-sm-3 col-xs-3">'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                        '<span class="Slider"  id="cal_pres"></span>'+
-                    '</div>'+
-                  '</div>'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
-                      '<span class="glyphicon glyphicon-user"></span>'+
-                    '</div>'+
+              '<div class="col-md-2 col-sm-2 col-xs-2">'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                      '<span class="Slider vertical" id="cal_puntualidad"></span>'+
                   '</div>'+
                 '</div>'+
-
-                '<div class="col-md-3 col-sm-3 col-xs-3">'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
-                        '<span class="Slider"  id="cal_hig"></span>'+
-                    '</div>'+
-                  '</div>'+
-                  '<div class="row">'+
-                    '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
-                      '<span class="glyphicon glyphicon-trash"></span>'+
-                    '</div>'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                    '<span class="glyphicon glyphicon-time"></span>'+
                   '</div>'+
                 '</div>'+
+              '</div>'+
 
-            '</div>'+
+              '<div class="col-md-2 col-sm-2 col-xs-2">'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                      '<span class="Slider vertical"  id="cal_instalaciones"></span>'+
+                  '</div>'+
+                '</div>'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                    '<span class="glyphicon glyphicon-home"></span>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+
+              '<div class="col-md-2 col-sm-2 col-xs-2">'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                      '<span class="Slider vertical"  id="cal_trato"></span>'+
+                  '</div>'+
+                '</div>'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                    '<span class="glyphicon glyphicon-user"></span>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+
+              '<div class="col-md-2 col-sm-2 col-xs-2">'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="padding-left: 45%;">'+
+                      '<span class="Slider vertical"  id="cal_costo"></span>'+
+                  '</div>'+
+                '</div>'+
+                '<div class="row">'+
+                  '<div class="col-md-12 col-sm-12 col-xs-12" style="padding-left: 45%;">'+
+                    '<span class="glyphicon glyphicon-usd"></span>'+
+                  '</div>'+
+                '</div>'+
+              '</div>'+
+
+          '</div>'+
+
+          '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
+
+              '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción cita: </div>'+
+
+              '<div class="col-md-10 col-sm-10 col-xs-10 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'+
+                '<span class="Slider horizontal" id="cal_satisfaccion" style="width:100%!important"></span>'+
+              '</div>'+
+
+          '</div>'+
+
+
+          '<div class="row">'+
 
             '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" style="margin-top:20px">'+
                 '<input type="text" id="tituloComentario" class="form-control" rows="3" placeholder="Titulo del comentario" required>'+
@@ -3392,7 +3490,7 @@ function dejarComentarioMedico(){
     $('.clear-rating').css('display','none');
     $('.caption').css('display','none');
 
-    $( "span.Slider" ).each(function() {
+    $( "span.Slider.vertical" ).each(function() {
       var id = $(this).prop('id');
 
       $('#'+id ).slider({
@@ -3402,6 +3500,30 @@ function dejarComentarioMedico(){
         step: 10,
         animate: true,
         orientation: "vertical",
+        slide: repositionTooltip,
+        start: function( e, ui ){
+          $('#'+id +" .ui-slider-handle:first").tooltip('show');
+          repositionTooltip(e,ui);
+        },
+        stop: function(){
+          $('#'+id +" .ui-slider-handle:first").tooltip('hide');
+        }
+      });
+
+      $('#'+id +" .ui-slider-handle:first").tooltip( {placement:"top",title: $('#'+id).slider("value"),trigger:"manual"});
+
+    });
+
+    $( "span.Slider.horizontal" ).each(function() {
+
+      var id = $(this).prop('id');
+
+      $('#'+id ).slider({
+        value: 50,
+        min: 0,
+        max: 100,
+        step: 10,
+        animate: true,
         slide: repositionTooltip,
         start: function( e, ui ){
           $('#'+id +" .ui-slider-handle:first").tooltip('show');
@@ -4700,28 +4822,79 @@ function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id){
           '</div>'+
         '</form>'
   });
+}
 
-  /*
-  console.log('--------------------');
-  console.log('Inicio: ' + inicio);
-  console.log('Fin: ' + fin);
-  console.log('Medico: ' + medico);
-  console.log('Servicio: ' + servicio_id);
+function verDetalleComentario(comentario_id){
+    $.post('/paciente/detallesComentario',{
+      comentario_id: comentario_id
+    }, function(data){
+      if (data.success){
+        if (data.result){
+          data.result.fecha = formatearFechaComentario(new Date(data.result.fecha).toLocaleDateString().split(' ')[0]);
+          data.result.fecharespuesta = formatearFechaComentario(new Date(data.result.fecharespuesta).toLocaleDateString().split(' ')[0]);
 
-  $.post('/secretaria/crearCita',{
-    paciente_id: 2,
-    usuario_id: 6,
-    inicio: formatearFecha(inicio),
-    fin: formatearFecha(fin),
-    medico_id: medico,
-    servicio_id: servicio_id
-  }, function(data){
-    if (data.success){
-      $('#divCalendario').fullCalendar('removeEvents');
-      $('#divCalendario').fullCalendar('refetchEvents');
-      activarDesactivarAgregarCita($('#btnAddCita'));
-    }
-  }).fail(function(e){
-    console.error("Post error: "+JSON.stringify(e));
-  });*/
+          if (data.result.Medico.Usuario.DatosGenerale.apellidoM && data.result.Medico.Usuario.DatosGenerale.apellidoM != ""){
+            data.result.Medico.Usuario.DatosGenerale.apellidoM = ' ' +data.result.Medico.Usuario.DatosGenerale.apellidoM;
+          } else {
+            data.result.Medico.Usuario.DatosGenerale.apellidoM = '';
+          }
+
+          if (data.result.Usuario.DatosGenerale.apellidoM && data.result.Usuario.DatosGenerale.apellidoM != ""){
+            data.result.Usuario.DatosGenerale.apellidoM = ' ' + data.result.Usuario.DatosGenerale.apellidoM;
+          } else {
+            data.result.Usuario.DatosGenerale.apellidoM = '';
+          }
+
+          var nombreMedico = data.result.Medico.Usuario.DatosGenerale.nombre + ' ' + data.result.Medico.Usuario.DatosGenerale.apellidoP + data.result.Medico.Usuario.DatosGenerale.apellidoM;
+          var nombrePaciente = data.result.Usuario.DatosGenerale.nombre + ' ' + data.result.Usuario.DatosGenerale.apellidoP + data.result.Usuario.DatosGenerale.apellidoM;
+
+          secondaryBootbox = bootbox.dialog({
+            backdrop: true,
+            size:'large',
+            className: 'Intermed-Bootbox',
+            title: '<span class="title text-center" style="font-weight:bold"></span>',
+            message:
+                  '<div class="row">'+
+                    '<div class="col-md-12">'+
+                      '<div class="comentario row">'+
+                        '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">'+
+                          '<div class="media comment-container">'+
+                            '<div class="media-left">'+
+                              '<img class="img-circle comment-img" style="width: 150px;" src="'+ data.result.Usuario.urlFotoPerfil +'">'+
+                            '</div>'+
+                            '<article class="media-body">'+
+                              '<div class="text-uppercase s30 h67-medcond">'+ data.result.titulo +'</div>'+
+                              '<p class="s15 h67-medium">'+ data.result.comentario +'</p>'+
+                              '<p class="comment-autor s15 h75-bold noMargin">'+
+                                '<span class="text-capitalize">'+ nombrePaciente +'</span>'+
+                              '</p>'+
+                              '<p class="comment-date s15 h67-medium text-info noMargin">'+ data.result.fecha +'</p>'+
+                            '</article>'+
+                          '</div>'+
+                        '</div>'+
+                        '<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 pull-right">'+
+                          '<div class="media comment-container">'+
+                            '<article class="media-body text-right">'+
+                              '<p class="s15 h67-medium">'+ data.result.respuesta +'</p>'+
+                              '<p class="comment-autor s15 h75-bold noMargin">'+
+                              '<span class="text-capitalize">'+ nombreMedico +'</span></p>'+
+                              '<p class="comment-date s15 h67-medium text-info noMargin">' + data.result.fecharespuesta + '</p>'+
+                            '</article>'+
+                            '<div class="media-right">'+
+                            '<img class="img-circle comment-img noMargin" style="width:70px;" src="'+ data.result.Medico.Usuario.urlFotoPerfil +'">'+
+                          '</div>'+
+                        '</div>'+
+                      '</div>'+
+                    '</div>'+
+                '</div>'
+          });
+        }
+      } else {
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    }).fail(function(e){
+      console.error("Post error: "+JSON.stringify(e));
+    });
 }

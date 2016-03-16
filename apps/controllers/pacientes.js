@@ -119,6 +119,42 @@ exports.cargarUbicacion = function (object, req, res){
   }
 }
 
+exports.detallesComentario = function (object, req, res){
+    try{
+      if (req.session.passport.user && req.session.passport.user.Paciente_id){
+        models.ComentariosMedicos.findOne({
+          where: {
+            usuario_id: req.session.passport.user.id,
+            id: object.comentario_id
+          },
+          include: [{
+            model: models.Medico,
+            attributes:['id'],
+            include: [{
+              model: models.Usuario,
+              attributes: ['usuarioUrl','urlFotoPerfil','urlPersonal'],
+              include: [{
+                model: models.DatosGenerales
+              }]
+            }]
+          },{
+            model: models.Usuario,
+            attributes: ['usuarioUrl','urlFotoPerfil','urlPersonal'],
+            include: [{
+              model: models.DatosGenerales
+            }]
+          }]
+        }).then(function(result){
+          res.status(200).json({'success':true,'result':result});
+        });
+      } else {
+        res.status(200).json({'success':false});
+      }
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
+}
+
 
 function getDateTime() {
   var date = new Date();

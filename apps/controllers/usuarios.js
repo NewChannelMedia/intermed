@@ -536,11 +536,7 @@ function cargarExtraInfo( usuario, redirect, response, req, res ) {
           req.session.passport.user.registroCompleto = 0;
           if (response){
             if ( redirect ) {
-                var url = req.session.passport.user.usuarioUrl;
-                if (req.session.passport.user.urlPersonal && req.session.passport.user.urlPersonal != ""){
-                    url = req.session.passport.user.urlPersonal;
-                }
-                res.redirect( '/' + url );
+                res.redirect( '/');
             }
             else {
               res.send( {
@@ -584,11 +580,7 @@ function cargarExtraInfo( usuario, redirect, response, req, res ) {
           req.session.passport.user.registroCompleto = 0;
           if (response){
             if ( redirect ) {
-              var url = req.session.passport.user.usuarioUrl;
-              if (req.session.passport.user.urlPersonal && req.session.passport.user.urlPersonal != ""){
-                  url = req.session.passport.user.urlPersonal;
-              }
-              res.redirect( '/' + url );
+                res.redirect( '/');
             }
             else {
               res.send( {

@@ -560,15 +560,31 @@ var uId ="";
       }
     } );
   }
+
+  function obtenerCriteriosCalificacion(){
+      var higiene = $('#cal_higiene').slider("option", "value");
+      var puntualidad = $('#cal_puntualidad').slider("option", "value");
+      var instalaciones = $('#cal_instalaciones').slider("option", "value");
+      var tratoPersonal = $('#cal_trato').slider("option", "value");
+      var costo = $('#cal_costo').slider("option", "value");
+      var satisfaccionGeneral = $('#cal_satisfaccion').slider("option", "value");
+
+      var criterios= {
+        higiene: higiene,
+        puntualidad: puntualidad,
+        instalaciones: instalaciones,
+        tratoPersonal: tratoPersonal,
+        satisfaccionGeneral: satisfaccionGeneral,
+        costo: costo
+      }
+      return criterios;
+  }
+
   function calificarCita(agenda_id, notificacion_id){
-    var agenda_id =  agenda_id;
-    var notificacion_id = notificacion_id;
-    var satisfaccionGeneral = ($("#input-21d").val()*2*10);
-    var higiene = $('#cal_higiene').slider("option", "value");
-    var puntualidad = $('#cal_puntualidad').slider("option", "value");
-    var instalaciones = $('#cal_instalaciones').slider("option", "value");
-    var tratoPersonal = $('#cal_trato').slider("option", "value");
     var comentario = $('#calificacionComentario').val();
+    var respuestas = obtenerCriteriosCalificacion();
+    var satisfaccionCita = ($("#input-21d").val()*2*10);
+
     $.ajax({
         url: '/cita/calificar',
         type: 'POST',
@@ -577,12 +593,9 @@ var uId ="";
         data: {
           agenda_id: agenda_id,
           notificacion_id: notificacion_id,
-          higieneLugar: higiene,
-          puntualidad: puntualidad,
-          instalaciones: instalaciones,
-          tratoPersonal: tratoPersonal,
-          satisfaccionGeneral: satisfaccionGeneral,
-          comentarios: comentario
+          comentarios: comentario,
+          satisfaccionCita: satisfaccionCita,
+          respuestas: respuestas
         },
         type: 'POST',
         success: function (data) {
@@ -612,11 +625,8 @@ var uId ="";
   }
   function calificarServMedico(){
     try{
-      var agenda_id =  agenda_id;
-      var efectividad = $('#cal_efect').slider("option", "value");
-      var tratoPersonal = $('#cal_tratoper').slider("option", "value");
-      var presentacion = $('#cal_pres').slider("option", "value");
-      var higiene = $('#cal_hig').slider("option", "value");
+      var respuestas = obtenerCriteriosCalificacion();
+
       $.ajax({
           url: '/medico/calificar',
           type: 'POST',
@@ -625,10 +635,7 @@ var uId ="";
           cache: false,
           data: {
             usuario_id: $('#usuarioPerfil').val(),
-            efectividad: efectividad,
-            tratoPersonal: tratoPersonal,
-            presentacion: presentacion,
-            higiene: higiene
+            respuestas: respuestas
           },
           type: 'POST',
           success: function (data) {

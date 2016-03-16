@@ -1062,47 +1062,78 @@ exports.calificarCita = function(object, req, res){
       where:{
         id: object.agenda_id
       },
-      attributes: ['usuario_id','paciente_id']
+      attributes: ['usuario_id','paciente_id'],
+      include: [{
+        model: models.Usuario,
+        attributes: ['id'],
+        include: [{
+          model: models.Medico,
+          attributes:['id']
+        }]
+      }]
     }).then(function(result){
-      models.Medico.findOne({
+      var medico_id = result.Usuario.Medico.id;
+      var paciente_id = result.paciente_id;
+      object.medico_id = medico_id;
+      object.usuario_id = req.session.passport.user.id;
+      models.CalificacionCita.findOrCreate({
         where: {
-          usuario_id: result.usuario_id
+          agenda_id: object.agenda_id,
+          medico_id: medico_id,
+          paciente_id: paciente_id
         },
-        attributes: ['id']
-      }).then(function(medico){
-        var medico_id = medico.id;
-        var paciente_id = result.paciente_id;
-        models.CalificacionCita.destroy({
-          where: {
-            agenda_id: object.agenda_id
-          }
-        }).then(function(result){
-          models.CalificacionCita.create({
-            higieneLugar: object.higieneLugar,
-            puntualidad: object.puntualidad,
-            instalaciones: object.instalaciones,
-            tratoPersonal: object.tratoPersonal,
-            satisfaccionGeneral: object.satisfaccionGeneral,
+        defaults: {
+          comentarios: object.comentarios,
+          agenda_id: object.agenda_id,
+          medico_id: medico_id,
+          paciente_id: paciente_id
+        }
+      }).spread(function(CalificacionCita, created) {
+        if (!created){
+          CalificacionCita.update({
             comentarios: object.comentarios,
-            agenda_id: object.agenda_id,
-            medico_id: medico_id,
-            paciente_id: paciente_id
-          }).then(function(calificacion){
-            var success = false;
-            if (calificacion){
-              success = true;
-              //Eliminar notificacion
-              models.Notificacion.destroy({
-                where: {
-                  id: object.notificacion_id
-                }
-              });
-            }
-            res.status(200).json({
-              success: success,
-              result: calificacion
-            });
+            satisfaccion: object.satisfaccionCita
           });
+        }
+        //Actualizar datos en preguntasMedico
+        models.PreguntasMedico.findOrCreate({
+          where: {
+            calificacioncita_id: CalificacionCita.id
+          },
+          defaults: {
+            medico_id: object.medico_id,
+            calificacioncita_id: CalificacionCita.id,
+            higiene: object.respuestas.higiene,
+            puntualidad: object.respuestas.puntualidad,
+            instalaciones: object.respuestas.instalaciones,
+            tratoPersonal: object.respuestas.tratoPersonal,
+            satisfaccionGeneral: object.respuestas.satisfaccionGeneral,
+            costo: object.respuestas.costo
+          }
+        }).spread(function(PreguntasMedico, created){
+          if (!created){
+            //Actualizar resultados
+            PreguntasMedico.update({
+              medico_id: object.medico_id,
+              higiene: object.respuestas.higiene,
+              puntualidad: object.respuestas.puntualidad,
+              instalaciones: object.respuestas.instalaciones,
+              tratoPersonal: object.respuestas.tratoPersonal,
+              satisfaccionGeneral: object.respuestas.satisfaccionGeneral,
+              costo: object.respuestas.costo
+            }).then(function(result){
+              exports.calcularCalificacionMedico(object, req, res, true);
+            });
+          } else {
+            exports.calcularCalificacionMedico(object, req, res, false);
+          }
+          if (object.notificacion_id && object.notificacion_id > 0){
+            models.Notificacion.destroy({
+              where: {
+                id: object.notificacion_id
+              }
+            });
+          }
         });
       });
     });
@@ -1111,6 +1142,31 @@ exports.calificarCita = function(object, req, res){
     req.errorHandler.report(err, req, res);
   }
 };
+
+
+exports.calcularCalificacionMedico = function(object, req, res, modificacion){
+  try{
+    models.Medico.findById(object.medico_id).then(function(medico){
+      var promedio = 0;
+      models.PreguntasMedico.findAll({
+        where: {
+          medico_id: object.medico_id
+        }
+      }).then(function(calificaciones){
+        calificaciones.forEach(function(cal){
+            promedio +=  ((parseInt(cal.higiene) + parseInt(cal.puntualidad) + parseInt(cal.instalaciones) + parseInt(cal.tratoPersonal) + parseInt(cal.satisfaccionGeneral) + parseInt(cal.costo)) / 6);
+        });
+        promedio = promedio/calificaciones.length;
+        medico.update({calificacion :  promedio});
+      });
+      res.status(200).json({
+        success:true
+      })
+    });
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
+},
 
 exports.obtenerCitasPropias = function(object, req, res){
   try{

@@ -1,4 +1,5 @@
 var session = {};
+var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 
 function varSession( variablesSesion ) {
   session = JSON.parse( JSON.stringify( variablesSesion ) );
@@ -143,6 +144,15 @@ function ifNotSession(options){
     return options.inverse( false );
 }
 
+function formatearFechaComentario(fecha){
+  fecha = new Date(fecha).toISOString();
+  fecha = fecha.split('-');
+  var mes = meses[parseInt(fecha[1])-1];
+  var dia = fecha[2];
+  var anio = fecha[0];
+  return parseInt(dia) + ' de ' + mes + ' de ' + anio ;
+}
+
 exports.varSession = varSession;
 exports.valSession = valSession;
 exports.ifSession = ifSession;
@@ -164,3 +174,4 @@ exports.ifFirst = ifFirst;
 exports.Last = Last;
 exports.numLast = numLast;
 exports.ifNotSession = ifNotSession;
+exports.formatearFechaComentario = formatearFechaComentario;

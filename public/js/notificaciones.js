@@ -267,6 +267,17 @@ function socketManejadores() {
     }
   } );
 
+  socket.on( 'contarNuevosComentarios', function ( total ) {
+    if ( total > 0 ) {
+      $( '#totalComentarios' ).html( total );
+      $( '#totalComentarios' ).removeClass( 'invisible hidden' );
+    }
+    else {
+      $( '#totalComentarios' ).html( '' );
+      $( '#totalComentarios' ).addClass( 'invisible hidden' );
+    }
+  } );
+
   socket.on( 'notificacionesEncontradas', function ( notificaciones ) {
     $( '#notificacinesList' ).html( '' );
     notificaciones.forEach( function ( record ) {
@@ -540,6 +551,16 @@ function formatearNotificacion( record , element) {
       case 35:
           //Secretaria elimino a médico
           not += '<div class="media-left"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a>' + nombreCompleto + ' dejó de ser tu secretaria.</a>' + mediaObjectFecha + '</div>';
+          break;
+      case 16:
+          mediaObjectImagen = '<img class="media-object img-circle" src="' + record.comentario.Medico.Usuario.urlFotoPerfil + '" '+style+'>';
+          if (record.comentario.Medico.Usuario.DatosGenerale.apellidoM){
+            record.comentario.Medico.Usuario.DatosGenerale.apellidoM = ' ' + record.comentario.Medico.Usuario.DatosGenerale.apellidoM;
+          } else {
+            record.comentario.Medico.Usuario.DatosGenerale.apellidoM = '';
+          }
+          nombreCompleto = record.comentario.Medico.Usuario.DatosGenerale.nombre + ' ' + record.comentario.Medico.Usuario.DatosGenerale.apellidoP + record.comentario.Medico.Usuario.DatosGenerale.apellidoM;
+          not += '<div class="media-left"><a onclick="verDetalleComentario('+ record.comentario.id +')">'+mediaObjectImagen+'</a></div><div class="media-body"><a onclick="verDetalleComentario('+ record.comentario.id +')">El Dr. ' + nombreCompleto + ' ha respondido tu comentario.</a>' + mediaObjectFecha + '</div>';
           break;
     }
     not += '</div>';
