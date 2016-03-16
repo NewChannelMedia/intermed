@@ -2224,15 +2224,14 @@ function cargarCitasPacienteNext(){
 function agregarDestRecom(){
   var nombre = $('#nombreRecomendacion').val();
   var email = $('#correoRecomendacion').val();
-  $('#destRecomendacion').append('<div class="input-group-btn InvitacionRecomendacion" style="display:inline-table;margin: 3px;">'+
-    '<label class="btn btn-xs" style="background-color:#f0ad4e;border-color:#eea236;">'+
-      '<span class="Nombre">'+nombre+'</span>&lt;'+
-      '<span class="Correo">'+email+'</span>&gt;'+
-    '</label>'+
-    '<button class="btn btn-xs borrar" onclick="$(this).parent().remove()">'+
-      '<span class="glyphicon glyphicon-remove"></span>'+
+
+  $('#destRecomendacion').append('<li class="lbl lbl-recomendacion">'+
+    '<span class="Nombre">'+nombre+'</span>&lt;'+
+    '<span class="Correo">'+email+'</span>&gt;'+
+    '<button class="btn btn-sm borrar" onclick="$(this).parent().remove()">'+
+      '<span class="glyphicon glyphicon-remove"</span>'+
     '</button>'+
-  '</div>');
+  '</li>');
   $('#destRec')[0].reset();
   return false;
 }

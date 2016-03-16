@@ -780,7 +780,6 @@ function recomendacionesBoot(usuarioMedico_id){
       closeButton:true,
       className: 'Intermed-Bootbox h65-medium',
       title: '<span class="title">Recomendar al '+ nombreUsuario +'</span>',
-      size:'large',
       message:
         '<form method="POST" onsubmit="return agregarDestRecom();" id="destRec">'+
           '<div class="form-group col-md-5">'+
@@ -793,10 +792,13 @@ function recomendacionesBoot(usuarioMedico_id){
             '<button class="btn btn-warning btn-block"><span class="glyphicon glyphicon-plus"></span></button>'+
           '</div>'+
 
-          '<div class="col-md-2 white-c ag-bold s20" style="min-height:35px">'+
+          '<div class="col-md-2 ag-bold s15" style="padding-top:15px">'+
             'Destinatarios:'+
           '</div>'+
-          '<div class="form-group col-md-10"><div id="destRecomendacion" style="min-height: 30px;border-radius: 5px;"></div></div>'+
+          '<div class="form-group col-md-10">'+
+            '<ul id="destRecomendacion" class="list-inline">'+
+            '</ul>'+
+          '</div>'+
         '</form>'+
 
         '<div class="form-group">'+
@@ -2778,7 +2780,7 @@ function detalleCita(agenda_id){
 }
 
 function bootboxCalificarCita(agenda_id, notificacion_id){
-  
+
     var imagenUrl = '';
     var nombreUsuario = '';
     var nombreUbicacion = '';

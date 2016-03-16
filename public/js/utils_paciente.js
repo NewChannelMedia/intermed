@@ -147,7 +147,7 @@ var uId ="";
     var usuario_medico_id = $('#usuarioPerfil').val();
     var destinatarios = [];
 
-    $('#destRecomendacion').find('.InvitacionRecomendacion').each(function(){
+    $('#destRecomendacion').find('.lbl-recomendacion').each(function(){
       var nombre = $(this).find('.Nombre').text();
       var correo = $(this).find('.Correo').text();
       destinatarios.push({
