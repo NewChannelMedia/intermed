@@ -153,6 +153,18 @@ function formatearFechaComentario(fecha){
   return parseInt(dia) + ' de ' + mes + ' de ' + anio ;
 }
 
+function dayOfDate(value){
+  return value.toString().split('T')[0].split('-')[2];
+}
+
+function monthOfDate(value){
+  return value.toString().split('T')[0].split('-')[1];
+}
+
+function YearOfDate(value){
+  return value.toString().split('T')[0].split('-')[0];
+}
+
 exports.varSession = varSession;
 exports.valSession = valSession;
 exports.ifSession = ifSession;
@@ -175,3 +187,6 @@ exports.Last = Last;
 exports.numLast = numLast;
 exports.ifNotSession = ifNotSession;
 exports.formatearFechaComentario = formatearFechaComentario;
+exports.dayOfDate = dayOfDate;
+exports.monthOfDate = monthOfDate;
+exports.YearOfDate = YearOfDate;

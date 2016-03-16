@@ -2352,4 +2352,205 @@ var _this = module.exports = {
       }
   }
 
+  cedulaGeneral: function (object, req, res){
+    var request = require("request");
+    iconv  = require('iconv-lite');
+
+    var options = {
+      method: 'POST',
+      encoding: null,
+      url: 'http://www.cedulaprofesional.sep.gob.mx/cedula/buscaCedulaJson.action',
+      headers:
+       {
+         'content-type': 'application/x-www-form-urlencoded; charset=utf-8',
+         'Accept-Charset': 'utf-8'
+       },
+      body: 'json=%7B%22maxResult%22%3A%221000%22%2C%22idCedula%22%3A%222'+ object.cedula +'%22%2C%22nombre%22%3A%22%22%2C%22paterno%22%3A%22%22%2C%22materno%22%3A%22%22%2C%22h_genero%22%3A%22%22%2C%22genero%22%3A%22%22%2C%22annioInit%22%3A%22%22%2C%22annioEnd%22%3A%22%22%2C%22insedo%22%3A%22%22%2C%22inscons%22%3A%22%22%2C%22institucion%22%3A%22TODAS%22%7D'
+    };
+
+    request(options, function (error, response, body) {
+      if (error){
+        res.status(200).json({
+          success:false,
+          result: error
+        });
+      } else {
+        body= iconv.decode(new Buffer(body), "ISO-8859-1");
+        if (JSON.parse(body).items && JSON.parse(body).items.length>0){
+          body = body.split('[{')[1].split('}]')[0].split(",");
+          var nombre = '';
+          var paterno = '';
+          var materno = '';
+          var anio = '';
+          var institucion = '';
+          var cedula = '';
+          var sexo = '';
+          var titulo = '';
+          var tipo = '';
+          var insedo = '';
+          var inscons = '';
+          body.forEach(function(res){
+            var string1 = res.split(":")[0];
+            var string2 = res.split(":")[1];
+            if (string1 && string2 && string2.replace("\"","").replace('"',"") != "null"){
+              string1 = string1.replace("\"","").replace('"',"");
+              string2 = string2.replace("\"","").replace('"',"");
+              if (string1 == "anioreg"){
+                anio = string2;
+              } else if (string1 == "desins"){
+                institucion = string2;
+              } else if (string1 == "idCedula"){
+                cedula = string2;
+              } else if (string1 == "nombre"){
+                nombre = string2;
+              } else if (string1 == "paterno"){
+                paterno = string2;
+              } else if (string1 == "materno"){
+                materno = string2;
+              } else if (string1 == "sexo"){
+                sexo = string2;
+              } else if (string1 == "titulo"){
+                titulo = string2;
+              } else if (string1 == "tipo"){
+                tipo = string2;
+              } else if (string1 == "inscons"){
+                inscons = string2;
+              } else if (string1 == "insedo"){
+                insedo = string2;
+              }
+            }
+          });
+          var resultArray = {
+            anio: anio,
+            institucion: institucion,
+            titulo: titulo,
+            tipo: tipo,
+            inscons: inscons,
+            insedo: insedo,
+            cedula: cedula,
+            nombre: nombre,
+            paterno: paterno,
+            materno: materno,
+            sexo: sexo
+          }
+
+          if (object.nombreMedico.toUpperCase().replace(' ','') == nombre.toUpperCase().replace(' ','') && object.paterno.toUpperCase().replace(' ','') == paterno.toUpperCase().replace(' ','') && object.materno.toUpperCase().replace(' ','') == materno.toUpperCase().replace(' ','') && object.genero == sexo){
+            if (object.tipo == "C1" && object.tipo == resultArray.tipo){
+              console.log('Insertar cedula en médico');
+              models.Medico.update({
+                cedula: object.cedula
+              },{
+                where: {
+                  usuario_id: req.session.passport.user.id
+                }
+              }).then(function(cedula){
+                console.log('Cedula actualizada: ' + JSON.stringify(cedula));
+              })
+            }
+
+            res.status(200).json({
+              success:true,
+              exists: true,
+              result: resultArray
+            });
+          } else {
+            res.status(200).json({
+              success:false,
+              exists: true,
+              result: resultArray
+            });
+          }
+        } else {
+          res.status(200).json({
+            success:false,
+            exists: false,
+            result: resultArray
+          });
+        }
+
+      }
+    });
+
+  },
+
+  registrarDatosGenerales: function ( object, req, res){
+    console.log('OBJECT: ' + JSON.stringify(object));
+
+
+    try{
+      if ( req.session.passport.user && req.session.passport.user.tipoUsuario === "M" ) {
+        var usuario_id = req.session.passport.user.id;
+        models.Medico.findOne({where: {
+            usuario_id: {$ne: req.session.passport.user.id},
+            curp: object.curp
+          }}).then(function(medicoCurp){
+            if (!medicoCurp){
+              models.DatosGenerales.upsert({
+                nombre: object.nombre,
+                apellidoP: object.paterno,
+                apellidoM: object.materno,
+                usuario_id: usuario_id
+              },{where: {
+                usuario_id: usuario_id
+              }}).then(function(DG){
+                models.Medico.upsert({
+                  curp: object.curp,
+                  fechaNac: object.fechaNac,
+                  usuario_id: usuario_id
+                  },{where: {
+                    usuario_id: usuario_id
+                }}).then(function(MED){
+                  models.Biometrico.upsert({
+                    genero: object.genero,
+                    usuario_id: usuario_id
+                  },{where: {
+                    usuario_id: usuario_id
+                  }}).then(function(BIO){
+                    //Insergar codigo_id en usuario, y set codigo como registrado
+                    models.DBEncuesta_encuesta.findOne({
+                      where: {
+                        codigo: object.codigoPromo
+                      }
+                    }).then(function(codigoEncuesta){
+                      if (codigoEncuesta){
+                        models.Usuario.update({
+                          codigoPromo_id: codigoEncuesta.id
+                        },{
+                          where: {
+                            id: usuario_id
+                          }
+                        }).then(function(){
+                          codigoEncuesta.update({
+                            registrado: 1
+                          }).then(function(result){
+                            console.log('Result: ' + JSON.stringify(result));
+                          });
+                        });
+                      }
+                    });
+                    res.send( {
+                      'success': true
+                    } );
+                  });
+                });
+              })
+            } else {
+                res.status(200).send( {
+                  'success': false,
+                  'error': 101
+                } );
+            }
+          });
+      }
+      else {
+        res.status(200).send( {
+          'success': false,
+          error: 1
+        } );
+      }
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
+  }
+
 }

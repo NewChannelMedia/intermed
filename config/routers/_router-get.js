@@ -14,6 +14,7 @@ module.exports = function (object){
         if (req.session.passport.user.status == 0){
           routeLife( 'plataforma2', 'plataforma', hps );
           res.render('medico/registro_1');
+
         } else if (req.session.passport.user.status == -1){
           routeLife( 'plataforma2', 'plataforma', hps );
           res.render('medico/registro_2');
