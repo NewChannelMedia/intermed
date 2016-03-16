@@ -267,9 +267,13 @@ module.exports = {
                 }, {
                 model: models.Usuario,
                 attributes: [ 'usuarioUrl', 'tipoUsuario' ]
+              },
+              {
+                model: models.CatalogoServicios
                 } ],
             order: [ [ 'principal', 'DESC' ] ]
           } ).then( function ( direccion ) {
+            console.log(JSON.stringify(direccion));
             if ( req.session.passport.user.Medico_id ) {
               var medico = {};
               models.MedicoExpertoEn.findAll( {
@@ -394,8 +398,12 @@ module.exports = {
               },
                 {
                   model: models.Telefono
-               } ]
+               },
+               {
+                 model: models.CatalogoServicios
+                 } ]
             } ).then( function ( direccion ) {
+              console.log(JSON.stringify(direccion));
               usuario = JSON.parse( JSON.stringify( usuario ) );
               usuario.Direccions = JSON.parse( JSON.stringify( direccion ) );
 

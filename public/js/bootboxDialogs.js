@@ -2260,7 +2260,7 @@ function iniciarSesionFacebook(callback, usuarioMedico_id){
 }
 
 
-function registrarPacienteBootbox(callback, usuarioMedico_id){
+function registrarPacienteBootbox(callback, usuarioMedico_id, reload){
 
   bootbox.dialog({
     backdrop: true,
@@ -2274,7 +2274,7 @@ function registrarPacienteBootbox(callback, usuarioMedico_id){
     '<div id="RegPacModal" class="Flama-normal">'+
         '<div class="row">'+
           '<div class="col-lg-6 col-md-6 regCorreo text-center">'+
-            '<form method="POST" onsubmit="return iniciarSesionLocal(\'email\',\'password\',\''+callback+'\','+ usuarioMedico_id +');">'+
+            '<form method="POST" onsubmit="return iniciarSesionLocal(\'email\',\'password\',\''+callback+'\','+ usuarioMedico_id +','+ reload +');">'+
               '<h3>Inicia sesión</h3>'+
               '<br>'+
               '<div class="row">'+

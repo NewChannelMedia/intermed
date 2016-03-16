@@ -110,12 +110,12 @@
                               <div class="body-container">
                                 <div class="center-content">
                                   {{#if usuario.id}}
-                                    <h2 class="profile-name text-capitalize">
+                                    <h2 class="profile-name text-capitalize shadow">
                                         {{#if usuario.DatosGenerale}}
                                           Dr. {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
                                         {{/if}}
                                     </h2>
-                                    <h4 class="profile-location">
+                                    <h4 class="profile-location shadow">
                                       {{#if usuario.direccion}}
                                           {{usuario.direccion.Municipio.municipio}}, {{usuario.direccion.Municipio.Estado.estado}}, MX.
                                       {{/if}}</h4>
@@ -544,11 +544,11 @@
               <div class="row">
                 {{#if usuario.id}}
                   <div class="col-lg-11 col-lg-offset-1 col-md-11 col-m-offset-1 col-sm-11 col-sm-offset-1">
-                    <h2 class="h67-medcond s25 text-uppercase whiteF">Ubicaciones y contacto</h2>
+                    <h2 class="h67-medcond s25 text-uppercase whiteF">Ubicaciones y Servicios</h2>
                   </div>
                 {{else}}
                   <div class="col-md-9 pull-left">
-                    <h2 class="h67-medcond s25 text-uppercase whiteF">Ubicaciones y contacto</h2>
+                    <h2 class="h67-medcond s25 text-uppercase whiteF">Ubicaciones y Servicios</h2>
                   </div>
                   <div class="col-md-3 pull-right text-right" style="margin-top:20px">
                     <button class="btn btn-primary btn-xs {{#unless usuario.Direccions}}hidden{{/unless}}" id="btnEditaUbi"><span class="glyphicon glyphicon-pencil"></span></button>
@@ -588,10 +588,47 @@
                               {{Localidad.TipoLocalidad.tipo}} <span>{{Localidad.localidad}}</span><br>
                               <span>{{Municipio.municipio}}</span>, <pan>{{Municipio.Estado.estado}}</pan>. CP: <span>{{Localidad.CP}}</span><br>
                               {{#if Telefonos}}
-                              <br><br><strong><span class="s20">Teléfonos</span></strong><br>
-                              {{#each Telefonos}}
-                              <abbr title="Phone" class="text-capitalize">{{tipo}}:</abbr><span> {{claveRegion}}</span> <span>{{numero}}</span> <span>{{ext}}</span><br>
-                              {{/each}}
+                                <br><br><strong><span class="s20">Teléfonos</span></strong><br>
+                                {{#each Telefonos}}
+                                  <abbr title="Phone" class="text-capitalize">{{tipo}}:</abbr><span> {{claveRegion}}</span> <span>{{numero}}</span> <span>{{ext}}</span><br>
+                                {{/each}}
+                              {{/if}}
+                              {{#if CatalogoServicios}}
+                                <br><br><strong><span class="s20">Servicios</span></strong><br>
+                                <table class="table table-condensed table-responsive">
+                                  <tbody>
+                                    {{#each CatalogoServicios}}
+                                    <tr>
+                                      <td class="text-capitalize">
+                                        <b>{{concepto}}</b>
+                                      </td>
+                                      {{#ifSessionVal 'id'}}
+                                      <td>
+                                        ${{../precio}}
+                                      </td>
+                                      <td>
+                                        <a tabindex="0" class="white-c popVerMas"
+                                        role="button" data-toggle="popover"
+                                        data-placement="top"
+                                        data-trigger="focus"
+                                        data-html="true"
+                                        title="<span class='text-capitalize'>{{../concepto}}</span>"
+                                        data-content="<p class='noMargin'>
+                                          <span class='text-capitalize'>{{../descripcion}}</span>.
+                                          <br><br>Duración: {{duracion}}.
+                                        </p>">
+                                          Ver Más
+                                        </a>
+                                      </td>
+                                      {{else}}
+                                      <td>
+                                        <a class="white-c" role="button" onclick="registrarPacienteBootbox(null, null, true)">Solicitar Más Información</a>
+                                      </td>
+                                      {{/ifSessionVal}}
+                                    </tr>
+                                    {{/each}}
+                                  </tbody>
+                                </table>
                               {{/if}}
                               </address>
                           </div>

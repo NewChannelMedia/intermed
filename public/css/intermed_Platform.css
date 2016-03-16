@@ -651,17 +651,14 @@ footer .logoIntermed {
 }
 
 .ubicaciones-inner-section {
-  display: table;
-  height: 312px;
+  height: 400px;
   margin: 0;
   padding: 0;
-  vertical-align: middle;
 }
 
 .ubicaciones-direcciones {
-  display: table-cell;
   width: 100%;
-  height: 300px;
+  height: 400px;
   min-height: 150px;
   border-right: solid 30px #1e6485;
   padding: 0 10px;
@@ -682,10 +679,9 @@ footer .logoIntermed {
 }
 
 .ubicaciones-mapa {
-  display: table-cell;
   width: 100%;
-  height: 312px;
-  min-height: 150px;
+  height: 400px;
+  min-height: 320px;
   background-color: #f1eee6;
 }
 /* ------------------------------- */
@@ -929,7 +925,7 @@ footer .logoIntermed {
 #slider1 {
   margin: 0 auto;
   width: 100%;
-  height: 235px;
+  height: 320px;
   position: relative;
   overflow: hidden;
 }
@@ -1675,4 +1671,44 @@ footer .logoIntermed {
 #navSections .float.down{
   right: 0;
   left: 50%;
+}
+
+
+#oficinaMedico {
+
+}
+
+@media (max-width:767px) {
+  #oficinaMedico {
+    padding-top: 60px;
+  }
+}
+
+.agendaTopContainer {
+  border-bottom: solid 2px #fff;
+  background-image: url('../img/profileBG.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.agendaTop {
+  height: 80px;
+  padding-top: 12px;
+}
+
+.agendaBody {
+  position: relative;
+  min-height: 500px;
+  border-bottom: solid 2px #fff;
+  background-color: #6a808e;
+}
+
+.agenda-day {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  overflow-y: auto;
 }

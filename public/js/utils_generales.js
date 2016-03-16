@@ -1242,6 +1242,11 @@ $( document ).ready( function () {
     $('#buscadorEspecial').on('input',function(e){
      cargarListaEspCol( $( '#usuarioPerfil' ).val() );
     });
+
+    $('.popVerMas').click( function(){
+        $(this).popover('toggle');
+    })
+
   } else if ($( '#perfilPaciente' ).length > 0 ) {
     cargarListaEspCol( $( '#usuarioPerfil' ).val() ,'P');
     cargarCitasPaciente();
@@ -1253,6 +1258,9 @@ $( document ).ready( function () {
     } else if (!$('#mostrar').hasClass('hidden')){
       //alert('mostrar secretaria');
     }
+  } else if( $('#oficinaMedico').length > 0 ) {
+    var h = $(window).height() - $('#newMainNav').height() - $('.agendaTopContainer').height()-2;/*- $('footer').height()*/
+    $('.agendaBody').css('height',h+'px');
   }
 } );
 //fin de Perfil Medicos
