@@ -1260,6 +1260,14 @@ $( document ).ready( function () {
     }
   } else if( $('#oficinaMedico').length > 0 ) {
 
+    $("#calendar").kendoCalendar({
+      culture: 'es-MX',
+      start: "day"
+    });
+    var calendar = $("#calendar").data("kendoCalendar");
+      calendar.value(new Date());
+
+
     if ( $( window ).width() > 768 ) {
       var h = $( window ).height() - $( '#newMainNav' ).height() - $( '.agendaTopContainer' ).height() - 2; /*- $('footer').height()*/
       $( '.agendaDay' ).css( 'height', h + 'px' );
@@ -2485,7 +2493,15 @@ function realizarBusqueda(bounds){
           }
           contenido += `
             <li>
-              <a onclick="centrarEnMapa('`+ direccion.latitud +`','`+ direccion.longitud +`',`+ medico.id +`,'`+ direccion.id +`',true)"><button class="btn btn-warning"><span class="glyphicon glyphicon-map-marker"></span></button>&nbsp;&nbsp;<strong>`+ direccion.nombre +`</strong><small> `+ direccion.calle +` #`+ direccion.numero + direccion.numeroInt +`, `+ direccion.Municipio.municipio +`,`+ direccion.Municipio.Estado.estado +`<span class="glyphicon glyphicon-zoom-in"></span></small></a>
+              <a onclick="centrarEnMapa('`+ direccion.latitud +`','`+ direccion.longitud +`',`+ medico.id +`,'`+ direccion.id +`',true)">
+              <button class="btn btn-warning">
+              <span class="glyphicon glyphicon-map-marker"></span>
+              </button>
+              &nbsp;&nbsp;
+              <strong>`+ direccion.nombre +`</strong>
+              <small> `+ direccion.calle +` #`+ direccion.numero + direccion.numeroInt +`, `+ direccion.Municipio.municipio +`,`+ direccion.Municipio.Estado.estado +`<span class="glyphicon glyphicon-zoom-in"></span>
+              </small>
+              </a>
             </li>`;
 
           if (!marcadoresBusqueda[direccion.id]){
