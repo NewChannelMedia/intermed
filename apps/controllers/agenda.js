@@ -1283,3 +1283,295 @@ function getDateTime() {
   day = ( day < 10 ? "0" : "" ) + day;
   return year + '-' + month + '-' + day + ' ' + hour + ':' + min + ':' + sec;
 }
+
+// Selecciona horarios y eventos del médico
+exports.seleccionaAgendaMedico  =  function(object, req, res)
+{
+    var resultado = [];
+    models.Horarios.findAll({
+      include:[ {model: models.Direccion, where : { usuario_id: object.id }}]
+    }).then(function(datos) {
+
+      var horaInicio;
+      var horaFin;
+      var fechaHorario;
+      var fechaCalendario  =  object.inicio.split('-');
+      var inicioSemana = new Date(fechaCalendario[0], (fechaCalendario[1]-1) , fechaCalendario[2])
+      fechaHorario  = inicioSemana;
+
+      for (i = 0; i <= datos.length - 1; i++) {
+          fechaHorario = new Date(fechaCalendario[0], (fechaCalendario[1]-1) , inicioSemana.getDate() + (datos[i].dia-1))
+          horaInicio = fechaHorario.getFullYear() + '-' + (fechaHorario.getMonth() + 1) + '-' + fechaHorario.getDate() + ' ' +  datos[i].horaInicio;  //  '2015-12-13 ' + datos[i].horaInicio;
+          horaFin = fechaHorario.getFullYear() + '-' + (fechaHorario.getMonth() +  1) + '-' + fechaHorario.getDate() + ' ' +  datos[i].horaFin;  //  '2015-12-13 ' + datos[i].horaInicio;
+
+          var horario = {
+              //id: 'businessHours_' +  datos[i].id,
+              title: datos[i].horaInicio + ' - ' + datos[i].horaFin,
+              start: horaInicio,
+              end: horaFin,
+              color : '#578',
+              rendering: 'background',
+          };
+          resultado.push(horario);
+      };
+
+      models.Evento.findAll({
+         where :  { usuario_id: object.id , fechaHoraInicio: { $between: [object.inicio, object.fin] } }
+      }).then(function(eventos) {
+        for (i = 0; i <= eventos.length - 1; i++) {
+            //if (eventos[i].status == 1) {
+              var horario = {
+                  id: '_' +  eventos[i].id,
+                  title: eventos[i].descripcion,
+                  start: formatearFecha(eventos[i].fechaHoraInicio),
+                  end:  formatearFecha (eventos[i].fechaHoraFin),
+                  color : '#FF0000'
+              }
+              console.log(eventos[i].fechaHoraInicio + ' ' + formatearTimestampAgenda(eventos[i].fechaHoraInicio))
+              resultado.push(horario);
+            //}
+        }
+      });
+
+      models.Agenda.findAll({
+           where :  { usuario_id: object.id , fechaHoraInicio: { $between: [object.inicio, object.fin] } }
+      }).then(function(datos) {
+
+            for (i = 0; i <= datos.length - 1; i++) {
+                if (datos[i].status == 1) {
+                  var horario = {
+                      id: 'Cita_' +  datos[i].id,
+                      title: 'Cita',
+                      start: datos[i].fechaHoraInicio,
+                      end: datos[i].fechaHoraFin,
+                      editable: false,
+                      durationEditable: false,
+                    //  overlap: false,
+                    //  slotEventOverlap: false,
+                  }
+                } else {
+                  var horario = {
+                      id:  datos[i].id,
+                      title: 'Cita',
+                      start: datos[i].fechaHoraInicio,
+                      end: datos[i].fechaHoraFin,
+                      color : '#000',
+                      editable: false,
+                      durationEditable: false,
+                    //  overlap: false,
+                    //  slotEventOverlap: false
+                  }
+                }
+              resultado.push(horario);
+            }
+            res.send(resultado);
+      });
+    }).catch(function(err) {
+        res.status(500).json({error: err})
+    });
+};
+
+exports.muestraAgendaMedico  =  function(object, req, res)
+{
+    res.render( 'citaMedico', {
+      id: object.id
+    });
+};
+
+// Agrega evento del médico
+exports.agregaEvento = function(object, req, res) {
+    models.Evento.create({
+        fechaHoraInicio:  formatearFecha(object.fecha),
+        fechaHoraFin:  formatearFecha(object.fechaFin),
+        usuario_id : object.id,
+        descripcion: object.titulo
+    }).then(function(datos) {
+        res.status(200).json({ok: true});
+    }).catch(function(err) {
+        res.status(500).json({error: err});
+    });
+};
+
+// Cancelar  evento del médico
+exports.cancelaEvento = function(object, req, res) {
+  models.Evento.destroy({ where : { id: object.id }
+  }).then(function(datos) {
+      res.status(200).json({ok: true});
+  }).catch(function(err) {
+      res.status(500).json({error: err});
+  });
+};
+
+// Modificar  evento del médico
+exports.modificaEvento = function(object, req, res) {
+  models.Evento.update({
+      fechaHoraInicio: object.inicio,
+      fechaHoraFin: object.fin,
+    }, { where : {  id: object.id }
+  }).then(function(datos) {
+      res.status(200).json({ok: true});
+  }).catch(function(err) {
+      res.status(500).json({error: err});
+  });
+};
+
+// Médico solicitando un cambio en la cita
+exports.solicitarCambioCita = function(object, req, res) {
+  //var id = object.id.replace("Cita_", "");
+  var id = object.id;
+
+  models.Agenda.findOne({
+       where : { id: id}
+  }).then(function(datos) {
+     console.log('solictar cambio' +  id)
+      var aplazo = aplazaCita(object.tiempo, object.id);
+      models.AgendaCambio.create({
+        fechaHoraInicio:  aplazo.fecha,
+        fechaHoraFin:  aplazo.fechaFin,
+        status: 0,
+        agenda_id: id,
+        tiempo : object.tiempo
+      }).then(function() {
+        models.Notificacion.create({
+            data : id.toString(),
+            tipoNotificacion_id : 50,
+            usuario_id : datos.paciente_id.toString()
+        });
+      }).catch(function(err) {
+          res.status(500).json({error: err});
+      });
+  });
+
+};
+
+// Paciente autorizando la cita
+exports.aceptarCambioCita = function(object, req, res) {
+  //console.log('acepta cambio')
+  // cambiando la cita
+  models.AgendaCambio.findOne({
+    where : { agenda_id: object.id }
+  }).then(function(agenda) {
+    var hora =  agenda.tiempo.split(':');
+    var finalDia =  new moment.utc(agenda.fechaHoraInicio).endOf('day').format('YYYY-MM-DD HH:mm');
+
+    models.AgendaCambio.update({
+        estatus:  1
+      }, { where : { agenda_id: object.id, estatus:0}
+    });
+
+    models.Agenda.update({
+        fechaHoraInicio:  agenda.fechaHoraInicio,
+        fechaHoraFin:  agenda.fechaHoraFin
+      }, { where : { id: object.id}
+    }).then(function() {
+
+      // Notificando al médico de la aceptación
+      models.Notificacion.create({
+          data : object.id.toString(),
+          tipoNotificacion_id : 51,
+          usuario_id : object.usuario_id.toString(),
+          inicio : new Date()
+      });
+    });
+
+    var qry = "select * from agenda where fechaHoraInicio between '" + formatearTimestampAgenda(agenda.fechaHoraInicio) +  "' and '" + formatearTimestampAgenda( agenda.fechaHoraFin) + "'";
+    console.log(qry);
+    sequelize.query(qry, {type: sequelize.QueryTypes.SELECT})
+    .then(function(datos) {
+      if  ( datos != null)
+      {
+         console.log(datos.id +  ' ' + datos.fechaHoraInicio + ' ' + datos.fechaHoraFin)
+         var aplazo = new moment(datos.fechaHoraInicio);
+         var aplazoFin = new moment(datos.fechaHoraFin);
+
+         aplazo.add(hora[0], 'hours');
+         aplazo.add(hora[1], 'minutes');
+         aplazoFin.add(hora[0], 'hours');
+         aplazoFin.add(hora[1], 'minutes');
+         // Verificar
+         aplazo.subtract(6, 'hours');
+         aplazoFin.subtract(6, 'hours');
+
+         models.AgendaCambio.create({
+           fechaHoraInicio: formatearTimestampAgenda(aplazo),
+           fechaHoraFin:  formatearTimestampAgenda(aplazoFin),
+           status: 0,
+           agenda_id: datos.id,
+           tiempo : agenda.tiempo
+         });
+
+          // Notificando al paciente cambio de cita
+          models.Notificacion.create({
+              data : datos.id.toString(),
+              tipoNotificacion_id : 50,
+              usuario_id : datos.paciente_id.toString(),
+              inicio : new Date()
+          });
+       } else {
+        //console.log('sin agenda para encimar ')
+       }
+    });
+    res.status(200).json({sucess: ok});
+  }).catch(function(err) {
+      res.status(500).json({error: err});
+  });
+};
+
+// el paciente no acepto el retraso de la cita
+exports.rechazarCambioCita = function(object, req, res) {
+  // Cancelando la solicitud
+  console.log(object.id)
+  models.AgendaCambio.update({
+      estatus: 0,
+    }, { where : {  agenda_id: object.id }
+  }).then(function() {
+    // Cancelando la cita
+    models.Agenda.update({
+        status: 0,
+      },{ where : { id: object.id }
+    }).then(function() {
+      // Notificando al médico de la cancelación de la cita
+      models.Notificacion.create({
+          data : object.id.toString(),
+          tipoNotificacion_id : 52, //  determinar la notificacion
+          usuario_id : datos.usuario_id.toString()
+      });
+
+    }).catch(function(err) {
+        res.status(500).json({error: err});
+    });
+
+  }).catch(function(err) {
+      res.status(500).json({error: err});
+  });
+};
+
+function aplazaCita(tiempo, id)
+{
+  models.Agenda.findOne({
+       where : { id: id}
+  }).then(function(evento) {
+
+    var inicio = new moment(evento.fechaHoraInicio);
+    var aplazoInicio = new moment(evento.fechaHoraInicio);
+    var fin = new moment(evento.fechaHoraFin);
+    var aplazoFin = new moment(evento.fechaHoraFin);
+    var hora  =  tiempo.split(':');
+
+    aplazo = inicio.add(hora[0], 'hours');
+    aplazo = inicio.add(hora[1], 'minutes');
+
+    aplazoFin = fin.add(hora[0], 'hours');
+    aplazoFin = fin.add(hora[1], 'minutes');
+
+    var datos =  {
+      id: evento.id,
+      tiempo: tiempo,
+      fecha : aplazo.format('YYYY-M-D') + " "  + aplazo.format('HH:mm'),
+      fechaFin:  aplazoFin.format('YYYY-M-D') + " "  + aplazoFin.format('HH:mm'),
+    }
+
+    return datos;
+  });
+
+}

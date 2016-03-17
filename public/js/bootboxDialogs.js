@@ -1,3 +1,5 @@
+
+
 function agregarUbicacion(ubicacion_id){
   var id = '', nombre = '', principal = '', calle = '', numero = '', interior = '';
   var callea = '', calleb = '', estado = '', municipio = '', localidad = '', cp = '';
@@ -4370,7 +4372,7 @@ function detalleCitaSecretaria(agenda_id){
                   '</div>'+
                   '<div class="col-md-4 col-sm-4">'+
                     '<button class="btn btn-default btn-block s20" style="color: #5cb85c;font-weight: bold;">Reagendar</button>'+
-                    '<button class="btn btn-default btn-block s20" style="color: #f0ad4e;font-weight: bold;">Retrasar</button>'+
+                    '<button onClick="retrasaCita(' + agenda_id +  ')" class="btn btn-default btn-block s20" style="color: #f0ad4e;font-weight: bold;">Retrasar</button>'+
                     '<button class="btn btn-default btn-block s20" style="color: #d43f3a;font-weight: bold;">Cancelar</button>'+
                   '</div>'+
                 '</div>'+
@@ -4407,5 +4409,171 @@ function detalleCitaSecretaria(agenda_id){
       }
     });
   //  alert(data.split("|")[0]);
+}
 
+// Diálogo para retrasar cita
+function retrasaCita(id)
+{
+    var box = bootbox.dialog({
+      show: false,
+      backdrop: true,
+      animate: false,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      title: 'Retrasar Cita' ,
+      message:
+      '<div class="col-md-12">'+
+          '<select id="tiempoRetrasoCita" class="form-control regInput" name="tiempoRetrasoCita" required="required">'+
+          '<option value="" selected disabled>Selecciona</option>'+
+          '<option value="00:15">15 minutos</option>'+
+          '<option value="00:30">30 minutos</option>'+
+          '<option value="01:00">1 hora</option>'+
+          '<option value="01:30">1 Hora 30 Minutos</option>'+
+          '<option value="02:00">2 Horas</option>'+
+        '</select></div><br>',
+      buttons: {
+          cancel: {
+              label: 'Cancelar',
+              className: 'btn-warning'
+          },
+          save: {
+              label: 'Aceptar',
+              className: 'btn-success',
+              callback: function () {
+                var tiempo = $('#tiempoRetrasoCita').val();
+                $.ajax({
+                     async: false,
+                     url: '/agenda/retrasarCita',
+                     type: 'POST',
+                     dataType: "json",
+                     cache: false,
+                     data: {
+                       'id': id,
+                       'tiempo' : tiempo
+                     },
+                     success: function () {
+                        alert('Se ha mandado la solicitud de retraso de cita ');
+                     },
+                     error: function ( jqXHR, textStatus, err ) {
+                       console.error( 'AJAX ERROR: ' + err );
+                     }
+                });
+              }
+          }
+      }
+    });
+
+    box.modal('show');
+}
+
+// Diálogo para retrasar cita
+function aceptaRetrasoCita(id)
+{
+    var box = bootbox.dialog({
+      show: false,
+      backdrop: true,
+      animate: false,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      title: 'Retrasar Cita' ,
+      message:
+      '<div class="col-md-12"> Retraso de Cita</div><br>',
+      buttons: {
+          cancel: {
+              label: 'Cancelar',
+              className: 'btn-warning',
+              callback: function () {
+                $.ajax({
+                     async: false,
+                     url: '/agenda/aceptarCambioCita',
+                     type: 'POST',
+                     dataType: "json",
+                     cache: false,
+                     data: {
+                       'id': id,
+                       'estatus' : false
+                     },
+                     success: function () {
+                        alert('Se ha cancelado la cita !');
+                     },
+                     error: function ( jqXHR, textStatus, err ) {
+                       console.error( 'AJAX ERROR: ' + err );
+                     }
+                });
+          },
+          save: {
+              label: 'Aceptar',
+              className: 'btn-success',
+              callback: function () {
+                $.ajax({
+                     async: false,
+                     url: '/agenda/aceptarCambioCita',
+                     type: 'POST',
+                     dataType: "json",
+                     cache: false,
+                     data: {
+                       'id': id,
+                       'estatus' : true
+                     },
+                     success: function () {
+                        alert('Se ha cambiado la cita !');
+                     },
+                     error: function ( jqXHR, textStatus, err ) {
+                       console.error( 'AJAX ERROR: ' + err );
+                     }
+                });
+              }
+          }
+      }
+    });
+
+    box.modal('show');
+}
+
+// Diálogo para cancelar cita
+function cancelarCita(id)
+{
+    var box = bootbox.dialog({
+      show: false,
+      backdrop: true,
+      animate: false,
+      onEscape: function () {
+          bootbox.hideAll();
+      },
+      title: 'Cancelar Cita' ,
+      message:
+      '<div class="col-md-12"> Desea cancelar le cita ?</div><br>',
+      buttons: {
+          cancel: {
+              label: 'Cancelar Operación',
+              className: 'btn-warning',
+          },
+          save: {
+              label: 'Aceptar',
+              className: 'btn-success',
+              callback: function () {
+                $.ajax({
+                     async: false,
+                     url: '/agenda/cancelarCita',
+                     type: 'POST',
+                     dataType: "json",
+                     cache: false,
+                     data: {
+                       'id': id
+                     },
+                     success: function () {
+                        alert('Se ha cancelado la cita !');
+                     },
+                     error: function ( jqXHR, textStatus, err ) {
+                       console.error( 'AJAX ERROR: ' + err );
+                     }
+                });
+              }
+          }
+      }
+    });
+
+    box.modal('show');
 }
