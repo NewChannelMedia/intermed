@@ -1,60 +1,56 @@
-<div class="container-fluid" id="DashboarSecretaria">
-  <!--Datos de invitación-->
-
-  <div class="row" style="margin-top:30px">
-    <div class="col-lg-2 col-lg-offset-1 col-md-3 col-md-offset-0">
-      <div class="row">
-        <div class="col-lg-12 col-md-12">
-          <div class="panel panel-primary" style="margin-bottom:0px">
-            <div class="panel-heading">
+<section id="dashboardSecretaria">
+  <div class="container-fluid">
+    <div class="row" style="margin-top:30px">
+      <div class="col-lg-2 col-lg-offset-1 col-md-3 col-md-offset-0">
+        <div class="row">
+          <div class="col-lg-12 col-md-12">
+            <div class="panel panel-primary" style="margin-bottom:0px">
+              <div class="panel-heading">
                 <img class="img-circle img-responsive center-block" alt="64x64" src="{{#valSession 'fotoPerfil'}}{{/valSession}}" data-holder-rendered="true">
-            </div>
-            <div class="panel-body" style="height: auto;">
-              <h4><strong>{{#valSession 'name'}}{{/valSession}}</strong></h4>
+              </div>
+              <div class="panel-body" style="height: auto;">
+                <h4><strong>{{#valSession 'name'}}{{/valSession}}</strong></h4>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      {{#if invitaciones}}
-      <div class="row">
-        <div class="col-md-12">
-
-            <div class="panel panel-primary">
-              <div class="panel-heading s20"><strong>Tus invitaciones pendientes</strong></div>
-              <div class="panel-body" style="height: auto;padding-top: 0px;padding-bottom: 0px;">
-                <div class="row" style="padding-bottom:0px">
-                  <div class="list-group" style="margin-bottom:0px">
-                    {{#each invitaciones}}
-                      <div class="list-group-item media" style="margin-top:0px">
-                        <a class="media-left media-middle" href="#">
+        {{#if invitaciones}}
+          <div class="row">
+            <div class="col-md-12">
+              <div class="panel panel-primary">
+                <div class="panel-heading s20"><strong>Tus invitaciones pendientes</strong></div>
+                <div class="panel-body" style="height: auto;padding-top: 0px;padding-bottom: 0px;">
+                  <div class="row" style="padding-bottom:0px">
+                    <div class="list-group" style="margin-bottom:0px">
+                      {{#each invitaciones}}
+                        <div class="list-group-item media" style="margin-top:0px">
+                          <a class="media-left media-middle" href="#">
                             <img class="pull-left img-circle" src="{{Medico.Usuario.urlFotoPerfil}}" style="max-width:40px;min-width:20px;width100%">
-                        </a>
-                        <div class="media-body">
-                          <h4 class="media-heading s15"><strong>Dr. {{Medico.Usuario.DatosGenerale.nombre}} {{Medico.Usuario.DatosGenerale.apellidoP}} {{Medico.Usuario.DatosGenerale.apellidoM}}</strong></h4>
-                          <p style="text-right">
-                            <span>¿Administrar a este médico?</span>
-                          </p>
-                        </div>
-                        <div class="media-right media-middle" href="#">
+                          </a>
+                          <div class="media-body">
+                            <h4 class="media-heading s15"><strong>Dr. {{Medico.Usuario.DatosGenerale.nombre}} {{Medico.Usuario.DatosGenerale.apellidoP}} {{Medico.Usuario.DatosGenerale.apellidoM}}</strong></h4>
+                            <p style="text-right">
+                              <span>¿Administrar a este médico?</span>
+                            </p>
+                          </div>
+                          <div class="media-right media-middle" href="#">
                             <button class="btn btn-success btn-xs" onclick="aceptarInvitacion({{Medico.id}},this)"><span class="glyphicon glyphicon-ok"></span></button>
                             <button class="btn btn-danger btn-xs" onclick="rechazarInvitacion({{Medico.id}},this)"><span class="glyphicon glyphicon-remove"></span></button>
+                          </div>
                         </div>
-
-                      </div>
-                    {{/each}}
+                      {{/each}}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-
-        </div>
+          </div>
+        {{/if}}
       </div>
-      {{/if}}
-    </div>
-    <div class="col-lg-8 col-md-9">
-      <div class="panel panel-primary">
-        <div class="panel-heading">
-          <div class="row" style="margin:0px;padding:0px;margin-right: -1px;">
+      <div class="col-lg-8 col-md-9">
+        <div class="panel panel-primary">
+          <div class="panel-heading">
+            <div class="row" style="margin:0px;padding:0px;margin-right: -1px;">
               <div class="col-md-3 col-sm-12 col-xs-12 text-center" style="margin:0px;padding:0px;">
                 <span class="s20">Tus médicos</span>
               </div>
@@ -71,77 +67,77 @@
                   </div>
                 </div>
               </div>
+            </div>
           </div>
-        </div>
-        <div class="panel-body" style="height: auto;margin:0px;padding:0px">
-          <div class="list-group" style="margin-bottom:0px">
-            {{#each medicos}}
-            <div class="list-group-item MedicoSecretaria" style="padding-top:0px;padding-bottom:0px;" id="MedicoSecretaria_{{Medico.id}}">
-                <div class="row s15" style="padding:0px">
-                  <div class="col-md-3" style="padding:15px">
-                    <div class="row hidden-sm hidden-xs" style="height: 270px;">
-                      <div class="body-container">
-                        <div class="center-content">
-                          <div class="col-md-12 text-center">
-                            <img src="{{Medico.Usuario.urlFotoPerfil}}" class="img-circle" style="max-width:80%">
-                          </div>
-                          <div class="col-md-12 text-center">
-                            Dr. {{Medico.Usuario.DatosGenerale.nombre}} {{Medico.Usuario.DatosGenerale.apellidoP}} {{Medico.Usuario.DatosGenerale.apellidoM}}
-                          </div>
-                          <div class="col-md-12 text-center">
-                            <button class="btn btn-default btn-block" onclick="verAgendaMedico({{Medico.id}})">Agenda</button>
-                            <!--<button class="btn btn-danger btn-block pull-right" onclick="eliminarRelacionMedico({{Medico.id}},this)">Eliminar</button>-->
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row hidden-lg hidden-md">
-                      <div class="media" style="padding-left:15px;padding-right:15px">
-                        <a class="media-left" href="#">
-                          <img class="media-object img-circle img-responsible center-block" src="{{Medico.Usuario.urlFotoPerfil}}" alt="Generic placeholder image" style="max-width:50px">
-                        </a>
-                        <div class="media-body" style="height:50px">
-                          <div class="body-container">
-                            <div class="center-content">
-                              <h3 class="media-heading">Dr. {{Medico.Usuario.DatosGenerale.nombre}} {{Medico.Usuario.DatosGenerale.apellidoP}} {{Medico.Usuario.DatosGenerale.apellidoM}}</h3>
+          <div class="panel-body" style="height: auto;margin:0px;padding:0px">
+            <div class="list-group" style="margin-bottom:0px">
+              {{#each medicos}}
+                <div class="list-group-item MedicoSecretaria" style="padding-top:0px;padding-bottom:0px;" id="MedicoSecretaria_{{Medico.id}}">
+                  <div class="row s15" style="padding:0px">
+                    <div class="col-md-3" style="padding:15px">
+                      <div class="row hidden-sm hidden-xs" style="height: 270px;">
+                        <div class="body-container">
+                          <div class="center-content">
+                            <div class="col-md-12 text-center">
+                              <img src="{{Medico.Usuario.urlFotoPerfil}}" class="img-circle" style="max-width:80%">
+                            </div>
+                            <div class="col-md-12 text-center">
+                              Dr. {{Medico.Usuario.DatosGenerale.nombre}} {{Medico.Usuario.DatosGenerale.apellidoP}} {{Medico.Usuario.DatosGenerale.apellidoM}}
+                            </div>
+                            <div class="col-md-12 text-center">
+                              <button class="btn btn-default btn-block" onclick="verAgendaMedico({{Medico.id}})">Agenda</button>
+                              <!--<button class="btn btn-danger btn-block pull-right" onclick="eliminarRelacionMedico({{Medico.id}},this)">Eliminar</button>-->
                             </div>
                           </div>
                         </div>
-                        <div class="media-right">
-                          <button class="btn btn-warning btn-sm" onclick="window.location.href='s/{{Medico.Usuario.usuarioUrl}}'">Oficina</button>
+                      </div>
+                      <div class="row hidden-lg hidden-md">
+                        <div class="media" style="padding-left:15px;padding-right:15px">
+                          <a class="media-left" href="#">
+                            <img class="media-object img-circle img-responsible center-block" src="{{Medico.Usuario.urlFotoPerfil}}" alt="Generic placeholder image" style="max-width:50px">
+                          </a>
+                          <div class="media-body" style="height:50px">
+                            <div class="body-container">
+                              <div class="center-content">
+                                <h3 class="media-heading">Dr. {{Medico.Usuario.DatosGenerale.nombre}} {{Medico.Usuario.DatosGenerale.apellidoP}} {{Medico.Usuario.DatosGenerale.apellidoM}}</h3>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="media-right">
+                            <button class="btn btn-warning btn-sm" onclick="window.location.href='s/{{Medico.Usuario.usuarioUrl}}'">Oficina</button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="col-md-9">
-                    <div class="row" style="padding-bottom:0px">
-                      <div class="col-md-4" style="padding:0px;height:auto">
-                        <div class="panel panel-default dia1" style="margin:0px;border-radius: 0px;">
-                          <div class="panel-heading hidden-lg hidden-md text-center heading" style="height: 30px;">&nbsp;</div>
-                          <div class="panel-body contenidoagenda" style="height: 300px;overflow-y:auto;border-radius: 0px;padding: 0px;background-color:#FAFAFA"></div>
+                    <div class="col-md-9">
+                      <div class="row" style="padding-bottom:0px">
+                        <div class="col-md-4" style="padding:0px;height:auto">
+                          <div class="panel panel-default dia1" style="margin:0px;border-radius: 0px;">
+                            <div class="panel-heading hidden-lg hidden-md text-center heading" style="height: 30px;">&nbsp;</div>
+                            <div class="panel-body contenidoagenda" style="height: 300px;overflow-y:auto;border-radius: 0px;padding: 0px;background-color:#FAFAFA"></div>
+                          </div>
                         </div>
-                      </div>
-                      <div class="col-md-4" style="padding:0px;height:auto">
-                        <div class="panel panel-default dia2" style="margin:0px;border-radius: 0px;">
-                          <div class="panel-heading hidden-lg hidden-md text-center heading" style="height: 30px;">&nbsp;</div>
-                          <div class="panel-body contenidoagenda" style="height: 300px;overflow-y:auto;border-radius: 0px;padding: 0px;background-color:#FAFAFA"></div>
+                        <div class="col-md-4" style="padding:0px;height:auto">
+                          <div class="panel panel-default dia2" style="margin:0px;border-radius: 0px;">
+                            <div class="panel-heading hidden-lg hidden-md text-center heading" style="height: 30px;">&nbsp;</div>
+                            <div class="panel-body contenidoagenda" style="height: 300px;overflow-y:auto;border-radius: 0px;padding: 0px;background-color:#FAFAFA"></div>
+                          </div>
                         </div>
-                      </div>
-                      <div class="col-md-4" style="padding:0px;height:auto">
-                        <div class="panel panel-default dia3" style="margin:0px;border-radius: 0px;">
-                          <div class="panel-heading hidden-lg hidden-md text-center heading" style="height: 30px;">&nbsp;</div>
-                          <div class="panel-body contenidoagenda" style="height: 300px;overflow-y:auto;border-radius: 0px;padding: 0px;background-color:#FAFAFA"></div>
+                        <div class="col-md-4" style="padding:0px;height:auto">
+                          <div class="panel panel-default dia3" style="margin:0px;border-radius: 0px;">
+                            <div class="panel-heading hidden-lg hidden-md text-center heading" style="height: 30px;">&nbsp;</div>
+                            <div class="panel-body contenidoagenda" style="height: 300px;overflow-y:auto;border-radius: 0px;padding: 0px;background-color:#FAFAFA"></div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
+              {{/each}}
             </div>
-            {{/each}}
           </div>
-
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>

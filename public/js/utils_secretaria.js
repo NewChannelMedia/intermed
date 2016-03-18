@@ -127,7 +127,19 @@ $(document).ready(function(){
 
 function cargarCitasProximasSecretaria(){
 
-    if ($('#DashboarSecretaria').length>0){
+    if ($('#dashboardSecretaria').length>0){
+      if ( $( window ).width() > 768 ) {
+        var h = $( window ).height() - $( '#newMainNav' ).height() - $( '.agendaTopContainer' ).height() - 2 - $('footer').height();
+        $( '.dashboardBody' ).css( 'height', h + 'px' );
+        $( '.dasbboardLeft' ).css( 'height', h-2 + 'px' );
+        $( '.dashboardRight' ).css( 'height', h + 'px' );
+      }
+      else if ( $( window ).width() < 767 ) {
+        var h = $( window ).height() - $( '#newMainNav' ).height() - 2;
+        $( '.dasbboardLeft' ).css( 'height', h - $( '.agendaTopContainer' ).height() + 'px' );
+        $( '.dashboardRight' ).css( 'height', h + 'px' );
+      }
+
       var medicos = [];
       $('.dia1>.heading').text(getDate());
       $('.dia2>.heading').text(getDate(1));
