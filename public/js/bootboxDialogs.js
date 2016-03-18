@@ -271,7 +271,7 @@ function agregarUbicacion(ubicacion_id){
                   '</div>'+
               '</div>'+
               '<div class ="row">'+
-                '<div class="form-group col-md-12 col-sm-12 btn-group edit-btns text-center" id="divTelefonoAgregado" data-toggle="buttons"></div>'+
+                '<div class="form-group col-md-12 col-sm-12"><ul class="list-inline" id="divTelefonoAgregado"></ul></div>'+
               '</div>'+
               '</div>'+
               '<div class="row">'+
@@ -358,6 +358,7 @@ function agregarUbicacion(ubicacion_id){
             '<div class="col-lg-12">'+
               '<div class="row">'+
               '<form method="POST" onsubmit="return guardarServicio(\'frmRegServ\');" id="frmRegServ">'+
+                '<input type="hidden" id="servicio_id" value="">'+
                 '<div class="col-md-3">'+
                   '<div class="row">'+
                     '<div class="col-md-12">'+
@@ -445,8 +446,8 @@ function agregarUbicacion(ubicacion_id){
 
           '<div class="row">'+
             '<div class="col-lg-12">'+
-              '<div id="ServListReg" style="margin-bottom:15px">'+
-              '</div>'+
+              '<ul id="ServListReg" class="list-inline" style="margin-bottom:15px">'+
+              '</ul>'+
             '</div>'+
           '</div>'+
 

@@ -1,16 +1,16 @@
 ﻿
 
 $(function () {
-    conektaSuccessResponseHandler = function (token) {                
+    conektaSuccessResponseHandler = function (token) {
         $("#card-form").append($("<input type='hidden' name='conektaTokenId' />").val(token.id));
         $("#card-form").get(0).submit();
     }
 
-    conektaErrorResponseHandler = function (response) {        
+    conektaErrorResponseHandler = function (response) {
         $("#card-form .card-errors").text(response.message);
         var $form = $(this);
         //$form.find("button").prop("disabled", false);
-        
+
     }
 
     $("#card-form").submit(function (event) {
@@ -23,7 +23,7 @@ $(function () {
         // Previene que la información de la forma sea enviada al servidor
         return false;
 
-        //$("#card-form").find("button").prop("disabled", true);        
+        //$("#card-form").find("button").prop("disabled", true);
         //Conekta.token.create($("#card-form"), conektaSuccessResponseHandler, conektaErrorResponseHandler);
         //return false;
     });

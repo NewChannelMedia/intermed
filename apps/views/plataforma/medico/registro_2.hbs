@@ -167,7 +167,7 @@
                 </div>
                 <div class="col-lg-2 col-md-2 col-sm-2">
                   <div class="form-group">
-                    <input type="button" class="btn btn-warning bg-orange btn-block regInput h65-medium" id="addFon" value="Añadir">
+                    <button type="button" class="btn btn-warning bg-orange btn-block regInput h65-medium" id="addFon" >Añadir</button>
                   </div>
                 </div>
               </div>
@@ -179,16 +179,10 @@
               </div>
               <div class="row">
                 <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 pull-right">
-                  <input type="button" class="btn btn-reg btn-block h35-thin s20" value="Guardar" onclick="regUbicacion()" id="btnGuardar">
+                  <button type="button" class="btn btn-reg btn-block h35-thin s20" onclick="regUbicacion()" id="btnGuardar">Guardar</button>
                 </div>
-                <div class="col-md-6 pull-left">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <div class="row">
-                        <input type="button" class="btn btn-drop btn-block hidden" value="Eliminar" onclick="eliminarUbicacion()" id="btnEliminar">
-                      </div>
-                    </div>
-                  </div>
+                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6  pull-left">
+                  <button type="button" class="btn btn-drop btn-block h35-thin s20 hidden" onclick="resetearFormRegUbi()" id="btnCancelarUbi">Cancelar edicion</button>
                 </div>
               </div>
             </form>
@@ -205,31 +199,7 @@
             </p>
           </div>
           <div class="col-lg-12 col-md-12">
-            <ul class="list-inline">
-              <li class="lbl lbl-ubicaciones">
-                <span>Consultorio 1</span>
-                <button class="btn btn-sm borrar">
-                  <span class="glyphicon glyphicon-remove"</span>
-                </button>
-              </li>
-              <li class="lbl lbl-ubicaciones">
-                <span>Consultorio 2</span>
-                <button class="btn btn-sm borrar">
-                  <span class="glyphicon glyphicon-remove"</span>
-                </button>
-              </li>
-              <li class="lbl lbl-ubicaciones">
-                <span>Consultorio 3</span>
-                <button class="btn btn-sm borrar">
-                  <span class="glyphicon glyphicon-remove"</span>
-                </button>
-              </li>
-              <li class="lbl lbl-ubicaciones">
-                <span>Consultorio 4</span>
-                <button class="btn btn-sm borrar">
-                  <span class="glyphicon glyphicon-remove"</span>
-                </button>
-              </li>
+            <ul class="list-inline" id="listInlineUbi">
             </ul>
           </div>
           <hr>
@@ -264,6 +234,7 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
+                    <input type="hidden" name="servicio_id" id="servicio_id" value="">
                     <label class="darkGrey-c regInput">Concepto.</label>
                     <input type="text" class="form-control regInput" id="conceptServ" name="concepto" required="required">
                   </div>
@@ -324,14 +295,16 @@
           </form>
         </div>
         <div class="row UbicHidden">
-          <div class="col-lg-12">
+          <div class="col-lg-7 col-md-7 col-sm-6 col-xs-12">
             <div class="regSectionTitle darkGrey-c h77-boldcond">
               <span class="glyphicon glyphicon-pencil"></span>EDITA TUS SERVICIOS
             </div>
           </div>
-
-          <div id="ServListReg">
-
+        </div>
+        <div class="row UbicHidden">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <ul class="list-inline" id="ServListReg">
+            </ul>
           </div>
         </div>
         <div class="row nav-nextprev">
@@ -425,9 +398,18 @@
             <div class="col-lg-12 col-md-12">
               <input type="hidden" id="horariosUbi" name="horariosUbi" value="" />
               <input type="hidden" id="direccion_id" name="direccion_id" value="" />
+              <!--
               <div class="col-md-12" id="divCalendarioPadre" style="margin-right: 15px;">
                 <div id="divCalendario" class="regHorMed"></div>
               </div>
+            -->
+              <div class="col-md-12" id="divCalendarioPadre">
+                <div class="row">
+                  <div id="divCalendario" class="regHorMed calCita">
+                  </div>
+                </div>
+              </div>
+
               <div class="col-lg-2 col-md-2 col-sm-4 col-xs-6 pull-right">
                 <button type="button" class="btn bg-darkBlue btn-block h35-thin s20 white-c" id="btnRegHorarios" onclick="regHorarios($('#slc_horarios_ubi').val())">Guardar</button>
               </div>

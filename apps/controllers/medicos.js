@@ -396,7 +396,13 @@ var _this = module.exports = {
           include: [ {
             model: models.DatosGenerales
                   }, {
-            model: models.Medico
+            model: models.Medico,
+                    include: [{
+                      model: models.MedicoEspecialidad,
+                      include: [{
+                        model: models.Especialidad
+                      }]
+                    }]
                   }, {
             model: models.Biometrico
                   }, {
@@ -2351,124 +2357,187 @@ var _this = module.exports = {
         })
       }
   },
+
   cedulaGeneral: function (object, req, res){
-    var request = require("request");
-    iconv  = require('iconv-lite');
-
-    var options = {
-      method: 'POST',
-      encoding: null,
-      url: 'http://www.cedulaprofesional.sep.gob.mx/cedula/buscaCedulaJson.action',
-      headers:
-       {
-         'content-type': 'application/x-www-form-urlencoded; charset=utf-8',
-         'Accept-Charset': 'utf-8'
-       },
-      body: 'json=%7B%22maxResult%22%3A%221000%22%2C%22idCedula%22%3A%222'+ object.cedula +'%22%2C%22nombre%22%3A%22%22%2C%22paterno%22%3A%22%22%2C%22materno%22%3A%22%22%2C%22h_genero%22%3A%22%22%2C%22genero%22%3A%22%22%2C%22annioInit%22%3A%22%22%2C%22annioEnd%22%3A%22%22%2C%22insedo%22%3A%22%22%2C%22inscons%22%3A%22%22%2C%22institucion%22%3A%22TODAS%22%7D'
-    };
-
-    request(options, function (error, response, body) {
-      if (error){
+    models.Medico.findOne({
+      where: {
+        cedula: object.cedula,
+        usuario_id: {$not: req.session.passport.user.id}
+      }
+    }).then(function(existe){
+      if (existe){
         res.status(200).json({
-          success:false,
-          result: error
+          success: false,
+          registrado: true
         });
       } else {
-        body= iconv.decode(new Buffer(body), "ISO-8859-1");
-        if (JSON.parse(body).items && JSON.parse(body).items.length>0){
-          body = body.split('[{')[1].split('}]')[0].split(",");
-          var nombre = '';
-          var paterno = '';
-          var materno = '';
-          var anio = '';
-          var institucion = '';
-          var cedula = '';
-          var sexo = '';
-          var titulo = '';
-          var tipo = '';
-          var insedo = '';
-          var inscons = '';
-          body.forEach(function(res){
-            var string1 = res.split(":")[0];
-            var string2 = res.split(":")[1];
-            if (string1 && string2 && string2.replace("\"","").replace('"',"") != "null"){
-              string1 = string1.replace("\"","").replace('"',"");
-              string2 = string2.replace("\"","").replace('"',"");
-              if (string1 == "anioreg"){
-                anio = string2;
-              } else if (string1 == "desins"){
-                institucion = string2;
-              } else if (string1 == "idCedula"){
-                cedula = string2;
-              } else if (string1 == "nombre"){
-                nombre = string2;
-              } else if (string1 == "paterno"){
-                paterno = string2;
-              } else if (string1 == "materno"){
-                materno = string2;
-              } else if (string1 == "sexo"){
-                sexo = string2;
-              } else if (string1 == "titulo"){
-                titulo = string2;
-              } else if (string1 == "tipo"){
-                tipo = string2;
-              } else if (string1 == "inscons"){
-                inscons = string2;
-              } else if (string1 == "insedo"){
-                insedo = string2;
-              }
-            }
-          });
-          var resultArray = {
-            anio: anio,
-            institucion: institucion,
-            titulo: titulo,
-            tipo: tipo,
-            inscons: inscons,
-            insedo: insedo,
-            cedula: cedula,
-            nombre: nombre,
-            paterno: paterno,
-            materno: materno,
-            sexo: sexo
-          }
+        var request = require("request");
+        iconv  = require('iconv-lite');
 
-          if (object.nombreMedico.toUpperCase().replace(' ','') == nombre.toUpperCase().replace(' ','') && object.paterno.toUpperCase().replace(' ','') == paterno.toUpperCase().replace(' ','') && object.materno.toUpperCase().replace(' ','') == materno.toUpperCase().replace(' ','') && object.genero == sexo){
-            if (object.tipo == "C1" && object.tipo == resultArray.tipo){
-              console.log('Insertar cedula en médico');
-              models.Medico.update({
-                cedula: object.cedula
-              },{
-                where: {
-                  usuario_id: req.session.passport.user.id
-                }
-              }).then(function(cedula){
-                console.log('Cedula actualizada: ' + JSON.stringify(cedula));
-              })
-            }
+        var options = {
+          method: 'POST',
+          encoding: null,
+          url: 'http://www.cedulaprofesional.sep.gob.mx/cedula/buscaCedulaJson.action',
+          headers:
+           {
+             'content-type': 'application/x-www-form-urlencoded; charset=utf-8',
+             'Accept-Charset': 'utf-8'
+           },
+          body: 'json=%7B%22maxResult%22%3A%221000%22%2C%22idCedula%22%3A%222'+ object.cedula +'%22%2C%22nombre%22%3A%22%22%2C%22paterno%22%3A%22%22%2C%22materno%22%3A%22%22%2C%22h_genero%22%3A%22%22%2C%22genero%22%3A%22%22%2C%22annioInit%22%3A%22%22%2C%22annioEnd%22%3A%22%22%2C%22insedo%22%3A%22%22%2C%22inscons%22%3A%22%22%2C%22institucion%22%3A%22TODAS%22%7D'
+        };
 
-            res.status(200).json({
-              success:true,
-              exists: true,
-              result: resultArray
-            });
-          } else {
+        request(options, function (error, response, body) {
+          if (error){
             res.status(200).json({
               success:false,
-              exists: true,
-              result: resultArray
+              result: error
             });
-          }
-        } else {
-          res.status(200).json({
-            success:false,
-            exists: false,
-            result: resultArray
-          });
-        }
+          } else {
+            body= iconv.decode(new Buffer(body), "ISO-8859-1");
+            if (JSON.parse(body).items && JSON.parse(body).items.length>0){
+              body = body.split('[{')[1].split('}]')[0].split(",");
+              var nombre = '';
+              var paterno = '';
+              var materno = '';
+              var anio = '';
+              var institucion = '';
+              var cedula = '';
+              var sexo = '';
+              var titulo = '';
+              var tipo = '';
+              var insedo = '';
+              var inscons = '';
+              body.forEach(function(res){
+                var string1 = res.split(":")[0];
+                var string2 = res.split(":")[1];
+                if (string1 && string2 && string2.replace("\"","").replace('"',"") != "null"){
+                  string1 = string1.replace("\"","").replace('"',"");
+                  string2 = string2.replace("\"","").replace('"',"");
+                  if (string1 == "anioreg"){
+                    anio = string2;
+                  } else if (string1 == "desins"){
+                    institucion = string2;
+                  } else if (string1 == "idCedula"){
+                    cedula = string2;
+                  } else if (string1 == "nombre"){
+                    nombre = string2;
+                  } else if (string1 == "paterno"){
+                    paterno = string2;
+                  } else if (string1 == "materno"){
+                    materno = string2;
+                  } else if (string1 == "sexo"){
+                    sexo = string2;
+                  } else if (string1 == "titulo"){
+                    titulo = string2;
+                  } else if (string1 == "tipo"){
+                    tipo = string2;
+                  } else if (string1 == "inscons"){
+                    inscons = string2;
+                  } else if (string1 == "insedo"){
+                    insedo = string2;
+                  }
+                }
+              });
+              var resultArray = {
+                anio: anio,
+                institucion: institucion,
+                titulo: titulo,
+                tipo: tipo,
+                inscons: inscons,
+                insedo: insedo,
+                cedula: cedula,
+                nombre: nombre,
+                paterno: paterno,
+                materno: materno,
+                sexo: sexo
+              }
 
+              if (object.nombreMedico.toUpperCase().replace(' ','') == nombre.toUpperCase().replace(' ','') && object.paterno.toUpperCase().replace(' ','') == paterno.toUpperCase().replace(' ','') && object.materno.toUpperCase().replace(' ','') == materno.toUpperCase().replace(' ','') && object.genero == sexo){
+                if (object.tipo == resultArray.tipo){
+                  if (object.tipo == "C1"){
+                    models.Medico.update({
+                      cedula: object.cedula,
+                      titulo: resultArray.titulo
+                    },{
+                      where: {
+                        usuario_id: req.session.passport.user.id
+                      }
+                    }).then(function(result){
+                      res.status(200).json({
+                        success:true,
+                        exists: true,
+                        result: resultArray
+                      });
+                    });
+                  } else {
+                    models.MedicoEspecialidad.findOne({
+                      where: {
+                        cedula: object.cedula
+                      }
+                    }).then(function(MedicoEspecialidad){
+                      if (!MedicoEspecialidad){
+                        console.log('Insertar especialidad');
+                        models.Especialidad.findOrCreate({
+                          where:{
+                            especialidad: object.titulo
+                          },
+                          defaults: {
+                            especialidad: object.titulo
+                          }
+                        }).spread(function(especialidad,created){
+                          console.log('Especialidad: ' + JSON.stringify(especialidad));
+                          models.MedicoEspecialidad.create({
+                            medico_id: req.session.passport.user.Medico_id,
+                            cedula: object.cedula,
+                            titulo: resultArray.titulo,
+                            especialidad_id: especialidad.id,
+                            anio: resultArray.anio
+                          });
+                        });
+                        res.status(200).json({
+                          success:true,
+                          exists: true,
+                          result: resultArray
+                        });
+                      } else {
+                        res.status(200).json({
+                          success:false,
+                          exists: true,
+                          repeat: true,
+                          result: resultArray
+                        });
+                      }
+                    });
+                  }
+                } else {
+                  res.status(200).json({
+                    success:false,
+                    exists: true,
+                    tipo: true,
+                    result: resultArray
+                  });
+                }
+              } else {
+                res.status(200).json({
+                  success:false,
+                  exists: true,
+                  result: resultArray
+                });
+              }
+            } else {
+              res.status(200).json({
+                success:false,
+                exists: false,
+                result: resultArray
+              });
+            }
+
+          }
+        });
       }
     });
+
+
 
   },
 
@@ -2550,6 +2619,41 @@ var _this = module.exports = {
     }catch ( err ) {
       req.errorHandler.report(err, req, res);
     }
+  },
+
+  especialidadEstudioAgregar: function (object, req, res){
+
+    models.Especialidad.findOrCreate({
+      where:{
+        especialidad: object.especialidad
+      },
+      defaults: {
+        especialidad: object.especialidad
+      }
+    }).spread(function(especialidad,created){
+      models.MedicoEspecialidad.findOne({
+        where: {
+          especialidad_id: especialidad.id
+        }
+      }).then(function(MedicoEspecialidad){
+        if (!MedicoEspecialidad){
+          models.MedicoEspecialidad.create({
+            medico_id: req.session.passport.user.Medico_id,
+            especialidad_id: especialidad.id
+          }).then(function(MedicoEspecialidad){
+              res.status(200).send( {
+                'success': true,
+                'result': MedicoEspecialidad
+              } );
+          });
+        } else {
+          res.status(200).send( {
+            'success': false,
+            'repeat': true
+          } );
+        }
+      });
+    });
   }
 
 }

@@ -33,4 +33,8 @@ module.exports = function (object){
   app.post('/usuario/info/update', function (req, res) {
     intermed.callController('usuarios', 'UpdateInfo', req.body, req, res);
   });
+
+  app.post('/usuario/cambiarStatus', function (req, res){
+    intermed.callController('usuarios', 'cambiarStatusUsuario', req.body, req, res);
+  });
 }

@@ -44,6 +44,18 @@ a:visited {
   border-radius: 150px;
 }
 
+#newMainNav li {
+    position: relative;
+}
+
+.navBadge {
+    position: absolute;
+    bottom: -8px;
+    right: -5px;
+    background-color: #ff8a00;
+    padding-top: 5px;
+}
+
 @media (max-width:767px) {
   #mainNav,
   #newMainNav {

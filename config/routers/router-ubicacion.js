@@ -20,7 +20,7 @@ module.exports = function (object){
   app.post( '/buscarCP', function ( req, res ) {
     intermed.callController( 'ubicacion', 'encontrarPorCP', req.body, req, res );
   } );
-  app.post('/registrarubicacion', function (req, res) {
+  app.post('/medico/registrarubicacion', function (req, res) {
     intermed.callController('ubicacion', 'registrarUbicacion', req.body, req, res);
   });
 
@@ -62,5 +62,9 @@ module.exports = function (object){
 
   app.post('/seleccionaHorarios', function(req, res) {
     intermed.callController('agenda','seleccionaHorarios', req.body, req, res);
+  });
+
+  app.post('/ubicacion/detallesDireccion', function (req, res){
+    intermed.callController('ubicacion','detallesDireccion', req.body, req, res);
   });
 }

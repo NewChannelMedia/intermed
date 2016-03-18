@@ -166,7 +166,7 @@ function iniciarCalendario(eventos){
   eventos = JSON.parse(JSON.stringify(eventos));
 
   var valido = true;
-  $('#divCalendario').addClass('calAgenda');
+  //$('#divCalendario').addClass('calAgenda');
   $('#divCalendario').fullCalendar({
       // put your options and callbacks here
       defaultView: 'agendaWeek',
@@ -587,7 +587,7 @@ function cancelaCita(id) {
     var horariosDireccion = 0;
     var horariosMedico = 0;
 
-    $('#divCalendario').addClass('calAgenda');
+    //$('#divCalendario').addClass('calAgenda');
     $('#divCalendario').fullCalendar({
         firstDay:1,
         defaultView: 'agendaWeek',

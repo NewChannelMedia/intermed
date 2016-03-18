@@ -379,7 +379,8 @@ module.exports = {
         }
         res.status(200).json({
           success: valido,
-          registrado: registrado
+          registrado: registrado,
+          plan: encuesta.tipoPlan
         });
       });
     }catch ( err ) {

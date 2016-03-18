@@ -595,20 +595,21 @@ function funcionesTelefonos(){
       idTemp++;
       var ext = '';
       if ($('#extTelefono') && $('#extTelefono').val()) ext = $('#extTelefono').val();
-      $('#divTelefonoAgregado').append('<li class="lbl lbl-tel numeroTelefono" data-toggle="tooltip" data-placement="bottom" title="Haz click para editar / borrar.">'+
-        '<input type="hidden" class="idTelefono" value="">' +
-        '<input type="hidden" class="idTempTelefono" value="' + idTemp + '">' +
-          '<span class="editar btnChk">' +
-            '<span class="tipoTelefono hidden">' + $('#tipoTelefono').val() + '</span>' +
-            '<span class="tipoTelefonoIcon"><span class="glyphicon ' + clase + '"></span>&nbsp;</span>' +
-            '<span class="numTelefono">' + $('#numTelefono').val() + '</span>' +
-            '<span class="extTelefono">' + ext + '</span>' +
-          '</span>' +
-          '<button type="button" class="btn btn-sm borrar" disabled="true" onclick="eliminarTelefono(this)">' +
-            '<span class="glyphicon glyphicon-remove"></span>' +
-          '</button>' +
-        '</li>'
-      );
+      $('#divTelefonoAgregado').append('<li class="lbl lbl-tel">'+
+          '<span class="numeroTelefono">'+
+            '<input type="hidden" class="idTelefono" value="">' +
+            '<input type="hidden" class="idTempTelefono" value="' + idTemp + '">' +
+            '<span class="tipoTelefono hidden">'+ $('#tipoTelefono').val() +'</span>'+
+            '<span class="tipoTelefonoIcon">'+
+              '<span class="glyphicon '+ clase +'"></span>&nbsp;'+
+            '</span>'+
+            '<span class="numTelefono">'+$('#numTelefono').val() +'</span>'+
+            '<span class="extTelefono">'+ ext +'</span>'+
+          '</span>'+
+          '<button type="button" class="btn btn-sm borrar" onclick="eliminarTelefono(this)">'+
+            '<span class="glyphicon glyphicon-remove"></span>'+
+          '</button>'+
+      '</li>');
       $('[data-toggle="tooltip"]').tooltip();
       funcionesTelefonos();
       $('#tipoTelefono').prop('selectedIndex', 0);
@@ -616,8 +617,8 @@ function funcionesTelefonos(){
     }
   });
 
-  $('span.editar').unbind();
-  $('span.editar').click(function(){
+  $('span.numeroTelefono').unbind();
+  $('span.numeroTelefono').click(function(){
     if ($('#btnGuardar').val() != "Editar"){
       if ($(this).hasClass('editando')){
         $(this).removeClass('editando');
@@ -840,7 +841,7 @@ function split( val ) {
 function extractLast( term ) {
   return split( term ).pop();
 }
-function InputAutoComplete(inputId, availableTags){
+function InputAutoComplete(inputId, availableTags, defaultSelect){
     $('#'+inputId)
       // don't navigate away from the field on tab when selecting an item
       .bind( "keydown", function( event ) {
@@ -857,24 +858,26 @@ function InputAutoComplete(inputId, availableTags){
             availableTags, extractLast( request.term ) ) );
         },
         select: function( event, ui ) {
-          var agregar = true;
-          $('.'+inputId).each(function(){
-            if ($(this).text() == ui.item.value){
-              agregar = false;
+          if (defaultSelect){
+            var agregar = true;
+            $('.'+inputId).each(function(){
+              if ($(this).text() == ui.item.value){
+                agregar = false;
+              }
+            });
+            if (agregar){
+            $(this).parent().append(
+              '<div class="input-group-btn" style="padding:1px;display:initial">'+
+                '<label class="btn-xs btn-primary" style="margin-top:2px">'+
+                  '<span class="'+inputId+'">'+ ui.item.value +'</span>'+
+                  '<span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%" ></span>'+
+                '</label>'+
+              '</div>');
             }
-          });
-          if (agregar){
-          $(this).parent().append(
-            '<div class="input-group-btn" style="padding:1px;display:initial">'+
-              '<label class="btn-xs btn-primary" style="margin-top:2px">'+
-                '<span class="'+inputId+'">'+ ui.item.value +'</span>'+
-                '<span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%" ></span>'+
-              '</label>'+
-            '</div>');
+            this.value = '';
+            ajustarPantallaBusqueda();
+            return false;
           }
-          this.value = '';
-          ajustarPantallaBusqueda();
-          return false;
         },
         messages: {
             noResults: '',
@@ -1103,10 +1106,6 @@ function iniciarDivCalendario(direccion_id){
   if (!direccion_id){
     direccion_id = $('#idDireccion').val();
   }
-  var clase = '';
-  if ($('#divMapRegHor').length==0){
-    clase = 'regBack';
-  }
   $.ajax({
       url: '/horariosObtener',
       type: 'POST',
@@ -1118,7 +1117,7 @@ function iniciarDivCalendario(direccion_id){
         $('#horariosUbi').val(data.horarios);
         $('#direccion_id').val(data.direccion_id);
         $("#divCalendario").remove();
-        $("#divCalendarioPadre").html('<div id="divCalendario" class="regHorMed '+ clase +'"></div>');
+        $("#divCalendarioPadre").html('<div id="divCalendario" class="regHorMed"></div>');
         setTimeout(function(){iniciarCalendario(data.horarios)},300);
 
       },
@@ -2096,7 +2095,7 @@ function searchingData(){
   autoCompleteAseg('inputAseguradora');
 }
 //<------------- FIN DE LAS FUNCIONES ---------------------------->
-function autoCompleteEsp(inputId){
+function autoCompleteEsp(inputId, defaultSelect){
     $.ajax({
       async: false,
       url: '/cargarEspecialidades',
@@ -2108,7 +2107,7 @@ function autoCompleteEsp(inputId){
         data.forEach(function(esp){
           availableTags.push(esp.especialidad);
         });
-        InputAutoComplete(inputId,availableTags);
+        InputAutoComplete(inputId,availableTags, defaultSelect);
       },
       error: function (err){
         console.log('Ajax error: ' + JSON.stringify(err));
