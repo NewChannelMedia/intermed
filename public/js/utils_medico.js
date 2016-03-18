@@ -75,6 +75,11 @@ $( document ).ready( function () {
       var curpRegMed = '', cedulaRegMed = '';
       var genderF = '', genderM = '';
 
+      autoCompleteEsp('inputTituloEspecialidad',false);
+      autoCompleteEsp('inputTituloEspecialidadEstudio',false);
+
+      //seccion_continuar_2  seccion_editar_2 section_content_2
+
       var continuar = true;
       $.ajax( {
         async: false,
@@ -85,12 +90,18 @@ $( document ).ready( function () {
         success: function ( data ) {
           if (data.success ){
             //Registrado el nombre
+            var edicion1 = false;
+            var edicion2 = false;
+            var edicion3 = false;
+            var complete = true;
             if ( data.result.DatosGenerale) {
               $('#nombreRegMed').val(data.result.DatosGenerale.nombre);
               $('#apePatRegMed').val(data.result.DatosGenerale.apellidoP);
               if (data.result.DatosGenerale.apellidoM){
                 $('#apeMatRegMed').val(data.result.DatosGenerale.apellidoM);
               }
+            } else {
+              complete = false;
             }
 
             if (data.result.Medico.fechaNac){
@@ -98,6 +109,8 @@ $( document ).ready( function () {
               $('#anioNacReg').val(fechaNac[0]);
               $('#mesNacReg').val(fechaNac[1]);
               $('#diaNacReg').val(fechaNac[2]);
+            } else {
+              complete = false;
             }
 
             //Registrado el Genero
@@ -110,18 +123,28 @@ $( document ).ready( function () {
                 genderM = ' checked ';
                 $('#sexM').attr('checked',true);
               }
+            } else {
+              complete = false;
             }
 
-            //Registrado el curp
-            if ( data.result.Medico && data.result.Medico.curp) {
+            //Curp registrada
+            if ( data.result.Medico && data.result.Medico.curp ){
               $('#curpRegMed').val(data.result.Medico.curp);
-              $('#regMedDG input').attr('disabled','true');
             } else {
-              $('#regMedDG button').removeClass('hidden');
+              complete = false;
             }
-            //Registrada la cedula
+
+            if (complete){
+              datosPersonalesCompletos = true;
+              bloquearEdiciones();
+              edicionEdu();
+            } else {
+              bloquearEdiciones();
+              edicionDG();
+            }
+
             if ( data.result.Medico && data.result.Medico.cedula) {
-              console.log('medico: ' + JSON.stringify(data.result.Medico));
+              if (datosPersonalesCompletos) datosProfesionalesCompletos = true;
               $('#spanCedulaGeneral').text(data.result.Medico.cedula + ':'+data.result.Medico.titulo);
               $('#inputCedulaGeneral').val(data.result.Medico.cedula);
 
@@ -130,11 +153,17 @@ $( document ).ready( function () {
 
               $('.addEspecialidadDiv').removeClass('hidden');
               data.result.Medico.MedicoEspecialidads.forEach(function(esp){
-                $('#spanCedulaEspecialidad').append('<br><span class="especialidad"><span class="cedula">'+ esp.cedula + '</span>: <span class="tituloEsp">' + esp.Especialidad.especialidad +'</span></span>');
+                if (esp.cedula){
+                  $('#spanCedulaEspecialidad').append('<br><span class="especialidad"><span class="cedula">'+ esp.cedula + '</span>: <span class="tituloEsp">' + esp.Especialidad.especialidad +'</span></span>');
+                } else {
+                  $('#spanEspecialidadEstudio').append('<br><span class="especialidad"><span class="tituloEspEstudio">'+ esp.Especialidad.especialidad +'</span></span>');
+                }
               });
+            }
 
-            } else {
-              $('#regMedProf button').removeClass('hidden');
+            if (datosProfesionalesCompletos){
+              bloquearEdiciones();
+              edicionPago();
             }
           }
         },
@@ -1086,7 +1115,7 @@ function regUbicacion(salir) {
         UbicData['telefonosNuevos'] = telefonosNuevos;
 
         $.ajax({
-            url: '/registrarubicacion',
+            url: '/medico/registrarubicacion',
             type: 'POST',
             dataType: "json",
             cache: false,
@@ -1095,8 +1124,20 @@ function regUbicacion(salir) {
             success: function (data) {
               if (data.success){
                 if ($('#alertRegUbi').length>0){
+                  resetearFormRegUbi();
                   $('#alertRegUbi').html('Tu ubicación <b>'+ UbicData.nombreUbi +'</b> ha sido agrega, puedes agregar otra si gustas.');
                   var ubic = '<option value="'+ data.datos.id +'">'+ data.datos.nombre +' '+ data.datos.calle + ' #' + data.datos.numero +'</option>';
+                  $('#listInlineUbi').append('<li class="lbl lbl-ubicaciones">'+
+                                                '<span>'+ data.datos.nombre +'</span>'+
+                                                '<button class="btn btn-sm borrar">'+
+                                                  '<span class="glyphicon glyphicon-remove">'+
+                                                  '</span>'+
+                                                '</button>'+
+                                              '</li>');
+
+                  /*
+
+                  */
                   if ($('.UbicHidden').hasClass('hidden')){
                     $('.UbicHidden').removeClass('hidden');
                     $('.slc_ubicReg').html(ubic);
@@ -1105,7 +1146,6 @@ function regUbicacion(salir) {
                   }else {
                     $('.slc_ubicReg').append(ubic);
                   }
-                  resetearFormRegUbi();
                 } else {
 
                   $('#idDireccion').val(data.ubicacion_id);
@@ -1328,13 +1368,15 @@ function actualizarDirecciones(salir){
     }
   } );
 }
-function eliminarUbicacion(){
+function eliminarUbicacion(direccion_id,reg){
+  if (!direccion_id){
+    direccion_id = $('#idDireccion').val();
+  }
   bootbox.confirm({
     message: "¿Desea eliminar la dirección?.<br/><br/>*** Esta acción eliminara los telefonos,horarios y citas vinculados con la ubicación.",
     title: "Mensaje de confirmación",
     callback: function(result) {
       if (result){
-          var direccion_id = $('#idDireccion').val();
           $.ajax( {
             async: false,
             url: '/ubicaciones/eliminar',
@@ -1344,7 +1386,11 @@ function eliminarUbicacion(){
             cache: false,
             success: function ( data ) {
               if (data.success){
-                actualizarDirecciones(true);
+                if (reg){
+                  obtenerDirecciones();
+                } else {
+                  actualizarDirecciones(true);
+                }
               }
             },
             error: function (err){
@@ -3128,13 +3174,17 @@ function guardarCedula(){
 
 function resetearFormRegUbi() {
   $('#frmRegUbi')[0].reset();
+  $('#frmRegUbi input').val('');
+  $('#idDireccion').val('');
   mapa.marker = null;
   $('#slc_estados_mapa').val('');
+  $('#divTelefonoAgregado').html('');
   obtenerCiudades("_mapa");
   cargarMapa(0);
   cargarTelefonos();
   funcionesTelefonos();
   $('#nombreUbi').focus();
+  $('#btnCancelarUbi').addClass('hidden');
 }
 
 function obtenerDirecciones(){
@@ -3148,8 +3198,16 @@ function obtenerDirecciones(){
       if (data.success){
         var contenido = '';
         if (data.result){
+          $('#listInlineUbi').html("");
           data.result.forEach(function(res){
             contenido += '<option value="'+ res.id +'"><b>'+ res.nombre +'</b> '+ res.calle +' #'+ res.numero +'</option>';
+            $('#listInlineUbi').append('<li class="lbl lbl-ubicaciones">'+
+                                          '<span onclick="editarUbicacion('+ res.id +')">'+ res.nombre +'</span>'+
+                                          '<button class="btn btn-sm borrar" onclick="eliminarUbicacion('+ res.id +',true)">'+
+                                            '<span class="glyphicon glyphicon-remove">'+
+                                            '</span>'+
+                                          '</button>'+
+                                        '</li>');
           });
           if (data.result.length>0){
             $('#alertRegUbi').text('Ya has registrado ubicaciones, puedes registrar una nueva o continuar con la edición de servicios y horarios.');
@@ -3190,6 +3248,20 @@ function terminarReg2() {
   $(this).scrollTo($('#btnEndReg'), 800);
 }
 
+function editarServicio(contenedor){
+  contenedor = $(contenedor);
+  var id = contenedor.find('.id').text();
+  var concepto = contenedor.find('.concepto').text();
+  var descripcion = contenedor.find('.descripcion').text();
+  var duracion = contenedor.find('.duracion').text();
+  var precio = contenedor.find('.precio').text();
+  $('#servicio_id').val(id);
+  $('#conceptServ').val(concepto);
+  $('#decriptServ').val(descripcion);
+  $('#duraServ').val(duracion);
+  $('#precServ').val(precio);
+}
+
 function cargarServicios(element,obj){
   menuRegActiveTab(obj);
   var direccion_id = $(element).val();
@@ -3206,68 +3278,15 @@ function cargarServicios(element,obj){
           $('#ServListReg').html('');
           var contenido = '';
           if (data.result.length>0){
-            contenido = `<div class="row">
-                          <div class="col-md-3"><label class="whiteF regInput">Concepto.</label></div>
-                          <div class="col-md-3"><label class="whiteF regInput">Descripción.</label></div>
-                          <div class="col-md-2"><label class="whiteF regInput">Costo.</label></div>
-                          <div class="col-md-2"><label class="whiteF regInput">Duración.</label></div>
-                        </div>`;
-          }
-          $('#ServListReg').append(contenido);
 
-          data.result.forEach(function(res){
-            var contenido = `
-            <div class="row">
-            <form method="POST" onsubmit="return guardarServicio('frmRegServ-`+ res.id +`');" id="frmRegServ-`+ res.id +`">
-              <input type="hidden" name="servicio_id" value="`+res.id+`">
-              <div class="col-md-3">
-                <input type="text" class="form-control regInput" id="conceptServ" name="concepto" required="required" value="`+res.concepto+`">
-              </div>
-              <div class="col-md-3">
-                <input type="text" class="form-control regInput" id="decriptServ" name="descripcion" required="required" value="`+res.descripcion+`">
-              </div>
-              <div class="col-md-2">
-                <input type="text" class="form-control regInput" id="precServ" name="precio" required="required" value="`+res.precio+`">
-              </div>
-              <div class="col-md-2">
-                <select id="duraServ" class="form-control regInput" name="duracion" required="required">
-                  <option value="" selected disabled>Selecciona</option>
-                  <option value="00:30:00">30 minutos</option>
-                  <option value="00:45:00">1 hora</option>
-                  <option value="01:30:00">1 hora y 30 minutos</option>
-                  <option value="02:00:00">2 horas</option>
-                  <option value="02:30:00">2 horas y 30 minutos</option>
-                  <option value="03:00:00">3 horas</option>
-                  <option value="03:30:00">3 horas y 30 minutos</option>
-                  <option value="04:00:00">4 horas</option>
-                  <option value="04:30:00">4 horas y 30 minutos</option>
-                  <option value="05:00:00">5 horas</option>
-                  <option value="05:30:00">5 horas y 30 minutos</option>
-                  <option value="06:00:00">6 horas</option>
-                  <option value="06:30:00">6 horas y 30 minutos</option>
-                  <option value="07:00:00">7 horas</option>
-                  <option value="07:30:00">7 horas y 30 minutos</option>
-                  <option value="08:00:00">8 horas</option>
-                  <option value="08:30:00">8 horas y 30 minutos</option>
-                  <option value="09:00:00">9 horas</option>
-                  <option value="09:30:00">9 horas y 30 minutos</option>
-                </select>
-              </div>
-              <div class="col-md-1">
-                <button type="submit" class="btn btn-success regInput">
-                  <span style="color:white;" class="glyphicon glyphicon-floppy-disk"></span>
-                </button>
-              </div>
-              <div class="col-md-1">
-                <button type="button" class="btn btn-danger regInput" onclick="eliminarServicio(`+ res.id +`)">
-                  <span style="color:white;" class="glyphicon glyphicon-minus"></span>
-                </button>
-              </div>
-            </form>
-            </div>`;
+            $('#ServListReg').html('');
+            var contenido = '';
+            data.result.forEach(function(res){
+              contenido += '<li class="lbl lbl-ubicaciones"><span onclick="editarServicio(this)"><span class="hidden id">'+ res.id +'</span><span class="hidden descripcion">'+ res.descripcion +'</span><span class="hidden duracion">'+ res.duracion +'</span><span class="concepto">'+ res.concepto +'</span> ($<span class="precio">'+ res.precio +'</span>)</span><button class="btn btn-sm borrar" onclick="eliminarServicio('+ res.id +',this)"><span class="glyphicon glyphicon-remove"></span></button></li>';
+            });
+
             $('#ServListReg').append(contenido);
-            $('#frmRegServ-'+ res.id +' [name="duracion"]').prop('value',res.duracion);
-          });
+          }
         }
       } else if (data.error){
         manejadorDeErrores(data.error);
@@ -3307,92 +3326,10 @@ function guardarServicio(idElement){
 		type: 'POST',
 		success: function( data ) {
       if (data.success){
-        if (data.result){
-          $('#'+idElement)[0].reset();
-          var res = data.result;
-
-          var contenido = `
-          <div class="col-lg-12">
-            <form method="POST" onsubmit="return guardarServicio('frmRegServ-`+ res.id +`');" id="frmRegServ-`+ res.id +`">
-              <input type="hidden" name="servicio_id" value="`+res.id+`">
-              <div class="col-md-3">
-                <div class="row">
-                  <div class="col-md-12">
-                    <label class="whiteF regInput">Concepto.</label>
-                  </div>
-                  <div class="col-md-12">
-                    <input type="text" class="form-control regInput" id="conceptServ" name="concepto" required="required" value="`+res.concepto+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="row">
-                  <div class="col-md-12">
-                    <label class="whiteF regInput">Descripción.</label>
-                  </div>
-                  <div class="col-md-12">
-                    <input type="text" class="form-control regInput" id="decriptServ" name="descripcion" required="required" value="`+res.descripcion+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-2">
-                <div class="row">
-                  <div class="col-md-12">
-                    <label class="whiteF regInput">Costo.</label>
-                  </div>
-                  <div class="col-md-12">
-                    <input type="text" class="form-control regInput" id="precServ" name="precio" required="required" value="`+res.precio+`" onChange="$('#frmRegServ-`+ res.id +`').submit()">
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-2">
-                <div class="row">
-                  <div class="col-md-12">
-                    <label class="whiteF regInput">Duración.</label>
-                  </div>
-                  <div class="col-md-12">
-                    <select id="duraServ" class="form-control regInput" name="duracion" required="required" onChange="$('#frmRegServ-`+ res.id +`').submit()">
-                      <option value="" selected disabled>Selecciona</option>
-                      <option value="00:30:00">30 minutos</option>
-                      <option value="00:45:00">1 hora</option>
-                      <option value="01:30:00">1 hora y 30 minutos</option>
-                      <option value="02:00:00">2 horas</option>
-                      <option value="02:30:00">2 horas y 30 minutos</option>
-                      <option value="03:00:00">3 horas</option>
-                      <option value="03:30:00">3 horas y 30 minutos</option>
-                      <option value="04:00:00">4 horas</option>
-                      <option value="04:30:00">4 horas y 30 minutos</option>
-                      <option value="05:00:00">5 horas</option>
-                      <option value="05:30:00">5 horas y 30 minutos</option>
-                      <option value="06:00:00">6 horas</option>
-                      <option value="06:30:00">6 horas y 30 minutos</option>
-                      <option value="07:00:00">7 horas</option>
-                      <option value="07:30:00">7 horas y 30 minutos</option>
-                      <option value="08:00:00">8 horas</option>
-                      <option value="08:30:00">8 horas y 30 minutos</option>
-                      <option value="09:00:00">9 horas</option>
-                      <option value="09:30:00">9 horas y 30 minutos</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-1">
-                <div class="row">
-                  <div class="col-md-12">
-                    <label class="whiteF">&nbsp;</label>
-                  </div>
-                  <div class="col-md-12">
-                    <button type="button" class="btn btn-danger regInput" onclick="eliminarServicio(`+ res.id +`)">
-                      <span style="color:white;" class="glyphicon glyphicon-minus" ></span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>`;
-          $('#ServListReg').append(contenido);
-          $('#frmRegServ-'+ res.id +' [name="duracion"]').prop('value',res.duracion);
-        }
+        $('#servicio_id').val('');
+        $('#'+idElement).find('button').val('Añadir');
+        $('#'+idElement)[0].reset();
+        cargarServicios($('#slc_servicios_ubi'));
       } else if (data.error){
         manejadorDeErrores(data.error);
       }
@@ -3405,7 +3342,7 @@ function guardarServicio(idElement){
   return false;
 }
 
-function eliminarServicio(id){
+function eliminarServicio(id, element){
   	$.ajax({
   		url: '/medicos/serv/drop',
   		type: 'POST',
@@ -3415,7 +3352,7 @@ function eliminarServicio(id){
   		type: 'POST',
   		success: function( data ) {
         if (data.success){
-          $('#frmRegServ-'+id).remove();
+          $(element).parent().remove();
         }
         checkUbicMinConf();
       },
@@ -3465,6 +3402,10 @@ function validarCodigo(element){
           $(element).parent().find('.glyphicon').first().addClass('glyphicon-ok');
           $(element).parent().find('.glyphicon').removeClass('glyphicon-remove');
           $(element).parent().find('label').first().text('');
+          if (!data.plan){
+            data.plan = '';
+          }
+          $('#planid').val(data.plan);
         } else {
           var mensaje = '';
           if (data.registrado){
@@ -3949,8 +3890,8 @@ function validarCedulaGeneral(element, button){
           } else{
             if (data.exists){
               alert('La cedula no corresponde a la persona de registro');
-            } else {
-            //Has error, cedula no existe
+            } else if (data.registrado){
+              alert('Ya existe un médico registrado con esa cedula.');
             }
           }
         }
@@ -3974,14 +3915,15 @@ function validarCedulaGeneral(element, button){
 }
 
 
-function validarCedulaEspecialidad(element){
-  if (element.val().length>0){
+function validarCedulaEspecialidad(element, elementTitle){
+  if (element.val().length>0 && elementTitle.val().length>0){
       var nombreMedico = 'Valente Armando';
       var paterno = 'Maldonado';
       var materno = 'Rios';
       var genero = 1;
       $.post('/medicos/cedula/general',{
         cedula: element.val(),
+        titulo: elementTitle.val(),
         nombreMedico: nombreMedico,
         paterno: paterno,
         materno: materno,
@@ -3991,7 +3933,8 @@ function validarCedulaEspecialidad(element){
         if (data.success){
           if (data.result.tipo == "A1"){
             element.val('');
-            $('#spanCedulaEspecialidad').append('<br><span class="especialidad"><span class="cedula">'+ data.result.cedula + '</span>: <span class="tituloEsp">' + data.result.titulo +'</span></span>');
+            $('#spanCedulaEspecialidad').append('<br><span class="especialidad"><span class="cedula">'+ data.result.cedula + '</span>: <span class="tituloEsp">' + elementTitle.val() +'</span></span>');
+            elementTitle.val('');
           } else {
             alert('No es tipo licenciatura');
           }
@@ -4020,54 +3963,236 @@ function validarCedulaEspecialidad(element){
   }
 }
 
-function regMedDatosGenerales(){
-  try{
-    var nombre = $('#nombreRegMed').val();
-    var paterno = $('#apePatRegMed').val();
-    var materno = $('#apeMatRegMed').val();
-
-    var validDate = isValidDate(parseInt($('#anioNacReg').val()),parseInt($('#mesNacReg').val())-1,parseInt($('#diaNacReg').val()));
-
-    var matchCurp = $('#curpRegMed').val().match(/^([a-z]{4})([0-9]{6})([a-z]{6})([0-9]{2})$/i)
-
-    var genero = "";
-    if ($('#sexF').is(':checked')){
-      genero = $('#sexF').val();
-    } else if($('#sexM').is(':checked')){
-      genero = $('#sexM').val();
-    }
-
-    var fechaNac = $('#anioNacReg').val() + '-' + $('#mesNacReg').val() + '-' + $('#diaNacReg').val();
-    console.log('DATE: ' + fechaNac);
-
-    if (validDate && matchCurp && genero != ""){
-      $.post('/medicos/registrar/datosgenerales',{
-        nombre: nombre,
-        paterno: paterno,
-        materno: materno,
-        fechaNac: fechaNac,
-        genero : genero,
-        curp: $('#curpRegMed').val()
+function añadirEspecialidadEstudio(element){
+  if (element.val().length>0){
+      $.post('/medicos/especialidadestudio/agregar',{
+        especialidad: element.val()
       },function( data ){
-        console.log('Result: ' + JSON.stringify(data));
         if (data.success){
-          $('#regMedDG input').attr('disabled','true');
-          $('#regMedDG button').attr('disabled','true');
-        } else if (data.error){
-          manejadorDeErrores(data.error);
+          $('#spanEspecialidadEstudio').append('<br><span class="especialidad"><span class="tituloEspEstudio">' + element.val() +'</span></span>');
+          element.val('');
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          } else if (data.repeat){
+            alert('Ya tienes esta especialidad');
+          }
         }
       }).fail(function(e){
         console.error(e);
       });
-    } else if (!validDate){
-      console.log('La fecha no existe');
-    } else if (!matchCurp){
-      console.log('Formato incorrecto de curp');
-    } else if (genero == ""){
-      console.log('Falta seleccionar genero');
+  } else {
+    element[0].focus();
+  }
+}
+
+function regMedDatosGenerales(){
+  if (!$('#seccion_continuar_1').hasClass('hidden')){
+
+    try{
+      var nombre = $('#nombreRegMed').val();
+      var paterno = $('#apePatRegMed').val();
+      var materno = $('#apeMatRegMed').val();
+
+      var validDate = isValidDate(parseInt($('#anioNacReg').val()),parseInt($('#mesNacReg').val())-1,parseInt($('#diaNacReg').val()));
+
+      var matchCurp = $('#curpRegMed').val().match(/^([a-z]{4})([0-9]{6})([a-z]{6})([0-9]{2})$/i)
+
+      var genero = "";
+      if ($('#sexF').is(':checked')){
+        genero = $('#sexF').val();
+      } else if($('#sexM').is(':checked')){
+        genero = $('#sexM').val();
+      }
+
+      var fechaNac = $('#anioNacReg').val() + '-' + $('#mesNacReg').val() + '-' + $('#diaNacReg').val();
+
+      if (validDate && matchCurp && genero != ""){
+        $.post('/medicos/registrar/datosgenerales',{
+          nombre: nombre,
+          paterno: paterno,
+          materno: materno,
+          fechaNac: fechaNac,
+          genero : genero,
+          curp: $('#curpRegMed').val()
+        },function( data ){
+          console.log('Result: ' + JSON.stringify(data));
+          if (data.success){
+            datosPersonalesCompletos = true;
+            bloquearEdiciones();
+            edicionEdu();
+          } else if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }).fail(function(e){
+          console.error(e);
+        });
+      } else if (!validDate){
+        console.log('La fecha no existe');
+      } else if (!matchCurp){
+        console.log('Formato incorrecto de curp');
+      } else if (genero == ""){
+        console.log('Falta seleccionar genero');
+      }
+    } catch(e){
+      console.log('ERROR: ' + e);
     }
-  } catch(e){
-    console.log('ERROR: ' + e);
+  } else {
+    bloquearEdiciones();
+    edicionDG();
   }
   return false;
+}
+
+function bloquearEdiciones(){
+    //Datos generales
+    $('#seccion_continuar_1').addClass('hidden');
+    $('#seccion_editar_1').removeClass('hidden');
+    $('#section_content_1 input').attr('disabled',true);
+    $('#section_content_1 button').attr('disabled',true);
+    //Datos academicos
+    $('#seccion_continuar_2').addClass('hidden');
+    if (datosPersonalesCompletos){
+      $('#seccion_editar_2').removeClass('hidden');
+    } else {
+      $('#seccion_editar_2').addClass('hidden');
+    }
+    $('#section_content_2 input').attr('disabled',true);
+    $('#section_content_2 button').attr('disabled',true);
+    //Datos de pago
+    $('#seccion_continuar_3').addClass('hidden');
+    if (datosProfesionalesCompletos){
+      $('#seccion_editar_3').removeClass('hidden');
+    } else {
+      $('#seccion_editar_3').addClass('hidden');
+    }
+    $('#section_content_3 input').attr('disabled',true);
+    $('#section_content_3 button').attr('disabled',true);
+    $('#section_content_3 select').attr('disabled',true);
+}
+
+
+function edicionDG(){
+  $('#seccion_continuar_1').removeClass('hidden');
+  $('#seccion_editar_1').addClass('hidden');
+  $('#section_content_1 input').attr('disabled',false);
+}
+
+function edicionEdu(){
+  if (datosPersonalesCompletos){
+    $('#seccion_continuar_2').removeClass('hidden');
+    $('#seccion_editar_2').addClass('hidden');
+    $('#section_content_2 input').attr('disabled',false);
+    $('#section_content_2 button').attr('disabled',false);
+    if ($('#spanCedulaGeneral').text() != ""){
+      $('#inputCedulaGeneral').attr('disabled',true);
+      $('#addCedulaGen').attr('disabled',true);
+    }
+  }
+}
+
+function edicionPago(){
+  if (datosProfesionalesCompletos){
+    $('#seccion_continuar_3').removeClass('hidden');
+    $('#seccion_editar_3').addClass('hidden');
+    $('#section_content_3 input').attr('disabled',false);
+    $('#section_content_3 button').attr('disabled',false);
+    $('#section_content_3 select').attr('disabled',false);
+  }
+}
+
+function siguientePaso(){
+  if (!$('#seccion_continuar_2').hasClass('hidden') && $('#inputCedulaGeneral').attr('disabled')){
+    datosProfesionalesCompletos = true;
+    bloquearEdiciones();
+    edicionPago();
+  } else {
+    bloquearEdiciones();
+    edicionEdu();
+  }
+  return false;
+}
+
+function editarDatosDePago(){
+  bloquearEdiciones();
+  edicionPago();
+}
+
+var datosPersonalesCompletos = false;
+var datosProfesionalesCompletos = false;
+var datosPagoCompletos = false;
+
+function validarTarjeta(){
+  Conekta.token.create($('#conektaForm'), function (token){
+      $.post('/cargos/CrearSubscripcion',{
+        conektaTokenId:token.id,
+        planid:$('#planid').val()
+      },function(data){
+        if (data.success){
+          $.post('/usuario/cambiarStatus',{
+            status:-1
+          }, function (data){
+            actualizarSesion(true);
+          }).fail(function(e){
+            console.log("Post error: "+JSON.stringify(e));
+          });
+        }
+      }).fail(function(e){
+        console.log("Post error: "+JSON.stringify(e));
+      });
+  }, function (response) {
+      $("#conektaForm .card-errors").text(response.message_to_purchaser);
+  });
+  return false;
+}
+
+function editarUbicacion(direccion_id){
+    $.post('/ubicacion/detallesDireccion',{
+      direccion_id: direccion_id
+    },function(data){
+      //console.log('Result: ' + JSON.stringify(data));
+      if (data.success){
+        $('#idDireccion').val(data.result.id);
+        $('#nombreUbi').val(data.result.nombre);
+        if (data.result.principal == 1){
+          $('#principal').attr('checked',true);
+        }else{
+          $('#principal').attr('checked',false);
+        }
+
+        $('#calleUbi').val(data.result.calle);
+        $('#numeroUbi').val(data.result.numero);
+        $('#numeroIntUbi').val(data.result.numeroInt);
+        $('#calle1Ubi').val(data.result.calle1);
+        $('#calle2Ubi').val(data.result.calle2);
+        $('#slc_estados_mapa').val(data.result.Municipio.estado_id);
+        $('#slc_estados_mapa').change();
+        setTimeout(function(){
+          $('#slc_ciudades_mapa').val(data.result.Municipio.id);
+          $('#slc_ciudades_mapa').change();
+          setTimeout(function(){
+            $('#slc_colonias_mapa').val(data.result.localidad_id);
+            $('#cpUbi').val(data.result.Localidad.cp);
+          },500);
+        },500);
+
+        var contenidoTelefono = '';
+        /*<ul class="list-inline" id="listInlineUbi">
+        <li class="lbl lbl-ubicaciones"><span onclick="editarUbicacion(14)">New Channel</span><button class="btn btn-sm borrar" onclick="eliminarUbicacion(14,true)"><span class="glyphicon glyphicon-remove"></span></button></li><li class="lbl lbl-ubicaciones"><span onclick="editarUbicacion(15)">ñljsdfñlakj</span><button class="btn btn-sm borrar" onclick="eliminarUbicacion(15,true)"><span class="glyphicon glyphicon-remove"></span></button></li><li class="lbl lbl-ubicaciones"><span onclick="editarUbicacion(16)">ddddddd</span><button class="btn btn-sm borrar" onclick="eliminarUbicacion(16,true)"><span class="glyphicon glyphicon-remove"></span></button></li></ul>*/
+        data.result.Telefonos.forEach(function(tel){
+          contenidoTelefono += '<li class="lbl lbl-telefonos">'+
+                    '<span onclick="editarUbicacion(14)">'+ tel.numero +'</span>'+
+                    '<button class="btn btn-sm borrar" onclick="eliminarUbicacion(14,true)"><span class="glyphicon glyphicon-remove"></span></button>'+
+                  '</li>';
+
+        });
+
+        $('#divTelefonoAgregado').html(contenidoTelefono);
+        $('#btnCancelarUbi').removeClass('hidden');
+
+        //Visible boton para cancelar edición
+      }
+    }).fail(function(e){
+      console.log("Post error: "+JSON.stringify(e));
+    });
 }

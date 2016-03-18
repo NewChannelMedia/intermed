@@ -1202,3 +1202,17 @@ exports.UpdateInfo = function(object, req, res){
     req.errorHandler.report(err, req, res);
   }
 }
+
+exports.cambiarStatusUsuario= function (object, req, res){
+  models.Usuario.update({
+    status:object.status
+  },{
+    where: {
+      id: req.session.passport.user.id
+    }
+  }).then(function(result){
+    res.status(200).json({
+      result: result
+    });
+  });
+}

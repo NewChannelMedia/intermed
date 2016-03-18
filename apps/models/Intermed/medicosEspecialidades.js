@@ -10,6 +10,9 @@ module.exports = function ( sequelize, DataTypes ) {
     cedula: {
       type: DataTypes.STRING
     },
+    titulo: {
+      type: DataTypes.STRING
+    },
     anio: {
       type: DataTypes.INTEGER
     },

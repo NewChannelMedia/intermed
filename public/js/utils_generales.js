@@ -840,7 +840,7 @@ function split( val ) {
 function extractLast( term ) {
   return split( term ).pop();
 }
-function InputAutoComplete(inputId, availableTags){
+function InputAutoComplete(inputId, availableTags, defaultSelect){
     $('#'+inputId)
       // don't navigate away from the field on tab when selecting an item
       .bind( "keydown", function( event ) {
@@ -857,24 +857,26 @@ function InputAutoComplete(inputId, availableTags){
             availableTags, extractLast( request.term ) ) );
         },
         select: function( event, ui ) {
-          var agregar = true;
-          $('.'+inputId).each(function(){
-            if ($(this).text() == ui.item.value){
-              agregar = false;
+          if (defaultSelect){
+            var agregar = true;
+            $('.'+inputId).each(function(){
+              if ($(this).text() == ui.item.value){
+                agregar = false;
+              }
+            });
+            if (agregar){
+            $(this).parent().append(
+              '<div class="input-group-btn" style="padding:1px;display:initial">'+
+                '<label class="btn-xs btn-primary" style="margin-top:2px">'+
+                  '<span class="'+inputId+'">'+ ui.item.value +'</span>'+
+                  '<span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%" ></span>'+
+                '</label>'+
+              '</div>');
             }
-          });
-          if (agregar){
-          $(this).parent().append(
-            '<div class="input-group-btn" style="padding:1px;display:initial">'+
-              '<label class="btn-xs btn-primary" style="margin-top:2px">'+
-                '<span class="'+inputId+'">'+ ui.item.value +'</span>'+
-                '<span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%" ></span>'+
-              '</label>'+
-            '</div>');
+            this.value = '';
+            ajustarPantallaBusqueda();
+            return false;
           }
-          this.value = '';
-          ajustarPantallaBusqueda();
-          return false;
         },
         messages: {
             noResults: '',
@@ -2005,7 +2007,7 @@ function searchingData(){
   autoCompleteAseg('inputAseguradora');
 }
 //<------------- FIN DE LAS FUNCIONES ---------------------------->
-function autoCompleteEsp(inputId){
+function autoCompleteEsp(inputId, defaultSelect){
     $.ajax({
       async: false,
       url: '/cargarEspecialidades',
@@ -2017,7 +2019,7 @@ function autoCompleteEsp(inputId){
         data.forEach(function(esp){
           availableTags.push(esp.especialidad);
         });
-        InputAutoComplete(inputId,availableTags);
+        InputAutoComplete(inputId,availableTags, defaultSelect);
       },
       error: function (err){
         console.log('Ajax error: ' + JSON.stringify(err));

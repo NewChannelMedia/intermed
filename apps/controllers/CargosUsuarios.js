@@ -563,3 +563,127 @@ exports.SuscripcionCancelar = function (object, req, res) {
 //        where: { id: idUsuario }
 //    })
 //}
+
+
+exports.CrearSubscripcion = function (object, req, res) {
+    if (object.planid && object.planid>0){
+      generarSuscripcion(object,req,res);
+    } else {
+      models.PlanDeCargo.findOne({
+        where:{default:1}
+      }).then(function(plan){
+        console.log('plan_id: ' + plan.id);
+        object.planid = plan.id
+        generarSuscripcion(object,req,res);
+      });
+    }
+};
+
+function generarSuscripcion(object, req, res){
+  object.planid = object.planid.toString();
+  object.usuario_id = req.session.passport.user.id;
+  models.Usuario.findOne({
+      where: {
+          id: object.usuario_id
+      },
+      attributes: ['correo'],
+      include: [{
+          model: models.DatosGenerales,
+          attributes: ['nombre', 'apellidoP', 'apellidoM']
+      }]
+  })
+   .then(function (usuario) {
+      //Validar que exista el usuario en registro cargo
+      models.UsuarioCargo.findOne({
+          where: { medico_id: object.usuario_id }
+      }).then(function (usuarioCargo) {
+          if (usuarioCargo) {
+              if (usuario.idUsuarioProveedor) {
+                  actualizarUsuarioProveedor(res, usuario, usuarioCargo.idUsuarioProveedor)
+              } else {
+                  registrarUsuarioProveedor(res, object.usuario_id, usuario, object.conektaTokenId, object.planid);
+              }
+          } else {
+              models.UsuarioCargo.create({
+                  medico_id: object.usuario_id,
+                  plandecargo_id: object.planid,
+                  cargosEstatus_id: 1
+              }).then(function (usuariocargoregistrado) {
+                  if (usuariocargoregistrado) {
+                      registrarUsuarioProveedor(res, object.usuario_id, usuario, object.conektaTokenId, object.planid);
+                  }
+              }).catch(function (err) {
+                  console.log(err);
+              });
+          }
+      }).catch(function (err) {
+          console.log(err);
+      });
+  }).catch(function (err) {
+      console.log(err);
+  });
+}
+
+
+function actualizarUsuarioProveedor(res, datos, idUsuarioProveedor, conektaTokenId) {
+    customer = conekta.Customer.find(idUsuarioProveedor, function (err, customer) {
+        customer.update({
+            "name": datos.DatosGenerale.nombre + ' ' + datos.DatosGenerale.apellidoP + ' ' + datos.DatosGenerale.apellidoM,
+            "email": datos.correo
+        }, function (err, resultado) {
+            if (err) {
+                console.log(err);
+            } else {
+                res.status(200).json({
+                  success:true,
+                  linea: 624
+                });
+            }
+        });
+    });
+}
+//UsuarioGuardarDatosProveedor
+//UsuarioGuardarTarjeta
+
+function registrarUsuarioProveedor(res, usuario_id, datos, conektaTokenId, planid) {
+    models.PlanDeCargo.findOne({
+        where: { id: planid }
+    }).then(function (plan) {
+        //registra en proveedor
+        conekta.Customer.create({
+            "name": datos.DatosGenerale.nombre + ' ' + datos.DatosGenerale.apellidoP + ' ' + datos.DatosGenerale.apellidoM,
+            "email": datos.correo,
+            //"phone": "55-5555-5555",
+            "cards": [conektaTokenId],
+            "plan": plan.idproveedor
+        }, function (err, resultado) {
+            if (err) {
+                console.log(err);
+            } else {
+                UsuarioGuardarDatosProveedor(usuario_id, resultado.toObject().id, planid, resultado.subscription.toObject().created_at, resultado.subscription.toObject().subscription_start);
+                UsuarioGuardarTarjeta(usuario_id, resultado.toObject().cards[0]);
+
+                models.UsuarioCargo.update({
+                    cargosEstatus_id: 2 //Tabla estatusCargos: Suscripcion activa
+                }, {
+                    where: { medico_id: usuario_id }
+                })
+
+                console.log('cliente registrado en proveedor');
+
+                res.status(200).json({
+                  success: true,
+                  linea: 661
+                })
+            }
+        });
+    }).catch(function (err) {
+        console.log('error al obtener el id del intervalo cargo');
+    });
+}
+
+
+
+//UsuarioActualizarEnProveedor
+
+//RegistrarUsuarioEnProveedor

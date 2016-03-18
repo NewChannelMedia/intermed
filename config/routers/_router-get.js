@@ -13,7 +13,11 @@ module.exports = function (object){
       if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "M"){
         if (req.session.passport.user.status == 0){
           routeLife( 'plataforma2', 'plataforma', hps );
-          res.render('medico/registro_1');
+          models.PlanDeCargo.findAll({
+            order: [['default','DESC']]
+          }).then(function(planes){
+            res.render('medico/registro_1',{planes:planes});
+          });
 
         } else if (req.session.passport.user.status == -1){
           routeLife( 'plataforma2', 'plataforma', hps );

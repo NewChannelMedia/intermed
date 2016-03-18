@@ -2694,10 +2694,11 @@ div.Slider{
 #divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg,
 #divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg,
 #divCalendario.regHorMed div.fc-event-container .fc-event {
-  background-color: rgb(255,149,0);
+  background-color: #FFF;/*rgb(255,149,0);*/
   color: #6A6A6A;
   font-weight: bold;
   border: none;
+  opacity: 0.8;
 }
 
 #divCalendario.regHorMed div.fc-event-container .fc-event.citaPast,
