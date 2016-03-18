@@ -1308,7 +1308,6 @@ function horariosAgendaMedico(medico_id){
                     cache: false,
                     data: {medico_id: medico_id},
                     success: function (data) {
-                      console.log('Result: ' + JSON.stringify(data));
                       if (data.result){
                         if (data.result.Usuario.DatosGenerale.apellidoM){
                           data.result.Usuario.DatosGenerale.apellidoM = ' ' + data.result.Usuario.DatosGenerale.apellidoM;
