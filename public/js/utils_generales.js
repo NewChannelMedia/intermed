@@ -1240,6 +1240,11 @@ $( document ).ready( function () {
     $('#buscadorEspecial').on('input',function(e){
      cargarListaEspCol( $( '#usuarioPerfil' ).val() );
     });
+
+    $('.popVerMas').click( function(){
+        $(this).popover('toggle');
+    })
+
   } else if ($( '#perfilPaciente' ).length > 0 ) {
     cargarListaEspCol( $( '#usuarioPerfil' ).val() ,'P');
     cargarCitasPaciente();
@@ -1250,6 +1255,90 @@ $( document ).ready( function () {
       //alert('en espera de secretaria');
     } else if (!$('#mostrar').hasClass('hidden')){
       //alert('mostrar secretaria');
+    }
+  } else if( $('#oficinaMedico').length > 0 ) {
+
+    var today = new Date(),
+      events = [ //estos son los eventos que se despliegan en el calendario
+         +new Date(today.getFullYear(), today.getMonth(), 8),
+         +new Date(today.getFullYear(), today.getMonth(), 12),
+         +new Date(today.getFullYear(), today.getMonth(), 24),
+         +new Date(today.getFullYear(), today.getMonth() + 1, 6),
+         +new Date(today.getFullYear(), today.getMonth() + 1, 7),
+         +new Date(today.getFullYear(), today.getMonth() + 1, 25),
+         +new Date(today.getFullYear(), today.getMonth() + 1, 27),
+         +new Date(today.getFullYear(), today.getMonth() - 1, 3),
+         +new Date(today.getFullYear(), today.getMonth() - 1, 5),
+         +new Date(today.getFullYear(), today.getMonth() - 2, 22),
+         +new Date(today.getFullYear(), today.getMonth() - 2, 27)
+      ];
+
+    $("#calendar").kendoCalendar({
+      culture: 'es-MX',
+      start: "day",
+      depth: "decade",
+      value: today,
+      dates: events,
+      month: {
+        // template for dates in month view
+        content: '# if ($.inArray(+data.date, data.dates) != -1) { #' +
+                    '<div class="' +
+                       '# if (data.value) { #' +
+                           "dayEvent" +
+                       '# } else { #' +
+                           "day" +
+                       '# } #' +
+                    '">#= data.value #</div>' +
+                 '# } else { #' +
+                 '#= data.value #' +
+                 '# } #'
+      },
+      footer: false
+    });
+    var calendar = $("#calendar").data("kendoCalendar");
+      calendar.value(new Date());
+      calendar.bind("navigate", function() {
+        //aqui cargamos los eventos de ese mes
+        var view = this.view();
+        console.log(view.name); //name of the current view
+        var current = this.current();
+          console.log(current); //currently focused date
+      });
+      calendar.bind("change", function() {
+        //aqui cargamos los eventos de ese dia en la lista de la derecha
+        var value = this.value();
+        console.log(value); //value is the selected date in the calendar
+        if( $(window).width() < 767){
+          toAgendaDay();
+        }
+      });
+
+
+    if ( $( window ).width() > 768 ) {
+      var h = $( window ).height() - $( '#newMainNav' ).height() - $( '.agendaTopContainer' ).height() - 2; /*- $('footer').height()*/
+      $( '.agendaDay' ).css( 'height', h + 'px' );
+    }
+    else if ( $( window ).width() < 767 ) {
+      var h = $( window ).height() - $( '#newMainNav' ).height() - 2;
+      $( '.agendaDay' ).css( 'height', h + 'px' );
+      $( '.agendaMonth' ).css( 'height', h - $( '.agendaTopContainer' ).height() + 'px' );
+      $( '.agendaOverview' ).css( 'height', ( h - $( '.agendaTopContainer' ).height() + 60 ) / 2 + 'px' );
+      $( '.agendaOverview' ).addClass('overview-on-Mobile hidden');
+      $( '.agendaDay .day' ).addClass('openOverview');
+      $( '.agendaOverview .closeOverview' ).removeClass('hidden');
+    }
+
+    $('.openOverview').click(function(){
+      openOverview();
+    })
+    $('.closeOverview').click(function(){
+      closeOverview();
+    })
+    function openOverview (){
+      $( '.agendaOverview' ).removeClass('hidden', 100);
+    }
+    function closeOverview() {
+      $( '.agendaOverview' ).addClass('hidden', 100);
     }
   }
 } );
@@ -2449,7 +2538,15 @@ function realizarBusqueda(bounds){
           }
           contenido += `
             <li>
-              <a onclick="centrarEnMapa('`+ direccion.latitud +`','`+ direccion.longitud +`',`+ medico.id +`,'`+ direccion.id +`',true)"><button class="btn btn-warning"><span class="glyphicon glyphicon-map-marker"></span></button>&nbsp;&nbsp;<strong>`+ direccion.nombre +`</strong><small> `+ direccion.calle +` #`+ direccion.numero + direccion.numeroInt +`, `+ direccion.Municipio.municipio +`,`+ direccion.Municipio.Estado.estado +`<span class="glyphicon glyphicon-zoom-in"></span></small></a>
+              <a onclick="centrarEnMapa('`+ direccion.latitud +`','`+ direccion.longitud +`',`+ medico.id +`,'`+ direccion.id +`',true)">
+              <button class="btn btn-warning">
+              <span class="glyphicon glyphicon-map-marker"></span>
+              </button>
+              &nbsp;&nbsp;
+              <strong>`+ direccion.nombre +`</strong>
+              <small> `+ direccion.calle +` #`+ direccion.numero + direccion.numeroInt +`, `+ direccion.Municipio.municipio +`,`+ direccion.Municipio.Estado.estado +`<span class="glyphicon glyphicon-zoom-in"></span>
+              </small>
+              </a>
             </li>`;
 
           if (!marcadoresBusqueda[direccion.id]){

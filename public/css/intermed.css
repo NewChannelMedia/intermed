@@ -36,8 +36,19 @@ a:visited {
   background-color: #375467!important;
 }
 
+.bg-darkBlue2 {
+  background-color: #162c39!important;
+}
+
 .bg-orange {
   background-color: #ff8a00!important;
+}
+
+.bg-transparentDark {
+  background-color: rgba(0,0,0,.5)!important;
+}
+.bg-transparentClear {
+  background-color: rgba(250,250,250,.5)!important;
 }
 
 .noPadding {

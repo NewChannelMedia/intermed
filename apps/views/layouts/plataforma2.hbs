@@ -48,6 +48,10 @@
 
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/jquery.Jcrop.css" />
+    <link rel="stylesheet" href="http://cdn.kendostatic.com/2015.1.429/styles/kendo.common-material.min.css" />
+    <link rel="stylesheet" href="http://cdn.kendostatic.com/2015.1.429/styles/kendo.material.min.css" />
+    <link rel="stylesheet" href="http://cdn.kendostatic.com/2015.1.429/styles/kendo.dataviz.min.css" />
+    <link rel="stylesheet" href="http://cdn.kendostatic.com/2015.1.429/styles/kendo.dataviz.material.min.css" />
     <link rel="stylesheet" type="text/css" href="css/intermed.css">
     <link rel="stylesheet" type="text/css" href="css/intermed_Platform.css">
     <link rel="stylesheet" type="text/css" href="css/mapa.css" />
@@ -97,7 +101,7 @@
                           </a>
                         </li>
                         <li class="hidden-xs">
-                          <a class="white-c" href="{{base_url}}" id="oficina">Agenda</a>
+                          <a class="white-c" href="{{base_url}}">Agenda</a>
 
                         </li>
 
@@ -111,7 +115,7 @@
                         </li>
                         <li class="hidden-xs">
                           <a class="white-c" href="{{base_url}}comentarios">
-                            <span class="white-c glyphicon glyphicon-stats"></span>
+                            <span class="glyphicon glyphicon-stats"></span>
                           </a>
                         </li>
                         <li class="dropdown hidden-xs">
@@ -140,7 +144,7 @@
                           </a>
                           <ul class="dropdown-menu dropdown-menu-right s20" aria-labelledby="dLabel">
                             <li>
-                              <a class="text-right" href="{{base_url}}" id="oficina">Oficina</a>
+                              <a class="text-right" href="{{base_url}}">Agenda</a>
                             </li>
                             <li>
                               <a class="text-right" href="{{base_url}}secretaria">
@@ -313,12 +317,14 @@
         <div class="center-content">
           <div class="container-fluid">
             <div class="row noPadding">
-              <div class="col-lg-7 pull-right">
+              <div class="col-lg-12 pull-right text-right">
                 <a href="/" class="">
                   <img class="logoIntermed img-responsive pull-right" src="img/logos/logo1.png" />
                 </a>
               </div>
-              <div class="col-lg-7 pull-right">
+            </div>
+            <div class="row noPadding">
+              <div class="col-lg-12 pull-right text-right">
                 <p class="h65-medium s12 white-c pull-right text-right noMargin">
                   Todos los derechos reservados. Intermed 2016.
                 </p>
@@ -377,5 +383,6 @@
 
   </script>
   <script src="js/md5encrypt.js"></script>
-
+  <script src="http://cdn.kendostatic.com/2015.1.429/js/kendo.all.min.js"></script>
+  <script src="http://kendo.cdn.telerik.com/2014.1.528/js/cultures/kendo.culture.es-MX.min.js"></script>
 </html>

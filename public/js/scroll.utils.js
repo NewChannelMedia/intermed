@@ -202,7 +202,17 @@ function toComentarios(){
   $body.scrollTo($('#comentarios'), 1000, { offset:{ top:-(60+checkTop()), left:0 } });
 }
 
+function toAgendaDay(){
+  event.preventDefault();
+  if(checkTop()!=0){
+    $body.scrollTo($('.agendaDay'), 1000, { offset:{ top:-(checkTop()), left:0 } });
+  }
+}
 
+
+$('.goToDay').click(function(){
+  toAgendaDay();
+});
 
 var $body = $('body');
 $('body a').click(function() {
