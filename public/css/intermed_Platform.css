@@ -1719,8 +1719,6 @@ footer .logoIntermed {
   bottom: 0;
   overflow: hidden;
   overflow-y: auto;
-  margin-top: 15px;
-  margin-bottom: 15px;
   padding-top: 10px;
   padding-bottom: 10px;
 }
@@ -1735,6 +1733,7 @@ footer .logoIntermed {
   background-repeat: no-repeat;
   background-position: left center;
   background-size: cover;
+  padding: 15px;
 }
 
 .agendaOverview {
@@ -1763,3 +1762,39 @@ footer .logoIntermed {
     height: 0;
   }
 }
+
+.horas-container {
+  padding: 0 15px;
+}
+
+.hora {
+  height: 130px;
+  border-top: solid 2px #ffffff;
+}
+.mediaHora {
+  height: 65px;
+}
+.mediaHora.ocupada {
+  background-color: #162c39;
+}
+.lbl-hora {
+  color: #ffffff;
+}
+
+/*
+
+.horas {
+  padding: 0 15px;
+}
+
+.hora .mediaHora {
+  height: 65px;
+}
+
+.horas>.mediaHora:nth-child(2n+1) {
+  border-top: solid 2px #ffffff;;
+}
+
+.horas>.mediaHora:nth-child(2n) .lbl-hora {
+  display: none;
+}*/

@@ -1260,12 +1260,60 @@ $( document ).ready( function () {
     }
   } else if( $('#oficinaMedico').length > 0 ) {
 
+    var today = new Date(),
+      events = [ //estos son los eventos que se despliegan en el calendario
+         +new Date(today.getFullYear(), today.getMonth(), 8),
+         +new Date(today.getFullYear(), today.getMonth(), 12),
+         +new Date(today.getFullYear(), today.getMonth(), 24),
+         +new Date(today.getFullYear(), today.getMonth() + 1, 6),
+         +new Date(today.getFullYear(), today.getMonth() + 1, 7),
+         +new Date(today.getFullYear(), today.getMonth() + 1, 25),
+         +new Date(today.getFullYear(), today.getMonth() + 1, 27),
+         +new Date(today.getFullYear(), today.getMonth() - 1, 3),
+         +new Date(today.getFullYear(), today.getMonth() - 1, 5),
+         +new Date(today.getFullYear(), today.getMonth() - 2, 22),
+         +new Date(today.getFullYear(), today.getMonth() - 2, 27)
+      ];
+
     $("#calendar").kendoCalendar({
       culture: 'es-MX',
-      start: "day"
+      start: "day",
+      depth: "decade",
+      value: today,
+      dates: events,
+      month: {
+        // template for dates in month view
+        content: '# if ($.inArray(+data.date, data.dates) != -1) { #' +
+                    '<div class="' +
+                       '# if (data.value) { #' +
+                           "dayEvent" +
+                       '# } else { #' +
+                           "day" +
+                       '# } #' +
+                    '">#= data.value #</div>' +
+                 '# } else { #' +
+                 '#= data.value #' +
+                 '# } #'
+      },
+      footer: false
     });
     var calendar = $("#calendar").data("kendoCalendar");
       calendar.value(new Date());
+      calendar.bind("navigate", function() {
+        //aqui cargamos los eventos de ese mes
+        var view = this.view();
+        console.log(view.name); //name of the current view
+        var current = this.current();
+          console.log(current); //currently focused date
+      });
+      calendar.bind("change", function() {
+        //aqui cargamos los eventos de ese dia en la lista de la derecha
+        var value = this.value();
+        console.log(value); //value is the selected date in the calendar
+        if( $(window).width() < 767){
+          toAgendaDay();
+        }
+      });
 
 
     if ( $( window ).width() > 768 ) {

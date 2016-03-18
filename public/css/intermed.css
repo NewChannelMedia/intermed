@@ -36,6 +36,10 @@ a:visited {
   background-color: #375467!important;
 }
 
+.bg-darkBlue2 {
+  background-color: #162c39!important;
+}
+
 .bg-orange {
   background-color: #ff8a00!important;
 }
@@ -3213,10 +3217,12 @@ td.fc-day.fc-widget-content {
 }
 
 .k-widget {
-  max-width: 500px;
+  max-width: 600px;
   width: 100%;
   border: 0;
   background-color: transparent;
+  padding: 0;
+  margin: 0 auto;
 }
 
 .k-content,
@@ -3228,11 +3234,11 @@ td.fc-day.fc-widget-content {
 }
 
 .k-calendar td {
-  /* background-color: #fff; */
-  /* border-radius: 0; */
-  /* margin: 5px; */
-  /* border-spacing: 3px; */
-  /* display: table-cell; */
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  width: 1%;
+  float: none;
 }
 
 .k-calendar td.k-state-selected {
@@ -3247,7 +3253,20 @@ td.fc-day.fc-widget-content {
   background-color: black;
 }
 
-.k-state-hover {
+.k-state-focused, .k-state-hover {
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.k-calendar td.k-state-focused,.k-calendar td.k-state-hover {
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.k-calendar .k-header .k-state-hover {
   background-color: transparent;
 }
 
@@ -3269,13 +3288,12 @@ td.fc-day.fc-widget-content {
 }
 
 .k-calendar td a.k-link {
-  width: 65px;
-  height: 55px;
-  margin: 3px auto;
+  width: auto;
+  height: auto;
   background-color: #fff;
   font-size: 20px;
   border-radius: 4px;
-  margin: 3px auto;
+  margin: 3px;
   text-align: center;
 }
 
@@ -3284,4 +3302,26 @@ td.fc-day.fc-widget-content {
   text-transform: uppercase;
   color: #fff;
   background-color: transparent;
+}
+
+.k-calendar .k-footer .k-nav-today {
+  background-color: transparent;
+  color: #ffffff;
+  border: none;
+  text-transform: uppercase;
+}
+
+.k-calendar .k-footer .k-nav-today:hover, .k-calendar .k-footer .k-nav-today.k-state-hover {
+  background-color: transparent;
+  color: #ffffff;
+}
+
+
+.dayEvent {
+  display: inline-block;
+  color:red;
+}
+.today {
+  display: inline-block;
+  color:purple;
 }
