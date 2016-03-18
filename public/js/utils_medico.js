@@ -1349,6 +1349,7 @@ function actualizarDirecciones(salir){
         $('#slider1').html(contenido);
         MostrarUbicaciones();
 
+        $('#btnEditaUbi').unbind();
         $('#btnEditaUbi').on('click',function(){
           var ubicacion_id = $('.csslider > input:checked').prop('value');
           console.log('UBI: ' + ubicacion_id);
@@ -1413,6 +1414,7 @@ function cargarTelefonos(){
       data: {direccion_id: direccion_id},
       cache: false,
       success: function ( data ) {
+        var contenidoTelefono = '';
         data.forEach(function(telefono){
             var clase = '';
             switch(telefono.tipo) {
@@ -1434,22 +1436,23 @@ function cargarTelefonos(){
           } else {
             numTel += telefono.numero.replace(' ','-');
           }
-          $('#divTelefonoAgregado').append('<div class="input-group-btn numeroTelefono">' +
-            '<input type="hidden" class="idTelefono" value="' + telefono.id + '">' +
-            '<input type="hidden" class="idTempTelefono" value="">' +
-            '<label class="btn btn-sm editar btnChk">' +
-            '<input type="radio" autocomplete="off">' +
-            '<span class="tipoTelefono hidden">' + telefono.tipo + '</span>' +
-            '<span class="tipoTelefonoIcon"><span class="glyphicon ' + clase + '"></span></span>' +
-            '<span class="numTelefono">' + numTel + '</span>' +
-            '<span class="extTelefono">' + telefono.ext + '</span>' +
-            '</label>' +
-            '<button class="btn btn-sm borrar" disabled="true" onclick="eliminarTelefono(this)">' +
-            '<span class="glyphicon glyphicon-remove"></span>' +
-            '</button>' +
-            '</div>'
-          );
+
+          contenidoTelefono += '<li class="lbl lbl-tel">'+
+              '<span class="numeroTelefono">'+
+                '<input type="hidden" class="idTelefono" value="'+ telefono.id +'">'+
+                '<span class="tipoTelefono hidden">'+ telefono.tipo +'</span>'+
+                '<span class="tipoTelefonoIcon">'+
+                  '<span class="glyphicon '+ clase +'"></span>&nbsp;'+
+                '</span>'+
+                '<span class="numTelefono">'+ numTel +'</span>'+
+                '<span class="extTelefono">'+ telefono.ext +'</span>'+
+              '</span>'+
+              '<button type="button" class="btn btn-sm borrar" onclick="eliminarTelefono(this)">'+
+                '<span class="glyphicon glyphicon-remove"></span>'+
+              '</button>'+
+          '</li>';
         });
+        $('#divTelefonoAgregado').append(contenidoTelefono);
         funcionesTelefonos();
       },
       error: function (err){
@@ -3250,16 +3253,23 @@ function terminarReg2() {
 
 function editarServicio(contenedor){
   contenedor = $(contenedor);
-  var id = contenedor.find('.id').text();
-  var concepto = contenedor.find('.concepto').text();
-  var descripcion = contenedor.find('.descripcion').text();
-  var duracion = contenedor.find('.duracion').text();
-  var precio = contenedor.find('.precio').text();
-  $('#servicio_id').val(id);
-  $('#conceptServ').val(concepto);
-  $('#decriptServ').val(descripcion);
-  $('#duraServ').val(duracion);
-  $('#precServ').val(precio);
+  console.log($('#servicio_id').val() + ' == ' + contenedor.find('.id').text());
+  if ($('#servicio_id').val() == contenedor.find('.id').text()){
+    //Cancelar edicion
+    $('#frmRegServ')[0].reset();
+    $('#servicio_id').val('');
+  } else {
+    var id = contenedor.find('.id').text();
+    var concepto = contenedor.find('.concepto').text();
+    var descripcion = contenedor.find('.descripcion').text();
+    var duracion = contenedor.find('.duracion').text();
+    var precio = contenedor.find('.precio').text();
+    $('#servicio_id').val(id);
+    $('#conceptServ').val(concepto);
+    $('#decriptServ').val(descripcion);
+    $('#duraServ').val(duracion);
+    $('#precServ').val(precio);
+  }
 }
 
 function cargarServicios(element,obj){
@@ -3282,7 +3292,7 @@ function cargarServicios(element,obj){
             $('#ServListReg').html('');
             var contenido = '';
             data.result.forEach(function(res){
-              contenido += '<li class="lbl lbl-ubicaciones"><span onclick="editarServicio(this)"><span class="hidden id">'+ res.id +'</span><span class="hidden descripcion">'+ res.descripcion +'</span><span class="hidden duracion">'+ res.duracion +'</span><span class="concepto">'+ res.concepto +'</span> ($<span class="precio">'+ res.precio +'</span>)</span><button class="btn btn-sm borrar" onclick="eliminarServicio('+ res.id +',this)"><span class="glyphicon glyphicon-remove"></span></button></li>';
+              contenido += '<li class="lbl lbl-servicios"><span onclick="editarServicio(this)"><span class="hidden id">'+ res.id +'</span><span class="hidden descripcion">'+ res.descripcion +'</span><span class="hidden duracion">'+ res.duracion +'</span><span class="concepto">'+ res.concepto +'</span> ($<span class="precio">'+ res.precio +'</span>)</span><button class="btn btn-sm borrar" onclick="eliminarServicio('+ res.id +',this)"><span class="glyphicon glyphicon-remove"></span></button></li>';
             });
 
             $('#ServListReg').append(contenido);
@@ -3343,23 +3353,32 @@ function guardarServicio(idElement){
 }
 
 function eliminarServicio(id, element){
-  	$.ajax({
-  		url: '/medicos/serv/drop',
-  		type: 'POST',
-  		dataType: "json",
-      data: {id: id},
-  		cache: false,
-  		type: 'POST',
-  		success: function( data ) {
-        if (data.success){
-          $(element).parent().remove();
-        }
-        checkUbicMinConf();
-      },
-      error: function (err){
-  			console.error( 'AJAX ERROR: ' + err );
+
+  bootbox.confirm({
+    message: "¿Desea eliminar el servicio?.<br/><br/>*** Esta acción eliminara las citas vinculados con el.",
+    title: "Mensaje de confirmación",
+    callback: function(result) {
+      if (result){
+      	$.ajax({
+      		url: '/medicos/serv/drop',
+      		type: 'POST',
+      		dataType: "json",
+          data: {id: id},
+      		cache: false,
+      		type: 'POST',
+      		success: function( data ) {
+            if (data.success){
+              $(element).parent().remove();
+            }
+            checkUbicMinConf();
+          },
+          error: function (err){
+      			console.error( 'AJAX ERROR: ' + err );
+          }
+        });
       }
-    });
+    }
+  });
 }
 
 function checkUbicMinConf(){
@@ -4180,15 +4199,50 @@ function editarUbicacion(direccion_id){
         /*<ul class="list-inline" id="listInlineUbi">
         <li class="lbl lbl-ubicaciones"><span onclick="editarUbicacion(14)">New Channel</span><button class="btn btn-sm borrar" onclick="eliminarUbicacion(14,true)"><span class="glyphicon glyphicon-remove"></span></button></li><li class="lbl lbl-ubicaciones"><span onclick="editarUbicacion(15)">ñljsdfñlakj</span><button class="btn btn-sm borrar" onclick="eliminarUbicacion(15,true)"><span class="glyphicon glyphicon-remove"></span></button></li><li class="lbl lbl-ubicaciones"><span onclick="editarUbicacion(16)">ddddddd</span><button class="btn btn-sm borrar" onclick="eliminarUbicacion(16,true)"><span class="glyphicon glyphicon-remove"></span></button></li></ul>*/
         data.result.Telefonos.forEach(function(tel){
-          contenidoTelefono += '<li class="lbl lbl-telefonos">'+
-                    '<span onclick="editarUbicacion(14)">'+ tel.numero +'</span>'+
-                    '<button class="btn btn-sm borrar" onclick="eliminarUbicacion(14,true)"><span class="glyphicon glyphicon-remove"></span></button>'+
-                  '</li>';
+          console.log('tel: ' + JSON.stringify(tel));
+          var clase = '';
+          switch(tel.tipo) {
+          case "celular":
+              clase = 'glyphicon-phone';
+              break;
+          case "oficina":
+              clase = 'glyphicon-phone-alt';
+              break;
+          case "localizador":
+              clase = 'glyphicon-bell';
+              break;
+          default:
+              console.log('El tipo de telefono no existe');
+            }
 
+        var numTel = '';
+        if (tel.claveRegion && tel.claveRegion != ""){
+          numTel += tel.claveRegion + '-' + tel.numero.replace(' ','-');
+        } else {
+          numTel += tel.numero.replace(' ','-');
+        }
+
+          contenidoTelefono += '<li class="lbl lbl-tel">'+
+              '<span class="numeroTelefono">'+
+                '<input type="hidden" class="idTelefono" value="'+ tel.id +'">'+
+                '<span class="tipoTelefono hidden">'+ tel.tipo +'</span>'+
+                '<span class="tipoTelefonoIcon">'+
+                  '<span class="glyphicon '+ clase +'"></span>&nbsp;'+
+                '</span>'+
+                '<span class="numTelefono">'+ numTel +'</span>'+
+                '<span class="extTelefono">'+ tel.ext +'</span>'+
+              '</span>'+
+              '<button type="button" class="btn btn-sm borrar" onclick="eliminarTelefono(this)">'+
+                '<span class="glyphicon glyphicon-remove"></span>'+
+              '</button>'+
+          '</li>';
         });
+
 
         $('#divTelefonoAgregado').html(contenidoTelefono);
         $('#btnCancelarUbi').removeClass('hidden');
+
+        funcionesTelefonos();
 
         //Visible boton para cancelar edición
       }

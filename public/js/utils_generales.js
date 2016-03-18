@@ -595,20 +595,21 @@ function funcionesTelefonos(){
       idTemp++;
       var ext = '';
       if ($('#extTelefono') && $('#extTelefono').val()) ext = $('#extTelefono').val();
-      $('#divTelefonoAgregado').append('<li class="lbl lbl-tel numeroTelefono" data-toggle="tooltip" data-placement="bottom" title="Haz click para editar / borrar.">'+
-        '<input type="hidden" class="idTelefono" value="">' +
-        '<input type="hidden" class="idTempTelefono" value="' + idTemp + '">' +
-          '<span class="editar btnChk">' +
-            '<span class="tipoTelefono hidden">' + $('#tipoTelefono').val() + '</span>' +
-            '<span class="tipoTelefonoIcon"><span class="glyphicon ' + clase + '"></span>&nbsp;</span>' +
-            '<span class="numTelefono">' + $('#numTelefono').val() + '</span>' +
-            '<span class="extTelefono">' + ext + '</span>' +
-          '</span>' +
-          '<button type="button" class="btn btn-sm borrar" disabled="true" onclick="eliminarTelefono(this)">' +
-            '<span class="glyphicon glyphicon-remove"></span>' +
-          '</button>' +
-        '</li>'
-      );
+      $('#divTelefonoAgregado').append('<li class="lbl lbl-tel">'+
+          '<span class="numeroTelefono">'+
+            '<input type="hidden" class="idTelefono" value="">' +
+            '<input type="hidden" class="idTempTelefono" value="' + idTemp + '">' +
+            '<span class="tipoTelefono hidden">'+ $('#tipoTelefono').val() +'</span>'+
+            '<span class="tipoTelefonoIcon">'+
+              '<span class="glyphicon '+ clase +'"></span>&nbsp;'+
+            '</span>'+
+            '<span class="numTelefono">'+$('#numTelefono').val() +'</span>'+
+            '<span class="extTelefono">'+ ext +'</span>'+
+          '</span>'+
+          '<button type="button" class="btn btn-sm borrar" onclick="eliminarTelefono(this)">'+
+            '<span class="glyphicon glyphicon-remove"></span>'+
+          '</button>'+
+      '</li>');
       $('[data-toggle="tooltip"]').tooltip();
       funcionesTelefonos();
       $('#tipoTelefono').prop('selectedIndex', 0);
@@ -616,8 +617,8 @@ function funcionesTelefonos(){
     }
   });
 
-  $('span.editar').unbind();
-  $('span.editar').click(function(){
+  $('span.numeroTelefono').unbind();
+  $('span.numeroTelefono').click(function(){
     if ($('#btnGuardar').val() != "Editar"){
       if ($(this).hasClass('editando')){
         $(this).removeClass('editando');
@@ -1105,10 +1106,6 @@ function iniciarDivCalendario(direccion_id){
   if (!direccion_id){
     direccion_id = $('#idDireccion').val();
   }
-  var clase = '';
-  if ($('#divMapRegHor').length==0){
-    clase = 'regBack';
-  }
   $.ajax({
       url: '/horariosObtener',
       type: 'POST',
@@ -1120,7 +1117,7 @@ function iniciarDivCalendario(direccion_id){
         $('#horariosUbi').val(data.horarios);
         $('#direccion_id').val(data.direccion_id);
         $("#divCalendario").remove();
-        $("#divCalendarioPadre").html('<div id="divCalendario" class="regHorMed '+ clase +'"></div>');
+        $("#divCalendarioPadre").html('<div id="divCalendario" class="regHorMed"></div>');
         setTimeout(function(){iniciarCalendario(data.horarios)},300);
 
       },
