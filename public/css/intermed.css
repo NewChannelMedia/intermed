@@ -3222,3 +3222,161 @@ td.fc-day.fc-widget-content {
 .onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
     right: 0px;
 }
+
+
+.popover-title {
+  color: black;
+}
+
+.popover-content {
+  color: black;
+}
+
+.popover {
+  border-radius: 0;
+}
+
+
+/* calendario de la oficina */
+.k-header,
+.k-grid-header-wrap,
+.k-grid .k-grouping-header,
+.k-grid-header,
+.k-pager-wrap,
+.k-pager-wrap .k-textbox,
+.k-pager-wrap .k-link,
+.k-gantt-toolbar .k-state-default,
+.k-grouping-row td,
+.k-group-footer td,
+.k-grid-footer td {
+  border: 0;
+  border-color: transparent;
+  background: transparent;
+}
+
+.k-state-hover,
+.k-state-hover:hover,
+.k-splitbar-horizontal-hover:hover,
+.k-splitbar-vertical-hover:hover,
+.k-list > .k-state-hover,
+.k-scheduler .k-scheduler-toolbar ul li.k-state-hover,
+.k-pager-wrap .k-link:hover,
+.k-dropdown .k-state-focused,
+.k-filebrowser-dropzone,
+.k-mobile-list .k-item > .k-link:active,
+.k-mobile-list .k-item > .k-label:active,
+.k-mobile-list .k-edit-label.k-check:active,
+.k-mobile-list .k-recur-view .k-check:active {
+  border-color: none;
+  background-color: transparent;
+}
+
+.k-widget {
+  max-width: 600px;
+  width: 100%;
+  border: 0;
+  background-color: transparent;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.k-content,
+.k-editable-area,
+.k-panelbar > li.k-item,
+.k-panel > li.k-item,
+.k-tiles {
+  background-color: transparent;
+}
+
+.k-calendar td {
+  border-radius: 0;
+  margin: 0;
+  padding: 0;
+  width: 1%;
+  float: none;
+}
+
+.k-calendar td.k-state-selected {
+  border-radius: 0;
+  background-color: transparent;
+}
+
+.k-calendar .k-state-selected > .k-link {
+  margin: 0 auto;
+  color: #fff;
+  border-radius: 0;
+  background-color: black;
+}
+
+.k-state-focused, .k-state-hover {
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.k-calendar td.k-state-focused,.k-calendar td.k-state-hover {
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.k-calendar .k-header .k-state-hover {
+  background-color: transparent;
+}
+
+.k-state-hover,
+.k-state-hover:hover,
+.k-splitbar-horizontal-hover:hover,
+.k-splitbar-vertical-hover:hover,
+.k-list > .k-state-hover,
+.k-scheduler .k-scheduler-toolbar ul li.k-state-hover,
+.k-pager-wrap .k-link:hover,
+.k-dropdown .k-state-focused,
+.k-filebrowser-dropzone,
+.k-mobile-list .k-item > .k-link:active,
+.k-mobile-list .k-item > .k-label:active,
+.k-mobile-list .k-edit-label.k-check:active,
+.k-mobile-list .k-recur-view .k-check:active {
+  border: 0;
+  background-color: transparent;
+}
+
+.k-calendar td a.k-link {
+  width: auto;
+  height: auto;
+  background-color: #fff;
+  font-size: 20px;
+  border-radius: 4px;
+  margin: 3px;
+  text-align: center;
+}
+
+.k-calendar .k-content th {
+  text-align: center;
+  text-transform: uppercase;
+  color: #fff;
+  background-color: transparent;
+}
+
+.k-calendar .k-footer .k-nav-today {
+  background-color: transparent;
+  color: #ffffff;
+  border: none;
+  text-transform: uppercase;
+}
+
+.k-calendar .k-footer .k-nav-today:hover, .k-calendar .k-footer .k-nav-today.k-state-hover {
+  background-color: transparent;
+  color: #ffffff;
+}
+
+
+.dayEvent {
+  display: inline-block;
+  color:red;
+}
+.today {
+  display: inline-block;
+  color:purple;
+}
