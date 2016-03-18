@@ -70,6 +70,7 @@ exports.mostrar = function ( object, req, res ) {
 
 exports.iniciarSesion = function ( object, req, res ) {
   try{
+    console.log(object[ 'email' ] + ' ' + object[ 'password' ])
     req.session.passport = {};
     models.Usuario.findOne( {
       where: {

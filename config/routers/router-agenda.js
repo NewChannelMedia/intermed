@@ -17,9 +17,9 @@ module.exports = function (object){
     }
   });*/
 
+
+  // Selecciona agenda del médico y permite crear eventos, retrasar y cancelar citas
   app.get('/agendaMedicoVer', function(req,res){
-    //routeLife('main','main',hps);
-    console.log('hgh')
     if (req.session.passport && req.session.passport.user){
       intermed.callController('agenda', 'seleccionaAgendaMedico', {id: req.session.passport.user.id, inicio: req.query.start, fin:req.query.end}, req, res);
     } else {
@@ -36,6 +36,7 @@ module.exports = function (object){
     }
   });
 
+  // Quitar
   app.get('/muestraAgendaMedico', function(req,res){
     var datos =  { id : 1}
     routeLife('main','main',hps);
@@ -70,5 +71,40 @@ module.exports = function (object){
   //Contar citas proximas de usuario logueado
   app.post('/ag/private/count', function (req, res){
     intermed.callController('agenda','contarCitasPropias', req.body, req, res);
+  });
+
+  //Eventos
+  app.post('/eventos/agregar', function (req, res){
+    intermed.callController('agenda','agregaEvento', req.body, req, res);
+  });
+
+  app.post('/eventos/cancelar', function (req, res){
+    intermed.callController('agenda','cancelaEvento', req.body, req, res);
+  });
+
+  app.post('/eventos/modificar', function (req, res){
+    intermed.callController('agenda','modificaEvento', req.body, req, res);
+  });
+
+  //Citas
+  app.post('/agenda/retrasarCita', function (req, res){
+    intermed.callController('agenda','solicitarCambioCita', req.body, req, res);
+  });
+
+  app.post('/agenda/aceptarCambioCita', function (req, res){
+    if ( req.body.estatus == true)  {
+      intermed.callController('agenda','aceptarCambioCita', req.body, req, res);
+    } else {
+      intermed.callController('agenda','rechazarCambioCita', req.body, req, res);
+    }
+  });
+
+  app.post('/agenda/cancelarCita', function (req, res){
+    intermed.callController('agenda','cancelaCita', req.body, req, res);
+  });
+
+  // Opcion para quitar
+  app.post('/agenda/rechazarCambioCita', function (req, res){
+    intermed.callController('agenda','rechazarCambioCita', req.body, req, res);
   });
 }
