@@ -1603,6 +1603,579 @@ exports.rechazarCambioCita = function(object, req, res) {
   });
 };
 
+exports.traerAgendaMedico = function (object, req, res){
+  object.direccion_id = [];
+  if (req.session.passport.user.tipoUsuario == "M"){
+    models.Direccion.findAll({
+      where: {
+        usuario_id: req.session.passport.user.id
+      },
+      attributes: ['id']
+    }).then(function(direcciones){
+      direcciones.forEach(function(dir){
+        object.direccion_id.push(dir.id);
+      });
+      exports.agendaMedico(object, req, res);
+    })
+  } else {
+      models.MedicoSecretaria.findOne({
+        where:{
+          secretaria_id: req.session.passport.user.Secretaria_id,
+          medico_id: object.medico_id,
+          activo:1
+        },
+        include: [{
+          model: models.Medico,
+          attributes:['id'],
+          include: [{
+            model: models.Usuario,
+            attributes: ['id'],
+            include: [{
+              model: models.Direccion,
+              attributes: ['id']
+            }]
+          }]
+        }]
+      }).then(function(relacion){
+        relacion.Medico.Usuario.Direccions.forEach(function (dir){
+          object.direccion_id.push(dir.id);
+        });
+        if (relacion){
+          //Secretaria cuenta con permisos para ver agenda
+          exports.agendaMedico(object, req, res);
+        } else {
+          res.status(200).json({
+            success: false,
+            result: {
+              relacion: relacion
+            }
+          });
+        }
+      })
+  }
+}
+
+
+exports.agendaMedico = function (object, req, res){
+  try{
+    var resultado = [];
+    models.Horarios.findAll({
+       where :  {
+         direccion_id: {
+           $in: object.direccion_id
+         }
+       },
+       include: [{
+         model: models.Direccion
+       }]
+    }).then(function(datos) {
+      var horaInicio;
+      var horaFin;
+
+      var dia0 = object.inicio +' ';
+
+      var inicio = object.inicio.split('-');
+      var fin = object.fin.split('-');
+
+      var dia1 = '';
+      var dia2 = '';
+      var dia3 = '';
+      var dia4 = '';
+      var dia5 = '';
+      var dia6 = '';
+      if (fin[2]<inicio[2]){
+        //cambio de mes
+        var ultimo = parseInt(fin[2]);
+        if (ultimo > 1){
+          dia6 = fin[0] + '-' + fin[1] + '-' + ("0" + --ultimo).slice(-2) + ' ';
+          if (ultimo>1){
+            dia5 = fin[0] + '-' + fin[1] + '-' + ("0" + --ultimo).slice(-2) + ' ';
+            if (ultimo>1){
+              dia4 = fin[0] + '-' + fin[1] + '-' + ("0" + --ultimo).slice(-2) + ' ';
+              if (ultimo>1){
+                dia3 = fin[0] + '-' + fin[1] + '-' + ("0" + --ultimo).slice(-2) + ' ';
+                if (ultimo>1){
+                  dia2 = fin[0] + '-' + fin[1] + '-' + ("0" + --ultimo).slice(-2) + ' ';
+                  if (ultimo>1){
+                    dia1 = fin[0] + '-' + fin[1] + '-' + ("0" + --ultimo).slice(-2) + ' ';
+                  } else {
+                    dia1 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+1)).slice(-2) + ' ';
+                  }
+                } else {
+                    dia1 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+1)).slice(-2) + ' ';
+                    dia2 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+2)).slice(-2) + ' ';
+                }
+              } else {
+                  dia1 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+1)).slice(-2) + ' ';
+                  dia2 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+2)).slice(-2) + ' ';
+                  dia3 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+3)).slice(-2) + ' ';
+              }
+            } else {
+                dia1 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+1)).slice(-2) + ' ';
+                dia2 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+2)).slice(-2) + ' ';
+                dia3 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+3)).slice(-2) + ' ';
+                dia4 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+4)).slice(-2) + ' ';
+            }
+          } else {
+              dia1 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+1)).slice(-2) + ' ';
+              dia2 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+2)).slice(-2) + ' ';
+              dia3 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+3)).slice(-2) + ' ';
+              dia4 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+4)).slice(-2) + ' ';
+              dia5 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+5)).slice(-2) + ' ';
+          }
+        } else {
+          dia1 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+1)).slice(-2) + ' ';
+          dia2 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+2)).slice(-2) + ' ';
+          dia3 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+3)).slice(-2) + ' ';
+          dia4 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+4)).slice(-2) + ' ';
+          dia5 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+5)).slice(-2) + ' ';
+          dia6 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+6)).slice(-2) + ' ';
+        }
+      } else {
+        dia1 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+1)).slice(-2) + ' ';
+        dia2 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+2)).slice(-2) + ' ';
+        dia3 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+3)).slice(-2) + ' ';
+        dia4 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+4)).slice(-2) + ' ';
+        dia5 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+5)).slice(-2) + ' ';
+        dia6 = inicio[0] + '-' + inicio[1] + '-' + ("0" + (parseInt(inicio[2])+6)).slice(-2) + ' ';
+      }
+
+      var total = 0;
+      var className = [];
+      for (i = 0; i <= datos.length - 1; i++) {
+
+          if (!className[datos[i].direccion_id]){
+            className[datos[i].direccion_id] = 'direccion_'+total++;
+          }
+
+          switch (datos[i].dia) {
+              case 0: //domingo
+                  horaInicio = dia6 + datos[i].horaInicio;
+                  horaFin = dia6 + datos[i].horaFin;
+                  break;
+              case 1: //lunes
+                  horaInicio = dia0 + datos[i].horaInicio;
+                  horaFin = dia0 + datos[i].horaFin;
+                  break;
+              case 2: //martes
+                  horaInicio = dia1 + datos[i].horaInicio;
+                  horaFin = dia1 + datos[i].horaFin;
+                  break;
+              case 3: //miercoles
+                  horaInicio = dia2 + datos[i].horaInicio;
+                  horaFin = dia2 + datos[i].horaFin;
+                  break;
+              case 4: //jueves
+                  horaInicio = dia3 + datos[i].horaInicio;
+                  horaFin = dia3 + datos[i].horaFin;
+                  break;
+              case 5: //viernes
+                  horaInicio = dia4 + datos[i].horaInicio;
+                  horaFin = dia4 + datos[i].horaFin;
+                  break;
+              case 6: //sabado
+                  horaInicio = dia5 + datos[i].horaInicio;
+                  horaFin = dia5 + datos[i].horaFin;
+                  break;
+          };
+
+          var horario = {
+              //id: 'businessHours_' +  datos[i].id,
+              title: datos[i].horaInicio + ' - ' + datos[i].horaFin,
+              start: horaInicio,
+              end: horaFin,
+              className : className[datos[i].direccion_id],
+              constraint: 'businessHours',
+              rendering: 'background',
+              overlap: false,
+              //constraint: 'businessHours'
+              //dow: [datos[i].dia]
+          };
+          resultado.push(horario);
+      };
+
+      var fechaActual = formatearFecha(new Date());
+      models.Agenda.findAll({
+         where :  { direccion_id: object.direccion_id,
+                    fechaHoraInicio: {
+                      $gte: object.inicio,
+                      $lte: object.fin
+                    },
+                    status: {
+                      $gt: 0
+                    }
+                    },
+                    include: [{
+                      model: models.Paciente,
+                      include: [{
+                        model: models.Usuario,
+                        include: [{
+                          model: models.DatosGenerales
+                        }]
+                      }]
+                    },{
+                      model: models.PacienteTemporal
+                    }]
+      }).then(function(datos) {
+        for (i = 0; i <= datos.length - 1; i++) {
+          var fechaEvento = formatearFecha(new Date(datos[i].fechaHoraInicio).toUTCString());
+
+          var clase = 'citaPend ' + className[datos[i].direccion_id];
+          if (new Date(fechaEvento).toISOString().split('.000Z')[0].replace('T',' ') <= fechaActual){
+            clase = 'citaPast ' + className[datos[i].direccion_id]
+          }
+
+          if (datos[i].status == 1 ) {
+            var titulo = '';
+            if (datos[i].Paciente){
+              titulo = datos[i].Paciente.Usuario.DatosGenerale.nombre + ' ' + datos[i].Paciente.Usuario.DatosGenerale.apellidoP + datos[i].Paciente.Usuario.DatosGenerale.apellidoM;
+            } else {
+              titulo = datos[i].PacienteTemporal.nombres  + ' ' + datos[i].PacienteTemporal.apellidos;
+            }
+            var horario = {
+                id: 'cita_' +  datos[i].id,
+                title: titulo,
+                start: datos[i].fechaHoraInicio,
+                end: datos[i].fechaHoraFin,
+                className: clase,
+                editable: false,
+                durationEditable: false,
+                overlap: false,
+                slotEventOverlap: false,
+            };
+          }  else {
+            clase += ' citaCanc';
+            var horario = {
+              id: 'cita_' +  datos[i].id,
+              title: 'Cancelada',
+              className: clase,
+              start: datos[i].fechaHoraInicio,
+              end: datos[i].fechaHoraFin,
+              editable: false,
+              durationEditable: false,
+              overlap: false,
+              slotEventOverlap: false,
+            };
+          }
+          resultado.push(horario);
+        }
+        res.send(resultado);
+      });
+    });
+
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
+}
+
+
+exports.detalleCita = function (object, req, res){
+  if (req.session.passport.user.tipoUsuario == "M"){
+    models.Agenda.findOne({
+      where: {
+        id: object.agenda_id
+      },
+      include: [{
+        model:models.Usuario,
+        attributes: ['urlFotoPerfil','correo'],
+        where:{
+          id: req.session.passport.user.id
+        },
+        include: [{
+          model: models.DatosGenerales
+        }]
+      },{
+        model: models.Direccion,
+        attributes: ['nombre'],
+      },{
+        model: models.CatalogoServicios,
+        attributes: ['concepto'],
+      },{
+        model: models.Paciente,
+        attributes: ['id'],
+        include: [{
+          model: models.Usuario,
+          attributes: ['id','urlFotoPerfil'],
+          include: [{
+            model: models.DatosGenerales
+          }]
+        }]
+      },{
+        model: models.PacienteTemporal
+      }]
+    }).then(function(result){
+        res.status(200).json({success:true,result:result});
+    })
+  } else {
+    models.Agenda.findOne({
+      where: {
+        id: object.agenda_id
+      },
+      include: [{
+        model:models.Usuario,
+        attributes: ['urlFotoPerfil','correo'],
+        include: [{
+          model: models.DatosGenerales
+        },{
+          model: models.Medico,
+          attributes: ['id'],
+          include: [{
+            model: models.MedicoSecretaria,
+            where: {
+              secretaria_id: req.session.passport.user.Secretaria_id,
+              activo: 1
+            },
+            attributes: ['id']
+          }]
+        }]
+      },{
+        model: models.Direccion,
+        attributes: ['nombre'],
+      },{
+        model: models.CatalogoServicios,
+        attributes: ['concepto'],
+      },{
+        model: models.Paciente,
+        attributes: ['id'],
+        include: [{
+          model: models.Usuario,
+          attributes: ['id','urlFotoPerfil'],
+          include: [{
+            model: models.DatosGenerales
+          }]
+        }]
+      },{
+        model: models.PacienteTemporal
+      }]
+    }).then(function(result){
+        res.status(200).json({success:true,result:result});
+    })
+  }
+}
+
+
+exports.citaGuardarNota = function (object, req, res){
+  if (req.session.passport.user.tipoUsuario == "M"){
+    models.Agenda.findOne({
+      where: {
+        id: object.agenda_id
+      },
+      include: [{
+        model: models.Usuario,
+        attributes: ['id'],
+        where: {
+          id: req.session.passport.user.id
+        }
+      }]
+    }).then(function(agenda){
+      if (agenda){
+        agenda.update({nota:object.nota}).then(function(result){
+          res.status(200).json({success:true,result:result});
+        });
+      } else {
+        res.status(200).json({success:false,result:agenda});
+      }
+    });
+  } else {
+    models.Agenda.findOne({
+      where: {
+        id: object.agenda_id
+      },
+      include: [{
+        model: models.Usuario,
+        attributes: ['id'],
+        include: [{
+          model: models.Medico,
+          attributes: ['id'],
+          include: [{
+            model: models.MedicoSecretaria,
+            attributes: ['id'],
+            where:{
+              secretaria_id: req.session.passport.user.Secretaria_id,
+              activo: 1
+            }
+          }]
+        }]
+      }]
+    }).then(function(agenda){
+      if (agenda){
+        agenda.update({nota:object.nota}).then(function(result){
+          res.status(200).json({success:true,result:result});
+        });
+      } else {
+        res.status(200).json({success:false,result:agenda});
+      }
+    });
+  }
+}
+
+
+exports.cancelarCita = function(object, req, res){
+  if (req.session.passport.user.tipoUsuario == "M"){
+    models.Agenda.findOne({
+      where: {
+        id: object.agenda_id
+      },
+      include: [{
+        model: models.Usuario,
+        attributes: ['id'],
+        where:{
+          id: req.session.passport.user.id
+        }
+      }]
+    }).then(function(agenda){
+      console.log('AGENDA: ' + JSON.stringify(agenda));
+      if (object.medico){
+        agenda.update({status: 2}).then(function(agenda){
+            console.log('Ag: ' + JSON.stringify(agenda));
+        });
+      } else {
+        agenda.update({status: 0}).then(function(agenda){
+            console.log('Ag: ' + JSON.stringify(agenda));
+        });
+      }
+      console.log('Notificaciones');
+        res.status(200).json({
+          success: true,
+          result:1
+        })
+    });
+  } else {
+    models.Agenda.findOne({
+      where: {
+        id: object.agenda_id
+      },
+      include: [{
+        model: models.Usuario,
+        attributes: ['id'],
+        include: [{
+          model: models.Medico,
+          include: [{
+            model: models.MedicoSecretaria,
+            where: {activo: 1},
+            include: [{
+              model: models.Secretaria,
+              where: {
+                id: req.session.passport.user.Secretaria_id
+              }
+            }]
+          }]
+        }]
+      }]
+    }).then(function(agenda){
+      console.log('AGENDA: ' + JSON.stringify(agenda));
+      if (object.medico){
+        agenda.update({status: 2}).then(function(agenda){
+            console.log('Ag: ' + JSON.stringify(agenda));
+        });
+      } else {
+        agenda.update({status: 0}).then(function(agenda){
+            console.log('Ag: ' + JSON.stringify(agenda));
+        });
+      }
+      console.log('Notificaciones');
+        res.status(200).json({
+          success: true,
+          result:1
+        })
+    });
+  }
+}
+
+exports.serviciosPorHorario = function (object, req, res){
+  var day = new Date(object.inicio).getDay();
+  object.inicio = new Date(object.inicio).toISOString();
+  object.inicio = object.inicio.split('T')[1].split(':00.00')[0]
+  models.CatalogoServicios.findAll({
+    include: [{
+      model: models.Direccion,
+      attributes: ['id'],
+      include: [{
+        model: models.Horarios,
+        attributes: ['id','dia','horaInicio','horaFin'],
+        where: {
+          horaInicio :{
+            $lte: object.inicio
+          },
+          horaFin: {
+            $gt:object.inicio
+          },
+          dia: day
+        }
+      },{
+        model: models.Usuario,
+        attributes: ['id'],
+        include: [{ model: models.Medico,
+                    where: models.sequelize.or(
+                      { id: object.medico_id },
+                      { id: req.session.passport.user.Medico_id }
+                    )
+                  }]
+      }]
+    }]
+  }).then(function(result){
+    res.status(200).json({
+      success: false, result: result
+    })
+  });
+}
+
+
+exports.crearCita = function (object, req, res){
+  models.Medico.findOne({
+    where: models.sequelize.or(
+      { id: object.medico_id },
+      { id: req.session.passport.user.Medico_id }
+    )
+  }).then(function(medico){
+    models.CatalogoServicios.findOne({
+      where: {
+        id: object.servicio_id
+      }
+    }).then(function(servicio){
+      if (object.paciente_id){
+        models.Agenda.create({
+          usuario_id: medico.usuario_id,
+          paciente_id: object.paciente_id,
+          fechaHoraInicio: object.inicio,
+          fechaHoraFin: object.fin,
+          direccion_id: servicio.direccion_id,
+          servicio_id: servicio.id,
+          status:1
+        }).then(function(result){
+          res.status(200).json({
+            success: true,
+            result: result
+          })
+        });
+      } else {
+        //Crear paciente temporal
+        models.PacienteTemporal.create({
+          nombres: object.nombre,
+          apellidos: object.apellido,
+          correo: object.correo,
+          celular: object.celular
+        }).then(function(PacienteTemporal){
+            models.Agenda.create({
+              usuario_id: medico.usuario_id,
+              paciente_temporal_id: PacienteTemporal.id,
+              fechaHoraInicio: object.inicio,
+              fechaHoraFin: object.fin,
+              direccion_id: servicio.direccion_id,
+              servicio_id: servicio.id,
+              status:1
+            }).then(function(result){
+              res.status(200).json({
+                success: true,
+                result: result
+              })
+            });
+        });
+      }
+    });
+  });
+}
+
 function aplazaCita(tiempo, id)
 {
   models.Agenda.findOne({

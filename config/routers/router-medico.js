@@ -230,4 +230,8 @@ module.exports = function (object){
   app.post('/medicos/registrar/datosgenerales', function (req, res){
     intermed.callController('medicos','registrarDatosGenerales', req.body, req, res);
   });
+
+  app.post('/medico/detalleMedico', function (req, res){
+    intermed.callController('medicos','detalleMedico', req.body, req, res);
+  });
 }

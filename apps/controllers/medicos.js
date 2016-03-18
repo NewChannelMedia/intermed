@@ -2351,6 +2351,27 @@ var _this = module.exports = {
         })
       }
   },
+  detalleMedico: function (object, req, res){
+    models.Medico.findOne({
+      attributes: ['id'],
+      where: models.sequelize.or(
+        { id: object.medico_id },
+        { id: req.session.passport.user.Medico_id }
+      ),
+      include: [{
+        model: models.Usuario,
+        attributes: ['urlFotoPerfil','correo'],
+        include: [{
+          model: models.DatosGenerales,
+        }]
+      }]
+    }).then(function(result){
+      res.status(200).json({
+        success:true,
+        result: result
+      })
+    });
+  },
   cedulaGeneral: function (object, req, res){
     var request = require("request");
     iconv  = require('iconv-lite');

@@ -2495,7 +2495,7 @@ function agendarCitaBootbox(usuarioMedico_id){
     }
 }
 
-
+/*
 function verAgendaMedico(){
     bootbox.dialog({
       backdrop: true,
@@ -2535,7 +2535,7 @@ function verAgendaMedico(){
 
 
 }
-
+*/
 
 function verAgendaPaciente(){
     bootbox.dialog({
@@ -4533,7 +4533,7 @@ function detalleCitaSecretaria(agenda_id){
 
     $.ajax( {
       async: true,
-      url: '/secretaria/detalleCita',
+      url: '/agenda/detalleCita',
       type: 'POST',
       dataType: "json",
       cache: false,
@@ -4669,7 +4669,8 @@ function detalleCitaSecretaria(agenda_id){
 }
 
 
-function secretariaAgendaMedico(medico_id){
+function verAgendaMedico(medico_id){
+  console.log('nombre y foto por ajax');
   var nombremedico = 'Médico de prueba uno';
   var urlFotoPerfil = '/garage/profilepics/dpp.png';
   //Agendar cita
@@ -4680,7 +4681,7 @@ function secretariaAgendaMedico(medico_id){
     },
     size:'large',
     className: 'Intermed-Bootbox',
-    title: '<span class="title"><img src="'+ urlFotoPerfil +'" class="img-circle" style="max-width:30px">&nbsp;&nbsp;'+ nombremedico +'.</span>',
+    title: '<span class="title" id="agendaMedicoTitle"></span>',
     message:
           '<div class="row">'+
             '<div class="col-md-12">'+
@@ -4701,7 +4702,7 @@ function secretariaAgendaMedico(medico_id){
             '</div>'+
           '</div>'
   });
-  horariosAgendaSecretariaMedico(medico_id);
+  horariosAgendaMedico(medico_id);
 }
 
 var secondaryBootbox = null;

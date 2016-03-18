@@ -424,9 +424,12 @@ function validaAgenda(inicio, fin) {
                   valido = 5;
                   break;
               }
-            //Citas de otras personas o canceladas
-            } else if ((inicio >= inicioEvento && inicio < finEvento) || (fin > inicioEvento && fin <= finEvento))
-            {
+            } else if (inicio == fin){
+              if (inicioEvento<=inicio && finEvento>inicio){
+                valido = 4;
+                break;
+              }
+            } else if ((inicio >= inicioEvento && inicio < finEvento) || (fin > inicioEvento && fin <= finEvento)) {
               //Cita cancelada
               if (evento.title == "Cancelada"){
                 //Cancelada
@@ -439,7 +442,7 @@ function validaAgenda(inicio, fin) {
               }
             }
           }
-      };
+      }
   }
   return valido;
 }
@@ -1267,7 +1270,7 @@ function sortEvents(a, b) {
 var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 var agregarEvento = false;
 
-function horariosAgendaSecretariaMedico(medico_id){
+function horariosAgendaMedico(medico_id){
     var valido = true;
     $('#divCalendario').addClass('calCita');
     $('#divCalendario').fullCalendar({
@@ -1291,13 +1294,31 @@ function horariosAgendaSecretariaMedico(medico_id){
         },*/
         events: function(start, end, timezone, callback) {
           $.ajax({
-              url: '/secretaria/AgendaMedico',
+              url: '/agenda/AgendaMedico',
               type: 'POST',
               dataType: "json",
               cache: false,
               data: {medico_id: medico_id, direccion_id: 1, inicio: start.format(), fin: end.format()},
               success: function (data) {
                 callback(data);
+                $.ajax({
+                    url: '/medico/detalleMedico',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {medico_id: medico_id},
+                    success: function (data) {
+                      console.log('Result: ' + JSON.stringify(data));
+                      if (data.result){
+                        if (data.result.Usuario.DatosGenerale.apellidoM){
+                          data.result.Usuario.DatosGenerale.apellidoM = ' ' + data.result.Usuario.DatosGenerale.apellidoM;
+                        } else {
+                          data.result.Usuario.DatosGenerale.apellidoM  = '';
+                        }
+                        $('#agendaMedicoTitle').html('<img src="'+ data.result.Usuario.urlFotoPerfil +'" class="img-circle" style="max-width:30px">&nbsp;&nbsp;'+ data.result.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.DatosGenerale.apellidoP + data.result.Usuario.DatosGenerale.apellidoM);
+                      }
+                    }
+                  });
                 var d = new Date(start).getMonth();
                 $('#divCalendario .fc-toolbar .fc-left').text(meses[d]);
                 $('#divCalendario .fc-day-header').each(function(){
@@ -1327,11 +1348,13 @@ function horariosAgendaSecretariaMedico(medico_id){
 
             var inicio = new Date((new Date(date)).toUTCString().split(' GMT')[0]);
             var final = new moment(inicio);
+            console.log('validaevento: ' + validaEventoId(inicio,final))
+            console.log('validaAgenda: ' + validaAgenda(inicio,final))
             if (validaEventoId(inicio,final) && validaAgenda(inicio, final) == 1){
               //Promp para seleccionar servicio de esa dirección
               inicio = new Date(date).toLocaleString();
               $.ajax({
-                  url: '/secretaria/serviciosPorHorario',
+                  url: '/agenda/serviciosPorHorario',
                   type: 'POST',
                   dataType: "json",
                   cache: false,
@@ -1370,6 +1393,8 @@ function horariosAgendaSecretariaMedico(medico_id){
                               final = new Date(final);
 
                               var mensaje = '';
+                              console.log('Valido evento 2: ' +validaEvento(inicio, final));
+
                               if ( validaEvento(inicio, final)) {
                                 var validacionAgenda =  validaAgenda(inicio, final);
                                 if ( validacionAgenda == 1 ) {
