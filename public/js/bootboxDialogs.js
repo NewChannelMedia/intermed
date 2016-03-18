@@ -4468,6 +4468,7 @@ function retrasaCita(id)
 }
 
 // Diálogo para retrasar cita
+/*
 function aceptaRetrasoCita(id)
 {
     var box = bootbox.dialog({
@@ -4531,8 +4532,10 @@ function aceptaRetrasoCita(id)
 
     box.modal('show');
 }
+*/
 
 // Diálogo para cancelar cita
+/*
 function cancelarCita(id)
 {
     var box = bootbox.dialog({
@@ -4577,3 +4580,4 @@ function cancelarCita(id)
 
     box.modal('show');
 }
+*/
