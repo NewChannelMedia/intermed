@@ -1315,7 +1315,9 @@ $( document ).ready( function () {
 
 
     if ( $( window ).width() > 768 ) {
-      var h = $( window ).height() - $( '#newMainNav' ).height() - $( '.agendaTopContainer' ).height() - 2; /*- $('footer').height()*/
+      var h = $( window ).height() - $( '#newMainNav' ).height() - $( '.agendaTopContainer' ).height() - 2 - $('footer').height();
+      $( '.agendaBody' ).css( 'height', h + 'px' );
+      $( '.agendaMonth' ).css( 'height', h-2 + 'px' );
       $( '.agendaDay' ).css( 'height', h + 'px' );
     }
     else if ( $( window ).width() < 767 ) {

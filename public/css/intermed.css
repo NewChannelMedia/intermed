@@ -3272,13 +3272,36 @@ td.fc-day.fc-widget-content {
 }
 
 .k-widget {
-  max-width: 600px;
-  width: 100%;
   border: 0;
   background-color: transparent;
   padding: 0;
   margin: 0 auto;
 }
+
+@media (min-width: 425px) and (max-width: 767px) {
+  .k-widget {
+    width: 400px;
+  }
+}
+
+@media (min-width: 768px) {
+  .k-widget {
+    width: 300px;
+  }
+}
+
+@media (min-width: 992px) {
+  .k-widget {
+    width: 400px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .k-widget {
+    width: 500px;
+  }
+}
+
 
 .k-content,
 .k-editable-area,
@@ -3304,7 +3327,6 @@ td.fc-day.fc-widget-content {
 .k-calendar .k-state-selected > .k-link {
   margin: 0 auto;
   color: #fff;
-  border-radius: 0;
   background-color: black;
 }
 
