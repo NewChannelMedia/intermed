@@ -108,7 +108,34 @@ module.exports = function (object){
     intermed.callController('agenda','rechazarCambioCita', req.body, req, res);
   });
 
+
+  app.post('/agenda/AgendaMedico', function (req, res){
+    intermed.callController('agenda','traerAgendaMedico', req.body, req, res);
+  });
+
+
+  app.post('/agenda/detalleCita', function (req, res){
+    intermed.callController( 'agenda', 'detalleCita', req.body, req, res );
+  });
+
+  app.post('/agenda/cita/guardarNota',function (req, res){
+    intermed.callController( 'agenda', 'citaGuardarNota', req.body, req, res );
+  });
+
+  app.post('/agenda/cita/cancelar', function (req, res){
+    intermed.callController('agenda','cancelarCita', req.body, req, res);
+  });
+
+
+  app.post('/agenda/serviciosPorHorario', function (req, res){
+    intermed.callController('agenda','serviciosPorHorario', req.body, req, res);
+  });
+
+  app.post('/agenda/crearCita', function (req, res){
+    intermed.callController('agenda','crearCita', req.body, req, res);
+  });
   app.post('/agenda/eventos/dia', function (req, res){
     intermed.callController('agenda','eventosPorDia', req.body, req, res);
   })
+
 }

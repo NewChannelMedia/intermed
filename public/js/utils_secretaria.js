@@ -224,7 +224,7 @@ function getDate(numdias, year){
 
 function guardarNotaSecretaria(agenda_id, input){
   var nota = $('#'+input).val();
-  $.post('/secretaria/cita/guardarNota',{
+  $.post('/agenda/cita/guardarNota',{
     agenda_id:agenda_id,
     nota: nota,
   },function( data ){
@@ -259,7 +259,7 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
           medico_id: medico,
           servicio_id: servicio_id
         }
-        $.post('/secretaria/crearCita',datos, function(data){
+        $.post('/agenda/crearCita',datos, function(data){
           if (data.success){
             $('#divCalendario').fullCalendar('removeEvents');
             $('#divCalendario').fullCalendar('refetchEvents');
@@ -277,7 +277,7 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
         },5000);
       }
     } else {
-      $.post('/secretaria/crearCita',{
+      $.post('/agenda/crearCita',{
         paciente_id: paciente_id,
         inicio: formatearFecha(inicio),
         fin: formatearFecha(fin),
@@ -303,7 +303,7 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
 }
 
 function secretariaCancelaCita(agenda_id, medico){
-  $.post('/secretaria/cita/cancelar',{
+  $.post('/agenda/cita/cancelar',{
       agenda_id: agenda_id,
       medico: medico
     }, function(data){
