@@ -2,6 +2,10 @@
 * Todas las funciones cargadas en el $(document).ready();
 * o funciones que las pueden llamar donde sea
 **/
+var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+var dias = ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sábado'];
+
+
 //Eliminar el hash '#_=_' que agrega el login con facebook
 var base_url = 'http://localhost:3000/';
 var default_urlFotoPerfil = '/garage/profilepics/dpp.png';
@@ -1294,19 +1298,216 @@ $( document ).ready( function () {
       },
       footer: false
     });
-    var calendar = $("#calendar").data("kendoCalendar");
-      calendar.value(new Date());
-      calendar.bind("navigate", function() {
-        //aqui cargamos los eventos de ese mes
-        var view = this.view();
-        console.log(view.name); //name of the current view
-        var current = this.current();
-          console.log(current); //currently focused date
+    var kendoCalendar = $("#calendar").data("kendoCalendar");
+      kendoCalendar.value(new Date());
+      kendoCalendar.bind("navigate", function() {
+        var value = new Date(this.current());
+        var inicio = new Date(value.getFullYear(), value.getMonth(),1).toISOString().split('T')[0];
+        var fin = new Date(value.getFullYear(), value.getMonth(), new Date(value.getFullYear(),value.getMonth()+1, 0).getDate()).toISOString().split('T')[0];
+        console.log('INICIO: ' +  inicio);
+        console.log('FIN: ' +  fin);
+
       });
-      calendar.bind("change", function() {
+      kendoCalendar.bind("change", function() {
         //aqui cargamos los eventos de ese dia en la lista de la derecha
-        var value = this.value();
-        console.log(value); //value is the selected date in the calendar
+        var value = new Date(new Date(this.value()).toLocaleDateString());
+
+        $('#mesFecha').text(meses[value.getMonth()]);
+        $('#diaFecha').text(value.getDate());
+        $('#anioFecha').text(value.getFullYear());
+        $('#diaSemana').text(dias[value.getDay()]);
+
+        var fechaInicio = value.toISOString().split('T')[0] + ' 00:00:00';
+        var fechaFin = value.toISOString().split('T')[0] + ' 23:59:59';
+
+        /*
+        {"id":2,"fechaHoraInicio":"2016-03-19T09:15:00.000Z","fechaHoraFin":"2016-03-19T09:45:00.000Z","status":1,"nota":null,"resumen":null,"direccion_id":1,"usuario_id":1,"paciente_id":null,"paciente_temporal_id":1,"servicio_id":1,"Paciente":null,"PacienteTemporal":{"id":1,"nombres":"Margarita","apellidos":"Acosta","correo":"bmdz.acos@gmail.com","telefono":null,"fecha":"2016-03-19T00:08:10.000Z"}}
+        */
+        $.post('/agenda/eventos/dia',{fecha:fechaInicio,fin:fechaFin},function(data){
+          //console.log('RESULTADO: ' + JSON.stringify(data));
+          if (data.success){
+            var contenido = '';
+            data.result.forEach(function(res){
+              //console.log('Res: ' + JSON.stringify(res));
+              var nombre = '';
+              if (res.PacienteTemporal){
+                nombre = res.PacienteTemporal.nombres + ' ' + res.PacienteTemporal.apellidos;
+              } else {
+                nombre = res.Paciente.Usuario.DatosGenerale.nombre  + ' ' + res.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + res.Paciente.Usuario.DatosGenerale.apellidoM;
+              }
+
+              var ubicacion = res.Direccion.nombre;
+
+              var hora = res.fechaHoraInicio.split('T')[1].split(':00.00')[0];
+
+              contenido += '<a role="button" class="row mediaHora ocupada consulta" onclick="detalleCitaSecretaria('+ res.id +')">'+
+                '<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">'+
+                  '<div class="mediaHoraInterno">'+
+                    '<div class="body-container">'+
+                      '<div class="center-content">'+
+                        '<span class="lbl-mediahora h77-boldcond">'+hora+'</span>'+
+                      '</div>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+                '<div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">'+
+                  '<div class="mediaHoraInterno">'+
+                    '<div class="body-container">'+
+                      '<div class="center-content">'+
+                        '<div class="media">'+
+                          '<div class="media-left">'+
+                            '<span class="glyphicon glyphicon-user s35 darkBlue-c"></span>'+
+                          '</div>'+
+                          '<div class="media-body">'+
+                            '<h4 class="h77-boldcond s20 noMargin white-c">'+nombre+'</h4>'+
+                            '<h4 class="h75-bold s15 noMargin white-c"><small>'+ubicacion+'</small></h4>'+
+                          '</div>'+
+                        '</div>'+
+                      '</div>'+
+                    '</div>'+
+                  '</div>'+
+                '</div>'+
+              '</a>'
+            });
+            if (contenido  == ""){
+              contenido = `<div class="row hora">
+            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-1 noPadding">
+              <p class="noMargin">
+                <span class="lbl-hora h77-boldcond">8 am</span>
+              </p>
+            </div>
+            <div class="col-lg-11 col-md-11 col-sm-10 col-xs-11">
+              <a role="button" class="row mediaHora ocupada consulta" onclick="">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="lbl-mediahora h77-boldcond">8:00</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <div class="media">
+                          <div class="media-left">
+                            <span class="glyphicon glyphicon-user s35 darkBlue-c"></span>
+                          </div>
+                          <div class="media-body">
+                            <h4 class="h77-boldcond s20 noMargin white-c">Juan Carlos Medina</h4>
+                            <h4 class="h75-bold s15 noMargin white-c"><small>Consultorio principal</small></h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+              <a role="button" class="row mediaHora ocupada evento">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="lbl-mediahora h77-boldcond">8:30</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <div class="media">
+                                  <div class="media-left">
+                                    <span class="glyphicon glyphicon-bookmark s35 darkBlue-c"></span>
+                                  </div>
+                                  <div class="media-body">
+                                    <h4 class="h77-boldcond s20 noMargin white-c">Junta de asociacion de consultorio</h4>
+                                    <h4 class="h75-bold s15 noMargin white-c hidden-sm hidden-xs"><small>Consultorio principal</small></h4>
+                                  </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div><div class="row hora">
+            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-1 noPadding">
+              <p class="noMargin">
+                <span class="lbl-hora h77-boldcond">9 am</span>
+              </p>
+            </div>
+            <div class="col-lg-11 col-md-11 col-sm-10 col-xs-11">
+              <a role="button" class="row mediaHora">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="lbl-mediahora h77-boldcond">9:00</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <div class="media hidden">
+                          <div class="media-left">
+                            <span class="glyphicon glyphicon-user s35 darkBlue-c "></span>
+                          </div>
+                          <div class="media-body">
+                            <h4 class="h77-boldcond s20 noMargin white-c">Juan Carlos Medina</h4>
+                            <h4 class="h75-bold s15 noMargin white-c"><small>Consultorio principal</small></h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+              <a role="button" class="row mediaHora">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="lbl-mediahora h77-boldcond">9:30</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <div class="media hidden">
+                          <div class="media-left">
+                            <span class="glyphicon glyphicon-user s35 darkBlue-c "></span>
+                          </div>
+                          <div class="media-body">
+                            <h4 class="h77-boldcond s20 noMargin white-c">Juan Carlos Medina</h4>
+                            <h4 class="h75-bold s15 noMargin white-c"><small>Consultorio principal</small></h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          </div>`;
+            }
+            $('.horas-container').html(contenido);
+
+          }
+        }).fail(function(e){
+          console.log('POST fail: ' + e);
+        });
+
+
         if( $(window).width() < 767){
           toAgendaDay();
         }
