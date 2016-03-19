@@ -107,4 +107,8 @@ module.exports = function (object){
   app.post('/agenda/rechazarCambioCita', function (req, res){
     intermed.callController('agenda','rechazarCambioCita', req.body, req, res);
   });
+
+  app.post('/agenda/eventos/dia', function (req, res){
+    intermed.callController('agenda','eventosPorDia', req.body, req, res);
+  })
 }
