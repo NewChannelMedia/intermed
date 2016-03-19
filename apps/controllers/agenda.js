@@ -1577,7 +1577,6 @@ exports.aceptarCambioCita = function(object, req, res) {
 // el paciente no acepto el retraso de la cita
 exports.rechazarCambioCita = function(object, req, res) {
   // Cancelando la solicitud
-  console.log(object.id)
   models.AgendaCambio.update({
       estatus: 0,
     }, { where : {  agenda_id: object.id }
@@ -1602,6 +1601,35 @@ exports.rechazarCambioCita = function(object, req, res) {
       res.status(500).json({error: err});
   });
 };
+
+exports.eventosPorDia = function (object, req, res){
+  models.Agenda.findAll({
+    where:{
+      usuario_id: req.session.passport.user.id,
+      fechaHoraInicio: { $gte: object.fecha, $lt: object.fin }
+    },
+    include: [{
+      model: models.Paciente,
+      include: [{
+        model: models.Usuario,
+        attributes: ['id'],
+        include: [{
+          model: models.DatosGenerales
+        }]
+      }]
+    },{
+      model: models.PacienteTemporal
+    },{
+      model: models.Direccion,
+      attributes:['nombre']
+    }]
+  }).then(function(result){
+    res.status(200).json({
+      success:true,
+      result: result
+    })
+  })
+}
 
 exports.traerAgendaMedico = function (object, req, res){
   object.direccion_id = [];
