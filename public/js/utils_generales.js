@@ -1340,7 +1340,7 @@ $( document ).ready( function () {
 
               var hora = res.fechaHoraInicio.split('T')[1].split(':00.00')[0];
 
-              contenido += '<a role="button" class="row mediaHora ocupada consulta" onclick="verAgendaMedico('+ res.id +')">'+
+              contenido += '<a role="button" class="row mediaHora ocupada consulta" onclick="detalleCitaSecretaria('+ res.id +')">'+
                 '<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">'+
                   '<div class="mediaHoraInterno">'+
                     '<div class="body-container">'+
