@@ -1619,6 +1619,9 @@ exports.eventosPorDia = function (object, req, res){
       }]
     },{
       model: models.PacienteTemporal
+    },{
+      model: models.Direccion,
+      attributes:['nombre']
     }]
   }).then(function(result){
     res.status(200).json({

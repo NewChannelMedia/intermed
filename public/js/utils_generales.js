@@ -1324,16 +1324,28 @@ $( document ).ready( function () {
         {"id":2,"fechaHoraInicio":"2016-03-19T09:15:00.000Z","fechaHoraFin":"2016-03-19T09:45:00.000Z","status":1,"nota":null,"resumen":null,"direccion_id":1,"usuario_id":1,"paciente_id":null,"paciente_temporal_id":1,"servicio_id":1,"Paciente":null,"PacienteTemporal":{"id":1,"nombres":"Margarita","apellidos":"Acosta","correo":"bmdz.acos@gmail.com","telefono":null,"fecha":"2016-03-19T00:08:10.000Z"}}
         */
         $.post('/agenda/eventos/dia',{fecha:fechaInicio,fin:fechaFin},function(data){
-          console.log('RESULTADO: ' + JSON.stringify(data));
+          //console.log('RESULTADO: ' + JSON.stringify(data));
           if (data.success){
             var contenido = '';
             data.result.forEach(function(res){
+              console.log('Res: ' + JSON.stringify(res));
+              var nombre = '';
+              if (res.PacienteTemporal){
+                nombre = res.PacienteTemporal.nombres + ' ' + res.PacienteTemporal.apellidos;
+              } else {
+                nombre = res.Paciente.Usuario.DatosGenerale.nombre  + ' ' + res.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + res.Paciente.Usuario.DatosGenerale.apellidoM;
+              }
+
+              var ubicacion = res.Direccion.nombre;
+
+              var hora = res.fechaHoraInicio.split('T')[1].split(':00.00')[0];
+
               contenido += '<a role="button" class="row mediaHora ocupada consulta" onclick="">'+
                 '<div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">'+
                   '<div class="mediaHoraInterno">'+
                     '<div class="body-container">'+
                       '<div class="center-content">'+
-                        '<span class="lbl-mediahora h77-boldcond">8:00</span>'+
+                        '<span class="lbl-mediahora h77-boldcond">'+hora+'</span>'+
                       '</div>'+
                     '</div>'+
                   '</div>'+
@@ -1347,8 +1359,8 @@ $( document ).ready( function () {
                             '<span class="glyphicon glyphicon-user s35 darkBlue-c"></span>'+
                           '</div>'+
                           '<div class="media-body">'+
-                            '<h4 class="h77-boldcond s20 noMargin white-c">Juan Carlos Medina</h4>'+
-                            '<h4 class="h75-bold s15 noMargin white-c"><small>Consultorio principal</small></h4>'+
+                            '<h4 class="h77-boldcond s20 noMargin white-c">'+nombre+'</h4>'+
+                            '<h4 class="h75-bold s15 noMargin white-c"><small>'+ubicacion+'</small></h4>'+
                           '</div>'+
                         '</div>'+
                       '</div>'+
