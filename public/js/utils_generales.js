@@ -1328,7 +1328,7 @@ $( document ).ready( function () {
           if (data.success){
             var contenido = '';
             data.result.forEach(function(res){
-              console.log('Res: ' + JSON.stringify(res));
+              //console.log('Res: ' + JSON.stringify(res));
               var nombre = '';
               if (res.PacienteTemporal){
                 nombre = res.PacienteTemporal.nombres + ' ' + res.PacienteTemporal.apellidos;
