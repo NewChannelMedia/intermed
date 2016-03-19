@@ -1,4 +1,5 @@
 var models  = require('../models');
+var moment = require('../../public/js/moment.min.js');
 
 exports.generarCita = function(object, req, res) {
   try{
@@ -1476,15 +1477,22 @@ exports.modificaEvento = function(object, req, res) {
 exports.solicitarCambioCita = function(object, req, res) {
   //var id = object.id.replace("Cita_", "");
   var id = object.id;
+  var hora =  object.tiempo.split(':');
 
   models.Agenda.findOne({
        where : { id: id}
   }).then(function(datos) {
-     console.log('solictar cambio' +  id)
-      var aplazo = aplazaCita(object.tiempo, object.id);
+      var aplazo = new moment(datos.fechaHoraInicio);
+      var aplazoFin = new moment(datos.fechaHoraFin);
+
+      aplazo.add(hora[0], 'hours');
+      aplazo.add(hora[1], 'minutes');
+      aplazoFin.add(hora[0], 'hours');
+      aplazoFin.add(hora[1], 'minutes');
+
       models.AgendaCambio.create({
-        fechaHoraInicio:  aplazo.fecha,
-        fechaHoraFin:  aplazo.fechaFin,
+        fechaHoraInicio:  aplazo,
+        fechaHoraFin:  aplazoFin,
         status: 0,
         agenda_id: id,
         tiempo : object.tiempo
@@ -1497,8 +1505,10 @@ exports.solicitarCambioCita = function(object, req, res) {
       }).catch(function(err) {
           res.status(500).json({error: err});
       });
+      res.status(200).json({ok: true});
+  }).catch(function(err) {
+      res.status(500).json({error: err});
   });
-
 };
 
 // Paciente autorizando la cita
@@ -2174,34 +2184,4 @@ exports.crearCita = function (object, req, res){
       }
     });
   });
-}
-
-function aplazaCita(tiempo, id)
-{
-  models.Agenda.findOne({
-       where : { id: id}
-  }).then(function(evento) {
-
-    var inicio = new moment(evento.fechaHoraInicio);
-    var aplazoInicio = new moment(evento.fechaHoraInicio);
-    var fin = new moment(evento.fechaHoraFin);
-    var aplazoFin = new moment(evento.fechaHoraFin);
-    var hora  =  tiempo.split(':');
-
-    aplazo = inicio.add(hora[0], 'hours');
-    aplazo = inicio.add(hora[1], 'minutes');
-
-    aplazoFin = fin.add(hora[0], 'hours');
-    aplazoFin = fin.add(hora[1], 'minutes');
-
-    var datos =  {
-      id: evento.id,
-      tiempo: tiempo,
-      fecha : aplazo.format('YYYY-M-D') + " "  + aplazo.format('HH:mm'),
-      fechaFin:  aplazoFin.format('YYYY-M-D') + " "  + aplazoFin.format('HH:mm'),
-    }
-
-    return datos;
-  });
-
 }

@@ -1,4 +1,4 @@
-var models = require( '../models' );
+
 
 exports.index = function ( object, req, res ) {
   try{
@@ -116,6 +116,7 @@ exports.notificacionesScroll = function (object){
 }
 
 exports.cargarNotificacionesList = function (object){
+  console.log('Cargar notificaciones list');
     var whereid = new Array();
     var limit = 0;
     if (object.notificacionesId && object.notificacionesId!= "" && object.notificacionesId != null) {
@@ -302,6 +303,7 @@ exports.traerNuevasNotificaciones = function (object){
 
 
 function formatearNotificacion(result, emit, object){
+
   if (result.length > 0){
     result = JSON.parse( JSON.stringify( result ) );
     var length = result.length;
@@ -877,12 +879,33 @@ function formatearNotificacion(result, emit, object){
               }
             });
             break
+        case 50:
+            models.Agenda.findOne({
+              where: {id: record.data},
+              include:[{
+                model: models.Usuario,
+                attributes:['id','usuarioUrl','urlFotoPerfil'],
+                include:[{
+                  model: models.DatosGenerales,
+                  attributes:['nombre','apellidoP','apellidoM']
+                }]
+              }]
+            }).then(function(agenda){
+              console.log('agenda' + agenda)
+              totalProcesados++;
+              record[ 'agenda' ] = JSON.parse( JSON.stringify( agenda ) );
+              if ( totalProcesados === result.length) {
+                object.socket.emit(emit,result);
+              }
+            });
+            break;
         default:
             console.log('Notificacion sin procesar: [tipoNotificacion_id: '+ record.tipoNotificacion_id +']');
             totalProcesados++;
             if ( totalProcesados === result.length) {
               object.socket.emit(emit,result);
             }
+            break;
       }
     });
   } else {

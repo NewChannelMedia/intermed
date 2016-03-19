@@ -4971,13 +4971,14 @@ function aceptaRetrasoCita(id)
       onEscape: function () {
           bootbox.hideAll();
       },
-      title: 'Retrasar Cita' ,
+      title: 'Aceptar-Rechazar  retraso de cita' ,
       message:
-      '<div class="col-md-12"> Retraso de Cita</div><br>',
-      buttons: {
+      '<div class="col-md-12"> Aceptas el retraso de Cita</div><br>',
+  /*    buttons: {
           cancel: {
               label: 'Cancelar',
               className: 'btn-warning',
+
               callback: function () {
                 $.ajax({
                      async: false,
@@ -4996,7 +4997,8 @@ function aceptaRetrasoCita(id)
                        console.error( 'AJAX ERROR: ' + err );
                      }
                 });
-          },
+              }
+          },  // cancel
           save: {
               label: 'Aceptar',
               className: 'btn-success',
@@ -5026,7 +5028,6 @@ function aceptaRetrasoCita(id)
     box.modal('show');
 }
 */
-
 // Diálogo para cancelar cita
 /*
 function cancelarCita(id)

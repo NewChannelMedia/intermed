@@ -347,6 +347,7 @@ var io = function ( io, bundle, ioPassport ) {
       });
 
       socket.on('cargarNotificacionesList',function (notificacionesId,limit,maxfecha){
+        console.log('LIST')
           models.TipoNotificacion.findAll( {
             where: {
               tipoUsuario: socket.request.cookies.intermed_sesion.tipoUsuario

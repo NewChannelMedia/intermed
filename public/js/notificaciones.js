@@ -562,10 +562,18 @@ function formatearNotificacion( record , element) {
           nombreCompleto = record.comentario.Medico.Usuario.DatosGenerale.nombre + ' ' + record.comentario.Medico.Usuario.DatosGenerale.apellidoP + record.comentario.Medico.Usuario.DatosGenerale.apellidoM;
           not += '<div class="media-left"><a onclick="verDetalleComentario('+ record.comentario.id +')">'+mediaObjectImagen+'</a></div><div class="media-body"><a onclick="verDetalleComentario('+ record.comentario.id +')">El Dr. ' + nombreCompleto + ' ha respondido tu comentario.</a>' + mediaObjectFecha + '</div>';
           break;
+      case 50:
+          //Notificacion a paciente de retraso de cita
+          var mediaObjectImagen = '<img class="media-object img-circle" src="' + record.agenda.Usuario.urlFotoPerfil + '" '+style+'>';
+          var nombreCompleto = record.agenda.Usuario.DatosGenerale.nombre + ' ' + record.agenda.Usuario.DatosGenerale.apellidoP + ' ' + record.agenda.Usuario.DatosGenerale.apellidoM;
+          not += '<div class="media-left"><a onclick="retrasaCita(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body"><a onclick="retrasaCita(\''+record.data+'\')">El médico ' + nombreCompleto + ' ha retrasado la cita.</a>' + mediaObjectFecha + '</div>';
+          break;
     }
-    not += '</div>';
 
-    not = '<'+ element +' class="media" id="li' + record.id + '" ' + visto + '>' + not + '</'+element+'>'
+    not += '</div>';
+    not = '<'+ element +' class="media" id="li' + record.id + '" ' + visto + '>' + not + '</'+element+'>'
+
+    console.log('not' + not)
   //}
   return not;
 }
