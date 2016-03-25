@@ -7,7 +7,13 @@ module.exports = function ( sequelize, DataTypes ) {
       autoIncrement: true,
       primaryKey: true
     },
-    subEsp: {
+    cedula: {
+      type: DataTypes.STRING
+    },
+    titulo: {
+      type: DataTypes.STRING
+    },
+    anio: {
       type: DataTypes.INTEGER
     },
     medico_id: {

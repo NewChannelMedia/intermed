@@ -2705,10 +2705,11 @@ div.Slider{
 #divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg,
 #divCalendario.regHorMed div.fc-event-container .fc-event .fc-bg,
 #divCalendario.regHorMed div.fc-event-container .fc-event {
-  background-color: rgb(255,149,0);
+  background-color: #FFF;/*rgb(255,149,0);*/
   color: #6A6A6A;
   font-weight: bold;
   border: none;
+  opacity: 0.8;
 }
 
 #divCalendario.regHorMed div.fc-event-container .fc-event.citaPast,
@@ -3272,13 +3273,36 @@ td.fc-day.fc-widget-content {
 }
 
 .k-widget {
-  max-width: 600px;
-  width: 100%;
   border: 0;
   background-color: transparent;
   padding: 0;
   margin: 0 auto;
 }
+
+@media (min-width: 425px) and (max-width: 767px) {
+  .k-widget {
+    width: 400px;
+  }
+}
+
+@media (min-width: 768px) {
+  .k-widget {
+    width: 300px;
+  }
+}
+
+@media (min-width: 992px) {
+  .k-widget {
+    width: 400px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .k-widget {
+    width: 500px;
+  }
+}
+
 
 .k-content,
 .k-editable-area,
@@ -3302,9 +3326,7 @@ td.fc-day.fc-widget-content {
 }
 
 .k-calendar .k-state-selected > .k-link {
-  margin: 0 auto;
   color: #fff;
-  border-radius: 0;
   background-color: black;
 }
 
@@ -3343,13 +3365,37 @@ td.fc-day.fc-widget-content {
 }
 
 .k-calendar td a.k-link {
+  font-size: 20px;
+  line-height: 2em!important;
   width: auto;
   height: auto;
-  background-color: #fff;
-  font-size: 20px;
-  border-radius: 4px;
+  min-height: 2em!important;
   margin: 3px;
-  text-align: center;
+  border-radius: 4px;
+  background-color: #fff;
+}
+@media (min-width: 425px) and (max-width: 767px) {
+  .k-calendar td a.k-link {
+    height: 40px!important;
+  }
+}
+
+@media (min-width: 768px) {
+  .k-calendar td a.k-link {
+    height: 40px!important;
+  }
+}
+
+@media (min-width: 992px) {
+  .k-calendar td a.k-link {
+    height: 50px!important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .k-calendar td a.k-link {
+    height: 60px!important;
+  }
 }
 
 .k-calendar .k-content th {

@@ -231,6 +231,10 @@ module.exports = function (object){
     intermed.callController('medicos','registrarDatosGenerales', req.body, req, res);
   });
 
+  app.post('/medicos/especialidadestudio/agregar', function (req, res){
+    intermed.callController('medicos','especialidadEstudioAgregar', req.body, req, res);
+  });
+
   app.post('/medico/detalleMedico', function (req, res){
     intermed.callController('medicos','detalleMedico', req.body, req, res);
   });

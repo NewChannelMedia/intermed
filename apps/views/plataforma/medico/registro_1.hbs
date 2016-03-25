@@ -66,7 +66,7 @@
           <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
             <span class="round-number h45-light center-block">1</span>
           </div>
-          <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 reg">
+          <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 reg" id="section_content_1">
             <div class="row">
               <div class="col-md-12">
                 <h3 class="h45-light s20 text-uppercase regSectionTitle">
@@ -157,7 +157,8 @@
           <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4" style="height:377px">
             <div class="body-container">
               <div class="center-content">
-                  <button class="btn btn-primary btn-lg btn-default h45-light center-block btn-block white-c hidden">continuar</button>
+                  <button type="submit" class="btn btn-primary bg-darkBlue btn-lg h45-light center-block btn-block white-c btncontinuar hidden" id="seccion_continuar_1">Continuar</button>
+                  <button type="submit"  class="btn btn-lg btn-danger bg-orange h45-light center-block btn-block white-c btneditar hidden" id="seccion_editar_1">Editar</button>
               </div>
             </div>
           </div>
@@ -167,222 +168,187 @@
         <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
           <span class="round-number h45-light center-block">2</span>
         </div>
-        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 reg">
-          <div class="row">
-            <div class="col-md-12">
-              <h3 class="h45-light s20 text-uppercase regSectionTitle">
-                información profesional
-              </h3>
+        <form method="post" onsubmit="return siguientePaso();">
+          <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 reg" id="section_content_2">
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="h45-light s20 text-uppercase regSectionTitle">
+                  información profesional
+                </h3>
+              </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-              <div class="input-group">
-                <span class="input-group-addon" id="basic-addon3">Cedula general (*Obligatoria)</span>
-                <input type="text" class="form-control" id="inputCedulaGeneral" aria-describedby="basic-addon3" placeholder="Cédula de especialidad" required>
-                <span class="input-group-btn">
-                  <button type="button" class="btn btn-default" onclick="validarCedulaGeneral($('#inputCedulaGeneral'),this)" id="addCedulaGen">Validar</button>
+            <div class="row">
+              <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon3">Cedula general (*Obligatoria)</span>
+                  <input type="text" class="form-control" id="inputCedulaGeneral" aria-describedby="basic-addon3" placeholder="Cédula de especialidad" required>
+                  <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" onclick="validarCedulaGeneral($('#inputCedulaGeneral'),this)" id="addCedulaGen">Validar</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                <span id="spanCedulaGeneral"></span>
+              </div>
+            </div>
+            <div class="row hidden addEspecialidadDiv">
+              <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon3">¿Tienes especialidad?</span>
+                  <input type="text" class="form-control" aria-describedby="basic-addon3" placeholder="Cédula de especialidad" id="inputCedulaEspecialidad">
+                  <input type="text" class="form-control" placeholder="Titulo de especialidad" id="inputTituloEspecialidad">
+                  <span class="input-group-btn top-content">
+                    <button type="button" class="btn btn-default" type="button" onclick="validarCedulaEspecialidad($('#inputCedulaEspecialidad'),$('#inputTituloEspecialidad'))">Añadir</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="row hidden addEspecialidadDiv">
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <span id="spanCedulaEspecialidad"></span>
+              </div>
+            </div>
+            <div class="row hidden addEspecialidadDiv">
+              <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                <div class="input-group">
+                  <span class="input-group-addon" id="basic-addon3">¿Estás estudiando una especialidad?</span>
+                  <input type="text" class="form-control" aria-describedby="basic-addon3" placeholder="Nombre de la especialidad" id="inputTituloEspecialidadEstudio">
+                  <span class="input-group-btn">
+                  <button type="button" class="btn btn-default" type="button" onclick="añadirEspecialidadEstudio($('#inputTituloEspecialidadEstudio'))">Añadir</button>
                 </span>
+                </div>
+              </div>
+            </div>
+            <div class="row hidden addEspecialidadDiv">
+              <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                <span id="spanEspecialidadEstudio"></span>
               </div>
             </div>
           </div>
-          <div class="row">
-            <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-              <span id="spanCedulaGeneral"></span>
-            </div>
-          </div>
-          <div class="row hidden addEspecialidadDiv">
-            <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-              <div class="input-group">
-                <span class="input-group-addon" id="basic-addon3">¿Tienes especialidad?</span>
-                <input type="text" class="form-control" aria-describedby="basic-addon3" placeholder="Cédula de especialidad" id="inputCedulaEspecialidad">
-                <span class="input-group-btn">
-                  <button type="button" class="btn btn-default" type="button" onclick="validarCedulaEspecialidad($('#inputCedulaEspecialidad'))">Añadir</button>
-                </span>
+          <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4" style="height:377px">
+            <div class="body-container">
+              <div class="center-content">
+                  <button type="submit" class="btn btn-primary btn-lg bg-darkBlue h45-light center-block btn-block white-c btncontinuar hidden" id="seccion_continuar_2">Continuar</button>
+                  <button type="submit"  class="btn btn-warning btn-lg bg-orange h45-light center-block btn-block white-c btneditar hidden" id="seccion_editar_2">Editar</button>
               </div>
             </div>
           </div>
-          <div class="row hidden addEspecialidadDiv">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <span id="spanCedulaEspecialidad"></span>
-            </div>
-          </div>
-          <div class="row hidden addEspecialidadDiv">
-            <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-              <div class="input-group">
-                <span class="input-group-addon" id="basic-addon3">¿Estás estudiando una especialidad?</span>
-                <input type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" placeholder="Nombre de la especialidad">
-                <span class="input-group-btn">
-                <button type="button" class="btn btn-default" type="button">Añadir</button>
-              </span>
-              </div>
-            </div>
-          </div>
-          <div class="row hidden addEspecialidadDiv">
-            <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-              <span id="spanEspecialidadEstudio"></span>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4" style="height:377px">
-          <!--
-          <div class="body-container">
-            <div class="center-content">-->
-                <button class="btn btn-primary btn-lg btn-default h45-light center-block btn-block white-c hidden" style="margin-top:30px">continuar</button>
-            <!--</div>
-          </div>-->
-        </div>
+        </form>
       </div>
       <div class="row reg-box">
-        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
-          <span class="round-number h45-light center-block">3</span>
-        </div>
-        <div class="col-lg-8 col-md-8 col-sm-9 col-xs-12 reg">
-          <div class="row">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <h3 class="h45-light s20 text-uppercase regSectionTitle">
-                Selecciona tu forma de pago:
-              </h3>
-            </div>
+        <form method="post" onsubmit="return validarTarjeta();" id="conektaForm">
+          <div class="col-lg-3 col-md-3 col-sm-3 col-xs-4">
+            <span class="round-number h45-light center-block">3</span>
           </div>
-          <div class="row">
-            <div class="col-lg-12">
-              <ul id ="tipodepagoTabs" class="nav nav-pills" role="tablist">
-                <li role="presentation" class="active">
-                  <a class="noPadding" href="#tarjetaTab" aria-controls="tarjetaTab" role="tab" data-toggle="tab">
-                    <span class="btn btn-default btn-block"><span class="glyphicon glyphicon-credit-card"></span> Tarjeta de Crédito</span>
-                  </a>
-                </li>
-                <li>
-                  <a class="noPadding" href="#paypalTab" aria-controls="tarjetaTab" role="tab" data-toggle="tab">
-                    <span class="btn btn-default btn-block"><span class="glyphicon glyphicon-piggy-bank"></span> PayPal</span>
-                  </a>
-                </li>
-              </ul>
+          <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 reg" id="section_content_3">
+            <div class="row">
+              <div class="col-md-12">
+                <h3 class="h45-light s20 text-uppercase regSectionTitle">
+                  Tarjeta de Crédito
+                </h3>
+              </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-lg-12">
-              <div class="tab-content">
-                <div id="tarjetaTab" class="tab-pane active" role="tabpanel">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <h3 class="h45-light s20 text-uppercase regSectionTitle">
-                        Tarjeta de Crédito
-                      </h3>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <form action="" method="POST" id="card-form" name="card-form">
-                        <span class="card-errors"></span>
-                        <div class="row">
-                          <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12">
-                            <div class="form-group">
-                              <label class="s15 regInput">Nombre como aparece en su tarjeta:</label>
-                              <input type="text" class="form-control regInput" placeholder="" autocomplete="off" required="true" data-conekta="card[name]" />
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8">
-                            <label class="s15 regInput">Número de tarjeta de crédito</label>
-                            <div class="input-group">
-                              <input type="text" class="form-control regInput" maxlength="16" placeholder="" autocomplete="off" required="true" data-conekta="card[number]" onchange="console.log(Conekta.card.validateNumber($(this).val()) + ' ' + Conekta.card.getBrand($(this).val()))" />
-                              <span class="input-group-addon"><span class="glyphicon glyphicon-lock"</span>
-                            </div>
-                          </div>
-                          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
-                            <label class="s15 regInput">CVV </label>
-                            <div class="input-group">
-                              <input type="password" class="form-control regInput" autocomplete="off" data-conekta="card[cvc]" minlength="3" maxlength="3" required="true" />
-                              <span class="input-group-addon" data-toggle="tooltip" data-placement="top" title="Número de seguridad que se encuentra al reverso de tu tarjeta."><span class="glyphicon glyphicon-question-sign"></span></span>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <label class="s15 regInput">Fecha de Expiración (MM / AAAAA)</label>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-lg-2 col-md-2 col-sm-3 col-xs-5">
-                            <div class="form-group">
-                              <select class="form-control regInput" required="true" data-conekta="card[exp_month]" >
-                                <option value="" selected disabled>Mes</option>
-                                <option value="1">01</option>
-                                <option value="2">02</option>
-                                <option value="3">03</option>
-                                <option value="4">04</option>
-                                <option value="5">05</option>
-                                <option value="6">06</option>
-                                <option value="7">07</option>
-                                <option value="8">08</option>
-                                <option value="9">09</option>
-                                <option value="10">10</option>
-                                <option value="11">11</option>
-                                <option value="12">12</option>
-                              </select>
-                            </div>
-                          </div>
-                          <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
-                            <span class="s35">/</span>
-                          </div>
-                          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
-                            <select class="form-control regInput" required="true" data-conekta="card[exp_year]" >
-                              <option value="" selected disabled>Año</option>
-                              <option value="2016">2016</option>
-                              <option value="2017">2017</option>
-                              <option value="2018">2018</option>
-                              <option value="2019">2019</option>
-                              <option value="2020">2020</option>
-                              <option value="2021">2021</option>
-                              <option value="2022">2022</option>
-                              <option value="2023">2023</option>
-                              <option value="2024">2024</option>
-                              <option value="2025">2025</option>
-                              <option value="2026">2026</option>
-                            </select>
-                          </div>
-                        </div>
-                        <div class="row <!--hidden invisible-->">
-                          <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12">
-                            <div class="form-row">
-                              <label>
-                                <span>Seleccionar plan de cargo</span>
-                                <select class="form-control" name="planid" id="planid" required>
-                                  <option value="">Planes</option>
-                                  {{#each planes}}
-                                    <option value="{{id}}">{{nombre}}</option>
-                                  {{/each}}
-                                </select>
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-lg-4 col-md-4 col-sm-6 col-xs-6">
-                            <button type="submit" class="btn btn-default btn-block" id="enviar" name="enviar">Verificar Tarjeta</button>
-                          </div>
-                        </div>
-                      </form>
+            <div class="row">
+              <div class="col-lg-12">
+                <span class="card-errors"></span>
+                <div class="row">
+                  <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12">
+                    <div class="form-group">
+                      <label class="s15 regInput">Nombre como aparece en su tarjeta:</label>
+                      <input type="text" class="form-control regInput" placeholder="" autocomplete="off" required="true" data-conekta="card[name]" id="conektaName" />
                     </div>
                   </div>
                 </div>
-                <div id="paypalTab" class="tab-pane" role="tabpanel">
-                  <div class="row">
-                    <div class="col-lg-12">
-                      <h3 class="h45-light s20 text-uppercase regSectionTitle">
-                        PayPal
-                      </h3>
+                <div class="row">
+                  <div class="col-lg-6 col-md-6 col-sm-8 col-xs-8">
+                    <label class="s15 regInput">Número de tarjeta de crédito</label>
+                    <div class="input-group">
+                      <input type="text" class="form-control regInput" maxlength="16" placeholder="" autocomplete="off" required="true" data-conekta="card[number]"  id="conektaCard"  />
+                      <span class="input-group-addon"><span class="glyphicon glyphicon-lock"</span>
                     </div>
-
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+                    <label class="s15 regInput">CVV </label>
+                    <div class="input-group">
+                      <input type="password" class="form-control regInput" autocomplete="off" data-conekta="card[cvc]" minlength="3" maxlength="3" required="true"  id="conektaCVC" />
+                      <span class="input-group-addon" data-toggle="tooltip" data-placement="top" title="Número de seguridad que se encuentra al reverso de tu tarjeta."><span class="glyphicon glyphicon-question-sign"></span></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <label class="s15 regInput">Fecha de Expiración (MM / AAAAA)</label>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-2 col-md-2 col-sm-3 col-xs-5">
+                    <div class="form-group">
+                      <select class="form-control regInput" required="true" data-conekta="card[exp_month]"  id="conektaDate1" >
+                        <option value="" selected disabled>Mes</option>
+                        <option value="1">01</option>
+                        <option value="2">02</option>
+                        <option value="3">03</option>
+                        <option value="4">04</option>
+                        <option value="5">05</option>
+                        <option value="6">06</option>
+                        <option value="7">07</option>
+                        <option value="8">08</option>
+                        <option value="9">09</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-lg-1 col-md-1 col-sm-1 col-xs-1 text-center">
+                    <span class="s35">/</span>
+                  </div>
+                  <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                    <select class="form-control regInput" required="true" data-conekta="card[exp_year]"  id="conektaDate2" >
+                      <option value="" selected disabled>Año</option>
+                      <option value="2016">2016</option>
+                      <option value="2017">2017</option>
+                      <option value="2018">2018</option>
+                      <option value="2019">2019</option>
+                      <option value="2020">2020</option>
+                      <option value="2021">2021</option>
+                      <option value="2022">2022</option>
+                      <option value="2023">2023</option>
+                      <option value="2024">2024</option>
+                      <option value="2025">2025</option>
+                      <option value="2026">2026</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row hidden">
+                  <div class="col-lg-6 col-md-6 col-sm-8 col-xs-12">
+                    <div class="form-row">
+                      <label>
+                        <span>Seleccionar plan de cargo</span>
+                        <select class="form-control" name="planid" id="planid">
+                          <option value="">Planes</option>
+                          {{#each planes}}
+                            <option value="{{id}}">{{nombre}}</option>
+                          {{/each}}
+                        </select>
+                      </label>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+          <div class="col-lg-2 col-md-2 col-sm-2 col-xs-4" style="height:377px">
+            <div class="body-container">
+              <div class="center-content">
+                  <button type="submit" class="btn btn-primary btn-lg h45-light center-block btn-block white-c btncontinuar hidden" id="seccion_continuar_3">Continuar</button>
+                  <button type="button" class="btn btn-danger btn-lg h45-light center-block btn-block white-c btneditar hidden" id="seccion_editar_3" onclick="editarDatosDePago()">Editar</button>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
 
       <div class="row">
@@ -394,9 +360,7 @@
             </div>
           </div>
         </div>
-
-
       </div>
+
     </div>
-  </form>
 </section>

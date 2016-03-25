@@ -59,4 +59,8 @@ module.exports = function (object){
     intermed.callController( 'PlanDeCargo', 'reemplazarPlan', req.body, req, res );
   });
 
+  app.post('/cargos/CrearSubscripcion', function (req, res){
+    intermed.callController( 'CargosUsuarios', 'CrearSubscripcion', req.body, req, res );
+  });
+
 }

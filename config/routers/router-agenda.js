@@ -134,5 +134,8 @@ module.exports = function (object){
   app.post('/agenda/crearCita', function (req, res){
     intermed.callController('agenda','crearCita', req.body, req, res);
   });
+  app.post('/agenda/eventos/dia', function (req, res){
+    intermed.callController('agenda','eventosPorDia', req.body, req, res);
+  })
 
 }

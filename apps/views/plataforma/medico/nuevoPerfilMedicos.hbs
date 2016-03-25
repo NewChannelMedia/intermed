@@ -204,7 +204,7 @@
                       {{#if usuario.id}}
                         {{#ifTipoMedico}}
                           {{#if ../usuario.medFavCol}}
-                            <a class="option" onclick="calificarServicioMedico()">
+                            <a class="option" onclick="dejarComentarioMedico()">
                               <div class="body-container">
                                 <div class="center-content">
                                   <div class="row">
@@ -440,7 +440,7 @@
                           </div>
                         </a>
                         {{#if ../usuario.medPac}}
-                          <a class="option" onclick="calificarServicioMedico()">
+                          <a class="option" onclick="dejarComentarioMedico()">
                             <div class="body-container">
                               <div class="center-content">
                                 <div class="row">
@@ -970,7 +970,6 @@
             <div class="container">
               <div class="center-block">
                 {{#if usuario.medFavCol}}
-                  <a class="btn btn-tranparent s20 h67-medcond logros-actions-action" onclick="calificarServicioMedico()"><span class="glyphicon glyphicon-check"></span>&nbsp;CALIFICA EL SERVICIO DE ESTE MEDICO</a>
                   <a class="btn btn-tranparent s20 h67-medcond logros-actions-action" onclick="dejarComentarioMedico()"><span class="glyphicon glyphicon-pencil"></span>&nbsp;DEJA UN COMENTARIO</a>
                 {{else}}
                   <a class="btn btn-tranparent s20 h67-medcond logros-actions-action"><span class="glyphicon glyphicon-book"></span>&nbsp;COMENTARIOS</a>

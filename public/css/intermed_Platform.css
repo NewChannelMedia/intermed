@@ -44,6 +44,57 @@ a:visited {
   border-radius: 150px;
 }
 
+#newMainNav li {
+    position: relative;
+}
+
+.navBadge {
+  position: absolute;
+  z-index: 100;
+  right: -5px;
+  bottom: -8px;
+  padding-top: 5px;
+  background-color: #ff8a00;
+}
+
+@media (max-width: 767px) {
+  #newMainNav .dropdown-menu {
+    position: fixed;
+    top: 57px;
+    right: -1px;
+    bottom: -1px;
+    left: -1px;
+    border-radius: 0;
+    background-color: rgba(23, 44, 59, .8);
+    padding: 0 8px;
+  }
+
+  #newMainNav .dropdown-menu li {
+    display: table;
+    width: 100%;
+    height: 60px;
+  }
+
+  #newMainNav .dropdown-menu li a {
+    display: table-cell;
+    width: 100%;
+    height: 60px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  #newMainNav .dropdown-menu li a:hover {
+    color: #000000;
+  }
+}
+
+#newMainNav .dropdown-menu .navBadge {
+  position: relative;
+  z-index: 100;
+  right: -8px;
+  bottom: -2px;
+}
+
 @media (max-width:767px) {
   #mainNav,
   #newMainNav {
@@ -61,7 +112,7 @@ a:visited {
 
 .navigator {
   display: block;
-  min-height: 100px;
+  min-height: 60px;
   margin: 0 auto;
   padding: 0;
   border: 0;
@@ -70,11 +121,11 @@ a:visited {
 }
 
 footer {
-  height: 90px;
+  height: 60px;
 }
 
 footer .logoIntermed {
-  height: 40px;
+  height: 30px;
 }
 
 @media (max-width: 767px) {
@@ -1748,7 +1799,6 @@ footer .logoIntermed {
 
 .agendaElement {
   height: 550px;
-  min-height: 550px;
 }
 
 .agendaMonth {
@@ -1791,17 +1841,47 @@ footer .logoIntermed {
 }
 
 .hora {
-  height: 130px;
+  height: 142px;
   border-top: solid 2px #ffffff;
 }
+
 .mediaHora {
   height: 65px;
+  padding: 0;
+  margin-bottom: 5px;
+  display: block;
 }
-.mediaHora.ocupada {
+
+.hora.ocupada .mediaHora, .mediaHora.ocupada {
   background-color: #162c39;
 }
-.lbl-hora {
+
+.mediaHoraInterno {
+  height: 65px;
+  padding: 0;
+  margin: 0;
+  padding-top: 4px;
+}
+
+.lbl-hora, .lbl-mediahora {
   color: #ffffff;
+  font-weight: bold;
+  display: block;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.lbl-hora {
+  margin-top: 5px;
+
+}
+
+.lbl-mediahora {
+  font-size: 20px;
+  height: 36px;
+  padding-top: 10px;
+  border-right: solid 3px #fff;
+  margin-top: -4px;
 }
 
 /*

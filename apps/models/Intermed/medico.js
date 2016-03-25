@@ -4,6 +4,7 @@ module.exports = function(sequelize, DataTypes) {
   var Medico = sequelize.define("Medico", {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
     cedula: {type: DataTypes.STRING , unique:true},
+    titulo: {type: DataTypes.STRING},
     curp: {type: DataTypes.STRING , unique:true},
     token: {type: DataTypes.STRING , unique:true},
     tokenMaestro: {type: DataTypes.STRING},

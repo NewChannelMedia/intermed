@@ -511,7 +511,7 @@ function capitalize(s)
         frase += " ";
       }
       frase += palabra[0].toUpperCase() + palabra.slice(1);
-    }    
+    }
   });
   return frase;
 }
@@ -559,7 +559,7 @@ function cargarExtraInfo( usuario, redirect, response, req, res ) {
           attributes: [ 'id' ],
           include: [ {
             model: models.MedicoEspecialidad,
-            attributes: [ 'id', 'subEsp' ],
+            attributes: [ 'id', 'cedula' ],
             include: [ {
               model: models.Especialidad
               } ]
@@ -1202,4 +1202,18 @@ exports.UpdateInfo = function(object, req, res){
   }catch ( err ) {
     req.errorHandler.report(err, req, res);
   }
+}
+
+exports.cambiarStatusUsuario= function (object, req, res){
+  models.Usuario.update({
+    status:object.status
+  },{
+    where: {
+      id: req.session.passport.user.id
+    }
+  }).then(function(result){
+    res.status(200).json({
+      result: result
+    });
+  });
 }

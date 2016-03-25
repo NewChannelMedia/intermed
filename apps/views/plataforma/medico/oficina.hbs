@@ -15,7 +15,7 @@
         <div class="body-container">
           <div class="center-content">
             <p class="noMargin text-uppercase h77-boldcond s50 white-c pull-right shadow">
-              <span class="hidden-sm hidden-xs">martes </span>22 <span class="hidden-sm hidden-xs">de </span>marzo<span class="hidden-sm hidden-xs">,</span> 2016
+              <span class="hidden-sm hidden-xs" id="diaSemana">martes</span> <span id="diaFecha">22</span> <span class="hidden-sm hidden-xs">de </span><span id="mesFecha">marzo</span><span class="hidden-sm hidden-xs">,</span> <span id="anioFecha">2016</span>
             </p>
           </div>
         </div>
@@ -24,17 +24,17 @@
   </div>
   <div class="container-fluid agendaBody">
     <div class="row noPadding">
-      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 agendaMonth">
         <div class="row noPadding">
-          <div class="col-lg-12 agendaElement text-center agendaMonth">
+          <div class="col-lg-12 agendaElement text-center noPadding">
             <div class="body-container">
-              <div class="center-content">
+              <div class="top-content">
                 <div id="calendar" class="h77-boldcond"></div>
               </div>
             </div>
           </div>
         </div>
-        <div class="row noPadding bg-orange agendaOverview">
+        <!--<div class="row noPadding bg-orange agendaOverview">
           <div class="col-lg-12 agendaElement text-center">
             <div class="body-container">
               <div class="center-content">
@@ -45,7 +45,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
       </div>
       <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 agendaDay">
         <div class="row">
@@ -55,52 +55,133 @@
         </div>
         <div class="horas-container">
           <div class="row hora">
-            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 mediaHora">
-              <div class="body-container">
-                <div class="center-content">
-                  <p class="noMargin">
-                    <span class="lbl-hora">8:00 am</span>
-                  </p>
-                </div>
-              </div>
+            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-1 noPadding">
+              <p class="noMargin">
+                <span class="lbl-hora h77-boldcond">8 am</span>
+              </p>
             </div>
-            <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 mediaHora">
-              <div class="body-container">
-                <div class="top-content">
-                  <div class="row noPadding bg-darkBlue2">
-                    <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
-                      <span class="lbl-hora"><small>8:00am</small></span>
-                    </div>
-                    <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
-                      <p class="white-c noMargin">
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                      </p>
+            <div class="col-lg-11 col-md-11 col-sm-10 col-xs-11">
+              <a role="button" class="row mediaHora ocupada consulta" onclick="">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="lbl-mediahora h77-boldcond">8:00</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <div class="media">
+                          <div class="media-left">
+                            <span class="glyphicon glyphicon-user s35 darkBlue-c"></span>
+                          </div>
+                          <div class="media-body">
+                            <h4 class="h77-boldcond s20 noMargin white-c">Juan Carlos Medina</h4>
+                            <h4 class="h75-bold s15 noMargin white-c"><small>Consultorio principal</small></h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+              <a role="button" class="row mediaHora ocupada evento">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="lbl-mediahora h77-boldcond">8:30</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <div class="media">
+                                  <div class="media-left">
+                                    <span class="glyphicon glyphicon-bookmark s35 darkBlue-c"></span>
+                                  </div>
+                                  <div class="media-body">
+                                    <h4 class="h77-boldcond s20 noMargin white-c">Junta de asociacion de consultorio</h4>
+                                    <h4 class="h75-bold s15 noMargin white-c hidden-sm hidden-xs"><small>Consultorio principal</small></h4>
+                                  </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
             </div>
           </div>
-        </div>
-
-        <div class="row noPadding mediaHora">
-          <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-            <p class="lbl-hora h77-boldcond s15 white-c">
-              8:00pm
-            </p>
-          </div>
-          <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-            <div class="row bg-darkBlue2 noPadding">
-              <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                <p class="h77-boldcond s15 white-c">
-                  8:00pm
-                </p>
-              </div>
-              <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                <p class="h77-boldcond s15 white-c">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-              </div>
+          <div class="row hora">
+            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-1 noPadding">
+              <p class="noMargin">
+                <span class="lbl-hora h77-boldcond">9 am</span>
+              </p>
+            </div>
+            <div class="col-lg-11 col-md-11 col-sm-10 col-xs-11">
+              <a role="button" class="row mediaHora">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="lbl-mediahora h77-boldcond">9:00</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <div class="media hidden">
+                          <div class="media-left">
+                            <span class="glyphicon glyphicon-user s35 darkBlue-c "></span>
+                          </div>
+                          <div class="media-body">
+                            <h4 class="h77-boldcond s20 noMargin white-c">Juan Carlos Medina</h4>
+                            <h4 class="h75-bold s15 noMargin white-c"><small>Consultorio principal</small></h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+              <a role="button" class="row mediaHora">
+                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="lbl-mediahora h77-boldcond">9:30</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                  <div class="mediaHoraInterno">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <div class="media hidden">
+                          <div class="media-left">
+                            <span class="glyphicon glyphicon-user s35 darkBlue-c "></span>
+                          </div>
+                          <div class="media-body">
+                            <h4 class="h77-boldcond s20 noMargin white-c">Juan Carlos Medina</h4>
+                            <h4 class="h75-bold s15 noMargin white-c"><small>Consultorio principal</small></h4>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </a>
             </div>
           </div>
         </div>
