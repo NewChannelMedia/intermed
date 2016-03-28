@@ -567,7 +567,7 @@ var uId ="";
       var instalaciones = $('#cal_instalaciones').slider("option", "value");
       var tratoPersonal = $('#cal_trato').slider("option", "value");
       var costo = $('#cal_costo').slider("option", "value");
-      var satisfaccionGeneral = $('#cal_satisfaccion').slider("option", "value");
+      var satisfaccionGeneral =($("#cal_satisfaccion").val()*2*10);
 
       var criterios= {
         higiene: higiene,
@@ -583,7 +583,6 @@ var uId ="";
   function calificarCita(agenda_id, notificacion_id){
     var comentario = $('#calificacionComentario').val();
     var respuestas = obtenerCriteriosCalificacion();
-    var satisfaccionCita = ($("#input-21d").val()*2*10);
 
     $.ajax({
         url: '/cita/calificar',
@@ -594,7 +593,6 @@ var uId ="";
           agenda_id: agenda_id,
           notificacion_id: notificacion_id,
           comentarios: comentario,
-          satisfaccionCita: satisfaccionCita,
           respuestas: respuestas
         },
         type: 'POST',

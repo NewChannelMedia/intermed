@@ -179,7 +179,7 @@ $( document ).ready( function () {
     obtenerDirecciones();
 
     checkUbicMinConf();
-  } else if ($('#moderarComentarios').length>0){
+  } else if ($('#feedback').length>0){
     setTimeout(function(){
       socket.emit('verComentarios');
     },3000);
@@ -2464,7 +2464,7 @@ function traerAseguradoras(){
                                       '<div class="text-uppercase s30 h67-medcond">'+ res.titulo +'</div>'+
                                       '<p class="s15 h67-medium">'+ res.comentario +'</p>'+
                                       '<p class="comment-autor s15 h75-bold noMargin">'+
-                                        '<span class="text-capitalize">'+ nombre +'.</span>'+
+                                        '<span class="text-capitalize">'+ nombre +'</span>'+
                                       '</p>'+
                                       '<p class="comment-date s15 h67-medium text-info noMargin">'+ res.fecha +'</p>'+
                                     '</article>'+

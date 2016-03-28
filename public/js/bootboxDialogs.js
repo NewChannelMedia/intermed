@@ -2840,8 +2840,8 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
 
           '<div class="col-md-6 col-sm-6 col-xs-10 col-md-offset-3 col-sm-offset-3 col-xs-offset-1" style="margin-top:20px">'+
             '<div class="row">'+
-              '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción cita: </div>'+
-              '<div class="col-md-12 col-sm-12 col-xs-12"><input id="input-21d" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>'+
+              '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción general: </div>'+
+              '<div class="col-md-12 col-sm-12 col-xs-12"><input id="cal_satisfaccion" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>'+
             '</div>'+
 
             '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
@@ -2913,16 +2913,6 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
 
             '</div>'+
 
-            '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
-
-                '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción cita: </div>'+
-
-                '<div class="col-md-10 col-sm-10 col-xs-10 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'+
-                  '<span class="Slider horizontal" id="cal_satisfaccion" style="width:100%!important"></span>'+
-                '</div>'+
-
-            '</div>'+
-
             '<div class="row">'+
               '<textarea class="form-control" placeholder="Comentarios (opcional)" style="resize: none;margin-top:5px" rows="4" id="calificacionComentario"></textarea>'+
             '</div>'+
@@ -2944,7 +2934,7 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
     $('.bootbox-close-button').css('color','white');
     $('.bootbox-close-button').css('font-size','180%');
 
-    $("#input-21d").rating();
+    $("#cal_satisfaccion").rating();
 
     $('.clear-rating').css('display','none');
     $('.caption').css('display','none');
@@ -3371,6 +3361,11 @@ function dejarComentarioMedico(){
             '</div>'+
           '</div>'+
 
+          '<div class="row">'+
+            '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción general: </div>'+
+            '<div class="col-md-12 col-sm-12 col-xs-12"><input id="cal_satisfaccion" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>'+
+          '</div>'+
+
           '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
 
               '<div class="col-md-2 col-sm-2 col-xs-2 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'+
@@ -3436,16 +3431,6 @@ function dejarComentarioMedico(){
                     '<span class="glyphicon glyphicon-usd"></span>'+
                   '</div>'+
                 '</div>'+
-              '</div>'+
-
-          '</div>'+
-
-          '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
-
-              '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción cita: </div>'+
-
-              '<div class="col-md-10 col-sm-10 col-xs-10 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'+
-                '<span class="Slider horizontal" id="cal_satisfaccion" style="width:100%!important"></span>'+
               '</div>'+
 
           '</div>'+
