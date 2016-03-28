@@ -128,6 +128,12 @@ $(document).ready(function(){
 function cargarCitasProximasSecretaria(){
 
     if ($('#dashboardSecretaria').length>0){
+      var date = new Date();
+      $('#diaSemana').text(dias[date.getDay()]);
+      $('#diaFecha').text(date.getDate());
+      $('#mesFecha').text(meses[date.getMonth()]);
+      $('#anioFecha').text(date.getFullYear());
+
       if ( $( window ).width() > 768 ) {
         var h = $( window ).height() - $( '#newMainNav' ).height() - $( '.agendaTopContainer' ).height() - 2 - $('footer').height();
         $( '.dashboardBody' ).css( 'height', h + 'px' );
@@ -139,6 +145,9 @@ function cargarCitasProximasSecretaria(){
         $( '.dasbboardLeft' ).css( 'height', h - $( '.agendaTopContainer' ).height() + 'px' );
         $( '.dashboardRight' ).css( 'height', h + 'px' );
       }
+
+      $('#dateComa').text(',');
+      $('#dateDe').text('de');
 
       var medicos = [];
       $('.dia1>.heading').text(getDate());

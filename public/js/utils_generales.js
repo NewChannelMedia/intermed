@@ -1260,6 +1260,11 @@ $( document ).ready( function () {
       //alert('mostrar secretaria');
     }
   } else if( $('#oficinaMedico').length > 0 ) {
+    var date = new Date();
+    $('#diaSemana').text(dias[date.getDay()]);
+    $('#diaFecha').text(date.getDate());
+    $('#mesFecha').text(meses[date.getMonth()]);
+    $('#anioFecha').text(date.getFullYear());
 
     var today = new Date(),
       events = [ //estos son los eventos que se despliegan en el calendario
