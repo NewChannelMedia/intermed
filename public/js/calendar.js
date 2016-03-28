@@ -1157,6 +1157,7 @@ function agregarEventosHorarioOficina(dia,eventos, halfDay){
       }
     }
   }
+  console.log('Agregar eventos: ' + JSON.stringify(eventsData));
   $('#divCalendario').fullCalendar('addEventSource', eventsData, true);
 }
 
@@ -1228,33 +1229,6 @@ function calendarHorarioOficina(){
     agregarEventosHorarioOficina(dia4,eventos4);
     agregarEventosHorarioOficina(dia5,eventos5);
     agregarEventosHorarioOficina(dia6,eventos6, true);
-  /*
-    calendarSeleccionarNada();
-    var d = new Date(formatearTimestampAgenda($('#divCalendario').fullCalendar('getView').start));
-
-    var year = d.getFullYear();
-    var month = d.getMonth();
-    var day = d.getDate();
-
-    for (var i = 0; i < 6; i++) {
-      var dateStart = new Date(year, month, day+i, 9, 0, 0, 0);
-      var dateEnd = new Date(year, month, day+i, 14, 0, 0, 0);
-      eventData = {
-        "start":dateStart.toLocaleString(),
-        "end":dateEnd.toLocaleString()
-      }
-      $('#divCalendario').fullCalendar('renderEvent', eventData, true);
-
-      if (i<5){
-        var dateStart = new Date(year, month, day+i, 16, 0, 0, 0);
-        var dateEnd = new Date(year, month, day+i, 19, 0, 0, 0);
-        eventData = {
-          "start":dateStart.toLocaleString(),
-          "end":dateEnd.toLocaleString()
-        }
-        $('#divCalendario').fullCalendar('renderEvent', eventData, true);
-      }
-    }*/
 }
 
 function sortEvents(a, b) {

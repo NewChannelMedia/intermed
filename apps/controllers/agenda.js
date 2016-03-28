@@ -36,7 +36,7 @@ exports.agregaCita = function(object, req, res) {
         paciente_id : req.session.passport.user.Paciente_id,
         servicio_id : object.serviciocita_id,
         usuario_id : object.medico_id,
-        status : true
+        status : 1
     }).then(function(datos) {
         models.Medico.findOne({
           where:{
