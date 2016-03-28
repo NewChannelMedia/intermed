@@ -2433,7 +2433,7 @@ function cargarCitasPaciente(offset, element){
           var contenido = '';
           var meses = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
           data.result.forEach(function(res){
-            var date = new Date(res.fechaHoraInicio).toLocaleString();
+            var date = new Date(res.fechaHoraInicio).toLocaleString('en-US');
             var dia = parseInt(res.fechaHoraInicio.split('T')[0].split('-')[2]);
             var mes = parseInt(res.fechaHoraInicio.split('T')[0].split('-')[1]);
             var hora = parseInt(res.fechaHoraInicio.split('T')[1].split(':')[0]);

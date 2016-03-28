@@ -2472,6 +2472,7 @@ var _this = module.exports = {
                 sexo: sexo
               }
 
+              console.log('Primer validación: '+ object.genero + ' = ' + sexo +' ' + (object.genero == sexo));
               if (object.nombreMedico.toUpperCase().replace(' ','') == nombre.toUpperCase().replace(' ','') && object.paterno.toUpperCase().replace(' ','') == paterno.toUpperCase().replace(' ','') && object.materno.toUpperCase().replace(' ','') == materno.toUpperCase().replace(' ','') && object.genero == sexo){
                 if (object.tipo == resultArray.tipo){
                   if (object.tipo == "C1"){
@@ -2505,7 +2506,6 @@ var _this = module.exports = {
                             especialidad: object.titulo
                           }
                         }).spread(function(especialidad,created){
-                          console.log('Especialidad: ' + JSON.stringify(especialidad));
                           models.MedicoEspecialidad.create({
                             medico_id: req.session.passport.user.Medico_id,
                             cedula: object.cedula,

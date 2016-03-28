@@ -4376,7 +4376,7 @@ function detallesError(error_id, element){
           //"DBError_userIntermed":{"id":1,"nombre":"Adminitrador","correo":"admin@newchannel.mx"},
           if (data.result.DBError_userIntermed){
             contenidoatiende = '<a class="list-group-item disabled"><b>Atendido por:</b> '+ data.result.DBError_userIntermed.nombre  + ' [' + data.result.DBError_userIntermed.correo + '] </a>';
-            contenidoatiende += '<a class="list-group-item disabled"><b>Fecha:</b> '+ new Date(data.result.datetimeupdated).toLocaleString()  +' </a>';
+            contenidoatiende += '<a class="list-group-item disabled"><b>Fecha:</b> '+ new Date(data.result.datetimeupdated).toLocaleString('en-US')  +' </a>';
           }
 
           if (permisos){

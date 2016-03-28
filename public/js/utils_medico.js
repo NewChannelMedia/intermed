@@ -1197,7 +1197,7 @@ function regUbicacion(salir) {
 }
 //Registrar Ubicacion
 function regHorarios(direccion_id) {
-  terminarReg2();
+    terminarReg2();
     if (!direccion_id){
       direccion_id = $('#direccion_id').val();
     }

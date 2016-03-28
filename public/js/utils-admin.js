@@ -683,7 +683,7 @@ function guardarEstatusError(error_id,statusInput,element){
           if (element){
             if (status == 2){
               var contenidoatiende = '<a class="list-group-item disabled"><b>Atendido por:</b> '+ data.result.nombre  + ' [' + data.result.correo + '] </a>';
-              contenidoatiende += '<a class="list-group-item disabled"><b>Fecha:</b> '+ new Date(data.date).toLocaleString()  +' </a>';
+              contenidoatiende += '<a class="list-group-item disabled"><b>Fecha:</b> '+ new Date(data.date).toLocaleString('en-US')  +' </a>';
 
               $('#atiendeLog').html(contenidoatiende);
 

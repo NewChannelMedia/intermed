@@ -18,7 +18,7 @@ var sequelizeMain = new Sequelize( 'intermed', 'root', '', {
   logging: null
 } );
 // conexion a la nueva base de datos intermed.historia
-var sequelizeHistorial = new Sequelize('intermed.historia','root','',{
+var sequelizeHistorial = new Sequelize('intermed.historia','root', '', {
   host: 'localhost',
   dialect: 'mysql',
   pool:{
