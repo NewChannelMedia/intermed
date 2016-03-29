@@ -1472,7 +1472,8 @@ function getFeedback(tipo){
           scaleOverride: true,
           scaleSteps: 5,
           scaleStepWidth: 20,
-          scaleStartValue: 0
+          scaleStartValue: 0,
+          tooltipTemplate: "<%if (label){%><%=label%>: <%}%><%= value %>%",
         });
       },
       error: function ( jqXHR, textStatus, err ) {
