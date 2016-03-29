@@ -1129,34 +1129,35 @@ footer .logoIntermed {
 }
 
 #colegas {
-  background-color: #84aac1;
-  min-height: 830px;
-  padding-top: 40px;
-  clear: both;
   position: relative;
+  clear: both;
+  min-height: auto;
+  padding: 0;
+  background-color: #84aac1;
 }
 
-.side-especialidades{
-  min-height: 640px;
-  background-color: #3c6b8a;
-  text-align: justify;
-  padding: 15px 13px;
+.side-especialidades {
   float: left;
-  margin-bottom: 30px;
+  min-height: 400px;
+  padding: 15px 13px;
+  text-align: justify;
+  background-color: #3c6b8a;
 }
 
 .side-especialides-header {
   font-size: 34px;
+  display: block;
   text-transform: uppercase;
   color: #fff;
-  display: block;
 }
+
 .side-especialides-subheader {
   font-size: 22px;
   letter-spacing: .37px;
-  color: #fff;
   text-transform: uppercase;
+  color: #fff;
 }
+
 @media (max-width:767px){
   .side-especialidades {
     min-height: 140px;
@@ -1211,11 +1212,10 @@ footer .logoIntermed {
 }
 
 .main-colegas {
-  min-height: 640px;
-  max-height: 640px;
   overflow: hidden;
-  margin-bottom: 30px;
   overflow-y: auto;
+  /*min-height: 400px;
+  max-height: 640px;*/
 }
 
 .main-colegas h1 {
@@ -1786,6 +1786,7 @@ footer .logoIntermed {
   background-color: #6a808e;
 }
 
+
 .agendaDay {
   position: relative;;
   top: 0;
@@ -1795,6 +1796,7 @@ footer .logoIntermed {
   overflow-y: auto;
   padding-top: 10px;
   padding-bottom: 10px;
+  background-color: #6a808e;
 }
 
 .agendaElement {
@@ -1901,3 +1903,11 @@ footer .logoIntermed {
 .horas>.mediaHora:nth-child(2n) .lbl-hora {
   display: none;
 }*/
+
+#perfilPaciente {}
+
+@media (max-width:767px) {
+  #perfilPaciente {
+    padding-top: 60px;
+  }
+}

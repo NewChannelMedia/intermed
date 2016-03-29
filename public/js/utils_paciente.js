@@ -89,6 +89,11 @@ var usuario = "";
 var uId ="";
 //<----------- RECOMENDACIONES -------------------->
   $(document).ready(function(){
+    if ($( '#perfilPaciente' ).length > 0 ) {
+      
+    }
+
+
     // inpyt type text
     $( '.recomendar.contList-profileActionLink' ).click(function(){
       //se manda a llamar al bootbox
