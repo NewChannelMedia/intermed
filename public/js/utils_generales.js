@@ -1382,52 +1382,37 @@ $( document ).ready( function () {
         var dataset = {labels:[],datasets:[]};
         var dataHigiene = {
             label: "Higiene",
-            fillColor: "rgba(220,220,220,0.2)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
+            fillColor: "rgba(220,220,220,0)",
+            strokeColor: "rgba(191,191,63,1)",
+            pointColor: "rgba(191,191,63,1)",
             data: []
           }
         var dataPuntualidad = {
             label: "Puntualidad",
-            fillColor: "rgba(220,220,220,0.2)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
+            fillColor: "rgba(220,220,220,0)",
+            strokeColor: "rgba(255,153,51,1)",
+            pointColor: "rgba(255,153,51,1)",
             data: []
           }
         var dataInstalaciones = {
             label: "Instalaciones",
-            fillColor: "rgba(151,187,205,0.2)",
+            fillColor: "rgba(220,220,220,0)",
             strokeColor: "rgba(151,187,205,1)",
             pointColor: "rgba(151,187,205,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
             data: []
           }
         var dataTratoPersonal = {
             label: "Trato Personal",
-            fillColor: "rgba(220,220,220,0.2)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
+            fillColor: "rgba(220,220,220,0)",
+            strokeColor: "rgba(191,63,63,1)",
+            pointColor: "rgba(191,63,63,1)",
             data: []
           }
         var dataCosto = {
             label: "Costo",
-            fillColor: "rgba(220,220,220,0.2)",
-            strokeColor: "rgba(220,220,220,1)",
-            pointColor: "rgba(220,220,220,1)",
-            pointStrokeColor: "#fff",
-            pointHighlightFill: "#fff",
-            pointHighlightStroke: "rgba(220,220,220,1)",
+            fillColor: "rgba(220,220,220,0)",
+            strokeColor: "rgba(127,63,191,1)",
+            pointColor: "rgba(127,63,191,1)",
             data: []
           }
 
@@ -1446,11 +1431,47 @@ $( document ).ready( function () {
         dataset.datasets.push(dataTratoPersonal);
         dataset.datasets.push(dataCosto);
 
-                console.log('DATASET: ' + JSON.stringify(dataset));
         var width = $('#feedbackResult').parent().outerWidth();
         var ctx = document.getElementById("feedbackResult").getContext("2d");
         ctx.canvas.width = width;
-        var myNewChart = new Chart(ctx).Line(dataset);
+        var myNewChart = new Chart(ctx).Line(dataset,{
+          scaleOverride: true,
+          scaleSteps: 5,
+          scaleStepWidth: 20,
+          scaleStartValue: 0
+        });
+
+        $('.topDrPorc').text(data.calificacion.calificacion);
+        $('.satGenPorc').text(data.general[0].satisfaccionGeneral);
+        /*
+        var dataTopDr = [
+            {
+                value: 300,
+                color:"#F7464A",
+                highlight: "#FF5A5E",
+                label: "Red"
+            },
+            {
+                value: 50,
+                color: "#46BFBD",
+                highlight: "#5AD3D1",
+                label: "Green"
+            },
+            {
+                value: 100,
+                color: "#FDB45C",
+                highlight: "#FFC870",
+                label: "Yellow"
+            }
+        ]
+
+        var width = $('#feedbackTopDr').parent().outerWidth();
+        var ctx = document.getElementById("feedbackTopDr").getContext("2d");
+        ctx.canvas.width = width;
+        ctx.canvas.height = 280;
+        var myNewChart = new Chart(ctx).Pie(dataTopDr);
+        */
+
 
       },
       error: function ( jqXHR, textStatus, err ) {
