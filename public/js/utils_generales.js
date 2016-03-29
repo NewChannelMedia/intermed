@@ -1371,7 +1371,11 @@ $( document ).ready( function () {
       $( '.agendaOverview' ).addClass('hidden', 100);
     }
   } else if ($('#feedbackResult').length > 0){
+    getFeedback();
+  }
+} );
 
+function getFeedback(tipo){
     $.ajax( {
       url: '/medico/feedback',
       type: 'POST',
@@ -1425,11 +1429,41 @@ $( document ).ready( function () {
           dataCosto.data.push(prom.costo);
         });
 
-        dataset.datasets.push(dataHigiene);
-        dataset.datasets.push(dataPuntualidad);
-        dataset.datasets.push(dataInstalaciones);
-        dataset.datasets.push(dataTratoPersonal);
-        dataset.datasets.push(dataCosto);
+        if (!tipo){
+            getCalTopDr(data.calificacion.calificacion);
+            if (data.general[0]){
+              getCalGeneral(data.general);
+            }
+            dataset.datasets.push(dataHigiene);
+            dataset.datasets.push(dataPuntualidad);
+            dataset.datasets.push(dataInstalaciones);
+            dataset.datasets.push(dataTratoPersonal);
+            dataset.datasets.push(dataCosto);
+        } else {
+          if (tipo == 1){
+            //Todos
+            dataset.datasets.push(dataHigiene);
+            dataset.datasets.push(dataPuntualidad);
+            dataset.datasets.push(dataInstalaciones);
+            dataset.datasets.push(dataTratoPersonal);
+            dataset.datasets.push(dataCosto);
+          } else if (tipo == 2){
+            //higiene
+            dataset.datasets.push(dataHigiene);
+          } else if (tipo == 3){
+            //instalaciones
+            dataset.datasets.push(dataInstalaciones);
+          } else if (tipo == 4){
+            //puntualidad
+            dataset.datasets.push(dataPuntualidad);
+          } else if (tipo == 5){
+            //trato
+            dataset.datasets.push(dataTratoPersonal);
+          } else if (tipo == 6){
+            //costo
+            dataset.datasets.push(dataCosto);
+          }
+        }
 
         var width = $('#feedbackResult').parent().outerWidth();
         var ctx = document.getElementById("feedbackResult").getContext("2d");
@@ -1440,46 +1474,95 @@ $( document ).ready( function () {
           scaleStepWidth: 20,
           scaleStartValue: 0
         });
-
-        $('.topDrPorc').text(data.calificacion.calificacion);
-        $('.satGenPorc').text(data.general[0].satisfaccionGeneral);
-        /*
-        var dataTopDr = [
-            {
-                value: 300,
-                color:"#F7464A",
-                highlight: "#FF5A5E",
-                label: "Red"
-            },
-            {
-                value: 50,
-                color: "#46BFBD",
-                highlight: "#5AD3D1",
-                label: "Green"
-            },
-            {
-                value: 100,
-                color: "#FDB45C",
-                highlight: "#FFC870",
-                label: "Yellow"
-            }
-        ]
-
-        var width = $('#feedbackTopDr').parent().outerWidth();
-        var ctx = document.getElementById("feedbackTopDr").getContext("2d");
-        ctx.canvas.width = width;
-        ctx.canvas.height = 280;
-        var myNewChart = new Chart(ctx).Pie(dataTopDr);
-        */
-
-
       },
       error: function ( jqXHR, textStatus, err ) {
         console.error( 'AJAX ERROR: ' + err );
       }
     } );
-  }
-} );
+}
+
+function getCalTopDr(calificacion){
+    var color = '#DF3A01';
+    if (parseInt(calificacion) == 80){
+      color = '#D7DF01';
+    } else if (parseInt(calificacion) > 80){
+      color = '#5FB404';
+    }
+    var dataTopDr = [
+        {
+            value: (100-parseInt(calificacion)),
+            color:"#000"
+        },
+        {
+            value: calificacion,
+            color: color
+        }
+    ]
+
+    $('#topDrPer').text(calificacion + '%');
+
+    var width = $('#feedbackTopDr').parent().outerWidth();
+    var ctx = document.getElementById("feedbackTopDr").getContext("2d");
+    ctx.canvas.width = width;
+    ctx.canvas.height = 280;
+    var myNewChart = new Chart(ctx).Doughnut(dataTopDr,{
+      segmentStrokeWidth : 1,
+       showTooltips: false
+    });
+}
+
+function getCalGeneral(calificaciones){
+    var dataCalGeneral = [];
+    var unaEstrella = {
+        value: 0,
+        color:"#DF3A01",
+        label: '★✩✩✩✩'
+    };
+    var dosEstrellas = {
+        value: 0,
+        color:"#DF7401",
+        label: '★★✩✩✩'
+    };
+    var tresEstrellas = {
+        value: 0,
+        color:"#D7DF01",
+        label: '★★★✩✩'
+    };
+    var cuatroEstrellas = {
+        value: 0,
+        color:"#A5DF00",
+        label: '★★★★✩'
+    };
+    var cincoEstrellas = {
+        value: 0,
+        color:"#5FB404",
+        label: '★★★★★'
+    };
+
+    calificaciones.forEach(function(cal){
+      if (cal.porcentaje <= 20){
+        unaEstrella.value = unaEstrella.value+ parseInt(cal.total);
+      } else if (cal.porcentaje <= 40){
+        dosEstrellas.value = dosEstrellas.value + parseInt(cal.total);
+      } else if (cal.porcentaje <= 60){
+        tresEstrellas.value = tresEstrellas.value + parseInt(cal.total);
+      } else if (cal.porcentaje <= 80){
+        cuatroEstrellas.value = cuatroEstrellas.value +  parseInt(cal.total);
+      } else {
+        cincoEstrellas.value = cincoEstrellas.value + parseInt(cal.total);
+      }
+    });
+
+    dataCalGeneral = [unaEstrella,dosEstrellas,tresEstrellas,cuatroEstrellas,cincoEstrellas];
+
+    var width = $('#feedbackGeneral').parent().outerWidth();
+    var ctx = document.getElementById("feedbackGeneral").getContext("2d");
+    ctx.canvas.width = width;
+    ctx.canvas.height = 280;
+    var myNewChart = new Chart(ctx).Doughnut(dataCalGeneral,{
+      segmentStrokeWidth : 1
+    });
+}
 
 function cargarEventosPorDia(fechaInicio, fechaFin){
   $.post('/agenda/eventos/dia',{fecha:fechaInicio,fin:fechaFin},function(data){

@@ -9,13 +9,13 @@
                 <h4 class="noMargin">Estadisticas Generales</h4>
               </div>
               <div class="col-lg-8 col-md-8 col-sm-8 col-xs-9 text-right">
-                <div class="btn-group" role="group" aria-label="...">
-                  <button type="button" class="btn btn-default btn-sm active">General</button>
-                  <button type="button" class="btn btn-default btn-sm">Higiene</button>
-                  <button type="button" class="btn btn-default btn-sm">Instalaciones</button>
-                  <button type="button" class="btn btn-default btn-sm">Puntualidad</button>
-                  <button type="button" class="btn btn-default btn-sm">Trato</button>
-                  <button type="button" class="btn btn-default btn-sm">Costo</button>
+                <div class="btn-group"  data-toggle="buttons">
+                  <label class="btn btn-default btn-sm active" onclick="getFeedback(1)"><input type="radio" name="tipoGrafica" autocomplete="off" checked>General</label>
+                  <label class="btn btn-default btn-sm" onclick="getFeedback(2)"><input type="radio" name="tipoGrafica" autocomplete="off">Higiene</label>
+                  <label class="btn btn-default btn-sm" onclick="getFeedback(3)"><input type="radio" name="tipoGrafica" autocomplete="off">Instalaciones</label>
+                  <label class="btn btn-default btn-sm" onclick="getFeedback(4)"><input type="radio" name="tipoGrafica" autocomplete="off">Puntualidad</label>
+                  <label class="btn btn-default btn-sm" onclick="getFeedback(5)"><input type="radio" name="tipoGrafica" autocomplete="off">Trato</label>
+                  <label class="btn btn-default btn-sm" onclick="getFeedback(6)"><input type="radio" name="tipoGrafica" autocomplete="off">Costo</label>
                 </div>
               </div>
             </div>
@@ -34,42 +34,14 @@
           </div>
           <div class="panel-body">
             <div class="row noPadding">
-              <div class="col-lg-12 col-md-12 col-sm-6 col-xs-6">
-                <!--<canvas id="feedbackTopDr"></canvas>-->
-                <div class="stats">
-                  <div class="body-container">
-                    <div class="center-content text-center">
-                      <span class="img-circle bg-orange" style="height:250px;width:250px;display:inline-block;">
-                        <div class="body-container">
-                          <div class="center-content">
-                            <p class="white-c noMargin">
-                              Top Doctor<br />
-                              <span class="topDrPorc"></span>%
-                            </p>
-                          </div>
-                        </div>
-                      </span>
-                    </div>
-                  </div>
-                </div>
+              <div class="col-lg-12 col-md-12 col-sm-6 col-xs-6 text-center">
+                <span class="s25" style="position: relative;top:170px;font-weight:bold;left:15px">
+                  TopDr<br><span style="font-size:200%" id="topDrPer"></span>
+                </span>
+                <canvas id="feedbackTopDr"></canvas>
               </div>
-              <div class="col-lg-12 col-md-12 col-sm-6 col-xs-6">
-                <div class="stats">
-                  <div class="body-container">
-                    <div class="center-content text-center">
-                      <span class="img-circle bg-blue" style="height:250px;width:250px;display:inline-block;">
-                        <div class="body-container">
-                          <div class="center-content">
-                            <p class="white-c noMargin">
-                              Satisfaccion Gral.<br />
-                              <span class="satGenPorc"></span>%
-                            </p>
-                          </div>
-                        </div>
-                      </span>
-                    </div>
-                  </div>
-                </div>
+              <div class="col-lg-12 col-md-12 col-sm-6 col-xs-6" style="padding-top:25px">
+                <canvas id="feedbackGeneral"></canvas>
               </div>
             </div>
           </div>
