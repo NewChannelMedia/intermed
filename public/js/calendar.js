@@ -1274,9 +1274,9 @@ function horariosAgendaMedico(medico_id){
               type: 'POST',
               dataType: "json",
               cache: false,
-              data: {medico_id: medico_id, direccion_id: 1, inicio: start.format(), fin: end.format()},
+              data: {medico_id: medico_id,inicio: start.format(), fin: end.format()},
               success: function (data) {
-                callback(data);
+                callback(data.result);
                 $.ajax({
                     url: '/medico/detalleMedico',
                     type: 'POST',
@@ -1295,11 +1295,31 @@ function horariosAgendaMedico(medico_id){
                     }
                   });
                 var d = new Date(start).getMonth();
+                var clases = $('.direccionlist.active').attr('class');
+                var claseActual = '';
+                if (clases && clases != ""){
+                  clases = clases.split(' ');
+                  clases.forEach(function(clase){
+                    if (clase.substring(0,4) == 'dir-'){
+                      claseActual = clase;
+                    }
+                  });
+                }
+
                 $('#divCalendario .fc-toolbar .fc-left').text(meses[d]);
                 $('#divCalendario .fc-day-header').each(function(){
                   $(this).text($(this).text().split('/')[0]);
                 });
-                $('.direccionlist.active').click();
+                $('#btnGroupDir').html('<button type="button" class="btn btn-default direccionlist active" onclick="destacarDireccion(this)">VER TODAS</button>');
+                data.direcciones.forEach(function(dir){
+                    $('#btnGroupDir').append('<button type="button" class="btn btn-default direccionlist dir-'+ dir.className +'" onclick="destacarDireccion(this,\''+ dir.className +'\')">'+ dir.nombre +'</button>');
+                });
+
+                if (claseActual != ""){
+                  $('.direccionlist.'+claseActual).click();
+                } else {
+                  $('.direccionlist.active').click();
+                }
               },
               error: function (err){
                 console.log('AJAX Error: ' + JSON.stringify(err));

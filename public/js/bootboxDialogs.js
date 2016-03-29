@@ -4656,7 +4656,6 @@ function detalleCitaSecretaria(agenda_id){
 
 
 function verAgendaMedico(medico_id){
-  console.log('nombre y foto por ajax');
   var nombremedico = 'Médico de prueba uno';
   var urlFotoPerfil = '/garage/profilepics/dpp.png';
   //Agendar cita
@@ -4673,7 +4672,7 @@ function verAgendaMedico(medico_id){
             '<div class="col-md-12">'+
               '<form method="POST" name="frmRegCita" id="frmRegCita">'+
                 '<input type="hidden" id="medico_id" name="medico_id" value="'+ medico_id +'">'+
-                '<div class="col-md-10 text-left"><div class="btn-group" ><button type="button" class="btn btn-default direccionlist active" onclick="destacarDireccion(this)">VER TODAS</button><button type="button" class="btn btn-default direccionlist" onclick="destacarDireccion(this,\'direccion_0\')">Dirección 1</button><button type="button" class="btn btn-default direccionlist" onclick="destacarDireccion(this,\'direccion_1\')">Dirección 2</button><button type="button" class="btn btn-default direccionlist" onclick="destacarDireccion(this,\'direccion_2\')">Dirección 3</button></div></div>'+
+                '<div class="col-md-10 text-left"><div class="btn-group" id="btnGroupDir"></div></div>'+
                 '<div class="col-md-2"><div class="row"><button type="button" class="btn btn-default btn-md pull-right" onclick="activarDesactivarAgregarCita(this)" id="btnAddCita">Agregar cita</button></div></div>'+
                 '<div class="col-md-12" id="divCalendarioPadre"><div class="row"><div id="divCalendario" class="regHorMed"></div></div></div>'+
               '</form>'+

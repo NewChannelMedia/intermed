@@ -1633,15 +1633,21 @@ exports.eventosPorDia = function (object, req, res){
 
 exports.traerAgendaMedico = function (object, req, res){
   object.direccion_id = [];
+  object.direcciones = [];
   if (req.session.passport.user.tipoUsuario == "M"){
     models.Direccion.findAll({
       where: {
         usuario_id: req.session.passport.user.id
       },
-      attributes: ['id']
+      attributes: ['id','nombre'],
+      order: [['principal','DESC']]
     }).then(function(direcciones){
       direcciones.forEach(function(dir){
         object.direccion_id.push(dir.id);
+        object.direcciones.push({
+          id: dir.id,
+          nombre: dir.nombre
+        })
       });
       exports.agendaMedico(object, req, res);
     })
@@ -1660,13 +1666,18 @@ exports.traerAgendaMedico = function (object, req, res){
             attributes: ['id'],
             include: [{
               model: models.Direccion,
-              attributes: ['id']
+              attributes: ['id','nombre'],
+              order: [['principal','DESC']]
             }]
           }]
         }]
       }).then(function(relacion){
         relacion.Medico.Usuario.Direccions.forEach(function (dir){
           object.direccion_id.push(dir.id);
+          object.direcciones.push({
+            id: dir.id,
+            nombre: dir.nombre
+          })
         });
         if (relacion){
           //Secretaria cuenta con permisos para ver agenda
@@ -1774,6 +1785,12 @@ exports.agendaMedico = function (object, req, res){
 
           if (!className[datos[i].direccion_id]){
             className[datos[i].direccion_id] = 'direccion_'+total++;
+            console.log('Direcciones: ' + JSON.stringify(object));
+            object.direcciones.forEach(function(dir){
+              if (dir.id == datos[i].direccion_id){
+                dir.className = className[datos[i].direccion_id];
+              }
+            });
           }
 
           switch (datos[i].dia) {
@@ -1887,7 +1904,11 @@ exports.agendaMedico = function (object, req, res){
           }
           resultado.push(horario);
         }
-        res.send(resultado);
+        console.log('resultado: ' + JSON.stringify(object.direcciones));
+        res.status(200).json({
+          result: resultado,
+          direcciones: object.direcciones
+        });
       });
     });
 
