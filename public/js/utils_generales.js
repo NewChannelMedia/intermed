@@ -1195,14 +1195,9 @@ function repositionTooltip( e, ui ){
     $(div).css('z-index','30000');
 }
 
+
+
 $( document ).ready( function () {
-  $('.openMobileMenu').click(function(){
-    if($('body').hasClass('noScroll')){
-      $('body').removeClass('noScroll');
-    }else{
-      $('body').addClass('noScroll');
-    }
-  })
   //console.log('length: '+$( '#perfilMedico' ).length);
   if ( $( '#perfilMedico' ).length > 0 ) {
 
@@ -1307,27 +1302,18 @@ $( document ).ready( function () {
         toAgendaDay();
       }
     });
-    console.log($( window ).innerWidth());
 
     if ( $( window ).innerWidth() <= 767 ) {
-      console.log($( window ).innerWidth());
-      console.log('mobile');
       var h = $( window ).outerHeight() - $( '#newMainNav' ).height() - $( '.agendaTopContainer' ).height() - 2;
-      console.log(h);
       $( '.dashboardBody' ).css( 'height', h + 'px' );
       $( '.dashboardLeft' ).css( 'height', h - 2 + 'px' );
       $( '.dashboardRight' ).css( 'height', h - 2 + $( '.agendaTopContainer' ).height() + 'px' );
       $( '.dashboardBody2' ).css( 'min-height', h + $( '.agendaTopContainer' ).height() - $( 'footer' ).height() + 'px' );
-      console.log( $( '.dashboardBody2' ).height() );
-      console.log( $( '.colegas-header' ).height() );
-      console.log( $( '#listaEspecialidades' ).height() );
-      var y = $( '.dashboardBody2' ).height() - ( $( '.colegas-header' ).height() + $( '#listaEspecialidades' ).height() );
+      var y = $( '.dashboardBody2' ).height() - $( '.colegas-header' ).height();
       $( '.dashboardBody2 .main-colegas' ).css( 'max-height', y + 'px' );
       $( '.dashboardBody2 .main-colegas' ).css( 'height', y  + 'px' );
     }
     if ( $( window ).innerWidth() > 767 ) {
-      console.log($( window ).innerWidth());
-      console.log('desktop');
       var h = $( window ).height() - $( '#newMainNav' ).height() - 2;
       $( '.dashboardBody' ).css( 'height', h - $( '.agendaTopContainer' ).height() + 'px' );
       $( '.dashboardLeft' ).css( 'height', h - $( '.agendaTopContainer' ).height() - 2  + 'px' );

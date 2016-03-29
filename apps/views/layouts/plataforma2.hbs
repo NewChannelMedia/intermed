@@ -183,17 +183,17 @@
                           <span class="white-c">|</span>
                         </li>
                         <li class="dropdown">
-                          <a class="dropdown-toggle white-c" data-toggle="dropdown" href="#" role="button">
+                          <a class="dropdown-toggle white-c openMobileMenu" data-toggle="dropdown" href="#" role="button">
                             <span class="glyphicon glyphicon-search"></span>
                           </a>
                           <ul class="dropdown-menu notificationDropdown dropdown-menu-right" aria-labelledby="dLabel">
                             <li>
-                              <h4>Encuentra médicos al instante: </h4>
+                              <h4 class="white-c">Encuentra médicos al instante: </h4>
                               <form method="POST" action="{{base_url}}buscar" onsubmit="return false;">
                                 <div class="input-group navbar-search">
-                                  <input type="text" class="form-control input-sm ui-autocomplete-input" id="buscadorInternoDropDown" name="" placeholder="Busca tu medico aquí" required="" autocomplete="off">
+                                  <input type="text" class="form-control ui-autocomplete-input" id="buscadorInternoDropDown" name="" placeholder="Busca tu medico aquí" required="" autocomplete="off">
                                   <span class="input-group-btn">
-                                    <button class="btn btn-default bg-blue btn-sm" type="button">
+                                    <button class="btn btn-default bg-blue" type="button">
                                       <span class="glyphicon glyphicon-search"></span>
                                     </button>
                                   </span>
@@ -202,8 +202,8 @@
                             </li>
                           </ul>
                         </li>
-                        <li>
-                          <a id="notificationIcon" class="dropdown-toggle white-c" data-toggle="dropdown" href="#" role="button" onclick="mostrarNotificaciones()">
+                        <li class="dropdown">
+                          <a id="notificationIcon" class="dropdown-toggle white-c openMobileMenu" data-toggle="dropdown" href="#" role="button" onclick="mostrarNotificaciones()">
                             <span class="proicon proicon-notificacion"></span>
                             <span id="totalNotificaciones" class="badge" style="position:absolute; margin-top:-38px; right:0px"></span>
                           </a>
