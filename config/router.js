@@ -6,7 +6,7 @@
  *	@version 0
  *	@date Tuesday, August 4,  2015
  */
-global.base_url = 'http://localhost:3000/';
+global.base_url = 'http://192.168.1.67:3000/';
 
 
 var express = require( 'express' ),
