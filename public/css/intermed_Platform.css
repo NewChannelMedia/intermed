@@ -1841,7 +1841,7 @@ footer .logoIntermed {
 }
 
 .hora {
-  height: 142px;
+  height: auto;/*142px;*/
   border-top: solid 2px #ffffff;
 }
 

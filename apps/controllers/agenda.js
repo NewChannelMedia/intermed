@@ -2204,6 +2204,18 @@ exports.crearCita = function (object, req, res){
   });
 }
 
+exports.cargarCitasMes = function(object, req, res){
+  models.sequelize.query(
+    "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`agenda` where `usuario_id` = "+ req.session.passport.user.id +"  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
+    , { type: models.Sequelize.QueryTypes.SELECT}
+  ).then(function(result) {
+    res.status(200).json({
+      success: false,
+      result: result
+    });
+  });
+}
+
 function aplazaCita(tiempo, id)
 {
   models.Agenda.findOne({

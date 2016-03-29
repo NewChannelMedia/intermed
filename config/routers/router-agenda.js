@@ -136,6 +136,10 @@ module.exports = function (object){
   });
   app.post('/agenda/eventos/dia', function (req, res){
     intermed.callController('agenda','eventosPorDia', req.body, req, res);
-  })
+  });
+
+  app.post('/agenda/cargarCitasMes', function (req, res){
+    intermed.callController('agenda','cargarCitasMes', req.body, req, res);
+  });
 
 }

@@ -1150,6 +1150,7 @@ function agregarEventosHorarioOficina(dia,eventos, halfDay){
         }
       });
       if (agregar){
+        console.log('Start: ' + start.toLocaleString());
         eventsData.push({
             start: start.toLocaleString('en-US'),
             end: end.toLocaleString('en-US')
