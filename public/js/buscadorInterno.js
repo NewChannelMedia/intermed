@@ -179,17 +179,12 @@ $(document).ready(function(){
           busqueda = $.grep(busqueda, function(v, k){
               return $.inArray(v ,busqueda) === k;
           });
-          var pacientes = 0;
-          if ($('#tipoBusquedaPaciente').is(':checked')){
-            pacientes = 1;
-          }
           $.ajax({
             url: "/buscadorInterno",
             dataType: "json",
             method: 'POST',
             data: {
-              busqueda: busqueda,
-              pacientes: pacientes
+              busqueda: busqueda
             },
             success: function( data ) {
               var allUsers = [];
@@ -198,18 +193,23 @@ $(document).ready(function(){
                 newUser['name'] = user.DatosGenerale.nombre + ' ' + user.DatosGenerale.apellidoP + ' ' + user.DatosGenerale.apellidoM;
                 newUser['value'] = newUser['name'];
                 newUser['category'] = "Usuarios";
-                newUser['url']  = 'nuevoPerfilMedicos/'+user.usuarioUrl;
+                var url = user.usuarioUrl;
+                if (user.urlPersonal && user.urlPersonal != ""){
+                  url = user.urlPersonal;
+                }
+                newUser['url']  = url;
                 newUser['image']  = "<img src="+user.urlFotoPerfil+" style='width:20px'></img> ";
-                if (user.Medico){
+                if (user.tipoUsuario == "M"){
                   newUser['name']  = 'Dr. ' + newUser['name'] ;
                 }
                 newUser['label']  = newUser['name'];
                 user = newUser;
                 allUsers.push(newUser);
               });
+              /*
               if (!$('#tipoBusquedaPaciente').is(':checked')){
                 allUsers = oficina.concat(allUsers);
-              }
+              }*/
               response(customFilter(allUsers,request.term));
             }
           });

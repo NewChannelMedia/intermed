@@ -2406,7 +2406,7 @@ function searchingData(){
   $("#medResults").html('');
   mapSearchDiv();
 
-  autoCompleteEsp('inputEspecialidad');
+  autoCompleteEsp('inputEspecialidad',true);
   autoCompleteAseg('inputAseguradora');
 }
 //<------------- FIN DE LAS FUNCIONES ---------------------------->

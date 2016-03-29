@@ -20,6 +20,7 @@ exports.buscar = function ( object, req, res ) {
 
     if (continuar){
       //if (busqueda.length > 0 && busqueda[0] != ''){
+      /*
           if (object.pacientes>0){
             busqueda.forEach(function(result){
               if (result != ""){
@@ -31,7 +32,7 @@ exports.buscar = function ( object, req, res ) {
               }
             });
             whereTipoUsuario = {tipoUsuario: 'P'};
-          } else {
+          } else {*/
             busqueda.forEach(function(result){
               if (result != ""){
                 if (!(result.toLowerCase() in busquedaEspecial)){
@@ -48,13 +49,13 @@ exports.buscar = function ( object, req, res ) {
               }
             });
             if (! whereTipoUsuario.tipoUsuario){
-              whereTipoUsuario = {tipoUsuario: {$notLike: 'P'}};
+              whereTipoUsuario = {tipoUsuario: 'M'};
             }
-          }
+          //}
       //}
 
       models.Usuario.findAll( {
-          attributes: ['id','usuarioUrl','urlFotoPerfil'],
+          attributes: ['id','usuarioUrl','urlFotoPerfil','tipoUsuario','urlPersonal'],
           include: [ {
             model: models.DatosGenerales, where: where,attributes: ['nombre','apellidoP','apellidoM']
                 }, {
