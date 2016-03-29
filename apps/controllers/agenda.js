@@ -970,8 +970,6 @@ exports.detallesCancelacionPaciente = function(object, req, res){
           },
           attributes: ['concepto']
         }).then(function(servicio){
-          console.log('UBICACION: ' + JSON.stringify(ubicacion));
-          console.log('SERVICIO: ' + JSON.stringify(servicio));
           res.status(200).json({
             usuario: usuario,
             ubicacion: ubicacion.nombre,
@@ -1384,7 +1382,6 @@ exports.seleccionaAgendaMedico  =  function(object, req, res)
                   end:  formatearFecha (eventos[i].fechaHoraFin),
                   color : '#FF0000'
               }
-              console.log(eventos[i].fechaHoraInicio + ' ' + formatearTimestampAgenda(eventos[i].fechaHoraInicio))
               resultado.push(horario);
             //}
         }

@@ -620,15 +620,15 @@ function actualizarSesion(refresh, callback, parametros) {
                 if (data.session.especialidades){
                   data.session.especialidades.forEach(function(esp){
                     var contenido = '<li>'+ esp.Especialidad.especialidad +'</li>';
-                    if (esp.subEsp){
-                      subespecialidades += contenido;
-                    } else {
+                    if (esp.cedula && esp.cedula != ""){
                       especialidades += contenido;
+                    } else {
+                      subespecialidades += contenido;
                     }
                   });
                   especialidades += '<span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarEspecialidades()"></span>';
                   if (subespecialidades != ""){
-                    subespecialidades = '<li>Subespecialidad:</li>' + subespecialidades;
+                    subespecialidades = '<li>ESTUDIANDO:</li>' + subespecialidades;
                   }
 
                   $('.user.profile-esp').html(especialidades);
@@ -2065,18 +2065,17 @@ function traerAseguradoras(){
         if ($('#regmedEsp ul').length>0){
           var contesp = '', contsubesp = '';;
           $.each(data.MedicoEspecialidads, function( i, item ){
-            if( item.subEsp == 1 ){
-              contsubesp += '<li class="lbl lbl-subesp">'+ item.Especialidad.especialidad + '&nbsp;'+
+            if( item.cedula && item.cedula != ""){
+              contesp += '<li class="lbl lbl-esp">'+ item.Especialidad.especialidad + '&nbsp;('+ item.cedula +')'+
               '<button class="btn btn-sm borrar" type="button" onclick="deleteEsp(\''+item.id+'\',this);">'+
               '<span class="glyphicon glyphicon-remove"></span></button></li>';
             } else {
-              contesp += '<li class="lbl lbl-esp">'+ item.Especialidad.especialidad + '&nbsp;'+
+              contsubesp += '<li class="lbl lbl-subesp">'+ item.Especialidad.especialidad + '&nbsp;'+
               '<button class="btn btn-sm borrar" type="button" onclick="deleteEsp(\''+item.id+'\',this);">'+
               '<span class="glyphicon glyphicon-remove"></span></button></li>';
-
             }});
           $('#especialidadesListBoot').html(contesp);
-          $('#subEspecialidadesListBoot').html(contsubesp);
+          $('#EspecialidadesEstListBoot').html(contsubesp);
         } else {
           var esp = '';
           var subesp = '';
@@ -3936,23 +3935,28 @@ function validarCedulaGeneral(element, button){
 
 function validarCedulaEspecialidad(element, elementTitle){
   if (element.val().length>0 && elementTitle.val().length>0){
-      var nombreMedico = 'Valente Armando';
-      var paterno = 'Maldonado';
-      var materno = 'Rios';
       var genero = 1;
+      if ($('#sexF').is(':checked')){
+        genero = 2;
+      }
       $.post('/medicos/cedula/general',{
         cedula: element.val(),
         titulo: elementTitle.val(),
-        nombreMedico: nombreMedico,
-        paterno: paterno,
-        materno: materno,
+        nombreMedico: $('#nombreRegMed').val(),
+        paterno: $('#apePatRegMed').val(),
+        materno: $('#apeMatRegMed').val(),
         genero : genero,
         tipo: 'A1'
       },function( data ){
         if (data.success){
           if (data.result.tipo == "A1"){
+            actualizarSesion();
             element.val('');
-            $('#spanCedulaEspecialidad').append('<br><span class="especialidad"><span class="cedula">'+ data.result.cedula + '</span>: <span class="tituloEsp">' + elementTitle.val() +'</span></span>');
+            if ($('#especialidadesListBoot').length>0){
+              $('#especialidadesListBoot').append('<li class="lbl lbl-esp">'+ elementTitle.val() +'&nbsp;('+ data.result.cedula +')<button class="btn btn-sm borrar" type="button" onclick="deleteEsp('+data.result.id+',this);"><span class="glyphicon glyphicon-remove"></span></button></li>');
+            } else {
+              $('#spanCedulaEspecialidad').append('<br><span class="especialidad"><span class="cedula">'+ data.result.cedula + '</span>: <span class="tituloEsp">' + elementTitle.val() +'</span></span>');
+            }
             elementTitle.val('');
           } else {
             alert('No es tipo licenciatura');
@@ -3982,13 +3986,20 @@ function validarCedulaEspecialidad(element, elementTitle){
   }
 }
 
-function añadirEspecialidadEstudio(element){
+function anadirEspecialidadEstudio(element){
   if (element.val().length>0){
       $.post('/medicos/especialidadestudio/agregar',{
         especialidad: element.val()
       },function( data ){
         if (data.success){
-          $('#spanEspecialidadEstudio').append('<br><span class="especialidad"><span class="tituloEspEstudio">' + element.val() +'</span></span>');
+          actualizarSesion();
+          if ($('#EspecialidadesEstListBoot').length>0){
+            $('#EspecialidadesEstListBoot').append('<li class="lbl lbl-subesp">'+ element.val() + '&nbsp;'+
+              '<button class="btn btn-sm borrar" type="button" onclick="deleteEsp(\''+data.result.id+'\',this);">'+
+              '<span class="glyphicon glyphicon-remove"></span></button></li>');
+          } else {
+            $('#spanEspecialidadEstudio').append('<br><span class="especialidad"><span class="tituloEspEstudio">' + element.val() +'</span></span>');
+          }
           element.val('');
         } else {
           if (data.error){

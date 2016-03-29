@@ -4260,17 +4260,15 @@ function editarEspecialidades(){
                   '</div>'+
                 '</div>'+
 
-                '<div class="col-md-12">'+
-                  '<div class="input-group">'+
-                    '<input type="text" id="autoEsp" class="form-control autoEspecialidad">'+
-                    '<span class="input-group-btn">'+
-                      '<button id="addEspecialidadMedic" onclick="agregarEspecialidad(\'autoEsp\');" class="btn btn-primary form-control" type="button">'+
-                        '<span class="glyphicon glyphicon-plus"></span>'+
-                      '</button>'+
-                    '</span>'+
-                  '</div>'+
+                '<div class="col-md-4">'+
+                  '<input type="text" class="form-control" placeholder="Cédula de especialidad" id="inputCedulaEspecialidad">'+
                 '</div>'+
-
+                '<div class="col-md-6 noPadding">'+
+                  '<input type="text" class="form-control" placeholder="Titulo de especialidad" id="inputTituloEspecialidad">'+
+                '</div>'+
+                '<div class="col-md-2">'+
+                  '<button type="button" class="btn btn-primary btn-block" type="button" onclick="validarCedulaEspecialidad($(\'#inputCedulaEspecialidad\'),$(\'#inputTituloEspecialidad\'))">Agregar</button>'+
+                '</div>'+
 
 
                 '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="regmedEsp" style="margin-top:10px">'+
@@ -4283,23 +4281,22 @@ function editarEspecialidades(){
               '<div class="row">'+
                 '<div class="col-md-12">'+
                   '<div class="whiteF h77-boldcond" style="font-size: 18px;padding: 8px;background-color: #172C3B;margin: -10px;margin-bottom: 5px;margin-top:20px;">'+
-                    '<span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;SUBESPECIALIDADES.'+
+                    '<span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;ESPECIALIDADES ESTUDIANDO.'+
                   '</div>'+
                 '</div>'+
 
                 '<div class="col-md-12">'+
                   '<div class="input-group">'+
-                    '<input type="text" id="autoSubEsp" class="form-control autoEspecialidad">'+
+                    '<input type="text" class="form-control" aria-describedby="basic-addon3" placeholder="Nombre de la especialidad" id="inputTituloEspecialidadEstudio">'+
                     '<span class="input-group-btn">'+
-                      '<button id="addEspecialidadMedic" onclick="agregarSubespecialidad(\'autoSubEsp\');" class="btn btn-primary form-control" type="button">'+
-                        '<span class="glyphicon glyphicon-plus"></span>'+
-                      '</button>'+
-                    '</span>'+
-                  '</div>'+
+                    '<button type="button" class="btn btn-primary" type="button" onclick="anadirEspecialidadEstudio($(\'#inputTituloEspecialidadEstudio\'))">Agregar</button>'+
+                  '</span>'+
                 '</div>'+
 
                 '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="regmedEsp" style="margin-top:10px">'+
-                  '<ul class="list-inline" id="subEspecialidadesListBoot"></ul>'+
+                  '<div class="row">'+
+                    '<ul class="list-inline" id="EspecialidadesEstListBoot"></ul>'+
+                  '</div>'+
                 '</div>'+
 
               '</div>'+
@@ -4310,6 +4307,8 @@ function editarEspecialidades(){
     '</div>'
   });
   setTimeout(function(){
+  autoCompleteEsp('inputTituloEspecialidad',false);
+  autoCompleteEsp('inputTituloEspecialidadEstudio',false);
   loadEspecialidades();
   },300);
 }
