@@ -1301,29 +1301,30 @@ $( document ).ready( function () {
       }
     });
 
-
-    if ( $( window ).width() <= 768 ) {
-      console.log('other');
+    if ( $( window ).width() < 768 ) {
       var h = $( window ).height() - $( '#newMainNav' ).height() - $( '.agendaTopContainer' ).height() - 2;
+      console.log('mobile');
       $( '.dashboardBody' ).css( 'height', h + 'px' );
       $( '.dashboardLeft' ).css( 'height', h - 2 + 'px' );
-      $( '.dashboardRight' ).css( 'height', h + $( '.agendaTopContainer' ).height() + 'px' );
+      $( '.dashboardRight' ).css( 'height', h - 2 + 'px' );
       $( '.dashboardBody2' ).css( 'height', h + $( '.agendaTopContainer' ).height() - $( 'footer' ).height() + 'px' );
-      var y = h - 2 - ( $( '.colegas-header' ).height() + $( '.side-especialidades' ).height() + $( 'footer' ).height() );
-console.log(y);
+      console.log( $( '.dashboardBody2' ).height() );
+      console.log( $( '.colegas-header' ).height() );
+      console.log( $( '#listaEspecialidades' ).height() );
+      var y = $( '.dashboardBody2' ).height() - ( $( '.colegas-header' ).height() + $( '#listaEspecialidades' ).height() + 30 );
       $( '.dashboardBody2 .main-colegas' ).css( 'max-height', y + 'px' );
       $( '.dashboardBody2 .main-colegas' ).css( 'height', y  + 'px' );
     }
-    else if ( $( window ).width() > 767 ) {
-      console.log('here');
+    if ( $( window ).width() >= 768 ) {
       var h = $( window ).height() - $( '#newMainNav' ).height() - 2;
       $( '.dashboardBody' ).css( 'height', h - $( '.agendaTopContainer' ).height() + 'px' );
       $( '.dashboardLeft' ).css( 'height', h - $( '.agendaTopContainer' ).height() - 2  + 'px' );
       $( '.dashboardRight' ).css( 'height', h - $( '.agendaTopContainer' ).height() -2 + 'px' );
       $( '.dashboardBody2' ).css( 'height', h + 'px' );
-      var y = h - ($( '.dashboardBody2 .colegas-header' ).height() + $( '.dashboardBody2 .side-especialidades' ).height());
-      $( '.dashboardBody2 .colegas-element' ).css( 'max-height', y + 'px' );
-      $( '.dashboardBody2 .colegas-element' ).css( 'height', y + 'px' );
+      var y = $( '.dashboardBody2' ).height() - ( $( '.colegas-header' ).height() );
+      $( '#listaEspecialidades' ).css( 'height', y + 'px' );
+      $( '.dashboardBody2 .main-colegas' ).css( 'max-height', y + 'px' );
+      $( '.dashboardBody2 .main-colegas' ).css( 'height', y + 'px' );
     }
 
   } else if($( '#medicoSecretaria').length > 0 ){
@@ -2184,7 +2185,8 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id, element,tipo){
           if (res.urlPersonal && res.urlPersonal != ""){
             usuarioUrl = res.urlPersonal;
           }
-          contenido +=  '<div '+classDiv+'>'+
+          contenido +=
+          '<div '+classDiv+'>'+
             '<div class="thumbnail noPadding noMargin">'+
               '<div >'+
                 '<a class="" href="/'+ usuarioUrl +'"><img src="'+ res.urlFotoPerfil +'" alt="..."></a>'+
@@ -2201,7 +2203,7 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id, element,tipo){
             '</div>'+
           '</div>'
         })
-        contenido += '</div>';
+        /*contenido += '</div>';*/
         $('#listaColegas').html(contenido);
       }else{
         if (data.error){
@@ -2299,7 +2301,8 @@ function cargarListaColegasByAlf(usuario_id,letra,element,tipo){
           if (res.urlPersonal && res.urlPersonal != ""){
             usuarioUrl = res.urlPersonal;
           }
-          contenido += '<div '+classDiv+'>'+
+          contenido +=
+          '<div '+classDiv+'>'+
             '<div class="thumbnail">'+
               '<div >'+
                 '<a class="pPic" href="/'+ usuarioUrl +'"><img src="'+ res.urlFotoPerfil +'" alt="..."></a>'+
@@ -2316,7 +2319,7 @@ function cargarListaColegasByAlf(usuario_id,letra,element,tipo){
             '</div>'+
           '</div>'
         })
-        contenido += '</div>';
+        /*contenido += '</div>';*/
         $('#listaColegas').html(contenido);
       }else{
         if (data.error){

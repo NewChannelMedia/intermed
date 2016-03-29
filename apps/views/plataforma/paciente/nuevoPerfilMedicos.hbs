@@ -15,36 +15,39 @@
   <div class="container-fluid agendaBody dashboardBody">
     <div class="row noPadding">
       <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 agendaMonth dashboardLeft">
-        <div class="row">
-          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="panel panel-primary noMargin">
-              <div class="panel-heading bg-darkBlue col-lg-12 col-md-12 col-sm-3 col-xs-4">
+        <div class="row noPadding userProfile bg-transparentClear boxShadow">
+          <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4 userProfile">
+            <div class="body-container">
+              <div class="top-content">
                 {{#if usuario.id}}
                   <img class="img-circle img-responsive center-block" alt="64x64" src="
                   {{usuario.urlFotoPerfil}}" data-holder-rendered="true">
                 {{else}}
-                  <img class="img-circle img-responsive center-block" src="
+                  <img class="userProfilePic center-block" src="
                   {{valSession 'fotoPerfil'}}" id='fotoPerfil' alt="perfil" />
-                  <label for="imageFile" class="gray-c">Cambiar Imagen</label>
+                  <label for="imageFile" class="userProfileChangePic">Cambiar Imagen</label>
                   <input type="file" id="imageFile" style="display:none">
                 {{/if}}
               </div>
-              <div class="panel-body col-lg-12 col-md-12 col-sm-9 col-xs-8 bg-transparentClear" style="height: auto;">
+            </div>
+          </div>
+          <div class="col-lg-9 col-md-9 col-sm-8 col-xs-8 userProfile">
+            <div class="body-container">
+              <div class="top-content">
                 {{#if usuario.id}}
-                  <h2 class="profile-name s20 text-capitalize">
+                  <h2 class="s30 text-capitalize">
                       {{#if usuario.DatosGenerale}}
                         {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
                       {{/if}}
                   </h2>
                 {{else}}
-                  <h2 class="profile-name s20 text-capitalize">
+                  <h2 class="s30 text-capitalize">
                   {{valSession "name"}}
-                  <h4 class="profile-location">
+                  <h4 class="s20 text-uppercase">
                     {{#ifSession "municipio"}}
                       {{valSession "municipio"}}, {{valSession "estado"}}. MX
                     {{/ifSession}}
                   </h4>
-
                   <ul class="media-right profileExtraNav list-inline">
                     <li class="active"><a role="button" class="dark-c" onclick="editaPerfBoot();">Edita tu perfil</a></li>
                   </ul>
@@ -56,7 +59,7 @@
         <div class="row">
           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 agendaElement text-center noPadding">
             <div class="body-container">
-              <div class="top-content">
+              <div class="bottom-content">
                 <div id="calendar" class="h77-boldcond"></div>
               </div>
             </div>
@@ -105,13 +108,13 @@
   </div>
   <div id="colegas" class="container-fluid dashboardBody2">
     <div class="row noPadding">
-      <div class="col-lg-12 col-md-12">
+      <div class="col-lg-12">
         <div class="row noPadding colegas-header">
           <div class="col-lg-12">
             <div class="row">
               <div class="col-lg-12 col-md-12 text-center">
                 <h4 class="cat-main-title h77-boldcond">Mis médicos favoritos</h4>
-                <h4 class="cat-sub-title h67-medcond noMargin">Ligas a los perfiles de mis médicos favoritos</h4>
+                <h4 class="cat-sub-title h67-medcond noMargin hidden-xs">Ligas a los perfiles de mis médicos favoritos</h4>
               </div>
             </div>
             <div class="row">
@@ -145,7 +148,7 @@
           </div>
         </div>
         <div class="row noPadding">
-          <div id="listaEspecialidades" class="col-lg-3 col-md-4 col-sm-4 col-xs-12 side-especialidades colegas-element" style="width:null!important">
+          <div id="listaEspecialidades" class="col-lg-3 col-md-4 col-sm-4 col-xs-12 side-especialidades colegas-element">
             <p>
               <span class="side-especialides-header h77-boldcond">Selecciona</span><!--<div class="clearfix"></div>-->
               <span class="side-especialides-subheader h67-medcond" id="tipoFiltro"></span>
