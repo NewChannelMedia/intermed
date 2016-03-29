@@ -2683,9 +2683,9 @@ var _this = module.exports = {
       },
       attributes: ['calificacion']
     }).then(function(calificacion){
-      models.sequelize.query("SELECT Year(`fecha`) as 'anio', Month(`fecha`) as 'mes', AVG(`higiene`) AS 'higiene',AVG(`puntualidad`) AS 'puntualidad',AVG(`instalaciones`) AS 'instalaciones',AVG(`tratoPersonal`) AS 'tratoPersonal',AVG(`costo`) AS 'costo',AVG(`satisfaccionGeneral`) AS 'satisfaccionGeneral' FROM `intermed`.`preguntas-medico` where `medico_id` = 1 group by year(`fecha`),month(`fecha`) order by year(`fecha`) ASC,month(`fecha`) ASC;", { type: models.sequelize.QueryTypes.SELECT})
+      models.sequelize.query("SELECT Year(`fecha`) as 'anio', Month(`fecha`) as 'mes', AVG(`higiene`) AS 'higiene',AVG(`puntualidad`) AS 'puntualidad',AVG(`instalaciones`) AS 'instalaciones',AVG(`tratoPersonal`) AS 'tratoPersonal',AVG(`costo`) AS 'costo',AVG(`satisfaccionGeneral`) AS 'satisfaccionGeneral' FROM `intermed`.`preguntas-medico` where `medico_id` = "+ req.session.passport.user.Medico_id +" group by year(`fecha`),month(`fecha`) order by year(`fecha`) ASC,month(`fecha`) ASC;", { type: models.sequelize.QueryTypes.SELECT})
       .then(function(promedios) {
-        models.sequelize.query("SELECT COUNT(`satisfaccionGeneral`) as 'total', `satisfaccionGeneral` as 'porcentaje' FROM `intermed`.`preguntas-medico`  where `medico_id` = 1 GROUP BY `satisfaccionGeneral` ORDER BY `satisfaccionGeneral` ASC;", { type: models.sequelize.QueryTypes.SELECT})
+        models.sequelize.query("SELECT COUNT(`satisfaccionGeneral`) as 'total', `satisfaccionGeneral` as 'porcentaje' FROM `intermed`.`preguntas-medico`  where `medico_id` = "+ req.session.passport.user.Medico_id +" GROUP BY `satisfaccionGeneral` ORDER BY `satisfaccionGeneral` ASC;", { type: models.sequelize.QueryTypes.SELECT})
         .then(function(general) {
           res.status(200).json({calificacion: calificacion, promedios:promedios, general: general})
         });
