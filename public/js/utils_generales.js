@@ -1254,6 +1254,27 @@ $( document ).ready( function () {
     cargarListaEspCol( $( '#usuarioPerfil' ).val() ,'P');
     cargarCitasPaciente();
 
+    var today = new Date();
+
+    var events = [];
+    $.ajax( {
+      url: '/agenda/cargarCitasMesPaciente',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      async: false,
+      success: function ( data ) {
+        events = [];
+        data.result.forEach(function(res){
+          var fecha = res.FECHA.split('T')[0].split('-');
+          events.push(new Date(parseInt(fecha[0]), parseInt(fecha[1])-1, parseInt(fecha[2])).getTime());
+        });
+      },
+      error: function ( jqXHR, textStatus, err ) {
+        events = [];
+      }
+    } );
+
     $("#calendar").kendoCalendar({
       culture: 'es-MX',
       start: "day",
@@ -2624,57 +2645,11 @@ function autoCompleteAseg(inputId){
 }
 
 function cargarCitasPaciente(offset, element){
-    var limit = 4;
-    $('.citaPac').removeClass('hidden').removeClass('hidden').removeClass('active');
-
-    if (element){
-      $(element).parent().addClass('active');
-    }
-    if (offset === 0){
-      $('.citaPac.prev').addClass('hidden');
-    }
-    if ($('.citaPac').not('.next').last().text() == $(element).text()){
-      $('.citaPac.next').addClass('hidden');
-    }
-
-    if (!offset && offset !== 0){
-      //Calcular paginador
-      $.ajax({
-        async: false,
-        url: '/ag/private/count',
-        type: 'POST',
-        dataType: "json",
-        cache: false,
-        success: function ( data ) {
-          var contenido = '';
-          var paginas = Math.ceil(parseInt(data.result)/limit);
-          if (paginas>1){
-              contenido = '<li class="citaPac prev hidden"><a style="border:none;background-color:rgba(0,0,0,0)" onclick="cargarCitasPacientePrev()">&laquo;</a></li>';
-              for (var i = 0; i < paginas; i++) {
-                var clase = '';
-                if (i == 0) clase = ' class="citaPac active" '; else clase = ' class="citaPac" ';
-                contenido += '<li '+ clase +'><a style="border:none;background-color:rgba(0,0,0,0)" onclick="cargarCitasPaciente('+parseInt(i)+',this)">'+(parseInt(i)+1)+'</a></li>';
-              }
-              contenido += '<li class="citaPac next"><a style="border:none;background-color:rgba(0,0,0,0)" onclick="cargarCitasPacienteNext()">&raquo;</a></li>';
-          }
-          $('#pagination_citasPaciente').html(contenido);
-        },
-        error: function (err){
-          console.log('Ajax error: ' + JSON.stringify(err));
-        }
-      });
-    }
-    if (!offset){
-      offset = 0;
-    }
-    offset = offset*limit;
-
     $.ajax({
       async: false,
       url: '/ag/private/get',
       type: 'POST',
       dataType: "json",
-      data:{'limit':limit,'offset':offset},
       cache: false,
       success: function ( data ) {
         if (data.success){

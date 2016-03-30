@@ -142,4 +142,8 @@ module.exports = function (object){
     intermed.callController('agenda','cargarCitasMes', req.body, req, res);
   });
 
+  app.post('/agenda/cargarCitasMesPaciente', function (req, res){
+    intermed.callController('agenda','cargarCitasMesPac', req.body, req, res);
+  });
+
 }

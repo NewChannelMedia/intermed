@@ -1212,10 +1212,9 @@ exports.obtenerCitasPropias = function(object, req, res){
             paciente_id: req.session.passport.user.Paciente_id,
             fechaHoraInicio: {
               $gte: getDateTime()
-            }
+            },
+            status: 1
           },
-          limit: object.limit,
-          offset: object.offset,
           order: [['fechaHoraInicio','ASC']],
           include: [{
             model: models.Usuario,
@@ -2252,6 +2251,18 @@ exports.crearCita = function (object, req, res){
 exports.cargarCitasMes = function(object, req, res){
   models.sequelize.query(
     "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`agenda` where `status` > 0 && `usuario_id` = "+ req.session.passport.user.id +"  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
+    , { type: models.Sequelize.QueryTypes.SELECT}
+  ).then(function(result) {
+    res.status(200).json({
+      success: false,
+      result: result
+    });
+  });
+}
+
+exports.cargarCitasMesPac = function(object, req, res){
+  models.sequelize.query(
+    "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`agenda` where `status` > 0 && `paciente_id` = "+ req.session.passport.user.Paciente_id +" AND DATE(`fechaHoraInicio`) >= NOW()  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
     , { type: models.Sequelize.QueryTypes.SELECT}
   ).then(function(result) {
     res.status(200).json({
