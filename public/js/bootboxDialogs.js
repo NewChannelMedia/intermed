@@ -4740,6 +4740,7 @@ function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id){
                 '<ul class="list-group resultadosBusquedaPaciente">'+
                   '<li class="list-group-item media" style="margin-top:0px">Busca a tu paciente en Intermed</li>'+
                 '</ul>'+
+                '<ul class="pager" style="text-align:right;margin:0px;"></ul>'+
             '</div>'+
             '<div class="col-lg-6 col-md-6 regCorreo">'+
               '<h3>Si no está en Intermed, ingresa sus datos:</h3>'+

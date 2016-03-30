@@ -1648,6 +1648,9 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
       limpiarAgendaDia();
       data.result.forEach(function(res){
           var hora = res.fechaHoraInicio.split('T')[1].split(':00.00')[0].replace(':','-');
+          if (hora.substring(0,1) == "0"){
+            hora = hora.substring(1,5);
+          }
           var element = $('.mediaHora.'+hora);
           element.addClass('ocupada').addClass('consulta');
           element.find('.glyphicon').addClass('glyphicon-user');
@@ -3056,6 +3059,9 @@ function realizarBusqueda(bounds){
 
     var curr = 0;
     if (numPages > 1){
+      $('.pager').removeClass('hidden');
+    } else {
+      $('.pager').addClass('hidden');
     }
 
     while(numPages > curr){

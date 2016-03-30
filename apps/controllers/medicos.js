@@ -2612,7 +2612,8 @@ var _this = module.exports = {
     }).spread(function(especialidad,created){
       models.MedicoEspecialidad.findOne({
         where: {
-          especialidad_id: especialidad.id
+          especialidad_id: especialidad.id,
+          medico_id: req.session.passport.user.Medico_id
         }
       }).then(function(MedicoEspecialidad){
         if (!MedicoEspecialidad){
