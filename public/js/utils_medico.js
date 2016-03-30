@@ -4266,7 +4266,8 @@ function BuscarPaciente(inputBusquedaId,outPutResultId,inicio,fin,medico,servici
   var buscar = $('#'+inputBusquedaId).val();
 
     $.post('/paciente/buscar',{
-      buscar:buscar
+      buscar:buscar,
+      usuario_medico_id: medico
     }, function(data){
       var contenido = '';
       $.each(data.result, function( i, item){

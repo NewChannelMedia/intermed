@@ -199,42 +199,88 @@ exports.buscar = function (object, req, res){
     });
   } else {
     //Traer todos los pacientes que han tenido cita con el médico
-    models.Agenda.findAll({
-      order: [['id','DESC']],
-      where: {
-        usuario_id: req.session.passport.user.id,
-        paciente_id: {$gte: 0}
-      },
-      group: ['paciente_id'],
-      attributes: ['id'],
-      include: [{
-        model: models.Paciente,
-        attributes: ['id'],
-        include: [{
-          model: models.Usuario,
-          attributes: ['id','urlFotoPerfil'],
+    var medico_id = '';
+    if (req.session.passport.user.tipoUsuario == "M"){
+        models.Agenda.findAll({
+          order: [['id','DESC']],
+          where: {
+            usuario_id: req.session.passport.user.id,
+            paciente_id: {$gte: 0}
+          },
+          group: ['paciente_id'],
+          attributes: ['id'],
           include: [{
-            model: models.DatosGenerales
-          },{
-            model: models.Direccion,
+            model: models.Paciente,
             attributes: ['id'],
             include: [{
-              model :models.Municipio,
-              attributes: ['municipio'],
+              model: models.Usuario,
+              attributes: ['id','urlFotoPerfil'],
               include: [{
-                model :models.Estado,
-                attributes: ['estado']
+                model: models.DatosGenerales
+              },{
+                model: models.Direccion,
+                attributes: ['id'],
+                include: [{
+                  model :models.Municipio,
+                  attributes: ['municipio'],
+                  include: [{
+                    model :models.Estado,
+                    attributes: ['estado']
+                  }]
+                }]
               }]
             }]
           }]
-        }]
-      }]
-    }).then(function(result){
-      res.status(200).json({
-        success: true,
-        result: result
+        }).then(function(result){
+          res.status(200).json({
+            success: true,
+            result: result
+          });
+        });
+    } else {
+      models.Medico.findOne({
+        where: {
+          usuario_id: object.usuario_medico_id
+        }
+      }).then(function(medico){
+        models.Agenda.findAll({
+          order: [['id','DESC']],
+          where: {
+            usuario_id: medico.id,
+            paciente_id: {$gte: 0}
+          },
+          group: ['paciente_id'],
+          attributes: ['id'],
+          include: [{
+            model: models.Paciente,
+            attributes: ['id'],
+            include: [{
+              model: models.Usuario,
+              attributes: ['id','urlFotoPerfil'],
+              include: [{
+                model: models.DatosGenerales
+              },{
+                model: models.Direccion,
+                attributes: ['id'],
+                include: [{
+                  model :models.Municipio,
+                  attributes: ['municipio'],
+                  include: [{
+                    model :models.Estado,
+                    attributes: ['estado']
+                  }]
+                }]
+              }]
+            }]
+          }]
+        }).then(function(result){
+          res.status(200).json({
+            success: true,
+            result: result
+          });
+        });
       });
-    });
+    }
   }
 }
 
