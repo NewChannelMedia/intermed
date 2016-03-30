@@ -1865,6 +1865,7 @@ footer .logoIntermed {
   padding: 0;
   margin-bottom: 5px;
   display: block;
+  cursor: auto;
 }
 
 .hora.ocupada .mediaHora, .mediaHora.ocupada {
@@ -1897,6 +1898,19 @@ footer .logoIntermed {
   padding-top: 10px;
   border-right: solid 3px #fff;
   margin-top: -4px;
+}
+
+.mediaHora.noDisponible * {
+    color: #596C77!important;
+    border-color: #596C77!important;
+}
+
+.bloque .mediaHoraInterno.tiempo  .lbl-mediahora {
+  border-right: none;
+}
+
+.bloque .mediaHoraInterno.tiempo {
+    background-color: #6a808e!important;
 }
 
 /*

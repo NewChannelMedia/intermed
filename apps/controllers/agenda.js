@@ -1603,7 +1603,8 @@ exports.eventosPorDia = function (object, req, res){
   models.Agenda.findAll({
     where:{
       usuario_id: req.session.passport.user.id,
-      fechaHoraInicio: { $gte: object.fecha, $lt: object.fin }
+      fechaHoraInicio: { $gte: object.fecha, $lt: object.fin },
+      status:{$gt: 0}
     },
     include: [{
       model: models.Paciente,
@@ -1621,10 +1622,20 @@ exports.eventosPorDia = function (object, req, res){
       attributes:['nombre']
     }]
   }).then(function(result){
-    res.status(200).json({
-      success:true,
-      result: result
-    })
+    var dia = new Date(object.fecha).getDay();
+    models.Horarios.findAll({
+      where: {
+        dia: dia
+      },
+      include :[{model: models.Direccion, where : { usuario_id: req.session.passport.user.id },attributes: ['id']}]
+    }).then(function(horarios) {
+        res.status(200).json({
+          success:true,
+          result: result,
+          horarios: horarios
+        })
+    });
+
   })
 }
 
@@ -2127,8 +2138,21 @@ exports.cancelarCita = function(object, req, res){
 
 exports.serviciosPorHorario = function (object, req, res){
   var day = new Date(object.inicio).getDay();
-  object.inicio = new Date(object.inicio).toISOString();
-  object.inicio = object.inicio.split('T')[1].split(':00.00')[0]
+  if (object.kendo){
+    var horas = 0;
+    if (object.inicio.search('PM')>0){
+      horas = 12;
+    }
+    object.inicio = object.inicio.split(', ')[1].split(':');
+    object.inicio[0] = (parseInt(object.inicio[0])+horas).toString();
+    if (object.inicio[0].length == 1){
+      object.inicio[0] = '0'+object.inicio[0];
+    }
+    object.inicio = object.inicio[0]+':'+object.inicio[1];
+  } else {
+    object.inicio = new Date(object.inicio).toISOString();
+    object.inicio = object.inicio.split('T')[1].split(':00.00')[0];
+  }
   models.CatalogoServicios.findAll({
     include: [{
       model: models.Direccion,
@@ -2176,6 +2200,10 @@ exports.crearCita = function (object, req, res){
         id: object.servicio_id
       }
     }).then(function(servicio){
+      if (object.kendo){
+        object.inicio = object.inicio.replace(' ','T')+'.000Z';
+        object.fin = object.fin.replace(' ','T')+'.000Z';
+      }
       if (object.paciente_id){
         models.Agenda.create({
           usuario_id: medico.usuario_id,
@@ -2207,6 +2235,8 @@ exports.crearCita = function (object, req, res){
               direccion_id: servicio.direccion_id,
               servicio_id: servicio.id,
               status:1
+            },{
+              logging: console.log
             }).then(function(result){
               res.status(200).json({
                 success: true,
@@ -2221,7 +2251,7 @@ exports.crearCita = function (object, req, res){
 
 exports.cargarCitasMes = function(object, req, res){
   models.sequelize.query(
-    "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`agenda` where `usuario_id` = "+ req.session.passport.user.id +"  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
+    "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`agenda` where `status` > 0 && `usuario_id` = "+ req.session.passport.user.id +"  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
     , { type: models.Sequelize.QueryTypes.SELECT}
   ).then(function(result) {
     res.status(200).json({

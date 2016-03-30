@@ -4262,7 +4262,7 @@ function editarUbicacion(direccion_id){
     });
 }
 
-function BuscarPaciente(inputBusquedaId,outPutResultId,inicio,fin,medico,servicio_id){
+function BuscarPaciente(inputBusquedaId,outPutResultId,inicio,fin,medico,servicio_id,kendo){
   var buscar = $('#'+inputBusquedaId).val();
 
     $.post('/paciente/buscar',{
@@ -4311,7 +4311,7 @@ function BuscarPaciente(inputBusquedaId,outPutResultId,inicio,fin,medico,servici
         contenido+= '<li class="list-group-item media" style="margin-top:0px">'+
                             '<div class="media-left"><a href="#"><img class="media-object" src="'+ fotoPerfil +'" alt="..." style="width:40px"></a></div>'+
                             '<div class="media-body"><h4 class="media-heading">'+ nombre +'</h4>'+ ubicacion +'</div>'+
-                            '<div class="media-right"><button type="button" class="btn btn-primary btn-sm" onclick="registrarCitaPacienteTemporal('+inicio+','+fin+','+medico+','+servicio_id+','+ paciente_id +')">Seleccionar</button></div>'+
+                            '<div class="media-right"><button type="button" class="btn btn-primary btn-sm" onclick="registrarCitaPacienteTemporal('+inicio+','+fin+','+medico+','+servicio_id+','+ paciente_id +','+ kendo +')">Seleccionar</button></div>'+
                         '</li>';
       });
 
@@ -4376,4 +4376,20 @@ function BuscarPaciente(inputBusquedaId,outPutResultId,inicio,fin,medico,servici
       console.log("Error 4286: "+JSON.stringify(e));
     });
 
+}
+
+function activarAgendarOficina(){
+  if ($('#agendarCitaOficina').hasClass('agregar')){
+    $('#agendarCitaOficina').text('AGENDAR');
+    $('#agendarCitaOficina').removeClass('agregar');
+    $('#agendarCitaOficina').addClass('btn-default');
+    $('#agendarCitaOficina').removeClass('btn-danger');
+    $('.mediaHora').not('.ocupada').not('.noDisponible').css('cursor','default');
+  } else {
+    $('#agendarCitaOficina').text('CANCELAR AGENDAR');
+    $('#agendarCitaOficina').addClass('agregar');
+    $('#agendarCitaOficina').removeClass('btn-default');
+    $('#agendarCitaOficina').addClass('btn-danger');
+    $('.mediaHora').not('.ocupada').not('.noDisponible').css('cursor','pointer');
+  }
 }

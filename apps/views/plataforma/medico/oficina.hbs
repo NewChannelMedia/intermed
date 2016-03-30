@@ -30,6 +30,13 @@
             <div class="body-container">
               <div class="center-content">
                 <div id="calendar" class="h77-boldcond"></div>
+                <div class="k-widget clear">
+                  <div class="row">
+                    <div class="col-lg-12">
+                    	<a class="btn btn-block btn-lg btn-default text-uppercase" onclick="verAgendaMedico()" role="button">VER AGENDA</a>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -50,141 +57,10 @@
       <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 agendaDay">
         <div class="row">
           <div class="col-lg-12">
-          	<a class="btn btn-default pull-right" onclick="verAgendaMedico()" role="button">agendar</a>
+          	<a class="btn btn-default pull-right" id="agendarCitaOficina" onclick="activarAgendarOficina()" role="button">AGENDAR</a>
           </div>
         </div>
         <div class="horas-container">
-          <!--
-          <div class="row hora">
-            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-1 noPadding">
-              <p class="noMargin">
-                <span class="lbl-hora h77-boldcond">8 am</span>
-              </p>
-            </div>
-            <div class="col-lg-11 col-md-11 col-sm-10 col-xs-11">
-              <a role="button" class="row mediaHora ocupada consulta" onclick="">
-                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">
-                  <div class="mediaHoraInterno">
-                    <div class="body-container">
-                      <div class="center-content">
-                        <span class="lbl-mediahora h77-boldcond">8:00</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                  <div class="mediaHoraInterno">
-                    <div class="body-container">
-                      <div class="center-content">
-                        <div class="media">
-                          <div class="media-left">
-                            <span class="glyphicon glyphicon-user s35 darkBlue-c"></span>
-                          </div>
-                          <div class="media-body">
-                            <h4 class="h77-boldcond s20 noMargin white-c">Juan Carlos Medina</h4>
-                            <h4 class="h75-bold s15 noMargin white-c"><small>Consultorio principal</small></h4>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </a>
-              <a role="button" class="row mediaHora ocupada evento">
-                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">
-                  <div class="mediaHoraInterno">
-                    <div class="body-container">
-                      <div class="center-content">
-                        <span class="lbl-mediahora h77-boldcond">8:30</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                  <div class="mediaHoraInterno">
-                    <div class="body-container">
-                      <div class="center-content">
-                        <div class="media">
-                                  <div class="media-left">
-                                    <span class="glyphicon glyphicon-bookmark s35 darkBlue-c"></span>
-                                  </div>
-                                  <div class="media-body">
-                                    <h4 class="h77-boldcond s20 noMargin white-c">Junta de asociacion de consultorio</h4>
-                                    <h4 class="h75-bold s15 noMargin white-c hidden-sm hidden-xs"><small>Consultorio principal</small></h4>
-                                  </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-          </div>
-          <div class="row hora">
-            <div class="col-lg-1 col-md-1 col-sm-2 col-xs-1 noPadding">
-              <p class="noMargin">
-                <span class="lbl-hora h77-boldcond">9 am</span>
-              </p>
-            </div>
-            <div class="col-lg-11 col-md-11 col-sm-10 col-xs-11">
-              <a role="button" class="row mediaHora">
-                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">
-                  <div class="mediaHoraInterno">
-                    <div class="body-container">
-                      <div class="center-content">
-                        <span class="lbl-mediahora h77-boldcond">9:00</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                  <div class="mediaHoraInterno">
-                    <div class="body-container">
-                      <div class="center-content">
-                        <div class="media hidden">
-                          <div class="media-left">
-                            <span class="glyphicon glyphicon-user s35 darkBlue-c "></span>
-                          </div>
-                          <div class="media-body">
-                            <h4 class="h77-boldcond s20 noMargin white-c">Juan Carlos Medina</h4>
-                            <h4 class="h75-bold s15 noMargin white-c"><small>Consultorio principal</small></h4>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </a>
-              <a role="button" class="row mediaHora">
-                <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">
-                  <div class="mediaHoraInterno">
-                    <div class="body-container">
-                      <div class="center-content">
-                        <span class="lbl-mediahora h77-boldcond">9:30</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                  <div class="mediaHoraInterno">
-                    <div class="body-container">
-                      <div class="center-content">
-                        <div class="media hidden">
-                          <div class="media-left">
-                            <span class="glyphicon glyphicon-user s35 darkBlue-c "></span>
-                          </div>
-                          <div class="media-body">
-                            <h4 class="h77-boldcond s20 noMargin white-c">Juan Carlos Medina</h4>
-                            <h4 class="h75-bold s15 noMargin white-c"><small>Consultorio principal</small></h4>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-          </div>-->
         </div>
       </div>
     </div>
