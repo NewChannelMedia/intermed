@@ -104,7 +104,9 @@ exports.logout = function ( object, req, res ) {
       res.clearCookie( 'intermed_sesion' );
       req.session.destroy();
     }
-    res.redirect( '/' );
+    res.status(200).json({
+      success:true
+    })
   }catch ( err ) {
     req.errorHandler.report(err, req, res);
   }
