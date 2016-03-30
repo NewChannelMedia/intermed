@@ -4732,36 +4732,17 @@ function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id){
           '<div class="row">'+
             '<div class="col-md-6">'+
                 '<div class="input-group">'+
-                  '<input type="text" id="inputBusquedaPaciente" class="form-control" placeholder="Encuentralo en Intermed..."  onchange="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\')">'+
+                  '<input type="text" id="inputBusquedaPaciente" class="form-control" placeholder="Encuentralo en Intermed..."  onchange="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\','+inicio+','+fin+','+medico+','+servicio_id+')">'+
                   '<span class="input-group-btn">'+
-                    '<button type="button" class="btn btn-secondary" type="button"  onclick="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\')">Buscar</button>'+
+                    '<button type="button" class="btn btn-secondary" type="button"  onclick="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\','+inicio+','+fin+','+medico+','+servicio_id+')">Buscar</button>'+
                   '</span>'+
                 '</div>'+
-                '<ul class="list-group" id="resultadosBusquedaPaciente">'+
-                  '<li class="list-group-item media" style="margin-top:0px">'+
-                      '<div class="media-left"><a href="#"><img class="media-object" src="https://image.freepik.com/iconos-gratis/perfil-macho-sombra-de-usuario_318-40244.jpg" alt="..." style="width:40px"></a></div>'+
-                      '<div class="media-body"><h4 class="media-heading">Nombre del paciente</h4><small>Zapopan, Jalisco.</small></div>'+
-                      '<div class="media-right"><button type="button" class="btn btn-primary btn-sm" onclick="registrarCitaPacienteTemporal('+inicio+','+fin+','+medico+','+servicio_id+',2)">Seleccionar</button></div>'+
-                  '</li>'+
-                  '<li class="list-group-item media" style="margin-top:0px">'+
-                      '<div class="media-left"><a href="#"><img class="media-object" src="https://image.freepik.com/iconos-gratis/perfil-macho-sombra-de-usuario_318-40244.jpg" alt="..." style="width:40px"></a></div>'+
-                      '<div class="media-body"><h4 class="media-heading">Nombre del paciente</h4><small>Zapopan, Jalisco.</small></div>'+
-                      '<div class="media-right"><button type="button" class="btn btn-primary btn-sm">Seleccionar</button></div>'+
-                  '</li>'+
-                  '<li class="list-group-item media" style="margin-top:0px">'+
-                      '<div class="media-left"><a href="#"><img class="media-object" src="https://image.freepik.com/iconos-gratis/perfil-macho-sombra-de-usuario_318-40244.jpg" alt="..." style="width:40px"></a></div>'+
-                      '<div class="media-body"><h4 class="media-heading">Nombre del paciente</h4><small>Zapopan, Jalisco.</small></div>'+
-                      '<div class="media-right"><button type="button" class="btn btn-primary btn-sm">Seleccionar</button></div>'+
-                  '</li>'+
-                  '<li class="list-group-item media" style="margin-top:0px">'+
-                      '<div class="media-left"><a href="#"><img class="media-object" src="https://image.freepik.com/iconos-gratis/perfil-macho-sombra-de-usuario_318-40244.jpg" alt="..." style="width:40px"></a></div>'+
-                      '<div class="media-body"><h4 class="media-heading">Nombre del paciente</h4><small>Zapopan, Jalisco.</small></div>'+
-                      '<div class="media-right"><button type="button" class="btn btn-primary btn-sm">Seleccionar</button></div>'+
-                  '</li>'+
+                '<ul class="list-group resultadosBusquedaPaciente">'+
+                  '<li class="list-group-item media" style="margin-top:0px">Busca a tu paciente en Intermed</li>'+
                 '</ul>'+
             '</div>'+
             '<div class="col-lg-6 col-md-6 regCorreo">'+
-              '<h3>Regístrate con tu correo electrónico</h3>'+
+              '<h3>Si no está en Intermed, ingresa sus datos:</h3>'+
               '<div class="row">'+
                 '<div class="col-md-12">'+
                   '<div class="form-group">'+
@@ -4809,6 +4790,8 @@ function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id){
           '</div>'+
         '</form>'
   });
+
+  BuscarPaciente('inputBusquedaPaciente','resultadosBusquedaPaciente',inicio,fin,medico,servicio_id);
 }
 
 function verDetalleComentario(comentario_id){

@@ -6,7 +6,6 @@ $(document).ready(function () {
 
     var valido = true;
     var eventos = JSON.parse($('#horariosUbi').val());
-    console.log('EVENTOS: ' + JSON.stringify(eventos));
 
     //inicializar calendario
     $('#calendar').fullCalendar({
@@ -293,7 +292,6 @@ function iniciarCalendarioAgendarCita(){
               cache: false,
               data: { direccion_id: $('#ubicacion_id').val(), inicio: start.format(), fin: end.format()},
               success: function (data) {
-                console.log('data: ' + JSON.stringify(data));
                 callback(data);
               },
               error: function (err){
@@ -546,8 +544,6 @@ function obtenerHorarios() {
                   fin: evento.end.format('YYYY-M-D') + " "  + fin.format('HH:mm'),
               };
               objhorarios.push(horario);
-
-              console.log('horarios' +   evento.start)
           }
         }
     };
@@ -937,7 +933,6 @@ function cancelaCita(id) {
                 };
                 objhorarios.push(horario);
 
-                console.log('horarios' +   evento.start)
             }
           }
       };
@@ -1150,7 +1145,6 @@ function agregarEventosHorarioOficina(dia,eventos, halfDay){
         }
       });
       if (agregar){
-        console.log('Start: ' + start.toLocaleString());
         eventsData.push({
             start: start.toLocaleString('en-US'),
             end: end.toLocaleString('en-US')
@@ -1158,7 +1152,6 @@ function agregarEventosHorarioOficina(dia,eventos, halfDay){
       }
     }
   }
-  console.log('addEventSource: ' + JSON.stringify(eventsData));
   //  console.log(new Date(new Date(evento.start).toLocaleDateString()).getDay());
   $('#divCalendario').fullCalendar('addEventSource', eventsData, true);
 }
@@ -1343,8 +1336,6 @@ function horariosAgendaMedico(medico_id){
 
             var inicio = new Date((new Date(date)).toUTCString().split(' GMT')[0]);
             var final = new moment(inicio);
-            console.log('validaevento: ' + validaEventoId(inicio,final))
-            console.log('validaAgenda: ' + validaAgenda(inicio,final))
             if (validaEventoId(inicio,final) && validaAgenda(inicio, final) == 1){
               //Promp para seleccionar servicio de esa dirección
               inicio = new Date(date).toLocaleString('en-US');
@@ -1388,7 +1379,6 @@ function horariosAgendaMedico(medico_id){
                               final = new Date(final);
 
                               var mensaje = '';
-                              console.log('Valido evento 2: ' +validaEvento(inicio, final));
 
                               if ( validaEvento(inicio, final)) {
                                 var validacionAgenda =  validaAgenda(inicio, final);

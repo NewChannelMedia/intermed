@@ -1483,6 +1483,9 @@ function getFeedback(tipo){
 }
 
 function getCalTopDr(calificacion){
+    if (!calificacion){
+      calificacion = 0;
+    }
     var color = '#DF3A01';
     if (parseInt(calificacion) == 80){
       color = '#D7DF01';
@@ -1499,7 +1502,6 @@ function getCalTopDr(calificacion){
             color: color
         }
     ]
-
     $('#topDrPer').text(calificacion + '%');
 
     var width = $('#feedbackTopDr').parent().outerWidth();
@@ -2795,7 +2797,7 @@ function realizarBusqueda(bounds){
       }
 
       var topDr = false;
-      if (medico.calificacion>8){
+      if (medico.calificacion>80){
         topDr = true;
       }
 

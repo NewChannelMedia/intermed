@@ -4261,3 +4261,62 @@ function editarUbicacion(direccion_id){
       console.log("Post error: "+JSON.stringify(e));
     });
 }
+
+function BuscarPaciente(inputBusquedaId,outPutResultId,inicio,fin,medico,servicio_id){
+  var buscar = $('#'+inputBusquedaId).val();
+
+    $.post('/paciente/buscar',{
+      buscar:buscar
+    }, function(data){
+      var contenido = '';
+      $.each(data.result, function( i, item){
+        var ubicacion = '';
+        var nombre = '';
+        var fotoPerfil = '';
+        var paciente_id = '';
+        if (buscar != ""){
+          fotoPerfil = item.urlFotoPerfil;
+          paciente_id = item.Paciente.id ;
+
+          if (item.Direccions[0]){
+            ubicacion = '<small>'+ item.Direccions[0].Municipio.municipio  + ', ' + item.Direccions[0].Municipio.Estado.estado +'</small>';
+          }
+          if (!item.DatosGenerale.apellidoM || item.DatosGenerale.apellidoM == ""){
+            item.DatosGenerale.apellidoM = '';
+          } else {
+            item.DatosGenerale.apellidoM = ' ' + item.DatosGenerale.apellidoM;
+          }
+
+          nombre = item.DatosGenerale.nombre  + ' ' + item.DatosGenerale.apellidoP + item.DatosGenerale.apellidoM;
+
+        } else {
+
+          fotoPerfil = item.Paciente.Usuario.urlFotoPerfil;
+          paciente_id = item.Paciente.id ;
+
+          if (item.Paciente.Usuario.Direccions[0]){
+            ubicacion = '<small>'+ item.Paciente.Usuario.Direccions[0].Municipio.municipio  + ', ' + item.Paciente.Usuario.Direccions[0].Municipio.Estado.estado +'</small>';
+          }
+          if (!item.Paciente.Usuario.DatosGenerale.apellidoM || item.Paciente.Usuario.DatosGenerale.apellidoM == ""){
+            item.Paciente.Usuario.DatosGenerale.apellidoM = '';
+          } else {
+            item.Paciente.Usuario.DatosGenerale.apellidoM = ' ' + item.Paciente.Usuario.DatosGenerale.apellidoM;
+          }
+
+          nombre = item.Paciente.Usuario.DatosGenerale.nombre  + ' ' + item.Paciente.Usuario.DatosGenerale.apellidoP + item.Paciente.Usuario.DatosGenerale.apellidoM;
+
+        }
+
+        contenido+= '<li class="list-group-item media" style="margin-top:0px">'+
+                            '<div class="media-left"><a href="#"><img class="media-object" src="'+ fotoPerfil +'" alt="..." style="width:40px"></a></div>'+
+                            '<div class="media-body"><h4 class="media-heading">'+ nombre +'</h4>'+ ubicacion +'</div>'+
+                            '<div class="media-right"><button type="button" class="btn btn-primary btn-sm" onclick="registrarCitaPacienteTemporal('+inicio+','+fin+','+medico+','+servicio_id+','+ paciente_id +')">Seleccionar</button></div>'+
+                        '</li>';
+      });
+
+      $('.'+outPutResultId).html(contenido);
+    }).fail(function(e){
+      console.log("Error 4286: "+JSON.stringify(e));
+    });
+
+}

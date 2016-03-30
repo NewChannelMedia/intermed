@@ -155,6 +155,89 @@ exports.detallesComentario = function (object, req, res){
     }
 }
 
+exports.buscar = function (object, req, res){
+  if (object.buscar != ""){
+    var where = new Array();
+    var busqueda = object.buscar.split(' ');
+    busqueda.forEach(function(result){
+      if (result != ""){
+        where.push(models.sequelize.or(
+            {nombre: {$like: '%'+ result +'%'}},
+            {apellidoP: {$like: '%'+ result +'%'}},
+            {apellidoM: {$like: '%'+ result +'%'}}
+        ));
+      }
+    });
+
+    models.Usuario.findAll({
+      where: {
+        tipoUsuario: 'P'
+      },
+      attributes: ['id','urlFotoPerfil'],
+      include: [{
+        model: models.DatosGenerales,
+        where: where
+      },{
+        model: models.Paciente
+      },{
+        model: models.Direccion,
+        attributes: ['id'],
+        include: [{
+          model :models.Municipio,
+          attributes: ['municipio'],
+          include: [{
+            model :models.Estado,
+            attributes: ['estado']
+          }]
+        }]
+      }]
+    }).then(function(result){
+      res.status(200).json({
+        success: true,
+        result: result
+      });
+    });
+  } else {
+    //Traer todos los pacientes que han tenido cita con el médico
+    models.Agenda.findAll({
+      order: [['id','DESC']],
+      where: {
+        usuario_id: req.session.passport.user.id,
+        paciente_id: {$gte: 0}
+      },
+      group: ['paciente_id'],
+      attributes: ['id'],
+      include: [{
+        model: models.Paciente,
+        attributes: ['id'],
+        include: [{
+          model: models.Usuario,
+          attributes: ['id','urlFotoPerfil'],
+          include: [{
+            model: models.DatosGenerales
+          },{
+            model: models.Direccion,
+            attributes: ['id'],
+            include: [{
+              model :models.Municipio,
+              attributes: ['municipio'],
+              include: [{
+                model :models.Estado,
+                attributes: ['estado']
+              }]
+            }]
+          }]
+        }]
+      }]
+    }).then(function(result){
+      res.status(200).json({
+        success: true,
+        result: result
+      });
+    });
+  }
+}
+
 
 function getDateTime() {
   var date = new Date();

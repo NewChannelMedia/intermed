@@ -1782,7 +1782,6 @@ exports.agendaMedico = function (object, req, res){
 
           if (!className[datos[i].direccion_id]){
             className[datos[i].direccion_id] = 'direccion_'+total++;
-            console.log('Direcciones: ' + JSON.stringify(object));
             object.direcciones.forEach(function(dir){
               if (dir.id == datos[i].direccion_id){
                 dir.className = className[datos[i].direccion_id];
@@ -1901,7 +1900,6 @@ exports.agendaMedico = function (object, req, res){
           }
           resultado.push(horario);
         }
-        console.log('resultado: ' + JSON.stringify(object.direcciones));
         res.status(200).json({
           result: resultado,
           direcciones: object.direcciones
@@ -2070,7 +2068,6 @@ exports.cancelarCita = function(object, req, res){
         }
       }]
     }).then(function(agenda){
-      console.log('AGENDA: ' + JSON.stringify(agenda));
       if (object.medico){
         agenda.update({status: 2}).then(function(agenda){
             console.log('Ag: ' + JSON.stringify(agenda));
