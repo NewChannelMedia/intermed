@@ -1195,6 +1195,8 @@ function repositionTooltip( e, ui ){
     $(div).css('z-index','30000');
 }
 
+
+
 $( document ).ready( function () {
   //console.log('length: '+$( '#perfilMedico' ).length);
   if ( $( '#perfilMedico' ).length > 0 ) {
@@ -1251,6 +1253,78 @@ $( document ).ready( function () {
   } else if ($( '#perfilPaciente' ).length > 0 ) {
     cargarListaEspCol( $( '#usuarioPerfil' ).val() ,'P');
     cargarCitasPaciente();
+
+    $("#calendar").kendoCalendar({
+      culture: 'es-MX',
+      start: "day",
+      depth: "decade",
+      value: today,
+      dates: events,
+      month: {
+        // template for dates in month view
+        content: '# if ($.inArray(+data.date, data.dates) != -1) { #' +
+                    '<div class="' +
+                       '# if (data.value) { #' +
+                           "dayEvent" +
+                       '# } else { #' +
+                           "day" +
+                       '# } #' +
+                    '">#= data.value #</div>' +
+                 '# } else { #' +
+                 '#= data.value #' +
+                 '# } #'
+      },
+      footer: false
+    });
+    var kendoCalendar = $("#calendar").data("kendoCalendar");
+    kendoCalendar.value(new Date());
+    kendoCalendar.bind("navigate", function() {
+      var value = new Date(this.current());
+      var inicio = new Date(value.getFullYear(), value.getMonth(),1).toISOString().split('T')[0];
+      var fin = new Date(value.getFullYear(), value.getMonth(), new Date(value.getFullYear(),value.getMonth()+1, 0).getDate()).toISOString().split('T')[0];
+      console.log('INICIO: ' +  inicio);
+      console.log('FIN: ' +  fin);
+
+    });
+    kendoCalendar.bind("change", function() {
+      //aqui cargamos los eventos de ese dia en la lista de la derecha
+      var value = new Date(new Date(this.value()).toLocaleDateString());
+
+      $('#mesFecha').text(meses[value.getMonth()]);
+      $('#diaFecha').text(value.getDate());
+      $('#anioFecha').text(value.getFullYear());
+      $('#diaSemana').text(dias[value.getDay()]);
+
+      var fechaInicio = value.toISOString().split('T')[0] + ' 00:00:00';
+      var fechaFin = value.toISOString().split('T')[0] + ' 23:59:59';
+
+      if( $(window).width() < 767){
+        toAgendaDay();
+      }
+    });
+
+    if ( $( window ).innerWidth() <= 767 ) {
+      var h = $( window ).outerHeight() - $( '#newMainNav' ).height() - $( '.agendaTopContainer' ).height() - 2;
+      $( '.dashboardBody' ).css( 'height', h + 'px' );
+      $( '.dashboardLeft' ).css( 'height', h - 2 + 'px' );
+      $( '.dashboardRight' ).css( 'height', h - 2 + $( '.agendaTopContainer' ).height() + 'px' );
+      $( '.dashboardBody2' ).css( 'min-height', h + $( '.agendaTopContainer' ).height() - $( 'footer' ).height() + 'px' );
+      var y = $( '.dashboardBody2' ).height() - $( '.colegas-header' ).height();
+      $( '.dashboardBody2 .main-colegas' ).css( 'max-height', y + 'px' );
+      $( '.dashboardBody2 .main-colegas' ).css( 'height', y  + 'px' );
+    }
+    if ( $( window ).innerWidth() > 767 ) {
+      var h = $( window ).height() - $( '#newMainNav' ).height() - 2;
+      $( '.dashboardBody' ).css( 'height', h - $( '.agendaTopContainer' ).height() + 'px' );
+      $( '.dashboardLeft' ).css( 'height', h - $( '.agendaTopContainer' ).height() - 2  + 'px' );
+      $( '.dashboardRight' ).css( 'height', h - $( '.agendaTopContainer' ).height() -2 + 'px' );
+      $( '.dashboardBody2' ).css( 'height', h + 'px' );
+      var y = $( '.dashboardBody2' ).height() - ( $( '.colegas-header' ).height() );
+      $( '#listaEspecialidades' ).css( 'height', y + 'px' );
+      $( '.dashboardBody2 .main-colegas' ).css( 'max-height', y + 'px' );
+      $( '.dashboardBody2 .main-colegas' ).css( 'height', y + 'px' );
+    }
+
   } else if($( '#medicoSecretaria').length > 0 ){
     if (!$('#agregar').hasClass('hidden')){
       //alert('agregar secretaria');
@@ -2068,7 +2142,7 @@ function cargarListaEspCol( usuario ,tipo) {
 function cargarListaColegasByEsp(usuario_id,especialidad_id, element,tipo){
   var classDiv = 'class="col-lg-3 col-md-3 col-sm-4 col-xs-4"';
   if (tipo && tipo == "P"){
-    classDiv = 'class="col-lg-3 col-md-6 col-sm-4 col-xs-6"';
+    classDiv = 'class="col-lg-3 col-md-4 col-sm-4 col-xs-4"';
   }
 
   $('#especialidadesList li.active').removeClass('active');
@@ -2109,10 +2183,11 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id, element,tipo){
           if (res.urlPersonal && res.urlPersonal != ""){
             usuarioUrl = res.urlPersonal;
           }
-          contenido +=  '<div '+classDiv+'>'+
-            '<div class="thumbnail">'+
+          contenido +=
+          '<div '+classDiv+'>'+
+            '<div class="thumbnail noPadding noMargin">'+
               '<div >'+
-                '<a class="pPic" href="/'+ usuarioUrl +'"><img src="'+ res.urlFotoPerfil +'" alt="..."></a>'+
+                '<a class="" href="/'+ usuarioUrl +'"><img src="'+ res.urlFotoPerfil +'" alt="..."></a>'+
               '</div>'+
               '<div class="caption">'+
                 '<div class="nombre h77-boldcond">'+
@@ -2126,7 +2201,7 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id, element,tipo){
             '</div>'+
           '</div>'
         })
-        contenido += '</div>';
+        /*contenido += '</div>';*/
         $('#listaColegas').html(contenido);
       }else{
         if (data.error){
@@ -2183,7 +2258,7 @@ function cargarListaAlfCol( usuario ,tipo) {
 function cargarListaColegasByAlf(usuario_id,letra,element,tipo){
   var classDiv = 'class="col-lg-3 col-md-3 col-sm-4 col-xs-4"';
   if (tipo && tipo == "P"){
-    classDiv = 'class="col-lg-3 col-md-6 col-sm-4 col-xs-6"';
+    classDiv = 'class="col-lg-3 col-md-4 col-sm-4 col-xs-4"';
   }
   $('#especialidadesList li.active').removeClass('active');
   if (element){
@@ -2224,7 +2299,8 @@ function cargarListaColegasByAlf(usuario_id,letra,element,tipo){
           if (res.urlPersonal && res.urlPersonal != ""){
             usuarioUrl = res.urlPersonal;
           }
-          contenido += '<div '+classDiv+'>'+
+          contenido +=
+          '<div '+classDiv+'>'+
             '<div class="thumbnail">'+
               '<div >'+
                 '<a class="pPic" href="/'+ usuarioUrl +'"><img src="'+ res.urlFotoPerfil +'" alt="..."></a>'+
@@ -2241,7 +2317,7 @@ function cargarListaColegasByAlf(usuario_id,letra,element,tipo){
             '</div>'+
           '</div>'
         })
-        contenido += '</div>';
+        /*contenido += '</div>';*/
         $('#listaColegas').html(contenido);
       }else{
         if (data.error){
