@@ -6,7 +6,6 @@ $(document).ready(function () {
 
     var valido = true;
     var eventos = JSON.parse($('#horariosUbi').val());
-    console.log('EVENTOS: ' + JSON.stringify(eventos));
 
     //inicializar calendario
     $('#calendar').fullCalendar({
@@ -118,7 +117,7 @@ function obtenerHorariosAgenda(direccion_id, background) {
 
         var horario = {
             direccion_id: direccion_id,
-            dia: evento.start._d.getDay(),
+            dia: new Date(new Date(evento.start).toLocaleDateString()).getDay(),// evento.start._d.getDay(),
             horaInicio: inicio.format('HH:mm'),
             horaFin: fin.format('HH:mm')
         };
@@ -293,7 +292,6 @@ function iniciarCalendarioAgendarCita(){
               cache: false,
               data: { direccion_id: $('#ubicacion_id').val(), inicio: start.format(), fin: end.format()},
               success: function (data) {
-                console.log('data: ' + JSON.stringify(data));
                 callback(data);
               },
               error: function (err){
@@ -546,8 +544,6 @@ function obtenerHorarios() {
                   fin: evento.end.format('YYYY-M-D') + " "  + fin.format('HH:mm'),
               };
               objhorarios.push(horario);
-
-              console.log('horarios' +   evento.start)
           }
         }
     };
@@ -937,7 +933,6 @@ function cancelaCita(id) {
                 };
                 objhorarios.push(horario);
 
-                console.log('horarios' +   evento.start)
             }
           }
       };
@@ -1020,8 +1015,8 @@ function agregarEventosTodosDisponibles(dia, eventos){
       });
       if (agregar){
         eventsData.push({
-            start: start.toLocaleString(),
-            end: end.toLocaleString()
+            start: start.toLocaleString('en-US'),
+            end: end.toLocaleString('en-US')
         });
       }
     }
@@ -1129,8 +1124,8 @@ function agregarEventosHorarioOficina(dia,eventos, halfDay){
     });
     if (agregar){
       eventsData.push({
-          start: start.toLocaleString(),
-          end: end.toLocaleString()
+          start: start.toLocaleString('en-US'),
+          end: end.toLocaleString('en-US')
       });
     }
   }
@@ -1151,12 +1146,13 @@ function agregarEventosHorarioOficina(dia,eventos, halfDay){
       });
       if (agregar){
         eventsData.push({
-            start: start.toLocaleString(),
-            end: end.toLocaleString()
+            start: start.toLocaleString('en-US'),
+            end: end.toLocaleString('en-US')
         });
       }
     }
   }
+  //  console.log(new Date(new Date(evento.start).toLocaleDateString()).getDay());
   $('#divCalendario').fullCalendar('addEventSource', eventsData, true);
 }
 
@@ -1228,33 +1224,6 @@ function calendarHorarioOficina(){
     agregarEventosHorarioOficina(dia4,eventos4);
     agregarEventosHorarioOficina(dia5,eventos5);
     agregarEventosHorarioOficina(dia6,eventos6, true);
-  /*
-    calendarSeleccionarNada();
-    var d = new Date(formatearTimestampAgenda($('#divCalendario').fullCalendar('getView').start));
-
-    var year = d.getFullYear();
-    var month = d.getMonth();
-    var day = d.getDate();
-
-    for (var i = 0; i < 6; i++) {
-      var dateStart = new Date(year, month, day+i, 9, 0, 0, 0);
-      var dateEnd = new Date(year, month, day+i, 14, 0, 0, 0);
-      eventData = {
-        "start":dateStart.toLocaleString(),
-        "end":dateEnd.toLocaleString()
-      }
-      $('#divCalendario').fullCalendar('renderEvent', eventData, true);
-
-      if (i<5){
-        var dateStart = new Date(year, month, day+i, 16, 0, 0, 0);
-        var dateEnd = new Date(year, month, day+i, 19, 0, 0, 0);
-        eventData = {
-          "start":dateStart.toLocaleString(),
-          "end":dateEnd.toLocaleString()
-        }
-        $('#divCalendario').fullCalendar('renderEvent', eventData, true);
-      }
-    }*/
 }
 
 function sortEvents(a, b) {
@@ -1298,9 +1267,9 @@ function horariosAgendaMedico(medico_id){
               type: 'POST',
               dataType: "json",
               cache: false,
-              data: {medico_id: medico_id, direccion_id: 1, inicio: start.format(), fin: end.format()},
+              data: {medico_id: medico_id,inicio: start.format(), fin: end.format()},
               success: function (data) {
-                callback(data);
+                callback(data.result);
                 $.ajax({
                     url: '/medico/detalleMedico',
                     type: 'POST',
@@ -1319,11 +1288,31 @@ function horariosAgendaMedico(medico_id){
                     }
                   });
                 var d = new Date(start).getMonth();
+                var clases = $('.direccionlist.active').attr('class');
+                var claseActual = '';
+                if (clases && clases != ""){
+                  clases = clases.split(' ');
+                  clases.forEach(function(clase){
+                    if (clase.substring(0,4) == 'dir-'){
+                      claseActual = clase;
+                    }
+                  });
+                }
+
                 $('#divCalendario .fc-toolbar .fc-left').text(meses[d]);
                 $('#divCalendario .fc-day-header').each(function(){
                   $(this).text($(this).text().split('/')[0]);
                 });
-                $('.direccionlist.active').click();
+                $('#btnGroupDir').html('<button type="button" class="btn btn-default direccionlist active" onclick="destacarDireccion(this)">VER TODAS</button>');
+                data.direcciones.forEach(function(dir){
+                    $('#btnGroupDir').append('<button type="button" class="btn btn-default direccionlist dir-'+ dir.className +'" onclick="destacarDireccion(this,\''+ dir.className +'\')">'+ dir.nombre +'</button>');
+                });
+
+                if (claseActual != ""){
+                  $('.direccionlist.'+claseActual).click();
+                } else {
+                  $('.direccionlist.active').click();
+                }
               },
               error: function (err){
                 console.log('AJAX Error: ' + JSON.stringify(err));
@@ -1347,11 +1336,9 @@ function horariosAgendaMedico(medico_id){
 
             var inicio = new Date((new Date(date)).toUTCString().split(' GMT')[0]);
             var final = new moment(inicio);
-            console.log('validaevento: ' + validaEventoId(inicio,final))
-            console.log('validaAgenda: ' + validaAgenda(inicio,final))
             if (validaEventoId(inicio,final) && validaAgenda(inicio, final) == 1){
               //Promp para seleccionar servicio de esa dirección
-              inicio = new Date(date).toLocaleString();
+              inicio = new Date(date).toLocaleString('en-US');
               $.ajax({
                   url: '/agenda/serviciosPorHorario',
                   type: 'POST',
@@ -1392,7 +1379,6 @@ function horariosAgendaMedico(medico_id){
                               final = new Date(final);
 
                               var mensaje = '';
-                              console.log('Valido evento 2: ' +validaEvento(inicio, final));
 
                               if ( validaEvento(inicio, final)) {
                                 var validacionAgenda =  validaAgenda(inicio, final);

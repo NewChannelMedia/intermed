@@ -98,6 +98,20 @@ function ifsubEsp(options){
     return options.inverse(true);
 }
 
+function ifEstudiando(options){
+  if ( session[ 'especialidades' ]){
+    var continuar = true;
+    for(var i=0, j=session['especialidades'].length; i<j; i++) {
+      if ((!session['especialidades'][i]['cedula'] || session['especialidades'][i]['cedula']  == "") && continuar){
+        continuar = false;
+        return options.fn( true );
+      }
+    }
+  }
+  else
+    return options.inverse(true);
+}
+
 function unset(value){
   session[value] = 0;
 }
@@ -178,6 +192,7 @@ exports.ifTipoSecretaria = ifTipoSecretaria;
 //exports.ifPaciente = ifPaciente;
 exports.eachValSession = eachValSession;
 exports.ifsubEsp = ifsubEsp;
+exports.ifEstudiando = ifEstudiando;
 exports.set = set;
 exports.unset = unset;
 exports.base_url = base_url;

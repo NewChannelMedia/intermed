@@ -2840,8 +2840,8 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
 
           '<div class="col-md-6 col-sm-6 col-xs-10 col-md-offset-3 col-sm-offset-3 col-xs-offset-1" style="margin-top:20px">'+
             '<div class="row">'+
-              '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción cita: </div>'+
-              '<div class="col-md-12 col-sm-12 col-xs-12"><input id="input-21d" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>'+
+              '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción general: </div>'+
+              '<div class="col-md-12 col-sm-12 col-xs-12"><input id="cal_satisfaccion" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>'+
             '</div>'+
 
             '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
@@ -2913,16 +2913,6 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
 
             '</div>'+
 
-            '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
-
-                '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción cita: </div>'+
-
-                '<div class="col-md-10 col-sm-10 col-xs-10 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'+
-                  '<span class="Slider horizontal" id="cal_satisfaccion" style="width:100%!important"></span>'+
-                '</div>'+
-
-            '</div>'+
-
             '<div class="row">'+
               '<textarea class="form-control" placeholder="Comentarios (opcional)" style="resize: none;margin-top:5px" rows="4" id="calificacionComentario"></textarea>'+
             '</div>'+
@@ -2944,7 +2934,7 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
     $('.bootbox-close-button').css('color','white');
     $('.bootbox-close-button').css('font-size','180%');
 
-    $("#input-21d").rating();
+    $("#cal_satisfaccion").rating();
 
     $('.clear-rating').css('display','none');
     $('.caption').css('display','none');
@@ -3371,6 +3361,11 @@ function dejarComentarioMedico(){
             '</div>'+
           '</div>'+
 
+          '<div class="row">'+
+            '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción general: </div>'+
+            '<div class="col-md-12 col-sm-12 col-xs-12"><input id="cal_satisfaccion" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>'+
+          '</div>'+
+
           '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
 
               '<div class="col-md-2 col-sm-2 col-xs-2 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'+
@@ -3436,16 +3431,6 @@ function dejarComentarioMedico(){
                     '<span class="glyphicon glyphicon-usd"></span>'+
                   '</div>'+
                 '</div>'+
-              '</div>'+
-
-          '</div>'+
-
-          '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
-
-              '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción cita: </div>'+
-
-              '<div class="col-md-10 col-sm-10 col-xs-10 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'+
-                '<span class="Slider horizontal" id="cal_satisfaccion" style="width:100%!important"></span>'+
               '</div>'+
 
           '</div>'+
@@ -4275,17 +4260,15 @@ function editarEspecialidades(){
                   '</div>'+
                 '</div>'+
 
-                '<div class="col-md-12">'+
-                  '<div class="input-group">'+
-                    '<input type="text" id="autoEsp" class="form-control autoEspecialidad">'+
-                    '<span class="input-group-btn">'+
-                      '<button id="addEspecialidadMedic" onclick="agregarEspecialidad(\'autoEsp\');" class="btn btn-primary form-control" type="button">'+
-                        '<span class="glyphicon glyphicon-plus"></span>'+
-                      '</button>'+
-                    '</span>'+
-                  '</div>'+
+                '<div class="col-md-4">'+
+                  '<input type="text" class="form-control" placeholder="Cédula de especialidad" id="inputCedulaEspecialidad">'+
                 '</div>'+
-
+                '<div class="col-md-6 noPadding">'+
+                  '<input type="text" class="form-control" placeholder="Titulo de especialidad" id="inputTituloEspecialidad">'+
+                '</div>'+
+                '<div class="col-md-2">'+
+                  '<button type="button" class="btn btn-primary btn-block" type="button" onclick="validarCedulaEspecialidad($(\'#inputCedulaEspecialidad\'),$(\'#inputTituloEspecialidad\'))">Agregar</button>'+
+                '</div>'+
 
 
                 '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="regmedEsp" style="margin-top:10px">'+
@@ -4298,23 +4281,22 @@ function editarEspecialidades(){
               '<div class="row">'+
                 '<div class="col-md-12">'+
                   '<div class="whiteF h77-boldcond" style="font-size: 18px;padding: 8px;background-color: #172C3B;margin: -10px;margin-bottom: 5px;margin-top:20px;">'+
-                    '<span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;SUBESPECIALIDADES.'+
+                    '<span class="glyphicon glyphicon-th-list"></span>&nbsp;&nbsp;ESPECIALIDADES ESTUDIANDO.'+
                   '</div>'+
                 '</div>'+
 
                 '<div class="col-md-12">'+
                   '<div class="input-group">'+
-                    '<input type="text" id="autoSubEsp" class="form-control autoEspecialidad">'+
+                    '<input type="text" class="form-control" aria-describedby="basic-addon3" placeholder="Nombre de la especialidad" id="inputTituloEspecialidadEstudio">'+
                     '<span class="input-group-btn">'+
-                      '<button id="addEspecialidadMedic" onclick="agregarSubespecialidad(\'autoSubEsp\');" class="btn btn-primary form-control" type="button">'+
-                        '<span class="glyphicon glyphicon-plus"></span>'+
-                      '</button>'+
-                    '</span>'+
-                  '</div>'+
+                    '<button type="button" class="btn btn-primary" type="button" onclick="anadirEspecialidadEstudio($(\'#inputTituloEspecialidadEstudio\'))">Agregar</button>'+
+                  '</span>'+
                 '</div>'+
 
                 '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" id="regmedEsp" style="margin-top:10px">'+
-                  '<ul class="list-inline" id="subEspecialidadesListBoot"></ul>'+
+                  '<div class="row">'+
+                    '<ul class="list-inline" id="EspecialidadesEstListBoot"></ul>'+
+                  '</div>'+
                 '</div>'+
 
               '</div>'+
@@ -4325,6 +4307,8 @@ function editarEspecialidades(){
     '</div>'
   });
   setTimeout(function(){
+  autoCompleteEsp('inputTituloEspecialidad',false);
+  autoCompleteEsp('inputTituloEspecialidadEstudio',false);
   loadEspecialidades();
   },300);
 }
@@ -4376,7 +4360,7 @@ function detallesError(error_id, element){
           //"DBError_userIntermed":{"id":1,"nombre":"Adminitrador","correo":"admin@newchannel.mx"},
           if (data.result.DBError_userIntermed){
             contenidoatiende = '<a class="list-group-item disabled"><b>Atendido por:</b> '+ data.result.DBError_userIntermed.nombre  + ' [' + data.result.DBError_userIntermed.correo + '] </a>';
-            contenidoatiende += '<a class="list-group-item disabled"><b>Fecha:</b> '+ new Date(data.result.datetimeupdated).toLocaleString()  +' </a>';
+            contenidoatiende += '<a class="list-group-item disabled"><b>Fecha:</b> '+ new Date(data.result.datetimeupdated).toLocaleString('en-US')  +' </a>';
           }
 
           if (permisos){
@@ -4671,7 +4655,6 @@ function detalleCitaSecretaria(agenda_id){
 
 
 function verAgendaMedico(medico_id){
-  console.log('nombre y foto por ajax');
   var nombremedico = 'Médico de prueba uno';
   var urlFotoPerfil = '/garage/profilepics/dpp.png';
   //Agendar cita
@@ -4688,7 +4671,7 @@ function verAgendaMedico(medico_id){
             '<div class="col-md-12">'+
               '<form method="POST" name="frmRegCita" id="frmRegCita">'+
                 '<input type="hidden" id="medico_id" name="medico_id" value="'+ medico_id +'">'+
-                '<div class="col-md-10 text-left"><div class="btn-group" ><button type="button" class="btn btn-default direccionlist active" onclick="destacarDireccion(this)">VER TODAS</button><button type="button" class="btn btn-default direccionlist" onclick="destacarDireccion(this,\'direccion_0\')">Dirección 1</button><button type="button" class="btn btn-default direccionlist" onclick="destacarDireccion(this,\'direccion_1\')">Dirección 2</button><button type="button" class="btn btn-default direccionlist" onclick="destacarDireccion(this,\'direccion_2\')">Dirección 3</button></div></div>'+
+                '<div class="col-md-10 text-left"><div class="btn-group" id="btnGroupDir"></div></div>'+
                 '<div class="col-md-2"><div class="row"><button type="button" class="btn btn-default btn-md pull-right" onclick="activarDesactivarAgregarCita(this)" id="btnAddCita">Agregar cita</button></div></div>'+
                 '<div class="col-md-12" id="divCalendarioPadre"><div class="row"><div id="divCalendario" class="regHorMed"></div></div></div>'+
               '</form>'+
@@ -4749,36 +4732,17 @@ function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id){
           '<div class="row">'+
             '<div class="col-md-6">'+
                 '<div class="input-group">'+
-                  '<input type="text" id="inputBusquedaPaciente" class="form-control" placeholder="Encuentralo en Intermed..."  onchange="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\')">'+
+                  '<input type="text" id="inputBusquedaPaciente" class="form-control" placeholder="Encuentralo en Intermed..."  onchange="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\','+inicio+','+fin+','+medico+','+servicio_id+')">'+
                   '<span class="input-group-btn">'+
-                    '<button type="button" class="btn btn-secondary" type="button"  onclick="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\')">Buscar</button>'+
+                    '<button type="button" class="btn btn-secondary" type="button"  onclick="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\','+inicio+','+fin+','+medico+','+servicio_id+')">Buscar</button>'+
                   '</span>'+
                 '</div>'+
-                '<ul class="list-group" id="resultadosBusquedaPaciente">'+
-                  '<li class="list-group-item media" style="margin-top:0px">'+
-                      '<div class="media-left"><a href="#"><img class="media-object" src="https://image.freepik.com/iconos-gratis/perfil-macho-sombra-de-usuario_318-40244.jpg" alt="..." style="width:40px"></a></div>'+
-                      '<div class="media-body"><h4 class="media-heading">Nombre del paciente</h4><small>Zapopan, Jalisco.</small></div>'+
-                      '<div class="media-right"><button type="button" class="btn btn-primary btn-sm" onclick="registrarCitaPacienteTemporal('+inicio+','+fin+','+medico+','+servicio_id+',2)">Seleccionar</button></div>'+
-                  '</li>'+
-                  '<li class="list-group-item media" style="margin-top:0px">'+
-                      '<div class="media-left"><a href="#"><img class="media-object" src="https://image.freepik.com/iconos-gratis/perfil-macho-sombra-de-usuario_318-40244.jpg" alt="..." style="width:40px"></a></div>'+
-                      '<div class="media-body"><h4 class="media-heading">Nombre del paciente</h4><small>Zapopan, Jalisco.</small></div>'+
-                      '<div class="media-right"><button type="button" class="btn btn-primary btn-sm">Seleccionar</button></div>'+
-                  '</li>'+
-                  '<li class="list-group-item media" style="margin-top:0px">'+
-                      '<div class="media-left"><a href="#"><img class="media-object" src="https://image.freepik.com/iconos-gratis/perfil-macho-sombra-de-usuario_318-40244.jpg" alt="..." style="width:40px"></a></div>'+
-                      '<div class="media-body"><h4 class="media-heading">Nombre del paciente</h4><small>Zapopan, Jalisco.</small></div>'+
-                      '<div class="media-right"><button type="button" class="btn btn-primary btn-sm">Seleccionar</button></div>'+
-                  '</li>'+
-                  '<li class="list-group-item media" style="margin-top:0px">'+
-                      '<div class="media-left"><a href="#"><img class="media-object" src="https://image.freepik.com/iconos-gratis/perfil-macho-sombra-de-usuario_318-40244.jpg" alt="..." style="width:40px"></a></div>'+
-                      '<div class="media-body"><h4 class="media-heading">Nombre del paciente</h4><small>Zapopan, Jalisco.</small></div>'+
-                      '<div class="media-right"><button type="button" class="btn btn-primary btn-sm">Seleccionar</button></div>'+
-                  '</li>'+
+                '<ul class="list-group resultadosBusquedaPaciente">'+
+                  '<li class="list-group-item media" style="margin-top:0px">Busca a tu paciente en Intermed</li>'+
                 '</ul>'+
             '</div>'+
             '<div class="col-lg-6 col-md-6 regCorreo">'+
-              '<h3>Regístrate con tu correo electrónico</h3>'+
+              '<h3>Si no está en Intermed, ingresa sus datos:</h3>'+
               '<div class="row">'+
                 '<div class="col-md-12">'+
                   '<div class="form-group">'+
@@ -4826,6 +4790,8 @@ function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id){
           '</div>'+
         '</form>'
   });
+
+  BuscarPaciente('inputBusquedaPaciente','resultadosBusquedaPaciente',inicio,fin,medico,servicio_id);
 }
 
 function verDetalleComentario(comentario_id){

@@ -238,4 +238,8 @@ module.exports = function (object){
   app.post('/medico/detalleMedico', function (req, res){
     intermed.callController('medicos','detalleMedico', req.body, req, res);
   });
+
+  app.post('/medico/feedback', function (req, res){
+    intermed.callController('medicos','getFeedback', req.body, req, res);
+  });
 }

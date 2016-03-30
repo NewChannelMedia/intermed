@@ -164,29 +164,29 @@
 
                                     <ul class="list-inline profile-esp user">
                                       {{#eachValSession "especialidades"}}
-                                        {{#unless subEsp}}
+                                        {{#if cedula}}
                                           <li>
                                             {{Especialidad.especialidad}}
                                           </li>
-                                        {{/unless}}
+                                        {{/if}}
                                       {{/eachValSession}}
                                       <span id="editEsp">
                                         <span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarEspecialidades()"></span>
                                       </span>
                                     </ul>
                                     <ul class="list-inline profile-subesp user">
-                                      {{#ifsubEsp}}
+                                      {{#ifEstudiando}}
                                         <li>
-                                          Subespecialidad:
+                                          Estudiando:
                                         </li>
                                         {{#eachValSession "especialidades"}}
-                                          {{#if subEsp}}
+                                          {{#unless cedula}}
                                             <li>
                                               <small>{{Especialidad.especialidad}}</small>
                                             </li>
-                                          {{/if}}
+                                          {{/unless}}
                                         {{/eachValSession}}
-                                      {{/ifsubEsp}}
+                                      {{/ifEstudiando}}
                                     </ul>
                                   {{/if}}
                                 </div>

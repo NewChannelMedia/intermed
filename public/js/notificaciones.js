@@ -124,10 +124,10 @@ function socketManejadores() {
     }
     if ( $( 'td.seleccionado' ).parent().prop( 'id' ) == result.de ) {
       ultimaFecha = $( "#chat .datetime>span" ).last();
-      if ( ultimaFecha.html() != formatfecha( new Date().toLocaleString() ) ) {
-        $( '#chat' ).append( '<li class="clearfix text-center datetime"><span>' + formatfecha( new Date().toLocaleString() ) + '</span></li>' );
+      if ( ultimaFecha.html() != formatfecha( new Date().toLocaleString('en-US') ) ) {
+        $( '#chat' ).append( '<li class="clearfix text-center datetime"><span>' + formatfecha( new Date().toLocaleString('en-US') ) + '</span></li>' );
       }
-      var hora = formathora( new Date().toLocaleString() );
+      var hora = formathora( new Date().toLocaleString('en-US') );
       var ultimoMsg = $( "#chat li" ).last();
       if ( !ultimoMsg.hasClass( 'left' ) ) {
         $( '#chat' ).append( mensajeIzquierda() );
@@ -226,11 +226,11 @@ function socketManejadores() {
       $( '#inboxInputText' ).val( '' );
       //Barra con fecha (dia-mes-año)
       ultimaFecha = $( "#chat .datetime>span" ).last();
-      if ( ultimaFecha.html() != formatfecha( new Date().toLocaleString() ) ) {
-        $( '#chat' ).append( '<li class="clearfix text-center datetime"><span>' + formatfecha( new Date().toLocaleString() ) + '</span></li>' );
+      if ( ultimaFecha.html() != formatfecha( new Date().toLocaleString('en-US') ) ) {
+        $( '#chat' ).append( '<li class="clearfix text-center datetime"><span>' + formatfecha( new Date().toLocaleString('en-US') ) + '</span></li>' );
       }
       //
-      var hora = formathora( new Date().toLocaleString() );
+      var hora = formathora( new Date().toLocaleString('en-US') );
       if ( !ultimoMsg.hasClass( 'right' ) ) {
         $( '#chat' ).append( mensajeDerecha() );
         ultimoMsg = $( "#chat li" ).last();

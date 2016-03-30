@@ -36,7 +36,7 @@ exports.agregaCita = function(object, req, res) {
         paciente_id : req.session.passport.user.Paciente_id,
         servicio_id : object.serviciocita_id,
         usuario_id : object.medico_id,
-        status : true
+        status : 1
     }).then(function(datos) {
         models.Medico.findOne({
           where:{
@@ -970,8 +970,6 @@ exports.detallesCancelacionPaciente = function(object, req, res){
           },
           attributes: ['concepto']
         }).then(function(servicio){
-          console.log('UBICACION: ' + JSON.stringify(ubicacion));
-          console.log('SERVICIO: ' + JSON.stringify(servicio));
           res.status(200).json({
             usuario: usuario,
             ubicacion: ubicacion.nombre,
@@ -1384,7 +1382,6 @@ exports.seleccionaAgendaMedico  =  function(object, req, res)
                   end:  formatearFecha (eventos[i].fechaHoraFin),
                   color : '#FF0000'
               }
-              console.log(eventos[i].fechaHoraInicio + ' ' + formatearTimestampAgenda(eventos[i].fechaHoraInicio))
               resultado.push(horario);
             //}
         }
@@ -1633,15 +1630,21 @@ exports.eventosPorDia = function (object, req, res){
 
 exports.traerAgendaMedico = function (object, req, res){
   object.direccion_id = [];
+  object.direcciones = [];
   if (req.session.passport.user.tipoUsuario == "M"){
     models.Direccion.findAll({
       where: {
         usuario_id: req.session.passport.user.id
       },
-      attributes: ['id']
+      attributes: ['id','nombre'],
+      order: [['principal','DESC']]
     }).then(function(direcciones){
       direcciones.forEach(function(dir){
         object.direccion_id.push(dir.id);
+        object.direcciones.push({
+          id: dir.id,
+          nombre: dir.nombre
+        })
       });
       exports.agendaMedico(object, req, res);
     })
@@ -1660,13 +1663,18 @@ exports.traerAgendaMedico = function (object, req, res){
             attributes: ['id'],
             include: [{
               model: models.Direccion,
-              attributes: ['id']
+              attributes: ['id','nombre'],
+              order: [['principal','DESC']]
             }]
           }]
         }]
       }).then(function(relacion){
         relacion.Medico.Usuario.Direccions.forEach(function (dir){
           object.direccion_id.push(dir.id);
+          object.direcciones.push({
+            id: dir.id,
+            nombre: dir.nombre
+          })
         });
         if (relacion){
           //Secretaria cuenta con permisos para ver agenda
@@ -1774,6 +1782,11 @@ exports.agendaMedico = function (object, req, res){
 
           if (!className[datos[i].direccion_id]){
             className[datos[i].direccion_id] = 'direccion_'+total++;
+            object.direcciones.forEach(function(dir){
+              if (dir.id == datos[i].direccion_id){
+                dir.className = className[datos[i].direccion_id];
+              }
+            });
           }
 
           switch (datos[i].dia) {
@@ -1887,7 +1900,10 @@ exports.agendaMedico = function (object, req, res){
           }
           resultado.push(horario);
         }
-        res.send(resultado);
+        res.status(200).json({
+          result: resultado,
+          direcciones: object.direcciones
+        });
       });
     });
 
@@ -2052,7 +2068,6 @@ exports.cancelarCita = function(object, req, res){
         }
       }]
     }).then(function(agenda){
-      console.log('AGENDA: ' + JSON.stringify(agenda));
       if (object.medico){
         agenda.update({status: 2}).then(function(agenda){
             console.log('Ag: ' + JSON.stringify(agenda));
@@ -2200,6 +2215,18 @@ exports.crearCita = function (object, req, res){
             });
         });
       }
+    });
+  });
+}
+
+exports.cargarCitasMes = function(object, req, res){
+  models.sequelize.query(
+    "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`agenda` where `usuario_id` = "+ req.session.passport.user.id +"  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
+    , { type: models.Sequelize.QueryTypes.SELECT}
+  ).then(function(result) {
+    res.status(200).json({
+      success: false,
+      result: result
     });
   });
 }

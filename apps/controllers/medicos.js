@@ -1111,7 +1111,7 @@ var _this = module.exports = {
           attributes:['id'],
           include:[{
             model: models.MedicoEspecialidad,
-            attributes:['id','subEsp'],
+            attributes:['id','cedula'],
             include:[{
               model: models.Especialidad,
               attributes:['especialidad']
@@ -2261,7 +2261,7 @@ var _this = module.exports = {
           include:[{
             model: models.DatosGenerales
           }]
-        } ],
+        }],
         order:[['fecha','DESC']],
         where: {
           medico_id: req.session.passport.user.Medico_id
@@ -2472,78 +2472,37 @@ var _this = module.exports = {
                 sexo: sexo
               }
 
-              if (object.nombreMedico.toUpperCase().replace(' ','') == nombre.toUpperCase().replace(' ','') && object.paterno.toUpperCase().replace(' ','') == paterno.toUpperCase().replace(' ','') && object.materno.toUpperCase().replace(' ','') == materno.toUpperCase().replace(' ','') && object.genero == sexo){
-                if (object.tipo == resultArray.tipo){
-                  if (object.tipo == "C1"){
-                    models.Medico.update({
-                      cedula: object.cedula,
-                      titulo: resultArray.titulo
-                    },{
-                      where: {
-                        usuario_id: req.session.passport.user.id
-                      }
-                    }).then(function(result){
-                      res.status(200).json({
-                        success:true,
-                        exists: true,
-                        result: resultArray
-                      });
-                    });
-                  } else {
-                    models.MedicoEspecialidad.findOne({
-                      where: {
-                        cedula: object.cedula
-                      }
-                    }).then(function(MedicoEspecialidad){
-                      if (!MedicoEspecialidad){
-                        console.log('Insertar especialidad');
-                        models.Especialidad.findOrCreate({
-                          where:{
-                            especialidad: object.titulo
-                          },
-                          defaults: {
-                            especialidad: object.titulo
-                          }
-                        }).spread(function(especialidad,created){
-                          console.log('Especialidad: ' + JSON.stringify(especialidad));
-                          models.MedicoEspecialidad.create({
-                            medico_id: req.session.passport.user.Medico_id,
-                            cedula: object.cedula,
-                            titulo: resultArray.titulo,
-                            especialidad_id: especialidad.id,
-                            anio: resultArray.anio
-                          });
-                        });
-                        res.status(200).json({
-                          success:true,
-                          exists: true,
-                          result: resultArray
-                        });
-                      } else {
-                        res.status(200).json({
-                          success:false,
-                          exists: true,
-                          repeat: true,
-                          result: resultArray
-                        });
-                      }
-                    });
+              if (!object.nombreMedico){
+                models.Usuario.findOne({
+                  where:{
+                    id: req.session.passport.user.id
+                  },
+                  attributes: ['id'],
+                  include: [{
+                    model: models.DatosGenerales
+                  },{
+                    model: models.Biometrico
+                  },{
+                    model: models.Medico
+                  }]
+                }).then(function(result){
+                  if (result.Biometrico.genero == "M"){
+                    object.genero = 1;
+                  } else if (result.Biometrico.genero == "F"){
+                    object.genero = 2;
                   }
-                } else {
-                  res.status(200).json({
-                    success:false,
-                    exists: true,
-                    tipo: true,
-                    result: resultArray
-                  });
-                }
-              } else {
-                res.status(200).json({
-                  success:false,
-                  exists: true,
-                  result: resultArray
+                  object.nombreMedico = result.DatosGenerale.nombre;
+                  object.paterno = result.DatosGenerale.apellidoP;
+                  object.materno = '';
+                  if ( result.DatosGenerale.nombre && result.DatosGenerale.nombre != ""){
+                    object.materno = result.DatosGenerale.apellidoM;
+                  }
+                  enviarResultadoCedula(object, req, res, resultArray);
                 });
+              } else {
+                enviarResultadoCedula(object, req, res, resultArray);
               }
+
             } else {
               res.status(200).json({
                 success:false,
@@ -2674,6 +2633,100 @@ var _this = module.exports = {
         }
       });
     });
+  },
+
+  getFeedback: function (object, req, res){
+    models.Medico.findOne({
+      where: {
+        usuario_id: req.session.passport.user.id
+      },
+      attributes: ['calificacion']
+    }).then(function(calificacion){
+      models.sequelize.query("SELECT Year(`fecha`) as 'anio', Month(`fecha`) as 'mes', AVG(`higiene`) AS 'higiene',AVG(`puntualidad`) AS 'puntualidad',AVG(`instalaciones`) AS 'instalaciones',AVG(`tratoPersonal`) AS 'tratoPersonal',AVG(`costo`) AS 'costo',AVG(`satisfaccionGeneral`) AS 'satisfaccionGeneral' FROM `intermed`.`preguntas-medico` where `medico_id` = "+ req.session.passport.user.Medico_id +" group by year(`fecha`),month(`fecha`) order by year(`fecha`) ASC,month(`fecha`) ASC;", { type: models.sequelize.QueryTypes.SELECT})
+      .then(function(promedios) {
+        models.sequelize.query("SELECT COUNT(`satisfaccionGeneral`) as 'total', `satisfaccionGeneral` as 'porcentaje' FROM `intermed`.`preguntas-medico`  where `medico_id` = "+ req.session.passport.user.Medico_id +" GROUP BY `satisfaccionGeneral` ORDER BY `satisfaccionGeneral` ASC;", { type: models.sequelize.QueryTypes.SELECT})
+        .then(function(general) {
+          res.status(200).json({calificacion: calificacion, promedios:promedios, general: general})
+        });
+      })
+    });
   }
 
+}
+
+function enviarResultadoCedula(object,req,res,resultArray){
+  var nombre = resultArray.nombre;
+  var paterno = resultArray.paterno;
+  var materno = resultArray.materno;
+
+  if (object.nombreMedico.toUpperCase().replace(' ','') == nombre.toUpperCase().replace(' ','') && object.paterno.toUpperCase().replace(' ','') == paterno.toUpperCase().replace(' ','') && object.materno.toUpperCase().replace(' ','') == materno.toUpperCase().replace(' ','') && object.genero == resultArray.sexo){
+    if (object.tipo == resultArray.tipo){
+      if (object.tipo == "C1"){
+        models.Medico.update({
+          cedula: object.cedula,
+          titulo: resultArray.titulo
+        },{
+          where: {
+            usuario_id: req.session.passport.user.id
+          }
+        }).then(function(result){
+          res.status(200).json({
+            success:true,
+            exists: true,
+            result: resultArray
+          });
+        });
+      } else {
+        models.MedicoEspecialidad.findOne({
+          where: {
+            cedula: object.cedula
+          }
+        }).then(function(MedicoEspecialidad){
+          if (!MedicoEspecialidad){
+            models.Especialidad.findOrCreate({
+              where:{
+                especialidad: object.titulo
+              },
+              defaults: {
+                especialidad: object.titulo
+              }
+            }).spread(function(especialidad,created){
+              models.MedicoEspecialidad.create({
+                medico_id: req.session.passport.user.Medico_id,
+                cedula: object.cedula,
+                titulo: resultArray.titulo,
+                especialidad_id: especialidad.id,
+                anio: resultArray.anio
+              });
+            });
+            res.status(200).json({
+              success:true,
+              exists: true,
+              result: resultArray
+            });
+          } else {
+            res.status(200).json({
+              success:false,
+              exists: true,
+              repeat: true,
+              result: resultArray
+            });
+          }
+        });
+      }
+    } else {
+      res.status(200).json({
+        success:false,
+        exists: true,
+        tipo: true,
+        result: resultArray
+      });
+    }
+  } else {
+    res.status(200).json({
+      success:false,
+      exists: true,
+      result: resultArray
+    });
+  }
 }

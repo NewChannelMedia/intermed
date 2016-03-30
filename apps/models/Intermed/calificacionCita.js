@@ -7,9 +7,6 @@ module.exports = function ( sequelize, DataTypes ) {
       autoIncrement: true,
       primaryKey: true
     },
-    satisfaccion: {
-      type: DataTypes.INTEGER
-    },
     comentarios: {
       type: DataTypes.STRING
     },
