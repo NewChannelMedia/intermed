@@ -3945,7 +3945,7 @@ function DetallesCitaPaciente(agenda_id){
     var result = null;
     $.ajax( {
       async: false,
-      url: '/agenda/detalleCita',
+      url: '/agenda/detalleCitaPac',
       type: 'POST',
       dataType: "json",
       cache: false,
@@ -3953,6 +3953,7 @@ function DetallesCitaPaciente(agenda_id){
         'agenda_id': agenda_id
       },
       success: function ( data ) {
+        console.log('Data.result: ' + JSON.stringify(data));
         result = data.result;
         imagenUrl = data.result.Usuario.urlFotoPerfil;
         if (!data.result.Usuario.DatosGenerale.apellidoM) data.result.Usuario.DatosGenerale.apellidoM = '';

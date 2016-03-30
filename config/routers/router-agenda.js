@@ -55,8 +55,8 @@ module.exports = function (object){
     intermed.callController('agenda','detallesCancelacionMedico', req.body, req, res);
   });
 
-  app.post('/agenda/detalleCita', function (req, res){
-    intermed.callController('agenda','detalleCita', req.body, req, res);
+  app.post('/agenda/detalleCitaPac', function (req, res){
+    intermed.callController('agenda','detalleCitaPac', req.body, req, res);
   });
 
   app.post('/cita/calificar', function (req, res){

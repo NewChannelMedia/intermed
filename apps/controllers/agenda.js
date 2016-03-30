@@ -1010,7 +1010,7 @@ exports.detallesCancelacionMedico = function(object, req, res){
   }
 };
 
-exports.detalleCita = function(object, req, res){
+exports.detalleCitaPac = function(object, req, res){
   try{
     models.Agenda.findOne({
       where:{
