@@ -1913,6 +1913,15 @@ footer .logoIntermed {
     background-color: #6a808e!important;
 }
 
+.mediaHora.cancelada {
+    background-color: lightslategray;
+}
+
+.mediaHora.cancelada .media-right {
+    color: #952323;
+    font-weight: bold;
+}
+
 /*
 
 .horas {

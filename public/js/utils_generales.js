@@ -1705,6 +1705,9 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
           var antElement = null;
           for (i = 1; i <bloques;i++){
             newElement.addClass('ocupada').addClass('bloque');
+            if (res.status == 2){
+              newElement.addClass('cancelada');
+            }
             newElement.find('.mediaHoraInterno').on('click',function(){
               detalleCitaSecretaria(res.id);
             });
@@ -1725,6 +1728,10 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
           var ubicacion = res.Direccion.nombre;
           element.find('.ubicacion').text(ubicacion);
           element.find('.media').removeClass('hidden');
+          if (res.status == 2){
+            element.find('.media-right').text('Cancelada');
+            element.addClass('cancelada');
+          }
           element.find('.mediaHoraInterno').on('click',function(){
             detalleCitaSecretaria(res.id);
           });
@@ -1798,6 +1805,7 @@ function limpiarAgendaDia(){
                       <h4 class="h77-boldcond s20 noMargin white-c nombre"></h4>
                       <h4 class="h75-bold s15 noMargin white-c"><small class="ubicacion"></small></h4>
                     </div>
+                    <div class="media-right text-right s20 "></div>
                   </div>
                 </div>
               </div>

@@ -28,6 +28,9 @@ module.exports = function ( sequelize, DataTypes ) {
         MedicoSecretaria.belongsTo( models.Secretaria, {
           foreignKey: 'secretaria_id'
         } )
+        MedicoSecretaria.hasOne( models.MedicoSecretariaPermisos, {
+          foreignKey: 'medico_secretarias_id'
+        }  );
       }
     },
     timestamps: false,
