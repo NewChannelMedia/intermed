@@ -3289,6 +3289,12 @@ td.fc-day.fc-widget-content {
   margin: 0 auto;
 }
 
+.k-widget.clear *{
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
 @media (min-width: 425px) and (max-width: 767px) {
   .k-widget {
     width: 400px;

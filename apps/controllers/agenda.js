@@ -1010,7 +1010,7 @@ exports.detallesCancelacionMedico = function(object, req, res){
   }
 };
 
-exports.detalleCita = function(object, req, res){
+exports.detalleCitaPac = function(object, req, res){
   try{
     models.Agenda.findOne({
       where:{
@@ -1212,10 +1212,9 @@ exports.obtenerCitasPropias = function(object, req, res){
             paciente_id: req.session.passport.user.Paciente_id,
             fechaHoraInicio: {
               $gte: getDateTime()
-            }
+            },
+            status: 1
           },
-          limit: object.limit,
-          offset: object.offset,
           order: [['fechaHoraInicio','ASC']],
           include: [{
             model: models.Usuario,
@@ -1603,7 +1602,8 @@ exports.eventosPorDia = function (object, req, res){
   models.Agenda.findAll({
     where:{
       usuario_id: req.session.passport.user.id,
-      fechaHoraInicio: { $gte: object.fecha, $lt: object.fin }
+      fechaHoraInicio: { $gte: object.fecha, $lt: object.fin },
+      status:{$gt: 0}
     },
     include: [{
       model: models.Paciente,
@@ -1621,10 +1621,20 @@ exports.eventosPorDia = function (object, req, res){
       attributes:['nombre']
     }]
   }).then(function(result){
-    res.status(200).json({
-      success:true,
-      result: result
-    })
+    var dia = new Date(object.fecha).getDay();
+    models.Horarios.findAll({
+      where: {
+        dia: dia
+      },
+      include :[{model: models.Direccion, where : { usuario_id: req.session.passport.user.id },attributes: ['id']}]
+    }).then(function(horarios) {
+        res.status(200).json({
+          success:true,
+          result: result,
+          horarios: horarios
+        })
+    });
+
   })
 }
 
@@ -2101,34 +2111,54 @@ exports.cancelarCita = function(object, req, res){
               where: {
                 id: req.session.passport.user.Secretaria_id
               }
+            },{
+              model: models.MedicoSecretariaPermisos,
+              where: {
+                permiso: 1,
+                secretaria_permiso_id: 4
+              }
             }]
           }]
         }]
       }]
     }).then(function(agenda){
-      console.log('AGENDA: ' + JSON.stringify(agenda));
-      if (object.medico){
-        agenda.update({status: 2}).then(function(agenda){
-            console.log('Ag: ' + JSON.stringify(agenda));
-        });
-      } else {
-        agenda.update({status: 0}).then(function(agenda){
-            console.log('Ag: ' + JSON.stringify(agenda));
-        });
-      }
-      console.log('Notificaciones');
+      if (agenda){
+        if (object.medico){
+          agenda.update({status: 2});
+        } else {
+          agenda.update({status: 0});
+        }
+        console.log('Falta agregar notificaciones');
         res.status(200).json({
-          success: true,
-          result:1
+          success: true
         })
+      } else {
+        res.status(200).json({
+          success: false,
+          error: 301
+        })
+      }
     });
   }
 }
 
 exports.serviciosPorHorario = function (object, req, res){
   var day = new Date(object.inicio).getDay();
-  object.inicio = new Date(object.inicio).toISOString();
-  object.inicio = object.inicio.split('T')[1].split(':00.00')[0]
+  if (object.kendo){
+    var horas = 0;
+    if (object.inicio.search('PM')>0){
+      horas = 12;
+    }
+    object.inicio = object.inicio.split(', ')[1].split(':');
+    object.inicio[0] = (parseInt(object.inicio[0])+horas).toString();
+    if (object.inicio[0].length == 1){
+      object.inicio[0] = '0'+object.inicio[0];
+    }
+    object.inicio = object.inicio[0]+':'+object.inicio[1];
+  } else {
+    object.inicio = new Date(object.inicio).toISOString();
+    object.inicio = object.inicio.split('T')[1].split(':00.00')[0];
+  }
   models.CatalogoServicios.findAll({
     include: [{
       model: models.Direccion,
@@ -2165,43 +2195,101 @@ exports.serviciosPorHorario = function (object, req, res){
 
 
 exports.crearCita = function (object, req, res){
-  models.Medico.findOne({
-    where: models.sequelize.or(
-      { id: object.medico_id },
-      { id: req.session.passport.user.Medico_id }
-    )
-  }).then(function(medico){
-    models.CatalogoServicios.findOne({
+  if (req.session.passport.user.tipoUsuario == "M"){
+    models.Medico.findOne({
       where: {
-        id: object.servicio_id
+        id: req.session.passport.user.Medico_id
       }
-    }).then(function(servicio){
-      if (object.paciente_id){
-        models.Agenda.create({
-          usuario_id: medico.usuario_id,
-          paciente_id: object.paciente_id,
-          fechaHoraInicio: object.inicio,
-          fechaHoraFin: object.fin,
-          direccion_id: servicio.direccion_id,
-          servicio_id: servicio.id,
-          status:1
-        }).then(function(result){
-          res.status(200).json({
-            success: true,
-            result: result
-          })
+    }).then(function(medico){
+      models.CatalogoServicios.findOne({
+        where: {
+          id: object.servicio_id
+        }
+      }).then(function(servicio){
+        if (object.kendo){
+          object.inicio = object.inicio.replace(' ','T')+'.000Z';
+          object.fin = object.fin.replace(' ','T')+'.000Z';
+        }
+        if (object.paciente_id){
+          models.Agenda.create({
+            usuario_id: medico.usuario_id,
+            paciente_id: object.paciente_id,
+            fechaHoraInicio: object.inicio,
+            fechaHoraFin: object.fin,
+            direccion_id: servicio.direccion_id,
+            servicio_id: servicio.id,
+            status:1
+          }).then(function(result){
+            res.status(200).json({
+              success: true,
+              result: result
+            })
+          });
+        } else {
+          //Crear paciente temporal
+          models.PacienteTemporal.create({
+            nombres: object.nombre,
+            apellidos: object.apellido,
+            correo: object.correo,
+            celular: object.celular
+          }).then(function(PacienteTemporal){
+              models.Agenda.create({
+                usuario_id: medico.usuario_id,
+                paciente_temporal_id: PacienteTemporal.id,
+                fechaHoraInicio: object.inicio,
+                fechaHoraFin: object.fin,
+                direccion_id: servicio.direccion_id,
+                servicio_id: servicio.id,
+                status:1
+              },{
+                logging: console.log
+              }).then(function(result){
+                res.status(200).json({
+                  success: true,
+                  result: result
+                })
+              });
+          });
+        }
+      });
+    });
+  } else {
+    models.Medico.findOne({
+      where: { id: object.medico_id },
+      include: [{
+        model: models.MedicoSecretaria,
+        where: {
+          secretaria_id: req.session.passport.user.Secretaria_id
+        },
+        include: [{
+          model: models.MedicoSecretariaPermisos,
+          where: {
+            permiso: 1,
+            secretaria_permiso_id: 3
+          }
+        }]
+      }]
+    }).then(function(medico){
+      if (!medico){
+        //Acceso denegado (no tiene permiso para agregar citas al médico)
+        res.status(200).json({
+          success: false,
+          result: 301
         });
       } else {
-        //Crear paciente temporal
-        models.PacienteTemporal.create({
-          nombres: object.nombre,
-          apellidos: object.apellido,
-          correo: object.correo,
-          celular: object.celular
-        }).then(function(PacienteTemporal){
+        models.CatalogoServicios.findOne({
+          where: {
+            id: object.servicio_id
+          }
+        }).then(function(servicio){
+          if (object.kendo){
+            object.inicio = object.inicio.replace(' ','T')+'.000Z';
+            object.fin = object.fin.replace(' ','T')+'.000Z';
+          }
+          if (object.paciente_id){
             models.Agenda.create({
               usuario_id: medico.usuario_id,
-              paciente_temporal_id: PacienteTemporal.id,
+              paciente_id: object.paciente_id,
               fechaHoraInicio: object.inicio,
               fechaHoraFin: object.fin,
               direccion_id: servicio.direccion_id,
@@ -2213,15 +2301,53 @@ exports.crearCita = function (object, req, res){
                 result: result
               })
             });
+          } else {
+            //Crear paciente temporal
+            models.PacienteTemporal.create({
+              nombres: object.nombre,
+              apellidos: object.apellido,
+              correo: object.correo,
+              celular: object.celular
+            }).then(function(PacienteTemporal){
+                models.Agenda.create({
+                  usuario_id: medico.usuario_id,
+                  paciente_temporal_id: PacienteTemporal.id,
+                  fechaHoraInicio: object.inicio,
+                  fechaHoraFin: object.fin,
+                  direccion_id: servicio.direccion_id,
+                  servicio_id: servicio.id,
+                  status:1
+                },{
+                  logging: console.log
+                }).then(function(result){
+                  res.status(200).json({
+                    success: true,
+                    result: result
+                  })
+                });
+            });
+          }
         });
       }
     });
-  });
+  }
 }
 
 exports.cargarCitasMes = function(object, req, res){
   models.sequelize.query(
-    "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`agenda` where `usuario_id` = "+ req.session.passport.user.id +"  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
+    "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`agenda` where `status` > 0 && `usuario_id` = "+ req.session.passport.user.id +"  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
+    , { type: models.Sequelize.QueryTypes.SELECT}
+  ).then(function(result) {
+    res.status(200).json({
+      success: false,
+      result: result
+    });
+  });
+}
+
+exports.cargarCitasMesPac = function(object, req, res){
+  models.sequelize.query(
+    "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`agenda` where `status` > 0 && `paciente_id` = "+ req.session.passport.user.Paciente_id +" AND DATE(`fechaHoraInicio`) >= NOW()  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
     , { type: models.Sequelize.QueryTypes.SELECT}
   ).then(function(result) {
     res.status(200).json({

@@ -91,4 +91,9 @@ module.exports = function (object){
   app.post('/session/tipo', function (req, res){
     intermed.callController( 'session', 'getSessionType', req.body, req, res );
   });
+
+  app.post( '/logout', function ( req, res, next ) {
+    routeLife( 'main', 'main', hps );
+    intermed.callController( 'usuarios', 'logout', {}, req, res )
+  } );
 }

@@ -3945,7 +3945,7 @@ function DetallesCitaPaciente(agenda_id){
     var result = null;
     $.ajax( {
       async: false,
-      url: '/agenda/detalleCita',
+      url: '/agenda/detalleCitaPac',
       type: 'POST',
       dataType: "json",
       cache: false,
@@ -3953,6 +3953,7 @@ function DetallesCitaPaciente(agenda_id){
         'agenda_id': agenda_id
       },
       success: function ( data ) {
+        console.log('Data.result: ' + JSON.stringify(data));
         result = data.result;
         imagenUrl = data.result.Usuario.urlFotoPerfil;
         if (!data.result.Usuario.DatosGenerale.apellidoM) data.result.Usuario.DatosGenerale.apellidoM = '';
@@ -4719,7 +4720,7 @@ function agregarCitaPorServicio(servicios){
 }
 
 
-function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id){
+function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id, kendo){
   //Modal para seleccionar paciente o introducir uno que no existe
 
   secondaryBootbox = bootbox.dialog({
@@ -4728,13 +4729,13 @@ function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id){
     className: 'Intermed-Bootbox',
     title: '<span class="title text-center" style="font-weight:bold">¿Quién es el paciente?</span>',
     message:
-      '<form method="post" onsubmit="return registrarCitaPacienteTemporal('+inicio+','+fin+','+medico+','+servicio_id+')">'+
+      '<form method="post" onsubmit="return registrarCitaPacienteTemporal('+inicio+','+fin+','+medico+','+servicio_id+',null,'+kendo+')">'+
           '<div class="row">'+
             '<div class="col-md-6">'+
                 '<div class="input-group">'+
-                  '<input type="text" id="inputBusquedaPaciente" class="form-control" placeholder="Encuentralo en Intermed..."  onchange="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\','+inicio+','+fin+','+medico+','+servicio_id+')">'+
+                  '<input type="text" id="inputBusquedaPaciente" class="form-control" placeholder="Encuentralo en Intermed..."  onchange="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\','+inicio+','+fin+','+medico+','+servicio_id+','+kendo+')">'+
                   '<span class="input-group-btn">'+
-                    '<button type="button" class="btn btn-secondary" type="button"  onclick="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\','+inicio+','+fin+','+medico+','+servicio_id+')">Buscar</button>'+
+                    '<button type="button" class="btn btn-secondary" type="button"  onclick="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\','+inicio+','+fin+','+medico+','+servicio_id+','+kendo+')">Buscar</button>'+
                   '</span>'+
                 '</div>'+
                 '<ul class="list-group resultadosBusquedaPaciente">'+
@@ -4792,7 +4793,7 @@ function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id){
         '</form>'
   });
 
-  BuscarPaciente('inputBusquedaPaciente','resultadosBusquedaPaciente',inicio,fin,medico,servicio_id);
+  BuscarPaciente('inputBusquedaPaciente','resultadosBusquedaPaciente',inicio,fin,medico,servicio_id,kendo);
 }
 
 function verDetalleComentario(comentario_id){
@@ -5041,3 +5042,101 @@ function cancelarCita(id)
     box.modal('show');
 }
 */
+
+
+function editarPerfilSecretaria(){
+  bootbox.dialog({
+    onEscape: function () {
+      bootbox.hideAll();
+  },
+  className: 'Intermed-Bootbox',
+  title: '<span class="title">Editar información personal</span>',
+  backdrop: true,
+  /*size:'large',*/
+  message:
+  '<div class="tab-content tabBootBox">'+
+    '<div class="tab-pane active" role="tabpanel" id="tabPerfil">'+
+      '<div class="row">'+
+        '<div class="col-lg-5 col-md-5 col-sm-5 col-xs-12">'+
+          '<div class="profilePic header-profile-photo-link center-block">'+
+            '<img id="imgPerfilMedic" src="" width="200" height="200" class="img-rounded fotoPerfil">'+
+            '<label for="imageFile">Cambiar Imagen</label>'+
+            '<input type="file" id="imageFile" style="display:none" onchange="seleccionarImagenPerfil(this)">'+
+          '</div>'+
+        '</div>'+
+        '<div class="col-lg-7 col-md-7 col-sm-7 col-xs-12">'+
+          '<div class="form-group">'+
+            '<label>Nombre:</label>'+
+            '<input class="form-control" placeholder="Nombre" id="nombrePersonal">'+
+          '</div>'+
+          '<div class="form-group">'+
+            '<div class="row">'+
+              '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+                '<label>Apellido:</label>'+
+                '</div>'+
+              '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'+
+                '<input class="form-control" placeholder="Apellido paterno" id="appPatPersonal">'+
+              '</div>'+
+              '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'+
+                '<input class="form-control col-lg-6 col-md-6 col-sm-6 col-xs-6" placeholder="Apellido materno" id="appMatPersonal">'+
+              '</div>'+
+            '</div>'+
+            '<div class="form-group">'+
+              '<div class="row">'+
+                '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+                  '<label>Correo electrónico: </label><span style="font-size:110%" id="correoElectSec"></span>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+      '</div>'+
+
+      '<div class="row">'+
+        '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+            '<div class="form-group">'+
+              '<div class="row">'+
+                '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+                  '<label>Ubicación:</label>'+
+                '</div>'+
+                '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'+
+                  '<select class="form-control" id="estadosSecr" onchange="cargarCiudades(\'#estadosSecr\')"></select>'+
+                '</div>'+
+                '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'+
+                  '<select class="form-control" id="selectCiudad"></select>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="row footerBootbox">'+
+        '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 pull-right">'+
+          '<button class="btn btn-success btn-lg btn-block" onclick="guardarInformacionSecretaria()">Guardar cambios</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    '<div class="tab-pane" role="tabpanel" id="tabImagen">'+
+      '<div class="row" id="CambiarFotoPerfil" name="CambiarFotoPerfil">'+
+        '<div class="col-md-12">'+
+          '<form>'+
+            '<div class="" style="display: flex;align-items: center;justify-content: center;flex-direction: column;">'+
+              '<input type="hidden" value="" name="base64file" id="base64file">'+
+              '<div class="col-md-12" id="contenedorFoto" class="text-center" style="width: auto;margin: auto"></div>'+
+              '<canvas id="canvas" height="300" width="300" style="display: none"></canvas>'+
+            '</div>'+
+          '</form>'+
+        '</div>'+
+      '</div>'+
+      '<div class="row footerBootbox">'+
+        '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'+
+          '<input type="button" class="btn btn-danger btn-lg btn-block" id="btnRegMed" value="Cancelar" onclick="$(\ #tabPerfil\ ).addClass(\ active\ );$(\ #tabImagen\ ).removeClass(\ active\ );">'+
+        '</div>'+
+        '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'+
+          '<input type="button" class="btn btn-success btn-lg btn-block" id="btnRegMed" value="Guardar" onclick="guardarImagenPerfil();">'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+  '</div>'
+  });
+  loadDatosSecretaria();
+}

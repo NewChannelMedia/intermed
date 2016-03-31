@@ -108,6 +108,26 @@
                         <li class="hidden-xs">
                           <span class="white-c">|</span>
                         </li>
+                        <li class="dropdown">
+                          <a class="dropdown-toggle white-c openMobileMenu" data-toggle="dropdown" href="#" role="button">
+                            <span class="glyphicon glyphicon-search"></span>
+                          </a>
+                          <ul class="dropdown-menu notificationDropdown dropdown-menu-right" aria-labelledby="dLabel">
+                            <li>
+                              <h4>Encuentra médicos al instante: </h4>
+                              <form method="POST" action="{{base_url}}buscar" onsubmit="return iniciarBusqueda()">
+                                <div class="input-group navbar-search">
+                                  <input type="text" class="form-control input-sm ui-autocomplete-input" id="buscadorInternoDropDown" name="nombreMed" placeholder="Busca tu medico aquí" required="" autocomplete="off">
+                                  <span class="input-group-btn">
+                                    <button class="btn btn-default bg-blue btn-sm" type="submit">
+                                      <span class="glyphicon glyphicon-search"></span>
+                                    </button>
+                                  </span>
+                                </div>
+                              </form>
+                            </li>
+                          </ul>
+                        </li>
                         <li class="hidden-xs">
                           <a class="white-c" href="{{base_url}}secretaria">
                             <span class="white-c proicon proicon-like-beat"></span>
@@ -136,7 +156,7 @@
                           <a class="white-c" href="" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-cog"></span></a>
                           <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dLabel">
                             <li><a href="{{base_url}}configuraciones">&nbsp;Configuración</a></li>
-                            <li><a href="{{base_url}}logout">&nbsp;Salir</a></li>
+                            <li><a onclick="logout()">&nbsp;Salir</a></li>
                           </ul>
                         </li>
                         <li class="dropdown hidden-lg hidden-md hidden-sm">
@@ -167,7 +187,7 @@
                               <a class="text-left" href="{{base_url}}configuraciones">Configuración</a>
                             </li>
                             <li>
-                              <a class="text-left" href="{{base_url}}logout">Salir</a>
+                              <a class="text-left" onclick="logout()">Salir</a>
                             </li>
                           </ul>
                         </li>
@@ -216,7 +236,7 @@
                           </ul>
                         </li>
                         <li>
-                          <a class="white-c" href="{{base_url}}logout">
+                          <a class="white-c" onclick="logout()">
                           <span class="glyphicon glyphicon-log-out"></span></a>
                         </li>
                       {{/ifTipoPaciente}}
@@ -249,7 +269,7 @@
                           </a>
                         </li>
                         <li class="hidden-xs">
-                          <a class="white-c" href="/logout">
+                          <a class="white-c" onclick="logout()">
                             <span class="glyphicon glyphicon-log-out"></span>
                           </a>
                         </li>
@@ -270,7 +290,7 @@
                               </a>
                             </li>
                             <li>
-                              <a class="text-right" href="{{base_url}}nlogout">
+                              <a class="text-right" onclick="logout()">
                                 Salir
                               </a>
                             </li>
@@ -289,7 +309,7 @@
                             <span class="white-c">|</span>
                           </li>
                           <li>
-                            <a class="white-c" href="{{base_url}}logout">
+                            <a class="white-c" onclick="logout()">
                               <span class="glyphicon glyphicon-log-out"></span>
                             </a>
                           </li>

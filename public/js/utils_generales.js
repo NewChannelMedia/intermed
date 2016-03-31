@@ -1254,6 +1254,27 @@ $( document ).ready( function () {
     cargarListaEspCol( $( '#usuarioPerfil' ).val() ,'P');
     cargarCitasPaciente();
 
+    var today = new Date();
+
+    var events = [];
+    $.ajax( {
+      url: '/agenda/cargarCitasMesPaciente',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      async: false,
+      success: function ( data ) {
+        events = [];
+        data.result.forEach(function(res){
+          var fecha = res.FECHA.split('T')[0].split('-');
+          events.push(new Date(parseInt(fecha[0]), parseInt(fecha[1])-1, parseInt(fecha[2])).getTime());
+        });
+      },
+      error: function ( jqXHR, textStatus, err ) {
+        events = [];
+      }
+    } );
+
     $("#calendar").kendoCalendar({
       culture: 'es-MX',
       start: "day",
@@ -1340,48 +1361,8 @@ $( document ).ready( function () {
     $('#mesFecha').text(meses[date.getMonth()]);
     $('#anioFecha').text(date.getFullYear());
 
-    var today = new Date();
-    var events = [];
-    $.ajax( {
-      url: '/agenda/cargarCitasMes',
-      type: 'POST',
-      dataType: "json",
-      cache: false,
-      async: false,
-      success: function ( data ) {
-        events = [];
-        data.result.forEach(function(res){
-          var fecha = res.FECHA.split('T')[0].split('-');
-          events.push(new Date(parseInt(fecha[0]), parseInt(fecha[1])-1, parseInt(fecha[2])).getTime());
-        });
-      },
-      error: function ( jqXHR, textStatus, err ) {
-        events = [];
-      }
-    } );
+    marcarEventosCalendario();
 
-    $("#calendar").kendoCalendar({
-      culture: 'es-MX',
-      start: "day",
-      depth: "decade",
-      value: today,
-      dates: events,
-      month: {
-        // template for dates in month view
-        content: '# if ($.inArray(+data.date, data.dates) != -1) { #' +
-                    '<div class="' +
-                       '# if (data.value) { #' +
-                           "dayEvent" +
-                       '# } else { #' +
-                           "day" +
-                       '# } #' +
-                    '">#= data.value #</div>' +
-                 '# } else { #' +
-                 '#= data.value #' +
-                 '# } #'
-      },
-      footer: false
-    });
     var kendoCalendar = $("#calendar").data("kendoCalendar");
       kendoCalendar.value(new Date());
       var fechaInicio = new Date().toISOString().split('T')[0] + ' 00:00:00';
@@ -1391,9 +1372,6 @@ $( document ).ready( function () {
         var value = new Date(this.current());
         var inicio = new Date(value.getFullYear(), value.getMonth(),1).toISOString().split('T')[0];
         var fin = new Date(value.getFullYear(), value.getMonth(), new Date(value.getFullYear(),value.getMonth()+1, 0).getDate()).toISOString().split('T')[0];
-        console.log('INICIO: ' +  inicio);
-        console.log('FIN: ' +  fin);
-
       });
       kendoCalendar.bind("change", function() {
         //aqui cargamos los eventos de ese dia en la lista de la derecha
@@ -1448,6 +1426,55 @@ $( document ).ready( function () {
     getFeedback();
   }
 } );
+
+function marcarEventosCalendario(){
+  var today = new Date();
+  if ($("#calendar").data("kendoCalendar")){
+    today = $("#calendar").data("kendoCalendar").value();
+  }
+  $("#calendar").html('');
+  var events = [];
+  $.ajax( {
+    url: '/agenda/cargarCitasMes',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    async: false,
+    success: function ( data ) {
+      events = [];
+      data.result.forEach(function(res){
+        var fecha = res.FECHA.split('T')[0].split('-');
+        events.push(new Date(parseInt(fecha[0]), parseInt(fecha[1])-1, parseInt(fecha[2])).getTime());
+      });
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      events = [];
+    }
+  } );
+
+  $("#calendar").kendoCalendar({
+    culture: 'es-MX',
+    start: "day",
+    depth: "decade",
+    value: today,
+    dates: events,
+    month: {
+      // template for dates in month view
+      content: '# if ($.inArray(+data.date, data.dates) != -1) { #' +
+                  '<div class="' +
+                     '# if (data.value) { #' +
+                         "dayEvent" +
+                     '# } else { #' +
+                         "day" +
+                     '# } #' +
+                  '">#= data.value #</div>' +
+               '# } else { #' +
+               '#= data.value #' +
+               '# } #'
+    },
+    footer: false
+  });
+}
 
 function getFeedback(tipo){
     $.ajax( {
@@ -1646,18 +1673,51 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
     if (data.success){
       var contenido = '';
       limpiarAgendaDia();
+      data.horarios.forEach(function(horario){
+        var horaInicio = horario.horaInicio.split(':');
+        horaInicio[0] = parseInt(horaInicio[0]);
+        var horaFin = horario.horaFin.split(':');
+        while ((parseInt(horaInicio[0]) < parseInt(horaFin[0])) || (parseInt(horaInicio[0]) <= parseInt(horaFin[0]) && parseInt(horaInicio[1])<parseInt(horaFin[1]))){
+          $('.mediaHora.'+horaInicio[0] +'-'+horaInicio[1]).removeClass('noDisponible');
+          if (parseInt(horaInicio[1]) == 45){
+            horaInicio[1] = '00';
+            horaInicio[0] = parseInt(horaInicio)+1;
+          } else {
+            horaInicio[1] = parseInt(horaInicio[1])+15;
+          }
+        }
+      });
       data.result.forEach(function(res){
           var hora = res.fechaHoraInicio.split('T')[1].split(':00.00')[0].replace(':','-');
+          var horaFin = res.fechaHoraFin.split('T')[1].split(':00.00')[0].replace(':','-');
           if (hora.substring(0,1) == "0"){
             hora = hora.substring(1,5);
           }
           var element = $('.mediaHora.'+hora);
           element.addClass('ocupada').addClass('consulta');
           element.find('.glyphicon').addClass('glyphicon-user');
-          /*
-            if cita icon=glyphicon-user clase = consulta
-            else if evento icon= glyphicon-bookmark clase = evento
-          */
+
+          var a = new Date(res.fechaHoraFin);
+          var b = new Date(res.fechaHoraInicio);
+          var bloques = ((a-b)/60000)/15;
+
+          var newElement = element.next();
+          var antElement = null;
+          for (i = 1; i <bloques;i++){
+            newElement.addClass('ocupada').addClass('bloque');
+            if (res.status == 2){
+              newElement.addClass('cancelada');
+            }
+            newElement.find('.mediaHoraInterno').on('click',function(){
+              detalleCitaSecretaria(res.id);
+            });
+            antElement = newElement;
+            newElement = newElement.next();
+            if (!newElement[0]){
+              newElement = antElement.parent().parent().next().find('.mediaHora').first();
+            }
+          }
+
           var nombre = '';
           if (res.PacienteTemporal){
             nombre = res.PacienteTemporal.nombres + ' ' + res.PacienteTemporal.apellidos;
@@ -1668,10 +1728,31 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
           var ubicacion = res.Direccion.nombre;
           element.find('.ubicacion').text(ubicacion);
           element.find('.media').removeClass('hidden');
-          element.find('.media').on('click',function(){
+          if (res.status == 2){
+            element.find('.media-right').text('Cancelada');
+            element.addClass('cancelada');
+          }
+          element.find('.mediaHoraInterno').on('click',function(){
             detalleCitaSecretaria(res.id);
           });
 
+      });
+
+      $('.mediaHora').not('.ocupada').not('.noDisponible').on('click',function(){
+        if ($('#agendarCitaOficina').hasClass('agregar')){
+          var clases = $(this).attr("class").split(' ');
+          var horario;
+          clases.forEach(function(clase){
+            if (clase.split('-')[1]){
+              horario = clase.split('-')[0] +':'+clase.split('-')[1]
+            }
+          });
+          //2016-03-30T17:29:12.860Z8:00
+          var clase = parseInt(horario.split(':')[0]) + '-' + horario.split(':')[1];
+          var date = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0];
+          var fecha = new Date(parseInt(date.split('-')[0]),parseInt(date.split('-')[1])-1,parseInt(date.split('-')[2]),parseInt(horario.split(':')[0]),parseInt(horario.split(':')[1]))
+          seleccionarServicioCitaOficina(fecha.getTime(),fecha,clase);
+        }
       });
 
     }
@@ -1702,9 +1783,9 @@ function limpiarAgendaDia(){
         if (minutos.length == 1){
           minutos += '0';
         }
-        contenido += `<a role="button" class="row mediaHora `+ hora +`-`+ minutos +`">
+        contenido += `<a role="button" class="row mediaHora noDisponible `+ hora +`-`+ minutos +`">
           <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">
-            <div class="mediaHoraInterno">
+            <div class="mediaHoraInterno tiempo">
               <div class="body-container">
                 <div class="center-content">
                   <span class="lbl-mediahora h77-boldcond">`+ hora +`:`+ minutos +`</span>
@@ -1724,6 +1805,7 @@ function limpiarAgendaDia(){
                       <h4 class="h77-boldcond s20 noMargin white-c nombre"></h4>
                       <h4 class="h75-bold s15 noMargin white-c"><small class="ubicacion"></small></h4>
                     </div>
+                    <div class="media-right text-right s20 "></div>
                   </div>
                 </div>
               </div>
@@ -2571,57 +2653,11 @@ function autoCompleteAseg(inputId){
 }
 
 function cargarCitasPaciente(offset, element){
-    var limit = 4;
-    $('.citaPac').removeClass('hidden').removeClass('hidden').removeClass('active');
-
-    if (element){
-      $(element).parent().addClass('active');
-    }
-    if (offset === 0){
-      $('.citaPac.prev').addClass('hidden');
-    }
-    if ($('.citaPac').not('.next').last().text() == $(element).text()){
-      $('.citaPac.next').addClass('hidden');
-    }
-
-    if (!offset && offset !== 0){
-      //Calcular paginador
-      $.ajax({
-        async: false,
-        url: '/ag/private/count',
-        type: 'POST',
-        dataType: "json",
-        cache: false,
-        success: function ( data ) {
-          var contenido = '';
-          var paginas = Math.ceil(parseInt(data.result)/limit);
-          if (paginas>1){
-              contenido = '<li class="citaPac prev hidden"><a style="border:none;background-color:rgba(0,0,0,0)" onclick="cargarCitasPacientePrev()">&laquo;</a></li>';
-              for (var i = 0; i < paginas; i++) {
-                var clase = '';
-                if (i == 0) clase = ' class="citaPac active" '; else clase = ' class="citaPac" ';
-                contenido += '<li '+ clase +'><a style="border:none;background-color:rgba(0,0,0,0)" onclick="cargarCitasPaciente('+parseInt(i)+',this)">'+(parseInt(i)+1)+'</a></li>';
-              }
-              contenido += '<li class="citaPac next"><a style="border:none;background-color:rgba(0,0,0,0)" onclick="cargarCitasPacienteNext()">&raquo;</a></li>';
-          }
-          $('#pagination_citasPaciente').html(contenido);
-        },
-        error: function (err){
-          console.log('Ajax error: ' + JSON.stringify(err));
-        }
-      });
-    }
-    if (!offset){
-      offset = 0;
-    }
-    offset = offset*limit;
-
     $.ajax({
       async: false,
       url: '/ag/private/get',
       type: 'POST',
       dataType: "json",
-      data:{'limit':limit,'offset':offset},
       cache: false,
       success: function ( data ) {
         if (data.success){
@@ -3135,4 +3171,42 @@ function iniciarSesionControl(inputEmail, inputPassword){
     }
   });
   return false;
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0; i<ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1);
+        if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
+    }
+    return "";
+}
+
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+d.toUTCString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+
+function logout(){
+  setCookie('intermed_sesion');
+  $.ajax({
+    async: false,
+    url: '/logout',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    success: function ( data ) {
+      if (data.success){
+        window.location.href = "/";
+      }
+    },
+    error: function(err){
+      console.log('AJAX error: ' + JSON.stringify(err));
+      return false;
+    }
+  });
 }

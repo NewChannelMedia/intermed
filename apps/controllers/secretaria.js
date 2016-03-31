@@ -37,7 +37,8 @@ exports.index = function (object, req, res){
                 medico_secretarias_id: secr.id
               },
               attributes: ['permiso']
-            }]
+            }],
+            order: [['id','ASC']]
           }).then(function(permisos){
             secr.permisos = permisos;
             total++;
@@ -716,26 +717,69 @@ exports.medicoOficina = function (object, req, res){
       attributes: ['id']
     }]
   }).then(function(usuariomedico){
-    /*
-    UsuarioMedico: {
-      "usuarioUrl":"0000001",
-      "urlPersonal":null,
-      "urlFotoPerfil":"/garage/profilepics/dpp.png",
-      "DatosGenerale":{
-        "id":2,
-        "nombre":"Medico",
-        "apellidoP":"De Prueba",
-        "apellidoM":"Uno",
-        "usuario_id":1
-      },
-      "Medico":{
-        "id":1
-      }
-    }
-    */
-    console.log('UsuarioMedico: ' + JSON.stringify(usuariomedico));
     res.render('secretaria/oficinaMedico',usuariomedico);
   });
+}
+
+exports.updateInfo = function (object, req, res){
+    try{
+      if (req.session.passport && req.session.passport.user) {
+        models.DatosGenerales.update({
+          nombre: object.nombre,
+          apellidoP: object.apellidoP,
+          apellidoM: object.apellidoM
+        },{
+          where: {
+            usuario_id: req.session.passport.user.id
+          }
+        }).then(function(result){
+          models.Secretaria.update({
+            estado_id: object.estado_id,
+            municipio_id: object.municipio_id
+          },{
+            where: {
+              usuario_id: req.session.passport.user.id
+            }
+          }).then(function(){
+            if (result){
+                res.status( 200 ).json({success:true, result: result});
+            } else {
+                res.status( 200 ).json({success:false});
+            }
+          })
+        });
+      }
+      else {
+        res.status( 200 )
+            .send({success:false,error:1});
+      }
+    }catch ( err ) {
+      req.errorHandler.report(err, req, res);
+    }
+}
+
+
+exports.getInfo = function (object, req, res){
+  try{
+    if (req.session &&  req.session.passport.user && req.session.passport.user.id > 0 ){
+      var usuario_id = req.session.passport.user.id;
+      models.Usuario.findOne({
+        where:{id:usuario_id},
+        attributes:['urlFotoPerfil','correo'],
+        include:[{
+          model: models.DatosGenerales,
+          attributes:['nombre','apellidoP','apellidoM']
+        },{
+          model: models.Secretaria
+        }]
+      }).then(function(usuario){
+        res.send(usuario);
+      });
+    }
+  }catch ( err ) {
+    console.log('ERROR: ' + err);
+    //req.errorHandler.report(err, req, res);
+  }
 }
 
 

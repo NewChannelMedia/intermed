@@ -261,7 +261,7 @@ function guardarNotaSecretaria(agenda_id, input){
   });
 }
 
-function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, paciente_id){
+function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, paciente_id,kendo){
   try{
     if (!paciente_id){
       $('#dangerMsg').addClass('hidden').text('');
@@ -271,6 +271,7 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
       var celular = $('#celularPaciente').val();
       if (correo != "" || celular != ""){
         var datos = {
+          kendo: kendo,
           nombre: nombre,
           apellido: apellido,
           correo: correo,
@@ -282,9 +283,24 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
         }
         $.post('/agenda/crearCita',datos, function(data){
           if (data.success){
-            $('#divCalendario').fullCalendar('removeEvents');
-            $('#divCalendario').fullCalendar('refetchEvents');
-            activarDesactivarAgregarCita($('#btnAddCita'));
+            if ($('.horas-container').length>0){
+              marcarEventosCalendario();
+              $('#agendarCitaOficina').text('AGENDAR');
+              $('#agendarCitaOficina').removeClass('agregar');
+              $('#agendarCitaOficina').addClass('btn-default');
+              $('#agendarCitaOficina').removeClass('btn-danger');
+              $('.mediaHora').not('.ocupada').not('.noDisponible').css('cursor','default');
+              var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
+              var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
+              cargarEventosPorDia(fechaInicio, fechaFin);
+            }
+
+            if ($('#divCalendario').length>0){
+                $('#divCalendario').fullCalendar('removeEvents');
+                $('#divCalendario').fullCalendar('refetchEvents');
+                activarDesactivarAgregarCita($('#btnAddCita'));
+            }
+
             cargarCitasProximasSecretaria();
             secondaryBootbox.hide();
           }
@@ -299,6 +315,7 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
       }
     } else {
       $.post('/agenda/crearCita',{
+        kendo: kendo,
         paciente_id: paciente_id,
         inicio: formatearFecha(inicio),
         fin: formatearFecha(fin),
@@ -306,9 +323,24 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
         servicio_id: servicio_id
       }, function(data){
         if (data.success){
-          $('#divCalendario').fullCalendar('removeEvents');
-          $('#divCalendario').fullCalendar('refetchEvents');
-          activarDesactivarAgregarCita($('#btnAddCita'));
+          if ($('.horas-container').length>0){
+            marcarEventosCalendario();
+            $('#agendarCitaOficina').text('AGENDAR');
+            $('#agendarCitaOficina').removeClass('agregar');
+            $('#agendarCitaOficina').addClass('btn-default');
+            $('#agendarCitaOficina').removeClass('btn-danger');
+            $('.mediaHora').not('.ocupada').not('.noDisponible').css('cursor','default');
+            var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
+            var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
+            cargarEventosPorDia(fechaInicio, fechaFin);
+          }
+
+          if ($('#divCalendario').length>0){
+              $('#divCalendario').fullCalendar('removeEvents');
+              $('#divCalendario').fullCalendar('refetchEvents');
+              activarDesactivarAgregarCita($('#btnAddCita'));
+          }
+
           cargarCitasProximasSecretaria();
           secondaryBootbox.hide();
         }
@@ -330,8 +362,17 @@ function secretariaCancelaCita(agenda_id, medico){
     }, function(data){
       console.log('CANCELACIÓN: ' + JSON.stringify(data));
     if (data.success){
-      $('#divCalendario').fullCalendar('removeEvents');
-      $('#divCalendario').fullCalendar('refetchEvents');
+      if ($('.horas-container').length>0){
+        marcarEventosCalendario();
+        var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
+        var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
+        cargarEventosPorDia(fechaInicio, fechaFin);
+      }
+
+      if ($('#divCalendario').length>0){
+          $('#divCalendario').fullCalendar('removeEvents');
+          $('#divCalendario').fullCalendar('refetchEvents');
+      }
       cargarCitasProximasSecretaria();
       if (bootSec){
         bootSec.hide();
