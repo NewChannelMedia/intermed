@@ -2150,6 +2150,9 @@ exports.serviciosPorHorario = function (object, req, res){
       horas = 12;
     }
     object.inicio = object.inicio.split(', ')[1].split(':');
+    if (object.inicio[0]==12){
+      horas = 0;
+    }
     object.inicio[0] = (parseInt(object.inicio[0])+horas).toString();
     if (object.inicio[0].length == 1){
       object.inicio[0] = '0'+object.inicio[0];

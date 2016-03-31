@@ -4448,18 +4448,17 @@ function BuscarPaciente(inputBusquedaId,outPutResultId,inicio,fin,medico,servici
 
 }
 
-function activarAgendarOficina(){
-  if ($('#agendarCitaOficina').hasClass('agregar')){
-    $('#agendarCitaOficina').text('AGENDAR');
-    $('#agendarCitaOficina').removeClass('agregar');
-    $('#agendarCitaOficina').addClass('btn-default');
-    $('#agendarCitaOficina').removeClass('btn-danger');
-    $('.mediaHora').not('.ocupada').not('.noDisponible').css('cursor','default');
-  } else {
-    $('#agendarCitaOficina').text('CANCELAR AGENDAR');
-    $('#agendarCitaOficina').addClass('agregar');
-    $('#agendarCitaOficina').removeClass('btn-default');
-    $('#agendarCitaOficina').addClass('btn-danger');
-    $('.mediaHora').not('.ocupada').not('.noDisponible').css('cursor','pointer');
-  }
+function validarAgregarEvento(){
+  var nombreEvento = $('#nombreEvento').val();
+  var fechaInicioEvento = $('#fechaInicioEvento').val();
+  var fechaFinEvento = $('#fechaFinEvento').val();
+  var ubicacionEvento = $('#ubicacionEvento').val();
+  var descripcionEvento = $('#descripcionEvento').val();
+  console.log('Nombre evento: ' + nombreEvento);
+  console.log('Fecha inicio evento: ' + fechaInicioEvento);
+  console.log('Fecha inicio min: ' + $('#fechaInicioEvento').prop('min'));
+  console.log('Fecha fin evento: ' + fechaFinEvento);
+  console.log('Ubicacion evento: ' + ubicacionEvento);
+  console.log('Descripción evento: ' + descripcionEvento);
+  return false;
 }

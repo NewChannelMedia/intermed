@@ -1738,20 +1738,23 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
 
       });
 
-      $('.mediaHora').not('.ocupada').not('.noDisponible').on('click',function(){
-        if ($('#agendarCitaOficina').hasClass('agregar')){
-          var clases = $(this).attr("class").split(' ');
-          var horario;
-          clases.forEach(function(clase){
-            if (clase.split('-')[1]){
-              horario = clase.split('-')[0] +':'+clase.split('-')[1]
-            }
-          });
-          //2016-03-30T17:29:12.860Z8:00
-          var clase = parseInt(horario.split(':')[0]) + '-' + horario.split(':')[1];
-          var date = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0];
-          var fecha = new Date(parseInt(date.split('-')[0]),parseInt(date.split('-')[1])-1,parseInt(date.split('-')[2]),parseInt(horario.split(':')[0]),parseInt(horario.split(':')[1]))
-          seleccionarServicioCitaOficina(fecha.getTime(),fecha,clase);
+      $('.mediaHora').not('.ocupada').on('click',function(){
+        var clases = $(this).attr("class").split(' ');
+        var horario;
+        clases.forEach(function(clase){
+          if (clase.split('-')[1]){
+            horario = clase.split('-')[0] +':'+clase.split('-')[1]
+          }
+        });
+        //2016-03-30T17:29:12.860Z8:00
+        var clase = parseInt(horario.split(':')[0]) + '-' + horario.split(':')[1];
+        var date = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0];
+        var fecha = new Date(parseInt(date.split('-')[0]),parseInt(date.split('-')[1])-1,parseInt(date.split('-')[2]),parseInt(horario.split(':')[0]),parseInt(horario.split(':')[1]))
+
+        if ($(this).hasClass('noDisponible')){
+          seleccionarAgregarEvento(fecha.getTime(),fecha,clase);
+        } else {
+          seleccionarAgregarEventoCita(fecha.getTime(),fecha,clase);
         }
       });
 
