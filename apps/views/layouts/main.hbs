@@ -37,7 +37,7 @@
             <div class="col-md-12">
               <p class="text-right">
                 {{#ifSession "id"}} Hola {{valSession "name"}} !!!&nbsp
-                  <a class="btn btn-transparent center-block h65-medium s25 reg" href="/logout" class="text-danger">Cerrar Sesión</a>
+                  <a class="btn btn-transparent center-block h65-medium s25 reg" onclick="logout()" class="text-danger">Cerrar Sesión</a>
                 {{else}}
                   <a class="btn btn-transparent h65-medium s25 whiteF noTransform login" href="#" id="logMod">ingresa</a> &nbsp
                   <a class="btn btn-transparent h65-medium s25 whiteF noTransform reg" href="#" onclick="registro();">registrate</a>

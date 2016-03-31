@@ -84,7 +84,7 @@
         <p class="navbar-text">
           {{#ifSession "admin"}}
           <a href="/registro" class="login">registro de médicos</a> |
-          <a href="/logout" class="text-danger">cerrar sesión</a> | {{else}}
+          <a onclick="logout()" class="text-danger">cerrar sesión</a> | {{else}}
           <a class="login" href="#" data-toggle="modal" data-target="#adminLoginModal">Admin</a> |  {{/ifSession}}
           <a href="#">Privacidad</a> | <a href="#">FAQs</a> | Todos los derechos reservados InterMed &reg 2015 / NewChannel &reg 2015
         </p>

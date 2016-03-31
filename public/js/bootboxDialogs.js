@@ -4719,7 +4719,7 @@ function agregarCitaPorServicio(servicios){
 }
 
 
-function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id){
+function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id, kendo){
   //Modal para seleccionar paciente o introducir uno que no existe
 
   secondaryBootbox = bootbox.dialog({
@@ -4728,13 +4728,13 @@ function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id){
     className: 'Intermed-Bootbox',
     title: '<span class="title text-center" style="font-weight:bold">¿Quién es el paciente?</span>',
     message:
-      '<form method="post" onsubmit="return registrarCitaPacienteTemporal('+inicio+','+fin+','+medico+','+servicio_id+')">'+
+      '<form method="post" onsubmit="return registrarCitaPacienteTemporal('+inicio+','+fin+','+medico+','+servicio_id+',null,'+kendo+')">'+
           '<div class="row">'+
             '<div class="col-md-6">'+
                 '<div class="input-group">'+
-                  '<input type="text" id="inputBusquedaPaciente" class="form-control" placeholder="Encuentralo en Intermed..."  onchange="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\','+inicio+','+fin+','+medico+','+servicio_id+')">'+
+                  '<input type="text" id="inputBusquedaPaciente" class="form-control" placeholder="Encuentralo en Intermed..."  onchange="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\','+inicio+','+fin+','+medico+','+servicio_id+','+kendo+')">'+
                   '<span class="input-group-btn">'+
-                    '<button type="button" class="btn btn-secondary" type="button"  onclick="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\','+inicio+','+fin+','+medico+','+servicio_id+')">Buscar</button>'+
+                    '<button type="button" class="btn btn-secondary" type="button"  onclick="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\','+inicio+','+fin+','+medico+','+servicio_id+','+kendo+')">Buscar</button>'+
                   '</span>'+
                 '</div>'+
                 '<ul class="list-group resultadosBusquedaPaciente">'+
@@ -4792,7 +4792,7 @@ function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id){
         '</form>'
   });
 
-  BuscarPaciente('inputBusquedaPaciente','resultadosBusquedaPaciente',inicio,fin,medico,servicio_id);
+  BuscarPaciente('inputBusquedaPaciente','resultadosBusquedaPaciente',inicio,fin,medico,servicio_id,kendo);
 }
 
 function verDetalleComentario(comentario_id){
