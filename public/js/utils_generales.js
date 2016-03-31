@@ -2341,9 +2341,9 @@ function cargarListaEspCol( usuario ,tipo) {
   }
 }
 function cargarListaColegasByEsp(usuario_id,especialidad_id, element,tipo){
-  var classDiv = 'class="col-lg-3 col-md-3 col-sm-4 col-xs-4"';
+  var classDiv = 'class="col-lg-3 col-md-3 col-sm-4 col-xs-6"';
   if (tipo && tipo == "P"){
-    classDiv = 'class="col-lg-3 col-md-4 col-sm-4 col-xs-4"';
+    classDiv = 'class="col-lg-3 col-md-3 col-sm-4 col-xs-6"';
   }
 
   $('#especialidadesList li.active').removeClass('active');
@@ -2388,7 +2388,7 @@ function cargarListaColegasByEsp(usuario_id,especialidad_id, element,tipo){
           '<div '+classDiv+'>'+
             '<div class="thumbnail noPadding noMargin">'+
               '<div >'+
-                '<a class="" href="/'+ usuarioUrl +'"><img src="'+ res.urlFotoPerfil +'" alt="..."></a>'+
+                '<a class="" href="/'+ usuarioUrl +'"><img class="img-responsive" src="'+ res.urlFotoPerfil +'" alt="..."></a>'+
               '</div>'+
               '<div class="caption">'+
                 '<div class="nombre h77-boldcond">'+
