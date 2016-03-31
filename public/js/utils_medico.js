@@ -730,6 +730,8 @@ function actualizarSesion(refresh, callback, parametros) {
                       </form>
                     </div>
                   </li>`);
+              } else if (data.session.tipoUsuario == "S"){
+                $('.nombreSesion').text(data.session.name);
               }
 
 
@@ -2037,6 +2039,8 @@ function traerAseguradoras(){
         $("#appPatPersonal").attr('value',data.DatosGenerale.apellidoP);
         $("#appMatPersonal").attr('value',data.DatosGenerale.apellidoM);
         $("#imgPerfilMedic").attr('src',data.urlFotoPerfil);
+        alert(JSON.stringify(data.correo));
+        $('#correoElectSec').attr('value',data.correo);
       });
     }
 
@@ -3465,6 +3469,72 @@ function guardarInformacionPersonal(){
       type: 'POST',
       dataType: "json",
       data: {nombre: nombre, apellidoP: appPatPersonal, apellidoM: appMatPersonal, fechaNac:fechaNacimiento},
+      cache: false,
+      type: 'POST',
+      success: function( data ) {
+        if (data.success){
+          actualizarSesion();
+          bootbox.hideAll();
+        } else {
+          if (data.error){
+            manejadorDeErrores(data.error);
+          }
+        }
+      },
+      error: function (err){
+        console.error( 'AJAX ERROR: ' + err );
+      }
+    });
+  }else {
+    alert('Falta un campo');
+  }
+}
+
+function loadDatosSecretaria(){
+  // se cargan los datos generales y foto
+  var html = "";
+  $.post('/secretaria/info/get', function(data){
+    //{"urlFotoPerfil":"/garage/profilepics/2/2_20160330181648.jpg","correo":"bmdz.acos@gmail.com","DatosGenerale":{"nombre":"Cinthia","apellidoP":"Bermúdez","apellidoM":"Acosta"},"Secretarium":{"id":1,"usuario_id":2,"estado_id":14,"municipio_id":1804}}
+    $("#nombrePersonal").attr('value',data.DatosGenerale.nombre);
+    $("#appPatPersonal").attr('value',data.DatosGenerale.apellidoP);
+    $("#appMatPersonal").attr('value',data.DatosGenerale.apellidoM);
+    $("#imgPerfilMedic").attr('src',data.urlFotoPerfil);
+    $('#correoElectSec').text(' ' +data.correo);
+    cargarEstados('estadosSecr');
+    if (data.Secretarium.estado_id){
+      setTimeout(function(){
+        $('#estadosSecr').val(data.Secretarium.estado_id);
+        if (data.Secretarium.municipio_id){
+          cargarCiudades('#estadosSecr');
+          setTimeout(function(){
+            $('#selectCiudad').val(data.Secretarium.municipio_id);
+          },500);
+        }
+      },500);
+    }
+  });
+}
+
+function guardarInformacionSecretaria(){
+  var nombre = $('#nombrePersonal').val();
+  var appPatPersonal = $('#appPatPersonal').val();
+  var appMatPersonal = $('#appMatPersonal').val();
+  var correo = $('#correoSecr').val();
+  var estado_id = $('#estadosSecr').val();
+  var municipio_id = $('#selectCiudad').val();
+
+  if (nombre != "" && appPatPersonal != "" && estado_id > 0 && municipio_id > 0){
+    $.ajax({
+      url: '/secretaria/info/update',
+      type: 'POST',
+      dataType: "json",
+      data: {
+        nombre: nombre,
+        apellidoP: appPatPersonal,
+        apellidoM: appMatPersonal,
+        estado_id: estado_id,
+        municipio_id: municipio_id
+      },
       cache: false,
       type: 'POST',
       success: function( data ) {

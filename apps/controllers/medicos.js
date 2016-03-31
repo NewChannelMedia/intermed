@@ -1089,7 +1089,7 @@ var _this = module.exports = {
         var usuario_id = req.session.passport.user.id;
         models.Usuario.findOne({
           where:{id:usuario_id},
-          attributes:['urlFotoPerfil'],
+          attributes:['urlFotoPerfil','correo'],
           include:[{
             model: models.DatosGenerales,
             attributes:['nombre','apellidoP','apellidoM']

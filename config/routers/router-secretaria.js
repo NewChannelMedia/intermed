@@ -52,4 +52,13 @@ module.exports = function (object){
   app.post('/secretaria/medicos/traerCitasProximas', function (req, res){
     intermed.callController( 'secretaria', 'citasProximas', req.body, req, res );
   });
+
+  app.post('/secretaria/info/update', function (req, res){
+    intermed.callController( 'secretaria', 'updateInfo', req.body, req, res );
+  });
+
+
+  app.post('/secretaria/info/get', function(req, res ){
+    intermed.callController('secretaria','getInfo', req.body, req, res );
+  });
 }

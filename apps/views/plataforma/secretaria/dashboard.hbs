@@ -19,10 +19,11 @@
           <div class="col-lg-12 col-md-12 ">
             <div class="panel panel-primary noMargin">
               <div class="panel-heading bg-darkBlue">
-                <img class="img-circle img-responsive center-block" alt="64x64" src="{{#valSession 'fotoPerfil'}}{{/valSession}}" data-holder-rendered="true">
+                <img class="img-circle img-responsive center-block fotoPerfil" alt="64x64" src="{{#valSession 'fotoPerfil'}}{{/valSession}}" data-holder-rendered="true">
               </div>
               <div class="panel-body" style="height: auto;">
-                <h4><strong>{{#valSession 'name'}}{{/valSession}}</strong></h4>
+                <h4 class="text-center text-capitalize"><strong class="nombreSesion">{{#valSession 'name'}}{{/valSession}}</strong></h4>
+                <button class="btn btn-default btn-block" onclick="editarPerfilSecretaria()">Editar</button>
               </div>
             </div>
           </div>
