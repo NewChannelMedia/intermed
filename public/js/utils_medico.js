@@ -4452,23 +4452,25 @@ function validarAgregarEvento(){
   try{
     var fechaInicioEvento = moment($('#fechaInicioEvento').val()).toDate();
     var fechaFinEvento = moment($('#fechaFinEvento').val()).toDate();
-    
+
     if (new Date(fechaInicioEvento)<new Date(fechaFinEvento)){
       var nombreEvento = $('#nombreEvento').val();
       var ubicacionEvento = $('#ubicacionEvento').val();
       var descripcionEvento = $('#descripcionEvento').val();
+      var data = {
+        inicio: fechaInicioEvento,
+        fin: fechaFinEvento,
+        nombre: nombreEvento,
+        ubicacion: ubicacionEvento,
+        descripcion: descripcionEvento
+      };
+      alert('INSERTAR EVENTO: ' + JSON.stringify(data));
       $.ajax( {
         async: false,
         url: '/agenda/evento/agregar',
         type: 'POST',
         dataType: "json",
-        data: {
-          inicio: fechaInicioEvento,
-          fin: fechaFinEvento,
-          nombre: nombreEvento,
-          ubicacion: ubicacionEvento,
-          descripcion: descripcionEvento
-        },
+        data: data,
         cache: false,
         success: function ( data ) {
           if (data.success){
