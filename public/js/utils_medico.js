@@ -4450,9 +4450,9 @@ function BuscarPaciente(inputBusquedaId,outPutResultId,inicio,fin,medico,servici
 
 function validarAgregarEvento(){
   try{
-    var fechaInicioEvento = new Date(new Date($('#fechaInicioEvento').val().toLocaleString('en-US')).toISOString().replace('T',' ').split('.000Z')[0]).toUTCString();
-    var fechaFinEvento = new Date(new Date($('#fechaFinEvento').val().toLocaleString('en-US')).toISOString().replace('T',' ').split('.000Z')[0]).toUTCString();
-
+    var fechaInicioEvento = moment($('#fechaInicioEvento').val()).toDate();
+    var fechaFinEvento = moment($('#fechaFinEvento').val()).toDate();
+    
     if (new Date(fechaInicioEvento)<new Date(fechaFinEvento)){
       var nombreEvento = $('#nombreEvento').val();
       var ubicacionEvento = $('#ubicacionEvento').val();
