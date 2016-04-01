@@ -24,8 +24,8 @@
         {{/ifTipoMedico}}
         {{#ifSession 'id'}}
           {{valSession 'name'}}
-        {{else}}
-          Intermed, la red social de la salud
+      {{else}}
+        Intermed, la red social de la salud
         {{/ifSession}}
       {{/if}}
     </title>
@@ -108,7 +108,7 @@
                         <li class="hidden-xs">
                           <span class="white-c">|</span>
                         </li>
-                        <li class="dropdown">
+                        <li class="dropdown hidden-xs">
                           <a class="dropdown-toggle white-c openMobileMenu" data-toggle="dropdown" href="#" role="button">
                             <span class="glyphicon glyphicon-search"></span>
                           </a>
@@ -121,7 +121,7 @@
                                   <span class="input-group-btn">
                                     <button class="btn btn-default bg-blue btn-sm" type="submit">
                                       <span class="glyphicon glyphicon-search"></span>
-                                    </button>
+                                  </button>
                                   </span>
                                 </div>
                               </form>
@@ -139,15 +139,15 @@
                             <span id="totalComentarios" class="badge navBadge"></span>
                           </a>
                         </li>
-                        <li class="dropdown hidden-xs">
+                        <li class="dropdown">
                           <a id="notificationIcon" class="dropdown-toggle white-c" data-toggle="dropdown" href="#" role="button" onclick="mostrarNotificaciones()">
                             <span class="white-c proicon proicon-notificacion"></span>
                             <span id="totalNotificaciones" class="badge navBadge"></span>
                           </a>
-                          <ul class="dropdown-menu notificationDropdown media-list dropdown-menu-right">
+                          <ul class="dropdown-menu notificationDropdown media-list dropdown-menu-right noPadding">
                             <div id="notificacinesList">
                             </div>
-                            <div style="padding:10px;background-color:#DDD;margin-bottom:-5px;margin-top:10px;">
+                            <div class="btn-verNotificaciones">
                               <a href="{{base_url}}notificaciones" class="text-center" style="text-align:center">Ver todas</a>
                             </div>
                           </ul>
@@ -179,8 +179,8 @@
                               </a>
                             </li>
                             <li>
-                              <a id="notificationIcon" class="text-left" href="{{base_url}}notificaciones">
-                                Notificaciones <span id="totalNotificaciones" class="badge navBadge pull-right"></span>
+                              <a class="text-left" href="{{base_url}}buscar">
+                                Buscador
                               </a>
                             </li>
                             <li>
@@ -215,7 +215,7 @@
                                   <span class="input-group-btn">
                                     <button class="btn btn-default bg-blue btn-sm" type="submit">
                                       <span class="glyphicon glyphicon-search"></span>
-                                    </button>
+                                  </button>
                                   </span>
                                 </div>
                               </form>
@@ -230,14 +230,14 @@
                           <ul class="dropdown-menu notificationDropdown media-list" style="left:auto;right:0;margin-right:0px;">
                             <div id="notificacinesList">
                             </div>
-                            <div style="padding:10px;background-color:#DDD;margin-bottom:-5px;margin-top:10px;">
+                            <div class="btn-verNotificaciones">
                               <a href="{{base_url}}notificaciones" class="text-center" style="text-align:center">Ver todas</a>
                             </div>
                           </ul>
                         </li>
                         <li>
                           <a class="white-c" onclick="logout()">
-                          <span class="glyphicon glyphicon-log-out"></span></a>
+                            <span class="glyphicon glyphicon-log-out"></span></a>
                         </li>
                       {{/ifTipoPaciente}}
                       {{#ifTipoSecretaria}}
@@ -250,7 +250,7 @@
                         <li class="hidden-xs">
                           <span class="white-c">|</span>
                         </li>
-                        <li class="dropdown hidden-xs">
+                        <li class="dropdown">
                           <a id="notificationIcon" class="dropdown-toggle white-c" data-toggle="dropdown" href="#" role="button" onclick="mostrarNotificaciones()">
                             <span class="proicon proicon-notificacion"></span>
                             <span id="totalNotificaciones" class="badge" style="position:absolute; margin-top:-38px; right:0px"></span>
@@ -258,7 +258,7 @@
                           <ul class="dropdown-menu notificationDropdown media-list" style="left:auto;right:0;margin-right:0px;">
                             <div id="notificacinesList">
                             </div>
-                            <div style="padding:10px;background-color:#DDD;margin-bottom:-5px;margin-top:10px;">
+                            <div class="btn-verNotificaciones">
                               <a href="{{base_url}}notificaciones" class="text-center" style="text-align:center">Ver todas</a>
                             </div>
                           </ul>
@@ -279,18 +279,12 @@
                           </a>
                           <ul class="dropdown-menu dropdown-menu-right s20" aria-labelledby="dLabel">
                             <li>
-                              <a id="notificationIcon" class="text-right" href="{{base_url}}notificaciones">
-                                Notificaciones
-                                <span id="totalNotificaciones" class="badge" style="position:absolute; margin-top:-38px; right:0px"></span>
-                              </a>
-                            </li>
-                            <li>
-                              <a class="text-right" href="{{base_url}}nconfiguraciones">
+                              <a class="text-left" href="{{base_url}}nconfiguraciones">
                                 Configuración
                               </a>
                             </li>
                             <li>
-                              <a class="text-right" onclick="logout()">
+                              <a class="text-left" onclick="logout()">
                                 Salir
                               </a>
                             </li>
@@ -322,7 +316,7 @@
                         <li>
                           <a class="btn btn-warning bg-orange h45-light white-c text-capitalize reg" href="#" onclick="registro();">Registro</a>
                         </li>
-                      {{/else}}
+                        {{/else}}
                     </ul>
                   </div>
                 </div>
@@ -408,4 +402,5 @@
   <script src="js/Chart.js"></script>
   <script src="http://cdn.kendostatic.com/2015.1.429/js/kendo.all.min.js"></script>
   <script src="http://kendo.cdn.telerik.com/2014.1.528/js/cultures/kendo.culture.es-MX.min.js"></script>
+
 </html>
