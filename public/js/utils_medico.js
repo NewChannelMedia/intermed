@@ -4449,44 +4449,49 @@ function BuscarPaciente(inputBusquedaId,outPutResultId,inicio,fin,medico,servici
 }
 
 function validarAgregarEvento(){
-  var fechaInicioEvento = new Date($('#fechaInicioEvento').val().replace('T',' ')).toUTCString();
-  var fechaFinEvento = new Date($('#fechaFinEvento').val().replace('T',' ')).toUTCString();
+  try{
+    var fechaInicioEvento = new Date(new Date($('#fechaInicioEvento').val().toLocaleString('en-US')).toISOString().replace('T',' ').split('.000Z')[0]).toUTCString();
+    var fechaFinEvento = new Date(new Date($('#fechaFinEvento').val().toLocaleString('en-US')).toISOString().replace('T',' ').split('.000Z')[0]).toUTCString();
 
-  if (new Date(fechaInicioEvento)<new Date(fechaFinEvento)){
-    var nombreEvento = $('#nombreEvento').val();
-    var ubicacionEvento = $('#ubicacionEvento').val();
-    var descripcionEvento = $('#descripcionEvento').val();
-    $.ajax( {
-      async: false,
-      url: '/agenda/evento/agregar',
-      type: 'POST',
-      dataType: "json",
-      data: {
-        inicio: fechaInicioEvento,
-        fin: fechaFinEvento,
-        nombre: nombreEvento,
-        ubicacion: ubicacionEvento,
-        descripcion: descripcionEvento
-      },
-      cache: false,
-      success: function ( data ) {
-        if (data.success){
-          marcarEventosCalendario();
-          var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
-          var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
-          cargarEventosPorDia(fechaInicio, fechaFin);
-          bootbox.hideAll();
-        } else {
-          //Error al agregar el evento (ya existe algun evento o cita)
+    if (new Date(fechaInicioEvento)<new Date(fechaFinEvento)){
+      var nombreEvento = $('#nombreEvento').val();
+      var ubicacionEvento = $('#ubicacionEvento').val();
+      var descripcionEvento = $('#descripcionEvento').val();
+      $.ajax( {
+        async: false,
+        url: '/agenda/evento/agregar',
+        type: 'POST',
+        dataType: "json",
+        data: {
+          inicio: fechaInicioEvento,
+          fin: fechaFinEvento,
+          nombre: nombreEvento,
+          ubicacion: ubicacionEvento,
+          descripcion: descripcionEvento
+        },
+        cache: false,
+        success: function ( data ) {
+          if (data.success){
+            marcarEventosCalendario();
+            var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
+            var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
+            cargarEventosPorDia(fechaInicio, fechaFin);
+            bootbox.hideAll();
+          } else {
+            //Error al agregar el evento (ya existe algun evento o cita)
+          }
+        },
+        error: function(err){
+          console.log('Ajax error: ' + JSON.stringify(err));
         }
-      },
-      error: function(err){
-        console.log('Ajax error: ' + JSON.stringify(err));
-      }
-    });
-  } else {
-    alert('La fecha de fin del evento debe de ser mayor a la fecha de inicio');
-    $('#fechaFinEvento')[0].focus();
+      });
+    } else {
+      alert('La fecha de fin del evento debe de ser mayor a la fecha de inicio');
+      $('#fechaFinEvento')[0].focus();
+    }
+  }
+  catch(e){
+    console.log('ERROR: ' + e);
   }
   return false;
 }
