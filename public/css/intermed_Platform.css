@@ -1858,6 +1858,7 @@ footer .logoIntermed {
 .hora {
   height: auto;/*142px;*/
   border-top: solid 2px #ffffff;
+  padding: 0;
 }
 
 .mediaHora {
@@ -1870,6 +1871,11 @@ footer .logoIntermed {
 
 .hora.ocupada .mediaHora, .mediaHora.ocupada {
   background-color: #162c39;
+  margin-bottom: 0;
+}
+
+.mediaHora.ocupada:not(.bloque) {
+  margin-top: 5px;
 }
 
 .mediaHoraInterno {
