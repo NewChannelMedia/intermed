@@ -1632,8 +1632,7 @@ exports.eventosPorDia = function (object, req, res){
         where: {
           fechaHoraInicio: { $gte: object.fecha, $lt: object.fin },
           status:1
-        },
-        logging: console.log
+        }
       }).then(function(eventos){
         console.log('Eventos: ' + JSON.stringify(eventos));
         res.status(200).json({
@@ -2254,8 +2253,6 @@ exports.crearCita = function (object, req, res){
                 direccion_id: servicio.direccion_id,
                 servicio_id: servicio.id,
                 status:1
-              },{
-                logging: console.log
               }).then(function(result){
                 res.status(200).json({
                   success: true,
@@ -2330,8 +2327,6 @@ exports.crearCita = function (object, req, res){
                   direccion_id: servicio.direccion_id,
                   servicio_id: servicio.id,
                   status:1
-                },{
-                  logging: console.log
                 }).then(function(result){
                   res.status(200).json({
                     success: true,

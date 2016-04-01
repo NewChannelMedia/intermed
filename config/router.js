@@ -24,9 +24,7 @@ var express = require( 'express' ),
     hps = require( '../apps/helpers/helpers' ),
     intermed = require( '../apps/controllers/Intermed' ),
     errorHandler = require( '../apps/controllers/errorHandler' ),
-    models  = require('../apps/models'),
-    moment = require('moment'),
-    jstz = require('jstz');
+    models  = require('../apps/models');
 
 require( './configPassport' )( passport );
 
@@ -79,9 +77,7 @@ var routerObject = {
   passport: passport,
   url: url,
   models: models,
-  errorHandler: errorHandler,
-  moment: moment,
-  jstz: jstz
+  errorHandler: errorHandler
 }
 
 
