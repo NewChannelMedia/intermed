@@ -1631,6 +1631,7 @@ exports.eventosPorDia = function (object, req, res){
       models.Evento.findAll({
         where: {
           fechaHoraInicio: { $gte: object.fecha, $lt: object.fin },
+          status:1
         },
         logging: console.log
       }).then(function(eventos){
@@ -2350,9 +2351,14 @@ exports.cargarCitasMes = function(object, req, res){
     "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`agenda` where `status` > 0 && `usuario_id` = "+ req.session.passport.user.id +"  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
     , { type: models.Sequelize.QueryTypes.SELECT}
   ).then(function(result) {
-    res.status(200).json({
-      success: false,
-      result: result
+    models.sequelize.query(
+      "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`eventos` where `status` > 0 && `usuario_id` = "+ req.session.passport.user.id +"  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
+      , { type: models.Sequelize.QueryTypes.SELECT}
+    ).then(function(result2) {
+      res.status(200).json({
+        success: false,
+        result: result.concat(result2)
+      });
     });
   });
 }

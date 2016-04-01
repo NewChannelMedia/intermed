@@ -8,6 +8,7 @@ module.exports = function(sequelize, DataTypes) {
     nombre: {type: DataTypes.STRING},
     ubicacion: {type: DataTypes.STRING},
     descripcion: {type: DataTypes.STRING},
+    status : {type : DataTypes.INTEGER},
     usuario_id : {type : DataTypes.INTEGER}
   }, {
     classMethods: {

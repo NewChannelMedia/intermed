@@ -4471,7 +4471,10 @@ function validarAgregarEvento(){
       cache: false,
       success: function ( data ) {
         if (data.success){
-          console.log('RESPONSE: ' + JSON.stringify(data));
+          marcarEventosCalendario();
+          var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
+          var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
+          cargarEventosPorDia(fechaInicio, fechaFin);
           bootbox.hideAll();
         } else {
           //Error al agregar el evento (ya existe algun evento o cita)

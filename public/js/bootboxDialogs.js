@@ -5252,3 +5252,7 @@ function seleccionarAgregarEvento(timestamp,fecha,clase){
 
       }
 }
+
+function detalleEventoMedico(evento_id){
+  console.log('Ver evento: ' + evento_id);
+}
