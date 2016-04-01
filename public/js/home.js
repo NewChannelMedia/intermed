@@ -1,7 +1,7 @@
 /* newHome */
 $(document).ready(function(){
   if ($('#newHome').length > 0){
-    $('#newHome #newHomeHeader').height(
+    $('#newHome #newHomeHeader .container').height(
       $(window).height()
     );
     /*$('#homeMainTitle').css({'margin-top':$(window).height()})*/
@@ -31,7 +31,7 @@ $(document).ready(function(){
 
 $(window).on('resize', function() {
   if ($('#newHome').length > 0){
-    $('#newHome #newHomeHeader').height(
+    $('#newHome #newHomeHeader .container').height(
       $(window).height()
     );
   }

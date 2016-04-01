@@ -2458,18 +2458,18 @@ function traerAseguradoras(){
                 res.fecha = formatearFechaComentario(res.fecha.split(' ')[0]);
 
                 contenido += '<div class="comentario row">'+
-                                '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">'+
+                                '<div class="col-lg-11 col-md-11 col-sm-11 col-xs-12">'+
                                   '<div class="media comment-container">'+
                                     '<div class="media-left">'+
                                       '<img class="img-circle comment-img" style="width: 150px;" src="'+ res.Usuario.urlFotoPerfil +'">'+
                                     '</div>'+
                                     '<article class="media-body">'+
-                                      '<div class="text-uppercase s30 h67-medcond">'+ res.titulo +'</div>'+
-                                      '<p class="s15 h67-medium">'+ res.comentario +'</p>'+
-                                      '<p class="comment-autor s15 h75-bold noMargin">'+
+                                      '<p class="comment-date s15 h67-medium text-muted">'+ res.fecha +'</p>'+
+                                      '<p class="comment-autor s15 h75-bold">'+
                                         '<span class="text-capitalize">'+ nombre +'</span>'+
                                       '</p>'+
-                                      '<p class="comment-date s15 h67-medium text-info noMargin">'+ res.fecha +'</p>'+
+                                      '<div class="text-uppercase s30 h67-medcond">'+ res.titulo +'</div>'+
+                                      '<p class="comment-text s15 h67-medium">'+ res.comentario +'</p>'+
                                     '</article>'+
                                   '</div>'+
                                 '</div>';
@@ -2485,18 +2485,18 @@ function traerAseguradoras(){
                   res.fecharespuesta = new Date(res.fecharespuesta).toLocaleDateString();
                   res.fecharespuesta = formatearFechaComentario(res.fecharespuesta.split(' ')[0]);
 
-                  contenido += '<div class="col-lg-9 col-md-9 col-sm-9 col-xs-9 pull-right">'+
-                  '<div class="media comment-container">'+
-                    '<article class="media-body text-right">'+
-                      '<p class="s15 h67-medium">'+ res.respuesta +'</p>'+
+                  contenido += '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'+
+                  '<div class="media comment-container respuesta">'+
+                    '<div class="media-left bottom-content">'+
+                      '<img class="img-circle comment-img noMargin" style="width:70px;" src="'+ res.Medico.Usuario.urlFotoPerfil +'">'+
+                    '</div>'+
+                    '<article class="media-body">'+
+                      '<p class="comment-date s15 h67-medium text-info">'+ res.fecharespuesta +'</p>'+
                       '<p class="comment-autor s15 h75-bold noMargin">'+
                         '<span class="text-capitalize">Dr. '+ nombreDoctor +'.</span>'+
                       '</p>'+
-                      '<p class="comment-date s15 h67-medium text-info noMargin">'+ res.fecharespuesta +'</p>'+
+                      '<p class="comment-text s15 h67-medium">'+ res.respuesta +'</p>'+
                     '</article>'+
-                    '<div class="media-right">'+
-                      '<img class="img-circle comment-img noMargin" style="width:70px;" src="'+ res.Medico.Usuario.urlFotoPerfil +'">'+
-                    '</div>'+
                   '</div>'+
                   '</div>';
                 }
