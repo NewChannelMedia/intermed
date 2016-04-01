@@ -4464,7 +4464,6 @@ function validarAgregarEvento(){
         ubicacion: ubicacionEvento,
         descripcion: descripcionEvento
       };
-      alert('INSERTAR EVENTO: ' + JSON.stringify(data));
       $.ajax( {
         async: false,
         url: '/agenda/evento/agregar',

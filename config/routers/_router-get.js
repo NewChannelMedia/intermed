@@ -7,8 +7,14 @@ module.exports = function (object){
   var express = object.express;
   var passport = object.passport;
   var url = object.url;
+  var moment = object.moment;
+  var jstz = object.jstz;
 
   app.get('*', function (req, res, next){
+    var someTimeFromUTC = moment(new Date());
+    var tzName = jstz.determine().name(); // America/Los_Angeles
+    console.log('tzName: ' + tzName);
+
     if (req.url != '/logout'){
       if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "M"){
         if (req.session.passport.user.status == 0){
