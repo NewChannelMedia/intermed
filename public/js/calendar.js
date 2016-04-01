@@ -1460,8 +1460,6 @@ function horariosAgendaMedico(medico_id){
 }
 
 
-
-
 function seleccionarServicioCitaOficina(date,inicio, clase){
   inicio = new Date(date).toLocaleString('en-US');
   $.ajax({
@@ -1477,7 +1475,7 @@ function seleccionarServicioCitaOficina(date,inicio, clase){
       });
 
       secondaryBootbox = bootbox.dialog({
-        backdrop: false,
+        backdrop: true,
         size:'small',
         className: 'Intermed-Bootbox',
         title: '<span class="title">Selecciona servicio</span>',

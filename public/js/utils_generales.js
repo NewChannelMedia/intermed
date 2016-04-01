@@ -1375,7 +1375,7 @@ $( document ).ready( function () {
       });
       kendoCalendar.bind("change", function() {
         //aqui cargamos los eventos de ese dia en la lista de la derecha
-        var value = new Date(new Date(this.value()).toLocaleDateString());
+        var value = new Date(new Date(this.value()).toLocaleDateString('en-US'));
 
         $('#mesFecha').text(meses[value.getMonth()]);
         $('#diaFecha').text(value.getDate());
@@ -1687,6 +1687,92 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
           }
         }
       });
+      data.eventos.forEach(function(res){
+        //{"id":7,"fechaHoraInicio":"2016-04-01T06:00:00.000Z","fechaHoraFin":"2016-04-01T15:00:00.000Z","nombre":"Evento de madrugada","ubicacion":"Los mochis","descripcion":"","usuario_id":8}
+
+            var hora = new Date(res.fechaHoraInicio).toLocaleString('en-US').split(', ')[1];
+            var horaFin = new Date(res.fechaHoraFin).toLocaleString('en-US').split(', ')[1];
+
+            if (parseInt(hora.split(':')[0]) != 12 &&  hora.search('PM')>0){
+              hora = (parseInt(hora.split(':')[0]) +12) +'-'+hora.split(':')[1];
+            } else if (parseInt(hora.split(':')[0]) == 12 &&  hora.search('AM')>0){
+              hora = 0+'-'+hora.split(':')[1];
+            } else {
+              hora = parseInt(hora.split(':')[0]) +'-'+ hora.split(':')[1];
+            }
+
+            if (parseInt(horaFin.split(':')[0]) != 12 &&  horaFin.search('PM')>0){
+              horaFin = (parseInt(horaFin.split(':')[0]) +12) +'-'+horaFin.split(':')[1];
+            } else if (parseInt(horaFin.split(':')[0]) == 12 &&  horaFin.search('AM')>0){
+              horaFin = 0+'-'+horaFin.split(':')[1];
+            } else {
+              horaFin = parseInt(horaFin.split(':')[0]) +'-'+ horaFin.split(':')[1];
+            }
+
+            if (hora.substring(0,1) == "0" && hora.substring(0,2) != "0:"){
+              hora = hora.substring(1,5);
+            }
+
+            var element = $('.mediaHora.'+hora);
+            element.addClass('ocupada').addClass('consulta');
+            element.find('.glyphicon').addClass('glyphicon-bookmark');
+
+            element.find('.nombre').text(res.nombre);
+            element.find('.ubicacion').text(res.ubicacion);
+            element.find('.media').removeClass('hidden');
+            if (res.status == 2){
+              element.find('.media-right').text('Cancelada');
+              element.addClass('cancelada');
+            }
+            element.find('.mediaHoraInterno').on('click',function(){
+              detalleEventoMedico(res.id);
+            });
+
+            hora = hora.split('-');
+            horaFin = horaFin.split('-');
+
+            var mismoDia = true;
+            if (parseInt(hora[1]) == 45){
+              hora[1] = 0;
+              if (parseInt(hora[0]) == 23){
+                mismoDia = false;
+              } else {
+                hora[0] = parseInt(hora[0])+1;
+              }
+            } else {
+              hora[1] = parseInt(hora[1])+15;
+            }
+
+            if (hora[1].toString().length == 1){
+              hora[1] = '0'+hora[1];
+            }
+
+            if (mismoDia){
+              while( (parseInt(hora[0])< parseInt(horaFin[0]))||(parseInt(hora[0])<= parseInt(horaFin[0]) && parseInt(hora[1])< parseInt(horaFin[1]))){
+                if (mismoDia){
+                  $('.mediaHora.'+parseInt(hora[0])+'-'+hora[1]).addClass('ocupada').addClass('bloque');
+
+                  $('.mediaHora.'+parseInt(hora[0])+'-'+hora[1]).on('click',function(){
+                    detalleEventoMedico(res.id);
+                  });
+                  if (parseInt(hora[1]) == 45){
+                    hora[1] = 0;
+                    if (parseInt(hora[0]) == 23){
+                      mismoDia = false;
+                    } else {
+                      hora[0] = parseInt(hora[0])+1;
+                    }
+                  } else {
+                    hora[1] = parseInt(hora[1])+15;
+                  }
+
+                  if (hora[1].toString().length == 1){
+                    hora[1] = '0'+hora[1];
+                  }
+                }
+              }
+            }
+      });
       data.result.forEach(function(res){
           var hora = res.fechaHoraInicio.split('T')[1].split(':00.00')[0].replace(':','-');
           var horaFin = res.fechaHoraFin.split('T')[1].split(':00.00')[0].replace(':','-');
@@ -1696,27 +1782,6 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
           var element = $('.mediaHora.'+hora);
           element.addClass('ocupada').addClass('consulta');
           element.find('.glyphicon').addClass('glyphicon-user');
-
-          var a = new Date(res.fechaHoraFin);
-          var b = new Date(res.fechaHoraInicio);
-          var bloques = ((a-b)/60000)/15;
-
-          var newElement = element.next();
-          var antElement = null;
-          for (i = 1; i <bloques;i++){
-            newElement.addClass('ocupada').addClass('bloque');
-            if (res.status == 2){
-              newElement.addClass('cancelada');
-            }
-            newElement.find('.mediaHoraInterno').on('click',function(){
-              detalleCitaSecretaria(res.id);
-            });
-            antElement = newElement;
-            newElement = newElement.next();
-            if (!newElement[0]){
-              newElement = antElement.parent().parent().next().find('.mediaHora').first();
-            }
-          }
 
           var nombre = '';
           if (res.PacienteTemporal){
@@ -1736,22 +1801,73 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
             detalleCitaSecretaria(res.id);
           });
 
+          hora = hora.split('-');
+          horaFin = horaFin.split('-');
+
+          var mismoDia = true;
+          if (parseInt(hora[1]) == 45){
+            hora[1] = 0;
+            if (parseInt(hora[0]) == 23){
+              mismoDia = false;
+            } else {
+              hora[0] = parseInt(hora[0])+1;
+            }
+          } else {
+            hora[1] = parseInt(hora[1])+15;
+          }
+
+          if (hora[1].toString().length == 1){
+            hora[1] = '0'+hora[1];
+          }
+
+          if (mismoDia){
+            while( (parseInt(hora[0])< parseInt(horaFin[0]))||(parseInt(hora[0])<= parseInt(horaFin[0]) && parseInt(hora[1])< parseInt(horaFin[1]))){
+              if (mismoDia){
+                $('.mediaHora.'+parseInt(hora[0])+'-'+hora[1]).addClass('ocupada').addClass('bloque');
+
+                if (res.status == 2){
+                  $('.mediaHora.'+parseInt(hora[0])+'-'+hora[1]).addClass('cancelada');
+                }
+                $('.mediaHora.'+parseInt(hora[0])+'-'+hora[1]).find('.mediaHoraInterno').on('click',function(){
+                  detalleCitaSecretaria(res.id);
+                });
+                if (parseInt(hora[1]) == 45){
+                  hora[1] = 0;
+                  if (parseInt(hora[0]) == 23){
+                    mismoDia = false;
+                  } else {
+                    hora[0] = parseInt(hora[0])+1;
+                  }
+                } else {
+                  hora[1] = parseInt(hora[1])+15;
+                }
+
+                if (hora[1].toString().length == 1){
+                  hora[1] = '0'+hora[1];
+                }
+              }
+            }
+          }
+
       });
 
-      $('.mediaHora').not('.ocupada').not('.noDisponible').on('click',function(){
-        if ($('#agendarCitaOficina').hasClass('agregar')){
-          var clases = $(this).attr("class").split(' ');
-          var horario;
-          clases.forEach(function(clase){
-            if (clase.split('-')[1]){
-              horario = clase.split('-')[0] +':'+clase.split('-')[1]
-            }
-          });
-          //2016-03-30T17:29:12.860Z8:00
-          var clase = parseInt(horario.split(':')[0]) + '-' + horario.split(':')[1];
-          var date = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0];
-          var fecha = new Date(parseInt(date.split('-')[0]),parseInt(date.split('-')[1])-1,parseInt(date.split('-')[2]),parseInt(horario.split(':')[0]),parseInt(horario.split(':')[1]))
-          seleccionarServicioCitaOficina(fecha.getTime(),fecha,clase);
+      $('.mediaHora').not('.ocupada').on('click',function(){
+        var clases = $(this).attr("class").split(' ');
+        var horario;
+        clases.forEach(function(clase){
+          if (clase.split('-')[1]){
+            horario = clase.split('-')[0] +':'+clase.split('-')[1]
+          }
+        });
+        //2016-03-30T17:29:12.860Z8:00
+        var clase = parseInt(horario.split(':')[0]) + '-' + horario.split(':')[1];
+        var date = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0];
+        var fecha = new Date(parseInt(date.split('-')[0]),parseInt(date.split('-')[1])-1,parseInt(date.split('-')[2]),parseInt(horario.split(':')[0]),parseInt(horario.split(':')[1]))
+
+        if ($(this).hasClass('noDisponible')){
+          seleccionarAgregarEvento(fecha.getTime(),fecha,clase);
+        } else {
+          seleccionarAgregarEventoCita(fecha.getTime(),fecha,clase);
         }
       });
 
@@ -2650,6 +2766,40 @@ function autoCompleteAseg(inputId){
         console.log('Ajax error: ' + JSON.stringify(err));
       }
     });
+}
+
+function formatearFechaLocalT(fecha){
+  //Transforma: 03/31/2016, 07:00:00 PM -> 2016-03-31T19:00:00
+  fecha = new Date(fecha).toLocaleString('en-US');
+  fecha = fecha.split(', ');
+  var mes = fecha[0].split('/')[0].toString();
+  var dia = fecha[0].split('/')[1].toString();
+  var anio = fecha[0].split('/')[2].toString();
+  var horas = parseInt(fecha[1].split(':')[0]);
+  var minutos = parseInt(fecha[1].split(':')[1]).toString();
+
+  if (mes.length== 1){
+    mes = '0'+mes;
+  }
+  if (dia.length== 1){
+    dia = '0'+dia;
+  }
+  if (horas != 12 && fecha[1].search('PM')>0){
+    horas = horas+12;
+  }
+
+  horas = horas.toString();
+  if (horas.length== 1){
+    horas = '0'+horas;
+  }
+
+  if (minutos.length== 1){
+    minutos = '0'+minutos;
+  }
+
+  fecha = anio +'-'+mes+'-'+dia+'T'+horas+':'+minutos+':00';
+
+  return fecha;
 }
 
 function cargarCitasPaciente(offset, element){

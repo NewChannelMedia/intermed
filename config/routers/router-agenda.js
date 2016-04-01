@@ -146,4 +146,8 @@ module.exports = function (object){
     intermed.callController('agenda','cargarCitasMesPac', req.body, req, res);
   });
 
+  app.post('/agenda/evento/agregar', function (req, res){
+    intermed.callController('agenda','eventoAgregar', req.body, req, res);
+  });
+
 }

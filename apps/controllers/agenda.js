@@ -1628,11 +1628,21 @@ exports.eventosPorDia = function (object, req, res){
       },
       include :[{model: models.Direccion, where : { usuario_id: req.session.passport.user.id },attributes: ['id']}]
     }).then(function(horarios) {
+      models.Evento.findAll({
+        where: {
+          fechaHoraInicio: { $gte: object.fecha, $lt: object.fin },
+          status:1
+        },
+        logging: console.log
+      }).then(function(eventos){
+        console.log('Eventos: ' + JSON.stringify(eventos));
         res.status(200).json({
           success:true,
           result: result,
+          eventos: eventos,
           horarios: horarios
         })
+      });
     });
 
   })
@@ -2150,6 +2160,9 @@ exports.serviciosPorHorario = function (object, req, res){
       horas = 12;
     }
     object.inicio = object.inicio.split(', ')[1].split(':');
+    if (object.inicio[0]==12){
+      horas = 0;
+    }
     object.inicio[0] = (parseInt(object.inicio[0])+horas).toString();
     if (object.inicio[0].length == 1){
       object.inicio[0] = '0'+object.inicio[0];
@@ -2338,9 +2351,14 @@ exports.cargarCitasMes = function(object, req, res){
     "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`agenda` where `status` > 0 && `usuario_id` = "+ req.session.passport.user.id +"  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
     , { type: models.Sequelize.QueryTypes.SELECT}
   ).then(function(result) {
-    res.status(200).json({
-      success: false,
-      result: result
+    models.sequelize.query(
+      "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`eventos` where `status` > 0 && `usuario_id` = "+ req.session.passport.user.id +"  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
+      , { type: models.Sequelize.QueryTypes.SELECT}
+    ).then(function(result2) {
+      res.status(200).json({
+        success: false,
+        result: result.concat(result2)
+      });
     });
   });
 }
@@ -2353,6 +2371,24 @@ exports.cargarCitasMesPac = function(object, req, res){
     res.status(200).json({
       success: false,
       result: result
+    });
+  });
+}
+
+exports.eventoAgregar = function (object, req, res){
+  models.Evento.create({
+    fechaHoraInicio: new Date(object.inicio),
+    fechaHoraFin: new Date(object.fin),
+    nombre: object.nombre,
+    ubicacion: object.ubicacion,
+    descripcion: object.descripcion,
+    usuario_id : req.session.passport.user.id
+  }).then(function(evento){
+    var success = false;
+    if (evento) success = true;
+    res.status(200).json({
+      success:true,
+      evento: evento
     });
   });
 }

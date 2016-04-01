@@ -5140,3 +5140,119 @@ function editarPerfilSecretaria(){
   });
   loadDatosSecretaria();
 }
+
+function seleccionarAgregarEventoCita(timestamp,fecha,clase){
+    var startDate = formatearFechaLocalT(new Date(fecha));
+
+    var now = new Date();
+    var startMinutes = now.getMinutes();
+    var sumMinutes = 0;
+    if (parseInt(startMinutes) > 0){
+      sumMinutes = ((15*(parseInt((parseInt(startMinutes)/15).toString().split('.')[0])+1))-parseInt(startMinutes));
+    }
+    var minStartDate = formatearFechaLocalT(new Date(now.setMinutes(now.getMinutes()+sumMinutes)));
+
+    if (new Date(startDate) >= new Date(minStartDate)){
+
+      bootbox.dialog({
+        onEscape: function () {
+          bootbox.hideAll();
+      },
+      className: 'Intermed-Bootbox',
+      title: '<span class="title">¿Que vas a agendar?</span>',
+      backdrop: true,
+      size:'small',
+      message:
+      '<div class="row">'+
+        '<div class="col-md-12"><button class="btn btn-default btn-block btn-lg agendarCitaButton">Cita</button></div>'+
+        '<div class="col-md-12"><button class="btn btn-default btn-block btn-lg agendarEventoButton">Evento</button></div>'+
+      '</div>'
+      });
+
+      $('.agendarCitaButton').on('click',function(){
+        bootbox.hideAll();
+        seleccionarServicioCitaOficina(timestamp,fecha,clase);
+      });
+
+      $('.agendarEventoButton').on('click',function(){
+        bootbox.hideAll();
+        seleccionarAgregarEvento(timestamp,fecha,clase);
+      });
+    }
+}
+
+function seleccionarAgregarEvento(timestamp,fecha,clase){
+      var startDate = formatearFechaLocalT(new Date(fecha));
+
+      var now = new Date();
+      var startMinutes = now.getMinutes();
+      var sumMinutes = 0;
+      if (parseInt(startMinutes) > 0){
+        sumMinutes = ((15*(parseInt((parseInt(startMinutes)/15).toString().split('.')[0])+1))-parseInt(startMinutes));
+      }
+      var minStartDate = formatearFechaLocalT(new Date(now.setMinutes(now.getMinutes()+sumMinutes)));
+
+      if (new Date(startDate) >= new Date(minStartDate)){
+          var newDate = new Date(fecha);
+          var endDate = formatearFechaLocalT(new Date(newDate.setMinutes(newDate.getMinutes()+60)));
+
+          bootbox.dialog({
+            onEscape: function () {
+              bootbox.hideAll();
+          },
+          className: 'Intermed-Bootbox',
+          title: '<span class="title">Detalles del evento</span>',
+          backdrop: true,
+          message:
+          '<form method="post" id="formAgregarEvento">'+
+            '<div class="row">'+
+              '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+                '<div class="form-group">'+
+                  '<label>Nombre: </label>'+
+                  '<input type="text" class="form-control" placeholder="Nombre" id="nombreEvento" required>'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'+
+                '<div class="form-group">'+
+                  '<label>Inicio: </label>'+
+                  '<input type="datetime-local" class="form-control" placeholder="Inicio" id="fechaInicioEvento"  value="'+ startDate +'" min="'+ minStartDate +'" required step="'+ (60*15) +'">'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">'+
+                '<div class="form-group">'+
+                  '<label>Fin: </label>'+
+                  '<input type="datetime-local"  class="form-control fechaFInEvento" placeholder="Fin" id="fechaFinEvento" value="'+ endDate +'" required step="'+ (60*15) +'">'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+                '<div class="form-group">'+
+                  '<label>Ubicacion: </label>'+
+                  '<input type="text" class="form-control" placeholder="Ubicación" id="ubicacionEvento">'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+                '<div class="form-group">'+
+                  '<label>Descripción: </label>'+
+                  '<textarea class="form-control" placeholder="Descripción" rows="4" id="descripcionEvento" style="resize:none"></textarea>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+            '<div class="row footerBootbox">'+
+              '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 pull-right">'+
+                '<button type="submit" class="btn btn-success btn-lg btn-block">Guardar</button>'+
+              '</div>'+
+              '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 pull-left">'+
+                '<input type="button" class="btn btn-danger btn-lg btn-block" value="Cancelar" onclick="bootbox.hideAll()">'+
+              '</div>'+
+            '</div>'+
+          '</form>'
+          });
+
+          $('#formAgregarEvento').on('submit', function(){ return validarAgregarEvento(timestamp,fecha,clase)});
+
+      }
+}
+
+function detalleEventoMedico(evento_id){
+  console.log('Ver evento: ' + evento_id);
+}
