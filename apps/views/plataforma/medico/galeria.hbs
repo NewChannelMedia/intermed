@@ -1,0 +1,89 @@
+<div id="perfilMedico">
+  <input type="hidden" id="MedicoId" value="{{usuario.Medico.id}}" />
+  <div id="screens">
+    <section id="perfil" class="header-section">
+      <nav id="stickyNav" class="nav-menu sticky h67-medcond">
+        <div class="container-fluid nav-menu-container">
+          <div id="menuMed" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="row nav-menu-row">
+              <div class="nav-menu-inner-section">
+                <ul class="nav nav-pills nav-justified nav-menu-menu h67-medcond s20">
+                  <li>
+                    <a id="toPerfil">
+                      <div class="body-container">
+                        <div class="center-content">
+                          <span class="hidden-xs">Perfil</span>
+                          <span class="proicon proicon-medico hidden-lg hidden-md hidden-sm"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a id="toUbicaciones">
+                      <div class="body-container">
+                        <div class="center-content">
+                          <span class="hidden-xs">Ubicaciones</span>
+                          <span class="proicon proicon-ubicacion-marker hidden-lg hidden-md hidden-sm"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a id="toInfo">
+                      <div class="body-container">
+                        <div class="center-content">
+                          <span class="hidden-xs">Info</span>
+                          <span class="proicon proicon-estudios hidden-lg hidden-md hidden-sm"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a id="toCurriculum">
+                      <div class="body-container">
+                        <div class="center-content">
+                          <span class="hidden-xs">Curriculum</span>
+                          <span class="proicon proicon-curriculum hidden-lg hidden-md hidden-sm"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="privateDisplay {{#ifSessionVal 'id'}}{{else}}hidden{{/ifSessionVal}}">
+                    <a id="toColegas">
+                      <div class="body-container">
+                        <div class="center-content">
+                          <span class="hidden-xs">Colegas</span>
+                          <span class="proicon proicon-colegas hidden-lg hidden-md hidden-sm"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="privateDisplay {{#ifSessionVal 'id'}}{{else}}hidden{{/ifSessionVal}}">
+                    <a id="toComentarios">
+                      <div class="body-container">
+                        <div class="center-content">
+                          <span class="hidden-xs">Comentarios</span>
+                          <span class="proicon proicon-comentar hidden-lg hidden-md hidden-sm"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a >
+                      <div class="body-container">
+                        <div class="center-content">
+                          <span class="hidden-xs">Galería</span>
+                          <span class="proicon proicon-galeria hidden-lg hidden-md hidden-sm"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </section>
+  </div>
+</div>

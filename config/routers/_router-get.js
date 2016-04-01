@@ -8,6 +8,7 @@ module.exports = function (object){
   var passport = object.passport;
   var url = object.url;
 
+
   app.get('*', function (req, res, next){
     if (req.url != '/logout'){
       if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "M"){
@@ -226,6 +227,36 @@ module.exports = function (object){
       next();
     }
   });
+
+  /*RUTA CARGAR GALERIA DE MÉDICO (DEJAR JUSTO ANTES DE ROUTER /:usuario)*/
+  app.get( '/:usuario/galeria', function ( req, res, next) {
+    var usuario = '';
+    if ( req.params.usuario ) usuario = req.params.usuario;
+    if (usuario != ""){
+      models.Usuario.findOne({
+        where: models.Sequelize.or(
+          {
+            usuarioUrl: usuario,
+            tipoUsuario: 'M'
+          },
+          {
+            urlPersonal: usuario,
+            tipoUsuario: 'M'
+          }
+        )
+      }).then(function(us){
+        if (us){
+          routeLife( 'plataforma2', 'plataforma/medico', hps );
+          intermed.callController( 'Home', 'galeria', {usuario: usuario}, req, res );
+        } else {
+          next();
+        }
+      });
+    } else {
+      next();
+    }
+  } );
+  /*FIN RUTA GALERIA MEDICO*/
 
   /*RUTA CARGAR PERFIL (DEJAR SIEMPRE AL FINAL)*/
   /*Dejando al final se evita que cada que se entre al router se haga una consulta para ver si se trata de un usuario*/
