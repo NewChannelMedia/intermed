@@ -5,6 +5,8 @@ module.exports = function(sequelize, DataTypes) {
     id: {type : DataTypes.BIGINT, autoIncrement: true, primaryKey: true},
     fechaHoraInicio: {type: DataTypes.DATE},
     fechaHoraFin: {type: DataTypes.DATE},
+    nombre: {type: DataTypes.STRING},
+    ubicacion: {type: DataTypes.STRING},
     descripcion: {type: DataTypes.STRING},
     usuario_id : {type : DataTypes.INTEGER}
   }, {

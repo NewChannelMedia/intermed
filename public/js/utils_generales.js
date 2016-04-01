@@ -1687,6 +1687,55 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
           }
         }
       });
+      data.eventos.forEach(function(res){
+        //{"id":7,"fechaHoraInicio":"2016-04-01T06:00:00.000Z","fechaHoraFin":"2016-04-01T15:00:00.000Z","nombre":"Evento de madrugada","ubicacion":"Los mochis","descripcion":"","usuario_id":8}
+
+            var hora = new Date(res.fechaHoraInicio).toLocaleString('en-US').split(', ')[1].split(':')[0] +':'+new Date(res.fechaHoraInicio).toLocaleString('en-US').split(', ')[1].split(':')[1];
+            var horaFin = new Date(res.fechaHoraFin).toLocaleString('en-US').split(', ')[1].split(':')[0] +':'+new Date(res.fechaHoraFin).toLocaleString('en-US').split(', ')[1].split(':')[1];
+            alert('hora: ' + hora);
+            alert('HORA: ' + horaFin);
+            if (hora.substring(0,1) == "0"){
+              hora = hora.substring(1,5);
+            }
+            var element = $('.mediaHora.'+hora);
+            element.addClass('ocupada').addClass('consulta');
+            element.find('.glyphicon').addClass('glyphicon-user');
+
+            var a = new Date(res.fechaHoraFin);
+            var b = new Date(res.fechaHoraInicio);
+            var bloques = ((a-b)/60000)/15;
+
+            var newElement = element.next();
+            var antElement = null;
+            for (i = 1; i <bloques;i++){
+              newElement.addClass('ocupada').addClass('bloque');
+              if (res.status == 2){
+                newElement.addClass('cancelada');
+              }
+              newElement.find('.mediaHoraInterno').on('click',function(){
+                detalleCitaSecretaria(res.id);
+              });
+              antElement = newElement;
+              newElement = newElement.next();
+              if (!newElement[0]){
+                newElement = antElement.parent().parent().next().find('.mediaHora').first();
+              }
+            }
+
+            var nombre = res.nombre;
+            
+            element.find('.nombre').text(nombre);
+            var ubicacion = res.Direccion.nombre;
+            element.find('.ubicacion').text(ubicacion);
+            element.find('.media').removeClass('hidden');
+            if (res.status == 2){
+              element.find('.media-right').text('Cancelada');
+              element.addClass('cancelada');
+            }
+            element.find('.mediaHoraInterno').on('click',function(){
+              detalleCitaSecretaria(res.id);
+            });
+      });
       data.result.forEach(function(res){
           var hora = res.fechaHoraInicio.split('T')[1].split(':00.00')[0].replace(':','-');
           var horaFin = res.fechaHoraFin.split('T')[1].split(':00.00')[0].replace(':','-');
@@ -2653,6 +2702,40 @@ function autoCompleteAseg(inputId){
         console.log('Ajax error: ' + JSON.stringify(err));
       }
     });
+}
+
+function formatearFechaLocalT(fecha){
+  //Transforma: 03/31/2016, 07:00:00 PM -> 2016-03-31T19:00:00
+  fecha = new Date(fecha).toLocaleString('en-US');
+  fecha = fecha.split(', ');
+  var mes = fecha[0].split('/')[0].toString();
+  var dia = fecha[0].split('/')[1].toString();
+  var anio = fecha[0].split('/')[2].toString();
+  var horas = parseInt(fecha[1].split(':')[0]);
+  var minutos = parseInt(fecha[1].split(':')[1]).toString();
+
+  if (mes.length== 1){
+    mes = '0'+mes;
+  }
+  if (dia.length== 1){
+    dia = '0'+dia;
+  }
+  if (horas != 12 && fecha[1].search('PM')>0){
+    horas = horas+12;
+  }
+
+  horas = horas.toString();
+  if (horas.length== 1){
+    horas = '0'+horas;
+  }
+
+  if (minutos.length== 1){
+    minutos = '0'+minutos;
+  }
+
+  fecha = anio +'-'+mes+'-'+dia+'T'+horas+':'+minutos+':00';
+
+  return fecha;
 }
 
 function cargarCitasPaciente(offset, element){

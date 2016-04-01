@@ -4449,16 +4449,41 @@ function BuscarPaciente(inputBusquedaId,outPutResultId,inicio,fin,medico,servici
 }
 
 function validarAgregarEvento(){
-  var nombreEvento = $('#nombreEvento').val();
-  var fechaInicioEvento = $('#fechaInicioEvento').val();
-  var fechaFinEvento = $('#fechaFinEvento').val();
-  var ubicacionEvento = $('#ubicacionEvento').val();
-  var descripcionEvento = $('#descripcionEvento').val();
-  console.log('Nombre evento: ' + nombreEvento);
-  console.log('Fecha inicio evento: ' + fechaInicioEvento);
-  console.log('Fecha inicio min: ' + $('#fechaInicioEvento').prop('min'));
-  console.log('Fecha fin evento: ' + fechaFinEvento);
-  console.log('Ubicacion evento: ' + ubicacionEvento);
-  console.log('Descripción evento: ' + descripcionEvento);
+  var fechaInicioEvento = new Date($('#fechaInicioEvento').val().replace('T',' ')).toUTCString();
+  var fechaFinEvento = new Date($('#fechaFinEvento').val().replace('T',' ')).toUTCString();
+
+  if (new Date(fechaInicioEvento)<new Date(fechaFinEvento)){
+    var nombreEvento = $('#nombreEvento').val();
+    var ubicacionEvento = $('#ubicacionEvento').val();
+    var descripcionEvento = $('#descripcionEvento').val();
+    $.ajax( {
+      async: false,
+      url: '/agenda/evento/agregar',
+      type: 'POST',
+      dataType: "json",
+      data: {
+        inicio: fechaInicioEvento,
+        fin: fechaFinEvento,
+        nombre: nombreEvento,
+        ubicacion: ubicacionEvento,
+        descripcion: descripcionEvento
+      },
+      cache: false,
+      success: function ( data ) {
+        if (data.success){
+          console.log('RESPONSE: ' + JSON.stringify(data));
+          bootbox.hideAll();
+        } else {
+          //Error al agregar el evento (ya existe algun evento o cita)
+        }
+      },
+      error: function(err){
+        console.log('Ajax error: ' + JSON.stringify(err));
+      }
+    });
+  } else {
+    alert('La fecha de fin del evento debe de ser mayor a la fecha de inicio');
+    $('#fechaFinEvento')[0].focus();
+  }
   return false;
 }
