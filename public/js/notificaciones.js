@@ -88,7 +88,7 @@ function socketManejadores() {
       if ( record.visto === 0 ) {
         visto = ' style="background-color:#EEEEEE" ';
       }
-      $( '#notificacionesInboxList' ).append( '<li class="media" ' + visto + ' id="vistaPrev_'+record.usuario.id+'"><div class="media-left"><a href="' + base_url + 'inbox/' + record.usuario.usuarioUrl + '"><img class="media-object img-circle" src="' + record.usuario.urlFotoPerfil + '" style="width: 40px;height:40px"></a></div><div class="media-body"><a href="' + base_url + 'inbox/' + record.usuario.usuarioUrl + '" style="color:black">' + record.usuario.DatosGenerale.nombre + ' ' + record.usuario.DatosGenerale.apellidoP + ' ' + record.usuario.DatosGenerale.apellidoM + '</a><br><div class="text-left msg" style="margin-top:5px;">' + record.mensaje + '</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" ><span class="fecha">' + formattedDate( record.fecha ) + ' </span><span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>' );
+      $( '#notificacionesInboxList' ).append( '<li class="media" ' + visto + ' id="vistaPrev_'+record.usuario.id+'"><div class="media-left center-content"><a href="' + base_url + 'inbox/' + record.usuario.usuarioUrl + '"><img class="media-object img-circle" src="' + record.usuario.urlFotoPerfil + '" style="width: 40px;height:40px"></a></div><div class="media-body center-content"><a href="' + base_url + 'inbox/' + record.usuario.usuarioUrl + '" style="color:black">' + record.usuario.DatosGenerale.nombre + ' ' + record.usuario.DatosGenerale.apellidoP + ' ' + record.usuario.DatosGenerale.apellidoM + '</a><br><div class="text-left msg" style="margin-top:5px;">' + record.mensaje + '</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" ><span class="fecha">' + formattedDate( record.fecha ) + ' </span><span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>' );
     } );
     if ( data.length > 0 ) {
       loadInboxList = true;
@@ -162,7 +162,7 @@ function socketManejadores() {
             if (usuario){
               InboxListLoaded.push( usuario.id );
               visto = ' style="background-color:#EEEEEE" ';
-              $( '#notificacionesInboxList' ).prepend( '<li class="media" ' + visto + ' id="vistaPrev_'+usuario.id+'"><div class="media-left"><a href="' + base_url + 'inbox/' + usuario.usuarioUrl + '"><img class="media-object img-circle" src="' + usuario.urlFotoPerfil + '" style="width: 40px;height:40px"></a></div><div class="media-body"><a href="' + base_url + 'inbox/' + usuario.usuarioUrl + '">' + usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM + '</a><br><div class="text-left msg" style="margin-top:-25px;">' + renderHTML(result.mensaje) + '</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" ><span class="fecha">' + formattedDate(getDateTime( true )) + ' </span><span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>' );
+              $( '#notificacionesInboxList' ).prepend( '<li class="media" ' + visto + ' id="vistaPrev_'+usuario.id+'"><div class="media-left center-content"><a href="' + base_url + 'inbox/' + usuario.usuarioUrl + '"><img class="media-object img-circle" src="' + usuario.urlFotoPerfil + '" style="width: 40px;height:40px"></a></div><div class="media-body center-content"><a href="' + base_url + 'inbox/' + usuario.usuarioUrl + '">' + usuario.DatosGenerale.nombre + ' ' + usuario.DatosGenerale.apellidoP + ' ' + usuario.DatosGenerale.apellidoM + '</a><br><div class="text-left msg" style="margin-top:-25px;">' + renderHTML(result.mensaje) + '</div><br/><div class="text-right float-right" style="margin-top:-25px; margin-right:5px;font-size: 60%" ><span class="fecha">' + formattedDate(getDateTime( true )) + ' </span><span style="font-size: 60%" class="glyphicon glyphicon-time"></span></div></div></li>' );
             }
           },
           error: function (err){
@@ -383,7 +383,7 @@ function formatearNotificacion( record , element) {
 
   var visto = '';
   if ( record.visto == 0 ) {
-    visto = '  style="background-color:#DDD" ';
+    visto = 'bg-orangeTransparent ';
   }
 
   //$('img').on('error', function() { $(this).attr("src", '/garage/profilepics/dpp.png')});
@@ -405,29 +405,28 @@ function formatearNotificacion( record , element) {
       }
       usuario_id = record[ tipo ].Usuario.id;
     }
-
-    var mediaObjectFecha = '<div class="text-left" style="margin-top:-5px;"><span class="not-fecha hidden invisible">' + record.inicio.slice( 0, 19 ).replace( 'T', ' ' ) + '</span><span style="font-size: 60%" class="glyphicon glyphicon-time" > ' + fecha + '</span></div>';
+    var mediaObjectFecha = '<div class="text-right center-block h67-medcond s15 text-default lbl-fecha"><small><span class="not-fecha hidden invisible">' + record.inicio.slice( 0, 19 ).replace( 'T', ' ' ) + '</span><span class="glyphicon glyphicon-time" ></span> ' + fecha + '</small></div>';
 
     var mediaObjectImagen = '<img class="media-object img-circle" src="' + fotoPerfil + '" '+style+'>';
-    var mediaObjectFotoPerfil = '<div class="media-left"><a href= "/' + usuarioUrl + '">'+mediaObjectImagen+'</a></div>';
+    var mediaObjectFotoPerfil = '<div class="media-left center-content"><a href= "/' + usuarioUrl + '">'+mediaObjectImagen+'</a></div>';
 
     switch ( record.tipoNotificacion_id ) {
       /*PACIENTE*/
       case 1:
         //solicitudAmistad
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '"><span id="pre' + record.id + '"></span>' + nombreCompleto + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></a>' + mediaObjectFecha + '</div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + usuario_id + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + usuario_id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>';
+        not += mediaObjectFotoPerfil + '<div class="media-body center-content"><a href= "/' + usuarioUrl + '"><span id="pre' + record.id + '"></span>' + nombreCompleto + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></a></div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + usuario_id + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + usuario_id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>';
         break;
       case 2:
         //solicitudAmistadAceptada
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">' + nombreCompleto + ' aceptó tu solicitud de amistad</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body center-content"><a href= "/' + usuarioUrl + '">' + nombreCompleto + ' aceptó tu solicitud de amistad</a></div>';
         break;
       case 3:
         //solicitudesAceptadas
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">Aceptaste la solicitud de amistad de ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body center-content"><a href= "/' + usuarioUrl + '">Aceptaste la solicitud de amistad de ' + nombreCompleto + '</a></div>';
         break;
       case 8:
         //solicitudRechazada
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">Rechazaste la solicitud de amistad de ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body center-content"><a href= "/' + usuarioUrl + '">Rechazaste la solicitud de amistad de ' + nombreCompleto + '</a></div>';
         break;
       case 12:
         //medicoRecomendado
@@ -437,14 +436,13 @@ function formatearNotificacion( record , element) {
           var fotoPaciente = record.paciente.Usuario.urlFotoPerfil;
           var nombreCompleto = record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM;
           var nombreDoctor = record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.ApellidoM;
-          content += '<div class="media-left">';
+          content += '<div class="media-left center-content">';
           content += '<a href="/' + medicoUrl + '">';
           content += mediaObjectImagen;
           content += '</div>';
-          content += '<div class="media-body">' + nombreCompleto + ' Te ha recomendado al Dr.' + nombreDoctor;
+          content += '<div class="media-body center-content">' + nombreCompleto + ' Te ha recomendado al Dr.' + nombreDoctor;
           content += '</a>';
           content += '<br />';
-          content += mediaObjectFecha
           content += '</div>';
         }
         not = content;
@@ -456,101 +454,100 @@ function formatearNotificacion( record , element) {
         for ( var i in record.medicos ) {
           ides += "|" + record.medicos[ i ].id;
         }
-        content += '<div class="media-left">';
+        content += '<div class="media-left center-content">';
         content += '<a href="#" onclick="miRecomendacion(\'' + ides + '\');cerrarNotModal()" class="recomendando">';
         content += mediaObjectImagen;
         content += '</a>';
         content += '</div>';
-        content += '<div class="media-body">';
+        content += '<div class="media-body center-content">';
         content += '<a href="#" onclick="miRecomendacion(\'' + ides + '\');cerrarNotModal();" class="recomendando">';
         content += nombreCompleto + ' te recomendo unos médicos';
         content += '</a>';
-        content += mediaObjectFecha
         content += '</div>';
         not = content;
         break;
         /*MEDICO*/
       case 4:
         //solicitudAmistad
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '"><span id="pre' + record.id + '"></span>' + nombreCompleto + ' <span id="post' + record.id + '">quiere ser tu colega en Intermed</span></a>' + mediaObjectFecha + '</div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + usuario_id+ ',' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(' + usuario_id + ',' + record.id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>';
+        not += mediaObjectFotoPerfil + '<div class="media-body center-content"><a href= "/' + usuarioUrl + '"><span id="pre' + record.id + '"></span>' + nombreCompleto + ' <span id="post' + record.id + '">quiere ser tu colega en Intermed</span></a></div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + usuario_id+ ',' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(' + usuario_id + ',' + record.id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>';
         break;
       case 5:
         //solicitudAmistadAceptada
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">' + nombreCompleto + ' ahora es tu colega en Intermed</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body center-content"><a href= "/' + usuarioUrl + '">' + nombreCompleto + ' ahora es tu colega en Intermed</a></div>';
         break;
       case 6:
         //solicitudesAceptadas
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">Aceptaste la solicitud de amistad de ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body center-content"><a href= "/' + usuarioUrl + '">Aceptaste la solicitud de amistad de ' + nombreCompleto + '</a></div>';
         break;
       case 7:
         //agregadoMedicoFavorito
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">' + nombreCompleto + ' te agregó a sus médicos favoritos</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body center-content"><a href= "/' + usuarioUrl + '">' + nombreCompleto + ' te agregó a sus médicos favoritos</a></div>';
         break;
       case 9:
         //solicitudRechazada
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">Rechazaste la solicitud de amistad de ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body center-content"><a href= "/' + usuarioUrl + '">Rechazaste la solicitud de amistad de ' + nombreCompleto + '</a></div>';
         break;
       case 13:
         //doctorRecomendado
-        not += mediaObjectFotoPerfil + '<div class="media-body"><a href= "/' + usuarioUrl + '">' + nombreCompleto + ' Recomendo tu perfil a otro paciente</a>' + mediaObjectFecha + '</div>';
+        not += mediaObjectFotoPerfil + '<div class="media-body center-content"><a href= "/' + usuarioUrl + '">' + nombreCompleto + ' Recomendo tu perfil a otro paciente</a></div>';
         break;
       case 14:
         //pedirRecomendacion
-        not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' te ha pedido las siguientes recomendaciones</a>' + mediaObjectFecha + '</div>';
+        not += '<div class="media-left center-content"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' te ha pedido las siguientes recomendaciones</a></div>';
         break;
       case 20:
           //paciente generando cita
-          not += '<div class="media-left"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' Ha solicitado una cita</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left center-content"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' Ha solicitado una cita</a></div>';
           break;
       case 21:
           //paciente calificación de cita
-          not += '<div class="media-left"><a onclick="bootboxCalificarCita(\''+record.data+'\',\''+record.id+'\')">'+mediaObjectImagen+'</a></div><div class="media-body"><a onclick="bootboxCalificarCita(\''+record.data+'\',\''+record.id+'\')">Califica tu cita con el ' + nombreCompleto + '</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left center-content"><a onclick="bootboxCalificarCita(\''+record.data+'\',\''+record.id+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="bootboxCalificarCita(\''+record.data+'\',\''+record.id+'\')">Califica tu cita con el ' + nombreCompleto + '</a></div>';
           break;
       case 22:
           //medico cancelando cita
-          not += '<div class="media-left"><a  onclick="detalleCancelacionMedico(\''+ record.data +'\')">'+mediaObjectImagen+'</a></div><div class="media-body"><a  onclick="detalleCancelacionMedico(\''+ record.data +'\')">El ' + nombreCompleto + ' ha cancelado una cita que tenias programada.</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left center-content"><a  onclick="detalleCancelacionMedico(\''+ record.data +'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a  onclick="detalleCancelacionMedico(\''+ record.data +'\')">El ' + nombreCompleto + ' ha cancelado una cita que tenias programada.</a></div>';
           break;
       case 23:
           //paciente ha rechazado cambio de cita
-          not += '<div class="media-left"><a href="#" >'+mediaObjectImagen+'</a></div><div class="media-body"><a href="#" >' + nombreCompleto + ' Ha rechazado la cita</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left center-content"><a href="#" >'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a href="#" >' + nombreCompleto + ' Ha rechazado la cita</a></div>';
           break;
       case 24:
           //paciente cancelando cita
-          not += '<div class="media-left" ><a onclick="detalleCancelacionPaciente(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body"><a onclick="detalleCancelacionPaciente(\''+record.data+'\')">El paciente ' + nombreCompleto + ' ha cancelado una cita.</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left center-content" ><a onclick="detalleCancelacionPaciente(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="detalleCancelacionPaciente(\''+record.data+'\')">El paciente ' + nombreCompleto + ' ha cancelado una cita.</a></div>';
           break;
       case 25:
           //medico tiene solicitud de cita
-          not += '<div class="media-left"><a onclick="detalleCita(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body"><a onclick="detalleCita(\''+record.data+'\')">El paciente ' + nombreCompleto + ' ha generado una cita.</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left center-content"><a onclick="detalleCita(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="detalleCita(\''+record.data+'\')">El paciente ' + nombreCompleto + ' ha generado una cita.</a></div>';
           break;
       case 9:
           //medico tiene solicitud de cita
-          not += '<div class="media-left"><a>INTERMED</a></div><div class="media-body"><a onclick="actualizarSesion();location.reload();">Tu cédula ha sido aceptada.</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left center-content"><a>INTERMED</a></div><div class="media-body center-content"><a onclick="actualizarSesion();location.reload();">Tu cédula ha sido aceptada.</a></div>';
           break;
       case 10:
-          not += '<div class="media-left"><a>INTERMED</a></div><div class="media-body"><a onclick="actualizarSesion();location.reload();">Tu cédula ha sido rechazada.</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left center-content"><a>INTERMED</a></div><div class="media-body center-content"><a onclick="actualizarSesion();location.reload();">Tu cédula ha sido rechazada.</a></div>';
           actualizarSesion();
           //medico tiene solicitud de cita
-          //not += '<div class="media-left"><a onclick="detalleCita(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body"><a onclick="detalleCita(\''+record.data+'\')">El paciente ' + nombreCompleto + ' ha generado una cita.</a>' + mediaObjectFecha + '</div>';
+          //not += '<div class="media-left center-content"><a onclick="detalleCita(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="detalleCita(\''+record.data+'\')">El paciente ' + nombreCompleto + ' ha generado una cita.</a></div>';
           break;
       case 31:
           //Medico envio invitación a secretaria
-          not += '<div class="media-left"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a>' + nombreCompleto + ' te ha invitado a ser su secretaria.</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left center-content"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a>' + nombreCompleto + ' te ha invitado a ser su secretaria.</a></div>';
           break;
       case 32:
           //Medico elimino a secretaria
-          not += '<div class="media-left"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a>' + nombreCompleto + ' te ha eliminado de sus secretarias.</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left center-content"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a>' + nombreCompleto + ' te ha eliminado de sus secretarias.</a></div>';
           break;
       case 33:
           //Secretaria acepto invitación
-          not += '<div class="media-left"><a href="/secretaria" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a href="/secretaria" >' + nombreCompleto + ' ha aceptado la invitación para ser tu secretaria, ¡Asígnale sus permisos!.</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left center-content"><a href="/secretaria" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a href="/secretaria" >' + nombreCompleto + ' ha aceptado la invitación para ser tu secretaria, ¡Asígnale sus permisos!.</a></div>';
           break;
       case 34:
           //Secretaria rechazo invitación
-          not += '<div class="media-left"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a>' + nombreCompleto + ' ha rechazado la invitación para ser tu secretaria.</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left center-content"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a>' + nombreCompleto + ' ha rechazado la invitación para ser tu secretaria.</a></div>';
           break;
       case 35:
           //Secretaria elimino a médico
-          not += '<div class="media-left"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body"><a>' + nombreCompleto + ' dejó de ser tu secretaria.</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left center-content"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a>' + nombreCompleto + ' dejó de ser tu secretaria.</a></div>';
           break;
       case 16:
           mediaObjectImagen = '<img class="media-object img-circle" src="' + record.comentario.Medico.Usuario.urlFotoPerfil + '" '+style+'>';
@@ -560,12 +557,12 @@ function formatearNotificacion( record , element) {
             record.comentario.Medico.Usuario.DatosGenerale.apellidoM = '';
           }
           nombreCompleto = record.comentario.Medico.Usuario.DatosGenerale.nombre + ' ' + record.comentario.Medico.Usuario.DatosGenerale.apellidoP + record.comentario.Medico.Usuario.DatosGenerale.apellidoM;
-          not += '<div class="media-left"><a onclick="verDetalleComentario('+ record.comentario.id +')">'+mediaObjectImagen+'</a></div><div class="media-body"><a onclick="verDetalleComentario('+ record.comentario.id +')">El Dr. ' + nombreCompleto + ' ha respondido tu comentario.</a>' + mediaObjectFecha + '</div>';
+          not += '<div class="media-left center-content"><a onclick="verDetalleComentario('+ record.comentario.id +')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="verDetalleComentario('+ record.comentario.id +')">El Dr. ' + nombreCompleto + ' ha respondido tu comentario.</a></div>';
           break;
     }
     not += '</div>';
 
-    not = '<'+ element +' class="media" id="li' + record.id + '" ' + visto + '>' + not + '</'+element+'>'
+    not = '<'+ element +' class="' + visto + '"><div class="media" id="li' + record.id + '"><div class="body-container">' + not + '</div></div>'+mediaObjectFecha+'</'+element+'>'
   //}
   return not;
 }
@@ -749,7 +746,7 @@ function mostrarNotificaciones() {
     $( '#notificacinesList' ).html( '<li class="text-center"><div class="throbber-loader" style="margin-top:10px">…</div></li>' );
     setTimeout( function () {
       socket.emit( 'buscarNotificaciones' );
-    }, 100 );
+    }, 1 );
 
   }
 }
