@@ -2405,11 +2405,6 @@ ol.sortable,ol.sortable ol {
   padding-top: 5px;
 }
 
-#divCalendarioPadre{
-  padding-top: 10px;
-  height: auto;
-}
-
 .medium{
   width: 50%;
   padding: auto;
@@ -3179,11 +3174,11 @@ iframe {
   display: none;
   visibility: hidden;
 }
-
+/*
 .fc-event .fc-bg {
   opacity: 1!important;
 }
-
+*/
 .fc-bgevent{
   background-color: transparent;
 }
@@ -3198,9 +3193,16 @@ tr.fc-minor .fc-widget-content:not(.fc-time) {
 .fc-time-grid .fc-content-skeleton {
     z-index: 301!important;
 }
-td.fc-day.fc-widget-content {
+
+
+#divCalendario.not(.calCita) td.fc-day.fc-widget-content {
     background-color: #375467;
 }
+
+#divCalendario.calCita td.fc-day.fc-widget-content{
+  background-color: rgb(234, 234, 234);
+}
+
 /*
 .fc-toolbar .fc-left {
     font-size: 35px;

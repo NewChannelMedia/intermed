@@ -276,8 +276,9 @@ function iniciarCalendarioAgendarCita(){
         allDaySlot: false,
         defaultDate: moment().format("YYYY-MM-DD"),
         slotLabelFormat: 'h:mm a',
-        slotLabelInterval : duracionServicio,
-        slotDuration: '00:30',
+        //slotLabelInterval : duracionServicio,
+        slotLabelInterval : '00:30',
+        slotDuration: '00:15',
         header: {
             //center: false,
             //right: false,

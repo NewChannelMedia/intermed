@@ -799,17 +799,15 @@ exports.seleccionaHorarios = function(object, req, res) {
           };
 
           var horario = {
-              //id: 'businessHours_' +  datos[i].id,
               title: datos[i].horaInicio + ' - ' + datos[i].horaFin,
               start: horaInicio,
               end: horaFin,
-              color : '#FFF',
+              //color : '#FFF',
               constraint: 'businessHours',
               rendering: 'background',
-              overlap: false,
-              //constraint: 'businessHours'
-              //dow: [datos[i].dia]
+              overlap: false
           };
+
           resultado.push(horario);
       };
 
@@ -1628,13 +1626,16 @@ exports.eventosPorDia = function (object, req, res){
       },
       include :[{model: models.Direccion, where : { usuario_id: req.session.passport.user.id },attributes: ['id']}]
     }).then(function(horarios) {
+      object.fecha = new Date(object.fecha).toISOString().replace('T',' ').replace('.000Z','');
+      object.fin = new Date(object.fin).toISOString().replace('T',' ').replace('.000Z','');
+
       models.Evento.findAll({
         where: {
           fechaHoraInicio: { $gte: object.fecha, $lt: object.fin },
           status:1
-        }
+        },
+        logging: console.log
       }).then(function(eventos){
-        console.log('Eventos: ' + JSON.stringify(eventos));
         res.status(200).json({
           success:true,
           result: result,
