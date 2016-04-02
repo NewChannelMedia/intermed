@@ -799,17 +799,15 @@ exports.seleccionaHorarios = function(object, req, res) {
           };
 
           var horario = {
-              //id: 'businessHours_' +  datos[i].id,
               title: datos[i].horaInicio + ' - ' + datos[i].horaFin,
               start: horaInicio,
               end: horaFin,
-              color : '#FFF',
+              //color : '#FFF',
               constraint: 'businessHours',
               rendering: 'background',
-              overlap: false,
-              //constraint: 'businessHours'
-              //dow: [datos[i].dia]
+              overlap: false
           };
+
           resultado.push(horario);
       };
 
@@ -1628,11 +1626,23 @@ exports.eventosPorDia = function (object, req, res){
       },
       include :[{model: models.Direccion, where : { usuario_id: req.session.passport.user.id },attributes: ['id']}]
     }).then(function(horarios) {
+      object.fecha = new Date(object.fecha).toISOString().replace('T',' ').replace('.000Z','');
+      object.fin = new Date(object.fin).toISOString().replace('T',' ').replace('.000Z','');
+
+      models.Evento.findAll({
+        where: {
+          fechaHoraInicio: { $gte: object.fecha, $lt: object.fin },
+          status:1
+        },
+        logging: console.log
+      }).then(function(eventos){
         res.status(200).json({
           success:true,
           result: result,
+          eventos: eventos,
           horarios: horarios
         })
+      });
     });
 
   })
@@ -2150,6 +2160,9 @@ exports.serviciosPorHorario = function (object, req, res){
       horas = 12;
     }
     object.inicio = object.inicio.split(', ')[1].split(':');
+    if (object.inicio[0]==12){
+      horas = 0;
+    }
     object.inicio[0] = (parseInt(object.inicio[0])+horas).toString();
     if (object.inicio[0].length == 1){
       object.inicio[0] = '0'+object.inicio[0];
@@ -2206,16 +2219,12 @@ exports.crearCita = function (object, req, res){
           id: object.servicio_id
         }
       }).then(function(servicio){
-        if (object.kendo){
-          object.inicio = object.inicio.replace(' ','T')+'.000Z';
-          object.fin = object.fin.replace(' ','T')+'.000Z';
-        }
         if (object.paciente_id){
           models.Agenda.create({
             usuario_id: medico.usuario_id,
             paciente_id: object.paciente_id,
-            fechaHoraInicio: object.inicio,
-            fechaHoraFin: object.fin,
+            fechaHoraInicio: new Date(object.inicio),
+            fechaHoraFin: new Date(object.fin),
             direccion_id: servicio.direccion_id,
             servicio_id: servicio.id,
             status:1
@@ -2241,8 +2250,6 @@ exports.crearCita = function (object, req, res){
                 direccion_id: servicio.direccion_id,
                 servicio_id: servicio.id,
                 status:1
-              },{
-                logging: console.log
               }).then(function(result){
                 res.status(200).json({
                   success: true,
@@ -2317,8 +2324,6 @@ exports.crearCita = function (object, req, res){
                   direccion_id: servicio.direccion_id,
                   servicio_id: servicio.id,
                   status:1
-                },{
-                  logging: console.log
                 }).then(function(result){
                   res.status(200).json({
                     success: true,
@@ -2338,9 +2343,14 @@ exports.cargarCitasMes = function(object, req, res){
     "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`agenda` where `status` > 0 && `usuario_id` = "+ req.session.passport.user.id +"  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
     , { type: models.Sequelize.QueryTypes.SELECT}
   ).then(function(result) {
-    res.status(200).json({
-      success: false,
-      result: result
+    models.sequelize.query(
+      "SELECT count(`fechaHoraInicio`) AS TOTAL,DATE(`fechaHoraInicio`) AS FECHA FROM `intermed`.`eventos` where `status` > 0 && `usuario_id` = "+ req.session.passport.user.id +"  group by DATE(`fechaHoraInicio`) order by `fechaHoraInicio` ASC;"
+      , { type: models.Sequelize.QueryTypes.SELECT}
+    ).then(function(result2) {
+      res.status(200).json({
+        success: false,
+        result: result.concat(result2)
+      });
     });
   });
 }
@@ -2353,6 +2363,102 @@ exports.cargarCitasMesPac = function(object, req, res){
     res.status(200).json({
       success: false,
       result: result
+    });
+  });
+}
+
+exports.eventoAgregar = function (object, req, res){
+  console.log('Validar que no existan eventos o citas entre: ' +  new Date(object.inicio) + ' y '+ new Date(object.fin));
+  models.Evento.findOne({
+    where: models.sequelize.or(
+      {
+        /*Evento nuevo contiene a evento existente*/
+        fechaHoraInicio: { $gte: new Date(object.inicio) },
+        fechaHoraFin: { $lte: new Date(object.fin) }
+      },
+      {
+        /*Evento existente contiene a evento nuevo*/
+        fechaHoraInicio: { $lte: new Date(object.inicio) },
+        fechaHoraFin: { $gte: new Date(object.fin) }
+      },
+      {
+        /*inicio de nuevo evento esta dentro de evento existente*/
+        fechaHoraInicio: { $lte: new Date(object.inicio) },
+        fechaHoraFin: { $gt: new Date(object.inicio) }
+      },
+      {
+        /*fin de nuevo evento esta dentro de evento existente*/
+        fechaHoraInicio: { $lt: new Date(object.fin) },
+        fechaHoraFin: { $gte: new Date(object.fin) }
+      },
+      {
+        /*inicio de evento existente esta dentro de nuevo evento*/
+        fechaHoraInicio: { $gte: new Date(object.inicio) },
+        fechaHoraFin: { $lt: new Date(object.inicio) }
+      },
+      {
+        /*fin de evento existente esta dentro de nuevo evento*/
+        fechaHoraInicio: { $gt: new Date(object.fin) },
+        fechaHoraFin: { $lte: new Date(object.fin) }
+      }
+    )
+  }).then(function(result1){
+    models.Agenda.findOne({
+      where: models.sequelize.or(
+        {
+          /*Evento nuevo contiene a evento existente*/
+          fechaHoraInicio: { $gte: new Date(object.inicio) },
+          fechaHoraFin: { $lte: new Date(object.fin) }
+        },
+        {
+          /*Evento existente contiene a evento nuevo*/
+          fechaHoraInicio: { $lte: new Date(object.inicio) },
+          fechaHoraFin: { $gte: new Date(object.fin) }
+        },
+        {
+          /*inicio de nuevo evento esta dentro de evento existente*/
+          fechaHoraInicio: { $lte: new Date(object.inicio) },
+          fechaHoraFin: { $gt: new Date(object.inicio) }
+        },
+        {
+          /*fin de nuevo evento esta dentro de evento existente*/
+          fechaHoraInicio: { $lt: new Date(object.fin) },
+          fechaHoraFin: { $gte: new Date(object.fin) }
+        },
+        {
+          /*inicio de evento existente esta dentro de nuevo evento*/
+          fechaHoraInicio: { $gte: new Date(object.inicio) },
+          fechaHoraFin: { $lt: new Date(object.inicio) }
+        },
+        {
+          /*fin de evento existente esta dentro de nuevo evento*/
+          fechaHoraInicio: { $gt: new Date(object.fin) },
+          fechaHoraFin: { $lte: new Date(object.fin) }
+        }
+      )
+    }).then(function(result2){
+      if (!result1 && !result2){
+        models.Evento.create({
+          fechaHoraInicio: new Date(object.inicio),
+          fechaHoraFin: new Date(object.fin),
+          nombre: object.nombre,
+          ubicacion: object.ubicacion,
+          descripcion: object.descripcion,
+          usuario_id : req.session.passport.user.id
+        }).then(function(evento){
+          var success = false;
+          if (evento) success = true;
+          res.status(200).json({
+            success:true,
+            evento: evento
+          });
+        });
+      } else {
+        res.status(200).json({
+          success:false,
+          overflow: true
+        });
+      }
     });
   });
 }

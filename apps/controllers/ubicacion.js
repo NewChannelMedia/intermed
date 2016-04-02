@@ -446,8 +446,7 @@ exports.horariosObtener = function (objects, req, res) {
           where: {
             usuario_id: req.session.passport.user.id
           }
-        }],
-        logging: console.log
+        }]
     }).then(function (datos) {
         var horaInicio;
         var horaFin;

@@ -1,95 +1,97 @@
 <div id="newHome">
   <header id="newHomeHeader">
-    <div class="container-fluid body-container">
-      <div class="row center-content">
-        <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 header-content-left text-center">
-          <div class="row">
-            <div class="col-lg-12">
-              <img class="center-block img-responsive" src="img/newHome/intermed.png">
+    <div class="container">
+      <div class="body-container">
+        <div class="row center-content">
+          <div class="col-lg-5 col-md-5 col-sm-5 col-xs-12 header-content-left text-center">
+            <div class="row">
+              <div class="col-lg-12">
+                <img class="center-block img-responsive" src="img/newHome/intermed.png">
+              </div>
+            </div>
+            <div class="row">
+              {{#ifSession "id"}}
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col-lg-offset-3 col-md-offset-3 col-sm-offset-3 col-xs-12 text-center">
+                Hola {{valSession "name"}}<br>
+                <a class="btn btn-transparent h65-medium s25 whiteF noTransform login" href='/{{valSession "usuarioUrl"}}'>Ir a perfil</a>
+              </div>
+              {{else}}
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center">
+                <a class="btn btn-transparent btn-block h65-medium s20 whiteF text-uppercase login" href="#" id="logMod">INGRESA</a>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center">
+                <a class="btn btn-transparent btn-block h65-medium s20 whiteF text-uppercase reg" href="#" onclick="registro();">REGISTRATE</a>
+              </div>
+              {{/ifSession}}
             </div>
           </div>
-          <div class="row">
-            {{#ifSession "id"}}
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col-lg-offset-3 col-md-offset-3 col-sm-offset-3 col-xs-12 text-center">
-              Hola {{valSession "name"}}<br>
-              <a class="btn btn-transparent h65-medium s25 whiteF noTransform login" href='/{{valSession "usuarioUrl"}}'>Ir a perfil</a>
-            </div>
-            {{else}}
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center">
-              <a class="btn btn-transparent btn-block h65-medium s20 whiteF text-uppercase login" href="#" id="logMod">INGRESA</a>
-            </div>
-            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center">
-              <a class="btn btn-transparent btn-block h65-medium s20 whiteF text-uppercase reg" href="#" onclick="registro();">REGISTRATE</a>
-            </div>
-            {{/ifSession}}
-          </div>
-        </div>
-        <hr class="separator hidden-xs">
-        <!--<div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 header-content-right">
-          <h1 class="h45-light s40 white-c">Intermed está en construcción.
-            <br>¡Espéranos pronto!
-          </h1>
-          <br>
-          <h2 class="h35-thin s50 white-c">¿Qué es Intermed?</h2>
-          <p class="h45-light s20 white-c text-justify">
-            Intermed es una red social que conecta a médicos
-            <br class="hidden-sm hidden-xs">con pacientes.
-            <br>Con ella, puedes encontrar médicos de acuerdo a
-            <br class="hidden-sm hidden-xs">tus preferencias y necesidades y hacer citas con
-            <br class="hidden-sm hidden-xs">ellos en cualquier momento y desde cualquier lugar.
-          </p>
-        </div>-->
-        <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 header-content-right">
-          <div class="body-container">
-            <div class="center-content">
-              <h1 class="h45-light s40 white-c">¡Encuentra tus medicos favoritos!</h1>
-              <form action="/buscar" id="buscaMedico" method="POST" onsubmit="return iniciarBusqueda()">
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="form-group" >
-                      <input type="text" class="form-control" id="nombreMed" name="nombreMed" placeholder="Busca a tu medico">
+          <hr class="separator hidden-xs">
+          <!--<div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 header-content-right">
+            <h1 class="h45-light s40 white-c">Intermed está en construcción.
+              <br>¡Espéranos pronto!
+            </h1>
+            <br>
+            <h2 class="h35-thin s50 white-c">¿Qué es Intermed?</h2>
+            <p class="h45-light s20 white-c text-justify">
+              Intermed es una red social que conecta a médicos
+              <br class="hidden-sm hidden-xs">con pacientes.
+              <br>Con ella, puedes encontrar médicos de acuerdo a
+              <br class="hidden-sm hidden-xs">tus preferencias y necesidades y hacer citas con
+              <br class="hidden-sm hidden-xs">ellos en cualquier momento y desde cualquier lugar.
+            </p>
+          </div>-->
+          <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 header-content-right">
+            <div class="body-container">
+              <div class="center-content">
+                <h1 class="h45-light s40 white-c">¡Encuentra tus medicos favoritos!</h1>
+                <form action="/buscar" id="buscaMedico" method="POST" onsubmit="return iniciarBusqueda()">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group" >
+                        <input type="text" class="form-control" id="nombreMed" name="nombreMed" placeholder="Busca a tu medico">
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <select class="form-control" name="selectEspecialidad">
-                        <option value="" disabled selected>Especialidad</option>
-                        {{#each especialidad}}
-                          <option value="{{id}}">{{especialidad}}</option>
-                        {{/each}}
-                      </select>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <select class="form-control" name="selectEspecialidad">
+                          <option value="" disabled selected>Especialidad</option>
+                          {{#each especialidad}}
+                            <option value="{{id}}">{{especialidad}}</option>
+                          {{/each}}
+                        </select>
+                      </div>
                     </div>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="form-group">
-                      <select class="form-control" name="selectAseguradora">
-                        <option value="" disabled selected>Aseguradora</option>
-                        {{#each aseguradora}}
-                          <option value="{{id}}">{{aseguradora}}</option>
-                        {{/each}}
-                      </select>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <select class="form-control" name="selectAseguradora">
+                          <option value="" disabled selected>Aseguradora</option>
+                          {{#each aseguradora}}
+                            <option value="{{id}}">{{aseguradora}}</option>
+                          {{/each}}
+                        </select>
+                      </div>
                     </div>
+                    <div class="col-md-4">
+                      <input type="submit" value="Buscar" class="btn btn-success btn-md btn-block" id="btn">
+                    </div>
+                    {{#if render.estado}}
+                      <script type="text/javascript">
+                        $('#selectEstados').prop('value',{{render.estado}});
+                        {{#if render.municipio}}
+                          $('#selectCiudad').prop('value',{{render.municipio}});
+                        {{/if}}
+                      </script>
+                    {{/if}}
                   </div>
-                  <div class="col-md-4">
-                    <input type="submit" value="Buscar" class="btn btn-success btn-md btn-block" id="btn">
-                  </div>
-                  {{#if render.estado}}
-                    <script type="text/javascript">
-                      $('#selectEstados').prop('value',{{render.estado}});
-                      {{#if render.municipio}}
-                        $('#selectCiudad').prop('value',{{render.municipio}});
-                      {{/if}}
-                    </script>
-                  {{/if}}
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="bounce-item hidden-xs">
-      <img id="bounce" class="center-block" src="img/newHome/down-arrow.png">
+      <div class="bounce-item hidden-xs">
+        <img id="bounce" class="center-block" src="img/newHome/down-arrow.png">
+      </div>
     </div>
   </header>
   <section id="homeMainTitle">

@@ -276,8 +276,9 @@ function iniciarCalendarioAgendarCita(){
         allDaySlot: false,
         defaultDate: moment().format("YYYY-MM-DD"),
         slotLabelFormat: 'h:mm a',
-        slotLabelInterval : duracionServicio,
-        slotDuration: '00:30',
+        //slotLabelInterval : duracionServicio,
+        slotLabelInterval : '00:30',
+        slotDuration: '00:15',
         header: {
             //center: false,
             //right: false,
@@ -1240,10 +1241,13 @@ var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','
 var agregarEvento = false;
 
 function horariosAgendaMedico(medico_id){
+  console.log('TEST');
+
     var valido = true;
     $('#divCalendario').addClass('calCita');
     $('#divCalendario').fullCalendar({
         firstDay:1,
+        //ignoreTimezone: false,//http://stackoverflow.com/questions/21594825/fullcalendar-timezones-not-modifying-times-on-clients-end
         defaultView: 'agendaWeek',
         height: 350,
         allDaySlot: false,
@@ -1382,6 +1386,9 @@ function horariosAgendaMedico(medico_id){
                               if ( validaEvento(inicio, final)) {
                                 var validacionAgenda =  validaAgenda(inicio, final);
                                 if ( validacionAgenda == 1 ) {
+                                  //date: 2016-04-09T09:00:00.000Z
+                                  date = new Date(new Date(date).toISOString().replace('T',' ').replace('.000Z','')).getTime();
+                                  alert('date: ' + date);
                                   registrarNuevaCitaBootbox(date, new moment(date).add(horas[0], 'h').add(horas[1], 'm'),medico_id,$('#servicioList').val());
                                   //usuario_id:6 paciente_id:2
                                 } else  if ( validacionAgenda == 3 ) {
@@ -1460,8 +1467,6 @@ function horariosAgendaMedico(medico_id){
 }
 
 
-
-
 function seleccionarServicioCitaOficina(date,inicio, clase){
   inicio = new Date(date).toLocaleString('en-US');
   $.ajax({
@@ -1477,7 +1482,7 @@ function seleccionarServicioCitaOficina(date,inicio, clase){
       });
 
       secondaryBootbox = bootbox.dialog({
-        backdrop: false,
+        backdrop: true,
         size:'small',
         className: 'Intermed-Bootbox',
         title: '<span class="title">Selecciona servicio</span>',
@@ -1520,6 +1525,7 @@ function seleccionarServicioCitaOficina(date,inicio, clase){
                   }
                 }
                 if (valido) {
+                  alert('date: ' + new Date(date).toUTCString());
                   registrarNuevaCitaBootbox(date, new moment(date).add(horas[0], 'h').add(horas[1], 'm'),null,$('#servicioList').val(),1);
                 } else {
                   alert('El tiempo del servicio excede el tiempo disponible');
