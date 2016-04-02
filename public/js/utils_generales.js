@@ -1774,11 +1774,29 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
             }
       });
       data.result.forEach(function(res){
-          var hora = res.fechaHoraInicio.split('T')[1].split(':00.00')[0].replace(':','-');
-          var horaFin = res.fechaHoraFin.split('T')[1].split(':00.00')[0].replace(':','-');
-          if (hora.substring(0,1) == "0"){
+          var hora = new Date(res.fechaHoraInicio).toLocaleString('en-US').split(', ')[1];
+          var horaFin = new Date(res.fechaHoraFin).toLocaleString('en-US').split(', ')[1];
+
+          if (parseInt(hora.split(':')[0]) != 12 &&  hora.search('PM')>0){
+            hora = (parseInt(hora.split(':')[0]) +12) +'-'+hora.split(':')[1];
+          } else if (parseInt(hora.split(':')[0]) == 12 &&  hora.search('AM')>0){
+            hora = 0+'-'+hora.split(':')[1];
+          } else {
+            hora = parseInt(hora.split(':')[0]) +'-'+ hora.split(':')[1];
+          }
+
+          if (parseInt(horaFin.split(':')[0]) != 12 &&  horaFin.search('PM')>0){
+            horaFin = (parseInt(horaFin.split(':')[0]) +12) +'-'+horaFin.split(':')[1];
+          } else if (parseInt(horaFin.split(':')[0]) == 12 &&  horaFin.search('AM')>0){
+            horaFin = 0+'-'+horaFin.split(':')[1];
+          } else {
+            horaFin = parseInt(horaFin.split(':')[0]) +'-'+ horaFin.split(':')[1];
+          }
+
+          if (hora.substring(0,1) == "0" && hora.substring(0,2) != "0:"){
             hora = hora.substring(1,5);
           }
+
           var element = $('.mediaHora.'+hora);
           element.addClass('ocupada').addClass('consulta');
           element.find('.glyphicon').addClass('glyphicon-user');

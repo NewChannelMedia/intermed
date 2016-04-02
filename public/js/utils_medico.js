@@ -4445,48 +4445,61 @@ function BuscarPaciente(inputBusquedaId,outPutResultId,inicio,fin,medico,servici
     }).fail(function(e){
       console.log("Error 4286: "+JSON.stringify(e));
     });
-
 }
 
 function validarAgregarEvento(){
-  var fechaInicioEvento = new Date($('#fechaInicioEvento').val().replace('T',' ')).toUTCString();
-  var fechaFinEvento = new Date($('#fechaFinEvento').val().replace('T',' ')).toUTCString();
+  try{
+    var fechaInicioEvento = moment($('#fechaInicioEvento').val()).toDate();
+    var fechaFinEvento = moment($('#fechaFinEvento').val()).toDate();
 
-  if (new Date(fechaInicioEvento)<new Date(fechaFinEvento)){
-    var nombreEvento = $('#nombreEvento').val();
-    var ubicacionEvento = $('#ubicacionEvento').val();
-    var descripcionEvento = $('#descripcionEvento').val();
-    $.ajax( {
-      async: false,
-      url: '/agenda/evento/agregar',
-      type: 'POST',
-      dataType: "json",
-      data: {
+    var fechaValidar = fechaInicioEvento.toLocaleString('en-US');
+    var fechaValidarFin = fechaFinEvento.toLocaleString('en-US');
+
+    //Fri Apr 08 2016 08:45:00 GMT-0500 (CDT) - Fri Apr 08 2016 09:45:00 GMT-0500 (CDT)
+
+    if (new Date(fechaInicioEvento)<new Date(fechaFinEvento)){
+      var nombreEvento = $('#nombreEvento').val();
+      var ubicacionEvento = $('#ubicacionEvento').val();
+      var descripcionEvento = $('#descripcionEvento').val();
+      var data = {
         inicio: fechaInicioEvento,
         fin: fechaFinEvento,
         nombre: nombreEvento,
         ubicacion: ubicacionEvento,
         descripcion: descripcionEvento
-      },
-      cache: false,
-      success: function ( data ) {
-        if (data.success){
-          marcarEventosCalendario();
-          var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
-          var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
-          cargarEventosPorDia(fechaInicio, fechaFin);
-          bootbox.hideAll();
-        } else {
-          //Error al agregar el evento (ya existe algun evento o cita)
+      };
+      $.ajax( {
+        async: false,
+        url: '/agenda/evento/agregar',
+        type: 'POST',
+        dataType: "json",
+        data: data,
+        cache: false,
+        success: function ( data ) {
+          if (data.success){
+            marcarEventosCalendario();
+            var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
+            var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
+            cargarEventosPorDia(fechaInicio, fechaFin);
+            bootbox.hideAll();
+          } else {
+            if (data.overflow){
+              alert('Evento interfiere con alguna cita o evento existente.')
+            }
+            //Error al agregar el evento (ya existe algun evento o cita)
+          }
+        },
+        error: function(err){
+          console.log('Ajax error: ' + JSON.stringify(err));
         }
-      },
-      error: function(err){
-        console.log('Ajax error: ' + JSON.stringify(err));
-      }
-    });
-  } else {
-    alert('La fecha de fin del evento debe de ser mayor a la fecha de inicio');
-    $('#fechaFinEvento')[0].focus();
+      });
+    } else {
+      alert('La fecha de fin del evento debe de ser mayor a la fecha de inicio');
+      $('#fechaFinEvento')[0].focus();
+    }
+  }
+  catch(e){
+    console.log('ERROR: ' + e);
   }
   return false;
 }
