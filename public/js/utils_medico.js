@@ -4445,13 +4445,17 @@ function BuscarPaciente(inputBusquedaId,outPutResultId,inicio,fin,medico,servici
     }).fail(function(e){
       console.log("Error 4286: "+JSON.stringify(e));
     });
-
 }
 
 function validarAgregarEvento(){
   try{
     var fechaInicioEvento = moment($('#fechaInicioEvento').val()).toDate();
     var fechaFinEvento = moment($('#fechaFinEvento').val()).toDate();
+
+    var fechaValidar = fechaInicioEvento.toLocaleString('en-US');
+    var fechaValidarFin = fechaFinEvento.toLocaleString('en-US');
+
+    //Fri Apr 08 2016 08:45:00 GMT-0500 (CDT) - Fri Apr 08 2016 09:45:00 GMT-0500 (CDT)
 
     if (new Date(fechaInicioEvento)<new Date(fechaFinEvento)){
       var nombreEvento = $('#nombreEvento').val();
@@ -4479,6 +4483,9 @@ function validarAgregarEvento(){
             cargarEventosPorDia(fechaInicio, fechaFin);
             bootbox.hideAll();
           } else {
+            if (data.overflow){
+              alert('Evento interfiere con alguna cita o evento existente.')
+            }
             //Error al agregar el evento (ya existe algun evento o cita)
           }
         },

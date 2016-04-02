@@ -2219,16 +2219,12 @@ exports.crearCita = function (object, req, res){
           id: object.servicio_id
         }
       }).then(function(servicio){
-        if (object.kendo){
-          object.inicio = object.inicio.replace(' ','T')+'.000Z';
-          object.fin = object.fin.replace(' ','T')+'.000Z';
-        }
         if (object.paciente_id){
           models.Agenda.create({
             usuario_id: medico.usuario_id,
             paciente_id: object.paciente_id,
-            fechaHoraInicio: object.inicio,
-            fechaHoraFin: object.fin,
+            fechaHoraInicio: new Date(object.inicio),
+            fechaHoraFin: new Date(object.fin),
             direccion_id: servicio.direccion_id,
             servicio_id: servicio.id,
             status:1
@@ -2372,19 +2368,97 @@ exports.cargarCitasMesPac = function(object, req, res){
 }
 
 exports.eventoAgregar = function (object, req, res){
-  models.Evento.create({
-    fechaHoraInicio: new Date(object.inicio),
-    fechaHoraFin: new Date(object.fin),
-    nombre: object.nombre,
-    ubicacion: object.ubicacion,
-    descripcion: object.descripcion,
-    usuario_id : req.session.passport.user.id
-  }).then(function(evento){
-    var success = false;
-    if (evento) success = true;
-    res.status(200).json({
-      success:true,
-      evento: evento
+  console.log('Validar que no existan eventos o citas entre: ' +  new Date(object.inicio) + ' y '+ new Date(object.fin));
+  models.Evento.findOne({
+    where: models.sequelize.or(
+      {
+        /*Evento nuevo contiene a evento existente*/
+        fechaHoraInicio: { $gte: new Date(object.inicio) },
+        fechaHoraFin: { $lte: new Date(object.fin) }
+      },
+      {
+        /*Evento existente contiene a evento nuevo*/
+        fechaHoraInicio: { $lte: new Date(object.inicio) },
+        fechaHoraFin: { $gte: new Date(object.fin) }
+      },
+      {
+        /*inicio de nuevo evento esta dentro de evento existente*/
+        fechaHoraInicio: { $lte: new Date(object.inicio) },
+        fechaHoraFin: { $gt: new Date(object.inicio) }
+      },
+      {
+        /*fin de nuevo evento esta dentro de evento existente*/
+        fechaHoraInicio: { $lt: new Date(object.fin) },
+        fechaHoraFin: { $gte: new Date(object.fin) }
+      },
+      {
+        /*inicio de evento existente esta dentro de nuevo evento*/
+        fechaHoraInicio: { $gte: new Date(object.inicio) },
+        fechaHoraFin: { $lt: new Date(object.inicio) }
+      },
+      {
+        /*fin de evento existente esta dentro de nuevo evento*/
+        fechaHoraInicio: { $gt: new Date(object.fin) },
+        fechaHoraFin: { $lte: new Date(object.fin) }
+      }
+    )
+  }).then(function(result1){
+    models.Agenda.findOne({
+      where: models.sequelize.or(
+        {
+          /*Evento nuevo contiene a evento existente*/
+          fechaHoraInicio: { $gte: new Date(object.inicio) },
+          fechaHoraFin: { $lte: new Date(object.fin) }
+        },
+        {
+          /*Evento existente contiene a evento nuevo*/
+          fechaHoraInicio: { $lte: new Date(object.inicio) },
+          fechaHoraFin: { $gte: new Date(object.fin) }
+        },
+        {
+          /*inicio de nuevo evento esta dentro de evento existente*/
+          fechaHoraInicio: { $lte: new Date(object.inicio) },
+          fechaHoraFin: { $gt: new Date(object.inicio) }
+        },
+        {
+          /*fin de nuevo evento esta dentro de evento existente*/
+          fechaHoraInicio: { $lt: new Date(object.fin) },
+          fechaHoraFin: { $gte: new Date(object.fin) }
+        },
+        {
+          /*inicio de evento existente esta dentro de nuevo evento*/
+          fechaHoraInicio: { $gte: new Date(object.inicio) },
+          fechaHoraFin: { $lt: new Date(object.inicio) }
+        },
+        {
+          /*fin de evento existente esta dentro de nuevo evento*/
+          fechaHoraInicio: { $gt: new Date(object.fin) },
+          fechaHoraFin: { $lte: new Date(object.fin) }
+        }
+      )
+    }).then(function(result2){
+      if (!result1 && !result2){
+        models.Evento.create({
+          fechaHoraInicio: new Date(object.inicio),
+          fechaHoraFin: new Date(object.fin),
+          nombre: object.nombre,
+          ubicacion: object.ubicacion,
+          descripcion: object.descripcion,
+          usuario_id : req.session.passport.user.id
+        }).then(function(evento){
+          var success = false;
+          if (evento) success = true;
+          res.status(200).json({
+            success:true,
+            evento: evento
+          });
+        });
+      } else {
+        res.status(200).json({
+          success:false,
+          overflow: true
+        });
+      }
     });
   });
 }
