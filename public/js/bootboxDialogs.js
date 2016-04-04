@@ -2449,7 +2449,6 @@ function agendarCitaBootbox(usuarioMedico_id){
         title: '<span class="title">AGENDAR UNA CITA.</span><span class="subtitle">Selecciona el servicio para el cual quieres generar la cita, seguido de eso se desplegaran las distintas ubicaciones donde el médico brinda el servicio.</span>',
         message:
               '<form method="POST" name="frmRegCita" id="frmRegCita">'+
-                '<input type="hidden" id="id" name="id">'+
                 '<input type="hidden" id="medico_id" name="medico_id" value="'+ usuarioMedico_id +'">'+
                 '<input type="hidden" id="fecha" name="fecha" />'+
                 '<input type="hidden" id="fechaFin" name="fechaFin" />'+
@@ -3953,15 +3952,31 @@ function DetallesCitaPaciente(agenda_id){
         'agenda_id': agenda_id
       },
       success: function ( data ) {
-        console.log('Data.result: ' + JSON.stringify(data));
         result = data.result;
         imagenUrl = data.result.Usuario.urlFotoPerfil;
         if (!data.result.Usuario.DatosGenerale.apellidoM) data.result.Usuario.DatosGenerale.apellidoM = '';
         nombreUsuario = data.result.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.DatosGenerale.apellidoP + ' ' + data.result.Usuario.DatosGenerale.apellidoM;
         nombreUbicacion = data.result.Direccion.nombre;
         nombreServicio = data.result.CatalogoServicio.concepto;
-        fecha = data.result.fechaHoraInicio.split('T')[0];
-        hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+
+        var date = new Date(data.result.fechaHoraInicio).toLocaleString('en-US');
+        //4/7/2016, 12:00:00 PM
+        //mes/dia/año, hora, minutos
+        hora = parseInt(date.split(', ')[1].split(':')[0]);
+        var minutos = date.split(', ')[1].split(':')[1];
+
+        var T = 'AM';
+        if (date.search('PM')>0){
+          T = 'PM';
+        } else {
+          if (hora == 12){
+            hora = 0;
+          }
+        }
+
+        hora = hora + ':'+minutos+' ' + T;
+
+        fecha = meses[parseInt(date.split(', ')[0].split('/')[0])] + '  ' + parseInt(date.split(', ')[0].split('/')[1]) +', '+date.split(', ')[0].split('/')[2]
       },
       error: function (err){
         console.log('AJAX Error: ' + JSON.stringify(err));
@@ -4538,8 +4553,26 @@ function detalleCitaSecretaria(agenda_id){
           }
           nombreUbicacion = data.result.Direccion.nombre;
           nombreServicio = data.result.CatalogoServicio.concepto;
-          fecha = data.result.fechaHoraInicio.split('T')[0];
-          hora = data.result.fechaHoraInicio.split('T')[1].split(':00.')[0];
+
+          var date = new Date(data.result.fechaHoraInicio).toLocaleString('en-US');
+          //4/7/2016, 12:00:00 PM
+          //mes/dia/año, hora, minutos
+          hora = parseInt(date.split(', ')[1].split(':')[0]);
+          var minutos = date.split(', ')[1].split(':')[1];
+
+          var T = 'AM';
+          if (date.search('PM')>0){
+            T = 'PM';
+          } else {
+            if (hora == 12){
+              hora = 0;
+            }
+          }
+
+          hora = hora + ':'+minutos+' ' + T;
+
+          fecha = meses[parseInt(date.split(', ')[0].split('/')[0])] + '  ' + parseInt(date.split(', ')[0].split('/')[1]) +', '+date.split(', ')[0].split('/')[2]
+
 
           if (data.result.nota){
             nota = data.result.nota;
@@ -5255,4 +5288,128 @@ function seleccionarAgregarEvento(timestamp,fecha,clase){
 
 function detalleEventoMedico(evento_id){
   console.log('Ver evento: ' + evento_id);
+  var nombre = '';
+  var ubicacion = '';
+  var descripcion = '';
+  var fecha = '';
+  var hora = '';
+
+  $.ajax( {
+    async: true,
+    url: '/agenda/detalleEvento',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      'evento_id': evento_id
+    },
+    success: function ( data ) {
+      /*
+Data: {"success":true,"result":{"id":43,"fechaHoraInicio":"2016-04-12T14:00:00.000Z","fechaHoraFin":"2016-04-13T15:00:00.000Z","nombre":"asDasdaSD","ubicacion":"","descripcion":"","status":1,"usuario_id":1}}
+      */
+      if (data.result){
+        nombre = data.result.nombre;
+        ubicacion = data.result.ubicacion;
+        descripcion = data.result.descripcion;
+
+        var date = new Date(data.result.fechaHoraInicio).toLocaleString('en-US');
+        //4/7/2016, 12:00:00 PM
+        //mes/dia/año, hora, minutos
+        hora = parseInt(date.split(', ')[1].split(':')[0]);
+        var minutos = date.split(', ')[1].split(':')[1];
+
+        var T = 'AM';
+        if (date.search('PM')>0){
+          T = 'PM';
+        } else {
+          if (hora == 12){
+            hora = 0;
+          }
+        }
+
+        hora = hora + ':'+minutos+' ' + T;
+
+        fecha = meses[parseInt(date.split(', ')[0].split('/')[0])] + '  ' + parseInt(date.split(', ')[0].split('/')[1]) +', '+date.split(', ')[0].split('/')[2]
+
+        editar = true;
+        if (new Date(data.result.fechaHoraFin) < new Date()){
+          estatus = "La cita ya finalizo.";
+          editar = false;
+        } else if (new Date(data.result.fechaHoraInicio) < new Date()){
+          estatus = "La cita ya inicio.";
+          editar = false;
+        }
+
+        var modal = '<div class="row">'+
+            '<div class="col-md-8 col-sm-8 s20" style="margin-top:15px">'+
+              '<span><b>Fecha: </b>'+ fecha +'</span><br/>'+
+              '<span><b>Hora: </b>'+ hora +'</span><br/><br/>'+
+            '</div>'+
+
+            '<div class="col-md-4 col-sm-4">'+
+                '<button class="btn btn-default btn-block s20" style="color: #d43f3a;font-weight: bold;" onclick="cancelarEvento('+evento_id+')">Cancelar</button>'+
+            '</div>'+
+          '</div>'+
+
+        '<div class="row">'+
+          '<div class="col-md-3 col-sm-5 col-xs-12">'+
+            '<label for="eventoNombre">Nombre: </label>'+
+          '</div>'+
+          '<div class="col-md-9 col-sm-7 col-xs-12">'+
+            '<input type="text" class="form-control s20" id="eventoNombre" value="'+ nombre +'">'+
+          '</div>'+
+        '</div>'+
+
+        '<div class="row">'+
+          '<div class="col-md-3 col-sm-5 col-xs-12">'+
+            '<label for="eventoUbicacion">Ubicacion: </label>'+
+          '</div>'+
+          '<div class="col-md-9 col-sm-7 col-xs-12">'+
+            '<input type="text" class="form-control s20"  id="eventoUbicacion" value="'+ ubicacion +'">'+
+          '</div>'+
+        '</div>'+
+
+        '<div class="row">'+
+          '<div class="col-md-3 col-sm-5 col-xs-12">'+
+            '<label for="inputDescripcionEvento">Descripción: </label>'+
+          '</div>'+
+          '<div class="col-md-9 col-sm-7 col-xs-12">'+
+              '<textarea class="form-control custom-control s20" rows="7" style="resize:none" id="inputDescripcionEvento" maxlength="250">'+ descripcion +'</textarea>'+
+          '</div>'+
+        '</div>'+
+
+        '<div class="row">'+
+          '<div class="col-md-6 col-sm-4 col-xs-4 pull-right">'+
+              '<div class="form-group">'+
+                  '<button class="btn btn-primary btn-md btn-block" id="btnRegMed"  onclick="guardarDescripcionEventoSecretaria('+evento_id+')">Guardar</button>'+
+              '</div>'+
+          '</div>'+
+
+          '<div class="col-md-2 col-sm-4 col-xs-4 pull-left">'+
+              '<div class="form-group">'+
+                  '<button class="btn btn-danger btn-block" id="btnRegMed" onclick="bootSec.hide()">Cerrar</button>'+
+              '</div>'+
+          '</div>'+
+        '</div>';
+
+
+        bootSec =  bootbox.dialog({
+            onEscape: function () {
+              bootSec.hide();
+          },
+          backdrop: false,
+          className: 'Intermed-Bootbox',
+          title: '',
+          message: modal
+        });
+
+        $('.bootbox-close-button').css('margin-top','0px');
+        $('.bootbox-close-button').css('margin-right','5px');
+
+      }
+    },
+    error: function (err){
+      console.log('AJAX Error: ' + JSON.stringify(err));
+    }
+  });
 }

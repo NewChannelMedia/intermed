@@ -33,7 +33,6 @@ function registrarCita() {
     console.log('horarios: ' + JSON.stringify(horarios));
   	$("#fecha").val(horarios[0].inicio);
     $("#fechaFin").val(horarios[0].fin);
-    $("#usuario_id").val(horarios[0].fin);
 
   	$.ajax({
   		url: '/agregaCita',
@@ -90,7 +89,7 @@ var uId ="";
 //<----------- RECOMENDACIONES -------------------->
   $(document).ready(function(){
     if ($( '#perfilPaciente' ).length > 0 ) {
-      
+
     }
 
 

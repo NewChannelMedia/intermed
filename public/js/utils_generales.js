@@ -1256,11 +1256,35 @@ $( document ).ready( function () {
 
     var today = new Date();
 
+    var d = new Date()
+    var timeZoneOffset = '';
+
+    var n = parseInt(d.getTimezoneOffset())/60;
+
+    if (n<0){
+      timeZoneOffset = '+';
+    } else {
+      timeZoneOffset = '-'
+    }
+    n = n.toString().replace('+','').replace('-','');
+
+    if (n.split('.')[0].length== 1){
+      timeZoneOffset += '0'+n.split('.')[0];
+    } else {
+      timeZoneOffset += n.split('.')[0];
+    }
+    if (!n.split('.')[1]){
+      timeZoneOffset += ':00';
+    } else {
+      timeZoneOffset += ':' + n.split('.')[1];
+    }
+
     var events = [];
     $.ajax( {
       url: '/agenda/cargarCitasMesPaciente',
       type: 'POST',
       dataType: "json",
+      data: {tz: timeZoneOffset},
       cache: false,
       async: false,
       success: function ( data ) {
@@ -1432,12 +1456,36 @@ function marcarEventosCalendario(){
   if ($("#calendar").data("kendoCalendar")){
     today = $("#calendar").data("kendoCalendar").value();
   }
+
+  var timeZoneOffset = '';
+
+  var n = parseInt(today.getTimezoneOffset())/60;
+
+  if (n<0){
+    timeZoneOffset = '+';
+  } else {
+    timeZoneOffset = '-'
+  }
+  n = n.toString().replace('+','').replace('-','');
+
+  if (n.split('.')[0].length== 1){
+    timeZoneOffset += '0'+n.split('.')[0];
+  } else {
+    timeZoneOffset += n.split('.')[0];
+  }
+  if (!n.split('.')[1]){
+    timeZoneOffset += ':00';
+  } else {
+    timeZoneOffset += ':' + n.split('.')[1];
+  }
+
   $("#calendar").html('');
   var events = [];
   $.ajax( {
     url: '/agenda/cargarCitasMes',
     type: 'POST',
     dataType: "json",
+    data: {tz:timeZoneOffset},
     cache: false,
     async: false,
     success: function ( data ) {
@@ -1672,13 +1720,17 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
   $.post('/agenda/eventos/dia',{fecha:fechaInicio,fin:fechaFin},function(data){
     if (data.success){
       var contenido = '';
-      limpiarAgendaDia();
+      limpiarAgendaDia(fechaInicio);
+      var anio = parseInt(new Date(fechaInicio).toLocaleString('en-US').split(', ')[0].split('/')[2]);
+      var mes = parseInt(new Date(fechaInicio).toLocaleString('en-US').split(', ')[0].split('/')[0]);
+      var dia = parseInt(new Date(fechaInicio).toLocaleString('en-US').split(', ')[0].split('/')[1]);
+
       data.horarios.forEach(function(horario){
         var horaInicio = horario.horaInicio.split(':');
         horaInicio[0] = parseInt(horaInicio[0]);
         var horaFin = horario.horaFin.split(':');
         while ((parseInt(horaInicio[0]) < parseInt(horaFin[0])) || (parseInt(horaInicio[0]) <= parseInt(horaFin[0]) && parseInt(horaInicio[1])<parseInt(horaFin[1]))){
-          $('.mediaHora.'+horaInicio[0] +'-'+horaInicio[1]).removeClass('noDisponible');
+          $('.mediaHora.'+anio+'-'+mes+'-'+dia+'-'+parseInt(horaInicio[0]) +'-'+parseInt(horaInicio[1])).removeClass('noDisponible');
           if (parseInt(horaInicio[1]) == 45){
             horaInicio[1] = '00';
             horaInicio[0] = parseInt(horaInicio)+1;
@@ -1689,31 +1741,24 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
       });
       data.eventos.forEach(function(res){
         //{"id":7,"fechaHoraInicio":"2016-04-01T06:00:00.000Z","fechaHoraFin":"2016-04-01T15:00:00.000Z","nombre":"Evento de madrugada","ubicacion":"Los mochis","descripcion":"","usuario_id":8}
+            var anio = parseInt(new Date(res.fechaHoraInicio).toLocaleString('en-US').split(', ')[0].split('/')[2]);
+            var mes = parseInt(new Date(res.fechaHoraInicio).toLocaleString('en-US').split(', ')[0].split('/')[0]);
+            var dia = parseInt(new Date(res.fechaHoraInicio).toLocaleString('en-US').split(', ')[0].split('/')[1]);
 
-            var hora = new Date(res.fechaHoraInicio).toLocaleString('en-US').split(', ')[1];
+            var horaInicio = new Date(res.fechaHoraInicio).toLocaleString('en-US').split(', ')[1];
             var horaFin = new Date(res.fechaHoraFin).toLocaleString('en-US').split(', ')[1];
 
-            if (parseInt(hora.split(':')[0]) != 12 &&  hora.search('PM')>0){
-              hora = (parseInt(hora.split(':')[0]) +12) +'-'+hora.split(':')[1];
-            } else if (parseInt(hora.split(':')[0]) == 12 &&  hora.search('AM')>0){
-              hora = 0+'-'+hora.split(':')[1];
-            } else {
-              hora = parseInt(hora.split(':')[0]) +'-'+ hora.split(':')[1];
+            hora = parseInt(horaInicio.split(':')[0]);
+            minutos = parseInt(horaInicio.split(':')[1]);
+
+            if (hora == 12 && new Date(res.fechaHoraInicio).toLocaleString('en-US').search('AM')>0){
+              hora = 0;
+            } else if (hora != 12 && new Date(res.fechaHoraInicio).toLocaleString('en-US').search('PM')>0){
+              hora = hora + 12;
             }
 
-            if (parseInt(horaFin.split(':')[0]) != 12 &&  horaFin.search('PM')>0){
-              horaFin = (parseInt(horaFin.split(':')[0]) +12) +'-'+horaFin.split(':')[1];
-            } else if (parseInt(horaFin.split(':')[0]) == 12 &&  horaFin.search('AM')>0){
-              horaFin = 0+'-'+horaFin.split(':')[1];
-            } else {
-              horaFin = parseInt(horaFin.split(':')[0]) +'-'+ horaFin.split(':')[1];
-            }
-
-            if (hora.substring(0,1) == "0" && hora.substring(0,2) != "0:"){
-              hora = hora.substring(1,5);
-            }
-
-            var element = $('.mediaHora.'+hora);
+            var clase = anio+'-'+mes+'-'+dia+'-'+hora+'-'+minutos;
+            var element = $('.mediaHora.'+clase);
             element.addClass('ocupada').addClass('consulta');
             element.find('.glyphicon').addClass('glyphicon-bookmark');
 
@@ -1728,76 +1773,54 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
               detalleEventoMedico(res.id);
             });
 
-            hora = hora.split('-');
-            horaFin = horaFin.split('-');
+            var fechaInicio = new Date(res.fechaHoraInicio);
+            var fechaFin = new Date(res.fechaHoraFin);
+            fechaInicio = new Date(fechaInicio.setMinutes(fechaInicio.getMinutes()+15));
 
-            var mismoDia = true;
-            if (parseInt(hora[1]) == 45){
-              hora[1] = 0;
-              if (parseInt(hora[0]) == 23){
-                mismoDia = false;
-              } else {
-                hora[0] = parseInt(hora[0])+1;
+            while (fechaInicio < fechaFin){
+              var locale  = fechaInicio.toLocaleString('en-US');
+              var anio = parseInt(locale.split(', ')[0].split('/')[2]);
+              var mes = parseInt(locale.split(', ')[0].split('/')[0]);
+              var dia = parseInt(locale.split(', ')[0].split('/')[1]);
+              var hora =parseInt(locale.split(', ')[1].split(':')[0]);
+              var minutos = parseInt(locale.split(', ')[1].split(':')[1]);
+              if (hora == 12 && locale.search('AM')>0){
+                hora = 0;
+              } else if (hora != 12 && locale.search('PM')>0){
+                hora = hora + 12;
               }
-            } else {
-              hora[1] = parseInt(hora[1])+15;
-            }
 
-            if (hora[1].toString().length == 1){
-              hora[1] = '0'+hora[1];
-            }
+              var clase = anio+'-'+mes+'-'+dia+'-'+hora+'-'+minutos;
+              $('.mediaHora.'+clase).addClass('ocupada').addClass('bloque');
 
-            if (mismoDia){
-              while( (parseInt(hora[0])< parseInt(horaFin[0]))||(parseInt(hora[0])<= parseInt(horaFin[0]) && parseInt(hora[1])< parseInt(horaFin[1]))){
-                if (mismoDia){
-                  $('.mediaHora.'+parseInt(hora[0])+'-'+hora[1]).addClass('ocupada').addClass('bloque');
-
-                  $('.mediaHora.'+parseInt(hora[0])+'-'+hora[1]).on('click',function(){
-                    detalleEventoMedico(res.id);
-                  });
-                  if (parseInt(hora[1]) == 45){
-                    hora[1] = 0;
-                    if (parseInt(hora[0]) == 23){
-                      mismoDia = false;
-                    } else {
-                      hora[0] = parseInt(hora[0])+1;
-                    }
-                  } else {
-                    hora[1] = parseInt(hora[1])+15;
-                  }
-
-                  if (hora[1].toString().length == 1){
-                    hora[1] = '0'+hora[1];
-                  }
-                }
-              }
+              $('.mediaHora.'+clase).on('click',function(){
+                detalleEventoMedico(res.id);
+              });
+              fechaInicio = new Date(fechaInicio.setMinutes(fechaInicio.getMinutes()+15));
             }
       });
       data.result.forEach(function(res){
-          var hora = new Date(res.fechaHoraInicio).toLocaleString('en-US').split(', ')[1];
+          var anio = parseInt(new Date(res.fechaHoraInicio).toLocaleString('en-US').split(', ')[0].split('/')[2]);
+          var mes = parseInt(new Date(res.fechaHoraInicio).toLocaleString('en-US').split(', ')[0].split('/')[0]);
+          var dia = parseInt(new Date(res.fechaHoraInicio).toLocaleString('en-US').split(', ')[0].split('/')[1]);
+
+          var horaInicio = new Date(res.fechaHoraInicio).toLocaleString('en-US').split(', ')[1];
           var horaFin = new Date(res.fechaHoraFin).toLocaleString('en-US').split(', ')[1];
 
-          if (parseInt(hora.split(':')[0]) != 12 &&  hora.search('PM')>0){
-            hora = (parseInt(hora.split(':')[0]) +12) +'-'+hora.split(':')[1];
-          } else if (parseInt(hora.split(':')[0]) == 12 &&  hora.search('AM')>0){
-            hora = 0+'-'+hora.split(':')[1];
-          } else {
-            hora = parseInt(hora.split(':')[0]) +'-'+ hora.split(':')[1];
+          hora = parseInt(horaInicio.split(':')[0]);
+          minutos = parseInt(horaInicio.split(':')[1]);
+
+          if (hora == 12 && new Date(res.fechaHoraInicio).toLocaleString('en-US').search('AM')>0){
+            hora = 0;
+          } else if (hora != 12 && new Date(res.fechaHoraInicio).toLocaleString('en-US').search('PM')>0){
+            hora = hora + 12;
           }
 
-          if (parseInt(horaFin.split(':')[0]) != 12 &&  horaFin.search('PM')>0){
-            horaFin = (parseInt(horaFin.split(':')[0]) +12) +'-'+horaFin.split(':')[1];
-          } else if (parseInt(horaFin.split(':')[0]) == 12 &&  horaFin.search('AM')>0){
-            horaFin = 0+'-'+horaFin.split(':')[1];
-          } else {
-            horaFin = parseInt(horaFin.split(':')[0]) +'-'+ horaFin.split(':')[1];
-          }
+          var clase = anio+'-'+mes+'-'+dia+'-'+hora+'-'+minutos;
 
-          if (hora.substring(0,1) == "0" && hora.substring(0,2) != "0:"){
-            hora = hora.substring(1,5);
-          }
+          console.log('Clase: ' + clase);
 
-          var element = $('.mediaHora.'+hora);
+          var element = $('.mediaHora.'+clase);
           element.addClass('ocupada').addClass('consulta');
           element.find('.glyphicon').addClass('glyphicon-user');
 
@@ -1819,52 +1842,30 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
             detalleCitaSecretaria(res.id);
           });
 
-          hora = hora.split('-');
-          horaFin = horaFin.split('-');
+          var fechaInicio = new Date(res.fechaHoraInicio);
+          var fechaFin = new Date(res.fechaHoraFin);
+          fechaInicio = new Date(fechaInicio.setMinutes(fechaInicio.getMinutes()+15));
 
-          var mismoDia = true;
-          if (parseInt(hora[1]) == 45){
-            hora[1] = 0;
-            if (parseInt(hora[0]) == 23){
-              mismoDia = false;
-            } else {
-              hora[0] = parseInt(hora[0])+1;
+          while (fechaInicio < fechaFin){
+            var locale  = fechaInicio.toLocaleString('en-US');
+            var anio = parseInt(locale.split(', ')[0].split('/')[2]);
+            var mes = parseInt(locale.split(', ')[0].split('/')[0]);
+            var dia = parseInt(locale.split(', ')[0].split('/')[1]);
+            var hora =parseInt(locale.split(', ')[1].split(':')[0]);
+            var minutos = parseInt(locale.split(', ')[1].split(':')[1]);
+            if (hora == 12 && locale.search('AM')>0){
+              hora = 0;
+            } else if (hora != 12 && locale.search('PM')>0){
+              hora = hora + 12;
             }
-          } else {
-            hora[1] = parseInt(hora[1])+15;
-          }
 
-          if (hora[1].toString().length == 1){
-            hora[1] = '0'+hora[1];
-          }
+            var clase = anio+'-'+mes+'-'+dia+'-'+hora+'-'+minutos;
+            $('.mediaHora.'+clase).addClass('ocupada').addClass('bloque');
 
-          if (mismoDia){
-            while( (parseInt(hora[0])< parseInt(horaFin[0]))||(parseInt(hora[0])<= parseInt(horaFin[0]) && parseInt(hora[1])< parseInt(horaFin[1]))){
-              if (mismoDia){
-                $('.mediaHora.'+parseInt(hora[0])+'-'+hora[1]).addClass('ocupada').addClass('bloque');
-
-                if (res.status == 2){
-                  $('.mediaHora.'+parseInt(hora[0])+'-'+hora[1]).addClass('cancelada');
-                }
-                $('.mediaHora.'+parseInt(hora[0])+'-'+hora[1]).find('.mediaHoraInterno').on('click',function(){
-                  detalleCitaSecretaria(res.id);
-                });
-                if (parseInt(hora[1]) == 45){
-                  hora[1] = 0;
-                  if (parseInt(hora[0]) == 23){
-                    mismoDia = false;
-                  } else {
-                    hora[0] = parseInt(hora[0])+1;
-                  }
-                } else {
-                  hora[1] = parseInt(hora[1])+15;
-                }
-
-                if (hora[1].toString().length == 1){
-                  hora[1] = '0'+hora[1];
-                }
-              }
-            }
+            $('.mediaHora.'+clase).on('click',function(){
+              detalleCitaSecretaria(res.id);
+            });
+            fechaInicio = new Date(fechaInicio.setMinutes(fechaInicio.getMinutes()+15));
           }
 
       });
@@ -1873,8 +1874,8 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
         var clases = $(this).attr("class").split(' ');
         var horario;
         clases.forEach(function(clase){
-          if (clase.split('-')[1]){
-            horario = clase.split('-')[0] +':'+clase.split('-')[1]
+          if (clase.split('-')[3]){
+            horario = clase.split('-')[3] +':'+clase.split('-')[4]
           }
         });
         //2016-03-30T17:29:12.860Z8:00
@@ -1895,7 +1896,8 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
   });
 }
 
-function limpiarAgendaDia(){
+function limpiarAgendaDia(fechaInicio){
+    //4/13/2016
 
     var contenido = '';
     for (var hora = 8; hora < 21; hora++) {
@@ -1913,16 +1915,17 @@ function limpiarAgendaDia(){
       <div class="col-lg-11 col-md-11 col-sm-10 col-xs-11">`;
 
       for (var i = 0; i < 4; i++) {
-        var minutos = (i*15).toString();
-        if (minutos.length == 1){
-          minutos += '0';
-        }
-        contenido += `<a role="button" class="row mediaHora noDisponible `+ hora +`-`+ minutos +`">
+        var anio = parseInt(new Date(fechaInicio).toLocaleString('en-US').split(', ')[0].split('/')[2]);
+        var mes = parseInt(new Date(fechaInicio).toLocaleString('en-US').split(', ')[0].split('/')[0]);
+        var dia = parseInt(new Date(fechaInicio).toLocaleString('en-US').split(', ')[0].split('/')[1]);
+
+        var minutos = (i*15);
+        contenido += `<a role="button" class="row mediaHora noDisponible `+ anio +`-`+ mes +`-`+ dia +`-`+ hora +`-`+ minutos +`">
           <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 noPadding">
             <div class="mediaHoraInterno tiempo">
               <div class="body-container">
                 <div class="center-content">
-                  <span class="lbl-mediahora h77-boldcond">`+ hora +`:`+ minutos +`</span>
+                  <span class="lbl-mediahora h77-boldcond">`+ hora +`:`+ ('0'+minutos).slice('-2') +`</span>
                 </div>
               </div>
             </div>
@@ -2823,7 +2826,7 @@ function formatearFechaLocalT(fecha){
 function cargarCitasPaciente(offset, element){
     $.ajax({
       async: false,
-      url: '/ag/private/get',
+      url: '/ag/pac/get',
       type: 'POST',
       dataType: "json",
       cache: false,
@@ -2833,17 +2836,26 @@ function cargarCitasPaciente(offset, element){
           var meses = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
           data.result.forEach(function(res){
             var date = new Date(res.fechaHoraInicio).toLocaleString('en-US');
-            var dia = parseInt(res.fechaHoraInicio.split('T')[0].split('-')[2]);
-            var mes = parseInt(res.fechaHoraInicio.split('T')[0].split('-')[1]);
-            var hora = parseInt(res.fechaHoraInicio.split('T')[1].split(':')[0]);
-            var minutos = res.fechaHoraInicio.split('T')[1].split(':')[1];
+            //4/7/2016, 12:00:00 PM
+            //mes/dia/año, hora, minutos
+            var dia = date.split(', ')[0].split('/')[1];
+            var mes = date.split(', ')[0].split('/')[0];
+
+            var hora = parseInt(date.split(', ')[1].split(':')[0]);
+            var minutos = date.split(', ')[1].split(':')[1];
+
             var T = 'AM';
-            if (hora >= 12){
+            if (date.search('PM')>0){
               T = 'PM';
-              if (hora>12){
-                hora = hora-12;
+              if (hora != 12){
+                hora = hora + 12;
+              }
+            } else {
+              if (hora == 12){
+                hora = 0;
               }
             }
+
             hora = hora + ':'+minutos+' ' + T;
             mes = meses[mes-1];
             if (res.Usuario.DatosGenerale.apellidoM && res.Usuario.DatosGenerale.apellidoM != ""){

@@ -4503,3 +4503,59 @@ function validarAgregarEvento(){
   }
   return false;
 }
+
+function cancelarEvento(evento_id){
+
+
+      var box = bootbox.dialog({
+        show: false,
+        backdrop: true,
+        animate: false,
+        onEscape: function () {
+            bootbox.hideAll();
+        },
+        title: 'Cancelar evento' ,
+        message:
+        '<div class="col-md-12">¿ Desea cancelar le evento ?</div><br>',
+        buttons: {
+            cancel: {
+                label: 'No',
+                className: 'btn-warning',
+            },
+            save: {
+                label: 'Si',
+                className: 'btn-success',
+                callback: function () {
+                    $.ajax( {
+                      async: false,
+                      url: '/agenda/evento/cancelar',
+                      type: 'POST',
+                      dataType: "json",
+                      data: {
+                        evento_id: evento_id
+                      },
+                      cache: false,
+                      success: function ( data ) {
+                        if (data.success){
+                          marcarEventosCalendario();
+                          var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
+                          var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
+                          cargarEventosPorDia(fechaInicio, fechaFin);
+                          bootbox.hideAll();
+                        } else {
+                          if (data.overflow){
+                            alert('Evento interfiere con alguna cita o evento existente.')
+                          }
+                        }
+                      },
+                      error: function(err){
+                        console.log('Ajax error: ' + JSON.stringify(err));
+                      }
+                    });
+                }
+            }
+        }
+      });
+
+      box.modal('show');
+}

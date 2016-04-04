@@ -624,7 +624,7 @@ exports.citasProximas = function (object, req, res){
   models.Agenda.findAll({
     where: {
       fechaHoraInicio: {
-        $between: [object.fechainicio,object.fechafin]
+        $between: [new Date(object.fechainicio),new Date(object.fechafin)]
       },
       status: 1
     },
