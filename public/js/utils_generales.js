@@ -1443,8 +1443,9 @@ $( document ).ready( function () {
       var h2 = h - $('#stickyNav').height() - $('#uploadControl').height();
       $( '#galeriaBody' ).css( 'height', h + 'px' );
       $( '#galeriaPanel' ).css('height', h2 + 'px');
-      $( '#uploadPanel .well' ).css('height', $( '#galeriaPanel' ).height() - 15 + 'px');
-      $( '#slideGaleria' ).css('height', $('#galeriaPanel').height() - 10 + 'px');
+      $( '#uploadPanel .well' ).css('height', $( '#galeriaPanel' ).height() + 'px');
+      $( '#uploadPanel2 .well' ).css('height', $( '#galeriaPanel' ).height() + 'px');
+      $( '#slideGaleria' ).css('height', $('#galeriaPanel').height() - 30 + 'px');
       $( '.img-container' ).css('height', $( '#slideGaleria' ).height() + 'px');
       $( '.caption-container' ).css('height', $( '#slideGaleria' ).height() + 'px');
     }
@@ -1455,7 +1456,8 @@ $( document ).ready( function () {
       $( '#galeriaBody' ).css( 'height', h + 'px' );
       $( '#galeriaBody' ).css('padding-top', $( '#newMainNav' ).height() + $('#stickyNav').height() + 'px')
       $( '#galeriaPanel' ).css('height', h2 + 'px');
-      $( '#uploadPanel .well' ).css('height', $( '#galeriaPanel' ).height() - 15 + 'px');
+      $( '#uploadPanel .well' ).css('height', $( '#galeriaPanel' ).height() + 'px');
+      $( '#uploadPanel .well' ).css('height', $( '#galeriaPanel' ).height() + 'px');
       $( '#slideGaleria' ).css('height', $('#galeriaPanel').height() + 'px');
       $( '.img-container' ).css('height', $( '#slideGaleria' ).height() - 120 + 'px');
       $( '.caption-container' ).css('height', 120 + 'px');

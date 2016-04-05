@@ -2019,7 +2019,7 @@ footer .logoIntermed {
 
 }
 
-#uploadPanel .well {
+#uploadPanel .well ,#uploadPanel2 .well {
   overflow: hidden;
   overflow-y: auto;
   height: 687px;
