@@ -64,7 +64,7 @@ module.exports = function (object){
   });
 
   //Obtener citas proximas de usuario logueado
-  app.post('/ag/private/get', function (req, res){
+  app.post('/ag/pac/get', function (req, res){
     intermed.callController('agenda','obtenerCitasPropias', req.body, req, res);
   });
 
@@ -148,6 +148,18 @@ module.exports = function (object){
 
   app.post('/agenda/evento/agregar', function (req, res){
     intermed.callController('agenda','eventoAgregar', req.body, req, res);
+  });
+
+  app.post('/agenda/detalleEvento', function (req, res){
+    intermed.callController('agenda','detalleEvento', req.body, req, res);
+  });
+
+  app.post('/agenda/evento/cancelar', function (req, res){
+    intermed.callController('agenda','cancelar', req.body, req, res);
+  });
+
+  app.post('/agenda/evento/guardarDescripcion', function (req, res){
+    intermed.callController( 'agenda', 'eventoGuardarDescr', req.body, req, res );
   });
 
 }

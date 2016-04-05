@@ -271,6 +271,7 @@ function iniciarCalendarioAgendarCita(){
     $('#divCalendario').addClass('calCita');
     $('#divCalendario').fullCalendar({
         firstDay:1,
+        timezon: 'local',
         defaultView: 'agendaWeek',
         height: 350,
         allDaySlot: false,
@@ -293,6 +294,33 @@ function iniciarCalendarioAgendarCita(){
               cache: false,
               data: { direccion_id: $('#ubicacion_id').val(), inicio: start.format(), fin: end.format()},
               success: function (data) {
+                var d = new Date()
+                var timeZoneOffset = '';
+
+                var n = parseInt(d.getTimezoneOffset())/60;
+
+                if (n<0){
+                  timeZoneOffset = '-';
+                } else {
+                  timeZoneOffset = '+'
+                }
+                n = n.toString().replace('+','').replace('-','');
+
+                if (n.split('.')[0].length== 1){
+                  timeZoneOffset += '0'+n.split('.')[0];
+                } else {
+                  timeZoneOffset += n.split('.')[0];
+                }
+                if (!n.split('.')[1]){
+                  timeZoneOffset += ':00';
+                } else {
+                  timeZoneOffset += ':' + n.split('.')[1];
+                }
+
+                for (var i = 0; i < data.length; i++){
+                  data[i].start = new Date(data[i].start).toISOString().replace(':00.000Z','')+timeZoneOffset;
+                  data[i].end = new Date(data[i].end).toISOString().replace(':00.000Z','')+timeZoneOffset;
+                }
                 callback(data);
               },
               error: function (err){
@@ -925,8 +953,10 @@ function cancelaCita(id) {
                 fin.hours(evento.end._d.getUTCHours());
                 fin.minute(evento.end._d.getUTCMinutes());
 
+                /*
                 fin = fin.subtract(6, 'hours');
                 inicio = inicio.subtract(6, 'hours');
+                */
 
                 var horario = {
                     inicio: evento.start.format('YYYY-M-D') + " "  + inicio.format('HH:mm'),
@@ -1241,13 +1271,10 @@ var meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','
 var agregarEvento = false;
 
 function horariosAgendaMedico(medico_id){
-  console.log('TEST');
-
     var valido = true;
     $('#divCalendario').addClass('calCita');
     $('#divCalendario').fullCalendar({
         firstDay:1,
-        //ignoreTimezone: false,//http://stackoverflow.com/questions/21594825/fullcalendar-timezones-not-modifying-times-on-clients-end
         defaultView: 'agendaWeek',
         height: 350,
         allDaySlot: false,
@@ -1259,20 +1286,52 @@ function horariosAgendaMedico(medico_id){
             //center: false,
             //right: false,
             left: false
-        },/*
-        header: {
-            left: 'month,agendaWeek,agendaDay',
-            center: 'title',
-            right: 'prev,next,today'
-        },*/
+        },
         events: function(start, end, timezone, callback) {
+          var startDate, endDate;
+          var d = new Date();
+          if ((parseInt(d.getTimezoneOffset())) >0){
+            startDate = new Date(new Date(start).setMinutes(new Date(start).getMinutes()+(parseInt(d.getTimezoneOffset()))))
+            endDate = new Date(new Date(end).setMinutes(new Date(end).getMinutes()+(parseInt(d.getTimezoneOffset()))))
+          } else {
+            startDate = new Date(new Date(start).setMinutes(new Date(start).getMinutes()-(parseInt(d.getTimezoneOffset()))))
+            endDate = new Date(new Date(end).setMinutes(new Date(end).getMinutes()-(parseInt(d.getTimezoneOffset()))))
+          }
+
           $.ajax({
               url: '/agenda/AgendaMedico',
               type: 'POST',
               dataType: "json",
               cache: false,
-              data: {medico_id: medico_id,inicio: start.format(), fin: end.format()},
+              data: {medico_id: medico_id,inicio: startDate, fin: endDate},
               success: function (data) {
+                var d = new Date()
+                var timeZoneOffset = '';
+
+                var n = parseInt(d.getTimezoneOffset())/60;
+
+                if (n<0){
+                  timeZoneOffset = '-';
+                } else {
+                  timeZoneOffset = '+'
+                }
+                n = n.toString().replace('+','').replace('-','');
+
+                if (n.split('.')[0].length== 1){
+                  timeZoneOffset += '0'+n.split('.')[0];
+                } else {
+                  timeZoneOffset += n.split('.')[0];
+                }
+                if (!n.split('.')[1]){
+                  timeZoneOffset += ':00';
+                } else {
+                  timeZoneOffset += ':' + n.split('.')[1];
+                }
+
+                for (var i = 0; i < data.result.length; i++){
+                  data.result[i].start = new Date(data.result[i].start).toISOString().replace(':00.000Z','')+timeZoneOffset;
+                  data.result[i].end = new Date(data.result[i].end).toISOString().replace(':00.000Z','')+timeZoneOffset;
+                }
                 callback(data.result);
                 $.ajax({
                     url: '/medico/detalleMedico',
@@ -1339,7 +1398,11 @@ function horariosAgendaMedico(medico_id){
           if (agregarEvento == true){
             var inicio = new Date((new Date(date)).toUTCString().split(' GMT')[0]);
             var final = new moment(inicio);
+            date = new Date(new Date(date).toISOString().replace('T',' ').replace('.000Z','')).getTime();
+            seleccionarAgregarEventoCita(date, new moment(date),medico_id);
+            /*
             if (validaEventoId(inicio,final) && validaAgenda(inicio, final) == 1){
+
               //Promp para seleccionar servicio de esa dirección
               inicio = new Date(date).toLocaleString('en-US');
               $.ajax({
@@ -1388,7 +1451,6 @@ function horariosAgendaMedico(medico_id){
                                 if ( validacionAgenda == 1 ) {
                                   //date: 2016-04-09T09:00:00.000Z
                                   date = new Date(new Date(date).toISOString().replace('T',' ').replace('.000Z','')).getTime();
-                                  alert('date: ' + date);
                                   registrarNuevaCitaBootbox(date, new moment(date).add(horas[0], 'h').add(horas[1], 'm'),medico_id,$('#servicioList').val());
                                   //usuario_id:6 paciente_id:2
                                 } else  if ( validacionAgenda == 3 ) {
@@ -1425,18 +1487,17 @@ function horariosAgendaMedico(medico_id){
                   }
                 });
               }
+              */
           }
         },
         eventClick: function (event, jsEvent, view) {
           if (event.id && !agregarEvento){
-            detalleCitaSecretaria(parseInt(event.id.split('_')[1]));
+            if (event.className == "eventoMedico"){
+              detalleEventoMedico(parseInt(event.id.split('_')[1]));
+            } else {
+              detalleCitaSecretaria(parseInt(event.id.split('_')[1]));
+            }
           }
-          /*
-          if ((event.id != null && event.id.substring(0,4) != 'cita' && (event.title != 'Cancelada' && event.title != 'No disponible')) || (event.id == null))
-          {
-            $('#divCalendario').fullCalendar('removeEvents');
-            $('#divCalendario').fullCalendar('refetchEvents');
-          }*/
         },
         eventMouseover: function (event, jsEvent, view) {
           if ((event.id != null && event.id.substring(0,4) != 'cita' && (event.title != 'Cancelada' && event.title != 'No disponible')) || (event.id== null)) {
@@ -1467,14 +1528,14 @@ function horariosAgendaMedico(medico_id){
 }
 
 
-function seleccionarServicioCitaOficina(date,inicio, clase){
+function seleccionarServicioCitaOficina(date,inicio, medico_id, clase){
   inicio = new Date(date).toLocaleString('en-US');
   $.ajax({
     url: '/agenda/serviciosPorHorario',
     type: 'POST',
     dataType: "json",
     cache: false,
-    data: {inicio: inicio,kendo:true},
+    data: {inicio: inicio,kendo:true,medico_id: medico_id},
     success: function (data) {
       var contenido = '';
       data.result.forEach(function(servicio){
@@ -1500,40 +1561,73 @@ function seleccionarServicioCitaOficina(date,inicio, clase){
             label: "Seleccionar",
             className: "btn-primary",
             callback: function() {
-              if ($('#servicioList').val() && $('#servicioList').val() != ""){
-                var duracionServicio = $("#servicioList option:selected").text().split('(')[1].split(')')[0];
-                var horas = duracionServicio.split(":");
+              if ($('#divCalendario').length>0){
+                  if ($('#servicioList').val() && $('#servicioList').val() != ""){
+                    var duracionServicio = $("#servicioList option:selected").text().split('(')[1].split(')')[0];
+                    var horas = duracionServicio.split(":");
 
-                var bloques = (parseInt(horas[0])*4) + (parseInt(horas[1])/15);
+                    var final = new moment(inicio).add(horas[0], 'h').add(horas[1], 'm');
 
-                element = $('.mediaHora.'+clase);
+                    var inicioTemp = new Date(new Date(inicio).setHours(new Date(inicio).getHours()-5));
+                    var finTemp = new Date(new Date(final).setHours(new Date(final).getHours()-5));
 
-                var valido = true;
-                var newElement = element.next();
-                var antElement = null;
-                for (i = 1; i <bloques;i++){
-                  if ( valido){
-                    if (newElement.hasClass('noDisponible') || newElement.hasClass('ocupada') ){
-                      valido = false;
+                    var mensaje = '';
+                    if ( validaEvento(inicio, new Date(final))) {
+                      registrarNuevaCitaBootbox(date, new moment(date).add(horas[0], 'h').add(horas[1], 'm'),medico_id,$('#servicioList').val(),1);
                     } else {
-                      antElement = newElement;
-                      newElement = newElement.next();
-                      if (!newElement[0]){
-                        newElement = antElement.parent().parent().next().find('.mediaHora').first();
+                      mensaje = "La duración de la cita excede el tiempo disponible en el horario."
+                    }
+                    if (mensaje != ""){
+                       bootbox.alert({
+                         backdrop: false,
+                         closeButton: false,
+                         onEscape: function () {
+                             bootbox.hideAll();
+                         },
+                         message: mensaje,
+                         className: 'Intermed-Bootbox',
+                         title: '<span class="title">Mensaje de Intermed</span>'
+                       });
+                    }
+                  } else {
+                    $('#servicioList').focus();
+                    return false;
+                  }
+              } else {
+                if ($('#servicioList').val() && $('#servicioList').val() != ""){
+                  var duracionServicio = $("#servicioList option:selected").text().split('(')[1].split(')')[0];
+                  var horas = duracionServicio.split(":");
+
+                  var bloques = (parseInt(horas[0])*4) + (parseInt(horas[1])/15);
+
+                  element = $('.mediaHora.'+clase);
+
+                  var valido = true;
+                  var newElement = element.next();
+                  var antElement = null;
+                  for (i = 1; i <bloques;i++){
+                    if ( valido){
+                      if (newElement.hasClass('noDisponible') || newElement.hasClass('ocupada') ){
+                        valido = false;
+                      } else {
+                        antElement = newElement;
+                        newElement = newElement.next();
+                        if (!newElement[0]){
+                          newElement = antElement.parent().parent().next().find('.mediaHora').first();
+                        }
                       }
                     }
                   }
-                }
-                if (valido) {
-                  alert('date: ' + new Date(date).toUTCString());
-                  registrarNuevaCitaBootbox(date, new moment(date).add(horas[0], 'h').add(horas[1], 'm'),null,$('#servicioList').val(),1);
-                } else {
-                  alert('El tiempo del servicio excede el tiempo disponible');
-                }
+                  if (valido) {
+                    registrarNuevaCitaBootbox(date, new moment(date).add(horas[0], 'h').add(horas[1], 'm'),medico_id,$('#servicioList').val(),1);
+                  } else {
+                    alert('El tiempo del servicio excede el tiempo disponible');
+                  }
 
-              } else {
-                $('#servicioList').focus();
-                return false;
+                } else {
+                  $('#servicioList').focus();
+                  return false;
+                }
               }
             }
           }
@@ -1557,9 +1651,9 @@ function destacarDireccion(element, direccionclass){
   if (direccionclass){
     //Mostrar solo eventos que esten dentro de un background con la clase direccionclass
     $('#divCalendario .fc-bgevent.'+direccionclass).css('opacity','1');
-    $('#divCalendario .fc-bgevent:not(.'+direccionclass+')').css('opacity','0');
+    $('#divCalendario .fc-bgevent:not(.'+direccionclass+'):not(.eventoMedico)').css('opacity','0');
     $('td.fc-day.fc-widget-content').css('background-color','#EAEAEA');
-    $('#divCalendario a.fc-time-grid-event.fc-v-event.fc-event.fc-start.fc-end:not(.'+direccionclass+')').css('display','none');
+    $('#divCalendario a.fc-time-grid-event.fc-v-event.fc-event.fc-start.fc-end:not(.'+direccionclass+'):not(.eventoMedico)').css('display','none');
   } else {
     $('#divCalendario td.fc-day.fc-widget-content').css('background-color','#375467');
     $('#divCalendario .fc-bgevent').css('opacity','1');

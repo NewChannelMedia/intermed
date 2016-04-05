@@ -170,14 +170,102 @@ function cargarCitasProximasSecretaria(){
       },function( data ){
         $('.panel-body.contenidoagenda').html('<ul class="list-group" style="margin-bottom: 0px"></ul>');
         if( data.success ){
+          var eventos = [];
+          data.result2.forEach(function(res){
+            var div = 'MedicoSecretaria_'+res.Usuario.Medico.id;
+
+            var date = new Date(res.fechaHoraInicio).toLocaleString('en-US');
+            //4/7/2016, 12:00:00 PM
+            //mes/dia/año, hora, minutos
+            hora = parseInt(date.split(', ')[1].split(':')[0]);
+            var minutos = date.split(', ')[1].split(':')[1];
+
+            var horaClase = '';
+            horaClase = hora;
+            var T = 'AM';
+            if (date.search('PM')>0){
+              T = 'PM';
+              horaClase = hora + 12;
+            } else {
+              if (hora == 12){
+                horaClase = 0;
+              }
+            }
+
+            hora = hora + ':'+minutos;
+            horaClase = horaClase + ':'+minutos;
+
+            //2016-04-05
+            var anio = date.split(', ')[0].split('/')[2];
+            var mes = date.split(', ')[0].split('/')[0];
+            if (mes.length == 1){
+              mes = '0'+mes;
+            }
+            var dia = date.split(', ')[0].split('/')[1];
+            if (dia.length == 1){
+              dia = '0'+dia;
+            }
+            fecha = anio  +'-'+ mes +'-'+ dia;
+
+            var dia = 'dia';
+            if (fecha == dia1){
+              dia += '1';
+            } else if (fecha == dia2){
+              dia += '2';
+            } else if (fecha == dia3){
+              dia += '3';
+            }
+            var nombrePaciente = res.nombre;
+            eventos.push({
+              div: div,
+              dia: dia,
+              inicio: parseInt(horaClase.replace(':','')),
+              contenido: '<li class="list-group-item eventoMedico" style="background-color:white;cursor:pointer" onclick="detalleEventoMedico('+ res.id +')"><strong>'+ hora +' ' + T +'</strong><br>'+ nombrePaciente + '<br>'+ res.ubicacion +'</li>'
+            })
+            //$('#'+div + ' .'+dia+' .panel-body ul').append();
+          });
           data.result.forEach(function(res){
             var div = 'MedicoSecretaria_'+res.Usuario.Medico.id;
+
+            var date = new Date(res.fechaHoraInicio).toLocaleString('en-US');
+            //4/7/2016, 12:00:00 PM
+            //mes/dia/año, hora, minutos
+            hora = parseInt(date.split(', ')[1].split(':')[0]);
+            var minutos = date.split(', ')[1].split(':')[1];
+
+            var horaClase = '';
+            var T = 'AM';
+            horaClase = hora;
+            if (date.search('PM')>0){
+              T = 'PM';
+              horaClase = hora + 12;
+            } else {
+              if (hora == 12){
+                horaClase = 0;
+              }
+            }
+
+            hora = hora + ':'+minutos;
+            horaClase = horaClase + ':'+minutos;
+
+            //2016-04-05
+            var anio = date.split(', ')[0].split('/')[2];
+            var mes = date.split(', ')[0].split('/')[0];
+            if (mes.length == 1){
+              mes = '0'+mes;
+            }
+            var dia = date.split(', ')[0].split('/')[1];
+            if (dia.length == 1){
+              dia = '0'+dia;
+            }
+            fecha = anio  +'-'+ mes +'-'+ dia;
+
             var dia = 'dia';
-            if (res.fechaHoraInicio.split('T')[0] == dia1){
+            if (fecha == dia1){
               dia += '1';
-            } else if (res.fechaHoraInicio.split('T')[0] == dia2){
+            } else if (fecha == dia2){
               dia += '2';
-            } else if (res.fechaHoraInicio.split('T')[0] == dia3){
+            } else if (fecha == dia3){
               dia += '3';
             }
             var nombrePaciente = '';
@@ -186,7 +274,28 @@ function cargarCitasProximasSecretaria(){
             } else if (res.PacienteTemporal){
               nombrePaciente = res.PacienteTemporal.nombres  + ' ' + res.PacienteTemporal.apellidos;
             }
-            $('#'+div + ' .'+dia+' .panel-body ul').append('<li class="list-group-item" style="background-color:white;cursor:pointer" onclick="detalleCitaSecretaria('+ res.id +')"><strong>'+ formatearHora(res.fechaHoraInicio.split('T')[1]) +'</strong><br>'+ nombrePaciente + '<br>'+ res.Direccion.nombre +'<br>'+ res.CatalogoServicio.concepto +'</li>');
+
+            eventos.push({
+              div: div,
+              dia: dia,
+              inicio: parseInt(horaClase.replace(':','')),
+              contenido: '<li class="list-group-item" style="background-color:white;cursor:pointer" onclick="detalleCitaSecretaria('+ res.id +')"><strong>'+ hora +' ' + T + '</strong><br>'+ nombrePaciente + '<br>'+ res.Direccion.nombre +'<br>'+ res.CatalogoServicio.concepto +'</li>'
+            });
+          });
+
+          eventos = eventos.sort(function (a,b) {
+            if (a['inicio'] > b['inicio']) {
+              return  1;
+            }
+            if (a['inicio'] < b['inicio']){
+              return -1;
+            } else {
+              return 0;
+            }
+          });
+
+          eventos.forEach(function(ev){
+            $('#'+ev.div + ' .'+ev.dia+' .panel-body ul').append(ev.contenido);
           });
         }else{
           if (data.error){
@@ -261,6 +370,45 @@ function guardarNotaSecretaria(agenda_id, input){
   });
 }
 
+function guardarDescripcionEventoSecretaria(evento_id, bootbox){
+  var nombre = $('#eventoNombre').val();
+  var ubicacion = $('#eventoUbicacion').val();
+  var descripcion = $('#inputDescripcionEvento').val();
+  if (nombre && nombre.replace(' ','') != ""){
+    $.post('/agenda/evento/guardarDescripcion',{
+      evento_id:evento_id,
+      nombre: nombre,
+      ubicacion: ubicacion,
+      descripcion: descripcion,
+    },function( data ){
+      if( data.success ){
+        cargarCitasProximasSecretaria();
+        marcarEventosCalendario();
+        if ($('#calendar').length>0){
+          var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
+          var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
+          cargarEventosPorDia(fechaInicio, fechaFin);
+        }
+
+        if ($('#divCalendario').length>0){
+          $('#divCalendario').fullCalendar('removeEvents');
+          $('#divCalendario').fullCalendar('refetchEvents');
+        }
+        bootbox.hide();
+      }else{
+        if (data.error){
+          manejadorDeErrores(data.error);
+        }
+      }
+    }).fail(function(e){
+      console.error(e);
+    });
+  } else {
+    alert('Es necesario que indique el nombre del evento');
+    $('#eventoNombre')[0].focus();
+  }
+}
+
 function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, paciente_id,kendo){
   try{
     if (!paciente_id){
@@ -276,8 +424,8 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
           apellido: apellido,
           correo: correo,
           celular: celular,
-          inicio: formatearFecha(inicio),
-          fin: formatearFecha(fin),
+          inicio: new Date(inicio),
+          fin: new Date(fin),
           medico_id: medico,
           servicio_id: servicio_id
         }
@@ -299,10 +447,12 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
                 $('#divCalendario').fullCalendar('removeEvents');
                 $('#divCalendario').fullCalendar('refetchEvents');
                 activarDesactivarAgregarCita($('#btnAddCita'));
+                secondaryBootbox.hide();
+            } else {
+              bootbox.hideAll();
             }
 
             cargarCitasProximasSecretaria();
-            secondaryBootbox.hide();
           }
         }).fail(function(e){
           console.error("Post error: "+JSON.stringify(e));
@@ -317,8 +467,8 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
       $.post('/agenda/crearCita',{
         kendo: kendo,
         paciente_id: paciente_id,
-        inicio: formatearFecha(inicio),
-        fin: formatearFecha(fin),
+        inicio: new Date(inicio),
+        fin: new Date(fin),
         medico_id: medico,
         servicio_id: servicio_id
       }, function(data){
@@ -339,10 +489,12 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
               $('#divCalendario').fullCalendar('removeEvents');
               $('#divCalendario').fullCalendar('refetchEvents');
               activarDesactivarAgregarCita($('#btnAddCita'));
+              secondaryBootbox.hide();
+          } else {
+            bootbox.hideAll();
           }
 
           cargarCitasProximasSecretaria();
-          secondaryBootbox.hide();
         }
       }).fail(function(e){
         console.error("Post error: "+JSON.stringify(e));
