@@ -1251,7 +1251,8 @@ function resetFormUsuarioReg(){
 }
 
 function seleccionarImagenUsuario(){
-  $('#imagenPerfilUs').val(base64file);bootbox.hideAll();
+  $('#imagenPerfilUs').val(base64file);
+  bootbox.hideAll();
   $('#imgPerfilNuevo').attr("src", base64file);
 }
 

@@ -4571,3 +4571,10 @@ function cancelarEvento(evento_id){
 
       box.modal('show');
 }
+
+function delUpImage(element){
+  $(element).parent().parent().remove();
+  if ('.imageUpload').length>0){
+    $('#btnUploadImages').removeClass('hidden');
+  }
+}
