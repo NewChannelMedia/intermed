@@ -90,32 +90,17 @@
             <div class="col-lg-4">
               <a role="button" class="btn btn-primary btn-lg btn-block" data-toggle="collapse" href="#uploadPanel" aria-expanded="false" aria-controls="uploadPanel"><span class="glyphicon glyphicon-plus"></span> Agregar fotos a la Galería</a>
             </div>
+            <div class="col-lg-4 pull-right">
+              <a role="button" id="btnUploadImages" class="btn btn-success btn-lg btn-block hidden" ><span class="glyphicon glyphicon-plus"></span> Subir imágenes</a>
+            </div>
           </div>
         </div>
         <div class="panel-collapse collapse col-lg-12 col-md-12 col-sm-12 col-xs-12" id="uploadPanel">
           <div class="well bg-transparentDark noMargin">
             <div class="row">
-              <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+              <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" id="divUploadFoto">
                 <div class="thumbnail">
-                  <img src="" style="height: 190px;background-color: rgba(0,0,0,0.1);">
-                  <br>
-                  <div class="caption noPadding">
-                    <form class="">
-                      <div class="form-group">
-                        <label class="control-label">Título:</label>
-                        <input type="text" class="form-control" placeholder="titulo">
-                      </div>
-                      <dic class="form-group">
-                        <label class="control-label">Descripción: </label>
-                        <textarea class="form-control" rows="3"></textarea>
-                      </dic>
-                    </form>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                <div class="thumbnail">
-                  <a role="button" class="btn btn-block text-center" style="height: 370px; ">
+                  <a role="button" class="btn btn-block text-center" style="height: 370px;" id="btnUpToGallery">
                     <div class="body-container">
                       <div class="center-content">
                         <span class="s50 glyphicon glyphicon-plus">
@@ -124,8 +109,7 @@
                       </div>
                     </div>
                   </a>
-
-
+                  <input type="file" id="imageUploadChoser" accept="image/*" multiple="true" style="display:none">
                 </div>
               </div>
             </div>
