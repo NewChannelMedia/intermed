@@ -560,6 +560,11 @@ module.exports = {
   },
   oficinaMedico: function (object, req, res){
     res.render('medico/oficina');
+  },
+
+  galeria: function (object, req, res){
+    console.log('Cargar galeria del usuario: ' + object.usuario);
+    res.render('galeria');
   }
 }
 

@@ -2006,3 +2006,86 @@ footer .logoIntermed {
   color: #ddd;
   background-color: rgba(0, 0, 0, .7);
 }
+
+#uploadPanel-container{
+
+}
+
+#uploadControl {
+
+}
+
+#uploadPanel {
+
+}
+
+#uploadPanel .well {
+  overflow: hidden;
+  overflow-y: auto;
+  height: 687px;
+  background-color: transparent;
+  border: none;
+}
+
+#galeriaPanel {
+  overflow: hidden;
+  position: relative;
+}
+
+#slideGaleria {
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+#slideGaleria .item img{
+  width: 100%;
+  background-color: rgba(0,0,0,0.1);
+  border: none;
+}
+
+#slideGaleria .carousel-control.left,
+#slideGaleria .carousel-control.right {
+  background: none!important;
+}
+
+#bottomSlider {
+  position: absolute;;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000
+}
+
+.img-container {
+  width: 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+}
+
+.caption-container {
+
+}
+
+/*@media (min-width:767px) {
+  .img-container,.caption-container {
+    height: 400px;
+  }
+}
+@media (min-width: 992px) {
+  .img-container,.caption-container {
+    height: 500px;
+  }
+}
+@media (min-width: 1200px) {
+  .img-container,.caption-container {
+    height: 600px;
+  }
+}*/
+
+.controls {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+}

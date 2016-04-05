@@ -1,0 +1,231 @@
+<div id="galeriaMedico">
+  <input type="hidden" id="MedicoId" value="{{usuario.Medico.id}}" />
+  <section id="galeriaBody" class="header-section">
+    <nav id="stickyNav" class="nav-menu sticky h67-medcond">
+      <div class="container-fluid nav-menu-container">
+        <div id="menuMed" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="row nav-menu-row">
+            <div class="nav-menu-inner-section">
+              <ul class="nav nav-pills nav-justified nav-menu-menu h67-medcond s20">
+                <li>
+                  <a id="toPerfil">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="hidden-xs">Perfil</span>
+                        <span class="proicon proicon-medico hidden-lg hidden-md hidden-sm"></span>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a id="toUbicaciones">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="hidden-xs">Ubicaciones</span>
+                        <span class="proicon proicon-ubicacion-marker hidden-lg hidden-md hidden-sm"></span>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a id="toInfo">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="hidden-xs">Info</span>
+                        <span class="proicon proicon-estudios hidden-lg hidden-md hidden-sm"></span>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a id="toCurriculum">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="hidden-xs">Curriculum</span>
+                        <span class="proicon proicon-curriculum hidden-lg hidden-md hidden-sm"></span>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li class="privateDisplay {{#ifSessionVal 'id'}}{{else}}hidden{{/ifSessionVal}}">
+                  <a id="toColegas">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="hidden-xs">Colegas</span>
+                        <span class="proicon proicon-colegas hidden-lg hidden-md hidden-sm"></span>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li class="privateDisplay {{#ifSessionVal 'id'}}{{else}}hidden{{/ifSessionVal}}">
+                  <a id="toComentarios">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="hidden-xs">Comentarios</span>
+                        <span class="proicon proicon-comentar hidden-lg hidden-md hidden-sm"></span>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  <a>
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="hidden-xs">Galería</span>
+                        <span class="proicon proicon-galeria hidden-lg hidden-md hidden-sm"></span>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <div id="uploadPanel-container" class="container-fluid">
+      <div id="uploadControl" class="row noPadding" style="height:0px;">
+        <div class="body-container">
+          <div class="center-content">
+            <div class="col-lg-4">
+              <a role="button" class="btn btn-primary btn-lg btn-block" data-toggle="collapse" href="#uploadPanel" aria-expanded="false" aria-controls="uploadPanel"><span class="glyphicon glyphicon-plus"></span> Agregar fotos a la Galería</a>
+            </div>
+          </div>
+        </div>
+        <div class="panel-collapse collapse col-lg-12 col-md-12 col-sm-12 col-xs-12" id="uploadPanel">
+          <div class="well bg-transparentDark noMargin">
+            <div class="row">
+              <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <div class="thumbnail">
+                  <img src="" style="height: 190px;background-color: rgba(0,0,0,0.1);">
+                  <br>
+                  <div class="caption noPadding">
+                    <form class="">
+                      <div class="form-group">
+                        <label class="control-label">Título:</label>
+                        <input type="text" class="form-control" placeholder="titulo">
+                      </div>
+                      <dic class="form-group">
+                        <label class="control-label">Descripción: </label>
+                        <textarea class="form-control" rows="3"></textarea>
+                      </dic>
+                    </form>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <div class="thumbnail">
+                  <a role="button" class="btn btn-block text-center" style="height: 370px; ">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="s50 glyphicon glyphicon-plus">
+                        </span>
+                        <br> Subir fotos
+                      </div>
+                    </div>
+                  </a>
+
+
+                </div>
+              </div>
+            </div>
+            <!-- aqui va el panel para subir las fotos -->
+          </div>
+        </div>
+      </div>
+      <div id="galeriaPanel" class="row noPadding">
+        <div class="body-container">
+          <div class="center-content">
+            <div id="slideGaleria" class="row">
+              <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" data-interval="false">
+                <!-- Indicators
+                <ol class="carousel-indicators">
+                  <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                  <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                  <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+                </ol>-->
+                <div class="carousel-inner" role="listbox">
+                  <div class="item active">
+                    <div class="container">
+                      <div class="row noPadding">
+                        <div class="col-lg-8 col-md-8 col-sm-7 col-xs-12 bg-black">
+                          <div class="img-container" style="background-image:url('/garage/test/landscape1.jpg')">
+                          </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12 caption-container bg-white">
+                          <div class="img-caption">
+                            <h4>Titulo de la foto</h4>
+                            <p>
+                              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="container">
+                      <div class="row noPadding">
+                        <div class="col-lg-8 col-md-8 col-sm-7 col-xs-12 bg-black">
+                          <div class="img-container" style="background-image:url('/garage/test/portrait1.jpg')">
+                          </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12 caption-container bg-white">
+                          <div class="img-caption">
+                            <h4>Titulo de la foto</h4>
+                            <p>
+                              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <div class="container">
+                      <div class="row noPadding">
+                        <div class="col-lg-8 col-md-8 col-sm-7 col-xs-12 bg-black">
+                          <div class="img-container" style="background-image:url('/garage/test/landscape2.jpg')">
+                          </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12 caption-container bg-white">
+                          <div class="img-caption">
+                            <h4>Titulo de la foto</h4>
+                            <p>
+                              Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="controls">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-lg-8 col-md-8 col-sm-7 col-xs-12">
+                          <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                          </a>
+                          <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="bottomSlider" class="row noPadding bg-transparentDark hidden" style="height:150px;">
+              <div class="col-lg-12">
+                <!-- aqui va el slider de thumbnails -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

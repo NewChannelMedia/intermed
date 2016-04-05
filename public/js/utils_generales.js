@@ -1410,18 +1410,34 @@ $( document ).ready( function () {
       $( '.agendaOverview .closeOverview' ).removeClass('hidden');
     }
 
-    $('.openOverview').click(function(){
-      openOverview();
-    })
-    $('.closeOverview').click(function(){
-      closeOverview();
-    })
-    function openOverview (){
-      $( '.agendaOverview' ).removeClass('hidden', 100);
+  } else if($('#galeriaMedico').length > 0) {
+
+    $('.carousel').carousel('pause');
+
+    if ( $( window ).width() >= 768 ) {
+      var h = $( window ).height() - $( '#newMainNav' ).height() - $('footer').height();
+      var h2 = h - $('#stickyNav').height() - $('#uploadControl').height();
+      $( '#galeriaBody' ).css( 'height', h + 'px' );
+      $( '#galeriaPanel' ).css('height', h2 + 'px');
+      $( '#uploadPanel .well' ).css('height', $( '#galeriaPanel' ).height() - 15 + 'px');
+      $( '#slideGaleria' ).css('height', $('#galeriaPanel').height() - 10 + 'px');
+      $( '.img-container' ).css('height', $( '#slideGaleria' ).height() + 'px');
+      $( '.caption-container' ).css('height', $( '#slideGaleria' ).height() + 'px');
     }
-    function closeOverview() {
-      $( '.agendaOverview' ).addClass('hidden', 100);
+    else if ( $( window ).width() < 768 ) {
+      console.log($(window).height());
+      var h = $( window ).height() - $( '#newMainNav' ).height() ;
+      var h2 = h - $('#stickyNav').height() - $('#uploadControl').height() - $('#stickyNav').height();
+      $( '#galeriaBody' ).css( 'height', h + 'px' );
+      $( '#galeriaBody' ).css('padding-top', $( '#newMainNav' ).height() + $('#stickyNav').height() + 'px')
+      $( '#galeriaPanel' ).css('height', h2 + 'px');
+      $( '#uploadPanel .well' ).css('height', $( '#galeriaPanel' ).height() - 15 + 'px');
+      $( '#slideGaleria' ).css('height', $('#galeriaPanel').height() + 'px');
+      $( '.img-container' ).css('height', $( '#slideGaleria' ).height() - 120 + 'px');
+      $( '.caption-container' ).css('height', 120 + 'px');
+
     }
+
   } else if ($('#feedbackResult').length > 0){
     getFeedback();
   }
