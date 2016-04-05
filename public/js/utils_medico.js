@@ -4574,7 +4574,7 @@ function cancelarEvento(evento_id){
 
 function delUpImage(element){
   $(element).parent().parent().remove();
-  if ('.imageUpload').length>0){
+  if ($('.imageUpload').length>0){
     $('#btnUploadImages').removeClass('hidden');
   }
 }
