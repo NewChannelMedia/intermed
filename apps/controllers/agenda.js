@@ -23,6 +23,7 @@ exports.generarCita = function(object, req, res) {
 
 exports.agregaCita = function(object, req, res) {
   try{
+    console.log('CREAR CITA');
     var fechaNotificacion = new Date(object.fechaFin);
     var fechaFinNotificacion = new Date(object.fechaFin);
     fechaNotificacion.setMinutes(fechaNotificacion.getMinutes() + 30);
@@ -1697,6 +1698,7 @@ exports.traerAgendaMedico = function (object, req, res){
   object.direccion_id = [];
   object.direcciones = [];
   if (req.session.passport.user.tipoUsuario == "M"){
+    object.usuario_medico_id = req.session.passport.user.id;
     models.Direccion.findAll({
       where: {
         usuario_id: req.session.passport.user.id
@@ -1734,6 +1736,7 @@ exports.traerAgendaMedico = function (object, req, res){
           }]
         }]
       }).then(function(relacion){
+        object.usuario_medico_id = relacion.Medico.Usuario.id;
         relacion.Medico.Usuario.Direccions.forEach(function (dir){
           object.direccion_id.push(dir.id);
           object.direcciones.push({
@@ -1886,6 +1889,7 @@ exports.agendaMedico = function (object, req, res){
               $gte: new Date(object.inicio),
               $lte: new Date(object.fin)
             },
+            usuario_id: object.usuario_medico_id,
             status: {
               $gt: 0
             }
@@ -2020,7 +2024,7 @@ exports.detalleEvento = function (object, req, res){
   } else {
     models.Evento.findOne({
       where: {
-        id: object.agenda_id
+        id: object.evento_id
       },
       include: [{
         model:models.Usuario,
@@ -2039,24 +2043,6 @@ exports.detalleEvento = function (object, req, res){
             attributes: ['id']
           }]
         }]
-      },{
-        model: models.Direccion,
-        attributes: ['nombre'],
-      },{
-        model: models.CatalogoServicios,
-        attributes: ['concepto'],
-      },{
-        model: models.Paciente,
-        attributes: ['id'],
-        include: [{
-          model: models.Usuario,
-          attributes: ['id','urlFotoPerfil'],
-          include: [{
-            model: models.DatosGenerales
-          }]
-        }]
-      },{
-        model: models.PacienteTemporal
       }]
     }).then(function(result){
         res.status(200).json({success:true,result:result});
@@ -2310,57 +2296,8 @@ exports.serviciosPorHorario = function (object, req, res){
 
 exports.crearCita = function (object, req, res){
   if (req.session.passport.user.tipoUsuario == "M"){
-    models.Medico.findOne({
-      where: {
-        id: req.session.passport.user.Medico_id
-      }
-    }).then(function(medico){
-      models.CatalogoServicios.findOne({
-        where: {
-          id: object.servicio_id
-        }
-      }).then(function(servicio){
-        if (object.paciente_id){
-          models.Agenda.create({
-            usuario_id: medico.usuario_id,
-            paciente_id: object.paciente_id,
-            fechaHoraInicio: new Date(object.inicio),
-            fechaHoraFin: new Date(object.fin),
-            direccion_id: servicio.direccion_id,
-            servicio_id: servicio.id,
-            status:1
-          }).then(function(result){
-            res.status(200).json({
-              success: true,
-              result: result
-            })
-          });
-        } else {
-          //Crear paciente temporal
-          models.PacienteTemporal.create({
-            nombres: object.nombre,
-            apellidos: object.apellido,
-            correo: object.correo,
-            celular: object.celular
-          }).then(function(PacienteTemporal){
-              models.Agenda.create({
-                usuario_id: medico.usuario_id,
-                paciente_temporal_id: PacienteTemporal.id,
-                fechaHoraInicio: object.inicio,
-                fechaHoraFin: object.fin,
-                direccion_id: servicio.direccion_id,
-                servicio_id: servicio.id,
-                status:1
-              }).then(function(result){
-                res.status(200).json({
-                  success: true,
-                  result: result
-                })
-              });
-          });
-        }
-      });
-    });
+    object.usuario_medico_id = req.session.passport.user.id;
+    exports.validarInterferenciaEventos(object, req, res, exports.crearCitaMedico);
   } else {
     models.Medico.findOne({
       where: { id: object.medico_id },
@@ -2385,58 +2322,164 @@ exports.crearCita = function (object, req, res){
           result: 301
         });
       } else {
-        models.CatalogoServicios.findOne({
-          where: {
-            id: object.servicio_id
-          }
-        }).then(function(servicio){
-          if (object.kendo){
-            object.inicio = object.inicio.replace(' ','T')+'.000Z';
-            object.fin = object.fin.replace(' ','T')+'.000Z';
-          }
-          if (object.paciente_id){
-            models.Agenda.create({
-              usuario_id: medico.usuario_id,
-              paciente_id: object.paciente_id,
-              fechaHoraInicio: object.inicio,
-              fechaHoraFin: object.fin,
-              direccion_id: servicio.direccion_id,
-              servicio_id: servicio.id,
-              status:1
-            }).then(function(result){
-              res.status(200).json({
-                success: true,
-                result: result
-              })
-            });
-          } else {
-            //Crear paciente temporal
-            models.PacienteTemporal.create({
-              nombres: object.nombre,
-              apellidos: object.apellido,
-              correo: object.correo,
-              celular: object.celular
-            }).then(function(PacienteTemporal){
-                models.Agenda.create({
-                  usuario_id: medico.usuario_id,
-                  paciente_temporal_id: PacienteTemporal.id,
-                  fechaHoraInicio: object.inicio,
-                  fechaHoraFin: object.fin,
-                  direccion_id: servicio.direccion_id,
-                  servicio_id: servicio.id,
-                  status:1
-                }).then(function(result){
-                  res.status(200).json({
-                    success: true,
-                    result: result
-                  })
-                });
-            });
-          }
-        });
+        object.usuario_medico_id = medico.usuario_id;
+        exports.validarInterferenciaEventos(object, req, res, exports.crearCitaMedico);
       }
     });
   }
+}
+
+exports.validarInterferenciaEventos= function (object,req, res, next){
+  models.Evento.findOne({
+    where: models.sequelize.or(
+      {
+        /*Evento nuevo contiene a evento existente*/
+        usuario_id: object.usuario_medico_id,
+        fechaHoraInicio: { $gte: new Date(object.inicio) },
+        fechaHoraFin: { $lte: new Date(object.fin) },
+        status: {$gte: 1}
+      },
+      {
+        /*Evento existente contiene a evento nuevo*/
+        usuario_id: object.usuario_medico_id,
+        fechaHoraInicio: { $lte: new Date(object.inicio) },
+        fechaHoraFin: { $gte: new Date(object.fin) },
+        status: {$gte: 1}
+      },
+      {
+        /*inicio de nuevo evento esta dentro de evento existente*/
+        usuario_id: object.usuario_medico_id,
+        fechaHoraInicio: { $lte: new Date(object.inicio) },
+        fechaHoraFin: { $gt: new Date(object.inicio) },
+        status: {$gte: 1}
+      },
+      {
+        /*fin de nuevo evento esta dentro de evento existente*/
+        usuario_id: object.usuario_medico_id,
+        fechaHoraInicio: { $lt: new Date(object.fin) },
+        fechaHoraFin: { $gte: new Date(object.fin) },
+        status: {$gte: 1}
+      },
+      {
+        /*inicio de evento existente esta dentro de nuevo evento*/
+        usuario_id: object.usuario_medico_id,
+        fechaHoraInicio: { $gte: new Date(object.inicio) },
+        fechaHoraFin: { $lt: new Date(object.inicio) },
+        status: {$gte: 1}
+      },
+      {
+        /*fin de evento existente esta dentro de nuevo evento*/
+        usuario_id: object.usuario_medico_id,
+        fechaHoraInicio: { $gt: new Date(object.fin) },
+        fechaHoraFin: { $lte: new Date(object.fin) },
+        status: {$gte: 1}
+      }
+    )
+  }).then(function(result1){
+    models.Agenda.findOne({
+      where: models.sequelize.or(
+        {
+          /*Evento nuevo contiene a evento existente*/
+          usuario_id: object.usuario_medico_id,
+          fechaHoraInicio: { $gte: new Date(object.inicio) },
+          fechaHoraFin: { $lte: new Date(object.fin) },
+          status: {$gte: 1}
+        },
+        {
+          /*Evento existente contiene a evento nuevo*/
+          usuario_id: object.usuario_medico_id,
+          fechaHoraInicio: { $lte: new Date(object.inicio) },
+          fechaHoraFin: { $gte: new Date(object.fin) },
+          status: {$gte: 1}
+        },
+        {
+          /*inicio de nuevo evento esta dentro de evento existente*/
+          usuario_id: object.usuario_medico_id,
+          fechaHoraInicio: { $lte: new Date(object.inicio) },
+          fechaHoraFin: { $gt: new Date(object.inicio) },
+          status: {$gte: 1}
+        },
+        {
+          /*fin de nuevo evento esta dentro de evento existente*/
+          usuario_id: object.usuario_medico_id,
+          fechaHoraInicio: { $lt: new Date(object.fin) },
+          fechaHoraFin: { $gte: new Date(object.fin) },
+          status: {$gte: 1}
+        },
+        {
+          /*inicio de evento existente esta dentro de nuevo evento*/
+          usuario_id: object.usuario_medico_id,
+          fechaHoraInicio: { $gte: new Date(object.inicio) },
+          fechaHoraFin: { $lt: new Date(object.inicio) },
+          status: {$gte: 1}
+        },
+        {
+          /*fin de evento existente esta dentro de nuevo evento*/
+          usuario_id: object.usuario_medico_id,
+          fechaHoraInicio: { $gt: new Date(object.fin) },
+          fechaHoraFin: { $lte: new Date(object.fin) },
+          status: {$gte: 1}
+        }
+      )
+    }).then(function(result2){
+      if (!result1 && !result2){
+        next(object, req, res);
+      } else {
+        res.status(200).json({
+          success:false,
+          overflow: true
+        });
+      }
+    });
+  });
+}
+
+exports.crearCitaMedico = function (object, req, res){
+  models.CatalogoServicios.findOne({
+    where: {
+      id: object.servicio_id
+    }
+  }).then(function(servicio){
+    if (object.paciente_id){
+      models.Agenda.create({
+        usuario_id: object.usuario_medico_id,
+        paciente_id: object.paciente_id,
+        fechaHoraInicio: new Date(object.inicio),
+        fechaHoraFin: new Date(object.fin),
+        direccion_id: servicio.direccion_id,
+        servicio_id: servicio.id,
+        status:1
+      }).then(function(result){
+        res.status(200).json({
+          success: true,
+          result: result
+        })
+      });
+    } else {
+      //Crear paciente temporal
+      models.PacienteTemporal.create({
+        nombres: object.nombre,
+        apellidos: object.apellido,
+        correo: object.correo,
+        celular: object.celular
+      }).then(function(PacienteTemporal){
+          models.Agenda.create({
+            usuario_id: object.usuario_medico_id,
+            paciente_temporal_id: PacienteTemporal.id,
+            fechaHoraInicio: object.inicio,
+            fechaHoraFin: object.fin,
+            direccion_id: servicio.direccion_id,
+            servicio_id: servicio.id,
+            status:1
+          }).then(function(result){
+            res.status(200).json({
+              success: true,
+              result: result
+            })
+          });
+      });
+    }
+  });
 }
 
 exports.cargarCitasMes = function(object, req, res){
@@ -2469,85 +2512,137 @@ exports.cargarCitasMesPac = function(object, req, res){
 }
 
 exports.eventoAgregar = function (object, req, res){
+  if (req.session.passport && req.session.passport.user.tipoUsuario == "M"){
+    object.usuario_medico_id = req.session.passport.user.id;
+    exports.validarCrearEvento(object, req, res);
+  } else {
+    models.MedicoSecretaria.findOne({
+      where:{
+        secretaria_id: req.session.passport.user.Secretaria_id,
+        medico_id: object.medico_id,
+        activo:1
+      },
+      include: [{
+        model: models.Medico,
+        attributes:['id'],
+        include: [{
+          model: models.Usuario,
+          attributes: ['id'],
+          include: [{
+            model: models.Direccion,
+            attributes: ['id','nombre'],
+            order: [['principal','DESC']]
+          }]
+        }]
+      }]
+    }).then(function(relacion){
+      if (relacion){
+        object.usuario_medico_id = relacion.Medico.Usuario.id;
+        exports.validarCrearEvento(object, req, res);
+      } else {
+        res.status(200).json({
+          success: false,
+          error: 404
+        })
+      }
+    });
+  }
+}
+
+exports.validarCrearEvento = function (object, req, res){
   models.Evento.findOne({
     where: models.sequelize.or(
       {
         /*Evento nuevo contiene a evento existente*/
+        usuario_id: object.usuario_medico_id,
         fechaHoraInicio: { $gte: new Date(object.inicio) },
         fechaHoraFin: { $lte: new Date(object.fin) },
         status: {$gte: 1}
       },
       {
         /*Evento existente contiene a evento nuevo*/
+        usuario_id: object.usuario_medico_id,
         fechaHoraInicio: { $lte: new Date(object.inicio) },
         fechaHoraFin: { $gte: new Date(object.fin) },
         status: {$gte: 1}
       },
       {
         /*inicio de nuevo evento esta dentro de evento existente*/
+        usuario_id: object.usuario_medico_id,
         fechaHoraInicio: { $lte: new Date(object.inicio) },
         fechaHoraFin: { $gt: new Date(object.inicio) },
         status: {$gte: 1}
       },
       {
         /*fin de nuevo evento esta dentro de evento existente*/
+        usuario_id: object.usuario_medico_id,
         fechaHoraInicio: { $lt: new Date(object.fin) },
         fechaHoraFin: { $gte: new Date(object.fin) },
         status: {$gte: 1}
       },
       {
         /*inicio de evento existente esta dentro de nuevo evento*/
+        usuario_id: object.usuario_medico_id,
         fechaHoraInicio: { $gte: new Date(object.inicio) },
         fechaHoraFin: { $lt: new Date(object.inicio) },
         status: {$gte: 1}
       },
       {
         /*fin de evento existente esta dentro de nuevo evento*/
+        usuario_id: object.usuario_medico_id,
         fechaHoraInicio: { $gt: new Date(object.fin) },
         fechaHoraFin: { $lte: new Date(object.fin) },
         status: {$gte: 1}
       }
-    )
+    ),
+    logging:console.log
   }).then(function(result1){
     models.Agenda.findOne({
       where: models.sequelize.or(
         {
           /*Evento nuevo contiene a evento existente*/
+          usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $gte: new Date(object.inicio) },
           fechaHoraFin: { $lte: new Date(object.fin) },
           status: {$gte: 1}
         },
         {
           /*Evento existente contiene a evento nuevo*/
+          usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $lte: new Date(object.inicio) },
           fechaHoraFin: { $gte: new Date(object.fin) },
           status: {$gte: 1}
         },
         {
           /*inicio de nuevo evento esta dentro de evento existente*/
+          usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $lte: new Date(object.inicio) },
           fechaHoraFin: { $gt: new Date(object.inicio) },
           status: {$gte: 1}
         },
         {
           /*fin de nuevo evento esta dentro de evento existente*/
+          usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $lt: new Date(object.fin) },
           fechaHoraFin: { $gte: new Date(object.fin) },
           status: {$gte: 1}
         },
         {
           /*inicio de evento existente esta dentro de nuevo evento*/
+          usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $gte: new Date(object.inicio) },
           fechaHoraFin: { $lt: new Date(object.inicio) },
           status: {$gte: 1}
         },
         {
           /*fin de evento existente esta dentro de nuevo evento*/
+          usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $gt: new Date(object.fin) },
           fechaHoraFin: { $lte: new Date(object.fin) },
           status: {$gte: 1}
         }
-      )
+      ),
+      logging:console.log
     }).then(function(result2){
       if (!result1 && !result2){
         models.Evento.create({
@@ -2556,7 +2651,7 @@ exports.eventoAgregar = function (object, req, res){
           nombre: object.nombre,
           ubicacion: object.ubicacion,
           descripcion: object.descripcion,
-          usuario_id : req.session.passport.user.id
+          usuario_id : object.usuario_medico_id
         }).then(function(evento){
           var success = false;
           if (evento) success = true;

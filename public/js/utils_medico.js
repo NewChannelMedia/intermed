@@ -4447,13 +4447,12 @@ function BuscarPaciente(inputBusquedaId,outPutResultId,inicio,fin,medico,servici
     });
 }
 
-function validarAgregarEvento(){
+function validarAgregarEvento(secbox){
   try{
     var fechaInicioEvento = moment($('#fechaInicioEvento').val()).toDate();
     var fechaFinEvento = moment($('#fechaFinEvento').val()).toDate();
 
-    var fechaValidar = fechaInicioEvento.toLocaleString('en-US');
-    var fechaValidarFin = fechaFinEvento.toLocaleString('en-US');
+    var medico_id = $('#evento_medico_id').val();
 
     //Fri Apr 08 2016 08:45:00 GMT-0500 (CDT) - Fri Apr 08 2016 09:45:00 GMT-0500 (CDT)
 
@@ -4465,6 +4464,7 @@ function validarAgregarEvento(){
         inicio: fechaInicioEvento,
         fin: fechaFinEvento,
         nombre: nombreEvento,
+        medico_id: medico_id,
         ubicacion: ubicacionEvento,
         descripcion: descripcionEvento
       };
@@ -4476,12 +4476,23 @@ function validarAgregarEvento(){
         data: data,
         cache: false,
         success: function ( data ) {
+          console.log('response. ' + JSON.stringify(data));
           if (data.success){
-            marcarEventosCalendario();
-            var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
-            var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
-            cargarEventosPorDia(fechaInicio, fechaFin);
-            bootbox.hideAll();
+            if ($("#calendar").length>0){
+              marcarEventosCalendario();
+              var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
+              var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
+              cargarEventosPorDia(fechaInicio, fechaFin);
+            }
+            cargarCitasProximasSecretaria();
+            if ($('#divCalendario').length>0){
+              $('#divCalendario').fullCalendar('removeEvents');
+              $('#divCalendario').fullCalendar('refetchEvents');
+              secbox.hide();
+              $('#btnAddCita').click();
+            } else {
+              bootbox.hideAll();
+            }
           } else {
             if (data.overflow){
               alert('Evento interfiere con alguna cita o evento existente.')
@@ -4499,14 +4510,12 @@ function validarAgregarEvento(){
     }
   }
   catch(e){
-    console.log('ERROR: ' + e);
+    console.error('ERROR: ' + e);
   }
   return false;
 }
 
 function cancelarEvento(evento_id){
-
-
       var box = bootbox.dialog({
         show: false,
         backdrop: true,
@@ -4537,10 +4546,13 @@ function cancelarEvento(evento_id){
                       cache: false,
                       success: function ( data ) {
                         if (data.success){
-                          marcarEventosCalendario();
-                          var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
-                          var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
-                          cargarEventosPorDia(fechaInicio, fechaFin);
+                          cargarCitasProximasSecretaria();
+                          if ($("#calendar").length>0){
+                            marcarEventosCalendario();
+                            var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
+                            var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
+                            cargarEventosPorDia(fechaInicio, fechaFin);
+                          }
                           bootbox.hideAll();
                         } else {
                           if (data.overflow){

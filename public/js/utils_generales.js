@@ -1884,9 +1884,9 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
         var fecha = new Date(parseInt(date.split('-')[0]),parseInt(date.split('-')[1])-1,parseInt(date.split('-')[2]),parseInt(horario.split(':')[0]),parseInt(horario.split(':')[1]))
 
         if ($(this).hasClass('noDisponible')){
-          seleccionarAgregarEvento(fecha.getTime(),fecha,clase);
+          seleccionarAgregarEvento(fecha.getTime(),fecha,null,clase);
         } else {
-          seleccionarAgregarEventoCita(fecha.getTime(),fecha,clase);
+          seleccionarAgregarEventoCita(fecha.getTime(),fecha,null,clase);
         }
       });
 

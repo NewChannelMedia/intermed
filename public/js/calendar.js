@@ -1398,7 +1398,11 @@ function horariosAgendaMedico(medico_id){
           if (agregarEvento == true){
             var inicio = new Date((new Date(date)).toUTCString().split(' GMT')[0]);
             var final = new moment(inicio);
+            date = new Date(new Date(date).toISOString().replace('T',' ').replace('.000Z','')).getTime();
+            seleccionarAgregarEventoCita(date, new moment(date),medico_id);
+            /*
             if (validaEventoId(inicio,final) && validaAgenda(inicio, final) == 1){
+
               //Promp para seleccionar servicio de esa dirección
               inicio = new Date(date).toLocaleString('en-US');
               $.ajax({
@@ -1483,6 +1487,7 @@ function horariosAgendaMedico(medico_id){
                   }
                 });
               }
+              */
           }
         },
         eventClick: function (event, jsEvent, view) {
@@ -1523,14 +1528,14 @@ function horariosAgendaMedico(medico_id){
 }
 
 
-function seleccionarServicioCitaOficina(date,inicio, clase){
+function seleccionarServicioCitaOficina(date,inicio, medico_id, clase){
   inicio = new Date(date).toLocaleString('en-US');
   $.ajax({
     url: '/agenda/serviciosPorHorario',
     type: 'POST',
     dataType: "json",
     cache: false,
-    data: {inicio: inicio,kendo:true},
+    data: {inicio: inicio,kendo:true,medico_id: medico_id},
     success: function (data) {
       var contenido = '';
       data.result.forEach(function(servicio){
@@ -1556,39 +1561,73 @@ function seleccionarServicioCitaOficina(date,inicio, clase){
             label: "Seleccionar",
             className: "btn-primary",
             callback: function() {
-              if ($('#servicioList').val() && $('#servicioList').val() != ""){
-                var duracionServicio = $("#servicioList option:selected").text().split('(')[1].split(')')[0];
-                var horas = duracionServicio.split(":");
+              if ($('#divCalendario').length>0){
+                  if ($('#servicioList').val() && $('#servicioList').val() != ""){
+                    var duracionServicio = $("#servicioList option:selected").text().split('(')[1].split(')')[0];
+                    var horas = duracionServicio.split(":");
 
-                var bloques = (parseInt(horas[0])*4) + (parseInt(horas[1])/15);
+                    var final = new moment(inicio).add(horas[0], 'h').add(horas[1], 'm');
 
-                element = $('.mediaHora.'+clase);
+                    var inicioTemp = new Date(new Date(inicio).setHours(new Date(inicio).getHours()-5));
+                    var finTemp = new Date(new Date(final).setHours(new Date(final).getHours()-5));
 
-                var valido = true;
-                var newElement = element.next();
-                var antElement = null;
-                for (i = 1; i <bloques;i++){
-                  if ( valido){
-                    if (newElement.hasClass('noDisponible') || newElement.hasClass('ocupada') ){
-                      valido = false;
+                    var mensaje = '';
+                    if ( validaEvento(inicio, new Date(final))) {
+                      registrarNuevaCitaBootbox(date, new moment(date).add(horas[0], 'h').add(horas[1], 'm'),medico_id,$('#servicioList').val(),1);
                     } else {
-                      antElement = newElement;
-                      newElement = newElement.next();
-                      if (!newElement[0]){
-                        newElement = antElement.parent().parent().next().find('.mediaHora').first();
+                      mensaje = "La duración de la cita excede el tiempo disponible en el horario."
+                    }
+                    if (mensaje != ""){
+                       bootbox.alert({
+                         backdrop: false,
+                         closeButton: false,
+                         onEscape: function () {
+                             bootbox.hideAll();
+                         },
+                         message: mensaje,
+                         className: 'Intermed-Bootbox',
+                         title: '<span class="title">Mensaje de Intermed</span>'
+                       });
+                    }
+                  } else {
+                    $('#servicioList').focus();
+                    return false;
+                  }
+              } else {
+                if ($('#servicioList').val() && $('#servicioList').val() != ""){
+                  var duracionServicio = $("#servicioList option:selected").text().split('(')[1].split(')')[0];
+                  var horas = duracionServicio.split(":");
+
+                  var bloques = (parseInt(horas[0])*4) + (parseInt(horas[1])/15);
+
+                  element = $('.mediaHora.'+clase);
+
+                  var valido = true;
+                  var newElement = element.next();
+                  var antElement = null;
+                  for (i = 1; i <bloques;i++){
+                    if ( valido){
+                      if (newElement.hasClass('noDisponible') || newElement.hasClass('ocupada') ){
+                        valido = false;
+                      } else {
+                        antElement = newElement;
+                        newElement = newElement.next();
+                        if (!newElement[0]){
+                          newElement = antElement.parent().parent().next().find('.mediaHora').first();
+                        }
                       }
                     }
                   }
-                }
-                if (valido) {
-                  registrarNuevaCitaBootbox(date, new moment(date).add(horas[0], 'h').add(horas[1], 'm'),null,$('#servicioList').val(),1);
-                } else {
-                  alert('El tiempo del servicio excede el tiempo disponible');
-                }
+                  if (valido) {
+                    registrarNuevaCitaBootbox(date, new moment(date).add(horas[0], 'h').add(horas[1], 'm'),medico_id,$('#servicioList').val(),1);
+                  } else {
+                    alert('El tiempo del servicio excede el tiempo disponible');
+                  }
 
-              } else {
-                $('#servicioList').focus();
-                return false;
+                } else {
+                  $('#servicioList').focus();
+                  return false;
+                }
               }
             }
           }

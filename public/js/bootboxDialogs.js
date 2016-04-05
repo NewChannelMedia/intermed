@@ -5174,7 +5174,7 @@ function editarPerfilSecretaria(){
   loadDatosSecretaria();
 }
 
-function seleccionarAgregarEventoCita(timestamp,fecha,clase){
+function seleccionarAgregarEventoCita(timestamp,fecha,medico_id,clase){
     var startDate = formatearFechaLocalT(new Date(fecha));
 
     var now = new Date();
@@ -5187,9 +5187,9 @@ function seleccionarAgregarEventoCita(timestamp,fecha,clase){
 
     if (new Date(startDate) >= new Date(minStartDate)){
 
-      bootbox.dialog({
-        onEscape: function () {
-          bootbox.hideAll();
+    secboox = bootbox.dialog({
+      onEscape: function () {
+          secboox.hide();
       },
       className: 'Intermed-Bootbox',
       title: '<span class="title">¿Que vas a agendar?</span>',
@@ -5203,18 +5203,18 @@ function seleccionarAgregarEventoCita(timestamp,fecha,clase){
       });
 
       $('.agendarCitaButton').on('click',function(){
-        bootbox.hideAll();
-        seleccionarServicioCitaOficina(timestamp,fecha,clase);
+        secboox.hide();
+        seleccionarServicioCitaOficina(timestamp,fecha,medico_id,clase);
       });
 
       $('.agendarEventoButton').on('click',function(){
-        bootbox.hideAll();
-        seleccionarAgregarEvento(timestamp,fecha,clase);
+        secboox.hide();
+        seleccionarAgregarEvento(timestamp,fecha,medico_id,clase);
       });
     }
 }
 
-function seleccionarAgregarEvento(timestamp,fecha,clase){
+function seleccionarAgregarEvento(timestamp,fecha,medico_id,clase){
       var startDate = formatearFechaLocalT(new Date(fecha));
 
       var now = new Date();
@@ -5229,16 +5229,17 @@ function seleccionarAgregarEvento(timestamp,fecha,clase){
           var newDate = new Date(fecha);
           var endDate = formatearFechaLocalT(new Date(newDate.setMinutes(newDate.getMinutes()+60)));
 
-          bootbox.dialog({
+          secbox = bootbox.dialog({
             onEscape: function () {
-              bootbox.hideAll();
+              secbox.hide();
           },
           className: 'Intermed-Bootbox',
           title: '<span class="title">Detalles del evento</span>',
           backdrop: true,
           message:
-          '<form method="post" id="formAgregarEvento">'+
+          '<form method="post" class="formAgregarEvento">'+
             '<div class="row">'+
+              '<input type="hidden" id="evento_medico_id" value="'+ medico_id +'">'+
               '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
                 '<div class="form-group">'+
                   '<label>Nombre: </label>'+
@@ -5275,19 +5276,18 @@ function seleccionarAgregarEvento(timestamp,fecha,clase){
                 '<button type="submit" class="btn btn-success btn-lg btn-block">Guardar</button>'+
               '</div>'+
               '<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6 pull-left">'+
-                '<input type="button" class="btn btn-danger btn-lg btn-block" value="Cancelar" onclick="bootbox.hideAll()">'+
+                '<input type="button" class="btn btn-danger btn-lg btn-block" value="Cancelar" onclick="secbox.hide()">'+
               '</div>'+
             '</div>'+
           '</form>'
           });
 
-          $('#formAgregarEvento').on('submit', function(){ return validarAgregarEvento(timestamp,fecha,clase)});
+          $('.formAgregarEvento').on('submit', function(){ return validarAgregarEvento(secbox)});
 
       }
 }
 
 function detalleEventoMedico(evento_id){
-  console.log('Ver evento: ' + evento_id);
   var nombre = '';
   var ubicacion = '';
   var descripcion = '';
@@ -5304,6 +5304,7 @@ function detalleEventoMedico(evento_id){
       'evento_id': evento_id
     },
     success: function ( data ) {
+      console.log('DATA: ' + JSON.stringify(data))
       /*
 Data: {"success":true,"result":{"id":43,"fechaHoraInicio":"2016-04-12T14:00:00.000Z","fechaHoraFin":"2016-04-13T15:00:00.000Z","nombre":"asDasdaSD","ubicacion":"","descripcion":"","status":1,"usuario_id":1}}
       */
@@ -5381,7 +5382,7 @@ Data: {"success":true,"result":{"id":43,"fechaHoraInicio":"2016-04-12T14:00:00.0
         '<div class="row">'+
           '<div class="col-md-6 col-sm-4 col-xs-4 pull-right">'+
               '<div class="form-group">'+
-                  '<button class="btn btn-primary btn-md btn-block" id="btnRegMed"  onclick="guardarDescripcionEventoSecretaria('+evento_id+')">Guardar</button>'+
+                  '<button class="btn btn-primary btn-md btn-block" id="btnUpdateEv">Guardar</button>'+
               '</div>'+
           '</div>'+
 
@@ -5402,6 +5403,12 @@ Data: {"success":true,"result":{"id":43,"fechaHoraInicio":"2016-04-12T14:00:00.0
           title: '',
           message: modal
         });
+
+        setTimeout(function(){
+          $('#btnUpdateEv').on('click',function(){
+              guardarDescripcionEventoSecretaria(evento_id,bootSec);
+          });
+        },300);
 
         $('.bootbox-close-button').css('margin-top','0px');
         $('.bootbox-close-button').css('margin-right','5px');

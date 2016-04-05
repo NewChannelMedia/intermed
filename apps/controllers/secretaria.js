@@ -667,7 +667,37 @@ exports.citasProximas = function (object, req, res){
       }]
     }]
   }).then(function(result){
-      res.status(200).json({success:true,result:result});
+
+      models.Evento.findAll({
+        where: {
+          fechaHoraInicio: {
+            $between: [new Date(object.fechainicio),new Date(object.fechafin)]
+          },
+          status: 1
+        },
+        order: [['fechaHoraInicio','ASC']],
+        include: [{
+          model: models.Usuario,
+          attributes: ['id'],
+          include: [{
+            model: models.Medico,
+            attributes: ['id'],
+            include: [{
+              model: models.MedicoSecretaria,
+              where: {
+                medico_id: {
+                  $in: object.medicos
+                },
+                activo: 1,
+                secretaria_id: req.session.passport.user.Secretaria_id
+              },
+              attributes: ['id']
+            }]
+          }]
+        }]
+      }).then(function(result2){
+        res.status(200).json({success:true,result:result,result2:result2});
+      })
   });
 }
 
