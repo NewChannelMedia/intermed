@@ -2064,7 +2064,24 @@ footer .logoIntermed {
 }
 
 .caption-container {
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
+  padding-bottom: 60px;
+}
 
+.img-controls {
+  position: absolute;
+  right: 10px;
+  bottom: 0;
+  left: 10px;
+  height: 60px;
+  padding: 13px 0;
+  border-top: solid 1px grey;
+}
+
+.img-caption .lbl-fecha {
+  margin: 10px 0;
 }
 
 /*@media (min-width:767px) {
