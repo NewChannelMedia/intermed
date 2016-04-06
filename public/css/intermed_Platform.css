@@ -2029,6 +2029,7 @@ footer .logoIntermed {
 
 #galeriaPanel {
   overflow: hidden;
+  overflow-y: auto;
   position: relative;
 }
 
@@ -2103,6 +2104,25 @@ footer .logoIntermed {
 .controls {
   position: absolute;
   top: 50%;
-  left: 0;
   right: 0;
+  left: 0;
+}
+
+.gallery-thumbnail {
+  position: relative;
+  display: table;
+  float: left;
+  min-height: 1px;
+  padding: 10px;
+}
+
+.gallery-thumb-content {
+  padding: 5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: white;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-color: rgba(20,20,20,.5);
 }
