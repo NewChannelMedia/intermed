@@ -1435,7 +1435,6 @@ $( document ).ready( function () {
     }
 
   } else if($('#galeriaMedico').length > 0) {
-
     $('.carousel').carousel('pause');
 
     if ( $( window ).width() >= 768 ) {
@@ -1518,10 +1517,27 @@ $( document ).ready( function () {
         }
     });
 
+    GalleryThumbnail();
+
   } else if ($('#feedbackResult').length > 0){
     getFeedback();
   }
 } );
+
+function GalleryThumbnail() {
+  var w = $('.gallery-thumbnail').outerWidth();
+  var h = w;
+  $('.gallery-thumbnail').css('height', h + 'px' );
+  console.log( w );
+  console.log( h );
+  console.log('-');
+}
+
+
+$( window ).resize( function() {
+  GalleryThumbnail();
+})
+
 
 function marcarEventosCalendario(){
   var today = new Date();
