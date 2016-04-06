@@ -4576,5 +4576,127 @@ function delUpImage(element){
   $(element).parent().parent().remove();
   if ($('.imageUpload').length>0){
     $('#btnUploadImages').removeClass('hidden');
+  } else {
+    $('#btnUploadImages').addClass('hidden');
   }
+}
+
+function cancelUpImg(){
+  $('.imageUpload').parent().remove();
+  $('#btnUploadImages').addClass('hidden');
+}
+
+function uploadImages(){
+  var total = $('.imageUpload').length;
+  var step = 100/total;
+  var t=0;
+
+  bootbox.dialog({
+    className: 'Intermed-Bootbox',
+    title: '<span class"title uploadTitleModal">Subiendo foto(s) a galería.</span>',
+    message:
+    '<div class="container-fluid">'+
+      '<div class="row">'+
+        '<div class="col-md-12">'+
+          '<div class="progress">'+
+            '<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="'+total+'" style="width: 0%;" id="progressbarupload">'+
+              '<span class="sr-only">0% Complete</span>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="col-md-12">'+
+          '<span class="pull-right" id="#imageName"></span>'+
+        '</div>'+
+      '</div>'+
+    '</div>'
+  });
+
+  $('.imageUpload').each(function(){
+    var element = $(this);
+    var titulo = element.find('input.imageTitle').val();
+    var descripcion = element.find('textarea.imageDescription').val();
+    var base64 =element.find('img').attr('src');
+    var nombreImagen = element.find('.imageName').val();
+    console.log(nombreImagen);
+    $('#imageName').text(nombreImagen);
+
+    $.ajax( {
+      async: false,
+      url: '/gallery/upload',
+      type: 'POST',
+      dataType: "json",
+      data: {
+        titulo: titulo,
+        descripcion: descripcion,
+        base64: base64,
+        num: ++t
+      },
+      cache: false,
+      success: function ( data ) {
+        console.log('result upload: ' + JSON.stringify(data));
+        if (data.success ){
+          element.parent().remove();
+          $('#progressbarupload').css('width',((t)*step)+'%');
+          if (t == total){
+            $('#btnUploadImages').addClass('hidden');
+            $('.uploadTitleModal').text('Imagenes subidas con exito.');
+            $('#progressbarupload').addClass('progress-bar-success');
+          }
+        }
+      },
+      error: function(err){
+        console.log('Ajax error: ' + JSON.stringify(err));
+      }
+    });
+  });
+}
+
+function cargarImagenes(evt){
+    var files = evt.target.files;
+    var errores = [];
+    for (var i = 0, f; f = files[i]; i++) {
+
+      if ( f.size < 1048576 ) {
+        var upload = {};
+        upload.name = f.name;
+
+        var reader = new FileReader();
+        reader.readAsDataURL(f);
+        reader.onload = function ( e ) {
+          upload.base64 = e.target.result;
+          $('#btnUploadImages').removeClass('hidden');
+
+          $('#divUploadFoto').before('<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">'+
+            '<div class="thumbnail imageUpload">'+
+              '<input type="hidden" class="imageName" value="'+ upload.name +'">'+
+              '<span class="btn btn-default btn-xs glyphicon glyphicon-remove pull-right" style="position: absolute;right: 20px;top: 5px;opacity: 0.8;" onclick="delUpImage(this)"></span>'+
+              '<img src="'+ e.target.result +'" style="height: 190px;background-color: rgba(0,0,0,0.1);">'+
+              '<br>'+
+              '<div class="caption noPadding">'+
+                '<form class="">'+
+                  '<div class="form-group">'+
+                    '<label class="control-label">Título:</label>'+
+                    '<input type="text" class="form-control imageTitle" placeholder="titulo">'+
+                  '</div>'+
+                  '<dic class="form-group">'+
+                    '<label class="control-label">Descripción: </label>'+
+                    '<textarea class="form-control imageDescription" style="resize:none" rows="3"></textarea>'+
+                  '</dic>'+
+                '</form>'+
+              '</div>'+
+            '</div>'+
+          '</div>');
+
+        }
+      } else {
+        console.log('MAL: ' + f.name);
+        errores.push({nombre:f.name,size:f.size});
+      }
+    }
+    if (errores.length>0){
+      //Bootbox mostrando las imagenes que no se pudieron subir por tamaño
+      alert('Errores: ' + JSON.stringify(errores));
+    }
+
+    $('#imageUploadChoser').val('');
 }

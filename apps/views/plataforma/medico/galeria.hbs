@@ -20,7 +20,7 @@
               </ul>
               <ul class="nav nav-pills nav-menu-menu h67-medcond s20 pull-right">
                 <li>
-                  <a id="btnUploadImages" class="btn btn-success btn-lg btn-block" role="button">
+                  <a id="btnUploadImages" onclick="uploadImages()" class="btn btn-success btn-lg btn-block hidden" role="button">
                     <div class="body-container">
                       <div class="center-content">
                         <span class="glyphicon glyphicon-upload"></span> subir
@@ -29,7 +29,7 @@
                   </a>
                 </li>
                 <li>
-                  <a class="btn btn-info btn-lg btn-block" role="button" data-toggle="collapse" href="#uploadPanel" aria-expanded="false" aria-controls="uploadPanel">
+                  <a class="btn btn-info btn-lg btn-block" onclick="cancelUpImg()" role="button" data-toggle="collapse" href="#uploadPanel" aria-expanded="false" aria-controls="uploadPanel">
                     <div class="body-container">
                       <div class="center-content">
                         <span class="glyphicon glyphicon-plus"></span> Agregar fotos nuevo

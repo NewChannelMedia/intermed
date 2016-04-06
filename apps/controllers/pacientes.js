@@ -46,12 +46,16 @@ exports.modificarPerfil = function ( object, req, res ) {
     if ( req.body.base64file ) {
       console.log( 'base64file: ' + req.body.base64file.length );
       var fs = require( "fs" );
-      if ( !fs.existsSync( './public/garage/profilepics/' + req.session.passport.user.id ) ) {
-        fs.mkdirSync( './public/garage/profilepics/' + req.session.passport.user.id, 0777 );
+
+      if ( !fs.existsSync( './public/garage/' + req.session.passport.user.id ) ) {
+        fs.mkdirSync( './public/garage/' + req.session.passport.user.id, 0777 );
+        fs.mkdirSync( './public/garage/' + req.session.passport.user.id+'/profilepics', 0777 );
+        fs.mkdirSync( './public/garage/' + req.session.passport.user.id+'/galeria', 0777 );
+        fs.mkdirSync( './public/garage/' + req.session.passport.user.id+'/thumbnails', 0777 );
       };
 
-      var newPath = '/garage/profilepics/' + req.session.passport.user.id + '/' + req.session.passport.user.id + '_' + getDateTime() + '.jpg';
-      var base64Data = req.body.base64file.replace( /^data:image\/png;base64,/, "" );
+      var newPath = '/garage/' + req.session.passport.user.id + '/profilepics/' + req.session.passport.user.id + '_' + getDateTime() + '.jpg';
+      var base64Data = req.body.base64file.split(';base64,')[1];
       fs.writeFile( './public' + newPath, base64Data, 'base64', function ( err, succes ) {
         if ( err ) {
           res.send( {

@@ -1467,55 +1467,9 @@ $( document ).ready( function () {
     $('#btnUpToGallery').on('click',function(){
       $('#imageUploadChoser').click();
     });
-
+    $('#btnUploadImages').addClass('hidden');
     $('#imageUploadChoser').on('change', function (evt) {
-        var files = evt.target.files;
-        var errores = [];
-        for (var i = 0, f; f = files[i]; i++) {
-
-          if ( f.size < 1048576 ) {
-            var upload = {};
-            upload.name = f.name;
-
-            var reader = new FileReader();
-            reader.readAsDataURL(f);
-            reader.onload = function ( e ) {
-              upload.base64 = e.target.result;
-
-              $('#divUploadFoto').before('<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">'+
-                '<div class="thumbnail imageUpload">'+
-                  '<span class="btn btn-default btn-xs glyphicon glyphicon-remove pull-right" style="position: absolute;right: 20px;top: 5px;opacity: 0.8;" onclick="delUpImage(this)"></span>'+
-                  '<img src="'+ e.target.result +'" style="height: 190px;background-color: rgba(0,0,0,0.1);">'+
-                  '<br>'+
-                  '<div class="caption noPadding">'+
-                    '<form class="">'+
-                      '<div class="form-group">'+
-                        '<label class="control-label">Título:</label>'+
-                        '<input type="text" class="form-control imageTitle" placeholder="titulo">'+
-                      '</div>'+
-                      '<dic class="form-group">'+
-                        '<label class="control-label">Descripción: </label>'+
-                        '<textarea class="form-control imageDescription" style="resize:none" rows="3"></textarea>'+
-                      '</dic>'+
-                    '</form>'+
-                  '</div>'+
-                '</div>'+
-              '</div>')
-
-            }
-          } else {
-            console.log('MAL: ' + f.name);
-            errores.push({nombre:f.name,size:f.size});
-          }
-        }
-        if (errores.length>0){
-          //Bootbox mostrando las imagenes que no se pudieron subir por tamaño
-          alert('Errores: ' + JSON.stringify(errores));
-        }
-
-        if ($('.imageUpload').length>0){
-          $('#btnUploadImages').removeClass('hidden');
-        }
+      cargarImagenes(evt);
     });
 
   } else if ($('#feedbackResult').length > 0){

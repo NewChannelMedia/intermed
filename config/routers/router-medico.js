@@ -242,4 +242,8 @@ module.exports = function (object){
   app.post('/medico/feedback', function (req, res){
     intermed.callController('medicos','getFeedback', req.body, req, res);
   });
+
+  app.post('/gallery/upload', function (req, res){
+    intermed.callController('galeria','upload', req.body, req, res);
+  });
 }
