@@ -87,18 +87,11 @@ var routerObject = {
   errorHandler: errorHandler
 }
 
-
-
 //::Temporal::, solo para ver la información que tiene el usuario en su variable sesión
 app.get( '/informacionusuario', function ( req, res ) {
   //res.send( JSON.stringify( req.session.passport ) + '<br/><a href="/">Regresar</a>' )
   res.send( JSON.stringify( req.session.passport ));
 } );
-
-app.get('*',function(req,res, next){
-  console.log(req.method + ' : ' + req.url);
-  next();
-})
 
 function parseCookies (request) {
     var list = {},

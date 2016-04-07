@@ -4610,6 +4610,14 @@ function delUpImage(element){
 function cancelUpImg(){
   $('.imageUpload').parent().remove();
   $('#btnUploadImages').addClass('hidden');
+
+  if ($('#upBtn .btnvalue').text() == "Agregar"){
+    $('#upBtn .btnvalue').text('Cancelar');
+    $('#upBtn .glyphicon').removeClass('glyphicon-plus').addClass('glyphicon-remove');
+  } else {
+    $('#upBtn .btnvalue').text('Agregar');
+    $('#upBtn .glyphicon').addClass('glyphicon-plus').removeClass('glyphicon-remove');
+  }
 }
 
 function uploadImages(){
@@ -4619,7 +4627,7 @@ function uploadImages(){
 
  bootsec =  bootbox.dialog({
     className: 'Intermed-Bootbox',
-    title: '<span class"title uploadTitleModal">Subiendo foto(s) a galería.</span>',
+    title: '<span class="title uploadTitleModal">Subiendo foto(s) a galería.</span>',
     message:
     '<div class="container-fluid">'+
       '<div class="row">'+
@@ -4665,8 +4673,13 @@ function uploadImages(){
           $('#progressbarupload').css('width',((t)*step)+'%');
           if (t == total){
             $('#btnUploadImages').addClass('hidden');
-            $('.uploadTitleModal').text('Imagenes subidas con exito.');
+            $('.Intermed-Bootbox .uploadTitleModal').text('Imagenes subidas con exito.');
             $('#progressbarupload').addClass('progress-bar-success');
+            actualizarGaleria();
+            $('#upBtn').click();
+            setTimeout(function(){
+              bootbox.hideAll();
+            },2000);
           }
         }
       },

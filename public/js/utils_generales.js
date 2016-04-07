@@ -1757,6 +1757,8 @@ function getCalTopDr(calificacion){
 }
 
 function getCalGeneral(calificaciones){
+
+
     var dataCalGeneral = [];
     var unaEstrella = {
         value: 10,
@@ -1784,7 +1786,11 @@ function getCalGeneral(calificaciones){
         label: '★★★★★'
     };
 
+    var total = 0;
+    var sumtotal = 0;
     calificaciones.forEach(function(cal){
+      total = total + parseInt(cal.total);
+      sumtotal = sumtotal + (parseInt(cal.total)*(cal.porcentaje));
       if (cal.porcentaje <= 20){
         unaEstrella.value = unaEstrella.value+ parseInt(cal.total);
       } else if (cal.porcentaje <= 40){
@@ -1800,13 +1806,36 @@ function getCalGeneral(calificaciones){
 
     dataCalGeneral = [unaEstrella,dosEstrellas,tresEstrellas,cuatroEstrellas,cincoEstrellas];
 
-    var width = $('#feedbackGeneral').parent().outerWidth() - 30;
-    var ctx = document.getElementById("feedbackGeneral").getContext("2d");
-    ctx.canvas.width = width;
-    ctx.canvas.height = 300;
-    var myNewChart = new Chart(ctx).Doughnut(dataCalGeneral,{
-      segmentStrokeWidth : 1
+    $('#feedbackGeneral').append('<input id="prom_estrellas" type="number" value="'+ ((sumtotal/total)/20) +'" class="rating">');
+    $("#prom_estrellas").rating({displayOnly: true, step: 0.5, readonly:true});
+
+    $('.clear-rating').css('display','none');
+    $('.caption').css('display','none');
+
+    $('#starsContainer').outerHeight($('#starsContainer').outerWidth());
+
+
+    $('#starDetails').popover({
+        html : true,
+        content: function(){
+          return '<input type="number" value="1" class="rating rating-details"><span class="pull-right" style=" position: absolute;margin-top: -20px;right: 19px;">'+ unaEstrella.value +'</span><br>'+
+          '<input type="number" value="2" class="rating rating-details"><span class="pull-right" style=" position: absolute;margin-top: -20px;right: 19px;">'+ dosEstrellas.value +'</span><br>'+
+          '<input type="number" value="3" class="rating rating-details"><span class="pull-right" style=" position: absolute;margin-top: -20px;right: 19px;">'+ tresEstrellas.value +'</span><br>'+
+          '<input type="number" value="4" class="rating rating-details"><span class="pull-right" style=" position: absolute;margin-top: -20px;right: 19px;">'+ cuatroEstrellas.value +'</span><br>'+
+          '<input type="number" value="5" class="rating rating-details"><span class="pull-right" style=" position: absolute;margin-top: -20px;right: 19px;">'+ cincoEstrellas.value +'</span>';
+        }
     });
+}
+
+function mostrarDetallesEstrellas(){
+  setTimeout(function(){
+    $(".rating").rating({displayOnly: true, readonly:true,'size':'xs'});
+    $('.clear-rating').css('display','none');
+    $('.caption').css('display','none');
+
+    $('#starsContainer .popover').css('width',$('#starsContainer').outerWidth()+30);
+    $('.popover').css('left','20px');
+  },100);
 }
 
 function cargarEventosPorDia(fechaInicio, fechaFin){
