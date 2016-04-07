@@ -1812,8 +1812,12 @@ function getCalGeneral(calificaciones){
     $('.clear-rating').css('display','none');
     $('.caption').css('display','none');
 
-    $('#starsContainer').outerHeight($('#starsContainer').outerWidth());
-
+    if ( $( window ).width() >= 992 ) {
+      $('#starsContainer').height($('#feedbackTopDr').height()/2);
+    }
+    else if ( $( window ).width() < 992 ) {
+      $('#starsContainer').height($('#feedbackTopDr').height());
+    }
 
     $('#starDetails').popover({
         html : true,
