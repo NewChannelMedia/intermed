@@ -1,4 +1,4 @@
-<section id="feedback">
+<section id="feedback" class="bg-greyBlue">
   <div class="container-fluid" >
     <div class="row">
       <div class="col-lg-12">
@@ -6,7 +6,7 @@
           <div class="panel-heading bg-darkBlue">
             <div class="row noPadding">
               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-3">
-                <h4 class="noMargin">Estadisticas Generales</h4>
+                <h4 class="h67-medcond noMargin">Estadisticas Generales</h4>
               </div>
               <div class="col-lg-8 col-md-8 col-sm-8 col-xs-9 text-right">
                 <div class="btn-group"  data-toggle="buttons">
@@ -20,7 +20,7 @@
               </div>
             </div>
           </div>
-          <div class="panel-body">
+          <div class="panel-body bg-white">
             <canvas id="feedbackResult"></canvas>
           </div>
         </div>
@@ -30,18 +30,37 @@
       <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
         <div class="panel panel-primary">
           <div class="panel-heading bg-darkBlue">
-            <h4 class="noMargin">Indices de Satisfacción</h4>
+            <h4 class="h67-medcond noMargin">Indices de Satisfacción</h4>
           </div>
-          <div class="panel-body">
+          <div class="panel-body bg-white col-lg-12 col-md-12 col-sm-6 col-xs-6" style="margin-bottom:15px;">
             <div class="row noPadding">
-              <div class="col-lg-12 col-md-12 col-sm-6 col-xs-6 text-center">
-                <span class="s25" style="position: relative;top:170px;font-weight:bold;left:15px">
-                  TopDr<br><span style="font-size:200%" id="topDrPer"></span>
-                </span>
-                <canvas id="feedbackTopDr"></canvas>
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
+                <div class="h67-medcond s20" style="position: absolute;top: 0;left: 0px;right: 0;display: block;bottom: 0;">
+                  <div class="body-container">
+                    <div class="center-content text-center">
+                      <p class="noMargin">Top Dr.<br>
+                        <span class="s30" id="topDrPer"></span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <canvas id="feedbackTopDr" class="center-block"></canvas>
               </div>
-              <div class="col-lg-12 col-md-12 col-sm-6 col-xs-6" style="padding-top:25px">
-                <canvas id="feedbackGeneral"></canvas>
+            </div>
+          </div>
+          <div class="panel-body bg-white col-lg-12 col-md-12 col-sm-6 col-xs-6" style="margin-bottom:15px;">
+            <div class="row noPadding">
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <canvas id="feedbackGeneral" class="center-block"></canvas>
+                <div class="h67-medcond s20" style="">
+                  <div class="body-container">
+                    <div class="center-content text-center">
+                      <p class="noMargin">Estrellas Obtenidas<br>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -50,10 +69,10 @@
       <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
         <div class="panel panel-primary">
           <div class="panel-heading bg-darkBlue">
-            <h4 class="noMargin">Comentarios</h4>
+            <h4 class="h67-medcond noMargin">Comentarios</h4>
           </div>
-          <div class="panel-body">
-            <table class="table table-striped table-bordered" style="background-color: #eaeaea;">
+          <div class="panel-body bg-white">
+            <table class="table noMargin">
               <tbody>
                 {{#each comentarios}}
                   <tr>
