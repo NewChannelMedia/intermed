@@ -58,7 +58,9 @@ exports.eliminar = function (object, req, res){
     if (galeria){
       var url = galeria.imagenurl;
       fs.unlink('./public' + url, function(err){
-        console.log('Error: ' + err);
+        if (err){
+          console.log('Error al eliminar imagen: ' + err);
+        }
       });
       galeria.destroy();
       res.status(200).json({

@@ -49,18 +49,15 @@
             </div>
           </div>
           <div class="panel-body bg-white col-lg-12 col-md-12 col-sm-6 col-xs-6" style="margin-bottom:15px;">
-            <div class="row noPadding">
-              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <canvas id="feedbackGeneral" class="center-block"></canvas>
-                <div class="h67-medcond s20" style="">
-                  <div class="body-container">
-                    <div class="center-content text-center">
-                      <p class="noMargin">Estrellas Obtenidas<br>
-                      </p>
-                    </div>
-                  </div>
-                </div>
+            <div class="row noPadding" id="starsContainer">
+              <div class="body-container">
+                <div class="center-content text-center">
+                  <div id="feedbackGeneral"></div>
+                  <p class="noMargin h67-medcond s20">Estrellas Obtenidas<br>
+                  </p>
+                  <button type="button" class="btn btn-xs btn-default" type="button" data-toggle="popover" data-title="Tus estrellas" data-placement="top" id="starDetails" onclick="mostrarDetallesEstrellas()">Ver más <span class="caret"></span></button>
 
+                </div>
               </div>
             </div>
           </div>
