@@ -1577,37 +1577,37 @@ function getFeedback(tipo){
         var dataset = {labels:[],datasets:[]};
         var dataHigiene = {
             label: "Higiene",
-            fillColor: "rgba(220,220,220,0)",
-            strokeColor: "rgba(191,191,63,1)",
-            pointColor: "rgba(191,191,63,1)",
+            fillColor: "rgba(56, 94, 157, 0)",
+            strokeColor: "rgba(56, 94, 157, 1)",
+            pointColor: "rgba(56, 94, 157, 1)",
             data: []
           }
         var dataPuntualidad = {
             label: "Puntualidad",
-            fillColor: "rgba(220,220,220,0)",
-            strokeColor: "rgba(255,153,51,1)",
-            pointColor: "rgba(255,153,51,1)",
+            fillColor: "rgba(217, 71, 58, 0)",
+            strokeColor: "rgba(217, 71, 58, 1)",
+            pointColor: "rgba(217, 71, 58, 1)",
             data: []
           }
         var dataInstalaciones = {
             label: "Instalaciones",
-            fillColor: "rgba(220,220,220,0)",
-            strokeColor: "rgba(151,187,205,1)",
-            pointColor: "rgba(151,187,205,1)",
+            fillColor: "rgba(234, 224, 64, 0)",
+            strokeColor: "rgba(234, 224, 64, 1)",
+            pointColor: "rgba(234, 224, 64, 1)",
             data: []
           }
         var dataTratoPersonal = {
             label: "Trato Personal",
-            fillColor: "rgba(220,220,220,0)",
-            strokeColor: "rgba(191,63,63,1)",
-            pointColor: "rgba(191,63,63,1)",
+            fillColor: "rgba(106, 182, 91, 0)",
+            strokeColor: "rgba(106, 182, 91, 1)",
+            pointColor: "rgba(106, 182, 91, 1)",
             data: []
           }
         var dataCosto = {
             label: "Costo",
-            fillColor: "rgba(220,220,220,0)",
-            strokeColor: "rgba(127,63,191,1)",
-            pointColor: "rgba(127,63,191,1)",
+            fillColor: "rgba(80, 79, 68, 0)",
+            strokeColor: "rgba(80, 79, 68, 1)",
+            pointColor: "rgba(80, 79, 68, 1)",
             data: []
           }
 
@@ -1677,28 +1677,30 @@ function getCalTopDr(calificacion){
     if (!calificacion){
       calificacion = 0;
     }
-    var color = '#DF3A01';
-    if (parseInt(calificacion) == 80){
-      color = '#D7DF01';
+    var color;
+    if (parseInt(calificacion) < 60 ){
+      color = 'rgb(217, 71, 58)';//rojo
+    } else if (parseInt(calificacion) < 80){
+      color = 'rgb(234, 224, 64)';//amarillo
     } else if (parseInt(calificacion) > 80){
-      color = '#5FB404';
+      color = 'rgb(106, 182, 91)';//verde
     }
     var dataTopDr = [
         {
-            value: (100-parseInt(calificacion)),
-            color:"#000"
-        },
-        {
             value: calificacion,
             color: color
+        },
+        {
+            value: (100-parseInt(calificacion)),
+            color:"transparent"
         }
     ]
     $('#topDrPer').text(calificacion + '%');
 
-    var width = $('#feedbackTopDr').parent().outerWidth();
+    var width = $('#feedbackTopDr').parent().outerWidth() - 30;
     var ctx = document.getElementById("feedbackTopDr").getContext("2d");
     ctx.canvas.width = width;
-    ctx.canvas.height = 280;
+    ctx.canvas.height = 300;
     var myNewChart = new Chart(ctx).Doughnut(dataTopDr,{
       segmentStrokeWidth : 1,
        showTooltips: false
@@ -1708,28 +1710,28 @@ function getCalTopDr(calificacion){
 function getCalGeneral(calificaciones){
     var dataCalGeneral = [];
     var unaEstrella = {
-        value: 0,
-        color:"#DF3A01",
+        value: 10,
+        color:"#a0d197",
         label: '★✩✩✩✩'
     };
     var dosEstrellas = {
         value: 0,
-        color:"#DF7401",
+        color:"#93ca88",
         label: '★★✩✩✩'
     };
     var tresEstrellas = {
         value: 0,
-        color:"#D7DF01",
+        color:"#85c379",
         label: '★★★✩✩'
     };
     var cuatroEstrellas = {
         value: 0,
-        color:"#A5DF00",
+        color:"#78bd6a",
         label: '★★★★✩'
     };
     var cincoEstrellas = {
-        value: 0,
-        color:"#5FB404",
+        value: 20,
+        color:"#6ab65b",
         label: '★★★★★'
     };
 
@@ -1749,10 +1751,10 @@ function getCalGeneral(calificaciones){
 
     dataCalGeneral = [unaEstrella,dosEstrellas,tresEstrellas,cuatroEstrellas,cincoEstrellas];
 
-    var width = $('#feedbackGeneral').parent().outerWidth();
+    var width = $('#feedbackGeneral').parent().outerWidth() - 30;
     var ctx = document.getElementById("feedbackGeneral").getContext("2d");
     ctx.canvas.width = width;
-    ctx.canvas.height = 280;
+    ctx.canvas.height = 300;
     var myNewChart = new Chart(ctx).Doughnut(dataCalGeneral,{
       segmentStrokeWidth : 1
     });
