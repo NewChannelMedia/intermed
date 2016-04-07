@@ -47,12 +47,15 @@ var app = express()
 
 app.set( 'view engine', 'hbs' );
 //Validar: Todo menos favicon.
+
 app.use( '/', express.static( __dirname + '/../public' ) );
 app.use( '/:a', express.static( __dirname + '/../public' ) );
 app.use( '/:a/', express.static( __dirname + '/../public' ) );
 app.use( '/:a/:b', express.static( __dirname + '/../public' ) );
 app.use( '/:a/:b/', express.static( __dirname + '/../public' ) );
+
 /*
+app.use( '/', express.static( __dirname + '/../public' ) );
 app.use( '/inbox', express.static( __dirname + '/../public' ) );
 app.use( '/notificaciones', express.static( __dirname + '/../public' ) );
 app.use( '/cambiar', express.static( __dirname + '/../public' ) );
@@ -63,7 +66,8 @@ app.use( '/medico', express.static( __dirname + '/../public' ) );
 app.use( '/s', express.static( __dirname + '/../public' ) );
 app.use( '/secretaria', express.static( __dirname + '/../public' ) );
 app.use( '/:usuario/', express.static( __dirname + '/../public' ) );
-app.use( '/:usuario/galeria', express.static( __dirname + '/../public' ) );*/
+app.use( '/:usuario/galeria', express.static( __dirname + '/../public' ) );
+*/
 
 var routeLife = function ( plantilla, carpeta, helpers ) {
   app.set( 'views', __dirname + '/../apps/views/' + carpeta);
@@ -87,18 +91,11 @@ var routerObject = {
   errorHandler: errorHandler
 }
 
-
-
 //::Temporal::, solo para ver la información que tiene el usuario en su variable sesión
 app.get( '/informacionusuario', function ( req, res ) {
   //res.send( JSON.stringify( req.session.passport ) + '<br/><a href="/">Regresar</a>' )
   res.send( JSON.stringify( req.session.passport ));
 } );
-
-app.get('*',function(req,res, next){
-  console.log(req.method + ' : ' + req.url);
-  next();
-})
 
 function parseCookies (request) {
     var list = {},

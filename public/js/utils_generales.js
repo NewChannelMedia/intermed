@@ -3415,7 +3415,7 @@ function setCookie(cname, cvalue, exdays) {
 }
 
 function logout(){
-  setCookie('intermed_sesion');
+  setCookie('_intermed');
   $.ajax({
     async: false,
     url: '/logout',
