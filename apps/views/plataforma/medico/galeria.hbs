@@ -1,5 +1,6 @@
 <div id="galeriaMedico">
-  <input type="hidden" id="MedicoId" value="{{usuario.Medico.id}}" />
+  <input type="hidden" id="user_id" value="{{usuario.id}}" />
+  <input type="hidden" id="my_gallery" value="{{#if personal}}1{{else}}0{{/if}}" />
   <section id="galeriaBody" class="header-section">
     <nav id="stickyNav" class="nav-menu sticky h67-medcond">
       <div class="container-fluid nav-menu-container">
@@ -8,7 +9,7 @@
             <div class="nav-menu-inner-section col-lg-12">
               <ul class="nav nav-pills nav-menu-menu h67-medcond s20 pull-left">
                 <li>
-                  <a id="toPerfil">
+                  <a href="../" id="toPerfil" onclick="location.href='../'">
                     <div class="body-container">
                       <div class="center-content">
                         <span class="glyphicon glyphicon-arrow-left"></span>
@@ -18,6 +19,7 @@
                   </a>
                 </li>
               </ul>
+              {{#if personal}}
               <ul class="nav nav-pills nav-menu-menu h67-medcond s20 pull-right">
                 <li>
                   <a id="btnUploadImages" onclick="uploadImages()" class="white-c hidden" role="button">
@@ -41,10 +43,12 @@
                   </a>
                 </li>
               </ul>
+              {{/if}}
             </div>
           </div>
         </div>
       </div>
+      {{#if personal}}
       <div class="panel-collapse collapse col-lg-12 col-md-12 col-sm-12 col-xs-12" id="uploadPanel">
         <div class="well noMargin">
           <div class="row">
@@ -65,156 +69,24 @@
           </div>
         </div>
       </div>
+      {{/if}}
     </nav>
     <div id="galeriaPanel" class="container bg-transparentDark">
       <div class="body-container">
         <div class="top-content">
-          <div class="row">
+          <div class="row" id="gallery-container">
+            {{#each usuario.Galeria}}
             <div class="gallery-thumbnail col-lg-2 col-md-2 col-sm-3 col-xs-4">
-              <div class="body-container gallery-thumb-content" style="background-image:url('/garage/test/landscape1.jpg')">
+              <div class="body-container gallery-thumb-content" style="background-image:url('{{imagenurl}}')">
                 <div class="bottom-content text-left">
-                  <h4 class="s25 h67-medcond white-c noMargin shadow">Título de la foto</h4>
+                  <span class="hidden id">{{id}}</span>
+                  <h4 class="s25 h67-medcond white-c noMargin shadow titulo">{{titulo}}</h4>
+                  <span class="hidden descripcion">{{descripcion}}</span>
+                  <span class="hidden fecha">{{fecha}}</span>
                 </div>
               </div>
             </div>
-            <div class="gallery-thumbnail col-lg-2 col-md-2 col-sm-3 col-xs-4">
-              <div class="body-container gallery-thumb-content" style="background-image:url('/garage/test/landscape1.jpg')">
-                <div class="bottom-content text-left">
-                  <h4 class="s25 h67-medcond white-c noMargin shadow">Título de la foto</h4>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div  class="row noPadding hidden">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <div id="slideGaleria" class="row">
-                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" data-interval="false">
-                  <div class="carousel-inner" role="listbox">
-                    <div class="item active">
-                      <div class="container">
-                        <div class="row noPadding">
-                          <div class="col-lg-8 col-md-8 col-sm-7 col-xs-12 bg-black">
-                            <div class="img-container" style="background-image:url('/garage/test/landscape1.jpg')">
-                            </div>
-                          </div>
-                          <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12 caption-container bg-white">
-                            <div class="img-caption">
-                              <h1 class="h67-medcond s40">Titulo de la foto</h1>
-                              <hr class="noMargin">
-                              <p class="text-right center-block h67-medcond s15 text-default lbl-fecha">
-                                <small>
-                                  <span class="not-fecha hidden invisible">2016-04-01 19:01:25</span>
-                                  <span class="glyphicon glyphicon-time"></span> 01 de abril a las 13:01
-                                </small>
-                              </p>
-                              <p class="h45-light s15 lh1-5">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                              </p>
-                              <div class="img-controls">
-                                <div class="btn-group pull-left" role="group" aria-label="...">
-                                  <button type="button" class="btn btn-default">Editar</button>
-                                  <button type="button" class="btn btn-default">Cambiar</button>
-                                  <button type="button" class="btn btn-default">Borrar</button>
-                                </div>
-                                <button type="button" class="btn btn-success pull-right">Guardar</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="item">
-                      <div class="container">
-                        <div class="row noPadding">
-                          <div class="col-lg-8 col-md-8 col-sm-7 col-xs-12 bg-black">
-                            <div class="img-container" style="background-image:url('/garage/test/portrait1.jpg')">
-                            </div>
-                          </div>
-                          <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12 caption-container bg-white">
-                            <div class="img-caption">
-                              <h1 class="h67-medcond s40">Titulo de la foto</h1>
-                              <hr class="noMargin">
-                              <p class="text-right center-block h67-medcond s15 text-default lbl-fecha">
-                                <small>
-                                  <span class="not-fecha hidden invisible">2016-04-01 19:01:25</span>
-                                  <span class="glyphicon glyphicon-time"></span> 01 de abril a las 13:01
-                                </small>
-                              </p>
-                              <p class="h45-light s15 lh1-5">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                              </p>
-                              <div class="img-controls">
-                                <div class="btn-group pull-left" role="group" aria-label="...">
-                                  <button type="button" class="btn btn-default">Editar</button>
-                                  <button type="button" class="btn btn-default">Cambiar</button>
-                                  <button type="button" class="btn btn-default">Borrar</button>
-                                </div>
-                                <button type="button" class="btn btn-success pull-right">Guardar</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="item">
-                      <div class="container">
-                        <div class="row noPadding">
-                          <div class="col-lg-8 col-md-8 col-sm-7 col-xs-12 bg-black">
-                            <div class="img-container" style="background-image:url('/garage/test/landscape2.jpg')">
-                            </div>
-                          </div>
-                          <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12 caption-container bg-white">
-                            <div class="img-caption">
-                              <h1 class="h67-medcond s40">Titulo de la foto</h1>
-                              <hr class="noMargin">
-                              <p class="text-right center-block h67-medcond s15 text-default lbl-fecha">
-                                <small>
-                                  <span class="not-fecha hidden invisible">2016-04-01 19:01:25</span>
-                                  <span class="glyphicon glyphicon-time"></span> 01 de abril a las 13:01
-                                </small>
-                              </p>
-                              <p class="h45-light s15 lh1-5">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                              </p>
-                              <div class="img-controls">
-                                <div class="btn-group pull-left" role="group" aria-label="...">
-                                  <button type="button" class="btn btn-default">Editar</button>
-                                  <button type="button" class="btn btn-default">Cambiar</button>
-                                  <button type="button" class="btn btn-default">Borrar</button>
-                                </div>
-                                <button type="button" class="btn btn-success pull-right">Guardar</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="controls">
-                      <div class="container">
-                        <div class="row">
-                          <div class="col-lg-8 col-md-8 col-sm-7 col-xs-12">
-                            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-                              <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                              <span class="sr-only">Previous</span>
-                            </a>
-                            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-                              <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                              <span class="sr-only">Next</span>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div id="bottomSlider" class="row noPadding bg-transparentDark hidden" style="height:150px;">
-                <div class="col-lg-12">
-                  <!-- aqui va el slider de thumbnails -->
-                </div>
-              </div>
-            </div>
+            {{/each}}
           </div>
         </div>
       </div>

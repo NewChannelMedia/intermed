@@ -1,9 +1,9 @@
 var models = require( '../models' );
+  var fs = require( "fs" );
 
 exports.upload = function (object, req, res) {
   try{
     if (req.session.passport && req.session.passport.user){
-      var fs = require( "fs" );
       if ( !fs.existsSync( './public/garage/' + req.session.passport.user.id ) ) {
         fs.mkdirSync( './public/garage/' + req.session.passport.user.id, 0777 );
         fs.mkdirSync( './public/garage/' + req.session.passport.user.id+'/profilepics', 0777 );
@@ -47,6 +47,71 @@ exports.upload = function (object, req, res) {
     req.errorHandler.report(err, req, res);
   }
 };
+
+exports.eliminar = function (object, req, res){
+  models.Galeria.findOne({
+    where: {
+      id: object.imagen_id,
+      usuario_id: req.session.passport.user.id
+    }
+  }).then(function(galeria){
+    if (galeria){
+      var url = galeria.imagenurl;
+      fs.unlink('./public' + url, function(err){
+        console.log('Error: ' + err);
+      });
+      galeria.destroy();
+      res.status(200).json({
+        success: true
+      })
+    } else {
+      res.status(200).json({
+        success: true
+      })
+    }
+  });
+}
+
+exports.actualizar = function (object, req, res){
+  models.Galeria.findOne({
+    where: {
+      id: object.imagen_id,
+      usuario_id: req.session.passport.user.id
+    }
+  }).then(function(galeria){
+    if (galeria){
+      console.log('OBJECT: ' + JSON.stringify(object));
+      galeria.update({
+        titulo: object.titulo,
+        descripcion: object.descripcion
+      },{
+        logging:console.log
+      }).then(function(result){
+        res.status(200).json({
+          success: true
+        });
+      });
+    } else {
+      res.status(200).json({
+        success: true
+      })
+    }
+  });
+}
+
+exports.obtener = function (object, req, res){
+  models.Galeria.findAll({
+    where: {
+      usuario_id: object.usuario_id
+    },
+    order: [['fecha','ASC']]
+  }).then(function(galeria){
+    res.status(200).json({
+      success: true,
+      result: galeria
+    });
+  });
+}
 
 
 

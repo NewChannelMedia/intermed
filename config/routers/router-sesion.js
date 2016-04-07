@@ -8,31 +8,26 @@ module.exports = function (object){
   var passport = object.passport;
   var passport = object.passport;
   var url = object.url;
+  var cookieSession = object.cookieSession;
+
+
 
   app.all( '*', function ( req, res, next ) {
+
     req.errorHandler = object.errorHandler;
     req.routeLife = object.routeLife;
     req.hps = object.hps;
 
     var revivirSesion = false;
+    hps.varSession([]);
     if (url.parse(req.url).pathname != "/favicon.ico"){
       if ( req.session.passport.user ) {
         hps.varSession( req.session.passport.user );
-        res.cookie( 'intermed_sesion', {
-          id: req.session.passport.user.id,
-          usuario: req.session.passport.user.usuarioUrl,
-          tipoUsuario: req.session.passport.user.tipoUsuario
-        } );
       }
       else {
-        hps.varSession([]);
-        //Eliminar cookie
-        if (req.cookies['intermed_sesion']){
-          //Revivir sesión si existe usuario con ['intermed_sesion']['id'] y ['intermed_sesion']['usuarioUrl']
-          if (req.cookies['intermed_sesion']['id'] && req.cookies['intermed_sesion']['tipoUsuario']){
-            revivirSesion = true;
-            intermed.callController( 'usuarios', 'revivirSesion', {id:req.cookies['intermed_sesion']['id'],usuarioUrl:req.cookies['intermed_sesion']['usuario']}, req, res );
-          }
+        if (req.cookies['intermed_sesion'] && req.cookies['intermed_sesion']['id'] && req.cookies['intermed_sesion']['tipoUsuario']){
+          revivirSesion = true;
+          intermed.callController( 'usuarios', 'revivirSesion', {id:req.cookies['intermed_sesion']['id'],usuarioUrl:req.cookies['intermed_sesion']['usuario']}, req, res );
         }
       }
       if (!revivirSesion){
@@ -96,4 +91,16 @@ module.exports = function (object){
     routeLife( 'main', 'main', hps );
     intermed.callController( 'usuarios', 'logout', {}, req, res )
   } );
+
+  function parseCookies (request) {
+      var list = {},
+          rc = unescape(request.headers.cookie).replace('j:{','').replace(':{','').replace('}','');
+
+      rc && rc.split(';').forEach(function( cookie ) {
+          var parts = cookie.split('=');
+          list[parts.shift().trim()] = decodeURI(parts.join('='));
+      });
+
+      return list;
+  }
 }

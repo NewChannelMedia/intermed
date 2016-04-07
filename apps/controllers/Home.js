@@ -563,8 +563,26 @@ module.exports = {
   },
 
   galeria: function (object, req, res){
-    console.log('Cargar galeria del usuario: ' + object.usuario);
-    res.render('galeria');
+    models.Usuario.findOne({
+      where: models.Sequelize.or(
+        {
+          usuarioUrl: object.usuario
+        },
+        {
+          urlPersonal: object.usuario
+        }
+      ),
+      attributes: ['id'],
+      include: [{
+        model: models.Galeria
+      }]
+    }).then(function(usuario){
+      var personal = 0;
+      if (req.session.passport && req.session.passport.user && req.session.passport.user.id == usuario.id){
+        personal = 1;
+      }
+      res.render('galeria',{personal: personal,usuario: usuario});
+    });
   }
 }
 

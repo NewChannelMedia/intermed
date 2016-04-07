@@ -4591,7 +4591,7 @@ function uploadImages(){
   var step = 100/total;
   var t=0;
 
-  bootbox.dialog({
+ bootsec =  bootbox.dialog({
     className: 'Intermed-Bootbox',
     title: '<span class"title uploadTitleModal">Subiendo foto(s) a galería.</span>',
     message:
@@ -4695,7 +4695,26 @@ function cargarImagenes(evt){
     }
     if (errores.length>0){
       //Bootbox mostrando las imagenes que no se pudieron subir por tamaño
-      alert('Errores: ' + JSON.stringify(errores));
+      contenido = '<ul class="list-group">';
+      errores.forEach(function(err){
+        contenido += '<li class="list-group-item"><span class="badge">Muy grande</span>'+ err.nombre +'</li>'
+      });
+      contenido += '</ul>';
+
+        bootSec =  bootbox.dialog({
+          className: 'Intermed-Bootbox',
+          backdrop:true,
+          onEscape: function () {
+              bootbox.hideAll();
+          },
+          title: '<span class="title">Los siguientes archivos no se pueden subir</span',
+          size:'small',
+          message: '<div class="row">'+
+              '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+              contenido+
+              '</div>'+
+            '</div>'
+        });
     }
 
     $('#imageUploadChoser').val('');

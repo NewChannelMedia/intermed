@@ -246,4 +246,16 @@ module.exports = function (object){
   app.post('/gallery/upload', function (req, res){
     intermed.callController('galeria','upload', req.body, req, res);
   });
+
+  app.post('/galeria/eliminar', function (req, res){
+    intermed.callController('galeria','eliminar', req.body, req, res);
+  });
+
+  app.post('/galeria/actualizar', function (req, res){
+    intermed.callController('galeria','actualizar', req.body, req, res);
+  });
+
+  app.post('/galeria/obtener', function (req, res){
+    intermed.callController('galeria','obtener', req.body, req, res);
+  });
 }

@@ -46,12 +46,13 @@ var app = express()
     } ) ); // support encoded bodies
 
 app.set( 'view engine', 'hbs' );
-
+//Validar: Todo menos favicon.
 app.use( '/', express.static( __dirname + '/../public' ) );
 app.use( '/:a', express.static( __dirname + '/../public' ) );
 app.use( '/:a/', express.static( __dirname + '/../public' ) );
 app.use( '/:a/:b', express.static( __dirname + '/../public' ) );
-app.use( '/:a/:b/', express.static( __dirname + '/../public' ) );/*
+app.use( '/:a/:b/', express.static( __dirname + '/../public' ) );
+/*
 app.use( '/inbox', express.static( __dirname + '/../public' ) );
 app.use( '/notificaciones', express.static( __dirname + '/../public' ) );
 app.use( '/cambiar', express.static( __dirname + '/../public' ) );
@@ -87,11 +88,29 @@ var routerObject = {
 }
 
 
+
 //::Temporal::, solo para ver la información que tiene el usuario en su variable sesión
 app.get( '/informacionusuario', function ( req, res ) {
   //res.send( JSON.stringify( req.session.passport ) + '<br/><a href="/">Regresar</a>' )
   res.send( JSON.stringify( req.session.passport ));
 } );
+
+app.get('*',function(req,res, next){
+  console.log(req.method + ' : ' + req.url);
+  next();
+})
+
+function parseCookies (request) {
+    var list = {},
+        rc = request.headers.cookie;
+
+    rc && rc.split(';').forEach(function( cookie ) {
+        var parts = cookie.split('=');
+        list[parts.shift().trim()] = decodeURI(parts.join('='));
+    });
+
+    return list;
+}
 //Fin temporal
 
 require( './routers/router-sesion.js' )(routerObject);//Es el primero en cargar, verifica la sesión
