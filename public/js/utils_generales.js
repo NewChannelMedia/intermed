@@ -1576,6 +1576,22 @@ function getFeedback(tipo){
       success: function ( data ) {
         //[{"anio":2015,"mes":3,"higiene":100,"puntualidad":100,"instalaciones":90,"tratoPersonal":100,"costo":100,"satisfaccionGeneral":100},{"anio":2016,"mes":2,"higiene":100,"puntualidad":100,"instalaciones":100,"tratoPersonal":100,"costo":100,"satisfaccionGeneral":100}]
         var dataset = {labels:[],datasets:[]};
+
+        var fechas = [];
+
+        var d = new Date();
+        var year = d.getFullYear();
+        var month = (parseInt(d.getMonth)+1);
+
+        for (var i = 0; i < 6; i++){
+          fechas.unshift({
+            label: meses[parseInt(d.getMonth())]+'/'+d.getFullYear(),
+            year: d.getFullYear(),
+            month: d.getMonth()+1
+          });
+          d = new Date(new Date(d).setMonth(new Date(d).getMonth()-1));
+        }
+
         var dataHigiene = {
             label: "Higiene",
             fillColor: "rgba(56, 94, 157, 0)",
@@ -1612,14 +1628,30 @@ function getFeedback(tipo){
             data: []
           }
 
-        data.promedios.forEach(function(prom){
-          dataset.labels.push(meses[parseInt(prom.mes)-1]+'/'+prom.anio);
-          dataHigiene.data.push(prom.higiene);
-          dataPuntualidad.data.push(prom.puntualidad);
-          dataInstalaciones.data.push(prom.instalaciones);
-          dataTratoPersonal.data.push(prom.tratoPersonal);
-          dataCosto.data.push(prom.costo);
-        });
+          fechas.forEach(function(fecha){
+            JSON.stringify(fecha)
+            var encontrado = false;
+            data.promedios.forEach(function(prom){
+              if (parseInt(fecha.year) == parseInt(prom.anio) && parseInt(fecha.month) == parseInt(prom.mes)){
+                encontrado = true;
+                dataset.labels.push(fecha.label);
+                dataHigiene.data.push(prom.higiene);
+                dataPuntualidad.data.push(prom.puntualidad);
+                dataInstalaciones.data.push(prom.instalaciones);
+                dataTratoPersonal.data.push(prom.tratoPersonal);
+                dataCosto.data.push(prom.costo);
+              }
+            });
+            if (!encontrado){
+              dataset.labels.push(fecha.label);
+              dataHigiene.data.push(0);
+              dataPuntualidad.data.push(0);
+              dataInstalaciones.data.push(0);
+              dataTratoPersonal.data.push(0);
+              dataCosto.data.push(0);
+            }
+          });
+
 
         if (!tipo){
             getCalTopDr(data.calificacion.calificacion);
@@ -3417,7 +3449,7 @@ function setCookie(cname, cvalue, exdays) {
 }
 
 function logout(){
-  setCookie('intermed_sesion');
+  setCookie('_intermed');
   $.ajax({
     async: false,
     url: '/logout',

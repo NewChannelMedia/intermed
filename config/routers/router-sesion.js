@@ -1,4 +1,11 @@
 module.exports = function (object){
+  const crypto = require('crypto'),
+        algorithm = 'aes192',
+        password = 'int5erm7edS6ess6ion';
+
+  const decipher = crypto.createDecipher(algorithm,password);
+
+
   var models = object.models;
   var app = object.app;
   var intermed = object.intermed;
@@ -13,7 +20,6 @@ module.exports = function (object){
 
 
   app.all( '*', function ( req, res, next ) {
-
     req.errorHandler = object.errorHandler;
     req.routeLife = object.routeLife;
     req.hps = object.hps;
@@ -25,9 +31,16 @@ module.exports = function (object){
         hps.varSession( req.session.passport.user );
       }
       else {
-        if (req.cookies['intermed_sesion'] && req.cookies['intermed_sesion']['id'] && req.cookies['intermed_sesion']['tipoUsuario']){
-          revivirSesion = true;
-          intermed.callController( 'usuarios', 'revivirSesion', {id:req.cookies['intermed_sesion']['id'],usuarioUrl:req.cookies['intermed_sesion']['usuario']}, req, res );
+        if (req.cookies['_intermed']){
+          var encrypted = unescape(req.cookies['_intermed']);
+          var decrypted = decipher.update(encrypted, 'hex', 'utf8');
+          decrypted += decipher.final('utf8');
+          cookieSession = decrypted.split(';');
+          //["1","0000001","M","2016-04-07_11:55:19"]
+          if (cookieSession[0] && cookieSession[1]){
+            revivirSesion = true;
+            intermed.callController( 'usuarios', 'revivirSesion', {id:cookieSession[0],usuarioUrl:cookieSession[1]}, req, res );
+          }
         }
       }
       if (!revivirSesion){
