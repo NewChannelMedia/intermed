@@ -1460,8 +1460,12 @@ $( document ).ready( function () {
       $( '#slideGaleria' ).css('height', $('#galeriaPanel').height() + 'px');
       $( '.img-container' ).css('height', $( '#slideGaleria' ).height() - 120 + 'px');
       $( '.caption-container' ).css('height', 120 + 'px');
-
     }
+
+    $('.gallery-thumb-content').on('click',function(){
+      var currentId = $(this).find('.id').text();
+      iniciarGaleria(currentId);
+    });
 
     $('#btnUpToGallery').on('click',function(){
       $('#imageUploadChoser').click();
@@ -1482,9 +1486,6 @@ function GalleryThumbnail() {
   var w = $('.gallery-thumbnail').outerWidth();
   var h = w;
   $('.gallery-thumbnail').css('height', h + 'px' );
-  console.log( w );
-  console.log( h );
-  console.log('-');
 }
 
 
@@ -3432,3 +3433,147 @@ function logout(){
     }
   });
 }
+
+/*Inicio galeria*/
+function iniciarGaleria(currentId){
+  var count = 0;
+  var galeriaMedico = [];
+  $('.gallery-thumb-content').each(function(){
+    var imagen = $(this).css('background-image').replace('url("','').replace('")','');
+    var id = $(this).find('.id').text();
+    var titulo = $(this).find('.titulo').text();
+    var descripcion = $(this).find('.descripcion').text();
+    var fecha = $(this).find('.fecha').text();
+    galeriaMedico.push({
+      id: parseInt(id),
+      titulo: titulo,
+      descripcion: descripcion,
+      imagen: imagen,
+      fecha: fecha
+    });
+  });
+  abrirModalGaleria(currentId,galeriaMedico);
+}
+
+
+
+function prevSlide(current,galeriaMedico){
+  if (current == 0){
+    current = galeriaMedico.length-1;
+  } else {
+    current = current-1;
+  }
+  actualizarSlider(current,galeriaMedico);
+  return current;
+}
+
+function nextSlide(current,galeriaMedico){
+  if (current == galeriaMedico.length-1){
+    current = 0;
+  } else {
+    current = current+1;
+  }
+  actualizarSlider(current,galeriaMedico);
+  return current;
+}
+
+function actualizarSlider(id,galeriaMedico){
+  $('.img-container.img-slider').css('background-image','url(\''+galeriaMedico[id].imagen+'\')');
+  $('.imageTitle').text(galeriaMedico[id].titulo);
+  $('.imageDescription').text(galeriaMedico[id].descripcion);
+  $('.utcDate').text(new Date(galeriaMedico[id].fecha).toISOString());
+  $('.formattedDate').text(formatearFechaGaleria(galeriaMedico[id].fecha));
+  $('.currentId').text(galeriaMedico[id].id);
+
+  $('.editSlider').removeClass('hidden');
+  $('.deleteSlider').removeClass('hidden');
+  $('.saveEditSlider').addClass('hidden');
+  $('.cancelEditSlider').addClass('hidden');
+}
+
+function formatearFechaGaleria(fecha){
+  //4/6/2016, 12:20:20 PM > 01 de abril a las 13:01
+  fecha =  new Date(fecha).toLocaleString('en-US');
+  var dia = parseInt(fecha.split(', ')[0].split('/')[1]);
+  var mes = meses[parseInt(fecha.split(', ')[0].split('/')[0])-1];
+  var anio = parseInt(fecha.split(', ')[0].split('/')[2]);
+
+  var horas = parseInt(fecha.split(', ')[1].split(':')[0]);
+  var minutos = parseInt(fecha.split(', ')[1].split(':')[1]);
+
+  if (horas != 12 && fecha.search('PM')>0){
+    horas = horas + 12;
+  } else if (horas == 12 && fecha.search('AM')>0){
+    horas = 0;
+  }
+
+  if (horas.toString()==1){
+    horas = '0'+horas;
+  }
+
+  if (anio == new Date().getFullYear()){
+    return dia + ' de ' + mes + ' a las ' + horas + ':' + minutos;
+  } else {
+    return dia + ' de ' + mes + ' de ' + anio + ' a las ' + horas + ':' + minutos;
+  }
+}
+
+function actualizarGaleria(current_id){
+  $.post('/galeria/obtener',{usuario_id:$('#user_id').val()},function(data){
+    if (data.success){
+      var contenido = '';
+      data.result.forEach(function(res){
+        contenido += '<div class="gallery-thumbnail col-lg-2 col-md-2 col-sm-3 col-xs-4">'+
+          '<div class="body-container gallery-thumb-content" style="background-image:url(\''+ res.imagenurl +'\')">'+
+            '<div class="bottom-content text-left">'+
+              '<span class="hidden id">'+ res.id +'</span>'+
+              '<h4 class="s25 h67-medcond white-c noMargin shadow titulo">'+ res.titulo +'</h4>'+
+              '<span class="hidden descripcion">'+ res.descripcion +'</span>'+
+              '<span class="hidden fecha">'+ res.fecha +'</span>'+
+            '</div>'+
+          '</div>'+
+        '</div>';
+      });
+      $('#gallery-container').html(contenido);
+      GalleryThumbnail();
+      $('.gallery-thumb-content').on('click',function(){
+        var currentId = $(this).find('.id').text();
+        iniciarGaleria(currentId);
+      });
+      bootbox.hideAll();
+      if (current_id && current_id>0){
+        iniciarGaleria(current_id);
+      }
+    }
+  }).fail(function(e){
+    console.log('Error: ' + JSON.stringify(e));
+  });
+}
+
+function eliminarImagenGaleria(imagen_id,current, galeriaMedico){
+  bootbox.confirm('¿Desea eliminar la imagen?', function(result){
+    if( result == true ){
+      // se manda un post con el id que se desea eliminar
+      $.post('/galeria/eliminar',{imagen_id:imagen_id},function(data){
+        if (data.success){
+          bootbox.hideAll();
+          if (galeriaMedico.length>1){
+            if (current == galeriaMedico.length-1){
+              current = 0;
+            } else {
+              current = current+1;
+            }
+            actualizarGaleria(galeriaMedico[current].id);
+          } else {
+            actualizarGaleria();
+          }
+
+        }
+      }).fail(function(e){
+        console.log('Error: ' + JSON.stringify(e));
+      });
+    }
+  });
+}
+
+/*Fin galeria*/

@@ -272,13 +272,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
 	font-family: 'Flama-BoldItalic';
-	src: url('/IntermedFonts/hinted-Flama-BoldItalic.eot');
+	src: url('IntermedFonts/hinted-Flama-BoldItalic.eot');
 	src: local('Flama-BoldItalic'),
-	url('/IntermedFonts/hinted-Flama-BoldItalic.eot?#iefix') format('embedded-opentype'),
-	url('/IntermedFonts/hinted-Flama-BoldItalic.woff2') format('woff2'),
-	url('/IntermedFonts/hinted-Flama-BoldItalic.woff') format('woff'),
-	url('/IntermedFonts/hinted-Flama-BoldItalic.ttf') format('truetype'),
-	url('/IntermedFonts/hinted-Flama-BoldItalic.svg#Flama-BoldItalic') format('svg');
+	url('IntermedFonts/hinted-Flama-BoldItalic.eot?#iefix') format('embedded-opentype'),
+	url('IntermedFonts/hinted-Flama-BoldItalic.woff2') format('woff2'),
+	url('IntermedFonts/hinted-Flama-BoldItalic.woff') format('woff'),
+	url('IntermedFonts/hinted-Flama-BoldItalic.ttf') format('truetype'),
+	url('IntermedFonts/hinted-Flama-BoldItalic.svg#Flama-BoldItalic') format('svg');
 	font-weight: bold;
 	font-style: italic;
 }
@@ -291,13 +291,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
 	font-family: 'Flama';
-	src: url('/IntermedFonts/hinted-Flama.eot');
+	src: url('IntermedFonts/hinted-Flama.eot');
   src: local('Flama'),
-	url('/IntermedFonts/hinted-Flama.eot?#iefix') format('embedded-opentype'),
-	url('/IntermedFonts/hinted-Flama.woff2') format('woff2'),
-	url('/IntermedFonts/hinted-Flama.woff') format('woff'),
-	url('/IntermedFonts/hinted-Flama.ttf') format('truetype'),
-	url('/IntermedFonts/hinted-Flama.svg#Flama') format('svg');
+	url('IntermedFonts/hinted-Flama.eot?#iefix') format('embedded-opentype'),
+	url('IntermedFonts/hinted-Flama.woff2') format('woff2'),
+	url('IntermedFonts/hinted-Flama.woff') format('woff'),
+	url('IntermedFonts/hinted-Flama.ttf') format('truetype'),
+	url('IntermedFonts/hinted-Flama.svg#Flama') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -312,11 +312,11 @@ footer,header,hgroup,menu,nav,section {
 	font-family: 'FlamaBook';
 	src: url('/Flama/hinted-Flama-Book-Italic.eot');
   src: local('FlamaBook-Italic'),
-	url('/IntermedFonts/hinted-Flama-Book-Italic.eot?#iefix') format('embedded-opentype'),
-	url('/IntermedFonts/hinted-Flama-Book-Italic.woff2') format('woff2'),
-	url('/IntermedFonts/hinted-Flama-Book-Italic.woff') format('woff'),
-	url('/IntermedFonts/hinted-Flama-Book-Italic.ttf') format('truetype'),
-	url('/IntermedFonts/hinted-Flama-Book-Italic.svg#FlamaBook-Italic') format('svg');
+	url('IntermedFonts/hinted-Flama-Book-Italic.eot?#iefix') format('embedded-opentype'),
+	url('IntermedFonts/hinted-Flama-Book-Italic.woff2') format('woff2'),
+	url('IntermedFonts/hinted-Flama-Book-Italic.woff') format('woff'),
+	url('IntermedFonts/hinted-Flama-Book-Italic.ttf') format('truetype'),
+	url('IntermedFonts/hinted-Flama-Book-Italic.svg#FlamaBook-Italic') format('svg');
 	font-weight: normal;
 	font-style: italic;
 }
@@ -329,13 +329,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
 	font-family: 'FlamaMedium';
-	src: url('/IntermedFonts/hinted-Flama-Medium.eot');
+	src: url('IntermedFonts/hinted-Flama-Medium.eot');
   src: local('FlamaMedium'),
-	url('/IntermedFonts/hinted-Flama-Medium.eot?#iefix') format('embedded-opentype'),
-	url('/IntermedFonts/hinted-Flama-Medium.woff2') format('woff2'),
-	url('/IntermedFonts/hinted-Flama-Medium.woff') format('woff'),
-	url('/IntermedFonts/hinted-Flama-Medium.ttf') format('truetype'),
-	url('/IntermedFonts/hinted-Flama-Medium.svg#FlamaMedium') format('svg');
+	url('IntermedFonts/hinted-Flama-Medium.eot?#iefix') format('embedded-opentype'),
+	url('IntermedFonts/hinted-Flama-Medium.woff2') format('woff2'),
+	url('IntermedFonts/hinted-Flama-Medium.woff') format('woff'),
+	url('IntermedFonts/hinted-Flama-Medium.ttf') format('truetype'),
+	url('IntermedFonts/hinted-Flama-Medium.svg#FlamaMedium') format('svg');
 	font-weight: 500;
 	font-style: normal;
 }
@@ -348,13 +348,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
 	font-family: 'FlamaMedium';
-	src: url('/IntermedFonts/hinted-Flama-Medium-Italic.eot');
+	src: url('IntermedFonts/hinted-Flama-Medium-Italic.eot');
   src: local('FlamaMedium-Italic'),
-	url('/IntermedFonts/hinted-Flama-Medium-Italic.eot?#iefix') format('embedded-opentype'),
-	url('/IntermedFonts/hinted-Flama-Medium-Italic.woff2') format('woff2'),
-	url('/IntermedFonts/hinted-Flama-Medium-Italic.woff') format('woff'),
-	url('/IntermedFonts/hinted-Flama-Medium-Italic.ttf') format('truetype'),
-	url('/IntermedFonts/hinted-Flama-Medium-Italic.svg#FlamaMedium-Italic') format('svg');
+	url('IntermedFonts/hinted-Flama-Medium-Italic.eot?#iefix') format('embedded-opentype'),
+	url('IntermedFonts/hinted-Flama-Medium-Italic.woff2') format('woff2'),
+	url('IntermedFonts/hinted-Flama-Medium-Italic.woff') format('woff'),
+	url('IntermedFonts/hinted-Flama-Medium-Italic.ttf') format('truetype'),
+	url('IntermedFonts/hinted-Flama-Medium-Italic.svg#FlamaMedium-Italic') format('svg');
 	font-weight: 500;
 	font-style: italic;
 }
@@ -367,13 +367,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
 	font-family: 'FlamaLight';
-	src: url('/IntermedFonts/hinted-Flama-Light.eot');
+	src: url('IntermedFonts/hinted-Flama-Light.eot');
   src: local('FlamaLight'),
-	url('/IntermedFonts/hinted-Flama-Light.eot?#iefix') format('embedded-opentype'),
-	url('/IntermedFonts/hinted-Flama-Light.woff2') format('woff2'),
-	url('/IntermedFonts/hinted-Flama-Light.woff') format('woff'),
-	url('/IntermedFonts/hinted-Flama-Light.ttf') format('truetype'),
-	url('/IntermedFonts/hinted-Flama-Light.svg#FlamaLight') format('svg');
+	url('IntermedFonts/hinted-Flama-Light.eot?#iefix') format('embedded-opentype'),
+	url('IntermedFonts/hinted-Flama-Light.woff2') format('woff2'),
+	url('IntermedFonts/hinted-Flama-Light.woff') format('woff'),
+	url('IntermedFonts/hinted-Flama-Light.ttf') format('truetype'),
+	url('IntermedFonts/hinted-Flama-Light.svg#FlamaLight') format('svg');
 	font-weight: 300;
 	font-style: normal;
 }
@@ -386,13 +386,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
 	font-family: 'FlamaBlack';
-	src: url('/IntermedFonts/hinted-Flama-Black-Italic.eot');
+	src: url('IntermedFonts/hinted-Flama-Black-Italic.eot');
   src: local('FlamaBlack-Italic'),
-	url('/IntermedFonts/hinted-Flama-Black-Italic.eot?#iefix') format('embedded-opentype'),
-	url('/IntermedFonts/hinted-Flama-Black-Italic.woff2') format('woff2'),
-	url('/IntermedFonts/hinted-Flama-Black-Italic.woff') format('woff'),
-	url('/IntermedFonts/hinted-Flama-Black-Italic.ttf') format('truetype'),
-	url('/IntermedFonts/hinted-Flama-Black-Italic.svg#FlamaBlack-Italic') format('svg');
+	url('IntermedFonts/hinted-Flama-Black-Italic.eot?#iefix') format('embedded-opentype'),
+	url('IntermedFonts/hinted-Flama-Black-Italic.woff2') format('woff2'),
+	url('IntermedFonts/hinted-Flama-Black-Italic.woff') format('woff'),
+	url('IntermedFonts/hinted-Flama-Black-Italic.ttf') format('truetype'),
+	url('IntermedFonts/hinted-Flama-Black-Italic.svg#FlamaBlack-Italic') format('svg');
 	font-weight: 900;
 	font-style: italic;
 }
@@ -405,13 +405,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
 	font-family: 'FlamaBlack';
-	src: url('/IntermedFonts/hinted-Flama-Black.eot');
+	src: url('IntermedFonts/hinted-Flama-Black.eot');
   src: local('FlamaBlack'),
-	url('/IntermedFonts/hinted-Flama-Black.eot?#iefix') format('embedded-opentype'),
-	url('/IntermedFonts/hinted-Flama-Black.woff2') format('woff2'),
-	url('/IntermedFonts/hinted-Flama-Black.woff') format('woff'),
-	url('/IntermedFonts/hinted-Flama-Black.ttf') format('truetype'),
-	url('/IntermedFonts/hinted-Flama-Black.svg#FlamaBlack') format('svg');
+	url('IntermedFonts/hinted-Flama-Black.eot?#iefix') format('embedded-opentype'),
+	url('IntermedFonts/hinted-Flama-Black.woff2') format('woff2'),
+	url('IntermedFonts/hinted-Flama-Black.woff') format('woff'),
+	url('IntermedFonts/hinted-Flama-Black.ttf') format('truetype'),
+	url('IntermedFonts/hinted-Flama-Black.svg#FlamaBlack') format('svg');
 	font-weight: 900;
 	font-style: normal;
 }
@@ -424,13 +424,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
 	font-family: 'FlamaBook';
-	src: url('/IntermedFonts/hinted-Flama-Book.eot');
+	src: url('IntermedFonts/hinted-Flama-Book.eot');
   src: local('FlamaBook'),
-	url('/IntermedFonts/hinted-Flama-Book.eot?#iefix') format('embedded-opentype'),
-	url('/IntermedFonts/hinted-Flama-Book.woff2') format('woff2'),
-	url('/IntermedFonts/hinted-Flama-Book.woff') format('woff'),
-	url('/IntermedFonts/hinted-Flama-Book.ttf') format('truetype'),
-	url('/IntermedFonts/hinted-Flama-Book.svg#FlamaBook') format('svg');
+	url('IntermedFonts/hinted-Flama-Book.eot?#iefix') format('embedded-opentype'),
+	url('IntermedFonts/hinted-Flama-Book.woff2') format('woff2'),
+	url('IntermedFonts/hinted-Flama-Book.woff') format('woff'),
+	url('IntermedFonts/hinted-Flama-Book.ttf') format('truetype'),
+	url('IntermedFonts/hinted-Flama-Book.svg#FlamaBook') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -443,13 +443,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
 	font-family: 'Flama';
-	src: url('/IntermedFonts/hinted-Flama-Italic.eot');
+	src: url('IntermedFonts/hinted-Flama-Italic.eot');
   src: local('Flama-Italic'),
-	url('/IntermedFonts/hinted-Flama-Italic.eot?#iefix') format('embedded-opentype'),
-	url('/IntermedFonts/hinted-Flama-Italic.woff2') format('woff2'),
-	url('/IntermedFonts/hinted-Flama-Italic.woff') format('woff'),
-	url('/IntermedFonts/hinted-Flama-Italic.ttf') format('truetype'),
-	url('/IntermedFonts/hinted-Flama-Italic.svg#Flama-Italic') format('svg');
+	url('IntermedFonts/hinted-Flama-Italic.eot?#iefix') format('embedded-opentype'),
+	url('IntermedFonts/hinted-Flama-Italic.woff2') format('woff2'),
+	url('IntermedFonts/hinted-Flama-Italic.woff') format('woff'),
+	url('IntermedFonts/hinted-Flama-Italic.ttf') format('truetype'),
+	url('IntermedFonts/hinted-Flama-Italic.svg#Flama-Italic') format('svg');
 	font-weight: normal;
 	font-style: italic;
 }
@@ -462,13 +462,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
 	font-family: 'Flama';
-	src: url('/IntermedFonts/hinted-Flama-Bold.eot');
+	src: url('IntermedFonts/hinted-Flama-Bold.eot');
   src: local('Flama-Bold'),
-	url('/IntermedFonts/hinted-Flama-Bold.eot?#iefix') format('embedded-opentype'),
-	url('/IntermedFonts/hinted-Flama-Bold.woff2') format('woff2'),
-	url('/IntermedFonts/hinted-Flama-Bold.woff') format('woff'),
-	url('/IntermedFonts/hinted-Flama-Bold.ttf') format('truetype'),
-	url('/IntermedFonts/hinted-Flama-Bold.svg#Flama-Bold') format('svg');
+	url('IntermedFonts/hinted-Flama-Bold.eot?#iefix') format('embedded-opentype'),
+	url('IntermedFonts/hinted-Flama-Bold.woff2') format('woff2'),
+	url('IntermedFonts/hinted-Flama-Bold.woff') format('woff'),
+	url('IntermedFonts/hinted-Flama-Bold.ttf') format('truetype'),
+	url('IntermedFonts/hinted-Flama-Bold.svg#Flama-Bold') format('svg');
 	font-weight: bold;
 	font-style: normal;
 }
@@ -481,13 +481,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
 	font-family: 'FlamaLight';
-	src: url('/IntermedFonts/hinted-Flama-Light-Italic.eot');
+	src: url('IntermedFonts/hinted-Flama-Light-Italic.eot');
   src: local('FlamaLight-Italic'),
-	url('/IntermedFonts/hinted-Flama-Light-Italic.eot?#iefix') format('embedded-opentype'),
-	url('/IntermedFonts/hinted-Flama-Light-Italic.woff2') format('woff2'),
-	url('/IntermedFonts/hinted-Flama-Light-Italic.woff') format('woff'),
-	url('/IntermedFonts/hinted-Flama-Light-Italic.ttf') format('truetype'),
-	url('/IntermedFonts/hinted-Flama-Light-Italic.svg#FlamaLight-Italic') format('svg');
+	url('IntermedFonts/hinted-Flama-Light-Italic.eot?#iefix') format('embedded-opentype'),
+	url('IntermedFonts/hinted-Flama-Light-Italic.woff2') format('woff2'),
+	url('IntermedFonts/hinted-Flama-Light-Italic.woff') format('woff'),
+	url('IntermedFonts/hinted-Flama-Light-Italic.ttf') format('truetype'),
+	url('IntermedFonts/hinted-Flama-Light-Italic.svg#FlamaLight-Italic') format('svg');
 	font-weight: 300;
 	font-style: italic;
 }
@@ -503,13 +503,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE XBdCn';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBdCnIt.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-XBdCnIt.eot');
   src: local('AkzidenzGroteskBE-XBdCnIt'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBdCnIt.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBdCnIt.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBdCnIt.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBdCnIt.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBdCnIt.svg#AkzidenzGroteskBE-XBdCnIt') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBdCnIt.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBdCnIt.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBdCnIt.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBdCnIt.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBdCnIt.svg#AkzidenzGroteskBE-XBdCnIt') format('svg');
   font-weight: 900;
   font-style: italic;
 }
@@ -522,13 +522,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-Bold.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-Bold.eot');
   src: local('AkzidenzGroteskBE-Bold'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Bold.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Bold.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Bold.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Bold.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Bold.svg#AkzidenzGroteskBE-Bold') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Bold.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Bold.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Bold.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Bold.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Bold.svg#AkzidenzGroteskBE-Bold') format('svg');
   font-weight: bold;
   font-style: normal;
 }
@@ -541,13 +541,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE XBdCn';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBdCn.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-XBdCn.eot');
   src: local('AkzidenzGroteskBE-XBdCn'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBdCn.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBdCn.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBdCn.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBdCn.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBdCn.svg#AkzidenzGroteskBE-XBdCn') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBdCn.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBdCn.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBdCn.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBdCn.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBdCn.svg#AkzidenzGroteskBE-XBdCn') format('svg');
   font-weight: 900;
   font-style: normal;
 }
@@ -560,13 +560,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-It.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-It.eot');
   src: local('AkzidenzGroteskBE-It'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-It.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-It.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-It.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-It.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-It.svg#AkzidenzGroteskBE-It') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-It.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-It.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-It.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-It.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-It.svg#AkzidenzGroteskBE-It') format('svg');
   font-weight: normal;
   font-style: italic;
 }
@@ -579,13 +579,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE BoldEx';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldExIt.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldExIt.eot');
   src: local('AkzidenzGroteskBE-BoldExIt'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldExIt.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldExIt.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldExIt.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldExIt.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldExIt.svg#AkzidenzGroteskBE-BoldExIt') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldExIt.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldExIt.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldExIt.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldExIt.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldExIt.svg#AkzidenzGroteskBE-BoldExIt') format('svg');
   font-weight: bold;
   font-style: italic;
 }
@@ -598,13 +598,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE LightCn';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightCn.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-LightCn.eot');
   src: local('AkzidenzGroteskBE-LightCn'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightCn.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightCn.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightCn.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightCn.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightCn.svg#AkzidenzGroteskBE-LightCn') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightCn.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightCn.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightCn.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightCn.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightCn.svg#AkzidenzGroteskBE-LightCn') format('svg');
   font-weight: 300;
   font-style: normal;
 }
@@ -617,13 +617,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE Cn';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-Cn.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-Cn.eot');
   src: local('AkzidenzGroteskBE-Cn'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Cn.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Cn.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Cn.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Cn.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Cn.svg#AkzidenzGroteskBE-Cn') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Cn.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Cn.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Cn.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Cn.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Cn.svg#AkzidenzGroteskBE-Cn') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -636,13 +636,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE Cn';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldCn.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldCn.eot');
   src: local('AkzidenzGroteskBE-BoldCn'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldCn.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldCn.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldCn.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldCn.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldCn.svg#AkzidenzGroteskBE-BoldCn') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldCn.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldCn.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldCn.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldCn.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldCn.svg#AkzidenzGroteskBE-BoldCn') format('svg');
   font-weight: bold;
   font-style: normal;
 }
@@ -655,13 +655,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldIt.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldIt.eot');
   src: local('AkzidenzGroteskBE-BoldIt'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldIt.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldIt.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldIt.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldIt.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldIt.svg#AkzidenzGroteskBE-BoldIt') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldIt.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldIt.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldIt.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldIt.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldIt.svg#AkzidenzGroteskBE-BoldIt') format('svg');
   font-weight: bold;
   font-style: italic;
 }
@@ -674,13 +674,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE Ex';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-Ex.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-Ex.eot');
   src: local('AkzidenzGroteskBE-Ex'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Ex.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Ex.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Ex.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Ex.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Ex.svg#AkzidenzGroteskBE-Ex') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Ex.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Ex.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Ex.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Ex.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Ex.svg#AkzidenzGroteskBE-Ex') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -693,13 +693,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE LightOsF';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightOsF.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-LightOsF.eot');
   src: local('AkzidenzGroteskBE-LightOsF'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightOsF.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightOsF.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightOsF.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightOsF.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightOsF.svg#AkzidenzGroteskBE-LightOsF') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightOsF.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightOsF.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightOsF.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightOsF.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightOsF.svg#AkzidenzGroteskBE-LightOsF') format('svg');
   font-weight: 300;
   font-style: normal;
 }
@@ -712,13 +712,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-Md.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-Md.eot');
   src: local('AkzidenzGroteskBE-Md'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Md.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Md.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Md.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Md.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Md.svg#AkzidenzGroteskBE-Md') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Md.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Md.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Md.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Md.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Md.svg#AkzidenzGroteskBE-Md') format('svg');
   font-weight: 500;
   font-style: normal;
 }
@@ -731,13 +731,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdIt.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-MdIt.eot');
   src: local('AkzidenzGroteskBE-MdIt'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdIt.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdIt.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdIt.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdIt.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdIt.svg#AkzidenzGroteskBE-MdIt') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdIt.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdIt.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdIt.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdIt.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdIt.svg#AkzidenzGroteskBE-MdIt') format('svg');
   font-weight: 500;
   font-style: italic;
 }
@@ -750,13 +750,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-Regular.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-Regular.eot');
   src: local('AkzidenzGroteskBE-Regular'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Regular.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Regular.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Regular.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Regular.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Regular.svg#AkzidenzGroteskBE-Regular') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Regular.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Regular.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Regular.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Regular.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Regular.svg#AkzidenzGroteskBE-Regular') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -769,13 +769,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE Ex';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdEx.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-MdEx.eot');
   src: local('AkzidenzGroteskBE-MdEx'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdEx.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdEx.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdEx.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdEx.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdEx.svg#AkzidenzGroteskBE-MdEx') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdEx.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdEx.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdEx.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdEx.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdEx.svg#AkzidenzGroteskBE-MdEx') format('svg');
   font-weight: 500;
   font-style: normal;
 }
@@ -788,13 +788,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE Super';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-Super.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-Super.eot');
   src: local('AkzidenzGroteskBE-Super'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Super.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Super.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Super.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Super.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Super.svg#AkzidenzGroteskBE-Super') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Super.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Super.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Super.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Super.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Super.svg#AkzidenzGroteskBE-Super') format('svg');
   font-weight: 900;
   font-style: normal;
 }
@@ -807,13 +807,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE XBd';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBd.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-XBd.eot');
   src: local('AkzidenzGroteskBE-XBd'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBd.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBd.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBd.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBd.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-XBd.svg#AkzidenzGroteskBE-XBd') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBd.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBd.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBd.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBd.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-XBd.svg#AkzidenzGroteskBE-XBd') format('svg');
   font-weight: 900;
   font-style: normal;
 }
@@ -826,13 +826,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE MdCn';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdCn.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-MdCn.eot');
   src: local('AkzidenzGroteskBE-MdCn'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdCn.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdCn.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdCn.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdCn.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdCn.svg#AkzidenzGroteskBE-MdCn') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdCn.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdCn.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdCn.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdCn.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdCn.svg#AkzidenzGroteskBE-MdCn') format('svg');
   font-weight: 500;
   font-style: normal;
 }
@@ -845,13 +845,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE LightEx';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightEx.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-LightEx.eot');
   src: local('AkzidenzGroteskBE-LightEx'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightEx.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightEx.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightEx.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightEx.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-LightEx.svg#AkzidenzGroteskBE-LightEx') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightEx.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightEx.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightEx.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightEx.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-LightEx.svg#AkzidenzGroteskBE-LightEx') format('svg');
   font-weight: 300;
   font-style: normal;
 }
@@ -864,13 +864,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE BoldEx';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldEx.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldEx.eot');
   src: local('AkzidenzGroteskBE-BoldEx'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldEx.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldEx.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldEx.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldEx.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-BoldEx.svg#AkzidenzGroteskBE-BoldEx') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldEx.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldEx.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldEx.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldEx.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-BoldEx.svg#AkzidenzGroteskBE-BoldEx') format('svg');
   font-weight: bold;
   font-style: normal;
 }
@@ -883,13 +883,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-Light.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-Light.eot');
   src: local('AkzidenzGroteskBE-Light'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Light.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Light.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Light.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Light.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-Light.svg#AkzidenzGroteskBE-Light') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Light.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Light.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Light.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Light.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-Light.svg#AkzidenzGroteskBE-Light') format('svg');
   font-weight: 300;
   font-style: normal;
 }
@@ -902,13 +902,13 @@ footer,header,hgroup,menu,nav,section {
 
 @font-face {
   font-family: 'Akzidenz Grotesk BE MdCn';
-  src: url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdCnIt.eot');
+  src: url('IntermedFonts/hinted-AkzidenzGroteskBE-MdCnIt.eot');
   src: local('AkzidenzGroteskBE-MdCnIt'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdCnIt.eot?#iefix') format('embedded-opentype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdCnIt.woff2') format('woff2'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdCnIt.woff') format('woff'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdCnIt.ttf') format('truetype'),
-  url('/IntermedFonts/hinted-AkzidenzGroteskBE-MdCnIt.svg#AkzidenzGroteskBE-MdCnIt') format('svg');
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdCnIt.eot?#iefix') format('embedded-opentype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdCnIt.woff2') format('woff2'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdCnIt.woff') format('woff'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdCnIt.ttf') format('truetype'),
+  url('IntermedFonts/hinted-AkzidenzGroteskBE-MdCnIt.svg#AkzidenzGroteskBE-MdCnIt') format('svg');
   font-weight: 500;
   font-style: italic;
 }
@@ -926,13 +926,13 @@ footer,header,hgroup,menu,nav,section {
   font-family: 'Helvetica Neue Bold';
   font-weight: bold;
   font-style: normal;
-  src: url('/IntermedFonts/hinted-HelveticaNeue-Bold.eot');
+  src: url('IntermedFonts/hinted-HelveticaNeue-Bold.eot');
   src: local('Helvetica 75 Bold'), local('HelveticaNeue-Bold'),
-url('/IntermedFonts/hinted-HelveticaNeue-Bold.eot?#iefix') format('embedded-opentype'),
-url('/IntermedFonts/hinted-HelveticaNeue-Bold.woff2') format('woff2'),
-url('/IntermedFonts/hinted-HelveticaNeue-Bold.woff') format('woff'),
-url('/IntermedFonts/hinted-HelveticaNeue-Bold.ttf') format('truetype'),
-url('/IntermedFonts/hinted-HelveticaNeue-Bold.svg#HelveticaNeue-Bold') format('svg');
+url('IntermedFonts/hinted-HelveticaNeue-Bold.eot?#iefix') format('embedded-opentype'),
+url('IntermedFonts/hinted-HelveticaNeue-Bold.woff2') format('woff2'),
+url('IntermedFonts/hinted-HelveticaNeue-Bold.woff') format('woff'),
+url('IntermedFonts/hinted-HelveticaNeue-Bold.ttf') format('truetype'),
+url('IntermedFonts/hinted-HelveticaNeue-Bold.svg#HelveticaNeue-Bold') format('svg');
 }
 
 .h75-bold {
@@ -945,13 +945,13 @@ url('/IntermedFonts/hinted-HelveticaNeue-Bold.svg#HelveticaNeue-Bold') format('s
   font-family: 'Helvetica Neue Condensed';
   font-weight: normal;
   font-style: normal;
-  src: url('/IntermedFonts/hinted-HelveticaNeue-Condensed.eot');
+  src: url('IntermedFonts/hinted-HelveticaNeue-Condensed.eot');
   src: local('Helvetica 57 Condensed'), local('HelveticaNeue-Condensed'),
-url('/IntermedFonts/hinted-HelveticaNeue-Condensed.eot?#iefix') format('embedded-opentype'),
-url('/IntermedFonts/hinted-HelveticaNeue-Condensed.woff2') format('woff2'),
-url('/IntermedFonts/hinted-HelveticaNeue-Condensed.woff') format('woff'),
-url('/IntermedFonts/hinted-HelveticaNeue-Condensed.ttf') format('truetype'),
-url('/IntermedFonts/hinted-HelveticaNeue-Condensed.svg#HelveticaNeue-Condensed') format('svg');
+url('IntermedFonts/hinted-HelveticaNeue-Condensed.eot?#iefix') format('embedded-opentype'),
+url('IntermedFonts/hinted-HelveticaNeue-Condensed.woff2') format('woff2'),
+url('IntermedFonts/hinted-HelveticaNeue-Condensed.woff') format('woff'),
+url('IntermedFonts/hinted-HelveticaNeue-Condensed.ttf') format('truetype'),
+url('IntermedFonts/hinted-HelveticaNeue-Condensed.svg#HelveticaNeue-Condensed') format('svg');
 }
 
 .h57-cond {
@@ -964,13 +964,13 @@ url('/IntermedFonts/hinted-HelveticaNeue-Condensed.svg#HelveticaNeue-Condensed')
   font-family: 'Helvetica Neue Heavy';
   font-weight: 900;
   font-style: normal;
-  src: url('/IntermedFonts/hinted-HelveticaNeue-Heavy.eot');
+  src: url('IntermedFonts/hinted-HelveticaNeue-Heavy.eot');
   src: local('Helvetica 85 Heavy'), local('HelveticaNeue-Heavy'),
-url('/IntermedFonts/hinted-HelveticaNeue-Heavy.eot?#iefix') format('embedded-opentype'),
-url('/IntermedFonts/hinted-HelveticaNeue-Heavy.woff2') format('woff2'),
-url('/IntermedFonts/hinted-HelveticaNeue-Heavy.woff') format('woff'),
-url('/IntermedFonts/hinted-HelveticaNeue-Heavy.ttf') format('truetype'),
-url('/IntermedFonts/hinted-HelveticaNeue-Heavy.svg#HelveticaNeue-Heavy') format('svg');
+url('IntermedFonts/hinted-HelveticaNeue-Heavy.eot?#iefix') format('embedded-opentype'),
+url('IntermedFonts/hinted-HelveticaNeue-Heavy.woff2') format('woff2'),
+url('IntermedFonts/hinted-HelveticaNeue-Heavy.woff') format('woff'),
+url('IntermedFonts/hinted-HelveticaNeue-Heavy.ttf') format('truetype'),
+url('IntermedFonts/hinted-HelveticaNeue-Heavy.svg#HelveticaNeue-Heavy') format('svg');
 }
 
 .h85-heavy {
@@ -983,13 +983,13 @@ url('/IntermedFonts/hinted-HelveticaNeue-Heavy.svg#HelveticaNeue-Heavy') format(
   font-family: 'Helvetica Neue Bold Condensed';
   font-weight: bold;
   font-style: normal;
-  src: url('/IntermedFonts/hinted-HelveticaNeue-BoldCond.eot');
+  src: url('IntermedFonts/hinted-HelveticaNeue-BoldCond.eot');
   src: local('Helvetica 77 Bold Condensed'), local('HelveticaNeue-BoldCond'),
-url('/IntermedFonts/hinted-HelveticaNeue-BoldCond.eot?#iefix') format('embedded-opentype'),
-url('/IntermedFonts/hinted-HelveticaNeue-BoldCond.woff2') format('woff2'),
-url('/IntermedFonts/hinted-HelveticaNeue-BoldCond.woff') format('woff'),
-url('/IntermedFonts/hinted-HelveticaNeue-BoldCond.ttf') format('truetype'),
-url('/IntermedFonts/hinted-HelveticaNeue-BoldCond.svg#HelveticaNeue-BoldCond') format('svg');
+url('IntermedFonts/hinted-HelveticaNeue-BoldCond.eot?#iefix') format('embedded-opentype'),
+url('IntermedFonts/hinted-HelveticaNeue-BoldCond.woff2') format('woff2'),
+url('IntermedFonts/hinted-HelveticaNeue-BoldCond.woff') format('woff'),
+url('IntermedFonts/hinted-HelveticaNeue-BoldCond.ttf') format('truetype'),
+url('IntermedFonts/hinted-HelveticaNeue-BoldCond.svg#HelveticaNeue-BoldCond') format('svg');
 }
 
 .h77-boldcond {
@@ -1002,13 +1002,13 @@ url('/IntermedFonts/hinted-HelveticaNeue-BoldCond.svg#HelveticaNeue-BoldCond') f
   font-family: 'Helvetica Neue Medium';
   font-weight: 500;
   font-style: normal;
-  src: url('/IntermedFonts/hinted-HelveticaNeue-Medium.eot');
+  src: url('IntermedFonts/hinted-HelveticaNeue-Medium.eot');
   src: local('Helvetica 65 Medium'), local('HelveticaNeue-Medium'),
-url('/IntermedFonts/hinted-HelveticaNeue-Medium.eot?#iefix') format('embedded-opentype'),
-url('/IntermedFonts/hinted-HelveticaNeue-Medium.woff2') format('woff2'),
-url('/IntermedFonts/hinted-HelveticaNeue-Medium.woff') format('woff'),
-url('/IntermedFonts/hinted-HelveticaNeue-Medium.ttf') format('truetype'),
-url('/IntermedFonts/hinted-HelveticaNeue-Medium.svg#HelveticaNeue-Medium') format('svg');
+url('IntermedFonts/hinted-HelveticaNeue-Medium.eot?#iefix') format('embedded-opentype'),
+url('IntermedFonts/hinted-HelveticaNeue-Medium.woff2') format('woff2'),
+url('IntermedFonts/hinted-HelveticaNeue-Medium.woff') format('woff'),
+url('IntermedFonts/hinted-HelveticaNeue-Medium.ttf') format('truetype'),
+url('IntermedFonts/hinted-HelveticaNeue-Medium.svg#HelveticaNeue-Medium') format('svg');
 }
 
 .h65-medium {
@@ -1021,13 +1021,13 @@ url('/IntermedFonts/hinted-HelveticaNeue-Medium.svg#HelveticaNeue-Medium') forma
   font-family: 'Helvetica Neue Light';
   font-weight: 300;
   font-style: normal;
-  src: url('/IntermedFonts/hinted-HelveticaNeue-Light.eot');
+  src: url('IntermedFonts/hinted-HelveticaNeue-Light.eot');
   src: local('Helvetica 45 Light'), local('HelveticaNeue-Light'),
-url('/IntermedFonts/hinted-HelveticaNeue-Light.eot?#iefix') format('embedded-opentype'),
-url('/IntermedFonts/hinted-HelveticaNeue-Light.woff2') format('woff2'),
-url('/IntermedFonts/hinted-HelveticaNeue-Light.woff') format('woff'),
-url('/IntermedFonts/hinted-HelveticaNeue-Light.ttf') format('truetype'),
-url('/IntermedFonts/hinted-HelveticaNeue-Light.svg#HelveticaNeue-Light') format('svg');
+url('IntermedFonts/hinted-HelveticaNeue-Light.eot?#iefix') format('embedded-opentype'),
+url('IntermedFonts/hinted-HelveticaNeue-Light.woff2') format('woff2'),
+url('IntermedFonts/hinted-HelveticaNeue-Light.woff') format('woff'),
+url('IntermedFonts/hinted-HelveticaNeue-Light.ttf') format('truetype'),
+url('IntermedFonts/hinted-HelveticaNeue-Light.svg#HelveticaNeue-Light') format('svg');
 }
 
 .h45-light {
@@ -1040,13 +1040,13 @@ url('/IntermedFonts/hinted-HelveticaNeue-Light.svg#HelveticaNeue-Light') format(
   font-family: 'Helvetica Neue Medium Condensed';
   font-weight: 500;
   font-style: normal;
-  src: url('/IntermedFonts/hinted-HelveticaNeue-MediumCond.eot');
+  src: url('IntermedFonts/hinted-HelveticaNeue-MediumCond.eot');
   src: local('Helvetica 67 Medium Condensed'), local('HelveticaNeue-MediumCond'),
-url('/IntermedFonts/hinted-HelveticaNeue-MediumCond.eot?#iefix') format('embedded-opentype'),
-url('/IntermedFonts/hinted-HelveticaNeue-MediumCond.woff2') format('woff2'),
-url('/IntermedFonts/hinted-HelveticaNeue-MediumCond.woff') format('woff'),
-url('/IntermedFonts/hinted-HelveticaNeue-MediumCond.ttf') format('truetype'),
-url('/IntermedFonts/hinted-HelveticaNeue-MediumCond.svg#HelveticaNeue-MediumCond') format('svg');
+url('IntermedFonts/hinted-HelveticaNeue-MediumCond.eot?#iefix') format('embedded-opentype'),
+url('IntermedFonts/hinted-HelveticaNeue-MediumCond.woff2') format('woff2'),
+url('IntermedFonts/hinted-HelveticaNeue-MediumCond.woff') format('woff'),
+url('IntermedFonts/hinted-HelveticaNeue-MediumCond.ttf') format('truetype'),
+url('IntermedFonts/hinted-HelveticaNeue-MediumCond.svg#HelveticaNeue-MediumCond') format('svg');
 }
 
 .h67-medcond {
@@ -1059,13 +1059,13 @@ url('/IntermedFonts/hinted-HelveticaNeue-MediumCond.svg#HelveticaNeue-MediumCond
   font-family: 'Helvetica Neue Medium Condensed Oblique';
   font-weight: 500;
   font-style: italic;
-  src: url('/IntermedFonts/hinted-HelveticaNeue-MediumCondObl.eot');
+  src: url('IntermedFonts/hinted-HelveticaNeue-MediumCondObl.eot');
   src: local('Helvetica 67 Medium Condensed Oblique'), local('HelveticaNeue-MediumCondObl'),
-url('/IntermedFonts/hinted-HelveticaNeue-MediumCondObl.eot?#iefix') format('embedded-opentype'),
-url('/IntermedFonts/hinted-HelveticaNeue-MediumCondObl.woff2') format('woff2'),
-url('/IntermedFonts/hinted-HelveticaNeue-MediumCondObl.woff') format('woff'),
-url('/IntermedFonts/hinted-HelveticaNeue-MediumCondObl.ttf') format('truetype'),
-url('/IntermedFonts/hinted-HelveticaNeue-MediumCondObl.svg#HelveticaNeue-MediumCondObl') format('svg');
+url('IntermedFonts/hinted-HelveticaNeue-MediumCondObl.eot?#iefix') format('embedded-opentype'),
+url('IntermedFonts/hinted-HelveticaNeue-MediumCondObl.woff2') format('woff2'),
+url('IntermedFonts/hinted-HelveticaNeue-MediumCondObl.woff') format('woff'),
+url('IntermedFonts/hinted-HelveticaNeue-MediumCondObl.ttf') format('truetype'),
+url('IntermedFonts/hinted-HelveticaNeue-MediumCondObl.svg#HelveticaNeue-MediumCondObl') format('svg');
 }
 
 .h67-medcondobl {
@@ -1076,13 +1076,13 @@ url('/IntermedFonts/hinted-HelveticaNeue-MediumCondObl.svg#HelveticaNeue-MediumC
 
 @font-face {
 	font-family: 'Helvetica Neue';
-	src: url('/IntermedFonts/hinted-HelveticaNeue-Thin.eot');
+	src: url('IntermedFonts/hinted-HelveticaNeue-Thin.eot');
 	src: local('Helvetica 35 Thin'), local('HelveticaNeue-Thin'),
-		url('/IntermedFonts/hinted-HelveticaNeue-Thin.eot?#iefix') format('embedded-opentype'),
-		url('/IntermedFonts/hinted-HelveticaNeue-Thin.woff2') format('woff2'),
-		url('/IntermedFonts/hinted-HelveticaNeue-Thin.woff') format('woff'),
-		url('/IntermedFonts/hinted-HelveticaNeue-Thin.ttf') format('truetype'),
-		url('/IntermedFonts/hinted-HelveticaNeue-Thin.svg#HelveticaNeue-Thin') format('svg');
+		url('IntermedFonts/hinted-HelveticaNeue-Thin.eot?#iefix') format('embedded-opentype'),
+		url('IntermedFonts/hinted-HelveticaNeue-Thin.woff2') format('woff2'),
+		url('IntermedFonts/hinted-HelveticaNeue-Thin.woff') format('woff'),
+		url('IntermedFonts/hinted-HelveticaNeue-Thin.ttf') format('truetype'),
+		url('IntermedFonts/hinted-HelveticaNeue-Thin.svg#HelveticaNeue-Thin') format('svg');
 	font-weight: 100;
 	font-style: normal;
 }

@@ -5420,3 +5420,153 @@ Data: {"success":true,"result":{"id":43,"fechaHoraInicio":"2016-04-12T14:00:00.0
     }
   });
 }
+
+function abrirModalGaleria(idInicial,galeriaMedico){
+  var my_gallery = false;
+  var imgControls = '';
+
+  if ($('#my_gallery').val() === "1"){
+    my_gallery = true;
+    imgControls = '<div class="img-controls">'+
+                    '<div class="btn-group pull-left" role="group" aria-label="...">'+
+                      '<button type="button" class="btn btn-default editSlider">Editar</button>'+
+                      '<button type="button" class="btn btn-default deleteSlider">Borrar</button>'+
+                    '</div>'+
+                    '<button type="button" class="btn btn-success saveEditSlider hidden pull-right">Guardar</button>'+
+                    '<button type="button" class="btn btn-danger cancelEditSlider hidden pull-right">Cancelar</button>'+
+                  '</div>';
+  }
+
+  ordenGaleria = galeriaMedico;
+  var posicion = 0;
+
+  var inicial = null;
+  galeriaMedico.forEach(function(gal){
+    if (parseInt(gal.id) === parseInt(idInicial)){
+      current = posicion;
+    }
+    posicion++;
+  });
+
+  bootSec =  bootbox.dialog({
+    className: 'Intermed-Bootbox',
+    backdrop:true,
+    onEscape: function () {
+        bootbox.hideAll();
+    },
+    size:'large',
+    message: '<div id="slideGaleria" class="row noPadding noMargin">'+
+      '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 noPadding noMargin">'+
+          '<div class="item">'+
+            '<span class="hidden currentId">'+ galeriaMedico[current].id +'</span>'+
+            '<div class="row" style="margin-left:0px!important">'+
+              '<div class="col-lg-8 col-md-8 col-sm-7 col-xs-12 bg-black noPadding">'+
+                '<div class="img-container img-slider" style="background-image:url(\''+ galeriaMedico[current].imagen +'\')">'+
+                '</div>'+
+              '</div>'+
+              '<div class="col-lg-4 col-md-4 col-sm-5 col-xs-12 caption-container bg-white">'+
+                '<div class="img-caption">'+
+                  '<h1 class="h67-medcond s40 imageTitle">'+ galeriaMedico[current].titulo +'</h1>'+
+                  '<hr class="noMargin">'+
+                  '<p class="text-right center-block h67-medcond s15 text-default lbl-fecha">'+
+                    '<small>'+
+                      '<span class="not-fecha hidden invisible utcDate">'+ new Date(galeriaMedico[current].fecha).toISOString() +'</span>'+
+                      '<span class="glyphicon glyphicon-time"></span>&nbsp;<span class="formattedDate">' + formatearFechaGaleria(galeriaMedico[current].fecha) + '</span>'+
+                    '</small>'+
+                  '</p>'+
+                  '<p class="h45-light s15 lh1-5 imageDescription">'+ galeriaMedico[current].descripcion +'</p>'+
+                  imgControls +
+                '</div>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+          '<div class="controls">'+
+            '<div class="row">'+
+              '<div class="col-lg-8 col-md-8 col-sm-7 col-xs-12">'+
+                '<a class="left carousel-control shadow">'+
+                  '<span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>'+
+                  '<span class="sr-only">Previous</span>'+
+                '</a>'+
+                '<a class="right carousel-control shadow">'+
+                  '<span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>'+
+                  '<span class="sr-only">Next</span>'+
+                '</a>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'
+  });
+
+  $('.Intermed-Bootbox .bootbox-close-button').css({
+    'position': 'absolute',
+    'top': '15px',
+    'right': '15px',
+    'z-index': '100',
+  });
+
+
+  if ( $( window ).width() > 768 ) {
+    console.log('Mayor o igual a 768');
+    $('.Intermed-Bootbox .img-container.img-slider').css('height',($( window ).height()-60));
+    $('.Intermed-Bootbox .caption-container').css('height',($( window ).height()-60));
+  }
+  else if ( $( window ).width() < 767 ) {
+    console.log('Menor a 767');
+    var h = parseInt($( window ).height());
+    $('.Intermed-Bootbox').css('height',(h));
+
+    $('.Intermed-Bootbox .img-container.img-slider').css('height',(h*0.7));
+    $('.Intermed-Bootbox .caption-container').css('height',(h*0.3));
+  }
+
+  $('.left.carousel-control').on('click',function(){
+    current = prevSlide(current,galeriaMedico);
+  });
+
+  $('.right.carousel-control').on('click',function(){
+    current = nextSlide(current,galeriaMedico);
+  });
+
+  $('button.deleteSlider').on('click',function(){
+    eliminarImagenGaleria($('.currentId').text(), current, galeriaMedico);
+  });
+
+  $('.editSlider').on('click', function(){
+    $('.editSlider').addClass('hidden');
+    $('.deleteSlider').addClass('hidden');
+    $('.saveEditSlider').removeClass('hidden');
+    $('.cancelEditSlider').removeClass('hidden');
+  });
+
+  $('.cancelEditSlider').on('click', function(){
+    $('.imageTitle').text(galeriaMedico[current].titulo);
+    $('.imageDescription').text(galeriaMedico[current].descripcion);
+    $('.editSlider').removeClass('hidden');
+    $('.deleteSlider').removeClass('hidden');
+    $('.saveEditSlider').addClass('hidden');
+    $('.cancelEditSlider').addClass('hidden');
+  });
+
+  $('.saveEditSlider').on('click', function(){
+    var nuevoTitulo = $('.imageTitle input').val();
+    var nuevaDescripcion = $('.imageDescription textarea').val();
+
+    $.post('/galeria/actualizar',{
+      imagen_id:galeriaMedico[current].id,
+      titulo: nuevoTitulo,
+      descripcion: nuevaDescripcion
+    },function(data){
+      if (data.success){
+        actualizarGaleria(galeriaMedico[current].id);
+      }
+    }).fail(function(e){
+      console.log('Error: ' + JSON.stringify(e));
+    });
+  });
+
+  $('.editSlider').on('click', function(){
+    $('.imageTitle').html('<input type="text" class="form-control h67-medcond s40" style="height: auto;" value="'+ galeriaMedico[current].titulo +'">');
+    $('.imageDescription').html('<textarea class="form-control h45-light s15 lh1-5" rows="6" style="resize:none;height: auto;">'+ galeriaMedico[current].descripcion +'</textarea>');
+  });
+}
