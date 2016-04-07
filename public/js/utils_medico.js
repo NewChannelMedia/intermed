@@ -2485,18 +2485,19 @@ function traerAseguradoras(){
                   res.fecharespuesta = new Date(res.fecharespuesta).toLocaleDateString();
                   res.fecharespuesta = formatearFechaComentario(res.fecharespuesta.split(' ')[0]);
 
-                  contenido += '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 col-lg-offset-1 col-md-offset-1 col-sm-offset-1 col-xs-offset-1">'+
+                  contenido += '<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 pull-right">'+
                   '<div class="media comment-container respuesta">'+
-                    '<div class="media-left bottom-content">'+
-                      '<img class="img-circle comment-img noMargin" style="width:70px;" src="'+ res.Medico.Usuario.urlFotoPerfil +'">'+
-                    '</div>'+
-                    '<article class="media-body">'+
-                      '<p class="comment-date s15 h67-medium text-info">'+ res.fecharespuesta +'</p>'+
+                    '<article class="media-body text-right">'+
+                      '<p class="comment-date s15 h67-medium text-muted pull-right">'+ res.fecharespuesta +'</p>'+
+                      '<span class="clearfix"></span>' +
                       '<p class="comment-autor s15 h75-bold noMargin">'+
                         '<span class="text-capitalize">Dr. '+ nombreDoctor +'.</span>'+
                       '</p>'+
                       '<p class="comment-text s15 h67-medium">'+ res.respuesta +'</p>'+
                     '</article>'+
+                    '<div class="media-right bottom-content">'+
+                      '<img class="img-circle comment-img noMargin" style="width:90px;" src="'+ res.Medico.Usuario.urlFotoPerfil +'">'+
+                    '</div>'+
                   '</div>'+
                   '</div>';
                 }
@@ -3884,7 +3885,7 @@ function responderComentario(comentario_id){
       respuesta: respuesta
     },function( data ){
       console.log('Data.response: ' + JSON.stringify(data));
-      var divContenedor = $('#textComment_'+comentario_id).parent().parent();
+      var divContenedor = $('#textComment_'+comentario_id).parent().parent().parent().parent().parent().parent();
       /*
       {"success":true,
       "result":{"id":11,"respuesta":"test","fecharespuesta":"2016-03-15T19:35:57.961Z",
@@ -3896,19 +3897,22 @@ function responderComentario(comentario_id){
       data.result.fecharespuesta = new Date(data.result.fecharespuesta).toLocaleDateString();
       data.result.fecharespuesta = formatearFechaComentario(data.result.fecharespuesta.split(' ')[0]);
 
-      var contenido = '<div class="media comment-container">'+
-                        '<article class="media-body text-right">'+
-                          '<p class="s15 h67-medium respuesta">'+ data.result.respuesta +'</p>'+
-                          '<p class="comment-autor s15 h75-bold noMargin">'+
-                            '<span class="text-capitalize">Dr. '+ data.result.Medico.Usuario.DatosGenerale.nombre + ' ' +  data.result.Medico.Usuario.DatosGenerale.apellidoP + ' ' +  data.result.Medico.Usuario.DatosGenerale.apellidoM + '</span>'+
-                          '</p>'+
-                          '<p class="comment-date s15 h67-medium text-info noMargin">'+ data.result.fecharespuesta +  '</p>'+
-                          '<button class="btn btn-default btn-xs" onclick="editarComentario('+ data.result.id +', this)">Editar</button>'+
-                        '</article>'+
-                        '<div class="media-right">'+
-                          '<img class="img-circle comment-img noMargin" style="width:70px;" src="'+ data.result.Medico.Usuario.urlFotoPerfil +'">'+
+      var contenido = ''+
+                        '<div class="media comment-container respuesta">'+
+                          '<article class="media-body text-right">'+
+                            '<p class="comment-date s15 h67-medium text-muted pull-right">'+ data.result.fecharespuesta +'</p>'+
+                            '<span class="clearfix"></span>' +
+                            '<p class="comment-autor s15 h75-bold noMargin">'+
+                              '<span class="text-capitalize">Dr. '+ data.result.Medico.Usuario.DatosGenerale.nombre + ' ' +  data.result.Medico.Usuario.DatosGenerale.apellidoP + ' ' +  data.result.Medico.Usuario.DatosGenerale.apellidoM +'.</span>'+
+                            '</p>'+
+                            '<p class="comment-text s15 h67-medium">'+ data.result.respuesta +'</p>'+
+                            '<button class="btn btn-default" onclick="editarComentario('+ data.result.id +', this)">Editar</button>'+
+                          '</article>'+
+                          '<div class="media-right bottom-content">'+
+                            '<img class="img-circle comment-img noMargin" style="width:90px;" src="'+ data.result.Medico.Usuario.urlFotoPerfil +'">'+
+                          '</div>'+
                         '</div>'+
-                      '</div>';
+                      '';
 
       divContenedor.html(contenido);
     }).fail(function(e){
@@ -3920,12 +3924,34 @@ function responderComentario(comentario_id){
 }
 
 function editarComentario(comentario_id, element){
-    var respuesta = $(element).parent().find('.respuesta').text();
-   var divContenedor = $(element).parent().parent().parent();
-   divContenedor.html('<div class="input-group">'+
+  var respuesta = $(element).parent().find('.respuesta').text();
+  var foto = $(element).parent().parent().find('.comment-img').attr('src');
+  console.log(foto);
+  var divContenedor = $(element).parent().parent().parent();
+  var contenido = ''+
+                   '<div class="media comment-container respuesta">'+
+                     '<div class="media-body text-right">'+
+                       '<div class="row noPadding">'+
+                        '<div class="col-lg-11 col-lg-offset-1 col-md-11 col-md-offset-1 col-sm-11 col-sm-offset-1 col-xs-11 col-xs-offset-1">' +
+                          '<div class="form-group noMargin">'+
+                            '<textarea class="form-control" style="resize:none;" rows="3" id="textComment_'+ comentario_id +'">'+ respuesta +'</textarea>'+
+                          '</div>'+
+                          '<div class="form-group noMargin">'+
+                            '<button class="btn btn-default pull-right" onclick="responderComentario('+ comentario_id +');">Responder</button>'+
+                          '</div>'+
+                        '</div>'+
+                      '</div>'+
+                    '</div>'+
+                    '<div class="media-right bottom-content">'+
+                      '<img class="img-circle comment-img noMargin" style="width:90px;" src="'+ foto +'">'+
+                    '</div>'+
+                  '</div>'+
+                '';
+    divContenedor.html(contenido);
+   /*divContenedor.html('<div class="input-group">'+
        '<textarea class="form-control" style="resize:none;" rows="3" id="textComment_'+ comentario_id +'">'+ respuesta +'</textarea>'+
        '<span class="input-group-btn top-content" style=""><button class="btn btn-default" onclick="responderComentario('+ comentario_id +');">Responder</button></span>'+
-   '</div>');
+   '</div>');responder*/
 }
 
 function validarCedulaGeneral(element, button){

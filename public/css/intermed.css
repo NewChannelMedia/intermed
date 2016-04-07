@@ -40,6 +40,10 @@ a:visited {
   background-color: #162c39!important;
 }
 
+.bg-grey {
+  background-color: #ededed!important;
+}
+
 .bg-greyBlue {
   background-color: #6a808e!important;
 }
@@ -64,6 +68,14 @@ a:visited {
 }
 .noMargin {
   margin: 0!important;
+}
+
+.noBorder {
+  border: none!important;
+  border-top: 0!important;
+  border-right: none!important;
+  border-bottom: none!important;
+  border-left: none!important;
 }
 
 .boxShadow {
