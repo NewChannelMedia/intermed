@@ -8,7 +8,7 @@
               <div class="col-lg-4 col-md-4 col-sm-4 col-xs-3">
                 <h4 class="h67-medcond noMargin">Estadisticas Generales</h4>
               </div>
-              <div class="col-lg-8 col-md-8 col-sm-8 col-xs-9 text-right">
+              <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 text-right">
                 <div class="btn-group"  data-toggle="buttons">
                   <label class="btn btn-default btn-sm active" onclick="getFeedback(1)"><input type="radio" name="tipoGrafica" autocomplete="off" checked>General</label>
                   <label class="btn btn-default btn-sm" onclick="getFeedback(2)"><input type="radio" name="tipoGrafica" autocomplete="off">Higiene</label>
@@ -17,10 +17,13 @@
                   <label class="btn btn-default btn-sm" onclick="getFeedback(5)"><input type="radio" name="tipoGrafica" autocomplete="off">Trato</label>
                   <label class="btn btn-default btn-sm" onclick="getFeedback(6)"><input type="radio" name="tipoGrafica" autocomplete="off">Costo</label>
                 </div>
+                <button class="btn btn-default btn-sm" type="button" data-toggle="collapse" data-target="#panel-feedbackResult" aria-expanded="false" aria-controls="panel-feedbackResult">
+                  <span class="glyphicon glyphicon-eye-open"></span>
+                </button>
               </div>
             </div>
           </div>
-          <div class="panel-body bg-white">
+          <div id="panel-feedbackResult" class="panel-body bg-white collapse in">
             <canvas id="feedbackResult"></canvas>
           </div>
         </div>
@@ -66,7 +69,7 @@
           </div>
         </div>
       </div>
-      <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
+      <div id="moderarComentarios" class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
         <div class="panel panel-primary">
           <div class="panel-heading bg-darkBlue">
             <h4 class="h67-medcond noMargin">Comentarios</h4>
@@ -76,28 +79,27 @@
               <tbody>
                 {{#each comentarios}}
                   <tr>
-                    <td>
+                    <td class="noBorder">
                       <div class="comentario row">
-                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
+                        <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12 ">
                           <div class="media comment-container">
                             <div class="media-left">
                               <img class="img-circle comment-img" style="width: 150px;" src="{{Usuario.urlFotoPerfil}}">
                             </div>
                             <article class="media-body">
-                              <div class="text-uppercase s30 h67-medcond">{{titulo}}</div>
-                              <p class="s15 h67-medium text-justify">{{comentario}}</p>
-                              <p class="comment-autor s15 h75-bold noMargin">
-                                <span class="text-capitalize">
-                                    {{#if anonimo}}
-                                      Anonimo
-                                    {{else}}
-                                      {{Usuario.DatosGenerale.nombre}} {{Usuario.DatosGenerale.apellidoP}} {{Usuario.DatosGenerale.apellidoM}}
-                                    {{/if}}
-                                    .</span>
-                              </p>
-                              <p class="comment-date s15 h67-medium text-info noMargin">
+                              <p class="comment-date s15 h67-medium text-muted">
                                 {{#formatearFechaComentario fecha}}{{/formatearFechaComentario}}
                               </p>
+                              <p class="comment-autor s15 h75-bold">
+                                <span class="text-capitalize">
+                                  {{#if anonimo}}
+                                    Anonimo
+                                  {{else}}
+                                    {{Usuario.DatosGenerale.nombre}} {{Usuario.DatosGenerale.apellidoP}} {{Usuario.DatosGenerale.apellidoM}}
+                                  {{/if}}.</span>
+                              </p>
+                              <div class="text-uppercase s30 h67-medcond">{{titulo}}</div>
+                              <p class="comment-text s15 h67-medium">{{comentario}}</p>
                             </article>
                             <div class="media-right">
                               <div class="onoffswitch">
@@ -112,26 +114,40 @@
                         </div>
                         <div class="col-lg-9 col-md-9 col-sm-10 col-xs-10 pull-right">
                           {{#if respuesta}}
-                            <div class="media comment-container">
+                            <div class="media comment-container respuesta">
                               <article class="media-body text-right">
-                                <p class="s15 h67-medium respuesta">{{respuesta}}</p>
+                                <p class="comment-date s15 h67-medium text-muted pull-right">
+                                  {{#formatearFechaComentario fecharespuesta}}{{/formatearFechaComentario}}
+                                </p>
+                                <span class="clearfix"></span>
                                 <p class="comment-autor s15 h75-bold noMargin">
                                   <span class="text-capitalize">Dr. {{#valSession 'name'}}{{/valSession}}</span>
                                 </p>
-                                <p class="comment-date s15 h67-medium text-info noMargin">
-                                  {{#formatearFechaComentario fecharespuesta}}{{/formatearFechaComentario}}
-                                </p>
-                                <button class="btn btn-default btn-xs" onclick="editarComentario({{this.id}}, this)">Editar</button>
+                                <p class="comment-text s15 h67-medium respuesta">{{respuesta}}</p>
+                                <button class="btn btn-default" onclick="editarComentario({{this.id}}, this)">Editar</button>
                               </article>
-                              <div class="media-right">
-                                <img class="img-circle comment-img noMargin" style="width:70px;" src="{{#valSession 'fotoPerfil'}}{{/valSession}}">
+                              <div class="media-right bottom-content">
+                                <img class="img-circle comment-img noMargin" style="width:90px;" src="{{#valSession 'fotoPerfil'}}{{/valSession}}">
                               </div>
                             </div>
                           {{else}}
-                            <div class="input-group">
-                              <textarea class="form-control" style="resize:none;" rows="3" id="textComment_{{this.id}}"></textarea>
-                              <span class="input-group-btn top-content" style=""><button class="btn btn-default" onclick="responderComentario({{this.id}});">Responder</button></span>
+                          <div class="media comment-container respuesta">
+                            <div class="media-body">
+                              <div class="row noPadding">
+                                <div class="col-lg-11 col-lg-offset-1 col-md-11 col-md-offset-1 col-sm-11 col-sm-offset-1 col-xs-11 col-xs-offset-1">
+                                  <div class="form-group noMargin">
+                                    <textarea class="form-control" style="resize:none;" rows="3" id="textComment_{{this.id}}"></textarea>
+                                  </div>
+                                  <div class="form-group noMargin">
+                                    <button class="btn btn-default pull-right" onclick="responderComentario({{this.id}});">Responder</button>
+                                  </div>
+                              	</div>
+                              </div>
                             </div>
+                            <div class="media-right bottom-content">
+                              <img class="img-circle comment-img noMargin" style="width:90px;" src="{{#valSession 'fotoPerfil'}}{{/valSession}}">
+                            </div>
+                          </div>
                           {{/if}}
                         </div>
                       </div>

@@ -1450,7 +1450,7 @@ $( document ).ready( function () {
     }
     else if ( $( window ).width() < 768 ) {
       console.log($(window).height());
-      var h = $( window ).height() - $( '#newMainNav' ).height() ;
+
       var h2 = h - $('#stickyNav').height() - $('#uploadControl').height() - $('#stickyNav').height();
       $( '#galeriaBody' ).css( 'height', h + 'px' );
       $( '#galeriaBody' ).css('padding-top', $( '#newMainNav' ).height() + $('#stickyNav').height() + 'px')
@@ -1477,8 +1477,19 @@ $( document ).ready( function () {
 
     GalleryThumbnail();
 
-  } else if ($('#feedbackResult').length > 0){
+  } else if ($('#feedback').length > 0){
     getFeedback();
+
+    if ( $( window ).width() >= 768 ) {
+      var h = $( window ).height() - $( 'footer' ).height() ;
+      $('#moderarComentarios .panel').css('height', h - $('#moderarComentarios .panel-heading').height() - 15 + 'px');
+      $('#moderarComentarios .panel-body').css('height', $('#moderarComentarios .panel').height() - $('#moderarComentarios .panel-heading').height() + 'px');
+    }
+    else if ( $( window ).width() < 768 ) {
+      var h = $( window ).height() - $( 'footer' ).height() - $( '#newMainNav' ).height();
+      $('#moderarComentarios .panel').css('height', h - $('#moderarComentarios .panel-heading').height() - 15 + 'px');
+      $('#moderarComentarios .panel-body').css('height', $('#moderarComentarios .panel').height() - $('#moderarComentarios .panel-heading').height() + 'px');
+    }
   }
 } );
 
@@ -1594,37 +1605,42 @@ function getFeedback(tipo){
 
         var dataHigiene = {
             label: "Higiene",
-            fillColor: "rgba(56, 94, 157, 0)",
+            fillColor: "rgba(222, 222, 222, 0.2)",
             strokeColor: "rgba(56, 94, 157, 1)",
             pointColor: "rgba(56, 94, 157, 1)",
+            pointDotStrokeWidth : 2,
             data: []
           }
         var dataPuntualidad = {
             label: "Puntualidad",
-            fillColor: "rgba(217, 71, 58, 0)",
+            fillColor: "rgba(222, 222, 222, 0.2)",
             strokeColor: "rgba(217, 71, 58, 1)",
             pointColor: "rgba(217, 71, 58, 1)",
+            pointDotStrokeWidth : 2,
             data: []
           }
         var dataInstalaciones = {
             label: "Instalaciones",
-            fillColor: "rgba(234, 224, 64, 0)",
+            fillColor: "rgba(222, 222, 222, 0.2)",
             strokeColor: "rgba(234, 224, 64, 1)",
             pointColor: "rgba(234, 224, 64, 1)",
+            pointDotStrokeWidth : 2,
             data: []
           }
         var dataTratoPersonal = {
             label: "Trato Personal",
-            fillColor: "rgba(106, 182, 91, 0)",
+            fillColor: "rgba(222, 222, 222, 0.2)",
             strokeColor: "rgba(106, 182, 91, 1)",
             pointColor: "rgba(106, 182, 91, 1)",
+            pointDotStrokeWidth : 2,
             data: []
           }
         var dataCosto = {
             label: "Costo",
-            fillColor: "rgba(80, 79, 68, 0)",
+            fillColor: "rgba(222, 222, 222, 0.2)",
             strokeColor: "rgba(80, 79, 68, 1)",
             pointColor: "rgba(80, 79, 68, 1)",
+            pointDotStrokeWidth : 2,
             data: []
           }
 
