@@ -1764,10 +1764,10 @@ function getCalTopDr(calificacion){
     ]
     $('#topDrPer').text(calificacion + '%');
 
-    var width = $('#feedbackTopDr').parent().outerWidth() - 30;
+    var h = $('#feedbackTopDr').parent().parent().parent().outerHeight() - 30;
     var ctx = document.getElementById("feedbackTopDr").getContext("2d");
-    ctx.canvas.width = width;
-    ctx.canvas.height = 300;
+    ctx.canvas.width = h;
+    ctx.canvas.height = h;
     var myNewChart = new Chart(ctx).Doughnut(dataTopDr,{
       segmentStrokeWidth : 1,
        showTooltips: false
