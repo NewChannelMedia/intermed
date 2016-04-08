@@ -1684,6 +1684,18 @@ footer .logoIntermed {
   width: 90%;
 }
 
+@media (max-width:767px) {
+  .comment-container {
+    border-radius: 45px 25px 45px 0px;
+  }
+  .comment-container.respuesta {
+    border-radius: 45px 0px 45px 45px;
+  }
+  .comment-img {
+    width: 60px!important;
+  }
+}
+
 .btn-tranparent {
   border-width: 0;
   border-color: transparent;
