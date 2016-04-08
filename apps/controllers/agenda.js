@@ -2791,7 +2791,7 @@ exports.reagendar = function (object, req, res){
           model: models.MedicoSecretariaPermisos,
           where: {
             permiso: 1,
-            secretaria_permiso_id: 3
+            secretaria_permiso_id: 6
           }
         }]
       }]
