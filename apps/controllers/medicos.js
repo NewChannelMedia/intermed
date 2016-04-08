@@ -1692,11 +1692,81 @@ var _this = module.exports = {
                   }]
                 }]
               }]
-            }).then(function(result){
-              res.status(200).json({
-                success: true,
-                result: result
-              });
+            }).then(function(comentarios){
+                models.CalificacionCita.findAll({
+                  where:{
+                    medico_id: medico.id,
+                    visible: 1
+                  },
+                  order:[['fecha','DESC']],
+                  include: [{
+                    model: models.Paciente,
+                    attributes: ['id'],
+                    include: [{
+                      model: models.Usuario,
+                      attributes: ['id','usuarioUrl','urlFotoPerfil','urlPersonal'],
+                      include: [{
+                        model: models.DatosGenerales
+                      },{
+                        model: models.Direccion,
+                        attributes:['id'],
+                        include:[
+                          {
+                            model: models.Municipio,
+                            include :[{ model : models.Estado}]
+                          }
+                        ]
+                      }]
+                    }]
+                  },{
+                    model: models.Medico,
+                    attributes: ['id'],
+                    include: [{
+                      model: models.Usuario,
+                      attributes: ['id','urlFotoPerfil'],
+                      include: [{
+                        model: models.DatosGenerales
+                      }]
+                    }]
+                  }]
+                }).then(function(ComentariosCita){
+                    var comentariosEnviar = [];
+
+                    comentarios.forEach(function(Comentario){
+                      comentariosEnviar.push({
+                        tipo: 1,
+                        perfil: 1,
+                        fecha: Comentario.fecha,
+                        comentario: Comentario,
+                        Usuario: Comentario.Usuario
+                      });
+                    });
+
+                    ComentariosCita.forEach(function(Comentario){
+                      comentariosEnviar.push({
+                        tipo: 2,
+                        cita: 1,
+                        fecha: Comentario.fecha,
+                        comentario: Comentario,
+                        Usuario: Comentario.Paciente.Usuario
+                      });
+                    });
+
+                    comentariosEnviar.sort(function (a, b) {
+                      if (new Date(a.fecha) > new Date(b.fecha)) {
+                        return -1;
+                      }
+                      if (new Date(a.fecha) < new Date(b.fecha)) {
+                        return 1;
+                      }
+                      return 0;
+                    });
+                    
+                    res.status(200).json({
+                      success: true,
+                      result: comentariosEnviar
+                    });
+                });
             });
           } else {
             //error de que el medico no existe
@@ -2267,7 +2337,56 @@ var _this = module.exports = {
           medico_id: req.session.passport.user.Medico_id
         }
       } ).then( function ( comentarios ) {
-        res.render('medico/comentarios',{comentarios:comentarios});
+        models.CalificacionCita.findAll( {
+          include: [ {
+            model: models.Paciente,
+            include: [{
+              model: models.Usuario,
+              attributes: ['id','urlFotoPerfil','usuarioUrl','tipoUsuario'],
+              include:[{
+                model: models.DatosGenerales
+              }]
+            }]
+          }],
+          order:[['fecha','DESC']],
+          where: {
+            medico_id: req.session.passport.user.Medico_id
+          }
+        } ).then( function ( ComentariosCita ) {
+          var comentariosEnviar = [];
+
+          comentarios.forEach(function(Comentario){
+            comentariosEnviar.push({
+              tipo: 1,
+              perfil: 1,
+              fecha: Comentario.fecha,
+              comentario: Comentario,
+              Usuario: Comentario.Usuario
+            });
+          });
+
+          ComentariosCita.forEach(function(Comentario){
+            comentariosEnviar.push({
+              tipo: 2,
+              cita: 1,
+              fecha: Comentario.fecha,
+              comentario: Comentario,
+              Usuario: Comentario.Paciente.Usuario
+            });
+          });
+
+          comentariosEnviar.sort(function (a, b) {
+            if (new Date(a.fecha) > new Date(b.fecha)) {
+              return -1;
+            }
+            if (new Date(a.fecha) < new Date(b.fecha)) {
+              return 1;
+            }
+            return 0;
+          });
+
+          res.render('medico/comentarios',{comentariosEnviar:comentariosEnviar});
+        });
       } );
     }catch ( err ) {
       req.errorHandler.report(err, req, res);
@@ -2276,26 +2395,49 @@ var _this = module.exports = {
 
   comentarioVisible: function (object, req, res){
     if (req.session.passport && req.session.passport.user && req.session.passport.user.Medico_id){
-        models.ComentariosMedicos.findOne( {
-          attributes: ['id','visible'],
-          where: {
-            medico_id: req.session.passport.user.Medico_id,
-            id: object.comentario_id
-          }
-        } ).then( function ( comentario ) {
-          if (comentario){
-            comentario.update({visible: object.visible}).then(function(result){
-                res.status(200).json({
-                  success:true,
-                  result: result
-                })
-            });
-          } else {
-            res.status(200).json({
-              success:false
-            })
-          }
-        } );
+        if (parseInt(object.tipo) === 1){
+          models.ComentariosMedicos.findOne( {
+            attributes: ['id','visible'],
+            where: {
+              medico_id: req.session.passport.user.Medico_id,
+              id: object.comentario_id
+            }
+          } ).then( function ( comentario ) {
+            if (comentario){
+              comentario.update({visible: object.visible}).then(function(result){
+                  res.status(200).json({
+                    success:true,
+                    result: result
+                  })
+              });
+            } else {
+              res.status(200).json({
+                success:false
+              })
+            }
+          } );
+        } else {
+          models.CalificacionCita.findOne( {
+            attributes: ['id','visible'],
+            where: {
+              medico_id: req.session.passport.user.Medico_id,
+              id: object.comentario_id
+            }
+          } ).then( function ( comentario ) {
+            if (comentario){
+              comentario.update({visible: object.visible}).then(function(result){
+                  res.status(200).json({
+                    success:true,
+                    result: result
+                  })
+              });
+            } else {
+              res.status(200).json({
+                success:false
+              })
+            }
+          } );
+        }
     } else {
       res.status(200).json({
         success:false
@@ -2306,6 +2448,7 @@ var _this = module.exports = {
   comentarioResponder: function (object, req, res){
     //{"comentario_id":"12","respuesta":"hola"}
       if (req.session.passport && req.session.passport.user && req.session.passport.user.Medico_id){
+        if (parseInt(object.tipo) == 1){
           models.ComentariosMedicos.findOne( {
             attributes: ['id','respuesta','fecharespuesta','usuario_id'],
             where: {
@@ -2351,6 +2494,40 @@ var _this = module.exports = {
               })
             }
           } );
+        } else {
+          models.CalificacionCita.findOne( {
+            attributes: ['id','respuesta','fecharespuesta'],
+            where: {
+              medico_id: req.session.passport.user.Medico_id,
+              id: object.comentario_id
+            },
+            include: [{
+              model: models.Medico,
+              attributes: ['id'],
+              include: [{
+                model: models.Usuario,
+                attributes: ['urlFotoPerfil'],
+                include: [{
+                  model: models.DatosGenerales
+                }]
+              }]
+            }]
+          } ).then( function ( comentario ) {
+            if (comentario){
+              comentario.update({respuesta: object.respuesta,fecharespuesta:new Date().toISOString()}).then(function(result){
+                  res.status(200).json({
+                    success:true,
+                    result: result
+                  })
+              });
+            } else {
+              res.status(200).json({
+                success:false
+              })
+            }
+          } );
+        }
+
       } else {
         res.status(200).json({
           success:false

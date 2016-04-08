@@ -1149,9 +1149,32 @@ exports.traerDatosUsuario = function (object, req, res){
       include:[{
         model:models.DatosGenerales,
         attributes:['nombre','apellidoP','apellidoM']
+      },{
+        model:models.Medico,
+        attributes:['id']
       }]
     }).then(function(usuario){
+      if (object.calificacion){
+        models.CalificacionMedico.findOne({
+          where: {
+            medico_id: usuario.Medico.id,
+            usuario_id: req.session.passport.user.id
+          },
+          attributes: ['id'],
+          include: [{
+            model: models.PreguntasMedico,
+            attributes: ['higiene','puntualidad','instalaciones','tratoPersonal','satisfaccionGeneral','costo'],
+          }]
+        }).then(function(result){
+          if (result){
+            usuario = JSON.parse(JSON.stringify(usuario));
+            usuario.calificacion = JSON.parse(JSON.stringify(result.PreguntasMedico));
+          }
+          res.send(usuario);
+        });
+      } else {
       res.send(usuario);
+      }
     });
   }catch ( err ) {
     req.errorHandler.report(err, req, res);

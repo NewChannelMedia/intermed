@@ -697,17 +697,16 @@ function formatearNotificacion(result, emit, object){
             });
             break;
           case 21:
-            models.Medico.findOne({
-              include:[{
+            models.Agenda.findOne({
+              where:{
+                id: record.data
+              },
+              include: [{
                 model: models.Usuario,
                 attributes:['id','usuarioUrl','urlFotoPerfil'],
                 include:[{
                   model: models.DatosGenerales,
                   attributes:['nombre','apellidoP','apellidoM']
-                },
-                {
-                  model: models.Agenda,
-                  where:{id: record.data}
                 }]
               }]
             }).then(function(medico){
@@ -719,17 +718,16 @@ function formatearNotificacion(result, emit, object){
             });
             break;
           case 22:
-            models.Medico.findOne({
-              include:[{
+            models.Agenda.findOne({
+              where:{
+                id: record.data
+              },
+              include: [{
                 model: models.Usuario,
                 attributes:['id','usuarioUrl','urlFotoPerfil'],
                 include:[{
                   model: models.DatosGenerales,
                   attributes:['nombre','apellidoP','apellidoM']
-                },
-                {
-                  model: models.Agenda,
-                  where:{id: record.data}
                 }]
               }]
             }).then(function(medico){
