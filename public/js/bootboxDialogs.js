@@ -4576,6 +4576,8 @@ function detalleCitaSecretaria(agenda_id){
     var result = '';
     var nota = '';
 
+    var medico_id;
+
     $.ajax( {
       async: true,
       url: '/agenda/detalleCita',
@@ -4587,6 +4589,7 @@ function detalleCitaSecretaria(agenda_id){
       },
       success: function ( data ) {
         if (data.result){
+          medico_id = data.result.Usuario.Medico.id;
           result = data.result;
           if (data.result.Paciente){
             imagenUrl = data.result.Paciente.Usuario.urlFotoPerfil;
@@ -4615,7 +4618,7 @@ function detalleCitaSecretaria(agenda_id){
 
           hora = hora + ':'+minutos+' ' + T;
 
-          fecha = meses[parseInt(date.split(', ')[0].split('/')[0])] + '  ' + parseInt(date.split(', ')[0].split('/')[1]) +', '+date.split(', ')[0].split('/')[2]
+          fecha = meses[(parseInt(date.split(', ')[0].split('/')[0])-1)] + '  ' + parseInt(date.split(', ')[0].split('/')[1]) +', '+date.split(', ')[0].split('/')[2]
 
 
           if (data.result.nota){
@@ -4631,7 +4634,7 @@ function detalleCitaSecretaria(agenda_id){
             } else if (data.result.status == 1){
               estatus = 'Cancelada por el paciente.';
             }
-          } else if (formatearTimestampAgenda(new Date(data.result.fechaHoraInicio).getTime()) < formatearFecha(new Date())){
+          } else if (new Date(data.result.fechaHoraInicio).getTime() < new Date()){
             estatus = "La cita ya finalizo.";
             editar = false;
           }
@@ -4657,7 +4660,7 @@ function detalleCitaSecretaria(agenda_id){
 
           if (editar){
             modal += '<div class="col-md-4 col-sm-4">'+
-                '<button class="btn btn-default btn-block s20" style="color: #5cb85c;font-weight: bold;">Reagendar</button>'+
+                '<button class="btn btn-default btn-block s20 reagendarBtn" style="color: #5cb85c;font-weight: bold;">Reagendar</button>'+
                 '<button class="btn btn-default btn-block s20" style="color: #f0ad4e;font-weight: bold;" onClick="retrasaCita(' + agenda_id + ')">Retrasar</button>'+
                 '<div class="btn-group btn-block">'+
                     '<button type="button" class="btn btn-default btn-block s20 dropdown-toggle" style="color: #d43f3a;font-weight: bold;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cancelar</button>'+
@@ -4706,9 +4709,6 @@ function detalleCitaSecretaria(agenda_id){
             '</div>';
           }
 
-
-
-
           bootSec =  bootbox.dialog({
               onEscape: function () {
                 bootSec.hide();
@@ -4719,8 +4719,14 @@ function detalleCitaSecretaria(agenda_id){
             message: modal
           });
 
+          $('.reagendarBtn').on('click',function(){
+            //reagendarCitaMedico(agenda_id,medico_id,modal);
+            verAgendaMedicoReagendar(medico_id, agenda_id,bootSec);
+          });
+
           $('.bootbox-close-button').css('margin-top','0px');
           $('.bootbox-close-button').css('margin-right','5px');
+
 
         }
       },
@@ -4733,8 +4739,6 @@ function detalleCitaSecretaria(agenda_id){
 
 
 function verAgendaMedico(medico_id){
-  var nombremedico = 'Médico de prueba uno';
-  var urlFotoPerfil = '/garage/profilepics/dpp.png';
   //Agendar cita
   bootbox.dialog({
     backdrop: true,
@@ -5613,4 +5617,138 @@ function abrirModalGaleria(idInicial,galeriaMedico){
     $('.imageTitle').html('<input type="text" class="form-control h67-medcond s40" style="height: auto;" value="'+ galeriaMedico[current].titulo +'">');
     $('.imageDescription').html('<textarea class="form-control h45-light s15 lh1-5" rows="6" style="resize:none;height: auto;">'+ galeriaMedico[current].descripcion +'</textarea>');
   });
+}
+
+
+function verAgendaMedicoReagendar(medico_id, agenda_id, modal){
+  //Agendar cita
+  bootboxReagendar = bootbox.dialog({
+    backdrop: false,
+    onEscape: function () {
+      bootboxReagendar.hide();
+    },
+    size:'large',
+    className: 'Intermed-Bootbox',
+    title: '<span class="title" id="agendaMedicoTitle"></span>',
+    message:
+          '<div class="row">'+
+            '<div class="col-md-12">'+
+              '<form method="POST" name="frmRegCita" id="frmRegCita">'+
+                '<input type="hidden" id="medico_id" name="medico_id" value="'+ medico_id +'">'+
+                '<div class="col-md-10 text-left"><div class="btn-group" id="btnGroupDir"></div></div>'+
+                '<div class="col-md-12"><div class="row"><div id="divCalendario" class="divCalenarioReagendar regHorMed"></div></div></div>'+
+              '</form>'+
+            '</div>'+
+          '</div>'+
+          '<div class="row">'+
+            '<div class="col-md-4 pull-right">'+
+              '<input type="button" class="btn btn-add btn-block hidden guardarReagenda" value="Guardar cambios">'+
+            '</div>'+
+            '<div class="col-md-4 pull-left">'+
+              '<input type="button" class="btn btn-drop btn-block cancelarReagendar" value="Cancelar">'+
+            '</div>'+
+          '</div>'
+  });
+
+  $('.cancelarReagendar').on('click',function(){
+    bootboxReagendar.hide();
+  });
+
+  $('.guardarReagenda').on('click',function(){
+    guardarReagenda(medico_id,agenda_id, bootboxReagendar, modal);
+  });
+
+  horariosAgendaMedicoReagendar(medico_id, agenda_id);
+}
+
+function guardarReagenda(medico_id, agenda_id, bootboxReagendar, modal){
+    console.log('Guardar agenda: ' + medico_id + ' - ' + agenda_id);
+    var evento;
+    var h = $('.divCalenarioReagendar').fullCalendar('clientEvents');
+
+    for (i = 0; i <= h.length-1; i++) {
+        if (h[i].rendering != 'background')
+        {
+          if  (h[i].className[0] == 'eventoReagendar')
+          {
+            console.log('EVENTO: ' + JSON.stringify(h[i]));
+            evento = h[i];
+          }
+        }
+    };
+    var d = new Date();
+    var horas = parseInt(d.getTimezoneOffset())/60;
+    var minutos = parseInt(d.getTimezoneOffset())-(horas*60);
+    /*
+    EVENTO: {
+      "start":"2016-04-09T09:00:00.000Z",
+      "end":"2016-04-09T11:00:00.000Z",
+    }
+    */
+    var inicio = sumarTiempo(evento.start,horas,minutos);
+    var final = sumarTiempo(evento.end,horas,minutos);
+
+
+    $.ajax( {
+      async: false,
+      url: '/agenda/reagendar',
+      type: 'POST',
+      dataType: "json",
+      cache: false,
+      data: {
+        medico_id: medico_id,
+        agenda_id: agenda_id,
+        inicio: inicio,
+        fin: final
+      },
+      success: function ( data ) {
+        console.log('result: ' + JSON.stringify(data));
+        if (data.success){
+          bootboxReagendar.hide();
+          modal.hide();
+          detalleCitaSecretaria(agenda_id);
+          cargarCitasProximasSecretaria();
+          if ($('#divCalendario').length>0){
+            $('#divCalendario').fullCalendar('removeEvents');
+            $('#divCalendario').fullCalendar('refetchEvents');
+          }
+          if ($("#calendar").length>0){
+            marcarEventosCalendario();
+            if ($('#calendar').length>0){
+              var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
+              var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
+              cargarEventosPorDia(fechaInicio, fechaFin);
+            }
+          }
+        }
+      },
+      error: function ( jqXHR, textStatus, err ) {
+        console.error( 'AJAX ERROR: ' + err );
+      }
+    } );
+
+}
+
+function restarTiempo(fecha, horas, minutos){
+  if (!horas){
+    horas = 0;
+  }
+  if (!minutos){
+    minutos = 0;
+  }
+  var fecha = new Date(new Date(fecha).setHours(new Date(fecha).getHours()-horas));
+  fecha = new Date(new Date(fecha).setMinutes(new Date(fecha).getMinutes()-minutos));
+  return fecha;
+}
+
+function sumarTiempo(fecha, horas, minutos){
+  if (!horas){
+    horas = 0;
+  }
+  if (!minutos){
+    minutos = 0;
+  }
+  var fecha = new Date(new Date(fecha).setHours(new Date(fecha).getHours()+horas));
+  fecha = new Date(new Date(fecha).setMinutes(new Date(fecha).getMinutes()+minutos));
+  return fecha;
 }

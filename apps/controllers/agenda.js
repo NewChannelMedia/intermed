@@ -1065,9 +1065,12 @@ exports.detalleCitaPac = function(object, req, res){
           model: models.DatosGenerales
         }]
       },{
-        model: models.Direccion,
-        include: [{
-          model: models.Localidad
+        model: models.Medico,
+        attributes:['id']
+      },{
+          model: models.Direccion,
+          include: [{
+            model: models.Localidad
         },{
           model: models.Municipio,
           include: [{
@@ -1695,22 +1698,43 @@ exports.traerAgendaMedico = function (object, req, res){
   object.direcciones = [];
   if (req.session.passport.user.tipoUsuario == "M"){
     object.usuario_medico_id = req.session.passport.user.id;
-    models.Direccion.findAll({
-      where: {
-        usuario_id: req.session.passport.user.id
-      },
-      attributes: ['id','nombre'],
-      order: [['principal','DESC']]
-    }).then(function(direcciones){
-      direcciones.forEach(function(dir){
-        object.direccion_id.push(dir.id);
+    if (object.agenda_id){
+      models.Agenda.findOne({
+        where: {
+          id: object.agenda_id
+        },
+        include: [{
+          model: models.Direccion,
+          attributes:  ['id','nombre']
+        }],
+        attributes: ['direccion_id']
+      }).then(function(result){
+        console.log('result. ' + JSON.stringify(result));
+        object.direccion_id = [result.direccion_id];
         object.direcciones.push({
-          id: dir.id,
-          nombre: dir.nombre
+          id: result.Direccion.id,
+          nombre: result.Direccion.nombre
         })
+        exports.agendaMedico(object, req, res);
       });
-      exports.agendaMedico(object, req, res);
-    })
+    } else {
+      models.Direccion.findAll({
+        where: {
+          usuario_id: req.session.passport.user.id
+        },
+        attributes: ['id','nombre'],
+        order: [['principal','DESC']]
+      }).then(function(direcciones){
+        direcciones.forEach(function(dir){
+          object.direccion_id.push(dir.id);
+          object.direcciones.push({
+            id: dir.id,
+            nombre: dir.nombre
+          })
+        });
+        exports.agendaMedico(object, req, res);
+      });
+    }
   } else {
       models.MedicoSecretaria.findOne({
         where:{
@@ -1733,25 +1757,45 @@ exports.traerAgendaMedico = function (object, req, res){
         }]
       }).then(function(relacion){
         object.usuario_medico_id = relacion.Medico.Usuario.id;
-        relacion.Medico.Usuario.Direccions.forEach(function (dir){
-          object.direccion_id.push(dir.id);
-          object.direcciones.push({
-            id: dir.id,
-            nombre: dir.nombre
-          })
-        });
-        if (relacion){
-          //Secretaria cuenta con permisos para ver agenda
-          exports.agendaMedico(object, req, res);
-        } else {
-          res.status(200).json({
-            success: false,
-            result: {
-              relacion: relacion
-            }
+        if (object.agenda_id){
+          models.Agenda.findOne({
+            where: {
+              id: object.agenda_id
+            },
+            include: [{
+              model: models.Direccion,
+              attributes:  ['id','nombre']
+            }],
+            attributes: ['direccion_id']
+          }).then(function(result){
+            object.direccion_id = [result.direccion_id];
+            object.direcciones.push({
+              id: result.Direccion.id,
+              nombre: result.Direccion.nombre
+            });
+            exports.agendaMedico(object, req, res);
           });
+        } else {
+          relacion.Medico.Usuario.Direccions.forEach(function (dir){
+            object.direccion_id.push(dir.id);
+            object.direcciones.push({
+              id: dir.id,
+              nombre: dir.nombre
+            })
+          });
+          if (relacion){
+            //Secretaria cuenta con permisos para ver agenda
+            exports.agendaMedico(object, req, res);
+          } else {
+            res.status(200).json({
+              success: false,
+              result: {
+                relacion: relacion
+              }
+            });
+          }
         }
-      })
+      });
   }
 }
 
@@ -1815,14 +1859,18 @@ exports.agendaMedico = function (object, req, res){
 
       var fechaActual = formatearFecha(new Date());
       models.Agenda.findAll({
-       where :  { direccion_id: object.direccion_id,
-        fechaHoraInicio: {
-          $gte: new Date(object.inicio),
-          $lte: new Date(object.fin)
-        },
-        status: {
-          $gt: 0
-        }
+       where :  {
+           direccion_id: {
+             $in: object.direccion_id
+           },
+          fechaHoraInicio: {
+            $gte: new Date(object.inicio),
+            $lte: new Date(object.fin)
+          },
+          id: {$not: object.agenda_id},
+          status: {
+            $gt: 0
+          }
         },
         include: [{
           model: models.Paciente,
@@ -1909,10 +1957,41 @@ exports.agendaMedico = function (object, req, res){
             };
             resultado.push(horario);
           }
-          res.status(200).json({
-            result: resultado,
-            direcciones: object.direcciones
-          });
+          if (object.agenda_id){
+            models.Agenda.findOne({
+              where: {
+                id: object.agenda_id
+              },
+              attributes: ['id','paciente_id','paciente_temporal_id'],
+              include: [{
+                model: models.Paciente,
+                attributes: ['id'],
+                include: [{
+                  model: models.Usuario,
+                  attributes: ['id'],
+                  include: [{
+                    model: models.DatosGenerales
+                  }]
+                }]
+              },{
+                model: models.PacienteTemporal,
+              },{
+                model: models.CatalogoServicios,
+                attributes: ['duracion','concepto']
+              }]
+            }).then(function(agenda){
+                res.status(200).json({
+                  result: resultado,
+                  direcciones: object.direcciones,
+                  porreagendar: agenda
+                });
+            });
+          } else {
+            res.status(200).json({
+              result: resultado,
+              direcciones: object.direcciones
+            });
+          }
         });
       });
     });
@@ -1937,6 +2016,9 @@ exports.detalleCita = function (object, req, res){
         },
         include: [{
           model: models.DatosGenerales
+        },{
+          model: models.Medico,
+          attributes: ['id']
         }]
       },{
         model: models.Direccion,
@@ -2374,42 +2456,48 @@ exports.validarInterferenciaEventos= function (object,req, res, next){
           usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $gte: new Date(object.inicio) },
           fechaHoraFin: { $lte: new Date(object.fin) },
-          status: {$gte: 1}
+          status: {$gte: 1},
+          id: {$not: object.agenda_id}
         },
         {
           /*Evento existente contiene a evento nuevo*/
           usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $lte: new Date(object.inicio) },
           fechaHoraFin: { $gte: new Date(object.fin) },
-          status: {$gte: 1}
+          status: {$gte: 1},
+          id: {$not: object.agenda_id}
         },
         {
           /*inicio de nuevo evento esta dentro de evento existente*/
           usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $lte: new Date(object.inicio) },
           fechaHoraFin: { $gt: new Date(object.inicio) },
-          status: {$gte: 1}
+          status: {$gte: 1},
+          id: {$not: object.agenda_id}
         },
         {
           /*fin de nuevo evento esta dentro de evento existente*/
           usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $lt: new Date(object.fin) },
           fechaHoraFin: { $gte: new Date(object.fin) },
-          status: {$gte: 1}
+          status: {$gte: 1},
+          id: {$not: object.agenda_id}
         },
         {
           /*inicio de evento existente esta dentro de nuevo evento*/
           usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $gte: new Date(object.inicio) },
           fechaHoraFin: { $lt: new Date(object.inicio) },
-          status: {$gte: 1}
+          status: {$gte: 1},
+          id: {$not: object.agenda_id}
         },
         {
           /*fin de evento existente esta dentro de nuevo evento*/
           usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $gt: new Date(object.fin) },
           fechaHoraFin: { $lte: new Date(object.fin) },
-          status: {$gte: 1}
+          status: {$gte: 1},
+          id: {$not: object.agenda_id}
         }
       )
     }).then(function(result2){
@@ -2595,42 +2683,48 @@ exports.validarCrearEvento = function (object, req, res){
           usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $gte: new Date(object.inicio) },
           fechaHoraFin: { $lte: new Date(object.fin) },
-          status: {$gte: 1}
+          status: {$gte: 1},
+          id: {$not: object.agenda_id}
         },
         {
           /*Evento existente contiene a evento nuevo*/
           usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $lte: new Date(object.inicio) },
           fechaHoraFin: { $gte: new Date(object.fin) },
-          status: {$gte: 1}
+          status: {$gte: 1},
+          id: {$not: object.agenda_id}
         },
         {
           /*inicio de nuevo evento esta dentro de evento existente*/
           usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $lte: new Date(object.inicio) },
           fechaHoraFin: { $gt: new Date(object.inicio) },
-          status: {$gte: 1}
+          status: {$gte: 1},
+          id: {$not: object.agenda_id}
         },
         {
           /*fin de nuevo evento esta dentro de evento existente*/
           usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $lt: new Date(object.fin) },
           fechaHoraFin: { $gte: new Date(object.fin) },
-          status: {$gte: 1}
+          status: {$gte: 1},
+          id: {$not: object.agenda_id}
         },
         {
           /*inicio de evento existente esta dentro de nuevo evento*/
           usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $gte: new Date(object.inicio) },
           fechaHoraFin: { $lt: new Date(object.inicio) },
-          status: {$gte: 1}
+          status: {$gte: 1},
+          id: {$not: object.agenda_id}
         },
         {
           /*fin de evento existente esta dentro de nuevo evento*/
           usuario_id: object.usuario_medico_id,
           fechaHoraInicio: { $gt: new Date(object.fin) },
           fechaHoraFin: { $lte: new Date(object.fin) },
-          status: {$gte: 1}
+          status: {$gte: 1},
+          id: {$not: object.agenda_id}
         }
       ),
       logging:console.log
@@ -2679,6 +2773,109 @@ exports.cancelar = function (object, req, res){
       });
     }
   });
+}
+
+exports.reagendar = function (object, req, res){
+  if (req.session.passport.user.tipoUsuario == "M"){
+    object.usuario_medico_id = req.session.passport.user.id;
+    exports.validarInterferenciaEventos(object, req, res, exports.guardarReagenda);
+  } else {
+    models.Medico.findOne({
+      where: { id: object.medico_id },
+      include: [{
+        model: models.MedicoSecretaria,
+        where: {
+          secretaria_id: req.session.passport.user.Secretaria_id
+        },
+        include: [{
+          model: models.MedicoSecretariaPermisos,
+          where: {
+            permiso: 1,
+            secretaria_permiso_id: 6
+          }
+        }]
+      }]
+    }).then(function(medico){
+      if (!medico){
+        //Acceso denegado (no tiene permiso para agregar citas al médico)
+        res.status(200).json({
+          success: false,
+          result: 301
+        });
+      } else {
+        object.usuario_medico_id = medico.usuario_id;
+        exports.validarInterferenciaEventos(object, req, res, exports.guardarReagenda);
+      }
+    });
+  }
+}
+
+exports.guardarReagenda = function (object, req, res){
+  console.log('Guardar reagenda. ' + JSON.stringify(object));
+  models.Agenda.findOne({
+    where: {
+      id: object.agenda_id
+    }
+  }).then(function(agenda){
+    if (agenda){
+      agenda.update({
+        fechaHoraInicio: new Date(object.inicio),
+        fechaHoraFin: new Date(object.fin)
+      }).then(function(result){
+        //Actualizar notificacion de recordatorio y de calificacion, eliminar
+        //crear notificacion de cita creada
+        res.status(200).json({success: true})
+      })
+    } else {
+      res.status(200).json({success: false})
+    }
+  })
+  /*
+  models.CatalogoServicios.findOne({
+    where: {
+      id: object.servicio_id
+    }
+  }).then(function(servicio){
+    if (object.paciente_id){
+      models.Agenda.create({
+        usuario_id: object.usuario_medico_id,
+        paciente_id: object.paciente_id,
+        fechaHoraInicio: new Date(object.inicio),
+        fechaHoraFin: new Date(object.fin),
+        direccion_id: servicio.direccion_id,
+        servicio_id: servicio.id,
+        status:1
+      }).then(function(result){
+        res.status(200).json({
+          success: true,
+          result: result
+        })
+      });
+    } else {
+      //Crear paciente temporal
+      models.PacienteTemporal.create({
+        nombres: object.nombre,
+        apellidos: object.apellido,
+        correo: object.correo,
+        celular: object.celular
+      }).then(function(PacienteTemporal){
+          models.Agenda.create({
+            usuario_id: object.usuario_medico_id,
+            paciente_temporal_id: PacienteTemporal.id,
+            fechaHoraInicio: object.inicio,
+            fechaHoraFin: object.fin,
+            direccion_id: servicio.direccion_id,
+            servicio_id: servicio.id,
+            status:1
+          }).then(function(result){
+            res.status(200).json({
+              success: true,
+              result: result
+            })
+          });
+      });
+    }
+  });*/
 }
 
 function aplazaCita(tiempo, id)

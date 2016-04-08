@@ -162,4 +162,8 @@ module.exports = function (object){
     intermed.callController( 'agenda', 'eventoGuardarDescr', req.body, req, res );
   });
 
+  app.post('/agenda/reagendar', function (req, res){
+    intermed.callController( 'agenda', 'reagendar', req.body, req, res );
+  });
+
 }

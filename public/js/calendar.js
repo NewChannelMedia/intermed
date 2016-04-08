@@ -422,8 +422,13 @@ function iniciarCalendarioAgendarCita(){
 var cita = null;
 
 
-function validaAgenda(inicio, fin) {
-  var h = $('#divCalendario').fullCalendar('clientEvents');
+function validaAgenda(inicio, fin, div) {
+  var h = [];
+  if (div){
+    h = $('.'+div).fullCalendar('clientEvents');
+  } else {
+    h = $('#divCalendario').fullCalendar('clientEvents');
+  }
   var evento;
   var valido = 1;
   var fecha  =  formatearFecha(new Date());
@@ -491,8 +496,13 @@ function formatearTimestampAgenda(timestamp){
   return iso
 }
 
-function validaEvento(inicioEvento, finEvento) {
-  var h = $('#divCalendario').fullCalendar('clientEvents');
+function validaEvento(inicioEvento, finEvento, div) {
+  var h = [];
+  if (div){
+    h = $('.'+div).fullCalendar('clientEvents');
+  } else {
+    h = $('#divCalendario').fullCalendar('clientEvents');
+  }
   var evento;
   var valido = false;
 
@@ -1400,94 +1410,6 @@ function horariosAgendaMedico(medico_id){
             var final = new moment(inicio);
             date = new Date(new Date(date).toISOString().replace('T',' ').replace('.000Z','')).getTime();
             seleccionarAgregarEventoCita(date, new moment(date),medico_id);
-            /*
-            if (validaEventoId(inicio,final) && validaAgenda(inicio, final) == 1){
-
-              //Promp para seleccionar servicio de esa dirección
-              inicio = new Date(date).toLocaleString('en-US');
-              $.ajax({
-                  url: '/agenda/serviciosPorHorario',
-                  type: 'POST',
-                  dataType: "json",
-                  cache: false,
-                  data: {medico_id: medico_id,inicio: inicio},
-                  success: function (data) {
-                    var contenido = '';
-                    data.result.forEach(function(servicio){
-                      contenido += '<option value="'+ servicio.id +'">'+ servicio.concepto + '  (' + servicio.duracion +')</option>';
-                    });
-
-                    secondaryBootbox = bootbox.dialog({
-                      backdrop: false,
-                      size:'small',
-                      className: 'Intermed-Bootbox',
-                      title: '<span class="title">Selecciona servicio</span>',
-                      message:
-                            '<div class="row">'+
-                              '<div class="col-md-12">'+
-                                '<select class="form-control" id="servicioList"><option disabled selected></option>'+ contenido + '</select>'+
-                              '</div>'+
-                            '</div>',
-                      buttons: {
-                        "Cancelar": {
-                          className: "btn-danger pull-left"
-                        },
-                        main: {
-                          label: "Seleccionar",
-                          className: "btn-primary",
-                          callback: function() {
-                            if ($('#servicioList').val() && $('#servicioList').val() != ""){
-                              var duracionServicio = $("#servicioList option:selected").text().split('(')[1].split(')')[0];
-                              var horas = duracionServicio.split(":");
-
-                              var inicio = new Date((new Date(date)).toUTCString().split(' GMT')[0]);
-                              final = final.add(horas[0], 'h').add(horas[1], 'm');
-                              final = new Date(final);
-
-                              var mensaje = '';
-
-                              if ( validaEvento(inicio, final)) {
-                                var validacionAgenda =  validaAgenda(inicio, final);
-                                if ( validacionAgenda == 1 ) {
-                                  //date: 2016-04-09T09:00:00.000Z
-                                  date = new Date(new Date(date).toISOString().replace('T',' ').replace('.000Z','')).getTime();
-                                  registrarNuevaCitaBootbox(date, new moment(date).add(horas[0], 'h').add(horas[1], 'm'),medico_id,$('#servicioList').val());
-                                  //usuario_id:6 paciente_id:2
-                                } else  if ( validacionAgenda == 3 ) {
-                                  mensaje = 'Horario cancelado por el médico !';
-                                } else  if ( validacionAgenda == 4 ) {
-                                  mensaje = 'El horario seleccionado interfiere con el horario de otra Cita';
-                                } else  if ( validacionAgenda == 5 ) {
-                                  mensaje = 'No puede generar dos citas el mismo dia !';
-                                }
-                              }
-                              if (mensaje != ""){
-                                 bootbox.alert({
-                                   backdrop: false,
-                                   closeButton: false,
-                                   onEscape: function () {
-                                       bootbox.hideAll();
-                                   },
-                                   message: mensaje,
-                                   className: 'Intermed-Bootbox',
-                                   title: '<span class="title">Mensaje de Intermed</span>'
-                                 });
-                              }
-                            } else {
-                              $('#servicioList').focus();
-                              return false;
-                            }
-                          }
-                        }
-                      }
-                    });
-                  },
-                  error: function (err){
-                    console.log('AJAX Error: ' + JSON.stringify(err));
-                  }
-                });
-              }
-              */
           }
         },
         eventClick: function (event, jsEvent, view) {
@@ -1638,6 +1560,208 @@ function seleccionarServicioCitaOficina(date,inicio, medico_id, clase){
       console.log('AJAX Error: ' + JSON.stringify(err));
     }
   });
+}
+
+
+function horariosAgendaMedicoReagendar(medico_id, agenda_id, bootboxReagendar){
+    var valido = true;
+    var nombreEvento = '';
+    var duracionEvento = '';
+    var direccion_id = '';
+
+    $('.divCalenarioReagendar').addClass('calCita');
+    $('.divCalenarioReagendar').fullCalendar({
+        firstDay:1,
+        defaultView: 'agendaWeek',
+        height: 350,
+        allDaySlot: false,
+        defaultDate: moment().format("YYYY-MM-DD"),
+        slotLabelFormat: 'h:mm a',
+        slotLabelInterval : '00:30',
+        slotDuration: '00:15',
+        header: {
+            //center: false,
+            //right: false,
+            left: false
+        },
+        events: function(start, end, timezone, callback) {
+          var startDate, endDate;
+          var d = new Date();
+          if ((parseInt(d.getTimezoneOffset())) >0){
+            startDate = new Date(new Date(start).setMinutes(new Date(start).getMinutes()+(parseInt(d.getTimezoneOffset()))))
+            endDate = new Date(new Date(end).setMinutes(new Date(end).getMinutes()+(parseInt(d.getTimezoneOffset()))))
+          } else {
+            startDate = new Date(new Date(start).setMinutes(new Date(start).getMinutes()-(parseInt(d.getTimezoneOffset()))))
+            endDate = new Date(new Date(end).setMinutes(new Date(end).getMinutes()-(parseInt(d.getTimezoneOffset()))))
+          }
+          $.ajax({
+              url: '/agenda/AgendaMedico',
+              type: 'POST',
+              dataType: "json",
+              cache: false,
+              data: {medico_id: medico_id,inicio: startDate, fin: endDate, agenda_id: agenda_id},
+              success: function (data) {
+                if (data.porreagendar.Paciente){
+                  nombreEvento = data.porreagendar.Paciente.Usuario.DatosGenerale.nombre + ' ' + data.porreagendar.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + data.porreagendar.Paciente.Usuario.DatosGenerale.apellidoM;
+                } else {
+                  nombreEvento = data.porreagendar.PacienteTemporal.nombres + ' ' +  data.porreagendar.PacienteTemporal.apellidos;
+                }
+                duracionEvento = data.porreagendar.CatalogoServicio.duracion;
+                direccion_id = data.porreagendar.direccion_id;
+                var d = new Date()
+                var timeZoneOffset = '';
+
+                var n = parseInt(d.getTimezoneOffset())/60;
+
+                if (n<0){
+                  timeZoneOffset = '-';
+                } else {
+                  timeZoneOffset = '+'
+                }
+                n = n.toString().replace('+','').replace('-','');
+
+                if (n.split('.')[0].length== 1){
+                  timeZoneOffset += '0'+n.split('.')[0];
+                } else {
+                  timeZoneOffset += n.split('.')[0];
+                }
+                if (!n.split('.')[1]){
+                  timeZoneOffset += ':00';
+                } else {
+                  timeZoneOffset += ':' + n.split('.')[1];
+                }
+
+                for (var i = 0; i < data.result.length; i++){
+                  data.result[i].start = new Date(data.result[i].start).toISOString().replace(':00.000Z','')+timeZoneOffset;
+                  data.result[i].end = new Date(data.result[i].end).toISOString().replace(':00.000Z','')+timeZoneOffset;
+                }
+                callback(data.result);
+                $.ajax({
+                    url: '/medico/detalleMedico',
+                    type: 'POST',
+                    dataType: "json",
+                    cache: false,
+                    data: {medico_id: medico_id},
+                    success: function (data) {
+                      if (data.result){
+                        if (data.result.Usuario.DatosGenerale.apellidoM){
+                          data.result.Usuario.DatosGenerale.apellidoM = ' ' + data.result.Usuario.DatosGenerale.apellidoM;
+                        } else {
+                          data.result.Usuario.DatosGenerale.apellidoM  = '';
+                        }
+                        $('#agendaMedicoTitle').html('<img src="'+ data.result.Usuario.urlFotoPerfil +'" class="img-circle" style="max-width:30px">&nbsp;&nbsp;'+ data.result.Usuario.DatosGenerale.nombre  + ' ' + data.result.Usuario.DatosGenerale.apellidoP + data.result.Usuario.DatosGenerale.apellidoM);
+                      }
+                    }
+                  });
+                var d = new Date(start).getMonth();
+                var clases = $('.direccionlist.active').attr('class');
+                var claseActual = '';
+                if (clases && clases != ""){
+                  clases = clases.split(' ');
+                  clases.forEach(function(clase){
+                    if (clase.substring(0,4) == 'dir-'){
+                      claseActual = clase;
+                    }
+                  });
+                }
+
+                $('.divCalenarioReagendar .fc-toolbar .fc-left').text(meses[d]);
+                $('.divCalenarioReagendar .fc-day-header').each(function(){
+                  $(this).text($(this).text().split('/')[0]);
+                });
+                $('#btnGroupDir').html('<button type="button" class="btn btn-default direccionlist active" onclick="destacarDireccion(this)">VER TODAS</button>');
+                data.direcciones.forEach(function(dir){
+                    $('#btnGroupDir').append('<button type="button" class="btn btn-default direccionlist dir-'+ dir.className +'" onclick="destacarDireccion(this,\''+ dir.className +'\')">'+ dir.nombre +'</button>');
+                });
+
+                if (claseActual != ""){
+                  $('.direccionlist.'+claseActual).click();
+                } else {
+                  $('.direccionlist.active').click();
+                }
+
+                $('.direccionlist:not(.dir-direccion_0)').css('display','none');
+                $('.direccionlist.dir-direccion_0').click();
+              },
+              error: function (err){
+                console.log('AJAX Error: ' + JSON.stringify(err));
+              }
+            });
+        },
+        minTime: '8:00',
+        maxTime: '21:00',
+        defaultDate: new Date(),
+        lang: 'es',
+        selectable: true,
+        selectHelper: false,
+        displayEventTime: true,
+        editable: true,
+        eventLimit: true,
+        overlap: false,
+        slotEventOverlap: false,
+        timezone:  "UTC",
+        dayClick: function (date, allDay, jsEvent, view) {
+          //alert(nombreEvento + ' ' + duracionEvento);
+          var horas = duracionEvento.split(":");
+
+          var inicioTemp = new Date((new Date(date)).toUTCString().split(' GMT')[0]);
+          var finalTemp = new moment(inicioTemp).add(horas[0], 'h').add(horas[1], 'm');
+
+          var inicio = new Date();
+          var final = new moment(new Date(date)).add(horas[0], 'h').add(horas[1], 'm');
+
+
+          var mensaje = '';
+          if ( validaEvento(inicioTemp, new Date(finalTemp), 'divCalenarioReagendar')) {
+
+            var validacionAgenda =  validaAgenda(inicioTemp, finalTemp, 'divCalenarioReagendar');
+
+            if ( validacionAgenda == 1 ) {
+              $('.divCalenarioReagendar').fullCalendar('removeEvents');
+              $('.divCalenarioReagendar').fullCalendar('refetchEvents');
+              $('.divCalenarioReagendar').fullCalendar( 'renderEvent', {start: new Date(date),end: final,title:nombreEvento,className:'eventoReagendar eventoMedico',overlap: false,durationEditable: false,editable: false})
+              $('.guardarReagenda').removeClass('hidden');
+              //registrarNuevaCitaBootbox(date, new moment(date).add(horas[0], 'h').add(horas[1], 'm'),medico_id,$('#servicioList').val(),1);
+              //Boton para guardar cita visible
+            } else  if ( validacionAgenda == 3 ) {
+              mensaje = 'Horario cancelado por el médico !';
+            } else  if ( validacionAgenda == 4 ) {
+              mensaje = 'El horario seleccionado interfiere con el horario de otra Cita';
+            } else  if ( validacionAgenda == 5 ) {
+              mensaje = 'No puede generar dos citas el mismo dia !';
+            }
+          } else {
+            mensaje = "La duración de la cita excede el tiempo disponible en el horario."
+          }
+          if (mensaje != ""){
+             bootbox.alert({
+               backdrop: false,
+               closeButton: false,
+               onEscape: function () {
+                   bootbox.hideAll();
+               },
+               message: mensaje,
+               className: 'Intermed-Bootbox',
+               title: '<span class="title">Mensaje de Intermed</span>'
+             });
+          }
+        },
+        eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
+          revertFunc();
+        }
+        /*
+        var intervalo = setInterval(function(){
+          if ($('.divCalenarioReagendar').length>0){
+            $('.divCalenarioReagendar').fullCalendar( 'refresh' );
+          } else {
+            clearInterval(intervalo);
+          }
+        },5000);
+        */
+    });
+    setTimeout(function(){
+      $('.divCalenarioReagendar').fullCalendar( 'render' );
+    },200);
 }
 
 var intervaloCambio = null;

@@ -4739,7 +4739,6 @@ function cargarImagenes(evt){
 
         }
       } else {
-        console.log('MAL: ' + f.name);
         errores.push({nombre:f.name,size:f.size});
       }
     }
@@ -4768,4 +4767,9 @@ function cargarImagenes(evt){
     }
 
     $('#imageUploadChoser').val('');
+}
+
+function reagendarCitaMedico(agenda_id,medico_id, modal){
+  //Enviamos el agenda_id (no sea crea nuevo evento, solo se cambia el horario de el, y sus notificaciones se modifican)
+  verAgendaMedicoReagendar(medico_id, agenda_id,modal);
 }
