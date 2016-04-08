@@ -5712,6 +5712,14 @@ function guardarReagenda(medico_id, agenda_id, bootboxReagendar, modal){
             $('#divCalendario').fullCalendar('removeEvents');
             $('#divCalendario').fullCalendar('refetchEvents');
           }
+          if ($("#calendar").length>0){
+            marcarEventosCalendario();
+            if ($('#calendar').length>0){
+              var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
+              var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
+              cargarEventosPorDia(fechaInicio, fechaFin);
+            }
+          }
         }
       },
       error: function ( jqXHR, textStatus, err ) {

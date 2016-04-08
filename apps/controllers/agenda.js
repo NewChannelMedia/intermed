@@ -1709,10 +1709,11 @@ exports.traerAgendaMedico = function (object, req, res){
         }],
         attributes: ['direccion_id']
       }).then(function(result){
+        console.log('result. ' + JSON.stringify(result));
         object.direccion_id = [result.direccion_id];
         object.direcciones.push({
-          id: result.id,
-          nombre: result.nombre
+          id: result.Direccion.id,
+          nombre: result.Direccion.nombre
         })
         exports.agendaMedico(object, req, res);
       });
@@ -1731,8 +1732,8 @@ exports.traerAgendaMedico = function (object, req, res){
             nombre: dir.nombre
           })
         });
+        exports.agendaMedico(object, req, res);
       });
-      exports.agendaMedico(object, req, res);
     }
   } else {
       models.MedicoSecretaria.findOne({
@@ -1800,7 +1801,6 @@ exports.traerAgendaMedico = function (object, req, res){
 
 
 exports.agendaMedico = function (object, req, res){
-  console.log('Direcciones: '+ JSON.stringify(object.direcciones));
   try{
     var resultado = [];
     models.Horarios.findAll({
@@ -2016,6 +2016,9 @@ exports.detalleCita = function (object, req, res){
         },
         include: [{
           model: models.DatosGenerales
+        },{
+          model: models.Medico,
+          attributes: ['id']
         }]
       },{
         model: models.Direccion,

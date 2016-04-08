@@ -1969,7 +1969,6 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
 
           var clase = anio+'-'+mes+'-'+dia+'-'+hora+'-'+minutos;
 
-          console.log('Clase: ' + clase);
 
           var element = $('.mediaHora.'+clase);
           element.addClass('ocupada').addClass('consulta');
@@ -2012,6 +2011,10 @@ function cargarEventosPorDia(fechaInicio, fechaFin){
 
             var clase = anio+'-'+mes+'-'+dia+'-'+hora+'-'+minutos;
             $('.mediaHora.'+clase).addClass('ocupada').addClass('bloque');
+
+            if (res.status == 2){
+              $('.mediaHora.'+clase).addClass('cancelada');
+            }
 
             $('.mediaHora.'+clase).on('click',function(){
               detalleCitaSecretaria(res.id);

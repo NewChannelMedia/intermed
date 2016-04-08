@@ -422,8 +422,13 @@ function iniciarCalendarioAgendarCita(){
 var cita = null;
 
 
-function validaAgenda(inicio, fin) {
-  var h = $('#divCalendario').fullCalendar('clientEvents');
+function validaAgenda(inicio, fin, div) {
+  var h = [];
+  if (div){
+    h = $('.'+div).fullCalendar('clientEvents');
+  } else {
+    h = $('#divCalendario').fullCalendar('clientEvents');
+  }
   var evento;
   var valido = 1;
   var fecha  =  formatearFecha(new Date());
@@ -491,8 +496,13 @@ function formatearTimestampAgenda(timestamp){
   return iso
 }
 
-function validaEvento(inicioEvento, finEvento) {
-  var h = $('#divCalendario').fullCalendar('clientEvents');
+function validaEvento(inicioEvento, finEvento, div) {
+  var h = [];
+  if (div){
+    h = $('.'+div).fullCalendar('clientEvents');
+  } else {
+    h = $('#divCalendario').fullCalendar('clientEvents');
+  }
   var evento;
   var valido = false;
 
@@ -1702,9 +1712,9 @@ function horariosAgendaMedicoReagendar(medico_id, agenda_id, bootboxReagendar){
 
 
           var mensaje = '';
-          if ( validaEvento(inicioTemp, new Date(finalTemp))) {
+          if ( validaEvento(inicioTemp, new Date(finalTemp), 'divCalenarioReagendar')) {
 
-            var validacionAgenda =  validaAgenda(inicioTemp, finalTemp);
+            var validacionAgenda =  validaAgenda(inicioTemp, finalTemp, 'divCalenarioReagendar');
 
             if ( validacionAgenda == 1 ) {
               $('.divCalenarioReagendar').fullCalendar('removeEvents');
