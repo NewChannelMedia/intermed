@@ -1,77 +1,87 @@
 <section id="feedback" class="bg-greyBlue">
   <div class="container-fluid" >
     <div class="row">
-      <div class="col-lg-12">
-        <div class="panel panel-primary">
+      <div id="panelEstadisticas" class="col-lg-12">
+        <div class="panel panel-primary noMargin">
           <div class="panel-heading bg-darkBlue">
             <div class="row noPadding">
-              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-3">
+              <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                 <h4 class="h67-medcond noMargin">Estadisticas Generales</h4>
               </div>
-              <div class="col-lg-8 col-md-8 col-sm-8 col-xs-8 text-right">
+              <div class="col-lg-8 col-md-8 col-sm-8 col-xs-12 text-right">
                 <div class="btn-group"  data-toggle="buttons">
-                  <label class="btn btn-default btn-sm active" onclick="getFeedback(1)"><input type="radio" name="tipoGrafica" autocomplete="off" checked>General</label>
-                  <label class="btn btn-default btn-sm" onclick="getFeedback(2)"><input type="radio" name="tipoGrafica" autocomplete="off">Higiene</label>
-                  <label class="btn btn-default btn-sm" onclick="getFeedback(3)"><input type="radio" name="tipoGrafica" autocomplete="off">Instalaciones</label>
-                  <label class="btn btn-default btn-sm" onclick="getFeedback(4)"><input type="radio" name="tipoGrafica" autocomplete="off">Puntualidad</label>
-                  <label class="btn btn-default btn-sm" onclick="getFeedback(5)"><input type="radio" name="tipoGrafica" autocomplete="off">Trato</label>
-                  <label class="btn btn-default btn-sm" onclick="getFeedback(6)"><input type="radio" name="tipoGrafica" autocomplete="off">Costo</label>
+                  <label class="btn btn-default btn-xs active" onclick="getFeedback(1)"><input type="radio" name="tipoGrafica" autocomplete="off" checked>General</label>
+                  <label class="btn btn-default btn-xs" onclick="getFeedback(2)"><input type="radio" name="tipoGrafica" autocomplete="off">Higiene</label>
+                  <label class="btn btn-default btn-xs" onclick="getFeedback(3)"><input type="radio" name="tipoGrafica" autocomplete="off">Instalaciones</label>
+                  <label class="btn btn-default btn-xs" onclick="getFeedback(4)"><input type="radio" name="tipoGrafica" autocomplete="off">Puntualidad</label>
+                  <label class="btn btn-default btn-xs" onclick="getFeedback(5)"><input type="radio" name="tipoGrafica" autocomplete="off">Trato</label>
+                  <label class="btn btn-default btn-xs" onclick="getFeedback(6)"><input type="radio" name="tipoGrafica" autocomplete="off">Costo</label>
                 </div>
-                <button class="btn btn-default btn-sm" type="button" data-toggle="collapse" data-target="#panel-feedbackResult" aria-expanded="false" aria-controls="panel-feedbackResult">
-                  <span class="glyphicon glyphicon-eye-open"></span>
-                </button>
               </div>
             </div>
           </div>
-          <div id="panel-feedbackResult" class="panel-body bg-white collapse in">
+          <div class="panel-body bg-white ">
             <canvas id="feedbackResult"></canvas>
           </div>
         </div>
       </div>
     </div>
-    <div class="row noPadding">
-      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-        <div class="panel panel-primary">
-          <div class="panel-heading bg-darkBlue">
-            <h4 class="h67-medcond noMargin">Indices de Satisfacción</h4>
-          </div>
-          <div class="panel-body bg-white col-lg-12 col-md-12 col-sm-6 col-xs-6" style="margin-bottom:15px;">
-            <div class="row noPadding">
-              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
-                <div class="h67-medcond s20" style="position: absolute;top: 0;left: 0px;right: 0;display: block;bottom: 0;">
-                  <div class="body-container">
-                    <div class="center-content text-center">
-                      <p class="noMargin">Top Dr.<br>
-                        <span class="s30" id="topDrPer"></span>
-                      </p>
+    <div class="row">
+      <div class="col-lg-4 col-md-4 col-sm-5 col-xs-12">
+        <div class="row noPadding">
+          <div id="panelTopDr" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="panel panel-primary noMargin">
+              <div class="panel-heading bg-darkBlue">
+                <h4 class="h67-medcond noMargin">Rango Top Doctor</h4>
+              </div>
+              <div class="panel-body bg-white">
+                <div class="body-container">
+                  <div class="center-content text-center">
+                    <canvas id="feedbackTopDr" class="center-block"></canvas>
+                  </div>
+                  <div class="h67-medcond s20 text-center" style="position: absolute;top: 0;left: 0px;right: 0;display: block;bottom: 0;">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <p class="noMargin">Top Dr.<br>
+                          <span class="s30" id="topDrPer"></span>
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <canvas id="feedbackTopDr" class="center-block"></canvas>
               </div>
             </div>
           </div>
-          <div class="panel-body bg-white col-lg-12 col-md-12 col-sm-6 col-xs-6" style="margin-bottom:15px;">
-            <div class="row noPadding" id="starsContainer">
-              <div class="body-container">
-                <div class="center-content text-center">
-                  <div id="feedbackGeneral"></div>
-                  <p class="noMargin h67-medcond s20">Estrellas Obtenidas<br>
-                  </p>
-                  <button type="button" class="btn btn-xs btn-default" type="button" data-toggle="popover" data-title="Tus estrellas" data-placement="top" id="starDetails" onclick="mostrarDetallesEstrellas()">Ver más <span class="caret"></span></button>
-
+        </div>
+        <div class="row noPadding">
+          <div id="panelEstrellas" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="panel panel-primary noMargin">
+              <div class="panel-heading bg-darkBlue">
+                <h4 class="h67-medcond noMargin">Indices de Satisfacción</h4>
+              </div>
+              <div class="panel-body bg-white">
+                <div class="body-container">
+                  <div class="center-content text-center">
+                    <div class="" id="starsContainer">
+                      <div id="feedbackGeneral"></div>
+                      <br />
+                      <p class="h67-medcond s20 noMargin">Estrellas Obtenidas<br />
+                      </p>
+                      <button type="button" class="btn btn-xs btn-default" type="button" data-toggle="popover" data-title="Tus estrellas" data-placement="top" id="starDetails" onclick="mostrarDetallesEstrellas()">Ver más <span class="caret"></span></button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div id="moderarComentarios" class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
-        <div class="panel panel-primary">
+      <div id="moderarComentarios" class="col-lg-8 col-md-8 col-sm-7 col-xs-12">
+        <div class="panel panel-primary noMargin">
           <div class="panel-heading bg-darkBlue">
             <h4 class="h67-medcond noMargin">Comentarios</h4>
           </div>
-          <div class="panel-body bg-white">
+          <div class="panel-body bg-white noPadding">
             <table class="table noMargin">
               <tbody>
                 {{#each comentarios}}

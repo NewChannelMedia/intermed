@@ -1630,7 +1630,7 @@ footer .logoIntermed {
   overflow-y: auto;
 }
 
-#moderarComentarios .panel {
+#moderarComentarios ,#moderarComentarios .panel {
   overflow: hidden;
 }
 #moderarComentarios .panel-body {
@@ -1682,6 +1682,18 @@ footer .logoIntermed {
 }
 .comment-autor .comment-text {
   width: 90%;
+}
+
+@media (max-width:767px) {
+  .comment-container {
+    border-radius: 45px 25px 45px 0px;
+  }
+  .comment-container.respuesta {
+    border-radius: 45px 0px 45px 45px;
+  }
+  .comment-img {
+    width: 60px!important;
+  }
 }
 
 .btn-tranparent {
