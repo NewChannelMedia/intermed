@@ -1065,9 +1065,12 @@ exports.detalleCitaPac = function(object, req, res){
           model: models.DatosGenerales
         }]
       },{
-        model: models.Direccion,
-        include: [{
-          model: models.Localidad
+        model: models.Medico,
+        attributes:['id']
+      },{
+          model: models.Direccion,
+          include: [{
+            model: models.Localidad
         },{
           model: models.Municipio,
           include: [{
@@ -1815,14 +1818,16 @@ exports.agendaMedico = function (object, req, res){
 
       var fechaActual = formatearFecha(new Date());
       models.Agenda.findAll({
-       where :  { direccion_id: object.direccion_id,
-        fechaHoraInicio: {
-          $gte: new Date(object.inicio),
-          $lte: new Date(object.fin)
-        },
-        status: {
-          $gt: 0
-        }
+       where :  {
+          direccion_id: object.direccion_id,
+          fechaHoraInicio: {
+            $gte: new Date(object.inicio),
+            $lte: new Date(object.fin)
+          },
+          id: {$not: object.agenda_id},
+          status: {
+            $gt: 0
+          }
         },
         include: [{
           model: models.Paciente,
@@ -1909,10 +1914,41 @@ exports.agendaMedico = function (object, req, res){
             };
             resultado.push(horario);
           }
-          res.status(200).json({
-            result: resultado,
-            direcciones: object.direcciones
-          });
+          if (object.agenda_id){
+            models.Agenda.findOne({
+              where: {
+                id: object.agenda_id
+              },
+              attributes: ['id','paciente_id','paciente_temporal_id'],
+              include: [{
+                model: models.Paciente,
+                attributes: ['id'],
+                include: [{
+                  model: models.Usuario,
+                  attributes: ['id'],
+                  include: [{
+                    model: models.DatosGenerales
+                  }]
+                }]
+              },{
+                model: models.PacienteTemporal,
+              },{
+                model: models.CatalogoServicios,
+                attributes: ['duracion','concepto']
+              }]
+            }).then(function(agenda){
+                res.status(200).json({
+                  result: resultado,
+                  direcciones: object.direcciones,
+                  porreagendar: agenda
+                });
+            });
+          } else {
+            res.status(200).json({
+              result: resultado,
+              direcciones: object.direcciones
+            });
+          }
         });
       });
     });
@@ -2679,6 +2715,92 @@ exports.cancelar = function (object, req, res){
       });
     }
   });
+}
+
+exports.reagendar = function (object, req, res){
+  if (req.session.passport.user.tipoUsuario == "M"){
+    object.usuario_medico_id = req.session.passport.user.id;
+    exports.validarInterferenciaEventos(object, req, res, exports.guardarReagenda);
+  } else {
+    models.Medico.findOne({
+      where: { id: object.medico_id },
+      include: [{
+        model: models.MedicoSecretaria,
+        where: {
+          secretaria_id: req.session.passport.user.Secretaria_id
+        },
+        include: [{
+          model: models.MedicoSecretariaPermisos,
+          where: {
+            permiso: 1,
+            secretaria_permiso_id: 3
+          }
+        }]
+      }]
+    }).then(function(medico){
+      if (!medico){
+        //Acceso denegado (no tiene permiso para agregar citas al médico)
+        res.status(200).json({
+          success: false,
+          result: 301
+        });
+      } else {
+        object.usuario_medico_id = medico.usuario_id;
+        exports.validarInterferenciaEventos(object, req, res, exports.guardarReagenda);
+      }
+    });
+  }
+}
+
+exports.guardarReagenda = function (object, req, res){
+  console.log('Guardar reagenda. ' + JSON.stringify(object));
+  res.status(200).json({sucess: false})
+  /*
+  models.CatalogoServicios.findOne({
+    where: {
+      id: object.servicio_id
+    }
+  }).then(function(servicio){
+    if (object.paciente_id){
+      models.Agenda.create({
+        usuario_id: object.usuario_medico_id,
+        paciente_id: object.paciente_id,
+        fechaHoraInicio: new Date(object.inicio),
+        fechaHoraFin: new Date(object.fin),
+        direccion_id: servicio.direccion_id,
+        servicio_id: servicio.id,
+        status:1
+      }).then(function(result){
+        res.status(200).json({
+          success: true,
+          result: result
+        })
+      });
+    } else {
+      //Crear paciente temporal
+      models.PacienteTemporal.create({
+        nombres: object.nombre,
+        apellidos: object.apellido,
+        correo: object.correo,
+        celular: object.celular
+      }).then(function(PacienteTemporal){
+          models.Agenda.create({
+            usuario_id: object.usuario_medico_id,
+            paciente_temporal_id: PacienteTemporal.id,
+            fechaHoraInicio: object.inicio,
+            fechaHoraFin: object.fin,
+            direccion_id: servicio.direccion_id,
+            servicio_id: servicio.id,
+            status:1
+          }).then(function(result){
+            res.status(200).json({
+              success: true,
+              result: result
+            })
+          });
+      });
+    }
+  });*/
 }
 
 function aplazaCita(tiempo, id)

@@ -2785,6 +2785,9 @@ div.Slider{
   background-size: 100% 24px;
 }
 
+#divCalendario .eventoReagendar .fc-bg {
+    background-color: #DAA520!important;
+}
 
 
 th.fc-day-header.fc-widget-header{

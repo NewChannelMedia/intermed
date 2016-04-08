@@ -4739,7 +4739,6 @@ function cargarImagenes(evt){
 
         }
       } else {
-        console.log('MAL: ' + f.name);
         errores.push({nombre:f.name,size:f.size});
       }
     }
@@ -4768,4 +4767,17 @@ function cargarImagenes(evt){
     }
 
     $('#imageUploadChoser').val('');
+}
+
+function reagendarCitaMedico(agenda_id,medico_id){
+  console.log('Reagendar: ' + agenda_id + ' - '+ medico_id);
+  //Enviamos el agenda_id (no sea crea nuevo evento, solo se cambia el horario de el, y sus notificaciones se modifican)
+  if ($('#divCalendario').length>0){
+    console.log('Abrir en modal existente');
+    //Se actualizan los eventos del calendario para reagendar (hacer cita) (no se muestra el evento con el agenda_id);
+  } else {
+    console.log('Abrir nuevo modal');
+    //Abrir un modal con el calendario para reagendar (hacer cita) (no se muestra el evento con el agenda_id);
+  }
+  verAgendaMedicoReagendar(medico_id, agenda_id);
 }
