@@ -1630,7 +1630,7 @@ footer .logoIntermed {
   overflow-y: auto;
 }
 
-#moderarComentarios .panel {
+#moderarComentarios ,#moderarComentarios .panel {
   overflow: hidden;
 }
 #moderarComentarios .panel-body {
