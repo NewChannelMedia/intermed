@@ -2474,7 +2474,7 @@ function traerAseguradoras(){
                                       '<p class="comment-autor s15 h75-bold">'+
                                         '<span class="text-capitalize">'+ nombre +'</span>'+
                                       '</p>'+
-                                      '<div class="text-uppercase s30 h67-medcond">'+ titulo +'</div>'+
+                                      '<div class="comment-title text-uppercase s25 h67-medcond">'+ titulo +'</div>'+
                                       '<p class="comment-text s15 h67-medium">'+ res.comentario.comentario +'</p>'+
                                     '</article>'+
                                   '</div>'+

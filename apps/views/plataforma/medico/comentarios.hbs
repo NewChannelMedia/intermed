@@ -91,7 +91,7 @@
                   <tr>
                     <td class="noBorder">
                       <div class="comentario row">
-                        <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12 ">
+                        <div class="col-lg-11 col-md-11 col-sm-12 col-xs-12 ">
                           <div class="media comment-container">
                             <div class="media-left">
                               <img class="img-circle comment-img" style="width: 150px;" src="{{Usuario.urlFotoPerfil}}">
@@ -109,19 +109,19 @@
                                   {{/if}}
                                 </span>
                               </p>
-                              <div class="text-uppercase s30 h67-medcond">{{comentario.titulo}}</div>
+                              <div class="comment-title text-uppercase s25 h67-medcond">{{comentario.titulo}}</div>
                               <p class="comment-text s15 h67-medium">{{comentario.comentario}}</p>
                             </article>
                             <div class="media-right">
                               <div class="onoffswitch">
                                 <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="onoffvisible_{{this.comentario.id}}_{{this.tipo}}" {{#if comentario.visible}} checked {{/if}} onchange="cambiarComentarioVisible(this,'{{this.comentario.id}}',{{this.tipo}})">
-                                <label class="onoffswitch-label" for="onoffvisible_{{this.comentario.id}}_{{this.tipo}}">
+                                <label class="h65-medium onoffswitch-label" for="onoffvisible_{{this.comentario.id}}_{{this.tipo}}">
                                   <span class="onoffswitch-inner"></span>
                                   <span class="onoffswitch-switch"></span>
                                 </label>
                               </div>
-                              {{#if cita}}<span class="badge">Comentario de cita</span>{{/if}}
-                              {{#if perfil}}<span class="badge">Comentario de perfil</span>{{/if}}
+                              {{#if cita}}<label class="badge bg-blue center-block h65-medium s15 text-uppercase"><span class="glyphicon glyphicon-user visible-xs" data-toggle="tooltip" data-placement="left" title="Comentario de Cita"></span><span class="hidden-xs"> Cita</span></label>{{/if}}
+                              {{#if perfil}}<label class="badge bg-blue center-block h65-medium s15 text-uppercase"><span class="glyphicon glyphicon-home visible-xs" data-toggle="tooltip" data-placement="left" title="Comentario en Perfil"></span><span class="hidden-xs"> Perfil</span></label>{{/if}}
                             </div>
                           </div>
                         </div>
