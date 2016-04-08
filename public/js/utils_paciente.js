@@ -587,6 +587,10 @@ var uId ="";
   function calificarCita(agenda_id, notificacion_id){
     var comentario = $('#calificacionComentario').val();
     var respuestas = obtenerCriteriosCalificacion();
+    var anonimo = 0;
+    if ($('#comentarioAnonimo').is(':checked')){
+      anonimo = 1;
+    }
 
     $.ajax({
         url: '/cita/calificar',
@@ -597,7 +601,8 @@ var uId ="";
           agenda_id: agenda_id,
           notificacion_id: notificacion_id,
           comentarios: comentario,
-          respuestas: respuestas
+          respuestas: respuestas,
+          anonimo: anonimo
         },
         type: 'POST',
         success: function (data) {

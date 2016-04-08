@@ -2913,8 +2913,22 @@ function bootboxCalificarCita(agenda_id, notificacion_id){
             '</div>'+
 
             '<div class="row">'+
-              '<textarea class="form-control" placeholder="Comentarios (opcional)" style="resize: none;margin-top:5px" rows="4" id="calificacionComentario"></textarea>'+
+              '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">'+
+                '<textarea class="form-control" placeholder="Comentarios (opcional)" style="resize: none;margin-top:5px" rows="4" id="calificacionComentario"></textarea>'+
+              '</div>'+
             '</div>'+
+
+
+            '<div class="row">'+
+              '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-right">'+
+                '<div style="font-weight: bold;padding:5px">'+
+                  '<label>'+
+                    '<input type="checkbox" id="comentarioAnonimo"> Comentario anónimo'+
+                  '</label>'+
+                '</div>'+
+              '</div>'+
+            '</div>'+
+
           '</div>'+
         '</div>'+
       '</div>'+
@@ -3317,6 +3331,17 @@ function dejarComentarioMedico(){
     var imagenUrl = '';
     var nombreUsuario = '';
 
+    var calificaciones = [];
+
+    calificaciones['cal_higiene'] = 50;
+    calificaciones['cal_puntualidad'] = 50;
+    calificaciones['cal_instalaciones'] = 50;
+    calificaciones['cal_trato'] = 50;
+    calificaciones['cal_costo'] = 50;
+    calificaciones['general'] = 2.5;
+
+    var leyenda = '';
+
     $.ajax( {
       async: false,
       url: '/usuario/traer',
@@ -3324,12 +3349,23 @@ function dejarComentarioMedico(){
       dataType: "json",
       cache: false,
       data: {
-        'id': $('#usuarioPerfil').val()
+        'id': $('#usuarioPerfil').val(),
+        calificacion: true
       },
       success: function ( data ) {
         imagenUrl = data.urlFotoPerfil;
         if (!data.DatosGenerale.apellidoM) data.DatosGenerale.apellidoM = '';
         nombreUsuario = 'Dr. ' + data.DatosGenerale.nombre  + ' ' + data.DatosGenerale.apellidoP + ' ' + data.DatosGenerale.apellidoM;
+
+        if (data.calificacion){
+          leyenda = '¿Modificar calificación?';
+          calificaciones['cal_higiene'] = data.calificacion.higiene;
+          calificaciones['cal_puntualidad'] = data.calificacion.puntualidad;
+          calificaciones['cal_instalaciones'] = data.calificacion.instalaciones;
+          calificaciones['cal_trato'] = data.calificacion.tratoPersonal;
+          calificaciones['cal_costo'] = data.calificacion.costo;
+          calificaciones['general'] = (parseInt(data.calificacion.satisfaccionGeneral)/20);
+        }
       },
       error: function (err){
         console.log('AJAX Error: ' + JSON.stringify(err));
@@ -3361,8 +3397,14 @@ function dejarComentarioMedico(){
           '</div>'+
 
           '<div class="row">'+
+            '<div class="col-md-12 col-sm-12 col-xs-12 s20 text-center" style="font-weight:bold">'+
+              leyenda +
+            '</div>'+
+          '</div>'+
+
+          '<div class="row">'+
             '<div class="col-md-12 col-sm-12 col-xs-12 text-center" style="margin-top:5px;font-weight:bold">Satisfacción general: </div>'+
-            '<div class="col-md-12 col-sm-12 col-xs-12"><input id="cal_satisfaccion" value="2.5" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>'+
+            '<div class="col-md-12 col-sm-12 col-xs-12"><input id="cal_satisfaccion" value="'+ calificaciones['general'] +'" type="number" class="rating" min=0 max=5 step=0.5 data-size="xs"></div>'+
           '</div>'+
 
           '<div class="row" class="calificacionCriterios" style="margin-top:15px;margin-bottom:15px;">'+
@@ -3480,8 +3522,10 @@ function dejarComentarioMedico(){
     $( "span.Slider.vertical" ).each(function() {
       var id = $(this).prop('id');
 
+      value = calificaciones[id];
+
       $('#'+id ).slider({
-        value: 50,
+        value: value,
         min: -10,
         max: 110,
         step: 10,

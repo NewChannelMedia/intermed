@@ -19,6 +19,9 @@ module.exports = function ( sequelize, DataTypes ) {
       associate: function ( models ) {
         CalificacionMedico.belongsTo( models.Usuario )
         CalificacionMedico.belongsTo( models.Medico )
+        CalificacionMedico.hasOne( models.PreguntasMedico, {
+          foreignKey: 'calificacionmedico_id'
+        } );
       }
     },
     timestamps: false,

@@ -74,6 +74,91 @@
           <div class="panel-body bg-white">
             <table class="table noMargin">
               <tbody>
+                <!--
+                {"tipo":2,"fecha":"2016-04-07T23:07:27.000Z","comentario":{"id":5,"comentarios":"Comentario calificacion cita 3","agenda_id":102,"medico_id":1,"paciente_id":1,"fecha":"2016-04-07T23:07:27.000Z","respuesta":null,"fecharespuesta":null,"visible":0,"Paciente":{"id":1,"fechaNac":"1991-01-23T00:00:00.000Z","usuario_id":4,"Usuario":{"id":4,"urlFotoPerfil":"/garage/defaults/dpp.png","usuarioUrl":"0000004","tipoUsuario":"P","DatosGenerale":{"id":5,"nombre":"Paciente","apellidoP":"De Prueba Uno","apellidoM":"","usuario_id":4}}}},"usuario":{"id":4,"urlFotoPerfil":"/garage/defaults/dpp.png","usuarioUrl":"0000004","tipoUsuario":"P","DatosGenerale":{"id":5,"nombre":"Paciente","apellidoP":"De Prueba Uno","apellidoM":"","usuario_id":4}}}
+                -->
+                {{#each comentariosEnviar}}
+                  <tr>
+                    <td class="noBorder">
+                      <div class="comentario row">
+                        <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12 ">
+                          <div class="media comment-container">
+                            <div class="media-left">
+                              <img class="img-circle comment-img" style="width: 150px;" src="{{Usuario.urlFotoPerfil}}">
+                            </div>
+                            <article class="media-body">
+                              <p class="comment-date s15 h67-medium text-muted">
+                                {{#formatearFechaComentario fecha}}{{/formatearFechaComentario}}
+                              </p>
+                              <p class="comment-autor s15 h75-bold">
+                                <span class="text-capitalize">
+                                  {{#if comentario.anonimo}}
+                                    Anonimo.
+                                  {{else}}
+                                    {{Usuario.DatosGenerale.nombre}} {{Usuario.DatosGenerale.apellidoP}}{{#if Usuario.DatosGenerale.apellidoM}} {{Usuario.DatosGenerale.apellidoM}}{{/if}}.
+                                  {{/if}}
+                                </span>
+                              </p>
+                              <div class="text-uppercase s30 h67-medcond">{{comentario.titulo}}</div>
+                              <p class="comment-text s15 h67-medium">{{comentario.comentario}}</p>
+                            </article>
+                            <div class="media-right">
+                              <div class="onoffswitch">
+                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="onoffvisible_{{this.comentario.id}}_{{this.tipo}}" {{#if comentario.visible}} checked {{/if}} onchange="cambiarComentarioVisible(this,'{{this.comentario.id}}',{{this.tipo}})">
+                                <label class="onoffswitch-label" for="onoffvisible_{{this.comentario.id}}_{{this.tipo}}">
+                                  <span class="onoffswitch-inner"></span>
+                                  <span class="onoffswitch-switch"></span>
+                                </label>
+                              </div>
+                              {{#if cita}}<span class="badge">Comentario de cita</span>{{/if}}
+                              {{#if perfil}}<span class="badge">Comentario de perfil</span>{{/if}}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-10 col-xs-10 pull-right">
+                          {{#if comentario.respuesta}}
+                            <div class="media comment-container respuesta">
+                              <article class="media-body text-right">
+                                <p class="comment-date s15 h67-medium text-muted pull-right">
+                                  {{#formatearFechaComentario comentario.fecharespuesta}}{{/formatearFechaComentario}}
+                                </p>
+                                <span class="clearfix"></span>
+                                <p class="comment-autor s15 h75-bold noMargin">
+                                  <span class="text-capitalize">Dr. {{#valSession 'name'}}{{/valSession}}</span>
+                                </p>
+                                <p class="comment-text s15 h67-medium respuesta">{{comentario.respuesta}}</p>
+                                <button class="btn btn-default" onclick="editarComentario({{this.comentario.id}}, this, {{this.tipo}})">Editar</button>
+                              </article>
+                              <div class="media-right bottom-content">
+                                <img class="img-circle comment-img noMargin" style="width:90px;" src="{{#valSession 'fotoPerfil'}}{{/valSession}}">
+                              </div>
+                            </div>
+                          {{else}}
+                          <div class="media comment-container respuesta">
+                            <div class="media-body">
+                              <div class="row noPadding">
+                                <div class="col-lg-11 col-lg-offset-1 col-md-11 col-md-offset-1 col-sm-11 col-sm-offset-1 col-xs-11 col-xs-offset-1">
+                                  <div class="form-group noMargin">
+                                    <textarea class="form-control" style="resize:none;" rows="3" id="textComment_{{this.comentario.id}}_{{this.tipo}}"></textarea>
+                                  </div>
+                                  <div class="form-group noMargin">
+                                    <button class="btn btn-default pull-right" onclick="responderComentario({{this.comentario.id}},{{this.tipo}});">Responder</button>
+                                  </div>
+                              	</div>
+                              </div>
+                            </div>
+                            <div class="media-right bottom-content">
+                              <img class="img-circle comment-img noMargin" style="width:90px;" src="{{#valSession 'fotoPerfil'}}{{/valSession}}">
+                            </div>
+                          </div>
+                          {{/if}}
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                {{/each}}
+                <!--
+
                 {{#each comentarios}}
                   <tr>
                     <td class="noBorder">
@@ -151,6 +236,7 @@
                     </td>
                   </tr>
                 {{/each}}
+                -->
               </tbody>
             </table>
           </div>

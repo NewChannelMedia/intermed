@@ -7,7 +7,7 @@ module.exports = function ( sequelize, DataTypes ) {
       autoIncrement: true,
       primaryKey: true
     },
-    comentarios: {
+    comentario: {
       type: DataTypes.STRING
     },
     agenda_id: {
@@ -21,6 +21,21 @@ module.exports = function ( sequelize, DataTypes ) {
     paciente_id: {
       type: DataTypes.BIGINT,
       allowNull: false
+    },
+    fecha: {
+      type: DataTypes.DATE
+    },
+    respuesta: {
+      type: DataTypes.STRING
+    },
+    fecharespuesta: {
+      type: DataTypes.DATE
+    },
+    visible: {
+      type: DataTypes.INTEGER
+    },
+    anonimo: {
+      type: DataTypes.INTEGER
     }
   }, {
     classMethods: {

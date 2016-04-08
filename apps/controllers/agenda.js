@@ -294,12 +294,7 @@ exports.seleccionaCita = function(object, req, res) {
 exports.calificaCita = function(object, req, res) {
   try{
     models.CalificacionCita.create({
-        higieneLugar: object.higieneLugar,
-        puntualidad: object.puntualidad,
-        instalaciones: object.instalaciones,
-        tratoPersonal: object.tratoPersonal,
-        satisfaccionGeneral: object.satisfaccionGeneral,
-        comentarios: object.comentarios,
+        comentario: object.comentarios,
         agenda_id: object.agenda_id,
         medico_id: object.medico_id,
         paciente_id: object.paciente_id
@@ -1117,16 +1112,17 @@ exports.calificarCita = function(object, req, res){
           paciente_id: paciente_id
         },
         defaults: {
-          comentarios: object.comentarios,
+          comentario: object.comentarios,
           agenda_id: object.agenda_id,
           medico_id: medico_id,
-          paciente_id: paciente_id
+          paciente_id: paciente_id,
+          anonimo: object.anonimo
         }
       }).spread(function(CalificacionCita, created) {
         if (!created){
           CalificacionCita.update({
-            comentarios: object.comentarios,
-            satisfaccion: object.satisfaccionCita
+            comentario: object.comentarios,
+            anonimo: object.anonimo
           });
         }
         //Actualizar datos en preguntasMedico
@@ -2176,19 +2172,14 @@ exports.cancelarCita = function(object, req, res){
       }]
     }).then(function(agenda){
       if (object.medico){
-        agenda.update({status: 2}).then(function(agenda){
-            console.log('Ag: ' + JSON.stringify(agenda));
-        });
+        agenda.update({status: 2});
       } else {
-        agenda.update({status: 0}).then(function(agenda){
-            console.log('Ag: ' + JSON.stringify(agenda));
-        });
+        agenda.update({status: 0});
       }
-      console.log('Notificaciones');
-        res.status(200).json({
-          success: true,
-          result:1
-        })
+      res.status(200).json({
+        success: true,
+        result:1
+      })
     });
   } else {
     models.Agenda.findOne({
