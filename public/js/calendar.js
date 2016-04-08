@@ -1553,10 +1553,11 @@ function seleccionarServicioCitaOficina(date,inicio, medico_id, clase){
 }
 
 
-function horariosAgendaMedicoReagendar(medico_id, agenda_id){
+function horariosAgendaMedicoReagendar(medico_id, agenda_id, bootboxReagendar){
     var valido = true;
     var nombreEvento = '';
     var duracionEvento = '';
+    var direccion_id = '';
 
     $('.divCalenarioReagendar').addClass('calCita');
     $('.divCalenarioReagendar').fullCalendar({
@@ -1596,6 +1597,7 @@ function horariosAgendaMedicoReagendar(medico_id, agenda_id){
                   nombreEvento = data.porreagendar.PacienteTemporal.nombres + ' ' +  data.porreagendar.PacienteTemporal.apellidos;
                 }
                 duracionEvento = data.porreagendar.CatalogoServicio.duracion;
+                direccion_id = data.porreagendar.direccion_id;
                 var d = new Date()
                 var timeZoneOffset = '';
 
@@ -1667,6 +1669,9 @@ function horariosAgendaMedicoReagendar(medico_id, agenda_id){
                 } else {
                   $('.direccionlist.active').click();
                 }
+
+                $('.direccionlist:not(.dir-direccion_0)').css('display','none');
+                $('.direccionlist.dir-direccion_0').click();
               },
               error: function (err){
                 console.log('AJAX Error: ' + JSON.stringify(err));
@@ -1715,8 +1720,6 @@ function horariosAgendaMedicoReagendar(medico_id, agenda_id){
             } else  if ( validacionAgenda == 5 ) {
               mensaje = 'No puede generar dos citas el mismo dia !';
             }
-
-
           } else {
             mensaje = "La duración de la cita excede el tiempo disponible en el horario."
           }

@@ -4660,7 +4660,7 @@ function detalleCitaSecretaria(agenda_id){
 
           if (editar){
             modal += '<div class="col-md-4 col-sm-4">'+
-                '<button class="btn btn-default btn-block s20" style="color: #5cb85c;font-weight: bold;" onClick="reagendarCitaMedico(' + agenda_id + ','+ medico_id +')">Reagendar</button>'+
+                '<button class="btn btn-default btn-block s20 reagendarBtn" style="color: #5cb85c;font-weight: bold;">Reagendar</button>'+
                 '<button class="btn btn-default btn-block s20" style="color: #f0ad4e;font-weight: bold;" onClick="retrasaCita(' + agenda_id + ')">Retrasar</button>'+
                 '<div class="btn-group btn-block">'+
                     '<button type="button" class="btn btn-default btn-block s20 dropdown-toggle" style="color: #d43f3a;font-weight: bold;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cancelar</button>'+
@@ -4709,9 +4709,6 @@ function detalleCitaSecretaria(agenda_id){
             '</div>';
           }
 
-
-
-
           bootSec =  bootbox.dialog({
               onEscape: function () {
                 bootSec.hide();
@@ -4722,8 +4719,14 @@ function detalleCitaSecretaria(agenda_id){
             message: modal
           });
 
+          $('.reagendarBtn').on('click',function(){
+            //reagendarCitaMedico(agenda_id,medico_id,modal);
+            verAgendaMedicoReagendar(medico_id, agenda_id,bootSec);
+          });
+
           $('.bootbox-close-button').css('margin-top','0px');
           $('.bootbox-close-button').css('margin-right','5px');
+
 
         }
       },
@@ -5617,10 +5620,10 @@ function abrirModalGaleria(idInicial,galeriaMedico){
 }
 
 
-function verAgendaMedicoReagendar(medico_id, agenda_id){
+function verAgendaMedicoReagendar(medico_id, agenda_id, modal){
   //Agendar cita
   bootboxReagendar = bootbox.dialog({
-    backdrop: true,
+    backdrop: false,
     onEscape: function () {
       bootboxReagendar.hide();
     },
@@ -5639,7 +5642,7 @@ function verAgendaMedicoReagendar(medico_id, agenda_id){
           '</div>'+
           '<div class="row">'+
             '<div class="col-md-4 pull-right">'+
-              '<input type="button" class="btn btn-add btn-block hidden guardarReagenda" value="Guardar cambios" onClick="guardarReagenda('+ medico_id + ',' + agenda_id+')">'+
+              '<input type="button" class="btn btn-add btn-block hidden guardarReagenda" value="Guardar cambios">'+
             '</div>'+
             '<div class="col-md-4 pull-left">'+
               '<input type="button" class="btn btn-drop btn-block cancelarReagendar" value="Cancelar">'+
@@ -5651,10 +5654,14 @@ function verAgendaMedicoReagendar(medico_id, agenda_id){
     bootboxReagendar.hide();
   });
 
+  $('.guardarReagenda').on('click',function(){
+    guardarReagenda(medico_id,agenda_id, bootboxReagendar, modal);
+  });
+
   horariosAgendaMedicoReagendar(medico_id, agenda_id);
 }
 
-function guardarReagenda(medico_id, agenda_id){
+function guardarReagenda(medico_id, agenda_id, bootboxReagendar, modal){
     console.log('Guardar agenda: ' + medico_id + ' - ' + agenda_id);
     var evento;
     var h = $('.divCalenarioReagendar').fullCalendar('clientEvents');
@@ -5696,6 +5703,16 @@ function guardarReagenda(medico_id, agenda_id){
       },
       success: function ( data ) {
         console.log('result: ' + JSON.stringify(data));
+        if (data.success){
+          bootboxReagendar.hide();
+          modal.hide();
+          detalleCitaSecretaria(agenda_id);
+          cargarCitasProximasSecretaria();
+          if ($('#divCalendario').length>0){
+            $('#divCalendario').fullCalendar('removeEvents');
+            $('#divCalendario').fullCalendar('refetchEvents');
+          }
+        }
       },
       error: function ( jqXHR, textStatus, err ) {
         console.error( 'AJAX ERROR: ' + err );
