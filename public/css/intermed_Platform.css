@@ -1653,16 +1653,16 @@ footer .logoIntermed {
   margin-bottom: 10px;
   padding: 10px;
   border: solid 1px rgba(0,0,0,.1);
-  border-radius: 90px 30px 90px 0;
+  border-radius: 90px 20px 20px 0;
   background-color: rgba(255,255,255,.9);
 }
 
 .comment-container .media-body {
-  padding-top: 10px;
+  padding-top: 0;
 }
 
 .comment-container.respuesta {
-  border-radius: 90px 0px 90px 90px;
+  border-radius: 20px 0px 60px 20px;
 }
 
 .comment-container.respuesta .media-body{
@@ -1684,12 +1684,12 @@ footer .logoIntermed {
   width: 90%;
 }
 
-@media (max-width:767px) {
+@media (max-width:991px) {
   .comment-container {
-    border-radius: 45px 25px 45px 0px;
+    border-radius: 45px 20px 20px 0px;
   }
   .comment-container.respuesta {
-    border-radius: 45px 0px 45px 45px;
+    border-radius: 20px 0px 45px 20px;
   }
   .comment-img {
     width: 60px!important;

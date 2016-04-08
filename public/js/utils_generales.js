@@ -1478,6 +1478,7 @@ $( document ).ready( function () {
     GalleryThumbnail();
 
   } else if ($('#feedback').length > 0){
+    getFeedback();
 
     if ( $( window ).width() >= 768 ) {
       var h = $( window ).height() - $( 'footer' ).height() - $( '#newMainNav' ).height() - 15;
@@ -1507,7 +1508,7 @@ $( document ).ready( function () {
       $('#panelEstrellas .panel').css('height', $('#panelEstrellas').height() - 10 + 'px');
       $('#panelEstrellas .panel-body').css('height', $('#panelEstrellas .panel').height() - $('#panelEstrellas .panel .panel-heading').outerHeight() + 'px');
     }
-    getFeedback();
+
   }
 } );
 
@@ -1723,9 +1724,15 @@ function getFeedback(tipo){
           }
         }
 
-        var width = $('#feedbackResult').parent().outerWidth();
+        var width = $('#feedbackResult').parent().width();
         var ctx = document.getElementById("feedbackResult").getContext("2d");
         ctx.canvas.width = width;
+        if ( $( window ).width() > 768 ) {
+          ctx.canvas.height = 150;
+        }
+        else if ( $( window ).width <= 768 ) {
+          ctx.canvas.height = 200;
+        }
         var myNewChart = new Chart(ctx).Line(dataset,{
           scaleOverride: true,
           scaleSteps: 5,
