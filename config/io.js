@@ -163,6 +163,7 @@ var io = function ( io, bundle, ioPassport ) {
       });
 
       socket.on('contarNuevasNotificaciones',function (object){
+        console.log('Contar nuevas notificaciones');
         var req = {
           socket: socket,
           usuario_id: socket.request.cookies.intermed_sesion.id,
