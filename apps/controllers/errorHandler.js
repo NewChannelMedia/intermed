@@ -2,7 +2,7 @@ var models = require( '../models' );
 var jsonfile = require('jsonfile');
 
 
-exports.report = function ( err, req, res ) {
+exports.report = function ( err, req, res, next) {
 
 
   var err = err.toString();
@@ -66,12 +66,16 @@ exports.report = function ( err, req, res ) {
         filePath: nombre
       }).then(function(error){
         console.log('xxxx [' + new Date().toISOString() + '] Error insertado en BD.')
-        if (!res.headersSent){
-          if (req.method == "GET"){
-            req.routeLife( 'plataforma2', 'interno', req.hps );
-            res.render('error',{success:false,error: err});
-          } else {
-            res.status(200).json({success:false,error: err});
+        if (next){
+          next(req, res);
+        } else {
+          if (res && !res.headersSent){
+            if (req.method == "GET"){
+              req.routeLife( 'plataforma2', 'interno', req.hps );
+              res.render('error',{success:false,error: err});
+            } else {
+              res.status(200).json({success:false,error: err});
+            }
           }
         }
       });

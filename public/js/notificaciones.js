@@ -255,8 +255,8 @@ function socketManejadores() {
 
   socket.on( 'contarNuevasNotificaciones', function ( total ) {
     if ( total > 0 ) {
-      $( '#totalNotificaciones' ).html( total );
-      $( '#totalNotificaciones' ).removeClass( 'invisible hidden' );
+      $( '.totalNotificaciones' ).html( total );
+      $( '.totalNotificaciones' ).removeClass( 'invisible hidden' );
       if ( $( '.notificationDropdown' ).is( ':visible' ) ) {
         socket.emit( 'traerNuevasNotificaciones' );
       }
@@ -269,12 +269,12 @@ function socketManejadores() {
 
   socket.on( 'contarNuevosComentarios', function ( total ) {
     if ( total > 0 ) {
-      $( '#totalComentarios' ).html( total );
-      $( '#totalComentarios' ).removeClass( 'invisible hidden' );
+      $( '.totalComentarios' ).html( total );
+      $( '.totalComentarios' ).removeClass( 'invisible hidden' );
     }
     else {
-      $( '#totalComentarios' ).html( '' );
-      $( '#totalComentarios' ).addClass( 'invisible hidden' );
+      $( '.totalComentarios' ).html( '' );
+      $( '.totalComentarios' ).addClass( 'invisible hidden' );
     }
   } );
 
@@ -414,7 +414,7 @@ function formatearNotificacion( record , element) {
       /*PACIENTE*/
       case 1:
         //solicitudAmistad
-        not += mediaObjectFotoPerfil + '<div class="media-body center-content"><a href= "/' + usuarioUrl + '"><span id="pre' + record.id + '"></span>' + nombreCompleto + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></a></div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + usuario_id + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + usuario_id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>';
+        not += mediaObjectFotoPerfil + '<div class="media-body center-content"><a href= "/' + usuarioUrl + '"><span id="pre' + record.id + '"></span>' + nombreCompleto + ' <span id="post' + record.id + '">quiere ser tu amigo en Intermed</span></a></div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacionColega(' + usuario_id + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(false, ' + usuario_id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>';
         break;
       case 2:
         //solicitudAmistadAceptada
@@ -469,7 +469,7 @@ function formatearNotificacion( record , element) {
         /*MEDICO*/
       case 4:
         //solicitudAmistad
-        not += mediaObjectFotoPerfil + '<div class="media-body center-content"><a href= "/' + usuarioUrl + '"><span id="pre' + record.id + '"></span>' + nombreCompleto + ' <span id="post' + record.id + '">quiere ser tu colega en Intermed</span></a></div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacion(' + usuario_id+ ',' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(' + usuario_id + ',' + record.id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>';
+        not += mediaObjectFotoPerfil + '<div class="media-body center-content"><a href= "/' + usuarioUrl + '"><span id="pre' + record.id + '"></span>' + nombreCompleto + ' <span id="post' + record.id + '">quiere ser tu colega en Intermed</span></a></div><div class="media-right" id="button' + record.id + '"><button type="button" class="btn btn-success btn-xs" onclick="aceptarInvitacionColega(' + usuario_id+ ',' + record.id + ')" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button><button type="button" class="btn btn-danger btn-xs" onclick="eliminarFavoritos(' + usuario_id + ',' + record.id + ')"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span class="glyphicon glyphicon-user" aria-hidden="true"></span></button>';
         break;
       case 5:
         //solicitudAmistadAceptada
