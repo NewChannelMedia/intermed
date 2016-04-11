@@ -920,7 +920,7 @@ function eliminarFavoritos( usuario_id , notificacion_id) {
     }
   } );
 }
-function aceptarInvitacion( usuario_id, notificacion_id ) {
+function aceptarInvitacionColega( usuario_id, notificacion_id ) {
   if (!usuario_id){
     usuario_id= $('#usuarioPerfil').val()
   }
