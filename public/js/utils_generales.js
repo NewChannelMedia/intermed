@@ -1371,6 +1371,18 @@ $( document ).ready( function () {
     }
 
   } else if($( '#medicoSecretaria').length > 0 ){
+    if ( $( window ).innerWidth() <= 767 ) {
+      var h = $( window ).outerHeight() - $( '#newMainNav' ).height() - $( 'footer' ).height();
+      $( '#medicoSecretaria' ).css( 'height', h + 'px' );
+      $( '#msBody' ).css( 'height', h - $( '.agendaTopContainer' ).height() + 'px' );
+    }
+    if ( $( window ).innerWidth() > 767 ) {
+      var h = $( window ).outerHeight() - $( '#newMainNav' ).height() - $( 'footer' ).height();
+      $( '#medicoSecretaria' ).css( 'height', h + 'px' );
+      $( '#msBody' ).css( 'height', h - $( '.agendaTopContainer' ).height() + 'px' );
+    }
+
+
     if (!$('#agregar').hasClass('hidden')){
       //alert('agregar secretaria');
     } else if (!$('#enEspera').hasClass('hidden')){

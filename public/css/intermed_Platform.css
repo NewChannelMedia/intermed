@@ -1812,6 +1812,21 @@ footer .logoIntermed {
 
 }
 
+#medicoSecretaria {
+  background-color: #6a808e!important;
+}
+
+#msBody {
+  padding: 10px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+@media (max-width:767px) {
+  #medicoSecretaria {
+    padding-top: 60px;
+  }
+}
 
 
 .agendaTopContainer {
