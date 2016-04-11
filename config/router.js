@@ -29,9 +29,9 @@ var express = require( 'express' ),
 require( './configPassport' )( passport );
 
 var app = express()
-    .use( cookieParser( 'intermedSession' ) )
+    .use( cookieParser( '_intermed' ) )
     .use( session( {
-      secret: 'intermedSession',
+      secret: '_intermed',
       resave: true,
       saveUninitialized: true
     } ) )
@@ -52,6 +52,7 @@ app.use( '/:a', express.static( __dirname + '/../public' ) );
 app.use( '/:a/', express.static( __dirname + '/../public' ) );
 app.use( '/:a/:b', express.static( __dirname + '/../public' ) );
 app.use( '/:a/:b/', express.static( __dirname + '/../public' ) );
+
 /*
 app.use( '/inbox', express.static( __dirname + '/../public' ) );
 app.use( '/notificaciones', express.static( __dirname + '/../public' ) );
@@ -86,6 +87,11 @@ var routerObject = {
   models: models,
   errorHandler: errorHandler
 }
+app.all( '*', function ( req, res, next ) {
+  if (req.method == "GET")
+  console.log(req.method  + '_' + req.path + ': ' + JSON.stringify(req.cookies['_intermed']));
+  next();
+});
 
 //::Temporal::, solo para ver la información que tiene el usuario en su variable sesión
 app.get( '/informacionusuario', function ( req, res ) {

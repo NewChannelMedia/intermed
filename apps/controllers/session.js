@@ -34,7 +34,7 @@ module.exports = {
   logout: function ( object, req, res ) {
     try{
       if ( req.session ) {
-        res.clearCookie( 'intermed_sesion' );
+        res.clearCookie( '_intermed' );
         req.session.destroy();
       }
       res.redirect( '/' );

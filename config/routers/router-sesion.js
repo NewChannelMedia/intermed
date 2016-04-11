@@ -10,9 +10,17 @@ module.exports = function (object){
   var url = object.url;
   var cookieSession = object.cookieSession;
 
+  const crypto = require('crypto'),
+    algorithm = 'aes192',
+    password = 'int5erm7edS6ess6ion';
+
+  const decipher = crypto.createDecipher(algorithm,password);
+
 
 
   app.all( '*', function ( req, res, next ) {
+
+  //  console.log(req.cookies['connect.sid'] + '>'+req.method  + ' - ' + req.path + ': ' + JSON.stringify(req.cookies['_intermed']) + ' - ' + req.headers.cookie + '\n'+'----------------------------------');
 
     req.errorHandler = object.errorHandler;
     req.routeLife = object.routeLife;
@@ -25,9 +33,19 @@ module.exports = function (object){
         hps.varSession( req.session.passport.user );
       }
       else {
-        if (req.cookies['intermed_sesion'] && req.cookies['intermed_sesion']['id'] && req.cookies['intermed_sesion']['tipoUsuario']){
-          revivirSesion = true;
-          intermed.callController( 'usuarios', 'revivirSesion', {id:req.cookies['intermed_sesion']['id'],usuarioUrl:req.cookies['intermed_sesion']['usuario']}, req, res );
+        if (req.cookies['_intermed'] && req.cookies['_intermed'] != "" && req.cookies['_intermed'] != "undefined"){
+          try{
+            var encrypted = unescape(req.cookies['_intermed']);
+            var decrypted = decipher.update(encrypted, 'hex', 'utf8');
+            decrypted += decipher.final('utf8');
+            cookieSession = decrypted.split(';');
+            if (cookieSession[0] && cookieSession[1]){
+              revivirSesion = true;
+              intermed.callController( 'usuarios', 'revivirSesion', {id:cookieSession[0],tipoUsuario:cookieSession[2]}, req, res );
+            }
+          } catch (e){
+            console.error('Error al descifrar la cookie de sesión: ' + e);
+          }
         }
       }
       if (!revivirSesion){
