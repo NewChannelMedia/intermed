@@ -454,7 +454,7 @@ exports.generarSesion = function ( req, res, usuario_id, redirect , response) {
           const cipher = crypto.createCipher(algorithm,password);
           var encrypted = cipher.update(usuario.id+';'+usuario.usuarioUrl+';'+usuario.tipoUsuario+';'+getDateTime( true ).replace(' ','_'), 'utf8', 'hex');
           encrypted += cipher.final('hex');
-          res.cookie( '_intermed',encrypted, { path: '/' });
+          res.cookie( '_intermed',encrypted, { domain: 'localhost', path: '/'});
 
           if ( redirect === true) {
             req.session.passport.user.inicio = 1;

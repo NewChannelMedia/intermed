@@ -255,8 +255,8 @@ function socketManejadores() {
 
   socket.on( 'contarNuevasNotificaciones', function ( total ) {
     if ( total > 0 ) {
-      $( '#totalNotificaciones' ).html( total );
-      $( '#totalNotificaciones' ).removeClass( 'invisible hidden' );
+      $( '.totalNotificaciones' ).html( total );
+      $( '.totalNotificaciones' ).removeClass( 'invisible hidden' );
       if ( $( '.notificationDropdown' ).is( ':visible' ) ) {
         socket.emit( 'traerNuevasNotificaciones' );
       }
@@ -269,12 +269,12 @@ function socketManejadores() {
 
   socket.on( 'contarNuevosComentarios', function ( total ) {
     if ( total > 0 ) {
-      $( '#totalComentarios' ).html( total );
-      $( '#totalComentarios' ).removeClass( 'invisible hidden' );
+      $( '.totalComentarios' ).html( total );
+      $( '.totalComentarios' ).removeClass( 'invisible hidden' );
     }
     else {
-      $( '#totalComentarios' ).html( '' );
-      $( '#totalComentarios' ).addClass( 'invisible hidden' );
+      $( '.totalComentarios' ).html( '' );
+      $( '.totalComentarios' ).addClass( 'invisible hidden' );
     }
   } );
 

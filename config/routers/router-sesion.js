@@ -14,8 +14,6 @@ module.exports = function (object){
     algorithm = 'aes192',
     password = 'int5erm7edS6ess6ion';
 
-  const decipher = crypto.createDecipher(algorithm,password);
-
 
 
   app.all( '*', function ( req, res, next ) {
@@ -35,8 +33,9 @@ module.exports = function (object){
       else {
         if (req.cookies['_intermed'] && req.cookies['_intermed'] != "" && req.cookies['_intermed'] != "undefined"){
           try{
+            var decipher = crypto.createDecipher(algorithm,password);
             var encrypted = unescape(req.cookies['_intermed']);
-            var decrypted = decipher.update(encrypted, 'hex', 'utf8');
+            var decrypted =  decipher.update(encrypted, 'hex', 'utf8');
             decrypted += decipher.final('utf8');
             cookieSession = decrypted.split(';');
             if (cookieSession[0] && cookieSession[1]){
