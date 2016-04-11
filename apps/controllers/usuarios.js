@@ -5,6 +5,11 @@ var http = require( 'http' ),
 var cryptomaniacs = require( './encryption' );
 var mail = require( './emailSender' );
 var correoUser = '';
+
+const crypto = require('crypto'),
+  algorithm = 'aes192',
+  password = 'int5erm7edS6ess6ion';
+
 exports.ajax = function ( object, req, res ) {
   try{
     models.DatosGenerales.findAll()
@@ -101,7 +106,7 @@ exports.iniciarSesion = function ( object, req, res ) {
 exports.logout = function ( object, req, res ) {
   try{
     if ( req.session ) {
-      res.clearCookie( 'intermed_sesion' );
+      res.clearCookie( '_intermed' );
       req.session.destroy();
     }
     res.status(200).json({
@@ -446,12 +451,11 @@ exports.generarSesion = function ( req, res, usuario_id, redirect , response) {
             req.session.passport.user.estado = usuario.Direccions[0].Municipio.Estado.estado;
           }
 
-          res.cookie( 'intermed_sesion', {
-            id: usuario.id,
-            usuario: usuario.usuarioUrl,
-            tipoUsuario: usuario.tipoUsuario,
-            tiempo: getDateTime( true )
-          } );
+          const cipher = crypto.createCipher(algorithm,password);
+          var encrypted = cipher.update(usuario.id+';'+usuario.usuarioUrl+';'+usuario.tipoUsuario+';'+getDateTime( true ).replace(' ','_'), 'utf8', 'hex');
+          encrypted += cipher.final('hex');
+          res.cookie( '_intermed',encrypted);
+
           if ( redirect === true) {
             req.session.passport.user.inicio = 1;
           }
@@ -491,7 +495,7 @@ exports.generarSesion = function ( req, res, usuario_id, redirect , response) {
               'error': 'El usuario no existe'
             } )
           } else {
-            res.clearCookie( 'intermed_sesion' );
+            res.clearCookie( '_intermed' );
             req.session.destroy();
             reloadPage(res);
           }
