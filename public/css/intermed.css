@@ -3237,9 +3237,18 @@ tr.fc-minor .fc-widget-content:not(.fc-time) {
   overflow-y: auto;
 }
 
+
 .onoffswitch {
   position: relative;
-  width: 45px;
+  width: 85px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+.onoffswitch2 {
+  position: relative;
+  width: 65px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -3250,58 +3259,85 @@ tr.fc-minor .fc-widget-content:not(.fc-time) {
 }
 
 .onoffswitch-label {
-  line-height: 20px;
   display: block;
   overflow: hidden;
-  height: 20px;
-  padding: 0;
   cursor: pointer;
-  transition: background-color .3s ease-in;
-  border: 2px solid #aaa;
-  border-radius: 20px;
-  background-color: #aaa;
+  border: none;
+  border-radius: 25px;
 }
 
-.onoffswitch-label:before {
-  position: absolute;
-  top: 0;
-  right: 23px;
-  bottom: 0;
+.onoffswitch-inner {
   display: block;
-  width: 20px;
-  margin: 0;
-  content: '';
-  transition: all .3s ease-in 0s;
-  border: 2px solid #aaa;
-  border-radius: 20px;
-  background: #fff;
+  width: 200%;
+  margin-left: -100%;
+  transition: margin .3s ease-in 0s;
 }
 
-.onoffswitch-checkbox:checked + .onoffswitch-label {
+.onoffswitch-inner:before,
+.onoffswitch-inner:after {
+  font-size: 10px;
+  line-height: 25px;
+  display: block;
+  float: left;
+  box-sizing: border-box;
+  width: 50%;
+  height: 25px;
+  padding: 0;
+  color: white;
+}
+
+.onoffswitch-inner:before {
+  padding-left: 5px;
+  content: 'Mostrar';
+  color: #fff;
   background-color: #2c8fbd;
 }
 
-.onoffswitch-checkbox:checked + .onoffswitch-label,
-.onoffswitch-checkbox:checked + .onoffswitch-label:before {
-  border-color: #2c8fbd;
+.onoffswitch-inner:after {
+  padding-right: 5px;
+  content: 'No Mostrar';
+  text-align: right;
+  color: #fff;
+  background-color: #bbbbbb;
 }
 
-.onoffswitch-checkbox:checked + .onoffswitch-label:before {
+.onoffswitch-switch {
+  position: absolute;
+  top: 0;
+  right: 60px;
+  bottom: 0;
+  display: block;
+  width: 25px;
+  margin: 0;
+  transition: all .3s ease-in 0s;
+  border: solid 1px #999999;
+  border-radius: 25px;
+  background: #fff;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+  margin-left: 0;
+}
+
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
   right: 0;
 }
 
-@media (min-width: 992px) {
+@media (max-width: 767px) {
   .onoffswitch {
-    width: 65px;
+    width: 45px;
   }
-  .onoffswitch-label {
-    height: 25px;
+  .onoffswitch-switch {
+    right: 20px;
   }
-  .onoffswitch-label:before{
-    right: 40px;
-    width: 25px;
+  .onoffswitch-inner:before {
+    content: "Si";
+  }
+  .onoffswitch-inner:after {
+    content: "No";
   }
 }
+
 
 
 .popover-title {

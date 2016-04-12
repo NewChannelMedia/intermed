@@ -5,42 +5,37 @@
         <div class="body-container">
           <div class="center-content">
             <div class="col-lg-7 col-md-7 col-sm-7 col-xs-9">
-              <div class="body-container">
-                <div class="center-content">
-                  <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
-                      {{#if usuario.id}}
-                        <img class="img-circle img-responsive center-block" alt="64x64" src="
-                        {{usuario.urlFotoPerfil}}" data-holder-rendered="true">
-                      {{else}}
-                        <img class="userProfilePic center-block" src="
-                        {{valSession 'fotoPerfil'}}" id='fotoPerfil' alt="perfil" />
-                        <label for="imageFile" class="userProfileChangePic hidden">Cambiar Imagen</label>
-                        <input type="file" id="imageFile" style="display:none">
-                      {{/if}}
-                    </div>
-                    <div class="col-lg-9 col-md-9 col-sm-8 col-xs-8">
-                      {{#if usuario.id}}
-                        <h2 class="h67-medcond s30 text-capitalize white-c shadow">
-                            {{#if usuario.DatosGenerale}}
-                              {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
-                            {{/if}}
-                        </h2>
-                      {{else}}
-                      <h2 class="h67-medcond s30 text-capitalize white-c shadow">
-                        {{valSession "name"}}
-                        <h4 class="h67-medcond s20 text-uppercase white-c">
-                          {{#ifSession "municipio"}}
-                            {{valSession "municipio"}}, {{valSession "estado"}}. MX
-                          {{/ifSession}}
-                        </h4>
-                        <ul class="media-right profileExtraNav list-inline">
-                          <li class="active"><a role="button" class="white-c" onclick="editaPerfBoot();">Edita tu perfil</a></li>
-                        </ul>
-                      {{/if}}
-                    </div>
-                  </div>
-
+              <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+                  {{#if usuario.id}}
+                    <img class="img-circle img-responsive center-block" alt="64x64" src="
+                    {{usuario.urlFotoPerfil}}" data-holder-rendered="true">
+                  {{else}}
+                    <img class="userProfilePic center-block" src="
+                    {{valSession 'fotoPerfil'}}" id='fotoPerfil' alt="perfil" />
+                    <label for="imageFile" class="userProfileChangePic hidden">Cambiar Imagen</label>
+                    <input type="file" id="imageFile" style="display:none">
+                  {{/if}}
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-8">
+                  {{#if usuario.id}}
+                    <h2 class="h67-medcond s30 text-capitalize white-c shadow">
+                        {{#if usuario.DatosGenerale}}
+                          {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
+                        {{/if}}
+                    </h2>
+                  {{else}}
+                  <h2 class="h67-medcond s30 text-capitalize white-c shadow">
+                    {{valSession "name"}}
+                    <h4 class="h67-medcond s20 text-uppercase white-c">
+                      {{#ifSession "municipio"}}
+                        {{valSession "municipio"}}, {{valSession "estado"}}. MX
+                      {{/ifSession}}
+                    </h4>
+                    <ul class="media-right profileExtraNav list-inline">
+                      <li class="active"><a role="button" class="white-c" onclick="editaPerfBoot();">Edita tu perfil</a></li>
+                    </ul>
+                  {{/if}}
                 </div>
               </div>
             </div>
