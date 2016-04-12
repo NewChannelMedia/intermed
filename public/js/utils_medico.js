@@ -3667,7 +3667,7 @@ function filtrarBusquedaSecretaria(){
           misinvitaciones.push(inv.correo);
         });
         if (data.result.length>0){
-          contenido += '<li class="list-group-item active"><strong>Resultados de tu búsqueda: </strong></li>';
+          /*contenido += '<li class="list-group-item active square">Resultados de tu búsqueda:</li>';*/
           data.result.forEach(function(secretaria){
             var classbtn = 'warning';
             var functionbtn = 'agregar';
@@ -3675,13 +3675,13 @@ function filtrarBusquedaSecretaria(){
             if (missecretarias.indexOf(secretaria.id) >= 0){
               classbtn = 'danger';
               functionbtn = 'eliminar';
-              labelbtn = 'Eliminar';
+              labelbtn = '<span class="glyphicon glyphicon-trash"></span>';
             } else if (misinvitaciones.indexOf(secretaria.Usuario.correo)>=0){
               classbtn = 'success';
               functionbtn = 'eliminarInvitacion';
-              labelbtn = 'Eliminar invitacion';
+              labelbtn = '<span class="glyphicon glyphicon-trash"></span>';
             }
-            contenido += '<li class="media list-group-item" style="margin-top: 0px">'+
+            contenido += '<li class="media list-group-item square" style="margin-top:10px;">'+
                   '<div class="media-left">'+
                     '<img class="media-object" alt="'+ secretaria.Usuario.DatosGenerale.nombre + ' ' + secretaria.Usuario.DatosGenerale.apellidoP+ ' ' + secretaria.Usuario.DatosGenerale.apellidoM +'" style="width: 45px; height: 45px;" src="'+ secretaria.Usuario.urlFotoPerfil +'" data-holder-rendered="true">'+
                   '</div>'+
@@ -3695,7 +3695,7 @@ function filtrarBusquedaSecretaria(){
                 '</li>';
           });
         } else {
-          contenido += '<li class="list-group-item list-group-item-danger"><strong>No existen secretarias registradas con los criterios de tu búsqueda. </strong></li>'
+          contenido += '<li class="list-group-item list-group-item-danger square">No existen secretarias registradas con los criterios de tu búsqueda.</li>'
         }
 
         $('#filtroSecretariaResult').html(contenido);

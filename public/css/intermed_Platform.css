@@ -1812,6 +1812,41 @@ footer .logoIntermed {
 
 }
 
+#medicoSecretaria {
+  background-color: #6a808e!important;
+}
+
+#msBody {
+  padding: 10px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+/*.mostrar-row {
+  -moz-column-width: 18em;
+  -webkit-column-width: 18em;
+  -moz-column-gap: 1em;
+  -webkit-column-gap: 1em;
+  -moz-column-count: 2;
+  -moz-column-gap: 10px;
+}
+
+.panelSecretaria {
+  display: inline-block;
+  width: 100%;
+  margin: .25rem;
+  padding: 1rem;
+}*/
+
+.panelSecretaria {
+
+}
+
+@media (max-width:767px) {
+  #medicoSecretaria {
+    padding-top: 60px;
+  }
+}
 
 
 .agendaTopContainer {
