@@ -2210,3 +2210,19 @@ tbody.collapse.in {
   width: 0;
   height: auto;
 }
+
+#configuraciones {
+  background-color: #6a808e!important;
+  padding-top: 15px;
+}
+
+#configuraciones .tab-pane {
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+@media (max-width:767px) {
+  #configuraciones {
+    padding-top: 75px;
+  }
+}

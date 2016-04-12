@@ -1,209 +1,250 @@
-<section>
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="" onclick="generales();">
-      <a href="#generales" aria-controls="generales" role="tab" data-toggle="tab">
-        <span class="glyphicon glyphicon-wrench">&nbsp;Generales</span>
-      </a>
-    </li>
-    <li role="presentation" class="">
-      <a href="#notificaciones" aria-controls="notificaciones" role="tab" data-toggle="tab">
-        <span class="glyphicon glyphicon-record">&nbsp;Notificaciones</span>
-      </a>
-    </li>
-    <li role="presentation" class="">
-      <a href="#pagos" aria-controls="pagos" role="tab" data-toggle="tab">
-        <span class="glyphicon glyphicon-piggy-bank">&nbsp;Pagos</span>
-      </a>
-    </li>
-  </ul>
-  <div class="col-md-12">
-    <div class="hidden" id="mensaje">
-      <h4 id="texto"></h4>
-    </div>
-  </div>
-  <div class="tab-content col-md-12">
-    <div role="tabpanel" class="tab-pane" id="generales">
-      <div class="container-fluid profileHolder">
+<section id="configuraciones">
+  <div id="configPanel" class="container">
+    <div class="panel panel-primary noBorder noMargin">
+      <div class="panel-heading bg-darkBlue">
+        <h4 class="h67-medcond noMargin">Configuraciones</h4>
+      </div>
+      <div class="panel-body">
         <div class="row">
-          <div class="col-md-12">
-              <!-- Correo modificacion -->
-              <div class="form-horizontal">
-                <div class="col-md-2">
-                  <p>
-                    <small>Cambia el correo con el que entras a intermed</small>
-                  </p>
-                </div>
-                <div class="form-group">
-                  <label for="mailMedic" class="col-md-2 control-label">
-                    <span class="glyphicon glyphicon-envelope"></span>
-                  </label>
-                  <div class="col-md-4">
-                    <span class="label label-warning" id="getMail"></span>
-                    <div class="input-group">
-                      <input type="mail" id="mailMedic" class="form-control" placeholder="E-mail">
-                      <span class="input-group-btn">
-                        <button class="btn btn-warning" type="button" id="saveMail">
-                          <span class="glyphicon glyphicon-floppy-disk"></span>
-                        </button>
-                      </span>
+          <div class="col-lg-2 col-md-2 col-sm-3 col-xs-2 noPadding">
+            <ul class="h45-light nav list-group bg-white noBorder" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#generales" aria-controls="generales" role="tab" data-toggle="tab" class="darkBlue-c">
+                  <span class="visible-xs s20 proicon proicon-editar center-block text-center"></span>
+                  <span class="hidden-xs"><span class="proicon proicon-editar"></span>&nbsp;Cuenta</span>
+                </a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#notificaciones" aria-controls="notificaciones" role="tab" data-toggle="tab" class="darkBlue-c">
+                  <span class="visible-xs s20 proicon proicon-notificacion center-block text-center"></span>
+                  <span class="hidden-xs"><span class="proicon proicon-notificacion"></span>&nbsp;Notificaciones</span>
+                </a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#pagos" aria-controls="pagos" role="tab" data-toggle="tab" class="darkBlue-c">
+                  <span class="visible-xs s20 proicon proicon-credit-card center-block text-center"></span>
+                  <span class="hidden-xs"><span class="proicon proicon-credit-card"></span>&nbsp;Pagos</span>
+                </a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#promociones" aria-controls="promociones" role="tab" data-toggle="tab" class="darkBlue-c">
+                  <span class="visible-xs s20 glyphicon glyphicon-gift center-block text-center"></span>
+                  <span class="hidden-xs"><span class="glyphicon glyphicon-gift"></span>&nbsp;Meses gratis</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-lg-10 col-md-10 col-sm-9 col-xs-10">
+            <div class="tab-content h45-light s15">
+              <div role="tabpanel" class="tab-pane fade in active" id="generales">
+                <div class="">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <h3 class="noMargin">Editar información de la cuenta</h3>
                     </div>
                   </div>
-                </div>
-              </div>
-              <!-- Fin correo modificacion -->
-          </div><!-- fin col-md-12 fin -->
-        </div><!-- Fin primer row -->
-        <div class="row">
-          <div class="col-md-12">
-            <!-- URL -->
-              <div class="form-horizontal">
-                <div class="col-md-2">
-                  <p>
-                    <small>Cambia el url, esta acción solo se podrá hacer una vez</small>
-                  </p>
-                </div>
-                <div class="form-group">
-                  <label for="urlMedic" class="col-md-2 control-label">
-                    <span class=""><small>www.intermed.online/</small></span>
-                  </label>
-                  <div class="col-md-4">
-                    <span class="label label-warning"><small>www.intermed.online/</small><small id="getUrl"></small></span>
-                  </div>
-                  <div class="col-md-4">
-                    <div class="input-group">
-                      <input type="text" id="urlMedic" title="" class="form-control" placeholder="Url personalizado"/>
-                      <span class="input-group-btn">
-                        <button class="btn btn-warning" type="button" id="saveUrl">
-                          <span class="glyphicon glyphicon-link"></span>
-                        </button>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            <!-- Fin URL -->
-          </div><!-- fin col-md-12 -->
-        </div><!-- Fin segundo row -->
-        <hr>
-        <div class="row">
-          <div class="col-md-12">
-            <!-- PASSWORD Y CONFIRMACION -->
-              <div class="form-horizontal">
-                <div class="col-md-2">
-                  <p>
-                    <small>Cambia tu contraseña</small>
-                  </p>
-                </div>
-                <div class="form-group">
-                  <label for="passMedic" class="col-md-2 control-label">
-                    <span class="glyphicon glyphicon-lock"></span>
-                  </label>
-                  <div class="col-md-4">
-                    <div class="input-group">
-                      <input type="password" id="passMedic" class="form-control" placeholder="Password"/>
-                      <input type="password" id="confiMedic" class="form-control" placeholder="Confirmar"/>
-                    </div>
+                  <div class="row">
                     <div class="col-md-12">
-                      <button class="btn btn-warning form-control" id="confirMedicPas">
-                        <span class="glyphicon glyphicon-lock"></span>
+                      <!-- Correo modificacion -->
+                      <div class="form-horizontal">
+                        <div class="col-md-2">
+                          <p>
+                            <small>Cambia el correo con el que entras a intermed</small>
+                          </p>
+                        </div>
+                        <div class="form-group">
+                          <label for="mailMedic" class="col-md-2 control-label">
+                            <span class="glyphicon glyphicon-envelope"></span>
+                          </label>
+                          <div class="col-md-4">
+                            <span class="label label-warning" id="getMail"></span>
+                            <div class="input-group">
+                              <input type="mail" id="mailMedic" class="form-control" placeholder="E-mail">
+                              <span class="input-group-btn">
+                            <button class="btn btn-warning" type="button" id="saveMail">
+                              <span class="glyphicon glyphicon-floppy-disk"></span>
+                              </button>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Fin correo modificacion -->
+                    </div>
+                    <!-- fin col-md-12 fin -->
+                  </div>
+                  <!-- Fin primer row -->
+                  <div class="row">
+                    <div class="col-md-12">
+                      <!-- URL -->
+                      <div class="form-horizontal">
+                        <div class="col-md-2">
+                          <p>
+                            <small>Cambia el url, esta acción solo se podrá hacer una vez</small>
+                          </p>
+                        </div>
+                        <div class="form-group">
+                          <label for="urlMedic" class="col-md-2 control-label">
+                            <span class=""><small>www.intermed.online/</small></span>
+                          </label>
+                          <div class="col-md-4">
+                            <span class="label label-warning"><small>www.intermed.online/</small><small id="getUrl"></small></span>
+                          </div>
+                          <div class="col-md-4">
+                            <div class="input-group">
+                              <input type="text" id="urlMedic" title="" class="form-control" placeholder="Url personalizado" />
+                              <span class="input-group-btn">
+                            <button class="btn btn-warning" type="button" id="saveUrl">
+                              <span class="glyphicon glyphicon-link"></span>
+                              </button>
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Fin URL -->
+                    </div>
+                    <!-- fin col-md-12 -->
+                  </div>
+                  <!-- Fin segundo row -->
+                  <hr>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <!-- PASSWORD Y CONFIRMACION -->
+                      <div class="form-horizontal">
+                        <div class="col-md-2">
+                          <p>
+                            <small>Cambia tu contraseña</small>
+                          </p>
+                        </div>
+                        <div class="form-group">
+                          <label for="passMedic" class="col-md-2 control-label">
+                            <span class="glyphicon glyphicon-lock"></span>
+                          </label>
+                          <div class="col-md-4">
+                            <div class="input-group">
+                              <input type="password" id="passMedic" class="form-control" placeholder="Password" />
+                              <input type="password" id="confiMedic" class="form-control" placeholder="Confirmar" />
+                            </div>
+                            <div class="col-md-12">
+                              <button class="btn btn-warning form-control" id="confirMedicPas">
+                                <span class="glyphicon glyphicon-lock"></span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- FIN PASSWORD Y CONFIRMACION -->
+                    </div>
+                  </div>
+                  <!-- Fin Tercer row -->
+                </div>
+                <!-- container-fluid principal fin -->
+              </div>
+              <!-- Fin tab generales-->
+              <div role="tabpanel" class="tab-pane fade" id="notificaciones">
+                <div class="">
+                  <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                      <h3 class="noMargin">Notificaciones</h3>
+                    </div>
+                    <div class="col-lg-12 col-md-12" id="notifList">
+                      <input type="hidden" value="" id="maxId">
+                      <table class="table" id="notifListTable" style="border-color: black;">
+                        <thead>
+                          <tr>
+                            <th style="">Tipo</th>
+                            <th style="" class="text-center">Interno</th>
+                            <th style="" class="text-center">Push</th>
+                            <th style="" class="text-center">Mail</th>
+                          </tr>
+                        </thead>
+                        <tbody id="configNot">
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div role="tabpanel" class="tab-pane fade" id="pagos">
+                <div class="">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <h3 class="noMargin">Información de pagos</h3>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                      <h4 class="center-block text-center">
+                  <span style="color:green"class="glyphicon glyphicon-ok-circle"></span>&nbsp;
+                  <label class="label label-success">Su cuenta premium</label>
+                </h4>
+                      <span class="">
+                  Tu suscripción se renovará automáticamente el <span style="color:red">2016-02-02</span> y se te hará un cargo por <span style="color:blue;">$1000.00</span>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                      <p class="center-block text-center">
+                        <img src="icons/PNG/cc-Visa.png" alt="" class="img-rounded">
+                        <span class="label label-success"> **** **** **** 7023</span>&nbsp;
+                        <span style="color:green;" class="glyphicon glyphicon-ok-sign"></span>
+                      </p>
+                      <p class="center-block text-center">
+                        <img src="icons/PNG/cc-mastercard.png" alt="" class="img-rounded">
+                        <span class="label label-success"> **** **** **** 2370</span>&nbsp;
+                        <span style="color:red;" class="glyphicon glyphicon-remove-sign"></span>
+                      </p>
+                      <p class="center-block text-center">
+                        <img src="icons/PNG/cc-paypal.png" alt="" class="img-rounded">
+                        <span class="label label-success"> **** **** **** 3270</span>&nbsp;
+                        <span style="color:blue;" class="glyphicon glyphicon-screenshot"></span>
+                      </p>
+                      <p class="center-block text-center">
+                        <img src="icons/PNG/cc-amex.png" alt="" class="img-rounded">
+                        <span class="label label-success"> **** **** **** 0372</span>&nbsp;
+                        <span style="color:blue;" class="glyphicon glyphicon-screenshot"></span>
+                      </p>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                      <button style="border-radius:20px;" class="btn btn-danger center-block" id="actualizaDatos" type="button">
+                        <span class="glyphicon glyphicon-pencil"></span>&nbsp;Actualizar datos
                       </button>
                     </div>
                   </div>
+                  <div class="row">
+                    <div class="col-md-8 col-md-offset-2">
+                      <span class="center-block text-center">
+                  ¿Deseas <a href="#" style="color:green;">cancelar tu suscripción</a>?
+                </span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            <!-- FIN PASSWORD Y CONFIRMACION -->
-          </div>
-        </div><!-- Fin Tercer row -->
-      </div><!-- container-fluid principal fin -->
-    </div><!-- Fin tab generales-->
-    <div role="tabpanel" class="tab-pane" id="notificaciones">
-      <div role="tabpanel" class="tab-pane" id="notificaciones">
-        <div class="container-fluid profileHolder">
-          <div>
-            <div>
-              <div class="container">
-                <div class="row" style="margin-top:40px;">
-                  <div class="col-lg-12 col-md-12" style="margin-bottom:15px;">
-                    <h3 style="display:inline">Notificaciones</h3>
+              <div role="tabpanel" class="tab-pane fade" id="promociones">
+                <div class="">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <h3 class="noMargin">Obtén Meses Gratis</h3>
+                    </div>
                   </div>
-                  <div class="col-lg-12 col-md-12" id="notifList" >
-                    <input type="hidden" value="" id="maxId">
-                    <table class="table" id="notifListTable" style="border-color: black;">
-                      <thead>
-                            <tr>
-                              <th style="width: 70%">Tipo</th>
-                              <th style="width: 10%" class="text-center">Interno</th>
-                              <th style="width: 10%" class="text-center">Push</th>
-                              <th style="width: 10%" class="text-center">Mail</th>
-                            </tr>
-                          </thead>
-                          <tbody id="configNot">
-                          </tbody>
-                    </table>
-                  </div>
+                  <div class="row"></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div><!-- FIN TAB PANE 2-->
-    </div><!-- Fin tab notificaciones -->
-    <div role="tabpanel" class="tab-pane" id="pagos">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-md-8 col-md-offset-2">
-            <h4 class="center-block text-center">
-              <span style="color:green"class="glyphicon glyphicon-ok-circle"></span>&nbsp;
-              <label class="label label-success">Su cuenta premium</label>
-            </h4>
-            <span class="">
-              Tu suscripción se renovará automáticamente el <span style="color:red">2016-02-02</span>
-              y se te hará un cargo por <span style="color:blue;">$1000.00</span>
-            </span>
+
+        <div class="col-md-12">
+          <div class="hidden" id="mensaje">
+            <h4 id="texto"></h4>
           </div>
         </div>
-        <hr>
-        <div class="row">
-          <div class="col-md-8 col-md-offset-2">
-            <p class="center-block text-center">
-              <img  src="icons/PNG/cc-Visa.png" alt="" class="img-rounded">
-              <span class="label label-success"> **** **** **** 7023</span>&nbsp;
-              <span style="color:green;" class="glyphicon glyphicon-ok-sign"></span>
-            </p>
-            <p class="center-block text-center">
-              <img  src="icons/PNG/cc-mastercard.png" alt="" class="img-rounded">
-              <span class="label label-success"> **** **** **** 2370</span>&nbsp;
-              <span style="color:red;" class="glyphicon glyphicon-remove-sign"></span>
-            </p>
-            <p class="center-block text-center">
-              <img  src="icons/PNG/cc-paypal.png" alt="" class="img-rounded">
-              <span class="label label-success"> **** **** **** 3270</span>&nbsp;
-              <span style="color:blue;" class="glyphicon glyphicon-screenshot"></span>
-            </p>
-            <p class="center-block text-center">
-              <img  src="icons/PNG/cc-amex.png" alt="" class="img-rounded">
-              <span class="label label-success"> **** **** **** 0372</span>&nbsp;
-              <span style="color:blue;" class="glyphicon glyphicon-screenshot"></span>
-            </p>
-          </div>
-        </div>
-        <hr>
-        <div class="row">
-          <div class="col-md-8 col-md-offset-2">
-            <button style="border-radius:20px;"class="btn btn-danger center-block" id="actualizaDatos" type="button">
-              <span class="glyphicon glyphicon-pencil"></span>&nbsp;Actualizar datos
-            </button>
-          </div>
-        </div>
-        <hr>
-        <div class="row">
-          <div class="col-md-8 col-md-offset-2">
-            <span class="center-block text-center">
-              ¿Deseas <a href="#" style="color:green;">cancelar tu suscripción</a>?
-            </span>
-          </div>
-        </div>
+
       </div>
-    </div><!-- Fin tab pagos-->
-  </div><!-- FIN PRINCIPAL -->
+    </div>
+  </div>
 </section>
