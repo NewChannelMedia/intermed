@@ -85,7 +85,13 @@ a:visited {
 }
 
 .boxShadow {
-  box-shadow: 0px 2px 10px 0px rgba(0,0,0,.4);
+  -webkit-box-shadow: 0px 2px 10px 0px rgba(0,0,0,.3);
+  box-shadow: 0px 2px 10px 0px rgba(0,0,0,.3);
+}
+
+.noShadow {
+  -webkit-box-shadow: none!important;
+  box-shadow: none!important
 }
 
 @media (max-width: 767px) {
@@ -1933,7 +1939,7 @@ hr {
   -moz-border-top-colors: none;
   border: 0;
   height: 0;
-  border-top: 2px solid #717171;
+  border-top: 1px solid #717171;
   border-bottom: 0;
 }
 #recomendarA tr td img{
