@@ -34,6 +34,9 @@ module.exports = function ( sequelize, DataTypes ) {
     visible: {
       type: DataTypes.INTEGER
     },
+    visto: {
+      type: DataTypes.INTEGER
+    },
     anonimo: {
       type: DataTypes.INTEGER
     }

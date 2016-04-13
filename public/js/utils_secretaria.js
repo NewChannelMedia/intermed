@@ -149,168 +149,202 @@ function cargarCitasProximasSecretaria(){
       $('#dateComa').text(',');
       $('#dateDe').text('de');
 
-      var medicos = [];
-      $('.dia1>.heading').text(getDate());
-      $('.dia2>.heading').text(getDate(1));
-      $('.dia3>.heading').text(getDate(2));
-      $('.MedicoSecretaria').each(function(){
-        medicos.push($(this).attr('id').split('_')[1]);
-      });
-      var fechainicio = getDate(0,true);
-      var fechafin = getDate(3,true);
-      var dia1 = fechainicio;
-      var dia2 = getDate(1,true);
-      var dia3 = getDate(2,true);
+      var fechainicio = new Date();
+      if ($('#dia1').val() && $('#dia1').val() != ""){
+        fechainicio = new Date($('#dia1').val());
+      }
+      cargarVistaPevCitas(fechainicio);
 
-      //Traer citas de medicos de proximos 3 dias
-      $.post('/secretaria/medicos/traerCitasProximas',{
-        medicos:medicos,
-        fechainicio: fechainicio,
-        fechafin: fechafin
-      },function( data ){
-        $('.panel-body.contenidoagenda').html('<ul class="list-group" style="margin-bottom: 0px"></ul>');
-        if( data.success ){
-          var eventos = [];
-          data.result2.forEach(function(res){
-            var div = 'MedicoSecretaria_'+res.Usuario.Medico.id;
 
-            var date = new Date(res.fechaHoraInicio).toLocaleString('en-US');
-            //4/7/2016, 12:00:00 PM
-            //mes/dia/año, hora, minutos
-            hora = parseInt(date.split(', ')[1].split(':')[0]);
-            var minutos = date.split(', ')[1].split(':')[1];
+      fechainicio = new Date($('#dia1').val());
+      cargarVistaPevCitas(fechainicio);
+    }
+}
 
-            var horaClase = '';
-            horaClase = hora;
-            var T = 'AM';
-            if (date.search('PM')>0){
-              T = 'PM';
-              horaClase = hora + 12;
-            } else {
-              if (hora == 12){
-                horaClase = 0;
-              }
-            }
+function cargarVistaPevCitasPrev(){
+    var fechainicio = new Date();
+    if ($('#dia1').val() && $('#dia1').val() != ""){
+      fechainicio = new Date($('#dia1').val());
+    }
+    fechainicio = new Date(new Date(fechainicio).setDate(fechainicio.getDate()-3));
+    cargarVistaPevCitas(fechainicio);
+}
 
-            hora = hora + ':'+minutos;
-            horaClase = horaClase + ':'+minutos;
+function cargarVistaPevCitasNext(){
+    var fechainicio = new Date();
+    if ($('#dia1').val() && $('#dia1').val() != ""){
+      fechainicio = new Date($('#dia1').val());
+    }
+    fechainicio = new Date(new Date(fechainicio).setDate(fechainicio.getDate()+3));
+    cargarVistaPevCitas(fechainicio);
+}
 
-            //2016-04-05
-            var anio = date.split(', ')[0].split('/')[2];
-            var mes = date.split(', ')[0].split('/')[0];
-            if (mes.length == 1){
-              mes = '0'+mes;
-            }
-            var dia = date.split(', ')[0].split('/')[1];
-            if (dia.length == 1){
-              dia = '0'+dia;
-            }
-            fecha = anio  +'-'+ mes +'-'+ dia;
+function cargarVistaPevCitas(fechainicio){
+  $('#dia1').val(fechainicio);
 
-            var dia = 'dia';
-            if (fecha == dia1){
-              dia += '1';
-            } else if (fecha == dia2){
-              dia += '2';
-            } else if (fecha == dia3){
-              dia += '3';
-            }
-            var nombrePaciente = res.nombre;
-            eventos.push({
-              div: div,
-              dia: dia,
-              inicio: parseInt(horaClase.replace(':','')),
-              contenido: '<li class="list-group-item eventoMedico" style="background-color:white;cursor:pointer" onclick="detalleEventoMedico('+ res.id +')"><strong>'+ hora +' ' + T +'</strong><br>'+ nombrePaciente + '<br>'+ res.ubicacion +'</li>'
-            })
-            //$('#'+div + ' .'+dia+' .panel-body ul').append();
-          });
-          data.result.forEach(function(res){
-            var div = 'MedicoSecretaria_'+res.Usuario.Medico.id;
+  var medicos = [];
+  $('.MedicoSecretaria').each(function(){
+    medicos.push($(this).attr('id').split('_')[1]);
+  });
 
-            var date = new Date(res.fechaHoraInicio).toLocaleString('en-US');
-            //4/7/2016, 12:00:00 PM
-            //mes/dia/año, hora, minutos
-            hora = parseInt(date.split(', ')[1].split(':')[0]);
-            var minutos = date.split(', ')[1].split(':')[1];
+  var fechafin = new Date(new Date(fechainicio).setDate(fechainicio.getDate()+3));
 
-            var horaClase = '';
-            var T = 'AM';
-            horaClase = hora;
-            if (date.search('PM')>0){
-              T = 'PM';
-              horaClase = hora + 12;
-            } else {
-              if (hora == 12){
-                horaClase = 0;
-              }
-            }
+  $('.dia1>.heading').text(formatDate(new Date(fechainicio)));
+  $('.dia2>.heading').text(formatDate(new Date(fechainicio), 1));
+  $('.dia3>.heading').text(formatDate(new Date(fechainicio), 2));
 
-            hora = hora + ':'+minutos;
-            horaClase = horaClase + ':'+minutos;
+  var dia1 = fechainicio;
+  var dia2 = formatDate(new Date(), 1,true);
+  var dia3 = formatDate(new Date(), 2,true);
 
-            //2016-04-05
-            var anio = date.split(', ')[0].split('/')[2];
-            var mes = date.split(', ')[0].split('/')[0];
-            if (mes.length == 1){
-              mes = '0'+mes;
-            }
-            var dia = date.split(', ')[0].split('/')[1];
-            if (dia.length == 1){
-              dia = '0'+dia;
-            }
-            fecha = anio  +'-'+ mes +'-'+ dia;
+  //Traer citas de medicos de proximos 3 dias
+  $.post('/secretaria/medicos/traerCitasProximas',{
+    medicos:medicos,
+    fechainicio: fechainicio,
+    fechafin: fechafin
+  },function( data ){
+    $('.panel-body.contenidoagenda').html('<ul class="list-group" style="margin-bottom: 0px"></ul>');
+    if( data.success ){
+      var eventos = [];
+      data.result2.forEach(function(res){
+        var div = 'MedicoSecretaria_'+res.Usuario.Medico.id;
 
-            var dia = 'dia';
-            if (fecha == dia1){
-              dia += '1';
-            } else if (fecha == dia2){
-              dia += '2';
-            } else if (fecha == dia3){
-              dia += '3';
-            }
-            var nombrePaciente = '';
-            if (res.Paciente){
-              nombrePaciente = res.Paciente.Usuario.DatosGenerale.nombre + ' ' + res.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + res.Paciente.Usuario.DatosGenerale.apellidoM;
-            } else if (res.PacienteTemporal){
-              nombrePaciente = res.PacienteTemporal.nombres  + ' ' + res.PacienteTemporal.apellidos;
-            }
+        var date = new Date(res.fechaHoraInicio).toLocaleString('en-US');
+        //4/7/2016, 12:00:00 PM
+        //mes/dia/año, hora, minutos
+        hora = parseInt(date.split(', ')[1].split(':')[0]);
+        var minutos = date.split(', ')[1].split(':')[1];
 
-            eventos.push({
-              div: div,
-              dia: dia,
-              inicio: parseInt(horaClase.replace(':','')),
-              contenido: '<li class="list-group-item" style="background-color:white;cursor:pointer" onclick="detalleCitaSecretaria('+ res.id +')"><strong>'+ hora +' ' + T + '</strong><br>'+ nombrePaciente + '<br>'+ res.Direccion.nombre +'<br>'+ res.CatalogoServicio.concepto +'</li>'
-            });
-          });
-
-          eventos = eventos.sort(function (a,b) {
-            if (a['inicio'] > b['inicio']) {
-              return  1;
-            }
-            if (a['inicio'] < b['inicio']){
-              return -1;
-            } else {
-              return 0;
-            }
-          });
-
-          eventos.forEach(function(ev){
-            $('#'+ev.div + ' .'+ev.dia+' .panel-body ul').append(ev.contenido);
-          });
-        }else{
-          if (data.error){
-            manejadorDeErrores(data.error);
+        var horaClase = '';
+        horaClase = hora;
+        var T = 'AM';
+        if (date.search('PM')>0){
+          T = 'PM';
+          horaClase = hora + 12;
+        } else {
+          if (hora == 12){
+            horaClase = 0;
           }
         }
-        $('.panel-body.contenidoagenda ul').each(function(){
-          if ($(this).text() == ""){
-            $(this).parent().html('<div class="body-container"><div class="center-content text-center" style="padding: 15px;font-weight: bold;color: #DDD;"><span class="s20" >Sin citas agendadas</span></div></div>');
-          }
-        });
-      }).fail(function(e){
-        console.error(e);
+
+        hora = hora + ':'+minutos;
+        horaClase = horaClase + ':'+minutos;
+
+        //2016-04-05
+        var anio = date.split(', ')[0].split('/')[2];
+        var mes = date.split(', ')[0].split('/')[0];
+        if (mes.length == 1){
+          mes = '0'+mes;
+        }
+        var dia = date.split(', ')[0].split('/')[1];
+        if (dia.length == 1){
+          dia = '0'+dia;
+        }
+        fecha = anio  +'-'+ mes +'-'+ dia;
+
+        var dia = 'dia';
+        if (fecha == dia1){
+          dia += '1';
+        } else if (fecha == dia2){
+          dia += '2';
+        } else if (fecha == dia3){
+          dia += '3';
+        }
+        var nombrePaciente = res.nombre;
+        eventos.push({
+          div: div,
+          dia: dia,
+          inicio: parseInt(horaClase.replace(':','')),
+          contenido: '<li class="list-group-item eventoMedico" style="background-color:white;cursor:pointer" onclick="detalleEventoMedico('+ res.id +')"><strong>'+ hora +' ' + T +'</strong><br>'+ nombrePaciente + '<br>'+ res.ubicacion +'</li>'
+        })
+        //$('#'+div + ' .'+dia+' .panel-body ul').append();
       });
+      data.result.forEach(function(res){
+        var div = 'MedicoSecretaria_'+res.Usuario.Medico.id;
+
+        var date = new Date(res.fechaHoraInicio).toLocaleString('en-US');
+        //4/7/2016, 12:00:00 PM
+        //mes/dia/año, hora, minutos
+        hora = parseInt(date.split(', ')[1].split(':')[0]);
+        var minutos = date.split(', ')[1].split(':')[1];
+
+        var horaClase = '';
+        var T = 'AM';
+        horaClase = hora;
+        if (date.search('PM')>0){
+          T = 'PM';
+          horaClase = hora + 12;
+        } else {
+          if (hora == 12){
+            horaClase = 0;
+          }
+        }
+
+        hora = hora + ':'+minutos;
+        horaClase = horaClase + ':'+minutos;
+
+        //2016-04-05
+        var anio = date.split(', ')[0].split('/')[2];
+        var mes = date.split(', ')[0].split('/')[0];
+        if (mes.length == 1){
+          mes = '0'+mes;
+        }
+        var dia = date.split(', ')[0].split('/')[1];
+        if (dia.length == 1){
+          dia = '0'+dia;
+        }
+        fecha = anio  +'-'+ mes +'-'+ dia;
+
+        var dia = 'dia';
+        if (fecha == dia1){
+          dia += '1';
+        } else if (fecha == dia2){
+          dia += '2';
+        } else if (fecha == dia3){
+          dia += '3';
+        }
+        var nombrePaciente = '';
+        if (res.Paciente){
+          nombrePaciente = res.Paciente.Usuario.DatosGenerale.nombre + ' ' + res.Paciente.Usuario.DatosGenerale.apellidoP + ' ' + res.Paciente.Usuario.DatosGenerale.apellidoM;
+        } else if (res.PacienteTemporal){
+          nombrePaciente = res.PacienteTemporal.nombres  + ' ' + res.PacienteTemporal.apellidos;
+        }
+
+        eventos.push({
+          div: div,
+          dia: dia,
+          inicio: parseInt(horaClase.replace(':','')),
+          contenido: '<li class="list-group-item" style="background-color:white;cursor:pointer" onclick="detalleCitaSecretaria('+ res.id +')"><strong>'+ hora +' ' + T + '</strong><br>'+ nombrePaciente + '<br>'+ res.Direccion.nombre +'<br>'+ res.CatalogoServicio.concepto +'</li>'
+        });
+      });
+
+      eventos = eventos.sort(function (a,b) {
+        if (a['inicio'] > b['inicio']) {
+          return  1;
+        }
+        if (a['inicio'] < b['inicio']){
+          return -1;
+        } else {
+          return 0;
+        }
+      });
+
+      eventos.forEach(function(ev){
+        $('#'+ev.div + ' .'+ev.dia+' .panel-body ul').append(ev.contenido);
+      });
+    }else{
+      if (data.error){
+        manejadorDeErrores(data.error);
+      }
     }
+    $('.panel-body.contenidoagenda ul').each(function(){
+      if ($(this).text() == ""){
+        $(this).parent().html('<div class="body-container"><div class="center-content text-center" style="padding: 15px;font-weight: bold;color: #DDD;"><span class="s20" >Sin citas agendadas</span></div></div>');
+      }
+    });
+  }).fail(function(e){
+    console.error(e);
+  });
 }
 
 function formatearHora(horasminutos){
@@ -327,12 +361,12 @@ function formatearHora(horasminutos){
 
 }
 
-function getDate(numdias, year){
+function formatDate(fecha, numdias, year){
   var meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
   if (!numdias){
     numdias = 0;
   }
-  var today = new Date(new Date().getTime() + (24*numdias) * 60 * 60 * 1000);
+  var today = new Date(fecha.setDate(new Date(fecha).getDate()+numdias));
   var dd = today.getDate();
   var mm = today.getMonth();
   if(dd<10) {
@@ -411,6 +445,7 @@ function guardarDescripcionEventoSecretaria(evento_id, bootbox){
 
 function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, paciente_id,kendo){
   try{
+    var utc = (parseInt(new Date().getTimezoneOffset())/60);
     if (!paciente_id){
       $('#dangerMsg').addClass('hidden').text('');
       var nombre = $('#nombrePaciente').val();
@@ -427,7 +462,8 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
           inicio: new Date(inicio),
           fin: new Date(fin),
           medico_id: medico,
-          servicio_id: servicio_id
+          servicio_id: servicio_id,
+          utc: utc
         }
         $.post('/agenda/crearCita',datos, function(data){
           if (data.success){
@@ -470,7 +506,8 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
         inicio: new Date(inicio),
         fin: new Date(fin),
         medico_id: medico,
-        servicio_id: servicio_id
+        servicio_id: servicio_id,
+        utc: utc
       }, function(data){
         if (data.success){
           if ($('.horas-container').length>0){

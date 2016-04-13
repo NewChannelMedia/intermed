@@ -4892,15 +4892,28 @@ function verDetalleComentario(comentario_id){
             data.result.Medico.Usuario.DatosGenerale.apellidoM = '';
           }
 
-          if (data.result.Usuario.DatosGenerale.apellidoM && data.result.Usuario.DatosGenerale.apellidoM != ""){
-            data.result.Usuario.DatosGenerale.apellidoM = ' ' + data.result.Usuario.DatosGenerale.apellidoM;
-          } else {
-            data.result.Usuario.DatosGenerale.apellidoM = '';
-          }
-
           var nombreMedico = data.result.Medico.Usuario.DatosGenerale.nombre + ' ' + data.result.Medico.Usuario.DatosGenerale.apellidoP + data.result.Medico.Usuario.DatosGenerale.apellidoM;
-          var nombrePaciente = data.result.Usuario.DatosGenerale.nombre + ' ' + data.result.Usuario.DatosGenerale.apellidoP + data.result.Usuario.DatosGenerale.apellidoM;
-
+          var nombrePaciente = '';
+          var urlFotoPerfil = '';
+          var titulo = '';
+          if (data.result.Usuario){
+            if (data.result.Usuario.DatosGenerale.apellidoM && data.result.Usuario.DatosGenerale.apellidoM != ""){
+              data.result.Usuario.DatosGenerale.apellidoM = ' ' + data.result.Usuario.DatosGenerale.apellidoM;
+            } else {
+              data.result.Usuario.DatosGenerale.apellidoM = '';
+            }
+            titulo = data.result.titulo;
+            urlFotoPerfil = data.result.Usuario.urlFotoPerfil;
+            nombrePaciente = data.result.Usuario.DatosGenerale.nombre + ' ' + data.result.Usuario.DatosGenerale.apellidoP + data.result.Usuario.DatosGenerale.apellidoM;
+          } else {
+            if (data.result.Paciente.Usuario.DatosGenerale.apellidoM && data.result.Paciente.Usuario.DatosGenerale.apellidoM != ""){
+              data.result.Paciente.Usuario.DatosGenerale.apellidoM = ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoM;
+            } else {
+              data.result.Paciente.Usuario.DatosGenerale.apellidoM = '';
+            }
+            urlFotoPerfil = data.result.Paciente.Usuario.urlFotoPerfil;
+            nombrePaciente = data.result.Paciente.Usuario.DatosGenerale.nombre + ' ' + data.result.Paciente.Usuario.DatosGenerale.apellidoP + data.result.Paciente.Usuario.DatosGenerale.apellidoM;
+          }
           secondaryBootbox = bootbox.dialog({
             backdrop: true,
             size:'large',
@@ -4913,10 +4926,10 @@ function verDetalleComentario(comentario_id){
                         '<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">'+
                           '<div class="media comment-container">'+
                             '<div class="media-left">'+
-                              '<img class="img-circle comment-img" style="width: 150px;" src="'+ data.result.Usuario.urlFotoPerfil +'">'+
+                              '<img class="img-circle comment-img" style="width: 150px;" src="'+ urlFotoPerfil +'">'+
                             '</div>'+
                             '<article class="media-body">'+
-                              '<div class="text-uppercase s30 h67-medcond">'+ data.result.titulo +'</div>'+
+                              '<div class="text-uppercase s30 h67-medcond">'+ titulo +'</div>'+
                               '<p class="s15 h67-medium">'+ data.result.comentario +'</p>'+
                               '<p class="comment-autor s15 h75-bold noMargin">'+
                                 '<span class="text-capitalize">'+ nombrePaciente +'</span>'+

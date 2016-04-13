@@ -126,31 +126,63 @@ exports.cargarUbicacion = function (object, req, res){
 exports.detallesComentario = function (object, req, res){
     try{
       if (req.session.passport.user && req.session.passport.user.Paciente_id){
-        models.ComentariosMedicos.findOne({
-          where: {
-            usuario_id: req.session.passport.user.id,
-            id: object.comentario_id
-          },
-          include: [{
-            model: models.Medico,
-            attributes:['id'],
+        if (parseInt(object.comentario_id.split('|')[0]) == 1){
+          models.ComentariosMedicos.findOne({
+            where: {
+              usuario_id: req.session.passport.user.id,
+              id: parseInt(object.comentario_id.split('|')[1])
+            },
             include: [{
+              model: models.Medico,
+              attributes:['id'],
+              include: [{
+                model: models.Usuario,
+                attributes: ['usuarioUrl','urlFotoPerfil','urlPersonal'],
+                include: [{
+                  model: models.DatosGenerales
+                }]
+              }]
+            },{
               model: models.Usuario,
               attributes: ['usuarioUrl','urlFotoPerfil','urlPersonal'],
               include: [{
                 model: models.DatosGenerales
               }]
             }]
-          },{
-            model: models.Usuario,
-            attributes: ['usuarioUrl','urlFotoPerfil','urlPersonal'],
+          }).then(function(result){
+            res.status(200).json({'success':true,'result':result});
+          });
+        } else {
+          models.CalificacionCita.findOne({
+            where: {
+              paciente_id: req.session.passport.user.Paciente_id,
+              id: parseInt(object.comentario_id.split('|')[1])
+            },
             include: [{
-              model: models.DatosGenerales
+              model: models.Medico,
+              attributes:['id'],
+              include: [{
+                model: models.Usuario,
+                attributes: ['usuarioUrl','urlFotoPerfil','urlPersonal'],
+                include: [{
+                  model: models.DatosGenerales
+                }]
+              }]
+            },{
+              model: models.Paciente,
+              attributes: ['id'],
+              include: [{
+                model: models.Usuario,
+                attributes: ['usuarioUrl','urlFotoPerfil','urlPersonal'],
+                include: [{
+                  model: models.DatosGenerales
+                }]
+              }]
             }]
-          }]
-        }).then(function(result){
-          res.status(200).json({'success':true,'result':result});
-        });
+          }).then(function(result){
+            res.status(200).json({'success':true,'result':result});
+          });
+        }
       } else {
         res.status(200).json({'success':false});
       }
