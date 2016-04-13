@@ -69,6 +69,26 @@ footer,header,hgroup,menu,nav,section {
   color: #717171!important;
 }
 
+.ubitBlue-c {
+  color: #385e9d!important;
+}
+
+.ubitRed-c {
+  color: #d9473a!important;
+}
+
+.ubitYellow-c {
+  color: #eae040!important;
+}
+
+.ubitGreen-c {
+  color: #6ab65b!important;
+}
+
+.ubitGrey-c {
+  color: #504f44!important;
+}
+
 .s5 {
     font-size: 5px!important;
 }

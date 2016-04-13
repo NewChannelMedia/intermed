@@ -65,6 +65,27 @@ a:visited {
   background-color: rgba(250,250,250,.5)!important;
 }
 
+.bg-ubitBlue {
+  background-color: #385e9d!important;
+}
+
+.bg-ubitRed {
+  background-color: #d9473a!important;
+}
+
+.bg-ubitYellow {
+  background-color: #eae040!important;
+}
+
+.bg-ubitGreen {
+  background-color: #6ab65b!important;
+}
+
+.bg-ubitGrey {
+  background-color: #504f44!important;
+}
+
+
 .noPadding {
   padding: 0!important;
 }
