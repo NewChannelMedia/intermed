@@ -149,15 +149,9 @@ function cargarCitasProximasSecretaria(){
       $('#dateComa').text(',');
       $('#dateDe').text('de');
 
-      var fechainicio = new Date();
-      if ($('#dia1').val() && $('#dia1').val() != ""){
-        fechainicio = new Date($('#dia1').val());
-      }
-      cargarVistaPevCitas(fechainicio);
-
-
-      fechainicio = new Date($('#dia1').val());
-      cargarVistaPevCitas(fechainicio);
+      var fechainicio = new Date().toISOString().split('T')[0];
+      var utc = (parseInt(new Date().getTimezoneOffset())/60);
+      cargarVistaPevCitas(new Date(new Date(fechainicio).setHours(new Date(fechainicio).getHours()+utc)));
     }
 }
 
