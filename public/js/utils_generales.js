@@ -1526,14 +1526,14 @@ $( document ).ready( function () {
       var h = $( window ).height() - $( 'footer' ).height() - $( '#newMainNav' ).height() ;
       $('#configuraciones').css('height', h + 'px');
       $('#configPanel').css('height', h - 30 + 'px');
-      $('#configPanel .panel-body.mainpb').css('height', $('#configPanel').height() - $('#configPanel .panel-heading').outerHeight() + 'px');
+      $('#configPanel .panel-body.mainpb').css('height', $('#configPanel').height() + 'px');
       $('#configPanel .tab-pane').css('height', $('#configPanel .panel-body').height() + 'px');
     }
     else if ( $( window ).width() < 768 ) {
-      var h = $( window ).height() - $( 'footer' ).height() ;
+      var h = $( window ).height() - $('#newMainNav').height() ;
       $('#configuraciones').css('height', h + 'px');
-      $('#configPanel').css('height', h - 30 - $('#newMainNav').height() + 'px');
-      $('#configPanel .panel-body.mainpb').css('height', $('#configPanel').height() - $('#configPanel .panel-heading').outerHeight() + 'px');
+      $('#configPanel').css('height', h - $( 'footer' ).height() + 'px');
+      $('#configPanel .panel-body.mainpb').css('height', $('#configPanel').height() + 'px');
       $('#configPanel .tab-pane').css('height', $('#configPanel .panel-body').height() + 'px');
     }
 

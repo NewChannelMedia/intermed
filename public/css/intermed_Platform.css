@@ -2225,6 +2225,9 @@ tbody.collapse.in {
 
 @media (max-width:767px) {
   #configuraciones {
-    padding-top: 75px;
+    padding-top: 60px;
+  }
+  #configPanel {
+    padding: 0!important;
   }
 }
