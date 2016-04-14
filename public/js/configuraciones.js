@@ -128,211 +128,117 @@ $("#saveMail").click(function(){
     });
   }
 });
+
 $("#saveUrl").click(function(){
-  var url = $("#urlMedic").val();
-  if( url != '' ){
-    bootbox.dialog({
-      className: 'Intermed-Bootbox',
-      title:'<span class="title">Confirmar con tu correo</span><span class="subtitle">Para realizar esta acción ocupamos que confirmes con tu contraseña</span>',
-      buttons:{
-        confirmar:{
-          label:'Confirmar',
-          className:'btn-danger',
-          callback: function(){
-            var email = $("#bootConfirm").val();
-            //consulta a la db para checar que la consulta sea la misma
-            $.post('/consultaInfo',{mail:email}, function(data){
-              if(data){
-                // se envia a que se guarde este campo
-                $.post('/saveUrl',{url:url},function(data){
-                  if(data){
-                    $("#urlMedic").val('');
-                    $("#mensaje").removeClass('hidden');
-                    $("#texto").text('Su url '+url+' fue cambiado con exito');
-                    $("#getUrl").text(url);
-                  }else{
-                    $("#urlMedic").val('');
-                    $("#mensaje").removeClass('hidden');
-                    $("#texto").text('Su url '+mail+' no se pudo cambiar');
-                  }
-                });
-              }else{
-                console.log("No");
-              }
-            });
-          }
-        },
-        cancel:{
-          label:'Cancelar',
-          className:'btn-default',
-          callback: function(){bootbox.hideAll();}
-        }
-      },
-      message:
-      '<div class="container-fluid">'+
-        '<div class="row">'+
-          '<div class="col-md-12">'+
-            '<span class="label label-info">Confirmar con tu contraseña</span>'+
-            '<input type="password" class="form-control" id="bootConfirm" />'+
-          '</div>'+
-          '<div class="col-md-12">'+
-            '¿Olvidaste tu contraseña?<a href="#" onclick="updatePasswordIntermed();" style="color:green;">'+
-              'Cambiala aquí'+
-            '</a>'+
-          '</div>'+
-        '</div>'+
-      '</div>'
-    });
-  }else{
-    bootbox.dialog({
-        className: 'Intermed-Bootbox',
-        title:'<span class="title">Revisa los campos</span><span class="subtitle">Hubo un error por favor revisa</span>',
-        buttons:{
-          ok:{
-            label:'Ok',
-            className:'btn-warning',
-            callback: function(){
-              bootbox.hideAll();
+    $("#urlMedic").val($("#urlMedic").val().replace(' ',''));
+    var urlMedic = $("#urlMedic").val();
+    var Msg = '';
+    if( urlMedic != '' ){
+      if(urlMedic.length >= 6){
+        bootbox.prompt({
+          title: "¿Cual es tu contraseña actual?",
+          inputType: "password",
+          value: "",
+          callback: function(result) {
+            if (result && result != "") {
+              $.post('/config/urlmedic',{
+                actual: hex_md5(result),
+                urlmedic: urlMedic
+              },function(data){
+                var Msg = '';
+                if (data.success){
+                  $('#urlPersonal').html('www.intermed.online/'+urlMedic);
+                  $('#urlPersonal').next().remove();
+                  $('#urlPersonal').next().remove();
+                  $("#urlMedic").val('');
+                  actualizarSesion();
+                  Msg='URL personal agregada.';
+                } else if (data.pass){
+                    Msg='Contraseña actual incorrecta.';
+                } else if (data.invalid){
+                    Msg='Url personal invalida.';
+                } else if (data.exists){
+                    Msg='Url personal invalida.';
+                } else if (data.number){
+                    Msg='Url personal invalida (no puede iniciar con número).';
+                }
+                if (Msg != ''){
+                  bootbox.alert({
+                    title: "Mensaje de intermed",
+                    message: Msg
+                  });
+                }
+              });
             }
           }
-        },
-        message:
-          '<div class="container-fluid">'+
-            '<div class="row">'+
-              '<div class="col-md-12">'+
-                '<span class="label label-info">Campo vacio</span>'+
-              '</div>'+
-            '</div>'+
-          '</div>'
-    });
-  }
+        });
+      }else{
+        Msg = 'La contraseña debe de tener por lo menos 6 caracteres';
+      }
+    }else{
+      $("#urlMedic").focus();
+    }
+    if (Msg != ''){
+      bootbox.alert({
+        title: "Mensaje de intermed",
+        message: Msg
+      });
+    }
 });
+
 $("#confirMedicPas").click(function(){
   var pass = $("#passMedic").val();
   var confirmPass = $("#confiMedic").val();
+
+  var Msg = '';
   if( pass != '' && confirmPass != '' ){
     if( pass === confirmPass ){
       if( (pass.length > 0 && pass.length >= 6) && (confirmPass.length > 0 && confirmPass.length >= 6) ){
-        bootbox.dialog({
-          className: 'Intermed-Bootbox',
-          title:'<span class="title">Confirmar con tu correo</span><span class="subtitle">Para realizar esta acción ocupamos que confirmes con tu contraseña</span>',
-          buttons:{
-            confirmar:{
-              label:'Confirmar',
-              className:'btn-danger',
-              callback: function(){
-                var email = $("#bootConfirm").val();
-                //consulta a la db para checar que la consulta sea la misma
-                $.post('/consultaInfo',{mail:email}, function(data){
-                  if(data){
-                    // consulta para modificar los campos
-                    $.post('/changePass',{password:pass},function(data){
-                      if(data){
-                        $("#passMedic").val('');
-                        $("#confiMedic").val('');
-                        $("#mensaje").removeClass('hidden');
-                        $("#texto").text('Su contraseña fue cambiado con exito');
-                      }else{
-                        $("#passMedic").val('');
-                        $("#confiMedic").val('');
-                        $("#mensaje").removeClass('hidden');
-                        $("#texto").text('Su contraseña no se pudo cambiar');
-                      }
-                    });
-                  }else{
-                    console.log("No");
-                  }
-                });
-              }
-            },
-            cancel:{
-              label:'Cancelar',
-              className:'btn-default',
-              callback: function(){bootbox.hideAll();}
-            }
-          },
-          message:
-          '<div class="container-fluid">'+
-            '<div class="row">'+
-              '<div class="col-md-12">'+
-                '<span class="label label-info">Confirmar con tu contraseña</span>'+
-                '<input type="password" class="form-control" id="bootConfirm" />'+
-              '</div>'+
-              '<div class="col-md-12">'+
-                '¿Olvidaste tu contraseña?<a href="#" onclick="updatePasswordIntermed();" style="color:green;">'+
-                  'Cambiala aquí'+
-                '</a>'+
-              '</div>'+
-            '</div>'+
-          '</div>'
-        });
-      }else{
-        bootbox.dialog({
-            className: 'Intermed-Bootbox',
-            title:'<span class="title">Revisa los campos</span><span class="subtitle">Hubo un error por favor revisa</span>',
-            buttons:{
-              ok:{
-                label:'Ok',
-                className:'btn-warning',
-                callback: function(){
-                  bootbox.hideAll();
+        bootbox.prompt({
+          title: "¿Cual es tu contraseña actual?",
+          inputType: "password",
+          value: "",
+          callback: function(result) {
+            if (result && result != "") {
+              $.post('/config/pass',{
+                actual: hex_md5(result),
+                nueva: hex_md5(pass)
+              },function(data){
+                var Msg = '';
+                if (data.success){
+                  $("#passMedic").val('');
+                  $("#confiMedic").val('');
+                  Msg='Contraseña cambiada.';
+                } else if (data.pass){
+                    Msg='Contraseña actual incorrecta.';
                 }
-              }
-            },
-            message:
-              '<div class="container-fluid">'+
-                '<div class="row">'+
-                  '<div class="col-md-12">'+
-                    '<span class="label label-info">Los campos deben de tener mas de 6 caracteres</span>'+
-                  '</div>'+
-                '</div>'+
-              '</div>'
-        });
-      }
-    }else{
-      bootbox.dialog({
-          className: 'Intermed-Bootbox',
-          title:'<span class="title">Revisa los campos</span><span class="subtitle">Hubo un error por favor revisa</span>',
-          buttons:{
-            ok:{
-              label:'Ok',
-              className:'btn-warning',
-              callback: function(){
-                bootbox.hideAll();
-              }
-            }
-          },
-          message:
-            '<div class="container-fluid">'+
-              '<div class="row">'+
-                '<div class="col-md-12">'+
-                  '<span class="label label-info">Los campos deben de coincidir</span>'+
-                '</div>'+
-              '</div>'+
-            '</div>'
-      });
-    }
-  }else{
-    bootbox.dialog({
-        className: 'Intermed-Bootbox',
-        title:'<span class="title">Revisa los campos</span><span class="subtitle">Hubo un error por favor revisa</span>',
-        buttons:{
-          ok:{
-            label:'Ok',
-            className:'btn-warning',
-            callback: function(){
-              bootbox.hideAll();
+                if (Msg != ''){
+                  bootbox.alert({
+                    title: "Mensaje de intermed",
+                    message: Msg
+                  });
+                }
+              });
             }
           }
-        },
-        message:
-          '<div class="container-fluid">'+
-            '<div class="row">'+
-              '<div class="col-md-12">'+
-                '<span class="label label-info">Los campos no pueden estar vacios</span>'+
-              '</div>'+
-            '</div>'+
-          '</div>'
+        });
+      }else{
+        Msg = 'La contraseña debe de tener por lo menos 6 caracteres';
+      }
+    }else{
+      Msg = 'La nueva contraseña y la confirmación no coinciden.';
+    }
+  }else{
+    if ($("#passMedic").val() == ""){
+      $("#passMedic").focus();
+    } else {
+      $("#confiMedic").focus();
+    }
+  }
+  if (Msg != ''){
+    bootbox.alert({
+      title: "Mensaje de intermed",
+      message: Msg
     });
   }
 });
