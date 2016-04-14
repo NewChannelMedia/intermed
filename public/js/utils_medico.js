@@ -4513,7 +4513,6 @@ function validarAgregarEvento(secbox){
         data: data,
         cache: false,
         success: function ( data ) {
-          console.log('response. ' + JSON.stringify(data));
           if (data.success){
             if ($("#calendar").length>0){
               marcarEventosCalendario();

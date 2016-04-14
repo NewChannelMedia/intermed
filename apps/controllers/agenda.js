@@ -2929,7 +2929,7 @@ exports.eventoAgregar = function (object, req, res){
       },
       include: [{
         model: models.Medico,
-        attributes:['id'],
+        attributes:['id','usuario_id'],
         include: [{
           model: models.Usuario,
           attributes: ['id'],
@@ -2937,6 +2937,21 @@ exports.eventoAgregar = function (object, req, res){
             model: models.Direccion,
             attributes: ['id','nombre'],
             order: [['principal','DESC']]
+          }]
+        },{
+          model: models.MedicoSecretaria,
+          where: {activo: 1},
+          include: [{
+            model: models.Secretaria,
+            where: {
+              id: req.session.passport.user.Secretaria_id
+            }
+          },{
+            model: models.MedicoSecretariaPermisos,
+            where: {
+              permiso: 1,
+              secretaria_permiso_id: 2
+            }
           }]
         }]
       }]
@@ -3079,22 +3094,60 @@ exports.validarCrearEvento = function (object, req, res){
   });
 }
 
-exports.cancelar = function (object, req, res){
-  models.Evento.update({
-    status:0
-  },{
+exports.cancelarEvento = function (object, req, res){
+  models.Evento.findOne({
     where: {
       id: object.evento_id
-    }
-  }).then(function(result){
-    if (result){
-      res.status(200).json({
-        success:true
-      });
+    },
+    include: [{
+      model: models.Usuario,
+      attributes:['id'],
+      include: [{
+        model: models.Medico,
+        attributes: ['id']
+      }]
+    }]
+  }).then(function(evento){
+    if (req.session.passport && req.session.passport.user.tipoUsuario == "M"){
+      if (evento.Usuario.id = req.session.passport.usuario.id){
+        evento.update({status:0}).then(function(result){
+          res.status(200).json({
+            success:true
+          });
+        });
+      } else {
+        res.status(200).json({
+          success:false
+        });
+      }
     } else {
-      res.status(200).json({
-        success:false
-      });
+      models.MedicoSecretaria.findOne({
+        where: {
+          activo: 1,
+          secretaria_id: req.session.passport.user.Secretaria_id,
+          medico_id: evento.Usuario.Medico.id
+        },
+        include: [{
+          model: models.MedicoSecretariaPermisos,
+          where: {
+            permiso: 1,
+            secretaria_permiso_id: 5
+          }
+        }]
+      }).then(function(result){
+        if (result){
+          evento.update({status:0}).then(function(result){
+            res.status(200).json({
+              success:true
+            });
+          });
+        } else {
+          res.status(200).json({
+            success: false,
+            error: 404
+          })
+        }
+      })
     }
   });
 }

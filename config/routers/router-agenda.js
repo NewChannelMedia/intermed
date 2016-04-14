@@ -155,7 +155,7 @@ module.exports = function (object){
   });
 
   app.post('/agenda/evento/cancelar', function (req, res){
-    intermed.callController('agenda','cancelar', req.body, req, res);
+    intermed.callController('agenda','cancelarEvento', req.body, req, res);
   });
 
   app.post('/agenda/evento/guardarDescripcion', function (req, res){

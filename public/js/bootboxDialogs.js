@@ -5362,10 +5362,6 @@ function detalleEventoMedico(evento_id){
       'evento_id': evento_id
     },
     success: function ( data ) {
-      console.log('DATA: ' + JSON.stringify(data))
-      /*
-Data: {"success":true,"result":{"id":43,"fechaHoraInicio":"2016-04-12T14:00:00.000Z","fechaHoraFin":"2016-04-13T15:00:00.000Z","nombre":"asDasdaSD","ubicacion":"","descripcion":"","status":1,"usuario_id":1}}
-      */
       if (data.result){
         nombre = data.result.nombre;
         ubicacion = data.result.ubicacion;

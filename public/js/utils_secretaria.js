@@ -554,7 +554,6 @@ function secretariaCancelaCita(agenda_id, medico){
       medico: medico,
       utc: utc
     }, function(data){
-      console.log('CANCELACIÓN: ' + JSON.stringify(data));
     if (data.success){
       if ($('.horas-container').length>0){
         marcarEventosCalendario();
