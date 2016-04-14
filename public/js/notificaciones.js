@@ -678,7 +678,7 @@ $( document ).ready( function () {
   }
 } );
 
-if ( window.location.href.indexOf( "/configuraciones" ) > 0 ) {
+if ( window.location.href.indexOf( "configuracion" ) > 0 ) {
 
   $( document ).ready( function () {
       //Manejar notificaciones
@@ -708,7 +708,7 @@ if ( window.location.href.indexOf( "/configuraciones" ) > 0 ) {
                   if ( record.descripcion && record.descripcion != '' ) {
                     descripcion = ' <a data-toggle="popover" title="' + record.nombre + '" data-content="' + record.descripcion + '"><span class="glyphicon glyphicon-question-sign"></span></a>';
                   }
-                  $( '#configNot' ).append( '<tr id="' + record.id + '"><td>' + record.nombre + descripcion + '</td><td class="text-center"><input type="checkbox" class="interno" ' + internoChecked + '></td><td class="text-center"><input type="checkbox" class="push"  ' + pushChecked + '></td><td class="text-center"><input type="checkbox"  class="mail" ' + mailChecked + '></td></tr>' );
+                  $( '#configNot' ).append( '<tr id="' + record.id + '"><td>' + record.nombre + descripcion + '</td><td class="text-center"><input type="checkbox" class="interno" ' + internoChecked + '></td><td class="text-center hidden"><input type="checkbox" class="push"  ' + pushChecked + '></td><td class="text-center"><input type="checkbox"  class="mail" ' + mailChecked + '></td></tr>' );
 
                   if ( record.configurable == 0 ) {
                     $( 'tr#' + record.id ).find( 'input[type="checkbox"]' ).each( function ( index ) {

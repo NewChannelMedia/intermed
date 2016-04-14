@@ -22,4 +22,13 @@ module.exports = function (object){
   app.post('/consultaInfo', function( req, res ){
     intermed.callController('/configuracion/configuraciones','consultaInfo', req.body, req, res);
   });
+  app.post('/config/pass', function (req, res){
+    intermed.callController('configuracion','cambiarPass', req.body, req, res);
+  });
+  app.post('/config/urlmedic', function (req, res){
+    intermed.callController('configuracion','urlmedic', req.body, req, res);
+  });
+  app.post('/config/correo', function (req, res){
+    intermed.callController('configuracion','correo', req.body, req, res);
+  });
 }

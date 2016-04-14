@@ -20,6 +20,7 @@
                   <span class="hidden-xs"><span class="proicon proicon-notificacion"></span>&nbsp;Notificaciones</span>
                 </a>
               </li>
+              {{#ifTipoMedico}}
               <li role="presentation" class="">
                 <a href="#pagos" aria-controls="pagos" role="tab" data-toggle="tab" class="darkBlue-c">
                   <span class="visible-xs s20 proicon proicon-credit-card center-block text-center"></span>
@@ -32,6 +33,7 @@
                   <span class="hidden-xs"><span class="glyphicon glyphicon-gift"></span>&nbsp;Meses gratis</span>
                 </a>
               </li>
+              {{/ifTipoMedico}}
             </ul>
           </div>
           <div class="col-lg-10 col-md-10 col-sm-9 col-xs-10 noPadding">
@@ -49,6 +51,7 @@
                         Basico
                       </div>
                       <div class="panel-body">
+                        {{#ifTipoMedico}}
                         <div class="row">
                           <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <p>
@@ -84,18 +87,25 @@
                               <span class="text-muted">www.intermed.online/</span>
                             </div>
                             <div class="input-group">
-                              <span class="input-group-addon square hidden-xs">
-                                www.intermed.online/
-                              </span>
-                              <input type="text" id="urlMedic" title="" class="form-control" placeholder="Url personalizado" />
-                              <span class="input-group-btn">
-                                <button class="btn" type="button" id="saveUrl">
-                                  <span class="glyphicon glyphicon-floppy-disk"></span><span class="hidden-xs"> Guardar</span>
-                              </button>
-                              </span>
+                              {{#ifSessionValNN 'urlPersonal'}}
+                                <span class="input-group-addon square hidden-xs">
+                                  www.intermed.online/{{valSession 'urlPersonal'}}
+                                </span>
+                              {{else}}
+                                <span class="input-group-addon square hidden-xs" id="urlPersonal">
+                                  www.intermed.online/
+                                </span>
+                                <input type="text" id="urlMedic" title="" class="form-control" placeholder="Url personalizado" />
+                                <span class="input-group-btn">
+                                  <button class="btn" type="button" id="saveUrl">
+                                    <span class="glyphicon glyphicon-floppy-disk"></span><span class="hidden-xs"> Guardar</span>
+                                  </button>
+                                </span>
+                              {{/ifSessionValNN}}
                             </div>
                           </div>
                         </div>
+                        {{/ifTipoMedico}}
                         <div class="row">
                           <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <p>
@@ -105,13 +115,13 @@
                           <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
                             <div class="input-group">
                               <div class="form-group">
-                                <input type="password" id="passMedic" class="form-control" placeholder="Nueva Contraseña" />
-                                <input type="password" id="confiMedic" class="form-control" placeholder="Confirmar" />
+                                <input type="password" id="passMedic" class="form-control" placeholder="Nueva Contraseña" required />
+                                <input type="password" id="confiMedic" class="form-control" placeholder="Confirmar" required/>
                               </div>
                               <span class="input-group-btn bottom-content">
                                 <button class="btn btn" id="confirMedicPas">
                                   <span class="glyphicon glyphicon-floppy-disk"></span><span class="hidden-xs"> Guardar</span>
-                              </button>
+                                </button>
                               </span>
                             </div>
                           </div>
@@ -142,7 +152,7 @@
                                 <tr>
                                   <th style="">Tipo</th>
                                   <th style="" class="text-center">Web</th>
-                                  <th style="" class="text-center">Movil</th>
+                                  <th style="" class="text-center hidden">Movil</th>
                                   <th style="" class="text-center">Mail</th>
                                 </tr>
                               </thead>
