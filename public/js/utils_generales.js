@@ -1198,7 +1198,6 @@ function repositionTooltip( e, ui ){
 
 
 $( document ).ready( function () {
-  //console.log('length: '+$( '#perfilMedico' ).length);
   if ( $( '#perfilMedico' ).length > 0 ) {
 
     MostrarUbicaciones();

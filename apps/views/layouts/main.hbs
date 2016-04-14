@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
   <head>
     <meta charset="utf-8">
     <meta name="google" content="notranslate">
@@ -11,16 +10,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="keywords" content="{{keywords}}">
     <meta name="description" content="Intermed la red social de la salud"/>
-
+    <meta name="theme-color" content="#375467">
     <title>Intermed | La red social de la salud</title>
-
+    <link rel="icon" type="image/x-icon" href="{{base_url}}favicon/favicon.ico" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{base_url}}favicon/apple-touch-icon-114x114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{base_url}}favicon/apple-touch-icon-72x72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="{{base_url}}favicon/apple-touch-icon-57x57-precomposed.png">
+    <meta name="msapplication-TileImage" content="{{base_url}}favicon/pinned.png">
+    <meta name="msapplication-TileColor" content="#2c8fbd">
+    <link rel="icon" href="{{base_url}}favicon/favicon-coast.png" sizes="228x228">
     <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/intermed.css">
     <link rel="stylesheet" type="text/css" href="css/home.css">
-    <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
-    <link rel="stylesheet" type="text/css" href="fonts/icons/icons.css">
     <link rel="stylesheet" type="text/css" href="css/fullcalendar.min.css">
-
+    <link rel="stylesheet" type="text/css" href="fonts/icons/icons.css">
+    <link rel="stylesheet" type="text/css" href="fonts/profileicons/proicons.css">
+    <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -28,27 +33,6 @@
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
   </head>
-  <!-- empieza nav superior -->
-<!--  <nav id="navHome">
-    <section class="container">
-      <div class="row">
-        <div id="atnc-clientes" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-right">
-          <div class="row">
-            <div class="col-md-12">
-              <p class="text-right">
-                {{#ifSession "id"}} Hola {{valSession "name"}} !!!&nbsp
-                  <a class="btn btn-transparent center-block h65-medium s25 reg" onclick="logout()" class="text-danger">Cerrar Sesión</a>
-                {{else}}
-                  <a class="btn btn-transparent h65-medium s25 whiteF noTransform login" href="#" id="logMod">ingresa</a> &nbsp
-                  <a class="btn btn-transparent h65-medium s25 whiteF noTransform reg" href="#" onclick="registro();">registrate</a>
-                {{/ifSession}}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  </nav>-->
   <body>
     {{{body}}}
     <footer>
@@ -125,8 +109,8 @@
   <script src="js/jquery.iscroll.js"></script>
   <script src="js/star-rating.js"></script>
   <script src="js/jquery.table2excel.js"></script>-->
-  <!-- scripts para conekta
-  <script type="text/javascript" src="https://conektaapi.s3.amazonaws.com/v0.3.2/js/conekta.js"></script>
+  <!-- scripts para conekta -->
+  <!--<script type="text/javascript" src="https://conektaapi.s3.amazonaws.com/v0.3.2/js/conekta.js"></script>
   <script src="js/conekta.js"></script>
   <script>Conekta.setPublishableKey("key_M9Ph2jxjJQSRszryszDsgTA");</script>-->
   <script src="js/home.js"></script>
