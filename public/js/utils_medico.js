@@ -2039,7 +2039,7 @@ function traerAseguradoras(){
         $("#appPatPersonal").attr('value',data.DatosGenerale.apellidoP);
         $("#appMatPersonal").attr('value',data.DatosGenerale.apellidoM);
         $("#imgPerfilMedic").attr('src',data.urlFotoPerfil);
-        alert(JSON.stringify(data.correo));
+        /*alert(JSON.stringify(data.correo));*/
         $('#correoElectSec').attr('value',data.correo);
       });
     }
