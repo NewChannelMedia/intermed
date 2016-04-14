@@ -12,7 +12,8 @@ module.exports = function(sequelize, DataTypes) {
     usuario_id: {type : DataTypes.BIGINT, allowNull:false},
     paciente_id: {type : DataTypes.BIGINT},
     paciente_temporal_id: { type: DataTypes.BIGINT},
-    servicio_id : {type : DataTypes.INTEGER}
+    servicio_id : {type : DataTypes.INTEGER},
+    motivoreagenda: {type: DataTypes.STRING}
   }, {
     classMethods: {
       associate: function(models) {

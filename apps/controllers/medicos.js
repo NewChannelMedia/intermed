@@ -1550,6 +1550,22 @@ var _this = module.exports = {
 
         var mailcont = 0;
         object.emails.forEach(function(email){
+          models.Usuario.findOne({
+            where: {
+              tipoUsuario: 'P',
+              correo: email.correo
+            }
+          }).then(function(usuario){
+            if (usuario){
+              //usuario existe, y es de tipo paciente: insertar notificación
+              models.Notificacion.create({
+                usuario_id: usuario.id,
+                data: req.session.passport.user.id + '|' + medico.id,
+                tipoNotificacion_id: 12
+              });
+            }
+          })
+
           var mailobject ={
             nombre:'correo de recomendacion',
             subject:'Recomendaciones',
@@ -2474,12 +2490,12 @@ var _this = module.exports = {
                     where: {
                       tipoNotificacion_id: 16,
                       usuario_id: comentario.usuario_id,
-                      data: object.comentario_id
+                      data: parseInt(object.tipo) + '|' +object.comentario_id
                     },
                     defaults: {
                       tipoNotificacion_id: 16,
                       usuario_id: comentario.usuario_id,
-                      data: object.comentario_id
+                      data: parseInt(object.tipo) + '|' +object.comentario_id
                     }
                   });
 
@@ -2511,10 +2527,31 @@ var _this = module.exports = {
                   model: models.DatosGenerales
                 }]
               }]
+            },{
+              model: models.Paciente,
+              attributes: ['id'],
+              include: [{
+                model: models.Usuario,
+                attributes: ['id'],
+              }]
             }]
           } ).then( function ( comentario ) {
             if (comentario){
               comentario.update({respuesta: object.respuesta,fecharespuesta:new Date().toISOString()}).then(function(result){
+                  //Crear notificacion para Paciente
+                  models.Notificacion.findOrCreate({
+                    where: {
+                      tipoNotificacion_id: 16,
+                      usuario_id: comentario.Paciente.Usuario.id,
+                      data: parseInt(object.tipo) + '|' + object.comentario_id
+                    },
+                    defaults: {
+                      tipoNotificacion_id: 16,
+                      usuario_id: comentario.Paciente.Usuario.id,
+                      data: parseInt(object.tipo) + '|' + object.comentario_id
+                    }
+                  });
+
                   res.status(200).json({
                     success:true,
                     result: result

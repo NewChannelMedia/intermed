@@ -15,6 +15,10 @@ $( 'document' ).ready( function () {
     }
   }, ( 10000 ) );
   socketManejadores();
+
+  if ($('#notificacionesListView').length>0){
+    socket.emit('cargarNotificacionesList',notificacionesList,limitNotificacionesList,fechaNotificacionList);
+  }
 } );
 
 
@@ -431,16 +435,33 @@ function formatearNotificacion( record , element) {
       case 12:
         //medicoRecomendado
         content = '';
-        if ( record.medico && record.paciente ) {
+        if ( record.medico && record.usuario ) {
           var medicoUrl = record.medico.Usuario.usuarioUrl;
-          var fotoPaciente = record.paciente.Usuario.urlFotoPerfil;
-          var nombreCompleto = record.paciente.Usuario.DatosGenerale.nombre + ' ' + record.paciente.Usuario.DatosGenerale.apellidoP + ' ' + record.paciente.Usuario.DatosGenerale.apellidoM;
-          var nombreDoctor = record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP + ' ' + record.medico.Usuario.DatosGenerale.ApellidoM;
+          var fotoPaciente = record.usuario.urlFotoPerfil;
+
+          if (record.usuario.DatosGenerale.apellidoM && record.usuario.DatosGenerale.apellidoM != ""){
+            record.usuario.DatosGenerale.apellidoM =  ' ' +record.usuario.DatosGenerale.apellidoM;
+          } else {
+            record.usuario.DatosGenerale.apellidoM = '';
+          }
+          var nombreCompleto = record.usuario.DatosGenerale.nombre + ' ' + record.usuario.DatosGenerale.apellidoP + record.usuario.DatosGenerale.apellidoM;
+
+          if (record.medico.Usuario.DatosGenerale.ApellidoM && record.medico.Usuario.DatosGenerale.ApellidoM != ""){
+            record.medico.Usuario.DatosGenerale.ApellidoM =  ' ' +record.medico.Usuario.DatosGenerale.ApellidoM;
+          } else {
+            record.medico.Usuario.DatosGenerale.ApellidoM = '';
+          }
+          var nombreDoctor = record.medico.Usuario.DatosGenerale.nombre + ' ' + record.medico.Usuario.DatosGenerale.apellidoP +  record.medico.Usuario.DatosGenerale.ApellidoM;
+          var comp = '';
+          if (record.usuario.tipoUsuario == "M"){
+            comp = 'Dr. '
+          }
+
           content += '<div class="media-left center-content">';
           content += '<a href="/' + medicoUrl + '">';
           content += mediaObjectImagen;
           content += '</div>';
-          content += '<div class="media-body center-content">' + nombreCompleto + ' Te ha recomendado al Dr.' + nombreDoctor;
+          content += '<div class="media-body center-content">' + comp + nombreCompleto + ' Te ha recomendado al Dr.' + nombreDoctor;
           content += '</a>';
           content += '<br />';
           content += '</div>';
@@ -497,7 +518,7 @@ function formatearNotificacion( record , element) {
         break;
       case 20:
           //paciente generando cita
-          not += '<div class="media-left center-content"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a href="#" onclick="presionando(\'#recomendandoAndo\');cerrarNotModal()" class="recomendando">' + nombreCompleto + ' Ha solicitado una cita</a></div>';
+          not += '<div class="media-left center-content"><a href="#" class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a href="#" class="recomendando">' + nombreCompleto + ' Ha solicitado una cita</a></div>';
           break;
       case 21:
           //paciente calificación de cita
@@ -505,22 +526,42 @@ function formatearNotificacion( record , element) {
           break;
       case 22:
           //medico cancelando cita
-          not += '<div class="media-left center-content"><a  onclick="detalleCancelacionMedico(\''+ record.data +'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a  onclick="detalleCancelacionMedico(\''+ record.data +'\')">El ' + nombreCompleto + ' ha cancelado una cita que tenias programada.</a></div>';
+          not += '<div class="media-left center-content"><a  onclick="detalleCancelacionMedico(\''+ record.data +'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a  onclick="detalleCancelacionMedico(\''+ record.data +'\')">Tu cita con el Dr. ' + nombreCompleto + ' ha sido cancelada.</a></div>';
           break;
       case 23:
           //paciente ha rechazado cambio de cita
-          not += '<div class="media-left center-content"><a href="#" >'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a href="#" >' + nombreCompleto + ' Ha rechazado la cita</a></div>';
+          not += '<div class="media-left center-content"><a onclick="detalleCitaSecretaria(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="detalleCitaSecretaria(\''+record.data+'\')" >Una cita de ' + nombreCompleto + ' ha sido cancelada.</a></div>';
           break;
       case 24:
-          //paciente cancelando cita
-          not += '<div class="media-left center-content" ><a onclick="detalleCancelacionPaciente(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="detalleCancelacionPaciente(\''+record.data+'\')">El paciente ' + nombreCompleto + ' ha cancelado una cita.</a></div>';
+          var mediaObjectImagen = '<img class="media-object img-circle" src="' + fotoPerfil + '" '+style+'>';
+          not += '<div class="media-left center-content"><a onclick="detalleCitaSecretaria(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="detalleCitaSecretaria(\''+record.data+'\')">Una de tus citas ha sido cancelada.</a></div>';
           break;
       case 25:
           //medico tiene solicitud de cita
           not += '<div class="media-left center-content"><a onclick="detalleCita(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="detalleCita(\''+record.data+'\')">El paciente ' + nombreCompleto + ' ha generado una cita.</a></div>';
           break;
+      case 26:
+          //paciente tiene nueva cita (generada por medico o secretaria)
+          not += '<div class="media-left center-content"><a onclick="DetallesCitaPaciente(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="DetallesCitaPaciente(\''+record.data+'\')">Tienes una nueva cita con el ' + nombreCompleto + '.</a></div>';
+          break;
+      case 27:
+          //paciente tiene nueva cita (generada por medico o secretaria)
+          not += '<div class="media-left center-content"><a onclick="DetallesCitaPaciente(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="DetallesCitaPaciente(\''+record.data+'\')">Falta poco para tu cita con el ' + nombreCompleto + '.</a></div>';
+          break;
+      case 28:
+          //paciente tiene nueva cita (generada por medico o secretaria)
+          not += '<div class="media-left center-content"><a onclick="detalleCitaSecretaria(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="detalleCitaSecretaria(\''+record.data+'\')">El ' + nombreCompleto + ' tiene una cita nueva.</a></div>';
+          break;
+      case 29:
+          var mediaObjectImagen = '<img class="media-object img-circle" src="' + fotoPerfil + '" '+style+'>';
+          //paciente tiene nueva cita (generada por medico o secretaria)
+          not += '<div class="media-left center-content"><a onclick="detalleCitaSecretaria(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="detalleCitaSecretaria(\''+record.data+'\')">Tienes una nueva cita agendada.</a></div>';
+          break;
+      case 30:
+          //aviso de reagenda para paciente
+          not += '<div class="media-left center-content"><a onclick="DetallesCitaPaciente(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="DetallesCitaPaciente(\''+record.data+'\')">Tu cita con el ' + nombreCompleto + ' ha sido reagendada.</a></div>';
+          break;
       case 9:
-          //medico tiene solicitud de cita
           not += '<div class="media-left center-content"><a>INTERMED</a></div><div class="media-body center-content"><a onclick="actualizarSesion();location.reload();">Tu cédula ha sido aceptada.</a></div>';
           break;
       case 10:
@@ -543,11 +584,11 @@ function formatearNotificacion( record , element) {
           break;
       case 34:
           //Secretaria rechazo invitación
-          not += '<div class="media-left center-content"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a>' + nombreCompleto + ' ha rechazado la invitación para ser tu secretaria.</a></div>';
+          not += '<div class="media-left center-content"><a class="">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a>' + nombreCompleto + ' ha rechazado la invitación para ser tu secretaria.</a></div>';
           break;
       case 35:
           //Secretaria elimino a médico
-          not += '<div class="media-left center-content"><a class="recomendando">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a>' + nombreCompleto + ' dejó de ser tu secretaria.</a></div>';
+          not += '<div class="media-left center-content"><a>'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a>' + nombreCompleto + ' dejó de ser tu secretaria.</a></div>';
           break;
       case 16:
           mediaObjectImagen = '<img class="media-object img-circle" src="' + record.comentario.Medico.Usuario.urlFotoPerfil + '" '+style+'>';
@@ -557,7 +598,7 @@ function formatearNotificacion( record , element) {
             record.comentario.Medico.Usuario.DatosGenerale.apellidoM = '';
           }
           nombreCompleto = record.comentario.Medico.Usuario.DatosGenerale.nombre + ' ' + record.comentario.Medico.Usuario.DatosGenerale.apellidoP + record.comentario.Medico.Usuario.DatosGenerale.apellidoM;
-          not += '<div class="media-left center-content"><a onclick="verDetalleComentario('+ record.comentario.id +')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="verDetalleComentario('+ record.comentario.id +')">El Dr. ' + nombreCompleto + ' ha respondido tu comentario.</a></div>';
+          not += '<div class="media-left center-content"><a onclick="verDetalleComentario(\''+ record.data +'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="verDetalleComentario(\''+ record.data +'\')">El Dr. ' + nombreCompleto + ' ha respondido tu comentario.</a></div>';
           break;
     }
     not += '</div>';

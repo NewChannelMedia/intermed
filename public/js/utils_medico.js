@@ -4773,3 +4773,102 @@ function reagendarCitaMedico(agenda_id,medico_id, modal){
   //Enviamos el agenda_id (no sea crea nuevo evento, solo se cambia el horario de el, y sus notificaciones se modifican)
   verAgendaMedicoReagendar(medico_id, agenda_id,modal);
 }
+
+function guardarReagenda(medico_id, agenda_id, bootboxReagendar, modal){
+    console.log('Guardar agenda: ' + medico_id + ' - ' + agenda_id);
+    var evento;
+    var h = $('.divCalenarioReagendar').fullCalendar('clientEvents');
+
+    for (i = 0; i <= h.length-1; i++) {
+        if (h[i].rendering != 'background')
+        {
+          if  (h[i].className[0] == 'eventoReagendar')
+          {
+            console.log('EVENTO: ' + JSON.stringify(h[i]));
+            evento = h[i];
+          }
+        }
+    };
+    var d = new Date();
+    var horas = parseInt(d.getTimezoneOffset())/60;
+    var minutos = parseInt(d.getTimezoneOffset())-(horas*60);
+    /*
+    EVENTO: {
+      "start":"2016-04-09T09:00:00.000Z",
+      "end":"2016-04-09T11:00:00.000Z",
+    }
+    */
+    var inicio = sumarTiempo(evento.start,horas,minutos);
+    var final = sumarTiempo(evento.end,horas,minutos);
+
+    var utc = (parseInt(new Date().getTimezoneOffset())/60);
+    bootbox.prompt({
+      title: "¿Cual es el motivo?",
+      value: "Surgió un retraso.",
+      callback: function(motivo) {
+        $.ajax( {
+          async: false,
+          url: '/agenda/reagendar',
+          type: 'POST',
+          dataType: "json",
+          cache: false,
+          data: {
+            medico_id: medico_id,
+            agenda_id: agenda_id,
+            inicio: inicio,
+            fin: final,
+            motivo: motivo,
+            utc: utc
+          },
+          success: function ( data ) {
+            if (data.success){
+              bootboxReagendar.hide();
+              modal.hide();
+              detalleCitaSecretaria(agenda_id);
+              cargarCitasProximasSecretaria();
+              if ($('#divCalendario').length>0){
+                $('#divCalendario').fullCalendar('removeEvents');
+                $('#divCalendario').fullCalendar('refetchEvents');
+              }
+              if ($("#calendar").length>0){
+                marcarEventosCalendario();
+                if ($('#calendar').length>0){
+                  var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
+                  var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
+                  cargarEventosPorDia(fechaInicio, fechaFin);
+                }
+              }
+            }
+          },
+          error: function ( jqXHR, textStatus, err ) {
+            console.error( 'AJAX ERROR: ' + err );
+          }
+        } );
+      }
+    });
+
+}
+
+function restarTiempo(fecha, horas, minutos){
+  if (!horas){
+    horas = 0;
+  }
+  if (!minutos){
+    minutos = 0;
+  }
+  var fecha = new Date(new Date(fecha).setHours(new Date(fecha).getHours()-horas));
+  fecha = new Date(new Date(fecha).setMinutes(new Date(fecha).getMinutes()-minutos));
+  return fecha;
+}
+
+function sumarTiempo(fecha, horas, minutos){
+  if (!horas){
+    horas = 0;
+  }
+  if (!minutos){
+    minutos = 0;
+  }
+  var fecha = new Date(new Date(fecha).setHours(new Date(fecha).getHours()+horas));
+  fecha = new Date(new Date(fecha).setMinutes(new Date(fecha).getMinutes()+minutos));
+  return fecha;
+}
