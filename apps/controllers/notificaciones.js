@@ -20,7 +20,8 @@ exports.obtenerTodas = function ( object, req, res ) {
   try{
     models.TipoNotificacion.findAll( {
       where: {
-        tipoUsuario: req.session.passport.user.tipoUsuario
+        tipoUsuario: req.session.passport.user.tipoUsuario,
+        visible: 1
       }
     } ).
     then( function ( result ) {

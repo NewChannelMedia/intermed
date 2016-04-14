@@ -25,6 +25,9 @@ module.exports = function ( sequelize, DataTypes ) {
     visto: {
       type: DataTypes.INTEGER
     },
+    visible: {
+      type: DataTypes.INTEGER
+    },
     recordatorio: {
       type: DataTypes.INTEGER
     }
