@@ -1434,7 +1434,6 @@ $( document ).ready( function () {
       var h = $( window ).height() - $( '#newMainNav' ).height() - $( '.agendaTopContainer' ).height() - 2 - $('footer').height();
       $( '.agendaBody' ).css( 'height', h + 'px' );
       $( '.agendaMonth' ).css( 'height', h - 2 + 'px' );
-      console.log($( '.agendaMonth' ).css( 'height', h - 2 + 'px' ));
       $( '.agendaDay' ).css( 'height', h - 2 + 'px' );
     }
     else if ( $( window ).width() < 767 ) {
