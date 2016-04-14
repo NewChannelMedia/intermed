@@ -28,4 +28,7 @@ module.exports = function (object){
   app.post('/config/urlmedic', function (req, res){
     intermed.callController('configuracion','urlmedic', req.body, req, res);
   });
+  app.post('/config/correo', function (req, res){
+    intermed.callController('configuracion','correo', req.body, req, res);
+  });
 }

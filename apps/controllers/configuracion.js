@@ -87,3 +87,38 @@ exports.urlmedic = function (object, req, res){
     req.errorHandler.report(err, req, res);
   }
 };
+
+
+exports.correo = function (object, req, res){
+  try{
+    models.Usuario.findOne({
+      where: {
+        id: req.session.passport.user.id
+      }
+    }).then( function ( usuario ) {
+      if (usuario){
+        models.Usuario.findOne({
+          where:{
+            correo: object.correo
+          }
+        }).then(function(existe){
+          if (!existe){
+            if (usuario.password == object.actual){
+              usuario.update({correo: object.correo}).then(function(){
+                res.status(200).json({success: true });
+              })
+            } else {
+              res.status(200).json({success: false ,pass:true});
+            }
+          } else {
+            res.status(200).json({success: false ,exists:true});
+          }
+        })
+      } else {
+        res.status(200).json({success: false });
+      }
+    } );
+  }catch ( err ) {
+    req.errorHandler.report(err, req, res);
+  }
+};

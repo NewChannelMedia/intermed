@@ -19,113 +19,64 @@ function generales(){
     }
   });
 }
+function validarEmail(valor) {
+    re=/^[_a-z0-9-]+(.[_a-z0-9-]+)*@[a-z0-9-]+(.[a-z0-9-]+)*(.[a-z]{2,3})$/
+    if(!re.exec(valor))    {
+        return false;
+    }else{
+        return true;
+    }
+}
+
 // Eventos de generales
 $("#saveMail").click(function(){
   // este evento actualizara el correo
-  var mail = $("#mailMedic").val();
-  var expreg = new RegExp(/^(?:(?:[\w`~!#$%^&*\-=+;:{}'|,?\/]+(?:(?:\.(?:"(?:\\?[\w`~!#$%^&*\-=+;:{}'|,?\/\.()<>\[\] @]|\\"|\\\\)*"|[\w`~!#$%^&*\-=+;:{}'|,?\/]+))*\.[\w`~!#$%^&*\-=+;:{}'|,?\/]+)?)|(?:"(?:\\?[\w`~!#$%^&*\-=+;:{}'|,?\/\.()<>\[\] @]|\\"|\\\\)+"))@(?:[a-zA-Z\d\-]+(?:\.[a-zA-Z\d\-]+)*|\[\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\])$/gm);
-  var comprobar = expreg.test(mail)? true: false;
-  if( mail != '' ){
-    if( comprobar ){
-      bootbox.dialog({
-        className: 'Intermed-Bootbox',
-        title:'<span class="title">Confirmar con tu correo</span><span class="subtitle">Para realizar esta acción ocupamos que confirmes con tu contraseña</span>',
-        buttons:{
-          confirmar:{
-            label:'Confirmar',
-            className:'btn-danger',
-            callback: function(){
-              var email = $("#bootConfirm").val();
-              //consulta a la db para checar que la consulta sea la misma
-              $.post('/consultaInfo',{mail:email}, function(data){
-                if(data){
-                  // si entro aqui el correo esta bien y se actualizara en la base de datos
-                  $.post('/changeMail',{correo:mail},function(data){
-                    if(data ){
-                      $("#mailMedic").val('');
-                      $("#mensaje").removeClass('hidden');
-                      $("#texto").text('Su correo '+mail+' fue cambiado con exito');
-                      $("#getMail").text(mail);
-                    }else{
-                      $("#mailMedic").val('');
-                      $("#mensaje").removeClass('hidden');
-                      $("#texto").text('Su correo '+mail+' no se pudo cambiar, ya existe uno igual');
-                    }
-                  });
-                }else{
-                  console.log("No");
-                }
-              });
-            },
-          },
-          cancel:{
-            label:'Cancelar',
-            className:'btn-default',
-            callback: function(){
-              bootbox.hideAll();
-            }
+  var mailMedic = $("#mailMedic").val();
+  var Msg = '';
+  if( mailMedic != '' ){
+    if(validarEmail(mailMedic)){
+      bootbox.prompt({
+        title: "¿Cual es tu contraseña actual?",
+        inputType: "password",
+        value: "",
+        callback: function(result) {
+          if (result && result != "") {
+            $.post('/config/correo',{
+              actual: hex_md5(result),
+              correo: mailMedic
+            },function(data){
+              var Msg = '';
+              if (data.success){
+                $("#mailMedic").val('');
+                actualizarSesion();
+                Msg='Correo actualizado.';
+              } else if (data.pass){
+                  Msg='Contraseña actual incorrecta.';
+              } else if (data.exists){
+                  Msg='Correo ya existe.';
+              }
+              if (Msg != ''){
+                bootbox.alert({
+                  title: "Mensaje de intermed",
+                  message: Msg
+                });
+              }
+            });
           }
-        },
-        message:
-        '<div class="container-fluid">'+
-          '<div class="row">'+
-            '<div class="col-md-12">'+
-              '<span class="label label-info">Confirmar con tu contraseña</span>'+
-              '<input type="password" class="form-control" id="bootConfirm" />'+
-            '</div>'+
-            '<div class="col-md-12">'+
-              '¿Olvidaste tu contraseña?<a href="#" onclick="updatePasswordIntermed();" style="color:green;">'+
-                'Cambiala aquí'+
-              '</a>'+
-            '</div>'+
-          '</div>'+
-        '</div>'
+        }
       });
     }else{
-      bootbox.dialog({
-        className: 'Intermed-Bootbox',
-        title:'<span class="title">Confirmar con tu correo</span><span class="subtitle">Para realizar esta acción ocupamos que confirmes con tu contraseña</span>',
-        buttons:{
-          ok:{
-            label:'Ok',
-            className:'btn-warning',
-            callback: function(){
-              bootbox.hideAll();
-            }
-          }
-        },
-        message:
-          '<div class="container-fluid">'+
-            '<div class="row">'+
-              '<div class="col-md-12">'+
-                '<span class="label label-info">el correo que ingreso no es correcto\nRevise que no contenga lo siguiente:\nespacios en blanco al principio ni al final</span>'+
-              '</div>'+
-            '</div>'+
-          '</div>'
+      $("#mailMedic").focus();
+      Msg = 'Formato incorrecto de correo';
+    }
+    if (Msg != ''){
+      bootbox.alert({
+        title: "Mensaje de intermed",
+        message: Msg
       });
     }
   }else{
-    bootbox.dialog({
-        className: 'Intermed-Bootbox',
-        title:'<span class="title">Revisa los campos</span><span class="subtitle">Hubo un error por favor revisa</span>',
-        buttons:{
-          ok:{
-            label:'Ok',
-            className:'btn-warning',
-            callback: function(){
-              bootbox.hideAll();
-            }
-          }
-        },
-        message:
-          '<div class="container-fluid">'+
-            '<div class="row">'+
-              '<div class="col-md-12">'+
-                '<span class="label label-info">El campo mail no puede estar vacio</span>'+
-              '</div>'+
-            '</div>'+
-          '</div>'
-    });
+    $("#mailMedic").focus();
   }
 });
 
@@ -158,7 +109,7 @@ $("#saveUrl").click(function(){
                 } else if (data.invalid){
                     Msg='Url personal invalida.';
                 } else if (data.exists){
-                    Msg='Url personal invalida.';
+                    Msg='Url personal ya existe.';
                 } else if (data.number){
                     Msg='Url personal invalida (no puede iniciar con número).';
                 }
@@ -173,7 +124,7 @@ $("#saveUrl").click(function(){
           }
         });
       }else{
-        Msg = 'La contraseña debe de tener por lo menos 6 caracteres';
+        Msg = 'La url personal debe de tener por lo menos 6 caracteres';
       }
     }else{
       $("#urlMedic").focus();
