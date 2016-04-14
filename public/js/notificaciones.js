@@ -15,6 +15,10 @@ $( 'document' ).ready( function () {
     }
   }, ( 10000 ) );
   socketManejadores();
+
+  if ($('#notificacionesListView').length>0){
+    socket.emit('cargarNotificacionesList',notificacionesList,limitNotificacionesList,fechaNotificacionList);
+  }
 } );
 
 

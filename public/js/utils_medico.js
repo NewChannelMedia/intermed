@@ -4801,7 +4801,7 @@ function guardarReagenda(medico_id, agenda_id, bootboxReagendar, modal){
     var inicio = sumarTiempo(evento.start,horas,minutos);
     var final = sumarTiempo(evento.end,horas,minutos);
 
-
+    var utc = (parseInt(new Date().getTimezoneOffset())/60);
     bootbox.prompt({
       title: "¿Cual es el motivo?",
       value: "Surgió un retraso.",
@@ -4817,7 +4817,8 @@ function guardarReagenda(medico_id, agenda_id, bootboxReagendar, modal){
             agenda_id: agenda_id,
             inicio: inicio,
             fin: final,
-            motivo: motivo
+            motivo: motivo,
+            utc: utc
           },
           success: function ( data ) {
             if (data.success){

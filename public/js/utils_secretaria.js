@@ -548,9 +548,11 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
 }
 
 function secretariaCancelaCita(agenda_id, medico){
+  var utc = (parseInt(new Date().getTimezoneOffset())/60);
   $.post('/agenda/cita/cancelar',{
       agenda_id: agenda_id,
-      medico: medico
+      medico: medico,
+      utc: utc
     }, function(data){
       console.log('CANCELACIÓN: ' + JSON.stringify(data));
     if (data.success){

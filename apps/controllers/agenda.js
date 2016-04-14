@@ -215,7 +215,6 @@ exports.rechazarCita = function(object, req, res) {
         }).then(function(datos) {
 
         }).catch(function(err) {
-            console.log(err);
             res.status(500).json({error: err});
         });
         res.status(200).json({ok: true});
@@ -934,8 +933,7 @@ exports.seleccionaHorarios = function(object, req, res) {
               status: {
                 $gt: 0
               }
-            },
-            logging: console.log
+            }
           }).then(function(datos) {
             for (i = 0; i <= datos.length - 1; i++) {
               var horario = {
@@ -1550,7 +1548,6 @@ exports.solicitarCambioCita = function(object, req, res) {
   models.Agenda.findOne({
        where : { id: id}
   }).then(function(datos) {
-     console.log('solictar cambio' +  id)
       var aplazo = aplazaCita(object.tiempo, object.id);
       models.AgendaCambio.create({
         fechaHoraInicio:  aplazo.fecha,
@@ -1602,12 +1599,10 @@ exports.aceptarCambioCita = function(object, req, res) {
     });
 
     var qry = "select * from agenda where fechaHoraInicio between '" + formatearTimestampAgenda(agenda.fechaHoraInicio) +  "' and '" + formatearTimestampAgenda( agenda.fechaHoraFin) + "'";
-    console.log(qry);
     sequelize.query(qry, {type: sequelize.QueryTypes.SELECT})
     .then(function(datos) {
       if  ( datos != null)
       {
-         console.log(datos.id +  ' ' + datos.fechaHoraInicio + ' ' + datos.fechaHoraFin)
          var aplazo = new moment(datos.fechaHoraInicio);
          var aplazoFin = new moment(datos.fechaHoraFin);
 
@@ -1754,7 +1749,6 @@ exports.traerAgendaMedico = function (object, req, res){
         }],
         attributes: ['direccion_id']
       }).then(function(result){
-        console.log('result. ' + JSON.stringify(result));
         object.direccion_id = [result.direccion_id];
         object.direcciones.push({
           id: result.Direccion.id,
@@ -2365,8 +2359,6 @@ exports.cancelarCita = function(object, req, res){
         if (agenda.PacienteTemporal){
           //Enviar notificacion por correo
           if (agenda.PacienteTemporal.correo){
-            console.log('Enviar correo de cancelación a paciente temporal. ' + agenda.PacienteTemporal.correo);
-            object.utc = 5;
             agenda.fechaHoraInicio = new Date(new Date(agenda.fechaHoraInicio).setHours(new Date(agenda.fechaHoraInicio.getHours()-parseInt(object.utc))));
             var mailobject ={
               subject:'Cita cancelada con el Dr. ' + agenda.Usuario.DatosGenerale.nombre  + ' ' + agenda.Usuario.DatosGenerale.apellidoP,
@@ -3007,8 +2999,7 @@ exports.validarCrearEvento = function (object, req, res){
         fechaHoraFin: { $lte: new Date(object.fin) },
         status: {$gte: 1}
       }
-    ),
-    logging:console.log
+    )
   }).then(function(result1){
     models.Agenda.findOne({
       where: models.sequelize.or(
@@ -3060,8 +3051,7 @@ exports.validarCrearEvento = function (object, req, res){
           status: {$gte: 1},
           id: {$not: object.agenda_id}
         }
-      ),
-      logging:console.log
+      )
     }).then(function(result2){
       if (!result1 && !result2){
         models.Evento.create({
@@ -3188,7 +3178,6 @@ exports.guardarReagenda = function (object, req, res){
               tipoNotificacion_id: {$in: [21,27]}
             }
           }).then(function(result){
-            console.log('Destroy result: ' + JSON.stringify(result));
             //Notificacion cita reagendada
             models.Notificacion.create({
                 data: agenda.id.toString(),
@@ -3228,8 +3217,6 @@ exports.guardarReagenda = function (object, req, res){
         } else {
           //Enviar correo con reagenda
           if (agenda.PacienteTemporal.correo){
-            console.log('Enviar correo de reagenda a paciente temporal. ' + agenda.PacienteTemporal.correo);
-            object.utc = 5;
             agenda.fechaHoraInicio = new Date(new Date(agenda.fechaHoraInicio).setHours(new Date(agenda.fechaHoraInicio.getHours()-parseInt(object.utc))));
             var mailobject ={
               motivo: agenda.motivoreagenda,

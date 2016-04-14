@@ -464,6 +464,7 @@ input, select, button {
   overflow: auto;
   max-height: 85%;
   padding-bottom: 60px;
+  height: 400px;
 }
 
 #notificacinesList .media {
