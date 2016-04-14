@@ -1430,10 +1430,11 @@ $( document ).ready( function () {
       });
 
 
-    if ( $( window ).width() > 768 ) {
+    if ( $( window ).width() > 767 ) {
       var h = $( window ).height() - $( '#newMainNav' ).height() - $( '.agendaTopContainer' ).height() - 2 - $('footer').height();
       $( '.agendaBody' ).css( 'height', h + 'px' );
       $( '.agendaMonth' ).css( 'height', h - 2 + 'px' );
+      console.log($( '.agendaMonth' ).css( 'height', h - 2 + 'px' ));
       $( '.agendaDay' ).css( 'height', h - 2 + 'px' );
     }
     else if ( $( window ).width() < 767 ) {
@@ -1449,7 +1450,7 @@ $( document ).ready( function () {
   } else if($('#galeriaMedico').length > 0) {
     $('.carousel').carousel('pause');
 
-    if ( $( window ).width() >= 768 ) {
+    if ( $( window ).width() > 767 ) {
       var h = $( window ).height() - $( '#newMainNav' ).height() - $('footer').height();
       var h2 = h - $('#stickyNav').height() - $('#uploadControl').height();
       $( '#galeriaBody' ).css( 'height', h + 'px' );
@@ -1460,7 +1461,7 @@ $( document ).ready( function () {
       $( '.img-container' ).css('height', $( '#slideGaleria' ).height() + 'px');
       $( '.caption-container' ).css('height', $( '#slideGaleria' ).height() + 'px');
     }
-    else if ( $( window ).width() < 768 ) {
+    else if ( $( window ).width() < 767 ) {
       console.log($(window).height());
 
       var h2 = h - $('#stickyNav').height() - $('#uploadControl').height() - $('#stickyNav').height();
@@ -1492,7 +1493,7 @@ $( document ).ready( function () {
   } else if ($('#feedback').length > 0){
     getFeedback();
 
-    if ( $( window ).width() >= 768 ) {
+    if ( $( window ).width() > 767 ) {
       var h = $( window ).height() - $( 'footer' ).height() - $( '#newMainNav' ).height() - 15;
       $('#moderarComentarios').css('max-height', h -$('#panelEstadisticas').height() - 20 + 'px');
       $('#moderarComentarios .panel').css('max-height', $('#moderarComentarios').height() + 'px');
@@ -1506,7 +1507,7 @@ $( document ).ready( function () {
       $('#panelEstrellas .panel').css('height', $('#panelEstrellas').height() + 'px');
       $('#panelEstrellas .panel-body').css('height', $('#panelEstrellas .panel').height() - $('#panelEstrellas .panel .panel-heading').outerHeight() + 'px');
     }
-    else if ( $( window ).width() < 768 ) {
+    else if ( $( window ).width() < 767 ) {
       var h = $( window ).height() - $( 'footer' ).height() - $( '#newMainNav' ).height() ;
       $('#moderarComentarios').css('max-height', h - 20 + 'px');
       $('#moderarComentarios .panel').css('max-height', $('#moderarComentarios').height() + 'px');
@@ -1522,14 +1523,14 @@ $( document ).ready( function () {
     }
 
   } else if ($('#configuraciones').length > 0){
-    if ( $( window ).width() >= 768 ) {
+    if ( $( window ).width() > 767 ) {
       var h = $( window ).height() - $( 'footer' ).height() - $( '#newMainNav' ).height() ;
       $('#configuraciones').css('height', h + 'px');
       $('#configPanel').css('height', h - 30 + 'px');
       $('#configPanel .panel-body.mainpb').css('height', $('#configPanel').height() + 'px');
       $('#configPanel .tab-pane').css('height', $('#configPanel .panel-body').height() + 'px');
     }
-    else if ( $( window ).width() < 768 ) {
+    else if ( $( window ).width() < 767 ) {
       var h = $( window ).height() - $('#newMainNav').height() ;
       $('#configuraciones').css('height', h + 'px');
       $('#configPanel').css('height', h - $( 'footer' ).height() + 'px');
