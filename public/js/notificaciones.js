@@ -522,15 +522,15 @@ function formatearNotificacion( record , element) {
           break;
       case 22:
           //medico cancelando cita
-          not += '<div class="media-left center-content"><a  onclick="detalleCancelacionMedico(\''+ record.data +'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a  onclick="detalleCancelacionMedico(\''+ record.data +'\')">El ' + nombreCompleto + ' ha cancelado una cita que tenias programada.</a></div>';
+          not += '<div class="media-left center-content"><a  onclick="detalleCancelacionMedico(\''+ record.data +'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a  onclick="detalleCancelacionMedico(\''+ record.data +'\')">Tu cita con el Dr. ' + nombreCompleto + ' ha sido cancelada.</a></div>';
           break;
       case 23:
           //paciente ha rechazado cambio de cita
-          not += '<div class="media-left center-content"><a href="#" >'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a href="#" >' + nombreCompleto + ' Ha rechazado la cita</a></div>';
+          not += '<div class="media-left center-content"><a onclick="detalleCitaSecretaria(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="detalleCitaSecretaria(\''+record.data+'\')" >Una cita de ' + nombreCompleto + ' ha sido cancelada.</a></div>';
           break;
       case 24:
-          //paciente cancelando cita
-          not += '<div class="media-left center-content" ><a onclick="detalleCancelacionPaciente(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="detalleCancelacionPaciente(\''+record.data+'\')">El paciente ' + nombreCompleto + ' ha cancelado una cita.</a></div>';
+          var mediaObjectImagen = '<img class="media-object img-circle" src="' + fotoPerfil + '" '+style+'>';
+          not += '<div class="media-left center-content"><a onclick="detalleCitaSecretaria(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="detalleCitaSecretaria(\''+record.data+'\')">Una de tus citas ha sido cancelada.</a></div>';
           break;
       case 25:
           //medico tiene solicitud de cita
@@ -552,6 +552,10 @@ function formatearNotificacion( record , element) {
           var mediaObjectImagen = '<img class="media-object img-circle" src="' + fotoPerfil + '" '+style+'>';
           //paciente tiene nueva cita (generada por medico o secretaria)
           not += '<div class="media-left center-content"><a onclick="detalleCitaSecretaria(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="detalleCitaSecretaria(\''+record.data+'\')">Tienes una nueva cita agendada.</a></div>';
+          break;
+      case 30:
+          //aviso de reagenda para paciente
+          not += '<div class="media-left center-content"><a onclick="DetallesCitaPaciente(\''+record.data+'\')">'+mediaObjectImagen+'</a></div><div class="media-body center-content"><a onclick="DetallesCitaPaciente(\''+record.data+'\')">Tu cita con el ' + nombreCompleto + ' ha sido reagendada.</a></div>';
           break;
       case 9:
           not += '<div class="media-left center-content"><a>INTERMED</a></div><div class="media-body center-content"><a onclick="actualizarSesion();location.reload();">Tu cédula ha sido aceptada.</a></div>';

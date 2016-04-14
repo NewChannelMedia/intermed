@@ -667,7 +667,6 @@ exports.citasProximas = function (object, req, res){
       }]
     }]
   }).then(function(result){
-
       models.Evento.findAll({
         where: {
           fechaHoraInicio: {

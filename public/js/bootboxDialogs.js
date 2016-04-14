@@ -4661,7 +4661,6 @@ function detalleCitaSecretaria(agenda_id){
           if (editar){
             modal += '<div class="col-md-4 col-sm-4">'+
                 '<button class="btn btn-default btn-block s20 reagendarBtn" style="color: #5cb85c;font-weight: bold;">Reagendar</button>'+
-                '<button class="btn btn-default btn-block s20" style="color: #f0ad4e;font-weight: bold;" onClick="retrasaCita(' + agenda_id + ')">Retrasar</button>'+
                 '<div class="btn-group btn-block">'+
                     '<button type="button" class="btn btn-default btn-block s20 dropdown-toggle" style="color: #d43f3a;font-weight: bold;" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Cancelar</button>'+
                     '<ul class="dropdown-menu" style="width:100%">'+
@@ -4810,8 +4809,7 @@ function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id, kendo){
     className: 'Intermed-Bootbox',
     title: '<span class="title text-center" style="font-weight:bold">¿Quién es el paciente?</span>',
     message:
-      '<form method="post" onsubmit="return registrarCitaPacienteTemporal('+inicio+','+fin+','+medico+','+servicio_id+',null,'+kendo+')">'+
-          '<div class="row">'+
+          '<div class="row" id="regPacTemp">'+
             '<div class="col-md-6">'+
                 '<div class="input-group">'+
                   '<input type="text" id="inputBusquedaPaciente" class="form-control" placeholder="Encuentralo en Intermed..."  onchange="BuscarPaciente(\'inputBusquedaPaciente\',\'resultadosBusquedaPaciente\','+inicio+','+fin+','+medico+','+servicio_id+','+kendo+')">'+
@@ -4868,10 +4866,9 @@ function registrarNuevaCitaBootbox(inicio, fin, medico, servicio_id, kendo){
               '<input type="button" class="btn btn-drop btn-block " value="Cancelar" onclick="secondaryBootbox.hide();">'+
             '</div>'+
             '<div class="col-md-4 pull-right">'+
-              '<input type="submit" class="btn btn-save btn-block " value="Guardar">'+
+              '<input type="button" class="btn btn-save btn-block " onclick="registrarCitaPacienteTemporal('+inicio+','+fin+','+medico+','+servicio_id+',null,'+kendo+')" value="Guardar">'+
             '</div>'+
-          '</div>'+
-        '</form>'
+          '</div>'
   });
 
   BuscarPaciente('inputBusquedaPaciente','resultadosBusquedaPaciente',inicio,fin,medico,servicio_id,kendo);
@@ -5672,96 +5669,4 @@ function verAgendaMedicoReagendar(medico_id, agenda_id, modal){
   });
 
   horariosAgendaMedicoReagendar(medico_id, agenda_id);
-}
-
-function guardarReagenda(medico_id, agenda_id, bootboxReagendar, modal){
-    console.log('Guardar agenda: ' + medico_id + ' - ' + agenda_id);
-    var evento;
-    var h = $('.divCalenarioReagendar').fullCalendar('clientEvents');
-
-    for (i = 0; i <= h.length-1; i++) {
-        if (h[i].rendering != 'background')
-        {
-          if  (h[i].className[0] == 'eventoReagendar')
-          {
-            console.log('EVENTO: ' + JSON.stringify(h[i]));
-            evento = h[i];
-          }
-        }
-    };
-    var d = new Date();
-    var horas = parseInt(d.getTimezoneOffset())/60;
-    var minutos = parseInt(d.getTimezoneOffset())-(horas*60);
-    /*
-    EVENTO: {
-      "start":"2016-04-09T09:00:00.000Z",
-      "end":"2016-04-09T11:00:00.000Z",
-    }
-    */
-    var inicio = sumarTiempo(evento.start,horas,minutos);
-    var final = sumarTiempo(evento.end,horas,minutos);
-
-
-    $.ajax( {
-      async: false,
-      url: '/agenda/reagendar',
-      type: 'POST',
-      dataType: "json",
-      cache: false,
-      data: {
-        medico_id: medico_id,
-        agenda_id: agenda_id,
-        inicio: inicio,
-        fin: final
-      },
-      success: function ( data ) {
-        console.log('result: ' + JSON.stringify(data));
-        if (data.success){
-          bootboxReagendar.hide();
-          modal.hide();
-          detalleCitaSecretaria(agenda_id);
-          cargarCitasProximasSecretaria();
-          if ($('#divCalendario').length>0){
-            $('#divCalendario').fullCalendar('removeEvents');
-            $('#divCalendario').fullCalendar('refetchEvents');
-          }
-          if ($("#calendar").length>0){
-            marcarEventosCalendario();
-            if ($('#calendar').length>0){
-              var fechaInicio = $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 00:00:00';
-              var fechaFin =  $("#calendar").data("kendoCalendar").value().toISOString().split('T')[0] + ' 23:59:59';
-              cargarEventosPorDia(fechaInicio, fechaFin);
-            }
-          }
-        }
-      },
-      error: function ( jqXHR, textStatus, err ) {
-        console.error( 'AJAX ERROR: ' + err );
-      }
-    } );
-
-}
-
-function restarTiempo(fecha, horas, minutos){
-  if (!horas){
-    horas = 0;
-  }
-  if (!minutos){
-    minutos = 0;
-  }
-  var fecha = new Date(new Date(fecha).setHours(new Date(fecha).getHours()-horas));
-  fecha = new Date(new Date(fecha).setMinutes(new Date(fecha).getMinutes()-minutos));
-  return fecha;
-}
-
-function sumarTiempo(fecha, horas, minutos){
-  if (!horas){
-    horas = 0;
-  }
-  if (!minutos){
-    minutos = 0;
-  }
-  var fecha = new Date(new Date(fecha).setHours(new Date(fecha).getHours()+horas));
-  fecha = new Date(new Date(fecha).setMinutes(new Date(fecha).getMinutes()+minutos));
-  return fecha;
 }

@@ -187,9 +187,9 @@ function cargarVistaPevCitas(fechainicio){
   $('.dia2>.heading').text(formatDate(new Date(fechainicio), 1));
   $('.dia3>.heading').text(formatDate(new Date(fechainicio), 2));
 
-  var dia1 = fechainicio;
-  var dia2 = formatDate(new Date(), 1,true);
-  var dia3 = formatDate(new Date(), 2,true);
+  var dia1 = formatDate(new Date(fechainicio),0,true)
+  var dia2 = formatDate(new Date(fechainicio), 1,true);
+  var dia3 = formatDate(new Date(fechainicio), 2,true);
 
   //Traer citas de medicos de proximos 3 dias
   $.post('/secretaria/medicos/traerCitasProximas',{
@@ -288,6 +288,8 @@ function cargarVistaPevCitas(fechainicio){
           dia = '0'+dia;
         }
         fecha = anio  +'-'+ mes +'-'+ dia;
+
+
 
         var dia = 'dia';
         if (fecha == dia1){
@@ -446,7 +448,7 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
       var apellido = $('#apellidoPaciente').val();
       var correo = $('#correoPaciente').val();
       var celular = $('#celularPaciente').val();
-      if (correo != "" || celular != ""){
+      if (nombre != "" && apellido != "" && (correo != "" || celular != "")){
         var datos = {
           kendo: kendo,
           nombre: nombre,
@@ -483,12 +485,19 @@ function registrarCitaPacienteTemporal(inicio, fin, medico, servicio_id, pacient
             }
 
             cargarCitasProximasSecretaria();
+            $('#regPacTemp').remove();
           }
         }).fail(function(e){
           console.error("Post error: "+JSON.stringify(e));
         });
       } else {
-        $('#dangerMsg').removeClass('hidden').text('Es necesario el correo o el teléfono del paciente.');
+        if (nombre == ""){
+          $('#dangerMsg').removeClass('hidden').text('Es necesario el nombre del paciente.');
+        } else if (apellido == ""){
+          $('#dangerMsg').removeClass('hidden').text('Es necesario el apellido del paciente.');
+        } else {
+          $('#dangerMsg').removeClass('hidden').text('Es necesario el correo o el teléfono del paciente.');
+        }
         setTimeout(function(){
           $('#dangerMsg').addClass('hidden').text('');
         },5000);

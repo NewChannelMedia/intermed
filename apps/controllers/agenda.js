@@ -2317,6 +2317,8 @@ exports.cancelarCita = function(object, req, res){
         model: models.Usuario,
         attributes: ['id'],
         include: [{
+          model: models.DatosGenerales
+        },{
           model: models.Medico,
           include: [{
             model: models.MedicoSecretaria,
@@ -2335,6 +2337,22 @@ exports.cancelarCita = function(object, req, res){
             }]
           }]
         }]
+      },{
+        model: models.Paciente
+      },{
+        model: models.PacienteTemporal
+      },{
+        model: models.Direccion,
+        include: [{
+          model: models.Localidad
+        },{
+          model: models.Municipio,
+          include: [{
+            model: models.Estado
+          }]
+        }]
+      },{
+        model: models.CatalogoServicios
       }]
     }).then(function(agenda){
       if (agenda){
@@ -2343,7 +2361,63 @@ exports.cancelarCita = function(object, req, res){
         } else {
           agenda.update({status: 0});
         }
-        console.log('Falta agregar notificaciones');
+        //Informar a Paciente
+        if (agenda.PacienteTemporal){
+          //Enviar notificacion por correo
+          if (agenda.PacienteTemporal.correo){
+            console.log('Enviar correo de cancelación a paciente temporal. ' + agenda.PacienteTemporal.correo);
+            object.utc = 5;
+            agenda.fechaHoraInicio = new Date(new Date(agenda.fechaHoraInicio).setHours(new Date(agenda.fechaHoraInicio.getHours()-parseInt(object.utc))));
+            var mailobject ={
+              subject:'Cita cancelada con el Dr. ' + agenda.Usuario.DatosGenerale.nombre  + ' ' + agenda.Usuario.DatosGenerale.apellidoP,
+              to:agenda.PacienteTemporal.correo,
+              nombre: ' ' + agenda.PacienteTemporal.nombres + ' ' + agenda.PacienteTemporal.apellidos,
+              medfotoPerfil: global.base_url + agenda.Usuario.urlFotoPerfil,
+              fechahora: agenda.fechaHoraInicio.toISOString().replace('T',' ').replace(':00.000Z',''),
+              ubicacion: agenda.Direccion.nombre  + '\n(' + agenda.Direccion.calle  + ' ' + agenda.Direccion.numero + ' ' + agenda.Direccion.numeroInt + ' ' + agenda.Direccion.Localidad.localidad +'. ' + agenda.Direccion.Municipio.municipio  +', '+ agenda.Direccion.Municipio.Estado.estado  + ')',
+              servicio: agenda.CatalogoServicio.concepto,
+              mednombre: agenda.Usuario.DatosGenerale.nombre  + ' ' + agenda.Usuario.DatosGenerale.apellidoP + ' ' + agenda.Usuario.DatosGenerale.apellidoM
+            };
+            mail.send(mailobject,'citacancelada');
+          }
+        } else {
+          models.Notificacion.create({
+            usuario_id: agenda.Paciente.usuario_id,
+            tipoNotificacion_id: 22,
+            data: agenda.id.toString()
+          });
+        }
+
+        //Informar a Médico
+        models.Notificacion.create({
+          usuario_id: agenda.Usuario.id,
+          tipoNotificacion_id: 24,
+          data: agenda.id.toString()
+        });
+
+        //Informar a secretarias de médico
+        models.MedicoSecretaria.findAll({
+          where: {
+            activo: 1,
+            medico_id: agenda.Usuario.Medico.id
+          },
+          include: [{
+            model: models.Secretaria,
+            attributes: ['id','usuario_id']
+          }]
+        }).then(function(ressec){
+          if (ressec){
+            ressec.forEach(function(sec){
+              models.Notificacion.create({
+                usuario_id: sec.Secretarium.usuario_id,
+                tipoNotificacion_id: 23,
+                data: agenda.id.toString()
+              });
+            });
+          }
+        });
+
+
         res.status(200).json({
           success: true
         })
@@ -3071,71 +3145,113 @@ exports.reagendar = function (object, req, res){
 }
 
 exports.guardarReagenda = function (object, req, res){
-  console.log('Guardar reagenda. ' + JSON.stringify(object));
   models.Agenda.findOne({
     where: {
       id: object.agenda_id
-    }
+    },
+    include: [{
+      model: models.Usuario,
+      attributes: ['id','usuarioUrl','urlFotoPerfil','urlPersonal'],
+      include: [{
+        model: models.DatosGenerales
+      }]
+    },{
+      model: models.Paciente
+    },{
+      model: models.PacienteTemporal
+    },{
+      model: models.Direccion,
+      include: [{
+        model: models.Localidad
+      },{
+        model: models.Municipio,
+        include: [{
+          model: models.Estado
+        }]
+      }]
+    },{
+      model: models.CatalogoServicios
+    }]
   }).then(function(agenda){
     if (agenda){
       agenda.update({
         fechaHoraInicio: new Date(object.inicio),
-        fechaHoraFin: new Date(object.fin)
+        fechaHoraFin: new Date(object.fin),
+        motivoreagenda: object.motivo
       }).then(function(result){
-        //Actualizar notificacion de recordatorio y de calificacion, eliminar
-        //crear notificacion de cita creada
+        if (agenda.Paciente){
+          //Actualizar notificacion de recordatorio y de calificacion, eliminar
+          //crear notificacion de cita reagendad
+          models.Notificacion.destroy({
+            where: {
+              data: agenda.id.toString(),
+              tipoNotificacion_id: {$in: [21,27]}
+            }
+          }).then(function(result){
+            console.log('Destroy result: ' + JSON.stringify(result));
+            //Notificacion cita reagendada
+            models.Notificacion.create({
+                data: agenda.id.toString(),
+                tipoNotificacion_id : 30,
+                usuario_id: agenda.Paciente.usuario_id
+            });
+
+            //Crear notificacion de recordatorio 1 dia antes
+            var undiaantes = new Date(new Date(agenda.fechaHoraInicio).setHours(new Date(agenda.fechaHoraInicio).getHours()-24));
+            models.Notificacion.create({
+              usuario_id: agenda.Paciente.usuario_id,
+              tipoNotificacion_id: 27,
+              data: agenda.id.toString(),
+              inicio:undiaantes,
+              fin:new Date(agenda.fechaHoraInicio)
+            });
+
+            //Crear notificacion de recordatorio 1 hora antes
+            var unahoraantes = new Date(new Date(agenda.fechaHoraInicio).setHours(new Date(agenda.fechaHoraInicio).getHours()-1));
+            models.Notificacion.create({
+              usuario_id: agenda.Paciente.usuario_id,
+              tipoNotificacion_id: 27,
+              data: agenda.id.toString(),
+              inicio:unahoraantes,
+              fin:new Date(agenda.fechaHoraInicio)
+            });
+
+            models.Notificacion.create({
+                inicio: new Date(agenda.fechaHoraFin),
+                fin:  new Date(new Date(agenda.fechaHoraFin).setHours(new Date(agenda.fechaHoraFin).getHours()+(24*7))),
+                data: agenda.id.toString(),
+                tipoNotificacion_id : 21,
+                usuario_id: agenda.Paciente.usuario_id
+            });
+          })
+
+        } else {
+          //Enviar correo con reagenda
+          if (agenda.PacienteTemporal.correo){
+            console.log('Enviar correo de reagenda a paciente temporal. ' + agenda.PacienteTemporal.correo);
+            object.utc = 5;
+            agenda.fechaHoraInicio = new Date(new Date(agenda.fechaHoraInicio).setHours(new Date(agenda.fechaHoraInicio.getHours()-parseInt(object.utc))));
+            var mailobject ={
+              motivo: agenda.motivoreagenda,
+              subject:'Cita reagendada con el Dr. ' + agenda.Usuario.DatosGenerale.nombre  + ' ' + agenda.Usuario.DatosGenerale.apellidoP,
+              to:agenda.PacienteTemporal.correo,
+              nombre: ' ' + agenda.PacienteTemporal.nombres + ' ' + agenda.PacienteTemporal.apellidos,
+              medfotoPerfil: global.base_url + agenda.Usuario.urlFotoPerfil,
+              fechahora: agenda.fechaHoraInicio.toISOString().replace('T',' ').replace(':00.000Z',''),
+              ubicacion: agenda.Direccion.nombre  + '\n(' + agenda.Direccion.calle  + ' ' + agenda.Direccion.numero + ' ' + agenda.Direccion.numeroInt + ' ' + agenda.Direccion.Localidad.localidad +'. ' + agenda.Direccion.Municipio.municipio  +', '+ agenda.Direccion.Municipio.Estado.estado  + ')',
+              servicio: agenda.CatalogoServicio.concepto,
+              mednombre: agenda.Usuario.DatosGenerale.nombre  + ' ' + agenda.Usuario.DatosGenerale.apellidoP + ' ' + agenda.Usuario.DatosGenerale.apellidoM
+            };
+            mail.send(mailobject,'citareagendada');
+          }
+        }
+
         res.status(200).json({success: true})
       })
     } else {
       res.status(200).json({success: false})
     }
   })
-  /*
-  models.CatalogoServicios.findOne({
-    where: {
-      id: object.servicio_id
-    }
-  }).then(function(servicio){
-    if (object.paciente_id){
-      models.Agenda.create({
-        usuario_id: object.usuario_medico_id,
-        paciente_id: object.paciente_id,
-        fechaHoraInicio: new Date(object.inicio),
-        fechaHoraFin: new Date(object.fin),
-        direccion_id: servicio.direccion_id,
-        servicio_id: servicio.id,
-        status:1
-      }).then(function(result){
-        res.status(200).json({
-          success: true,
-          result: result
-        })
-      });
-    } else {
-      //Crear paciente temporal
-      models.PacienteTemporal.create({
-        nombres: object.nombre,
-        apellidos: object.apellido,
-        correo: object.correo,
-        celular: object.celular
-      }).then(function(PacienteTemporal){
-          models.Agenda.create({
-            usuario_id: object.usuario_medico_id,
-            paciente_temporal_id: PacienteTemporal.id,
-            fechaHoraInicio: object.inicio,
-            fechaHoraFin: object.fin,
-            direccion_id: servicio.direccion_id,
-            servicio_id: servicio.id,
-            status:1
-          }).then(function(result){
-            res.status(200).json({
-              success: true,
-              result: result
-            })
-          });
-      });
-    }
-  });*/
 }
 
 function aplazaCita(tiempo, id)
