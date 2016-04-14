@@ -33,6 +33,9 @@ module.exports = function ( sequelize, DataTypes ) {
     },
     configurable: {
       type: DataTypes.INTEGER
+    },
+    visible: {
+      type: DataTypes.INTEGER
     }
   }, {
     classMethods: {

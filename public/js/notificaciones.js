@@ -2,13 +2,13 @@ var socket = io();
 
 $( 'document' ).ready( function () {
   socket.emit( 'contarNuevasNotificaciones' );
-  socket.emit( 'inbox' );
+  //socket.emit( 'inbox' );
   var notificacionesInterval;
   clearInterval( notificacionesInterval );
   notificacionesInterval = setInterval( function () {
     try {
       socket.emit( 'contarNuevasNotificaciones' );
-      socket.emit( 'inbox' );
+      //socket.emit( 'inbox' );
     }
     catch ( err ) {
       console.log( 'No se puede conectar con el servidor' );
