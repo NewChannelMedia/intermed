@@ -372,7 +372,6 @@ var io = function ( io, bundle, ioPassport ) {
 
       socket.on('cargarNotificacionesList',function (notificacionesId,limit,maxfecha){
 
-          console.log('cargarNotificacionesList');
           models.TipoNotificacion.findAll( {
             where: {
               tipoUsuario: socket.request.session.tipoUsuario
