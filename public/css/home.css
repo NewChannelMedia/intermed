@@ -11,7 +11,7 @@ body {
 #newHomeHeader {
   position: relative;
   margin: 0;
-  background-image: url('../img/newHome/headerBG.png');
+  background-image: url('../img/newHome/headerBG.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -126,13 +126,13 @@ body {
 .pacienteBG{
   left: 0;
   right: 50%;
-  background-image: url('../img/newHome/pacienteBG.png');
+  background-image: url('../img/newHome/pacienteBG.jpg');
 }
 
 .medicoBG{
   right: 0;
   left: 50%;
-  background-image: url('../img/newHome/medicoBG.png');
+  background-image: url('../img/newHome/medicoBG.jpg');
 }
 @media (max-width:767px) {
   .pacienteBG {

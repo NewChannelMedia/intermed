@@ -451,7 +451,7 @@ footer .logoIntermed {
   display: block;
   height: auto;
   padding-top: 60px;
-  background-image: url('../img/profileBG.png');
+  background-image: url('../img/profileBG.jpg');
   background-repeat: no-repeat;
   background-position: bottom center;
   background-size: cover;
@@ -1851,7 +1851,7 @@ footer .logoIntermed {
 
 .agendaTopContainer {
   border-bottom: solid 2px #fff;
-  background-image: url('../img/profileBG.png');
+  background-image: url('../img/profileBG.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -1899,7 +1899,7 @@ footer .logoIntermed {
 }
 
 .agendaMonth {
-  background-image: url('../img/profileBG.png');
+  background-image: url('../img/profileBG.jpg');
   background-repeat: no-repeat;
   background-position: left center;
   background-size: cover;
