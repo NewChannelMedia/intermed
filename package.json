@@ -1,6 +1,6 @@
 {
   "name": "intermed",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "La red social de la salud",
   "author": "New Channel",
   "private": true,
@@ -8,10 +8,6 @@
     "start": "node app.js"
   },
   "contributors": [
-    {
-      "name": "Oscar Ivan Muñoz Barajas",
-      "email": "oscar.m@newchannel.mx"
-    },
     {
       "name": "Juan Carlos Medina",
       "email": "jcmedina@newchannel.mx"
