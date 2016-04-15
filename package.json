@@ -21,6 +21,7 @@
       "email": "jorge@newchannel.mx"
     }
   ],
+  "engine": "node 0.12.7",
   "preferGlobal": "true",
   "dependencies": {
     "conekta": "^1.5.0",
