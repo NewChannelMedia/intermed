@@ -1,27 +1,135 @@
 var models = require('../models');
 var fs = require('fs');
+var xmldoc = require('xmldoc');
+
+/*
+//SITEMAPINDEX
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<sitemap>
+		<loc>http://www.intermed.online/sitemap1.xml</loc>
+		<lastmod>2016-4-15</lastmod>
+	</sitemap>
+*/
+
+/*
+//SITEMAP
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+	<url>
+		<loc>http://www.intermed.online/Dr.Maldonado</loc>
+		<lastmod>2016-4-15</lastmod>
+		<changefreq>weekly</changefreq>
+		<priority>1.0</priority>
+	</url>
+*/
 
 exports.agregarUsuario = function ( object, req, res ) {
-  var name = 'sitemapindex';
-  var name2 = 'sitemap';
-  fs.stat('./'+name, function( err, stats ){
-    if( err ){
-      fs.stat('./'+name2, function( erro, statss ){
-        var indice = 0;
-        if( erro ){
-          creaIndex(name);
-          creaSite(name2, ++indice);
-          registerSites(name,name2,indice);
-          // se llena el sitemap con los valores
-          registerAllSites(name2,name,indice);
-        }else{
-          registerAllSites(name2,name,indice);
-        }
-      });
+  fs.stat('./sitemapindex.xml', function (err, stats){
+    if (err){
+      //crear por primera vez el sitemap
+      existFile('sitemapindex','sitemap');
+    } else {
+      //Buscar el ultimo sitemap en sitemapindex, y agregar el nuevo nodo de usuario
+      object.usuario_id = 1;
+      addUserValidate(object,req, res);
     }
   });
   res.status(200).json({creado:true})
 };
+
+exports.actualizarUsuario = function ( object, req, res ) {
+  fs.stat('./sitemapindex.xml', function (err, stats){
+    if (err){
+      //crear por primera vez el sitemap
+      existFile('sitemapindex','sitemap');
+    } else {
+      //Buscar en todos los sitemaps el usuarioUrl y actualizar ese nodo a urlFotoPerfil
+
+    }
+  });
+};
+
+function addUserValidate(object,req, res){
+
+  fs.readFile('./sitemapindex.xml', 'utf8', function (err,xml) {
+    if (err) {
+      return console.log(err);
+    } else {
+      var sitemapindex = new xmldoc.XmlDocument(xml);
+      var lastsitemap = sitemapindex.lastChild.childNamed('loc').val.toString();
+      var base_url = global.base_url.toString();
+      console.log('base_url: ' + base_url);
+      lastsitemap = lastsitemap.replace(base_url, "");
+      console.log('replace. ' + lastsitemap)
+      //revisar si el nuevo usuario aun se puede agregar en ese archivo, si no, crear uno nuevo
+      object.sitemap = (sitemapindex.lastChild.childNamed('loc').val.toString().replace(global.base_url,''));
+      addUser(object, req, res);
+    }
+  });
+}
+
+function addUser(object, req, res){
+  console.log('OBJECT. ' + JSON.stringify(object));
+  fs.stat('./'+object.sitemap, function( err, stats ){
+    if (err){
+      console.log('Error al leer el sitemap: ' + object.sitemap +':'+err)
+    } else {
+      console.log('STATS: ' + stats);
+    }
+  });
+
+
+
+/*
+
+
+
+  fs.writeFile( complete , html, 'utf8', function( err ){
+    if( err ){
+      console.log("Error: al intentar escribir en este archivo: "+complete);
+    }
+  });
+    // se hace una consulta para traer todos los url de los usuarios medicos
+    models.Usuario.findAll({
+      where:{tipoUsuario:'M'},
+      attributes:['usuarioUrl','urlPersonal']
+    }).then(function(usuario){
+      usuario = JSON.parse(JSON.stringify(usuario));
+      var i = 0;
+      usuario.forEach(function(usu){
+          // en caso que el usuario llegue a mas de 50 mil registros, se dejara de agregar la informacion
+          //al archivo y se abrira otro donde se empeza a escribir en el nuevo archivo
+          // y tambien se checa que el archivo sea menor de 10 mb(10,000 kb)
+          var weight;
+          fs.stat(name+(indice)+".xml", function( err2, stats ){
+            weight = stats.size;
+            if( i >= 50000 || weight >= 10000 ){
+              i = 0;
+              //en este else, si entro excedio los 50 mil y el peso que debe de tener el archivo
+              // crea el nuevo sitemap
+              creaSite(name,(++indice));
+              // actualiza el sitemapindex
+              updateIndex(name2,name,fechaCompleta, indice);
+            } else {
+              console.log('Test');
+            }
+            i++;
+            // se revisa si el campo urlPersonal contenga datos, en caso de hacer asi se escribe,
+            // la etiqueta loc con la url personalizada en caso contrario se agregara solamente
+            // la url por default
+            var usuarioNombre = '';
+            if( usu.urlPersonal && usu.urlPersonal.length > 0 ){
+                usuarioNombre = usu.urlPersonal;
+            } else {
+              usuarioNombre = usu.usuarioUrl;
+            }
+            updateSitemap( name+(indice)+".xml", usuarioNombre);
+          });
+      });
+    });
+    */
+}
 
 /*
  module.exports ={
@@ -85,7 +193,7 @@ exports.agregarUsuario = function ( object, req, res ) {
     html += '<?xml version="1.0" encoding="UTF-8"?>\n';
     html += '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
      html += '\t<sitemap>\n';
-       html += '\t\t<loc>'+'http://www.intermed.online/'+complete+'</loc>\n';
+       html += '\t\t<loc>'+ global.base_url +complete+'</loc>\n';
        html += '\t\t<lastmod>'+fechaCompleta+'</lastmod>\n';
      html += '\t</sitemap>\n';
      fs.writeFile( vComplete, html, 'utf8', function( err ){
@@ -126,7 +234,7 @@ exports.agregarUsuario = function ( object, req, res ) {
     var d = new Date();
     var bandera = false; // bandera para cuando sobre pase los 50 mil saber que eso paso, se pondrá en true
     var fechaCompleta = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
-    var complete = name +indice+ ".xml";
+    var complete = name +'_'+indice+ ".xml";
     html += '<?xml version="1.0" encoding="UTF-8"?>\n';
     html += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
     // en esta parte el archivo ya debe de estar creado entonces se puede escribir sobre el
@@ -188,7 +296,7 @@ exports.agregarUsuario = function ( object, req, res ) {
     var html = "";
     var vComplete = addName+indice+'.xml';
     html += '\t<sitemap>\n';
-      html += '\t\t<loc>http://www.intermed.online/'+vComplete+'</loc>\n';
+      html += '\t\t<loc>' + global.base_url +vComplete+'</loc>\n';
       html += '\t\t<lastmod>'+fecha+'</lastmod>\n';
     html += '\t</sitemap>\n';
     var complete = name+".xml";
@@ -209,7 +317,7 @@ exports.agregarUsuario = function ( object, req, res ) {
     var url = name+".xml";
     var fechaCompleta = d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
     html += '\t<url>\n';
-      html += '\t\t<loc>http://www.intermed.online/'+valor+'</loc>\n';
+      html += '\t\t<loc>'+ global.base_url +valor+'</loc>\n';
       html += '\t\t<lastmod>'+fechaCompleta+'</lastmod>\n';
       html += '\t\t<changefreq>weekly</changefreq>\n';
       html += '\t\t<priority>1.0</priority>\n';
