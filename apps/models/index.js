@@ -5,7 +5,7 @@ var path = require( "path" );
 var Sequelize = require( "sequelize" );
 var env = process.env.NODE_ENV || "development";
 var db = {};
-var localhost = 'intermed.online';
+var localhost = '127.0.0.1';
 
 //var config    = require(__dirname + '/../config/config.json')[env];
 var sequelizeMain = new Sequelize( 'intermed', 'root', 't5o7m6a6s', {
