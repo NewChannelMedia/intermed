@@ -9,6 +9,10 @@ module.exports = function (object){
   var url = object.url;
 
 
+  app.get('/agregarUsuario', function (req, res, next){
+    intermed.callController('sitemap', 'agregarUsuario', req.body, req, res )
+  });
+
   app.get('*', function (req, res, next){
     if (req.url != '/logout'){
       if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "M"){
