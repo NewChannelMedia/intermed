@@ -7,7 +7,7 @@ var env = process.env.NODE_ENV || "development";
 var db = {};
 
 //var config    = require(__dirname + '/../config/config.json')[env];
-var sequelizeMain = new Sequelize( 'intermed', 'root', '', {
+var sequelizeMain = new Sequelize( 'intermed', 'root', 't5o7m6a6s', {
   host: 'localhost',
   dialect: 'mysql',
   pool: {
@@ -18,7 +18,7 @@ var sequelizeMain = new Sequelize( 'intermed', 'root', '', {
   logging: null
 } );
 // conexion a la nueva base de datos intermed.historia
-var sequelizeHistorial = new Sequelize('intermed.historia','root', '', {
+var sequelizeHistorial = new Sequelize('intermed.historia','root', 't5o7m6a6s', {
   host: 'localhost',
   dialect: 'mysql',
   pool:{
@@ -28,7 +28,7 @@ var sequelizeHistorial = new Sequelize('intermed.historia','root', '', {
   },
   logging: null
 });
-var sequelizeInbox = new Sequelize( 'intermed.inbox', 'root', '', {
+var sequelizeInbox = new Sequelize( 'intermed.inbox', 'root', 't5o7m6a6s', {
   host: 'localhost',
   dialect: 'mysql',
   pool: {
@@ -39,7 +39,7 @@ var sequelizeInbox = new Sequelize( 'intermed.inbox', 'root', '', {
   logging: null
 } );
 
-var sequelizeCargos = new Sequelize('intermed.cargos', 'root', '', {
+var sequelizeCargos = new Sequelize('intermed.cargos', 'root', 't5o7m6a6s', {
     host: 'localhost',
     dialect: 'mysql',
     pool: {
@@ -51,7 +51,7 @@ var sequelizeCargos = new Sequelize('intermed.cargos', 'root', '', {
 });
 
 
-var sequelizeEncuesta = new Sequelize('intermed.encuestas', 'root', '', {
+var sequelizeEncuesta = new Sequelize('intermed.encuestas', 'root', 't5o7m6a6s', {
     host: 'localhost',
     dialect: 'mysql',
     pool: {
@@ -62,7 +62,7 @@ var sequelizeEncuesta = new Sequelize('intermed.encuestas', 'root', '', {
     logging: null
 });
 
-var sequelizeError = new Sequelize('intermed.error', 'root', '', {
+var sequelizeError = new Sequelize('intermed.error', 'root', 't5o7m6a6s', {
     host: 'localhost',
     dialect: 'mysql',
     pool: {
