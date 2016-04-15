@@ -1,0 +1,166 @@
+<section id="perfilPaciente">
+  <div class="container-fluid agendaTopContainer">
+    <div class="row noPadding">
+      <div class="userProfile">
+        <div class="body-container">
+          <div class="center-content">
+            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-9">
+              <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-4">
+                  {{#if usuario.id}}
+                    <img class="img-circle img-responsive center-block" alt="64x64" src="
+                    {{usuario.urlFotoPerfil}}" data-holder-rendered="true">
+                  {{else}}
+                    <img class="userProfilePic center-block" src="
+                    {{valSession 'fotoPerfil'}}" id='fotoPerfil' alt="perfil" />
+                    <label for="imageFile" class="userProfileChangePic hidden">Cambiar Imagen</label>
+                    <input type="file" id="imageFile" style="display:none">
+                  {{/if}}
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-8">
+                  {{#if usuario.id}}
+                    <h2 class="h67-medcond s30 text-capitalize white-c shadow">
+                        {{#if usuario.DatosGenerale}}
+                          {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
+                        {{/if}}
+                    </h2>
+                  {{else}}
+                  <h2 class="h67-medcond s30 text-capitalize white-c shadow">
+                    {{valSession "name"}}
+                    <h4 class="h67-medcond s20 text-uppercase white-c">
+                      {{#ifSession "municipio"}}
+                        {{valSession "municipio"}}, {{valSession "estado"}}. MX
+                      {{/ifSession}}
+                    </h4>
+                    <ul class="media-right profileExtraNav list-inline">
+                      <li class="active"><a role="button" class="white-c" onclick="editaPerfBoot();">Edita tu perfil</a></li>
+                    </ul>
+                  {{/if}}
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-5 col-md-5 col-sm-5 col-xs-3">
+              <div class="body-container">
+                <div class="top-content">
+                  <p class="noMargin text-uppercase h77-boldcond s30 white-c text-right shadow">
+                    <span class="hidden-sm hidden-xs" id="diaSemana">martes</span> <span id="diaFecha">22</span> <span class="hidden-sm hidden-xs">de </span><span id="mesFecha">marzo</span><span class="hidden-sm hidden-xs">,</span> <span id="anioFecha">2016</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid agendaBody dashboardBody">
+    <div class="row noPadding">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 agendaMonth dashboardLeft">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 agendaElement text-center noPadding">
+            <div class="body-container">
+              <div class="top-content">
+                <div id="calendar" class="h77-boldcond"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--{{#if usuario.id}}
+          {{#if usuario.medFavCol}}
+          <div id="profileOptions" class="header-options-container col-lg-4 col-md-5 col-sm-2 col-xs-12 h67-medcond">
+            <div class="header-options-row row">
+              <div class="header-options-content">
+                <a href="{{base_url}}inbox/{{usuario.usuarioUrl}}" class="option">
+                  <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                    <span class="option-icon glyphicon glyphicon-comment s30 center-block text-center"></span>
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                    <div class="option-label">
+                      <span class="optn-lbl">
+                        <span class="option-icon glyphicon glyphicon-comment hidden-xs">
+                        </span>&nbsp;Envía un mensaje
+                      </span>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+          {{/if}}
+        {{/if}}-->
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 agendaDay dashboardRight">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 text-center" style="margin-top: 15px;">
+            <span class="cat-main-title h77-boldcond">Tus citas próximas</span><br>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <div class="list-group" id="div_citasPaciente">
+            </div>
+            <ul class="pagination" style="margin: 0px;" id="pagination_citasPaciente">
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="colegas" class="container-fluid dashboardBody2">
+    <div class="row noPadding">
+      <div class="col-lg-12">
+        <div class="row noPadding colegas-header">
+          <div class="col-lg-12">
+            <div class="row">
+              <div class="col-lg-12 col-md-12 text-center">
+                <h4 class="cat-main-title h77-boldcond">Mis médicos favoritos</h4>
+                <h4 class="cat-sub-title h67-medcond noMargin hidden-xs">Ligas a los perfiles de mis médicos favoritos</h4>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 text-center">
+                <ul class="list-inline text-center center-block">
+                  <li onclick="ocultarBuscadorColegasEspecial();cargarListaEspCol( $( '#usuarioPerfil' ).val() ,'P');">
+                    <span class="glyphicon glyphicon-circle-arrow-right"></span> Ordenar por especialidad
+                  </li>
+                  <li onclick="ocultarBuscadorColegasEspecial();cargarListaAlfCol( $( '#usuarioPerfil' ).val(),'P' );">
+                    <span class="glyphicon glyphicon-circle-arrow-right"></span> Ordenar por apellido
+                  </li>
+                  <li onclick="buscadorColegasEspecial();">
+                    <span class="glyphicon glyphicon-search"></span> Buscar
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="row hidden" id="buscadorEspecial" style="background-color:#3c6b8a;padding:10px;padding-bottom: 0px;">
+              <div clas="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group has-feedback" id="buscador">
+                  <input type="text" class="form-control ui-autocomplete-input" id="buscadorEspecialInput" placeholder="Buscar colega..." autocomplete="off"  onchange="cargarListaEspCol( $( '#usuarioPerfil' ).val() );">
+                  <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"  onclick="cargarListaEspCol( $( '#usuarioPerfil' ).val(),'P' );"></span>
+                </div>
+              </div>
+            </div>
+            <div id="FavColPanel">
+              <div class="contList">
+              </div>
+            </div>
+            <hr class="sep">
+          </div>
+        </div>
+        <div class="row noPadding">
+          <div id="listaEspecialidades" class="col-lg-3 col-md-3 col-sm-3 col-xs-12 side-especialidades colegas-element">
+            <p>
+              <span class="side-especialides-header h77-boldcond">Selecciona</span><!--<div class="clearfix"></div>-->
+              <span class="side-especialides-subheader h67-medcond" id="tipoFiltro"></span>
+            </p>
+            <hr class="sep">
+            <ul class="nav nav-pills nav-stacked h67-medcond" id="especialidadesList">
+            </ul>
+          </div>
+          <div id="listaColegas" class="col-lg-9 col-md-9 col-sm-9 col-xs-12 main-colegas colegas-element" data-spy="scroll" data-target="#listaEspecialidades" data-offset="180">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

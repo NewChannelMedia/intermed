@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="Content-Language" content="es">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Intermed | La red social de la salud</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/mapa.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/jquery.Jcrop.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="css/intermed.css">
+    <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="http://css-spinners.com/css/spinners.css" type="text/css">
+
+    <script src="js/jquery.iscroll.js"></script>
+    <!--<script src="js/utils.js"></script>-->
+    <script src="js/utils_generales.js"></script>
+    <script src="js/utils_medico.js"></script>
+    <script src="js/utils_paciente.js"></script>
+    <script src="js/buscadorInterno.js"></script>
+    <script src="js/notificaciones.js"></script>
+    <script src="js/bootbox.min.js"></script>
+    <script src="js/bootboxDialogs.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+  </head>
+
+  <body>
+    <!-- interno -->
+    <!-- empieza nav superior -->
+    <nav id="navPlatform">
+      <section class="container navContainer">
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+          <div class="navBlock navLogo">
+
+            <div class="navLogoImg">
+              <a href="/">
+                <img src="img/logo-color.png" />
+              </a>
+            </div>
+            <div class="navLogoText s30">
+              <p>
+                <a href="/">intermed
+                  <small class="s25"><sup>&reg</sup></small>
+               </a>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+          <div class="navBlock navSearch">
+            <div class="input-group navSearchBox">
+              <form method="POST" action="{{base_url}}buscar" class="form-inline">
+                <div class="form-group">
+                  <input class="form-control" id="buscadorInterno" name="" placeholder="Search for people, place or things" required="" style="width:300px">
+                </div>
+                <div class="form-group">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                      <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                  </span>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+          <div class="navBlock navControl">
+            <ul class="list-inline navControlIcons pull-right">
+              <li class="miniProfilePic">
+                <a id="profileIcon" class="navControlBtn" href="/perfil/{{valSession 'usuarioUrl'}}">
+                  <img class="profileLink" src="{{valSession 'fotoPerfil'}}" id='fotoPerfilMini' />
+                </a>
+              </li>
+              <li>
+                <a id="officeIcon" class="navControlBtn" href="#">
+                  <img src="img/icon-calendar.png">
+                  <!-- <span class="navControlIcon glyphicon glyphicon-list-alt"></span> -->
+                </a>
+              </li>
+              <li role="presentation" class="dropdown">
+                <a id="notificationIcon" class="navControlBtn dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="cargarListaInbox()">
+                <!--<a id="agendaIcon" class="navControlBtn" href="{{base_url}}inbox">-->
+                  <img src="img/icon-messages.png">
+                  <span id="totalInbox" class="badge"></span>
+                </a>
+
+                <ul class="dropdown-menu notificationDropdown media-list">
+                  <div  id="notificacionesInboxList" style="max-height:300px;overflow-y: scroll;">
+
+                  </div>
+                  <div style="padding:10px;background-color:#DDD;margin-bottom:-5px;margin-top:10px;">
+                    <a href="{{base_url}}inbox" class="text-center" style="text-align:center">Ver más</a>
+                  </div>
+                </ul>
+              </li>
+              <li role="presentation" class="dropdown" id="notificaciones">
+                <a id="notificationIcon" class="navControlBtn dropdown-toggle" data-toggle="dropdown" href="#" role="button" onclick="mostrarNotificaciones()">
+                  <img src="img/icon-office.png">
+                  <span id="totalNotificaciones" class="badge hidden invisible">1</span>
+                </a>
+                <ul class="dropdown-menu notificationDropdown media-list">
+                  <div  id="notificacinesList">
+
+                  </div>
+                  <div style="padding:10px;background-color:#DDD;margin-bottom:-5px;margin-top:10px;">
+                    <a href="{{base_url}}notificaciones" class="text-center" style="text-align:center">Ver todas</a>
+                  </div>
+                </ul>
+              </li>
+
+              <li class="navSeparator">
+                <span class="navS "></span>
+              </li>
+              <li role="presentation" class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                  <span class="navControlIcon glyphicon glyphicon-chevron-down"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a onclick="logout()">Cerrar Sesión</a></li>
+                  <li><a>algo 2</a></li>
+                  <li><a>algo 3</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </nav>
+    {{#unless name}}
+    <input type="hidden" id="inicio" value="{{valSession 'inicio'}}">
+    <input type="hidden" id="registroCompleto" value="{{valSession 'registroCompleto'}}">
+    <input type="hidden" id="tipoUsuario" value="{{valSession 'tipoUsuario'}}">
+    <input type="hidden" id="usuarioPerfil" value="{{#if usuario.id}}{{usuario.id}}{{else}}{{valSession 'id'}}{{/if}}"> {{/unless}} {{{body}}}
+    <footer>
+      <div class="container">
+        <p class="navbar-text">
+          {{#ifSession "admin"}}
+          <a href="/registro" class="login">registro de médicos</a> |
+          <a onclick="logout()" class="text-danger">cerrar sesión</a> | {{else}}
+          <a class="login" href="#" data-toggle="modal" data-target="#adminLoginModal">Admin</a> |  {{/ifSession}}
+          <a href="#">Privacidad</a> | <a href="#">FAQs</a> | Todos los derechos reservados InterMed &reg 2015 / NewChannel &reg 2015
+        </p>
+      </div>
+    </footer>
+
+      <!-- Enviar recomendaciones medico -->
+        <div id="recomendandoAndo" class="modal fade" role="dialog" aria-labelledby="recomendandoAndo">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <!-- Header -->
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">Recomienda las siguientes especialidades</h4>
+                  <span class="hidden" id="idOculto"></span>
+                  <div id="contenidoRequerido">
+                    <ul class="list-inline"></ul>
+                  </div>
+                </div>
+              <!-- Fin Header -->
+              <!-- Body -->
+                <div class="modal-body">
+                  <div class="" id="tabla">
+                    <table class="table table-hover table-condensed">
+                      <tbody id="agregandoContacto">
+                      </tbody>
+                    </table>
+                  </div>
+                  <div class="paraEnviar" id="sendFor">
+                    <ul class="list-inline"></ul>
+                  </div>
+                </div>
+              <!-- Fin body -->
+              <!-- Footer -->
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <button type="button" id="buscarRecomendar" class="btn btn-primary">Recomendar</button>
+                </div>
+              <!-- Fin footer -->
+            </div>
+          </div>
+        </div>
+      <!-- Fin enviar recomendaciones medico -->
+      <!-- inicio de mi recomendacion recibida del medico -->
+        <div id="meRecomendaron" class="modal fade" role="dialog" aria-labelledby="meRecomendaron">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+                <h4>Estas son las recomendaciones que pediste</h4>
+              </div>
+              <div class="modal-body">
+                <table id="misRecomendacionesMed" class="table table-hover table-condensed">
+                  <tbody id="cuerpoRecomendado"></tbody>
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <!-- fin de mi recomendacion recibida del medico -->
+    <!-- FIN PEDIR RECOMENDACION A MEDICOS -->
+  </body>
+
+  <style>
+#project-label {
+display: block;
+font-weight: bold;
+margin-bottom: 1em;
+}
+#project-icon {
+float: left;
+height: 32px;
+width: 32px;
+}
+#project-description {
+margin: 0;
+padding: 0;
+}
+</style>
+<script>
+  $(document).ready(function(){
+    recomiendaAuto( $("#buscadorRecomendados") );
+  });
+</script>
+  <script src="js/jquery.Jcrop.js"></script>
+  <script src="js/jquery.SimpleCropper.js"></script>
+  <script src="js/buscadorInterno.js"></script>
+  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=drawing,places&components=country:‌​MX&sensor=true&key=AIzaSyCBOC0Cq0T10nAmZNLkVMVBzU6MLd3DfKs"></script>
+  <script src="js/mapa.js"></script>
+</html>

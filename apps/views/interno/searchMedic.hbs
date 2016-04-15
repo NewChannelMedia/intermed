@@ -1,0 +1,78 @@
+<section id="buscadorFixed" class="Flama">
+  <div class="container-fluid">
+    <div class="row" style="padding-top: 15px;">
+      <div class="col-md-11"  style="padding-bottom:0px!important;margin-top:10px">
+        <div class="row" style="padding-bottom:0px!important">
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="text" class="form-control" id="nombreMed" name="nombreMed" placeholder="Nombre" value="{{render.nombre}}">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group" id="especialidadGroup">
+              <div class="form-control" placeholder="Especialidad" style="height:auto!important;padding:0px">
+                <input id="inputEspecialidad" class="form-control" placeholder="Especialidad" name="inputEspecialidad" style="border: none;">                {{#if render.especialidad}}
+                    <div class="input-group-btn" style="padding:1px;display:initial">
+                      <label class="btn-xs btn-primary" style="margin-top:2px">
+                        <span class="inputEspecialidad">{{render.especialidad.especialidad}}</span>
+                        <span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%"></span>
+                      </label>
+                    </div>
+                {{/if}}
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group" id="especialidadGroup">
+              <div class="form-control" placeholder="Especialidad" style="height:auto!important;padding:0px">
+                <input id="inputAseguradora" class="form-control" placeholder="Aseguradora" name="inputAseguradora" style="border: none;">
+                {{#if render.aseguradora}}
+                    <div class="input-group-btn" style="padding:1px;display:initial">
+                      <label class="btn-xs btn-primary" style="margin-top:2px">
+                        <span class="inputAseguradora">{{render.aseguradora.aseguradora}}</span>
+                        <span class="glyphicon glyphicon-remove" onclick="$(this).parent().parent().remove();ajustarPantallaBusqueda();" style="color:#d9534f;font-size:80%"></span>
+                      </label>
+                    </div>
+                {{/if}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-1" style="padding-bottom:0px!important;margin-top:10px">
+        <div class="row">
+          <div class="col-lg-12 col-md-12 col-ms-8 col-xs-8">
+            <button type="button" onclick="realizarBusqueda(searchDiv.getBounds());" class="btn btn-primary btn-md btn-block" id="btnSearch" ><span class='glyphicon glyphicon-search'></span></button>
+          </div>
+          <div class="hidden-lg hidden-md col-ms-4 col-xs-4">
+            <button type="button" onclick="vistaBuscadorMapa();" class="btn btn-success btn-md btn-block" id="btnMap" >Mapa</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="searchResult">
+  <div class="container-fluid text-center">
+    <div class="row" style="padding-bottom: 0px;">
+      <!-- empieza buscador -->
+      <div class="col-md-8 pull-right col-sm-12 col-xs-12">
+        <div style="margin-left:-15px;margin-right:-15px">
+          <button class="btn btn-success hidden-lg hidden-md" id="regresarVistaBusqueda" onclick="vistaBuscadorResultados()" style="position:fixed;top: 70px;right: 10px;z-index: 600;">Lista</button>
+          <div id="mapSearchDiv"></div>
+        </div>
+      </div>
+      <div id="buscadorResultado" class="Flama col-md-4 pull-left col-sm-12 col-xs-12"></div>
+
+
+    </div><!--
+    <div class="row">
+      <input type="hidden" id="maxNumPag">
+      <ul class="pagination pagination-sm" id="buscPag">
+      </ul>
+    </div>-->
+  </div>
+
+</div>

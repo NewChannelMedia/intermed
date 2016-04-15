@@ -1,0 +1,109 @@
+﻿<link href="css/mapa.css" rel="stylesheet" />
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=drawing,places&components=country:‌​MX&sensor=true&key=AIzaSyCBOC0Cq0T10nAmZNLkVMVBzU6MLd3DfKs"></script>
+<script src="js/mapa.js"></script>
+<section id="directorio">
+    <div class="container">
+        <div class="row">
+            <div class="panel">
+                <div class="panel-body">
+                    <h4>{{title}}</h4>
+                    <div id="ubicacion">
+                        <form method="POST" name="frmRegUb" id="frmRegUbi">
+                            <input type="hidden" id="idDireccion" name="idDireccion" value="{{direccion.id}}">
+                            <input type="hidden" id="usuario_id" name="usuario_id" value="{{usuario_id}}">
+                            <input type="hidden" id="estadoDato" name="estadoDato" value="{{direccion.Municipio.Estado.estado}}">
+                            <input type="hidden" id="municipioDato" name="municipioDato" value="{{direccion.Municipio.municipio}}">
+                            <input type="hidden" id="localidadDato" name="localidadDato" value="{{direccion.Localidad.localidad}}">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" id="nombreUbi" name="nombreUbi" placeholder="Nombre Ubicaci&oacute;n" value="{{direccion.nombre}}">
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <select class="form-control" name="slc_estados" id="slc_estados" required="required" onchange="obtenerCiudades()">
+                                                            <option value="">Estado</option>
+                                                            {{#each estados}}
+                                                            <option value="{{id}}">{{estado}}</option>
+                                                            {{/each}}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <select class="form-control" name="slc_ciudades" id="slc_ciudades" required="required" onchange="obtenerColonias()">
+                                                            <option>Ciudad</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <select class="form-control" name="slc_colonias" id="slc_colonias" required="required">
+                                                            <option>Colonia</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <input type="number" class="form-control" minlength="4" maxlength="5" id="cpUbi" name="cpUbi" placeholder="Codigo Postal" value="{{direccion.cp}}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-8">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control" id="calleUbi" name="calleUbi" placeholder="Calle" value="{{direccion.calle}}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control" id="numeroUbi" name="numeroUbi" placeholder="Numero" value="{{direccion.numero}}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control" id="calle1Ubi" name="calle1Ubi" placeholder="Entre calle A" value="{{direccion.calle1}}">
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <input type="text" class="form-control" id="calle2Ubi" name="calle2Ubi" placeholder="Y calle B" value="{{direccion.calle2}}">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="col-md-12">
+                                            <input type="text" value="{{direccion.latitud}}" id="latitud" name="latitud" />
+                                            <input type="text" value="{{direccion.longitud}}" id="longitud" name="longitud" />
+                                            <div id="searchDiv">
+                                                <input id="autocomplete_searchField" type="text" placeholder="Buscar Dirección">
+                                            </div>
+                                            <div id="direccion"></div>
+                                            <div id="mapDiv" style="z-index:3000"></div>
+                                            <div class="row">
+                                                <div class="col-md-6"></div>
+                                                <div class="col-md-6">
+                                                    <input type="button" onclick="mapa.GeolicalizacionUsuario();" value="Reiniciar Posicion" class="btn btn-info btn-md btn-block" /><br>
+                                                    <input type="button" class="btn btn-info btn-md btn-block" id="btnRegUbi" value="Guardar" onclick="regUbicacion()">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,99 @@
+@font-face {
+    font-family: 'icon';
+    src:    url('icon.eot?g47p5j');
+    src:    url('icon.eot?g47p5j#iefix') format('embedded-opentype'),
+        url('icon.ttf?g47p5j') format('truetype'),
+        url('icon.woff?g47p5j') format('woff'),
+        url('icon.svg?g47p5j#icon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.icon {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-google-plus2:before {
+    content: "\e900";
+}
+.icon-facebook2:before {
+    content: "\e901";
+}
+.icon-instagram:before {
+    content: "\e902";
+}
+.icon-twitter:before {
+    content: "\e903";
+}
+.icon-youtube:before {
+    content: "\e904";
+}
+.icon-vimeo2:before {
+    content: "\e905";
+}
+.icon-behance2:before {
+    content: "\e906";
+}
+.icon-trello:before {
+    content: "\e907";
+}
+.icon-linkedin:before {
+    content: "\e908";
+}
+.icon-git:before {
+    content: "\e909";
+}
+
+/*
+@font-face {
+    font-family: 'icon';
+    src: url('map-icon.eot?3uxupe');
+    src: url('map-icon.eot?3uxupe#iefix') format('embedded-opentype'),
+        url('map-icon.ttf?3uxupe') format('truetype'),
+        url('map-icon.woff?3uxupe') format('woff'),
+        url('map-icon.svg?3uxupe#icon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}*/
+
+.map-icon {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icon' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-close:before {
+    content: "\e5cd";
+}
+.icon-directions_car:before {
+    content: "\e531";
+}
+.icon-directions_walk:before {
+    content: "\e902";
+}
+.icon-map-signs:before {
+    content: "\e900";
+}
+.icon-compass:before {
+    content: "\e901";
+}

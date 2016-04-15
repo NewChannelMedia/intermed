@@ -1,0 +1,86 @@
+<section id="oficinaMedico">
+  <div class="container-fluid agendaTopContainer">
+    <div class="row noPadding">
+      <div class="col-lg-2 col-md-2 col-sm-3 col-xs-4 agendaTop bg-transparentDark">
+        <a thref="" class="btn btn-transparent btn-block h77-boldcond s20 white-c">
+          <div class="body-container">
+            <div class="center-content">
+              <span class="glyphicon glyphicon-cog"></span><br>
+              configurar
+            </div>
+          </div>
+        </a>
+      </div>
+      <div class="col-lg-10 col-md-10 col-sm-9 col-xs-8 agendaTop">
+        <div class="body-container">
+          <div class="center-content">
+            <p class="noMargin text-uppercase h77-boldcond s35 white-c pull-right shadow">
+              <span class="hidden-sm hidden-xs" id="diaSemana"></span> <span id="diaFecha"></span> <span class="hidden-sm hidden-xs" id="dateDe"></span> <span id="mesFecha"></span><span class="hidden-sm hidden-xs" id="dateComa"></span> <span id="anioFecha"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid agendaBody">
+    <div class="row noPadding">
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 agendaMonth">
+        <div class="row noPadding">
+          <div class="col-lg-12 agendaElement text-center noPadding">
+            <div class="body-container">
+              <div class="center-content">
+                <div id="calendar" class="h77-boldcond"></div>
+                <div class="k-widget clear">
+                  <div class="row noMargin hidden-xs">
+                    <div class="col-lg-12">
+                    	<a class="btn btn-block btn-lg btn-default text-uppercase" onclick="verAgendaMedico()" role="button">VER AGENDA</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--<div class="row noPadding bg-orange agendaOverview">
+          <div class="col-lg-12 agendaElement text-center">
+            <div class="body-container">
+              <div class="center-content">
+                <p class="white-c">
+                  que onda 2
+                </p>
+                <a class="closeOverview hidden btn btn-danger" >cerrar</a>
+              </div>
+            </div>
+          </div>
+        </div>-->
+      </div>
+      <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 agendaDay">
+        <div class="row noMargin visible-xs">
+          <div class="col-lg-12">
+            <a class="btn btn-block btn-lg btn-default text-uppercase" onclick="verAgendaMedico()" role="button">VER AGENDA</a>
+          </div>
+        </div>
+        <div class="horas-container">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script type="text/javascript">
+  var device = navigator.userAgent
+  if (device.match(/Iphone/i) || device.match(/Ipod/i) || device.match(/Android/i) || device.match(/J2ME/i) || device.match(/BlackBerry/i) || device.match(/iPhone|iPad|iPod/i) || device.match(/Opera Mini/i) || device.match(/IEMobile/i)
+   || device.match(/Mobile/i) || device.match(/Windows Phone/i) || device.match(/windows mobile/i) || device.match(/windows ce/i) || device.match(/webOS/i) || device.match(/palm/i) || device.match(/bada/i) || device.match(/series60/i)
+   || device.match(/nokia/i) || device.match(/symbian/i) || device.match(/HTC/i)) {
+      var txt = "";
+      txt += "{ * Browser CodeName: " + navigator.appCodeName + " } ";
+      txt += "{ * Browser Name: " + navigator.appName + "} ";
+      txt += "{ * Browser Version: " + navigator.appVersion + " } ";
+      txt += "{ * Cookies Enabled: " + navigator.cookieEnabled + " } ";
+      txt += "{ * Browser Language: " + navigator.language + " } ";
+      txt += "{ * Browser Online: " + navigator.onLine + " } ";
+      txt += "{ * Platform: " + navigator.platform + " } ";
+      txt += "{ * User-agent header: " + navigator.userAgent + " } ";
+      console.log(txt);
+    } else {
+  }
+</script>

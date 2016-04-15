@@ -1,0 +1,124 @@
+@font-face {
+  font-family: 'profileicons';
+  src: url('fonts/profileicons.eot?yiotdd');
+  src: url('fonts/profileicons.eot?yiotdd#iefix') format('embedded-opentype'),
+    url('fonts/profileicons.ttf?yiotdd') format('truetype'),
+    url('fonts/profileicons.woff?yiotdd') format('woff'),
+    url('fonts/profileicons.svg?yiotdd#profileicons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.proicon {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'profileicons' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.proicon-galeria:before {
+  content: "\e900";
+}
+
+.proicon-phone:before {
+  content: "\e906";
+}
+
+.proicon-estudios:before {
+  content: "\e901";
+}
+
+.proicon-stack:before {
+  content: "\e902";
+}
+
+.proicon-addressbook:before {
+  content: "\e907";
+}
+
+.proicon-info:before {
+  content: "\e903";
+}
+
+.proicon-like-check:before {
+  content: "\f004";
+}
+
+.proicon-ubicacion-marker:before {
+  content: "\f041";
+}
+
+.proicon-editar:before {
+  content: "\f044";
+}
+
+.proicon-comentar:before {
+  content: "\f075";
+}
+
+.proicon-like:before {
+  content: "\f08a";
+}
+
+.proicon-notificacion:before {
+  content: "\f0a2";
+}
+
+.proicon-colegas:before {
+  content: "\f0c0";
+}
+
+.proicon-medico:before {
+  content: "\f0f0";
+}
+
+.proicon-estudios-2:before {
+  content: "\f19d";
+}
+
+.proicon-visa:before {
+  content: "\f1f0";
+}
+
+.proicon-mastercard:before {
+  content: "\f1f1";
+}
+
+.proicon-american-express:before {
+  content: "\f1f3";
+}
+
+.proicon-paypal:before {
+  content: "\f1f4";
+}
+
+.proicon-like-beat:before {
+  content: "\f21e";
+}
+
+.proicon-ubicacion-signs:before {
+  content: "\f277";
+}
+
+.proicon-ubicacion-mapa:before {
+  content: "\f279";
+}
+
+.proicon-galeria-2:before {
+  content: "\e904";
+}
+
+.proicon-curriculum:before {
+  content: "\e905";
+}
+
+.proicon-credit-card:before {
+  content: "\e909";
+}

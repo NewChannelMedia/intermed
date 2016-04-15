@@ -1,0 +1,59 @@
+<section id="mensajes" style="background-color:#84AAC1">
+  <div class="container">
+    <div class="profileBody">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-2">
+              <div class="row">
+              <div class="panel panel-default">
+                <div class="panel-heading" style="padding:0px">
+                  <div class="form-group has-feedback" style="margin-bottom: 0px;">
+                    <input type="text" class="form-control" placeholder="Buscar contacto..." id="autocompleteContactos">
+                    <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
+                  </div>
+                </div>
+                <div class="panel-body" style="padding:0px" id="contactList">
+                  <table class="table table-hover table-bordered" style="margin:0px">
+                    <tbody id="InboxListaContactos">
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            </div>
+            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-10">
+              <div class="row">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h3 class="panel-title" id="InboxContact">&nbsp;
+                  </h3>
+                </div>
+                <div class="panel-body" id="InboxMsg" style="padding:0px;">
+                  <ul class="chat" id="chat">
+
+                  </ul>
+                </div>
+
+                <div class="panel-footer" id="inboxInput">
+                    <div class="input-group">
+                        <textarea id="inboxInputText" rows="1" class="form-control input-sm"  maxlength="400" placeholder="Type your message here..."  onkeyup="auto_grow(this)" style="resize:none;overflow:auto;max-height:100px;"></textarea>
+                        <span class="input-group-btn"><button class="btn btn-warning btn-sm" id="inboxBtnEnviar" style="max-height:100px;"><span class="glyphicon glyphicon-send"></span></button></span>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</section>
+<footer style="background-color:#172C3B!important">
+  <div class="container">
+    <p class="navbar-text">
+      <a class="login" href="#" data-toggle="modal" data-target="#adminLoginModal">Admin</a> |&nbsp;
+      <a href="#">Privacidad</a> |&nbsp;<a href="#">FAQs</a> | Todos los derechos reservados InterMed ® 2015 / NewChannel ® 2015
+    </p>
+  </div>
+</footer>
+<script src="js/inbox.js"></script>

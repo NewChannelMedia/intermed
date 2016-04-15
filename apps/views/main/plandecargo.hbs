@@ -1,0 +1,71 @@
+﻿<script>
+
+    
+    $(document).ready(function () {
+        $("#intervalocargo_id option").each(function () {
+            if ($(this).val() == $("#idIntervalo").val()) {
+                $(this).attr("selected", true);
+            }
+        });
+    });
+
+</script>
+<section id="planes">
+    <div class="container">
+        <div class="row">
+            <div class="panel">
+                <div class="panel-body">
+                    <h4>{{title}}</h4>
+                    <form action="registrarplancargo" method="POST" id="plancargo" name="plancargo">
+                        <input type="hidden" id="idPlan" name="idPlan" value="{{plan.id}}" />
+                        <input type="hidden" id="idIntervalo" name="idIntervalo" value="{{plan.intervalocargo_id}}" />
+                        <div class="form-row">
+                            <label>
+                                <span>Nombre plan de cobro</span>
+                                <input type="text" size="20" id="nombre" name="nombre" value="{{plan.nombre}}" required />
+                            </label>
+                        </div>
+                        <div class="form-row">
+                            <label>
+                                <span>monto</span>
+                                <input type="text" size="20" id="monto" name="monto" required value="{{plan.monto}}" />
+                            </label>
+                        </div>
+                        <div class="form-row">
+                            <label>
+                                <span>intervalo</span>
+                                <select class="form-control" name="intervalocargo_id" id="intervalocargo_id" required="required">
+                                    <option value="0">Intervalo</option>
+                                    {{#each intervalo}}
+                                    <option value="{{id}}">{{nombre}}</option>
+                                    {{/each}}
+                                </select>
+                            </label>
+                        </div>
+                        <div class="form-row">
+                            <label>
+                                <span>frecuencia de cobro</span>
+                                <input type="text" size="2" id="frecuencia" name="frecuencia" required value="{{plan.frecuencia}}" />
+                            </label>
+                        </div>
+                        <div class="form-row">
+                            <label>
+                                <span>periodo de prueba(dias)</span>
+                                <input type="text" size="2" id="periodoprueba" name="periodoprueba" required value="{{plan.periodoprueba}}" />
+                            </label>
+                        </div>
+                        <button type="submit" id="enviar" name="enviar">Registrar</button>
+                        
+                    </form>
+                    <form action="eliminarplancargo" method="POST" id="plancargo" name="plancargo">
+                        <input type="hidden" id="idPlanEliminar" name="idPlanEliminar" value="{{plan.id}}" />
+                        <button type="submit" id="eliminar" name="eliminar">Eliminar</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+

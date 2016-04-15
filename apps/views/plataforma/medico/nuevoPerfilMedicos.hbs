@@ -1,0 +1,990 @@
+<div id="perfilMedico">
+  <input type="hidden" id="MedicoId" value="{{usuario.Medico.id}}" />
+  <div id="screens">
+    <section id="perfil" class="header-section">
+      <nav id="stickyNav" class="nav-menu sticky h67-medcond">
+        <div class="container-fluid nav-menu-container">
+          <div id="menuMed" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="row nav-menu-row">
+              <div class="nav-menu-inner-section">
+                <ul class="nav nav-pills nav-justified nav-menu-menu h67-medcond s20">
+                  <li>
+                    <a id="toPerfil">
+                      <div class="body-container">
+                        <div class="center-content">
+                          <span class="hidden-xs">Perfil</span>
+                          <span class="proicon proicon-medico hidden-lg hidden-md hidden-sm"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a id="toUbicaciones">
+                      <div class="body-container">
+                        <div class="center-content">
+                          <span class="hidden-xs">Ubicaciones</span>
+                          <span class="proicon proicon-ubicacion-marker hidden-lg hidden-md hidden-sm"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a id="toInfo">
+                      <div class="body-container">
+                        <div class="center-content">
+                          <span class="hidden-xs">Info</span>
+                          <span class="proicon proicon-estudios hidden-lg hidden-md hidden-sm"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a id="toCurriculum">
+                      <div class="body-container">
+                        <div class="center-content">
+                          <span class="hidden-xs">Curriculum</span>
+                          <span class="proicon proicon-curriculum hidden-lg hidden-md hidden-sm"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="privateDisplay {{#ifSessionVal 'id'}}{{else}}hidden{{/ifSessionVal}}">
+                    <a id="toColegas">
+                      <div class="body-container">
+                        <div class="center-content">
+                          <span class="hidden-xs">Colegas</span>
+                          <span class="proicon proicon-colegas hidden-lg hidden-md hidden-sm"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li class="privateDisplay {{#ifSessionVal 'id'}}{{else}}hidden{{/ifSessionVal}}">
+                    <a id="toComentarios">
+                      <div class="body-container">
+                        <div class="center-content">
+                          <span class="hidden-xs">Comentarios</span>
+                          <span class="proicon proicon-comentar hidden-lg hidden-md hidden-sm"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="galeria">
+                      <div class="body-container">
+                        <div class="center-content">
+                          <span class="hidden-xs">Galería</span>
+                          <span class="proicon proicon-galeria hidden-lg hidden-md hidden-sm"></span>
+                        </div>
+                      </div>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+      <div class="container-fluid" name="profile">
+        <div class="header-container row noPadding">
+          <div class="col-lg-12 header-row">
+            <div class="body-container">
+              <div class="center-content">
+                <div class="col-lg-8 col-md-8 col-sm-10 col-xs-12">
+                  <div class="header-profile-body-container">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <div class="row noPadding">
+                          <div class="col-lg-4 col-md-5 col-sm-5 col-xs-4">
+                            <div class="header-profile-photo-container">
+                              <div class="profilePic header-profile-photo-link center-block">
+                                {{#if usuario.id}}
+                                  <img class="header-profile-photo-img" src="{{usuario.urlFotoPerfil}}" alt="perfil" />
+                                {{else}}
+                                  <img class="header-profile-photo-img fotoPerfil" src="{{valSession 'fotoPerfil'}}" id='fotoPerfil' alt="perfil" />
+                                {{/if}}
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-lg-8 col-md-7 col-sm-7 col-xs-8">
+                            <div class="header-profile-body-content whiteF flama-normal">
+                              <div class="body-container">
+                                <div class="center-content">
+                                  {{#if usuario.id}}
+                                    <h2 class="profile-name text-capitalize shadow">
+                                        {{#if usuario.DatosGenerale}}
+                                          Dr. {{usuario.DatosGenerale.nombre}} {{usuario.DatosGenerale.apellidoP}} {{usuario.DatosGenerale.apellidoM}}
+                                        {{/if}}
+                                    </h2>
+                                    <h4 class="profile-location shadow">
+                                      {{#if usuario.direccion}}
+                                          {{usuario.direccion.Municipio.municipio}}, {{usuario.direccion.Municipio.Estado.estado}}, MX.
+                                      {{/if}}</h4>
+                                    <ul class="list-inline profile-esp">
+                                      {{#each usuario.especialidades}}
+                                        {{#unless subEsp}}
+                                          <li>{{Especialidad.especialidad}}</li>
+                                        {{/unless}}
+                                      {{/each}}
+                                    </ul>
+                                    <ul class="list-inline profile-subesp">
+                                      {{#set "subEspPrint"}}{{/set}}
+                                      {{#each usuario.especialidades}}
+                                        {{#if subEsp}}
+                                          {{#ifSessionVal "subEspPrint"}}
+                                            {{#unset "subEspPrint"}}{{/unset}}
+                                            <li>
+                                              <small>Subespecialidad: </small>
+                                            </li>
+                                          {{/ifSessionVal}}
+                                        {{/if}}
+                                        {{#if subEsp}}
+                                          <li>
+                                            <small>{{Especialidad.especialidad}}</small>
+                                          </li>
+                                        {{/if}}
+                                      {{/each}}
+                                    </ul>
+                                  {{else}}
+                                    <h2 class="profile-name text-capitalize">
+                                      <span class="name">
+                                        {{#ifSession "name"}}
+                                          Dr. {{valSession "name"}}
+                                          {{else}}
+                                          No tenemos tu nombre registrado, continúa tu registro <a onclick="registroMedicoDatosPersonales()">aquí</a>.
+                                        {{/ifSession}}
+                                      </span>
+                                      <span id="editPerfil">
+                                        <span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarPerfilPersonal()"></span>
+                                      </span>
+                                    </h2>
+                                    <h4 class="profile-location">
+                                      {{#ifSession "municipio"}}
+                                        {{valSession "municipio"}}, {{valSession "estado"}}. MX
+                                      {{/ifSession}}</h4>
+
+                                    <ul class="list-inline profile-esp user">
+                                      {{#eachValSession "especialidades"}}
+                                        {{#if cedula}}
+                                          <li>
+                                            {{Especialidad.especialidad}}
+                                          </li>
+                                        {{/if}}
+                                      {{/eachValSession}}
+                                      <span id="editEsp">
+                                        <span class="glyphicon glyphicon-pencil pull-right editIcon" onclick="editarEspecialidades()"></span>
+                                      </span>
+                                    </ul>
+                                    <ul class="list-inline profile-subesp user">
+                                      {{#ifEstudiando}}
+                                        <li>
+                                          Estudiando:
+                                        </li>
+                                        {{#eachValSession "especialidades"}}
+                                          {{#unless cedula}}
+                                            <li>
+                                              <small>{{Especialidad.especialidad}}</small>
+                                            </li>
+                                          {{/unless}}
+                                        {{/eachValSession}}
+                                      {{/ifEstudiando}}
+                                    </ul>
+                                  {{/if}}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="profileOptions" class="header-options-container col-lg-4 col-md-4 col-sm-2 col-xs-12 h67-medcond noPadding">
+                  <div class="body-container">
+                    <div class="top-content" id="rightNav">
+                      {{#if usuario.id}}
+                        {{#ifTipoMedico}}
+                          {{#if ../usuario.medFavCol}}
+                            <a class="option" onclick="dejarComentarioMedico()">
+                              <div class="body-container">
+                                <div class="center-content">
+                                  <div class="row">
+                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                                      <span class="option-icon glyphicon glyphicon-check s30 center-block text-center"></span>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                                      <div class="option-label">
+                                        <div class="body-container">
+                                          <div class="center-content">
+                                            <span class="optn-lbl">
+                                              <span class="option-icon glyphicon glyphicon-check hidden-xs"></span>&nbsp;
+                                              Califica su servicio
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </a>
+                          {{/if}}
+                      {{else}}
+                        <a class="first-option option" onclick="agendarCitaBootbox()">
+                          <div class="body-container">
+                            <div class="center-content">
+                              <div class="row noPadding">
+                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-1 hidden-xs">
+                                  <span class="option-icon glyphicon h67-medcond s90 center-block text-center">+</span>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 hidden-sm">
+                                  <div class="option-label">
+                                    <div class="body-container">
+                                      <div class="center-content">
+                                        <span class="optn-lbl">Agenda una cita</span>
+                                        <span class="optn-sb hidden-xs">Haz click aquí para agendar con este médico.</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                        {{/ifTipoMedico}}
+
+
+
+                        {{#if ../usuario.medFavCol}}
+                          {{#ifTipoPaciente}}
+                            <a class="option">
+                              <div class="body-container">
+                                <div class="center-content">
+                                  <div class="row">
+                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                                      <span class="option-icon glyphicon glyphicon-heart s30 center-block text-center"></span>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                                      <div class="option-label">
+                                        <div class="body-container">
+                                          <div class="center-content">
+                                            <span class="optn-lbl" id="addFavoriteContact" onclick="eliminarFavoritos()">
+                                            <span class="option-icon glyphicon glyphicon-minus hidden-xs">
+                                            </span>&nbsp;Elimina de favoritos
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </a>
+                          {{/ifTipoPaciente}}
+                          {{#ifTipoMedico}}
+                            <a class="option">
+                              <div class="body-container">
+                                <div class="center-content">
+                                  <div class="row">
+                                    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                                      <span class="option-icon glyphicon glyphicon-heart s30 center-block text-center"></span>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                                      <div class="option-label">
+                                        <div class="body-container">
+                                          <div class="center-content">
+                                            <span class="optn-lbl" id="addFavoriteContact" onclick="eliminarFavoritos();">
+                                            <span class="option-icon glyphicon glyphicon-minus hidden-xs">
+                                            </span>&nbsp;Eliminar de colegas
+                                            </span>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </a>
+                          {{/ifTipoMedico}}
+                        {{else}}
+                          {{#if ../usuario.invitacionEnviada}}
+                            {{#ifTipoMedico}}
+                              <a class="option">
+                                <div class="body-container">
+                                  <div class="center-content">
+                                    <div class="row">
+                                      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                                        <span class="option-icon glyphicon glyphicon-heart s30 center-block text-center"></span>
+                                      </div>
+                                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                                        <div class="option-label">
+                                          <div class="body-container">
+                                            <div class="center-content">
+                                              <span class="optn-lbl" id="addFavoriteContact" onclick="eliminarFavoritos();">
+                                              <span class="option-icon glyphicon glyphicon-minus hidden-xs">
+                                              </span>&nbsp;Invitación enviada
+                                              </span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </a>
+                            {{/ifTipoMedico}}
+                          {{else}}
+                            {{#if ../usuario.invitacionEspera}}
+                              {{#ifTipoMedico}}
+                                <a class="option">
+                                  <div class="body-container">
+                                    <div class="center-content">
+                                      <div class="row">
+                                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                                          <span class="option-icon glyphicon glyphicon-heart s30 center-block text-center"></span>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                                          <div class="option-label">
+                                            <div class="body-container">
+                                              <div class="center-content">
+                                                <span class="optn-lbl" id="addFavoriteContact" onclick="aceptarInvitacionColega();">
+                                                <span class="option-icon glyphicon glyphicon-plus hidden-xs">
+                                                </span>&nbsp;Aceptar colega
+                                                </span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </a>
+                              {{/ifTipoMedico}}
+                            {{else}}
+                              {{#ifTipoMedico}}
+                                <a class="option">
+                                  <div class="body-container">
+                                    <div class="center-content">
+                                      <div class="row">
+                                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                                          <span class="option-icon glyphicon glyphicon-heart s30 center-block text-center"></span>
+                                        </div>
+                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                                          <div class="option-label">
+                                            <div class="body-container">
+                                              <div class="center-content">
+                                                <span class="optn-lbl" id="addFavoriteContact" onclick="agregarFavoritos();">
+                                                <span class="option-icon glyphicon glyphicon-plus hidden-xs">
+                                                </span>&nbsp;Agrega a colegas
+                                                </span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </a>
+                            {{else}}
+                              <a class="option">
+                                <div class="body-container">
+                                  <div class="center-content">
+                                    <div class="row">
+                                      <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                                        <span class="option-icon glyphicon glyphicon-heart s30 center-block text-center"></span>
+                                      </div>
+                                      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                                        <div class="option-label">
+                                          <div class="body-container">
+                                            <div class="center-content">
+                                              <span class="optn-lbl" id="addFavoriteContact" onclick="agregarFavoritos();">
+                                                <span class="option-icon glyphicon glyphicon-plus hidden-xs">
+                                                </span>&nbsp;Agrega a favoritos
+                                              </span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </a>
+                              {{/ifTipoMedico}}
+                            {{/if}}
+                          {{/if}}
+                        {{/if}}
+
+
+
+
+                        <!--FIN AGREGAR A FAVORITOS-->
+                        <a class="option" onclick="recomendacionesBoot();">
+                          <div class="body-container">
+                            <div class="center-content">
+                              <div class="row noPadding">
+                                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                                  <span class="option-icon glyphicon glyphicon-user s30 center-block text-center"></span>
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                                  <div class="option-label">
+                                    <div class="body-container">
+                                      <div class="center-content">
+                                        <span class="optn-lbl">
+                                          <span class="option-icon glyphicon glyphicon-user hidden-xs"></span> Recomienda a un amigo
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                        {{#if ../usuario.medPac}}
+                          <a class="option" onclick="dejarComentarioMedico()">
+                            <div class="body-container">
+                              <div class="center-content">
+                                <div class="row">
+                                  <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                                    <span class="option-icon glyphicon glyphicon-check s30 center-block text-center"></span>
+                                  </div>
+                                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                                    <div class="option-label">
+                                      <div class="body-container">
+                                        <div class="center-content">
+                                          <span class="optn-lbl">
+                                            <span class="option-icon glyphicon glyphicon-check hidden-xs"></span> Califica su servicio
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </a>
+                        {{/if}}
+                      {{else}}
+                        <a href="#" class="first-option option">
+                          <div class="body-container">
+                            <div class="center-content">
+                              <div class="">
+                                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-1 hidden-xs">
+                                  <span class="option-icon glyphicon h67-medcond s90 center-block text-center">+</span>
+                                </div>
+                                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 hidden-sm">
+                                  <div class="option-label">
+                                    <div class="body-container">
+                                      <div class="center-content">
+                                        <span class="optn-lbl">NUEVO PACIENTE</span>
+                                        <span class="optn-sb hidden-xs">Haz click aquí para generar un nuevo expediente.</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </a>
+                        <!--
+                      <a href="#" class="option">
+                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                          <span class="option-icon glyphicon glyphicon-user s30 center-block text-center"></span>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                          <div class="option-label">
+                            <span class="optn-lbl">
+                              <span class="option-icon glyphicon glyphicon-chevron-right hidden-xs">
+                              </span>&nbsp;CONSULTAS EN LÍNEA
+                            </span>
+                          </div>
+                        </div>
+                      </a>
+                      <a href="#" class="option">
+                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                          <span class="option-icon glyphicon glyphicon-check s30 center-block text-center"></span>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                          <div class="option-label">
+                            <span class="optn-lbl">
+                              <span class="option-icon glyphicon glyphicon-chevron-right hidden-xs">
+                              </span>&nbsp;INTERMARKET
+                            </span>
+                          </div>
+                        </div>
+                      </a>
+                      <a href="#" class="option">
+                        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-1 visible-sm">
+                          <span class="option-icon glyphicon glyphicon-comment s30 center-block text-center"></span>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 hidden-sm">
+                          <div class="option-label">
+                            <span class="optn-lbl">
+                              <span class="option-icon glyphicon glyphicon-chevron-right hidden-xs">
+                              </span>&nbsp;FOROS
+                            </span>
+                          </div>
+                        </div>
+                      </a>-->
+                      {{/if}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="ubicaciones">
+      <div class="container-fluid ubicaciones-container">
+        <div class="row ubicaciones-row">
+          <div class="ubicaciones-inner-section col-lg-5 col-md-5 col-sm-7 col-xs-12">
+            <div class="ubicaciones-direcciones ">
+              <span class="direcciones-arrow"></span>
+              <div class="row">
+                {{#if usuario.id}}
+                  <div class="col-lg-11 col-lg-offset-1 col-md-11 col-m-offset-1 col-sm-11 col-sm-offset-1">
+                    <h2 class="h67-medcond s25 text-uppercase whiteF">Ubicaciones y Servicios</h2>
+                  </div>
+                {{else}}
+                  <div class="col-md-9 pull-left">
+                    <h2 class="h67-medcond s25 text-uppercase whiteF">Ubicaciones y Servicios</h2>
+                  </div>
+                  <div class="col-md-3 pull-right text-right" style="margin-top:20px">
+                    <button class="btn btn-primary btn-xs {{#unless usuario.Direccions}}hidden{{/unless}}" id="btnEditaUbi"><span class="glyphicon glyphicon-pencil"></span></button>
+                    <button class="btn btn-primary btn-xs" id="btnAgregaUbi"><span class="glyphicon glyphicon-plus-sign"></span></button>
+                  </div>
+                {{/if}}
+              </div>
+              <div class="row">
+                <div class="col-lg-12">
+                  <div id="slider1" class="csslider infinity">
+                    {{#each usuario.Direccions}}
+                      <input type="radio" name="slides" {{#ifFirst @index}} checked="checked" {{/ifFirst}} id="slides_{{#indexBaseUno @index}}{{/indexBaseUno}}" value="{{id}}" />
+                    {{/each}}
+                    <ul>
+                      {{#each usuario.Direccions}}
+                        <li>
+                          <div class="direccionLtLn hidden">
+                            <span class="principal">{{principal}}</span>
+                            <span class="lat">{{latitud}}</span>
+                            <span class="long">{{longitud}}</span>
+                            <span class="nombre">{{nombre}}</span>
+                            <span class="direccion">
+                                  <span>{{calle}}</span>&nbsp;<span>#{{numero}}</span>
+                            <br> {{Localidad.TipoLocalidad.tipo}} <span>{{Localidad.localidad}}</span>
+                            <br>
+                            <span>{{Municipio.municipio}}</span>,
+                            <pan>{{Municipio.Estado.estado}}</pan>. CP: <span>{{Localidad.CP}}</span>
+                            </span>
+                          </div>
+                          <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3 direccion-pagination-bg">
+                            <span class="h67-medcond s90 white-c">{{#indexBaseUno @index}}{{/indexBaseUno}}</span>
+                          </div>
+                          <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                            <address class="s15 flama-normal lh1 white-c">
+                              <span class="s20 flama-bold text-capitalize">{{nombre}}</span><br><br>
+                              <span>{{calle}}</span>&nbsp;<span>#{{numero}}</span><br>
+                              {{Localidad.TipoLocalidad.tipo}} <span>{{Localidad.localidad}}</span><br>
+                              <span>{{Municipio.municipio}}</span>, <pan>{{Municipio.Estado.estado}}</pan>. CP: <span>{{Localidad.CP}}</span><br>
+                              {{#if Telefonos}}
+                                <br><br><strong><span class="s20">Teléfonos</span></strong><br>
+                                {{#each Telefonos}}
+                                  <abbr title="Phone" class="text-capitalize">{{tipo}}:</abbr><span> {{claveRegion}}</span> <span>{{numero}}</span> <span>{{ext}}</span><br>
+                                {{/each}}
+                              {{/if}}
+                              {{#if CatalogoServicios}}
+                                <br><br><strong><span class="s20">Servicios</span></strong><br>
+                                <table class="table table-condensed table-responsive">
+                                  <tbody>
+                                    {{#each CatalogoServicios}}
+                                    <tr>
+                                      <td class="text-capitalize">
+                                        <b>{{concepto}}</b>
+                                      </td>
+                                      {{#ifSessionVal 'id'}}
+                                      <td>
+                                        ${{../precio}}
+                                      </td>
+                                      <td>
+                                        <a tabindex="0" class="white-c popVerMas"
+                                        role="button" data-toggle="popover"
+                                        data-placement="top"
+                                        data-trigger="focus"
+                                        data-html="true"
+                                        title="<span class='text-capitalize'>{{../concepto}}</span>"
+                                        data-content="<p class='noMargin'>
+                                          <span class='text-capitalize'>{{../descripcion}}</span>.
+                                          <br><br>Duración: {{duracion}}.
+                                        </p>">
+                                          Ver Más
+                                        </a>
+                                      </td>
+                                      {{else}}
+                                      <td>
+                                        <a class="white-c" role="button" onclick="registrarPacienteBootbox(null, null, true)">Solicitar Más Información</a>
+                                      </td>
+                                      {{/ifSessionVal}}
+                                    </tr>
+                                    {{/each}}
+                                  </tbody>
+                                </table>
+                              {{/if}}
+                              </address>
+                          </div>
+                        </li>
+                      {{/each}}
+                    </ul>
+                    <div class="arrows">
+                      {{#each usuario.Direccions}}
+                        <label for="slides_{{#indexBaseUno @index}}{{/indexBaseUno}}"></label>
+                        {{#Last @index}}{{/Last}}
+                      {{/each}}
+                      <label for="slides_1" class="goto-first"></label>
+                      <label for="slides_{{#numLast}}{{/numLast}}" class="goto-last"></label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="ubicaciones-inner-section col-lg-7 col-md-7 col-sm-5 col-xs-12">
+            <div class="ubicaciones-mapa">
+              <div id="mapUbiDiv"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="info">
+      <div class="info-container container-fluid">
+        <div class="info-row row">
+          <div id="info-experto_en" class="info-inner-section col-lg-4 col-md-4 col-sm-4 col-xs-12">
+            <div class="container-fluid info-inner-container">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="info-body-header h77-boldcond">
+                    {{#unless usuario.id}}
+                      <div class="img-rounded info-left-icon" id="editInfo1">
+                        <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(1)"></span>
+                      </div>
+                      {{else}}
+                        {{#ifNotSession}}
+                          <div class="img-rounded info-left-icon hidden privateDisplaySession" id="editInfo1">
+                          </div>
+                        {{/ifNotSession}}
+                    {{/unless}}
+                    <span class="title">Experto en:</span>
+                  </div>
+                  <div class="info-body-content h67-medcond" id="divExpEn">
+                    <ul>
+                      {{#each medico.MedicoExpertoEns}}
+                        {{#if padre_id}}
+                          <ul>
+                        {{/if}}
+
+                        <li>{{expertoen}}</li>
+
+                        {{#if padre_id}}
+                          </ul>
+                        {{/if}}
+                      {{/each}}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="info-hospitales" class="info-inner-section col-lg-4 col-md-4 col-sm-4 col-xs-12">
+            <div class="container-fluid info-inner-container">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="info-body-header h77-boldcond">
+                    {{#unless usuario.id}}
+                      <div class="img-rounded info-left-icon" id="editInfo2">
+                        <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(2)"></span>
+                      </div>
+                      {{else}}
+                        {{#ifNotSession}}
+                          <div class="img-rounded info-left-icon hidden privateDisplaySession" id="editInfo2">
+                          </div>
+                        {{/ifNotSession}}
+                    {{/unless}}
+                    <span class="title">Hospitales</span>
+                    <span class="sub">y clínicas</span>
+                  </div>
+                  <div class="info-body-content h67-medcond" id="divClinicas">
+                    <ul>
+                      {{#each medico.MedicoClinicas}}
+                        <li>{{clinica}}</li>
+                      {{/each}}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="info-aseguradoras" class="info-inner-section col-lg-4 col-md-4 col-sm-4 col-xs-12">
+            <div class="container-fluid info-inner-container">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="info-body-header h77-boldcond">
+                    {{#unless usuario.id}}
+                      <div class="img-rounded info-left-icon" id="editInfo3">
+                        <span class="glyphicon glyphicon-pencil icon" onclick="bootbox_modificaMedicoDetalles(3)"></span>
+                      </div>
+                      {{else}}
+                        {{#ifNotSession}}
+                          <div class="img-rounded info-left-icon hidden privateDisplaySession" id="editInfo3">
+                          </div>
+                        {{/ifNotSession}}
+                    {{/unless}}
+                    <span class="title">Aseguradoras</span>
+                  </div>
+                  <div class="info-body-content h67-medcond" id="divAseg">
+                    <ul>
+                      {{#each medico.MedicoAseguradoras}}
+                        <li>{{Aseguradora.aseguradora}}</li>
+                      {{/each}}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="curriculum">
+      <div class="container-fluid">
+        <div class="row cat-header cv">
+          <div class="container">
+            <div class="col-lg-9 col-md-10 col-lg-offset-3 col-md-offset-2">
+              <div class="media">
+                <div class="media-left">
+                  <img class="cat-icon" src="img/plataforma/icons/curriculum.png">
+                </div>
+                <div class="media-body">
+                  <span class="cat-sub-title h67-medcond hidden-xs">Perfil profesional / Dr. <span>Juan Carlos Medina Martinez</span></span>
+                  <span class="cat-main-title h77-boldcond">CV y Certificaciones</span>
+                  <br>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cat-header-arrow cv">
+          </div>
+        </div>
+        <div class="row cv-body">
+          <div class="container cv-body-main">
+            <div class="cv-body-main-section col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <div class="row">
+                <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12 ">
+                  {{#unless usuario.id}}
+                    <a onclick="BootboxFormacionAcademica()">
+                      <div class="img-rounded info-left-icon">
+                        <span class="glyphicon glyphicon-pencil icon"></span>
+                      </div>
+                      <span class="info-label s20 whiteF h67-medcond text-uppercase">Editar sección</span>
+                    </a>
+                  {{/unless}}
+                  <div class="media cv-header">
+                    <div class="media-left cv-icon-cont">
+                      <img class="cv-icon" src="img/plataforma/icons/formacion.png">
+                    </div>
+                    <div class="media-body cv-title">
+                      <span class="whiteF h67-medcond s30">Formación Académica</span>
+                    </div>
+                  </div>
+                  <div class="cv-info whiteF s15" id="divFormAcad">
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="cv-body-main-section col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <div class="row">
+                <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12 col-lg-offset-1 col-md-offset-1 col-sm-offset-1">
+                  {{#unless usuario.id}}
+                    <a onclick="BootboxExperienciaLaboral()">
+                      <div class="img-rounded info-left-icon">
+                        <span class="glyphicon glyphicon-pencil icon"></span>
+                      </div>
+                      <span class="info-label s20 whiteF h67-medcond text-uppercase">Editar sección</span>
+                    </a>
+                  {{/unless}}
+                  <div class="media cv-header">
+                    <div class="media-left cv-icon-cont">
+                      <img class="cv-icon" src="img/plataforma/icons/experiencia.png">
+                    </div>
+                    <div class="media-body cv-title">
+                      <span class="whiteF h67-medcond s30">Experiencia Laboral</span>
+                    </div>
+                  </div>
+                  <div class="cv-info whiteF s15" id="divExpLab">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <span class="privateDisplay {{#ifSessionVal 'id'}}{{else}}hidden{{/ifSessionVal}}">
+      <section id="colegas">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="container">
+              <div class="row cat-header">
+                <div class="col-lg-9 col-md-10 col-lg-offset-3 col-md-offset-2">
+                  <div class="media">
+                    <div class="media-left">
+                      <img class="cat-icon" src="img/plataforma/icons/colegas.png">
+                    </div>
+                    <div class="media-body">
+                      <span class="cat-main-title h77-boldcond">Mis colegas favoritos</span>
+                      <br>
+                      <span class="cat-sub-title h67-medcond">Ligas a los perfiles de mis colegas recomendados</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 col-xs-offset-0">
+                  <ul class="list-inline text-center center-block">
+                    <li onclick="ocultarBuscadorColegasEspecial();cargarListaEspCol( $( '#usuarioPerfil' ).val() );">
+                      <div class="btn btn-tranparent dark-c">
+                        <span class="glyphicon glyphicon-circle-arrow-right"></span> Ordenar por especialidad
+                      </div>
+                    </li>
+                    <li onclick="ocultarBuscadorColegasEspecial();cargarListaAlfCol( $( '#usuarioPerfil' ).val() );">
+                      <div class="btn btn-tranparent dark-c">
+                        <span class="glyphicon glyphicon-circle-arrow-right"></span> Ordenar por apellido
+                      </div>
+                    </li>
+                    <li onclick="buscadorColegasEspecial();">
+                      <div class="btn btn-transparent dark-c">
+                        <span class="glyphicon glyphicon-search"></span> Buscar
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="row hidden" id="buscadorEspecial">
+                <div class="col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1 col-xs-offset-0">
+                  <div class="input-group" id="buscador">
+                    <input type="text" class="form-control" id="buscadorEspecialInput" placeholder="Buscar colega..." autocomplete="off" onchange="cargarListaEspCol( $( '#usuarioPerfil' ).val() );">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button" onclick="cargarListaEspCol( $( '#usuarioPerfil' ).val() );" aria-hidden="true">
+                  	  <span class="glyphicon glyphicon-search"></span>
+                  	</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <hr class="sep">
+                <div id="listaEspecialidades" class="side-especialidades">
+                  <p>
+                    <span class="side-especialides-header h77-boldcond">Selecciona</span>
+                    <!--<div class="clearfix"></div>-->
+                    <span class="side-especialides-subheader h67-medcond" id="tipoFiltro"></span>
+                  </p>
+                  <hr class="sep">
+                  <ul class="nav nav-pills nav-stacked h67-medcond" id="especialidadesList">
+                  </ul>
+                </div>
+                <div id="listaColegas" class="col-lg-9 col-md-9 col-sm-8 col-xs-12 pull-right main-colegas" data-spy="scroll" data-target="#listaEspecialidades" data-offset="180">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="comentarios" class="privateDisplay {{#ifSessionVal 'id'}}{{else}}hidden{{/ifSessionVal}}">
+        <div class="container-fluid">
+          <div class="row cat-header comentarios">
+            <div class="container">
+              <div class="col-lg-9 col-md-10 col-lg-offset-3 col-md-offset-2">
+                <div class="media">
+                  <div class="media-left">
+                    <img class="cat-icon" src="img/plataforma/icons/logros.png">
+                  </div>
+                  <div class="media-body">
+                    <span class="cat-sub-title h67-medcond">Comentarios de pacientes y logros</span>
+                    <span class="cat-main-title h77-boldcond">Comentarios y logros</span>
+                    <br>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="cat-header-arrow comentarios">
+            </div>
+          </div>
+          <div class="row logros-row hidden invisible">
+            <ul class="logros-slider">
+              <li class="slide">
+                <div class="media">
+                  <div class="media-left">
+                    <img class="logro-badge" src="img/plataforma/icons/logros.png">
+                  </div>
+                  <div class="media-body">
+                    <span class="logro-title whiteF s25 h77-boldcond text-uppercase">Atención Inmediata</span>
+                    <p class="s15 whiteF h67-medcond">
+                      Por responder en primer lugar a 10 preguntas en los foros.
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li class="slide">
+                <div class="media">
+                  <div class="media-left">
+                    <img class="logro-badge" src="img/plataforma/icons/logros.png">
+                  </div>
+                  <div class="media-body">
+                    <span class="logro-title whiteF s25 h77-boldcond text-uppercase">Popularity</span>
+                    <p class="s15 whiteF h67-medcond">
+                      Por ser recomendado a mas de 10 personas.
+                    </p>
+                  </div>
+                </div>
+              </li>
+              <li class="slide">
+                <div class="media">
+                  <div class="media-left">
+                    <img class="logro-badge" src="img/plataforma/icons/logros.png">
+                  </div>
+                  <div class="media-body">
+                    <span class="logro-title whiteF s25 h77-boldcond text-uppercase">Rocket Science</span>
+                    <p class="s15 whiteF h67-medcond">
+                      Por publicar 20 artículos de divulgación.
+                    </p>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="row noPadding">
+            <div class="logros-actions">
+              <div class="body-container">
+                <div class="bottom-content">
+                  {{#if usuario.medFavCol}}
+                    <a class="btn btn-tranparent s20 h67-medcond logros-actions-action text-uppercase" onclick="dejarComentarioMedico()"><span class="glyphicon glyphicon-pencil"></span>&nbsp;CALIFICA Y DEJA UN COMENTARIO</a>
+                  {{else}}
+                    <a class="btn btn-tranparent s20 h67-medcond logros-actions-action text-uppercase" onclick="dejarComentarioMedico()"><span class="glyphicon glyphicon-pencil"></span>&nbsp;CALIFICA Y DEJA UN COMENTARIO</a>
+                  {{/if}}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row comentarios-row">
+            <div class="col-lg-8 col-md-10 col-sm-12 col-xs-12 col-lg-offset-2 col-md-offset-1 col-sm-offset-0 col-xs-offset-0" id="comentariosMedico">
+            </div>
+          </div>
+        </div>
+      </section>
+      </span>
+  </div>
+</div>

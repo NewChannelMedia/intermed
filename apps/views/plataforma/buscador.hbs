@@ -1,0 +1,39 @@
+<section id="buscador" style="background-color:#84AAC1;padding:10px">
+  <div class="container" style="background-color:white;bottom:10px">
+  {{#if resultado}}
+    <h2>Resultados de busqueda</h2>
+    <ul class="media-list" style="margin-top:50px">
+    {{#each resultado}}
+      <li class="media result">
+        <div class="media-left">
+          <div class="media-enclosure">
+            <a href="/nuevoperfilmedicos/{{usuarioUrl}}">
+              <img class="media-object" src="{{urlFotoPerfil}}" alt="" width="60" height="60">
+            </a>
+          </div>
+        </div>
+        <div class="media-body">
+          <div class="col-md-8">
+            <h4 class="media-heading">
+              {{#if Medico}}
+              Dr.
+              {{/if}}
+              {{DatosGenerale.nombre}} {{DatosGenerale.apellidoP}}{{#if DatosGenerale.apellidoM}}&nbsp;{{DatosGenerale.apellidoM}}{{/if}}.
+            </h4>
+            <ul class="list-unstyled list-inline">
+            </ul>
+            <ul class="list-inline">
+            </ul>
+            <ul class="list-unstyled list-ubicaciones">
+              <!-- Cada <li> en esta parte debe mostrar una ubicación en la que trabaja el Medico -->
+            </ul>
+          </div>
+        </div>
+      </li>
+    {{/each}}
+    </ul>
+    {{else}}<br/>
+    <h4>Ingresa una consulta en el recuadro.</h4><br/><br/>
+    {{/if}}
+  </div>
+</section>

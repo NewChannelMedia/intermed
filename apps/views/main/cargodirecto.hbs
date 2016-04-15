@@ -1,0 +1,49 @@
+﻿<script type="text/javascript" src="https://conektaapi.s3.amazonaws.com/v0.3.2/js/conekta.js"></script>
+<script src="js/conekta.js"></script>
+<script>Conekta.setPublishableKey("key_M9Ph2jxjJQSRszryszDsgTA");</script>
+<section id="pagos">
+    <div class="container">
+        <div class="row">
+            <div class="panel">
+                <div class="panel-body">
+                    <h4>{{title}}</h4>
+
+                    <form action="PausarSuscripcion" method="POST" id="card-form" name="card-form">
+                        <span class="card-errors"></span>
+                        <input type="hidden" id="usuario_id" name="usuario_id" value="{{usuario_id}}" />
+                        <div class="form-row">
+                            <label>
+                                <span>Nombre del tarjetahabiente</span>
+                                <input type="text" size="20" data-conekta="card[name]" value="prueba" />
+                            </label>
+                        </div>
+                        <div class="form-row">
+                            <label>
+                                <span>Número de tarjeta de crédito</span>
+                                <input type="text" size="20" data-conekta="card[number]" value="4000000000000002" />
+                            </label>
+                        </div>
+                        <div class="form-row">
+                            <label>
+                                <span>CVC</span>
+                                <input type="text" size="4" data-conekta="card[cvc]" value="123" />
+                            </label>
+                        </div>
+                        <div class="form-row">
+                            <label>
+                                <span>Fecha de expiración (MM/AAAA)</span>
+                                <input type="text" size="2" data-conekta="card[exp_month]" value="03" />
+                            </label>
+                            <span>/</span>
+                            <input type="text" size="4" data-conekta="card[exp_year]" value="2019" />
+                        </div>
+                        <button type="submit" id="enviar" name="enviar">¡Pagar ahora!</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+

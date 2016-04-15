@@ -1,33 +1,39 @@
 {
-	"name":"intermed",
-	"version":"0.0.0.0",
-	"description":"La red social de la salud",
-	"author": "New Channel",
-	"contributors":
-	[
-		{
-			"name":"Oscar Ivan Muñoz Barajas",
-			"email":"oscar.m@newchannel.mx"
-		},
-		{
-			"name":"Juan Carlos Medina",
-			"email":"jcmedina@newchannel.mx"
-		},
-		{
-			"name": "Cinthia Margarita Bermudez Acosta",
-			"email": "cinthia.b@newchannel.mx"
-		},
-		{
-			"name": "Jorge Alejandro Preciado",
-			"email":"jorge@newchannel.mx"
-		}
-	],
-	"preferGlobal": "true", //instalar global
-	"dependencies":{
-		"express": "4.13.3",
-		"express-handlebars": "2.0.1",
-		"handlebars": "3.0.3",
-		"mysql": "2.8.0",
-		"sequelize": "3.5.1"
-	}
+  "name": "intermed",
+  "version": "1.0.0",
+  "description": "La red social de la salud",
+  "author": "New Channel",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "contributors": [
+    {
+      "name": "Juan Carlos Medina",
+      "email": "jcmedina@newchannel.mx"
+    },
+    {
+      "name": "Cinthia Margarita Bermudez Acosta",
+      "email": "cinthia.b@newchannel.mx"
+    },
+    {
+      "name": "Jorge Alejandro Preciado",
+      "email": "jorge@newchannel.mx"
+    }
+  ],
+  "preferGlobal": "true",
+  "dependencies": {
+    "conekta": "^1.5.0",
+    "express": "4.13.3",
+    "express-handlebars": "2.0.1",
+    "handlebars": "3.0.3",
+    "mysql": "2.8.0",
+    "nodemailer": "1.4.0",
+    "nodemailer-smtp-transport": "1.0.3",
+    "nodemailser-express-handlebars": "1.0.0",
+    "sequelize": "3.5.1",
+    "file-encryptor":"0.1.0",
+    "uuid":"2.0.1",
+    "object-to-xml":"1.0.0"
+  }
 }

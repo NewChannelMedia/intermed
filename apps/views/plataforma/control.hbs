@@ -1,0 +1,61 @@
+<div class="container-fluid" id="controlPanelAdmin">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <div class="row">
+            <ul class="nav nav-sidebar admin-nav">
+              <li class="active"><a onclick="cambiarSeleccionado(this);">
+                <span class="glyphicon glyphicon-home"></span>
+                <span class="title">Inicio</span>
+              </a></li>
+              <li><a onclick="cambiarSeleccionado(this);cargarPV();">
+                <span class="glyphicon glyphicon-th-list"></span>
+                <span class="title">Por validar</span>
+                <span class="badge" id="badgePV"></span>
+              </a></li>
+              <li><a onclick="cambiarSeleccionado(this);cargarPlanCarg();">
+                <span class="glyphicon glyphicon-repeat"></span>
+                <span class="title">Planes de cargo</span>
+              </a></li>
+              <li><a onclick="cambiarSeleccionado(this);cargarGenC();">
+                <span class="glyphicon glyphicon-repeat"></span>
+                <span class="title">Generar códigos</span>
+                <span class="badge" id="badgeMS"></span>
+              </a></li>
+              <li><a onclick="cambiarSeleccionado(this);cargarCodGen();">
+                <span class="glyphicon glyphicon-folder-close"></span>
+                <span class="title">Códigos generados</span>
+                <span class="badge" id="badgeMS"></span>
+              </a></li>
+              <li><a onclick="cambiarSeleccionado(this);">
+                <span class="glyphicon glyphicon-comment"></span>
+                <span class="title">Mensajes</span>
+                <span class="badge" id="badgeMS"></span>
+              </a></li>
+              <li><a onclick="cambiarSeleccionado(this);">
+                <span class="glyphicon glyphicon-bell"></span>
+                <span class="title">Notificaciones</span>
+                <span class="badge" id="badgeNOT"></span>
+              </a></li>
+              <li><a onclick="cambiarSeleccionado(this);cargarUsuariosCP();">
+                <span class="glyphicon glyphicon-bell"></span>
+                <span class="title">Usuarios</span>
+                <span class="badge" id="badgeNOT"></span>
+              </a></li>
+              <li><a onclick="cambiarSeleccionado(this);cargarError();">
+                <span class="glyphicon glyphicon-bullhorn"></span>
+                <span class="title">Error logs</span>
+                <span class="badge" id="badgeErr"></span>
+              </a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-sm-9 col-md-10 col-sm-12 col-xs-12 main pull-right">
+          <h1 class="page-header"></h1>
+
+          <div class="row placeholders text-left" id="pageAdminContent">
+            <!--CONTENIDO-->
+          </div>
+
+        </div>
+      </div>
+    </div>

@@ -1,0 +1,36 @@
+<div class="container">
+
+    <div class="panel panel-default" style="margin-top:40px">
+      <div class="panel-heading"></div>
+      <div class="panel-body" style="height: auto;">
+
+        <form onsubmit="return iniciarSesionControl('emailA','passwordA');" method="post">
+          <div class="row text-center">
+            <div class="col-md-8 col-md-offset-2">
+              <h2>INICIAR SESIÓN</h2>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+              <div class="form-group" id="emailGroup">
+                <input type="text" class="form-control input-lg" id="emailA" name="email" placeholder="Correo" required="true" aria-describedby="emailP">
+              </div>
+              <div class="form-group" id="passwordGroup">
+                <input type="password" class="form-control input-lg" id="passwordA" name="password" placeholder="Contraseña" required="true" aria-describedby="passwordP">
+              </div>
+            </div>
+          </div>
+          <div class="alert alert-info hidden text-center text-uppercase col-md-8 col-md-offset-2" id="LoginError" role="alert">
+            <strong>Correo o contraseña incorrectos.</strong>
+          </div>
+          <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+              <input type="submit" name="login" value="Ingresar" class="btn btn-success btn-lg btn-block">
+            </div>
+          </div>
+        </form>
+
+      </div>
+    </div>
+
+</div>

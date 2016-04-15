@@ -1,0 +1,95 @@
+<div id="galeriaMedico">
+  <input type="hidden" id="user_id" value="{{usuario.id}}" />
+  <input type="hidden" id="my_gallery" value="{{#if personal}}1{{else}}0{{/if}}" />
+  <section id="galeriaBody" class="header-section">
+    <nav id="stickyNav" class="nav-menu sticky h67-medcond">
+      <div class="container-fluid nav-menu-container">
+        <div id="menuMed" class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="row nav-menu-row">
+            <div class="nav-menu-inner-section col-lg-12">
+              <ul class="nav nav-pills nav-menu-menu h67-medcond s20 pull-left">
+                <li>
+                  <a href="../" id="toPerfil" onclick="location.href='../'">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="glyphicon glyphicon-arrow-left"></span>
+                        <span class="hidden-xs"> Regresar al Perfil</span>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+              {{#if personal}}
+              <ul class="nav nav-pills nav-menu-menu h67-medcond s20 pull-right">
+                <li>
+                  <a id="btnUploadImages" onclick="uploadImages()" class="white-c hidden" role="button">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="glyphicon glyphicon-upload"></span> Subir
+                      </div>
+                    </div>
+                  </a>
+                </li>
+                <li>
+                  &nbsp;
+                </li>
+                <li>
+                  <a class="white-c" role="button" onclick="cancelUpImg()" data-toggle="collapse" href="#uploadPanel" aria-expanded="false" aria-controls="uploadPanel" id="upBtn">
+                    <div class="body-container">
+                      <div class="center-content">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp;<span class="btnvalue">Agregar</span>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+              {{/if}}
+            </div>
+          </div>
+        </div>
+      </div>
+      {{#if personal}}
+      <div class="panel-collapse collapse col-lg-12 col-md-12 col-sm-12 col-xs-12" id="uploadPanel">
+        <div class="well noMargin">
+          <div class="row">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" id="divUploadFoto">
+              <div class="thumbnail">
+                <a role="button" class="btn btn-block text-center" style="height: 370px;" id="btnUpToGallery">
+                  <div class="body-container">
+                    <div class="center-content">
+                      <span class="s50 glyphicon glyphicon-plus">
+                      </span>
+                      <br> Subir fotos
+                    </div>
+                  </div>
+                </a>
+                <input type="file" id="imageUploadChoser" accept="image/*" multiple="true" style="display:none">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/if}}
+    </nav>
+    <div id="galeriaPanel" class="container bg-transparentDark">
+      <div class="body-container">
+        <div class="top-content">
+          <div class="row" id="gallery-container">
+            {{#each usuario.Galeria}}
+            <div class="gallery-thumbnail col-lg-2 col-md-2 col-sm-3 col-xs-4">
+              <div class="body-container gallery-thumb-content" style="background-image:url('{{imagenurl}}')">
+                <div class="bottom-content text-left">
+                  <span class="hidden id">{{id}}</span>
+                  <h4 class="s25 h67-medcond white-c noMargin shadow titulo">{{titulo}}</h4>
+                  <span class="hidden descripcion">{{descripcion}}</span>
+                  <span class="hidden fecha">{{fecha}}</span>
+                </div>
+              </div>
+            </div>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

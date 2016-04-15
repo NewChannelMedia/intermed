@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="google" content="notranslate">
+    <meta http-equiv="Content-Language" content="es">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Intermed | La red social de la salud</title>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/intermed.css">
+    <link rel="stylesheet" type="text/css" href="fonts/fonts.css">
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <!--<script src="js/utils.js"></script>-->
+    <script src="js/utils_generales.js"></script>
+    <script src="js/utils_medico.js"></script>
+    <script src="js/utils_paciente.js"></script>
+    <script src="js/FontUtils.js"></script>
+    <script src="js/bootbox.min.js"></script>
+    <script src="js/bootboxDialogs.js"></script>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+  <![endif]-->
+  </head>
+
+  <body>
+    <!-- interno -->
+    <!-- empieza nav superior -->
+    <nav id="navIntern">
+      <section class="container">
+        <div class="row">
+          <div id="logo" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-left">
+            <div class="col-md-1 col-sm-2 col-xs-2">
+              <a href="/">
+                <img class="logo-color" src="img/logo-color.png" />
+              </a>
+            </div>
+            <div class="col-md-11 col-sm-10 col-xs-10">
+              <div class="row">
+                <div class="flama-w200 slogan">
+                  <p class="text-left">
+                    <span class="s25">intermed <sup>&reg</sup></span> |
+                    <strong>La red social</strong> de la salud.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="atnc-clientes" class="col-lg-5 col-md-6 col-sm-12 col-xs-12 pull-right">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="bottom-border flama-w200">
+                  <p class=" text-right">
+                    <span class="hideonmobile">Atención a clientes: (33) 3125-2200 &nbsp</span>
+                    <strong>soporte@intermed.mx</strong>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <p class="text-right">
+                  <a class="login" href="#" data-toggle="modal" data-target="#LoginModal">ingresa</a> &nbsp
+                  <a class="reg" href="#" class="text-danger">registrate</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </nav>
+
+    {{{body}}}
+    <footer>
+      <div class="container">
+        <p class="navbar-text">
+          {{#ifSession "admin"}}
+          <a href="/registro" class="login">registro de médicos</a> |
+          <a onclick="logout()" class="text-danger">cerrar sesión</a> | {{else}}
+          <a class="login" href="#" data-toggle="modal" data-target="#adminLoginModal">Admin</a> |  {{/ifSession}}
+          <a href="#">Privacidad</a> | <a href="#">FAQs</a> | Todos los derechos reservados InterMed &reg 2015 / NewChannel &reg 2015
+        </p>
+      </div>
+    </footer>
+
+    <div class="modal fade" id="CatRegModal" tabindex="-1" role="dialog" aria-labelledby="CatRegLabel">
+      <div class="modal-dialog modal-lg">
+        <form method="" action="">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4>Intermed&reg | Registro</h4>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <h3 class="Flama-bold">SELECCIONA</h3>
+                <h1 class="Flama-normal">TU CATEGORÍA</h1>
+              </div>
+              <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                  <div class="iconos-servicios hi-icon-wrap hi-icon-effect hi-icon-effect-a">
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                      <a href="#" class="hi-icon hi-icon-modal" data-dismiss="modal" data-toggle="modal" data-target="#RegModal">
+                        <img class="hi-icon-img" src="img/BotonPacientes.png">
+                      </a>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                      <a href="#set-9" class="hi-icon hi-icon-modal">
+                        <img class="hi-icon-img" src="img/BotonMedicos.png">
+                      </a>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                      <a href="#set-9" class="hi-icon hi-icon-modal">
+                        <img class="hi-icon-img" src="img/BotonInstituciones.png">
+                      </a>
+                    </div>
+                    <div class="col-md-3 col-sm-3 col-xs-6">
+                      <a href="#set-9" class="hi-icon hi-icon-modal">
+                        <img class="hi-icon-img" src="img/BotonProveedores.png">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-1"></div>
+              </div>
+            </div>
+            <div class="modal-footer"></div>
+        </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <div class="modal fade" id="RegModal" tabindex="-1" role="dialog" aria-labelledby="RegLabel">
+      <div class="modal-dialog modal-lg">
+        <form method="POST" action="/reg/local" id="frm_regP">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4>Intermed&reg | Registro</h4>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <h3>Intermed &reg es mejor con facebook</h3>
+                  <input name="registroFB" value="Registrate con Facebook" class="btn btn-primary btn-block" onclick="window.location='/auth/facebook'">
+                  <p>
+                    <h2>¡En un solo click!</h2>
+                    Utiliza tu cuenta de Facebook para registrarte en Intermed y conectate con tus amigos y conocidos.
+                    <br>
+                    <small>Intermed no comparte tus datos con terceras personas ni compañias externas</small>
+                  </p>
+                </div>
+                <div class="col-md-6">
+                  <h3>Registrate con tu correo electronico</h3>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div id="alertError"></div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <input type="text" class="form-control" id="nombreReg" name="first_name" placeholder="Nombre" required="true">
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="form-group">
+                        <input type="text" class="form-control" id="ApellidoReg" name="last_name" placeholder="Apellido" required="true">
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <input type="email" class="form-control" id="correoReg" name="email" placeholder="Correo Electrónico" required="true">
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <input type="password" class="form-control" id="contraseñaReg" name="password" placeholder="Contraseña" pattern=".{6,13}" required="true">
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <input type="password" class="form-control" id="contraseña2Reg" name="password2" placeholder="Confirma tu contraseña" pattern=".{6,13}" required="true">
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <h4>
+                        <small>Fecha de Nacimiento</small>
+                      </h4>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <input type="text" class="form-control" id="diaNacReg" name="birthdayDay" placeholder="Dia" required="true">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <input type="text" class="form-control" id="mesNacReg" name="birthdayMonth" placeholder="Mes" required="true">
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div class="form-group">
+                          <input type="text" class="form-control" id="añoNacReg" name="birthdayYear" placeholder="Año" required="true">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <h4>
+                        <small>Sexo</small>
+                      </h4>
+                      <div class="col-md-6">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="gender" id="sexM" value="M" checked required="true"> Masculino
+                          </label>
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="radio">
+                          <label>
+                            <input type="radio" name="gender" id="sexF" value="F" required="true"> Femenino
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <input type="hidden" id="tiempo" name="tiempoStamp" value="tiempo" />
+                      <!-- TIMESTAMPS -->
+                      <input type="submit" id="regi" name="registroCorreo" value="Registrate" class="btn btn-success btn-block">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+              </div>
+            </div>
+            <div class="modal-footer"></div>
+        </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+
+    <div class="modal fade" id="LoginModal" tabindex="-1" role="dialog" aria-labelledby="LoginLabel">
+      <div class="modal-dialog">
+        <form method="POST" action="/auth/correo">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4>Intermed&reg | Login</h4>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                  <input name="loginFB" value="Login con Facebook" class="btn btn-primary btn-block" onclick="window.location='/auth/facebook'">
+                </div>
+              </div>
+              <hr>
+              <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="email" name="email" placeholder="Usuario" required="true">
+                  </div>
+                  <div class="form-group">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required="true">
+                  </div>
+                  <input type="submit" name="login" value="Ingresar" class="btn btn-primary btn-block">
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <p class="text-center">
+                <small>Recuerda que instituciones, proveedores y secretarias solo pueden ingresar con su correo y contraseña.</small>
+                <br>
+                <small>¿Olvidaste tus datos de acceso? <a href="#">Haz click aqui para recuperarlos</a></small>
+              </p>
+            </div>
+        </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+
+    <div class="modal fade" id="adminLoginModal" tabindex="-1" role="dialog" aria-labelledby="adminLoginLabel">
+      <div class="modal-dialog modal-sm">
+        <form method="POST" action="">
+          <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              <h4 class="modal-title">Porfavor, inicia sesión:</h4>
+            </div>
+            <div class="modal-body">
+              <input type="hidden" name="loginType" value="admin" />
+              <div class="form-group">
+                <input type="text" class="form-control" id="usuario" name="usuario" placeholder="Usuario">
+              </div>
+              <div class="form-group">
+                <input type="password" class="form-control" id="contraseña" name="contraseña" placeholder="Contraseña">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <input type="submit" name="login" value="Ingresar" class="btn btn-primary btn-block">
+            </div>
+        </form>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+  </body>
+
+</html>

@@ -1,0 +1,224 @@
+<link href="css/mapa.css" rel="stylesheet" />
+<link href="css/fullcalendar.min.css" rel="stylesheet" />
+
+<script src="js/moment.min.js"></script>
+<script src="js/fullcalendar.js"></script>
+<script src="js/lang/es.js"></script>
+
+<section id="principal">
+  <div class="container">
+
+    <form method="POST" name="frmRegCita" id="frmRegCita">
+      <input type="hidden" id="id" name="id">
+      <input type="hidden" id="paciente_id" name="paciente_id" value="1">
+      <input type="hidden" id="medico_id" name="medico_id" value="{{id}}">
+      <input type="hidden" id="fecha" name="fecha" />
+      <input type="hidden" id="fechaFin" name="fechaFin" />
+
+<!--
+      <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+              <select class="form-control" name="lstServicio" id="lstServicio" required="true">
+                  <option value="0">Servicio</option>
+                  {{#each servicios}}
+                      <option value="{{id}}">{{concepto}}</option>
+                  {{/each}}
+              </select>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="form-group">
+              <select class="form-control" name="lstUbicacion" id="lstUbicacion" required="true">
+                  <option value="0">Ubicaciones</option>
+                  {{#each ubicaciones}}
+                      <option value="{{id}}">{{nombre}}</option>
+                  {{/each}}
+              </select>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+          <div id='precioServicio'></div>
+          <div id='duracionServicio'></div>
+        </div>
+-->
+        <div class="col-md-12">
+          <div id='calendar'></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <input type="button" class="btn btn-info btn-md btn-block" id="btnRegMed" value="Guardar" onclick="registrarCita()">
+                </div>
+            </div>
+        </div>
+    </div>
+    </form>
+  </div>
+</section>
+
+
+<script>
+
+  var valido = true;
+  var duracionServicio = '02:00';
+  var precioServicio = 0;
+  var horariosDireccion = 0;
+  var horariosMedico = 0;
+
+$(document).ready(function () {
+    generarCalendario();
+});
+
+
+function generarCalendario()
+{
+  $('#calendar').fullCalendar({
+      firstDay:1,
+      defaultView: 'agendaWeek',
+      height: 350,
+      allDaySlot: false,
+      defaultDate: moment().format("YYYY-MM-DD"),
+      slotLabelFormat: 'h:mm a',
+      businessHours: true,
+      slotLabelInterval : duracionServicio.substring(0, 5),
+      /*businessHours: {
+            start: '06:00',
+            end: '22:59',
+            dow: [ 1, 2, 3, 4, 5, 6, 7 ]
+      },*/
+      slotDuration: '00:30',
+      //columnFormat: 'dddd',
+      header: {
+          center: false,
+          right: false,
+          left: false
+      },
+      events: {
+        url: '/agendaMedico/' +  $('#medico_id').val()
+      },
+      /*
+      minTime: '6:00',
+      maxTime: '24:00',*/
+      defaultDate: new Date(),
+      lang: 'es',
+      selectable: true,
+      selectHelper: false,
+      displayEventTime: true,
+      editable: true,
+      eventLimit: true,
+      overlap: false,
+      slotEventOverlap: false,
+      dayClick: function (date, allDay, jsEvent, view) {
+        revertFunc();
+        $('#calendar').fullCalendar('unselect');
+      },
+      eventClick: function (event, jsEvent, view) {
+        //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
+        var r = confirm("Esta seguro de cancelar la cita ?");
+        if  ( r == true)
+        {
+            if  (cancelaCita(event._id))
+            {
+              $('#calendar').fullCalendar('removeEvents', event._id);
+              $('#calendar').fullCalendar('unselect');
+            }
+        }
+        //}
+      },
+      eventMouseover: function (event, jsEvent, view) {
+        //if (event.id != null && event.id.substring(0,4) != 'cita' && event.title != 'Cancelada') {
+          $(this).append('<span id=\"' + event._id + '\">Clic para cancelar</span>');
+        //}
+      },
+      eventMouseout: function (event, jsEvent, view) {
+          $('#' + event._id).remove();
+      },
+      eventResize: function (event, delta, revertFunc, jsEvent, ui, view) {
+        revertFunc();
+      }
+  });
+}
+
+function quitaEventos() {
+  var h = $('#calendar').fullCalendar('clientEvents');
+  var evento;
+  for (i = 0; i <= h.length-1; i++) {
+      evento = h[i];
+      if (evento.rendering != 'background')
+      {
+         if (evento.id == null || evento.id.substring(0,4) != 'cita')
+         {
+           $('#calendar').fullCalendar('removeEvents', evento._id);
+         }
+      }
+  };
+}
+
+function obtenerHorarios() {
+    var objhorarios = [];
+    var h = $('#calendar').fullCalendar('clientEvents');
+    var evento;
+    var i;
+    var inicio = new moment();
+    var fin = new moment();
+    var fecha;
+
+    objhorarios = [];
+    for (i = 0; i <= h.length-1; i++) {
+        evento = h[i];
+
+        if (evento.rendering != 'background')
+        {
+          if  (evento.id == undefined )
+          {
+              inicio.hours(evento.start._d.getUTCHours());
+              inicio.minute(evento.start._d.getUTCMinutes());
+
+              fin.hours(evento.end._d.getUTCHours());
+              fin.minute(evento.end._d.getUTCMinutes());
+
+              fin = fin.subtract(6, 'hours');
+              inicio = inicio.subtract(6, 'hours');
+
+              var horario = {
+                  inicio: inicio.format('YYYY-M-D') + " "  + inicio.format('HH:mm'),
+                  fin: fin.format('YYYY-M-D') + " "  + fin.format('HH:mm'),
+              };
+              objhorarios.push(horario);
+          }
+        }
+    };
+    return objhorarios;
+};
+
+function cancelaCita(id) {
+  $.ajax( {
+    url: '/cancelaCitaMedico',
+    type: 'POST',
+    dataType: "json",
+    cache: false,
+    data: {
+      id: id,
+      usuario_id: $('#medico_id').val(),
+    },
+    success: function ( data ) {
+      if  ( data.err != null){
+        alert(data.error.message);
+        return false;
+      } else {
+        alert('La cita ha sido cancelada !');
+        return true;
+      }
+    },
+    error: function ( jqXHR, textStatus, err ) {
+      console.error( 'AJAX ERROR: ' + err );
+      return false;
+    }
+  });
+}
+
+</script>
