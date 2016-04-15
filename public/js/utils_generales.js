@@ -7,7 +7,7 @@ var dias = ['Domingo','Lunes','Martes','Miercoles','Jueves','Viernes','Sábado']
 
 
 //Eliminar el hash '#_=_' que agrega el login con facebook
-var base_url = 'http://localhost:3000/';
+var base_url = 'http://intermed.online:3000/';
 var default_urlFotoPerfil = '/garage/defaults/dpp.png';
 if (window.location.hash == '#_=_'){
     history.replaceState
