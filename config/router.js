@@ -6,7 +6,7 @@
  *	@version 0
  *	@date Tuesday, August 4,  2015
  */
-global.base_url = 'http://intermed.online:3000/';
+global.base_url = 'http://intermed.online/';
 
 
 var express = require( 'express' ),
@@ -134,5 +134,5 @@ require( './routers/router-error.js' )(routerObject);
 
 
 
-var io = serv.server( app, 3000 );
+var io = serv.server( app, 80 );
 socket.io( io, bundle, ioPassport );

@@ -648,7 +648,7 @@ function crearUsuarioIntermed(object, req, res){
       name: usuario.nombre,
       correo: usuario.correo,
       password: object.passwordNotMd5,
-      enlace: 'localhost:3000/control',
+      enlace: 'intermed.online/control',
     };
     mail.send( datos, 'registroPanel' ); //se envia el correo
 
