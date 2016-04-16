@@ -6,9 +6,13 @@ var Sequelize = require( "sequelize" );
 var env = process.env.NODE_ENV || "development";
 var db = {};
 
+var userName = 'root';
+var password = 't5o7m6a6s';
+var host = 'intermed.online';
+
 //var config    = require(__dirname + '/../config/config.json')[env];
-var sequelizeMain = new Sequelize( 'intermed', 'root', '', {
-  host: 'localhost',
+var sequelizeMain = new Sequelize( 'intermed', userName, password, {
+  host: host,
   dialect: 'mysql',
   pool: {
     max: 5,
@@ -18,8 +22,8 @@ var sequelizeMain = new Sequelize( 'intermed', 'root', '', {
   logging: null
 } );
 // conexion a la nueva base de datos intermed.historia
-var sequelizeHistorial = new Sequelize('intermed.historia','root', '', {
-  host: 'localhost',
+var sequelizeHistorial = new Sequelize('intermed.historia', userName, password, {
+  host: host,
   dialect: 'mysql',
   pool:{
     max: 5,
@@ -28,8 +32,8 @@ var sequelizeHistorial = new Sequelize('intermed.historia','root', '', {
   },
   logging: null
 });
-var sequelizeInbox = new Sequelize( 'intermed.inbox', 'root', '', {
-  host: 'localhost',
+var sequelizeInbox = new Sequelize( 'intermed.inbox', userName, password, {
+  host: host,
   dialect: 'mysql',
   pool: {
     max: 5,
@@ -39,8 +43,8 @@ var sequelizeInbox = new Sequelize( 'intermed.inbox', 'root', '', {
   logging: null
 } );
 
-var sequelizeCargos = new Sequelize('intermed.cargos', 'root', '', {
-    host: 'localhost',
+var sequelizeCargos = new Sequelize('intermed.cargos', userName, password, {
+    host: host,
     dialect: 'mysql',
     pool: {
         max: 5,
@@ -51,8 +55,8 @@ var sequelizeCargos = new Sequelize('intermed.cargos', 'root', '', {
 });
 
 
-var sequelizeEncuesta = new Sequelize('intermed.encuestas', 'root', '', {
-    host: 'localhost',
+var sequelizeEncuesta = new Sequelize('intermed.encuestas', userName, password, {
+    host: host,
     dialect: 'mysql',
     pool: {
         max: 5,
@@ -62,8 +66,8 @@ var sequelizeEncuesta = new Sequelize('intermed.encuestas', 'root', '', {
     logging: null
 });
 
-var sequelizeError = new Sequelize('intermed.error', 'root', '', {
-    host: 'localhost',
+var sequelizeError = new Sequelize('intermed.error', userName, password, {
+    host: host,
     dialect: 'mysql',
     pool: {
         max: 5,
