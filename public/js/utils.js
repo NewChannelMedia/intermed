@@ -3,7 +3,7 @@
  *
  */
 var regTotalDoc = 0;
-var base_url = 'http://localhost:3000/';
+var base_url = 'http://intermed.online/';
 var default_urlFotoPerfil = '/garage/profilepics/dpp.png';
 if ( location.pathname === '/registro' ) {
   $( document ).ready( getAllDoctors() );

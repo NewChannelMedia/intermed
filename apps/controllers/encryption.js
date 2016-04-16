@@ -145,7 +145,7 @@
         // caso dos cuenta intermed
         switch(bandera){
           case "historial":
-            var link = "localhost:3000/cambiar/historial/"+String(doEncriptToken( usuario_id, fecha));
+            var link = "intermed.online/cambiar/historial/"+String(doEncriptToken( usuario_id, fecha));
             var objeto = {
               to:object.to,
               subject: object.subject,
@@ -155,7 +155,7 @@
             sendMail.send( objeto,'changePassword',res);
             break;
           case "intermed":
-            var link = "localhost:3000/cambiar/intermed/"+String(doEncriptToken(usuario_id,fecha));
+            var link = "intermed.online/cambiar/intermed/"+String(doEncriptToken(usuario_id,fecha));
             var objecto = {
               to: object.to,
               subject: object.subject,

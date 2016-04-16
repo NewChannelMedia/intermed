@@ -682,7 +682,7 @@ function actualizarSesion(refresh, callback, parametros) {
                     Buscar
                   </a>
                   <div class="dropdown-menu dropdown-form panel navigator-dropdown-panel">
-                    <form method="POST" action="http://localhost:3000/buscar" class="form-inline" onsubmit="return false;">
+                    <form method="POST" action="`+ base_url +`buscar" class="form-inline" onsubmit="return false;">
                       <div class="input-group navbar-search navigator-inner-section-cell h65-medium">
                         <input type="text" class="form-control input-lg ui-autocomplete-input" id="buscadorInternoDropDown" name="" placeholder="Search for people, plaasdfasdfce or things" required="" style="width:300px" autocomplete="off">
                         <span class="input-group-btn">
@@ -718,7 +718,7 @@ function actualizarSesion(refresh, callback, parametros) {
                       Buscar
                     </a>
                     <div class="dropdown-menu dropdown-form panel navigator-dropdown-panel">
-                      <form method="POST" action="http://localhost:3000/buscar" class="form-inline" onsubmit="return false;">
+                      <form method="POST" action="`+ base_url +`buscar" class="form-inline" onsubmit="return false;">
                         <div class="input-group navbar-search navigator-inner-section-cell h65-medium">
                           <input type="text" class="form-control input-lg ui-autocomplete-input" id="buscadorInternoDropDown" name="" placeholder="Search for people, plaasdfasdfce or things" required="" style="width:300px" autocomplete="off">
                           <span class="input-group-btn">

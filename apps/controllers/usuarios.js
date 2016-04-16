@@ -387,7 +387,7 @@ var enviarCorreoConfirmacion = function ( usuario ) {
     name: usuario.nombre,
     correo: usuario.correo,
     token: usuario.token,
-    enlace: 'localhost:3000/activar/' + usuario.token,
+    enlace: 'intermed.online/activar/' + usuario.token,
   };
   mail.send( datos, 'confirmar' );
 }
@@ -868,7 +868,7 @@ exports.invitar = function ( object, req, res ) {
               subject: 'Te invito a usar Intermed',
               nombre: object.nombre,
               nombreSesion: req.session.passport.user.name,
-              enlace: 'localhost:3000/invitacion/' + tokens,
+              enlace: 'intermed.online/invitacion/' + tokens,
               mensaje: object.mensaje
             };
             mail.send( datos, 'invitar',res );

@@ -267,7 +267,7 @@ exports.invitar = function ( object, req, res ) {
                 invitacion.update({atendido:0});
               }
               var nombreSesion = req.session.passport.user.name;
-              var enlace = 'localhost:3000/secretaria/'+tokens;
+              var enlace = 'intermed.online/secretaria/'+tokens;
 
               var objecto = {
                 to: object.email,
@@ -446,7 +446,7 @@ exports.agregar = function (object, req, res){
           to: secretaria.Usuario.correo,
           subject: 'Invitación a Intermed',
           nombreSesion: req.session.passport.user.name,
-          enlace: 'localhost:3000/secretaria/'+tokens
+          enlace: 'intermed.online/secretaria/'+tokens
         };
         mail.send( objecto, 'invitarSecretaria');
       if (!created){

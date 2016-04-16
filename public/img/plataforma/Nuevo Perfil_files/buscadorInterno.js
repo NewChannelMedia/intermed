@@ -125,7 +125,7 @@ $(document).ready(function(){
         return false;
       },
       select: function( event, ui ) {
-        window.location.href = "http://localhost:3000/"+ui.item.url;
+        window.location.href = base_url+ui.item.url;
         return false;
       }
     })
@@ -219,7 +219,7 @@ $(document).ready(function(){
           return false;
         },
         select: function( event, ui ) {
-          window.location.href = "http://localhost:3000/"+ui.item.url;
+          window.location.href = base_url+ui.item.url;
           return false;
         }
       })
