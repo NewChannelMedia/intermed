@@ -24,25 +24,25 @@ var express = require( 'express' ),
     hps = require( '../apps/helpers/helpers' ),
     intermed = require( '../apps/controllers/Intermed' ),
     errorHandler = require( '../apps/controllers/errorHandler' ),
-    models  = require('../apps/models');
+    models = require( '../apps/models' );
 
 require( './configPassport' )( passport );
 
 var app = express()
     .use( cookieParser( '_intermed' ) )
     .use( session( {
-      secret: '_intermed',
-      resave: true,
-      saveUninitialized: true
+        secret: '_intermed',
+        resave: true,
+        saveUninitialized: true
     } ) )
     .use( passport.initialize() )
     .use( passport.session() )
     .use( bodyParser.json( {
-      limit: '5mb'
+        limit: '5mb'
     } ) ) // support json encoded bodies
     .use( bodyParser.urlencoded( {
-      extended: true,
-      limit: '5mb'
+        extended: true,
+        limit: '5mb'
     } ) ); // support encoded bodies
 
 app.set( 'view engine', 'hbs' );
@@ -67,69 +67,71 @@ app.use( '/:usuario/galeria', express.static( __dirname + '/../public' ) );
 */
 
 var routeLife = function ( plantilla, carpeta, helpers ) {
-  app.set( 'views', __dirname + '/../apps/views/' + carpeta);
-  app.engine( 'hbs', exphbs( {
-    defaultLayout: __dirname + '/../apps/views/layouts/' + plantilla + '.hbs',
-    extname: '.hbs',
-    helpers: helpers
-  } ) );
+    app.set( 'views', __dirname + '/../apps/views/' + carpeta );
+    app.engine( 'hbs', exphbs( {
+        defaultLayout: __dirname + '/../apps/views/layouts/' +
+            plantilla + '.hbs',
+        extname: '.hbs',
+        helpers: helpers
+    } ) );
 }
 
 /*INICIO CARGA DE ROUTERS*/
 var routerObject = {
-  app:app,
-  intermed: intermed,
-  routeLife: routeLife,
-  hps: hps,
-  express: express,
-  passport: passport,
-  url: url,
-  models: models,
-  errorHandler: errorHandler
+    app: app,
+    intermed: intermed,
+    routeLife: routeLife,
+    hps: hps,
+    express: express,
+    passport: passport,
+    url: url,
+    models: models,
+    errorHandler: errorHandler
 }
 app.all( '*', function ( req, res, next ) {
-  if (req.method == "GET")
-  console.log(req.method  + '_' + req.path + ': ' + JSON.stringify(req.cookies['_intermed']));
-  next();
-});
+    if ( req.method == "GET" )
+        console.log( req.method + '_' + req.path + ': ' + JSON.stringify(
+            req.cookies[ '_intermed' ] ) );
+    next();
+} );
 
 //::Temporal::, solo para ver la información que tiene el usuario en su variable sesión
 app.get( '/informacionusuario', function ( req, res ) {
-  //res.send( JSON.stringify( req.session.passport ) + '<br/><a href="/">Regresar</a>' )
-  res.send( JSON.stringify( req.session.passport ));
+    //res.send( JSON.stringify( req.session.passport ) + '<br/><a href="/">Regresar</a>' )
+    res.send( JSON.stringify( req.session.passport ) );
 } );
 
-function parseCookies (request) {
+function parseCookies( request ) {
     var list = {},
         rc = request.headers.cookie;
 
-    rc && rc.split(';').forEach(function( cookie ) {
-        var parts = cookie.split('=');
-        list[parts.shift().trim()] = decodeURI(parts.join('='));
-    });
+    rc && rc.split( ';' ).forEach( function ( cookie ) {
+        var parts = cookie.split( '=' );
+        list[ parts.shift().trim() ] = decodeURI( parts.join( '=' ) );
+    } );
 
     return list;
 }
 //Fin temporal
 
-require( './routers/router-sesion.js' )(routerObject);//Es el primero en cargar, verifica la sesión
-require( './routers/_router-get.js' )(routerObject); //Contiene todas las rutas a cargar (render)
-require( './routers/router-buscador.js' )(routerObject);
-require( './routers/router-contactos.js' )(routerObject);
-require( './routers/router-agenda.js' )(routerObject);
-require( './routers/router-inbox.js' )(routerObject);
-require( './routers/router-medico.js' )(routerObject);
-require( './routers/router-notificaciones.js' )(routerObject);
-require( './routers/router-paciente.js' )(routerObject);
-require( './routers/router-ubicacion.js' )(routerObject);
-require( './routers/router-usuario.js' )(routerObject);
-require('./routers/router-encriptacion.js')(routerObject);
-require('./routers/router-configuraciones.js')(routerObject);//router para las configuraciones
-require('./routers/router-control.js')(routerObject);
-require('./routers/router-pagos.js')(routerObject);
-require('./routers/router-historiales.js')(routerObject);
-require('./routers/router-secretaria.js')(routerObject);
-require( './routers/router-error.js' )(routerObject);
+require( './routers/router-sesion.js' )( routerObject ); //Es el primero en cargar, verifica la sesión
+require( './routers/_router-get.js' )( routerObject ); //Contiene todas las rutas a cargar (render)
+require( './routers/router-buscador.js' )( routerObject );
+require( './routers/router-contactos.js' )( routerObject );
+require( './routers/router-agenda.js' )( routerObject );
+require( './routers/router-inbox.js' )( routerObject );
+require( './routers/router-medico.js' )( routerObject );
+require( './routers/router-notificaciones.js' )( routerObject );
+require( './routers/router-paciente.js' )( routerObject );
+require( './routers/router-ubicacion.js' )( routerObject );
+require( './routers/router-usuario.js' )( routerObject );
+require( './routers/router-encriptacion.js' )( routerObject );
+require( './routers/router-configuraciones.js' )( routerObject ); //router para las configuraciones
+require( './routers/router-control.js' )( routerObject );
+require( './routers/router-pagos.js' )( routerObject );
+require( './routers/router-historiales.js' )( routerObject );
+require( './routers/router-secretaria.js' )( routerObject );
+require( './routers/router-error.js' )( routerObject );
 /*FIN CARGA DE ROUTERS*/
 
 
