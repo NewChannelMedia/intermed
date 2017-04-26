@@ -2,7 +2,7 @@ module.exports = function (object){
   var models = object.models;
   var app = object.app;
   var intermed = object.intermed;
-  var routeLife = object.routeLife;
+  var routeDispatcher = object.routeDispatcher;
   var hps = object.hps;
   var express = object.express;
   var passport = object.passport;
@@ -21,7 +21,7 @@ module.exports = function (object){
   //  console.log(req.cookies['connect.sid'] + '>'+req.method  + ' - ' + req.path + ': ' + JSON.stringify(req.cookies['_intermed']) + ' - ' + req.headers.cookie + '\n'+'----------------------------------');
 
     req.errorHandler = object.errorHandler;
-    req.routeLife = object.routeLife;
+    req.routeDispatcher = object.routeDispatcher;
     req.hps = object.hps;
 
     var revivirSesion = false;
@@ -82,7 +82,7 @@ module.exports = function (object){
   //<------------------------------------------------------------------------->
   app.get( '/activar/:token', function ( req, res ) {
     var tok = req.params.token;
-    routeLife( 'mail', 'interno', hps );
+    routeDispatcher( 'mail', 'interno', hps );
     intermed.callController( 'usuarios', 'activarCuenta', {
       token: tok
     }, req, res );
@@ -105,7 +105,7 @@ module.exports = function (object){
   });
 
   app.post( '/logout', function ( req, res, next ) {
-    routeLife( 'main', 'main', hps );
+    routeDispatcher( 'main', 'main', hps );
     intermed.callController( 'usuarios', 'logout', {}, req, res )
   } );
 

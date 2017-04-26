@@ -2,7 +2,7 @@ module.exports = function (object){
   var models = object.models;
   var app = object.app;
   var intermed = object.intermed;
-  var routeLife = object.routeLife;
+  var routeDispatcher = object.routeDispatcher;
   var hps = object.hps;
   var express = object.express;
   var passport = object.passport;
@@ -13,7 +13,7 @@ module.exports = function (object){
     if (req.url != '/logout'){
       if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "M"){
         if (req.session.passport.user.status == 0){
-          routeLife( 'plataforma2', 'plataforma', hps );
+          routeDispatcher( 'plataforma2', 'plataforma', hps );
           models.PlanDeCargo.findAll({
             order: [['default','DESC']]
           }).then(function(planes){
@@ -21,7 +21,7 @@ module.exports = function (object){
           });
 
         } else if (req.session.passport.user.status == -1){
-          routeLife( 'plataforma2', 'plataforma', hps );
+          routeDispatcher( 'plataforma2', 'plataforma', hps );
           res.render('medico/registro_2');
         } else {
           next();
@@ -37,9 +37,9 @@ module.exports = function (object){
   //Vista: home
   app.get( '/', function ( req, res ) {
     if (req.session.passport && req.session.passport.user){
-      routeLife( 'plataforma2', 'plataforma', hps );
+      routeDispatcher( 'plataforma2', 'plataforma', hps );
     } else {
-      routeLife( 'main', 'main', hps );
+      routeDispatcher( 'main', 'main', hps );
     }
     app.set('view options', { layout: 'plataforma2' });
     intermed.callController( 'Home', 'index', req.body, req, res )
@@ -47,19 +47,19 @@ module.exports = function (object){
 
   //Buscador de médicos
   app.get( '/buscar', function ( req, res ) {
-    routeLife( 'plataforma2', 'interno', hps );
+    routeDispatcher( 'plataforma2', 'interno', hps );
     intermed.callController( 'Home', 'buscar', '', req, res );
   } );
 
   //Buscador de médicos (enviando por post el filtro de busqueda)
   app.post( '/buscar', function ( req, res ) {
-    routeLife( 'plataforma2', 'interno', hps );
+    routeDispatcher( 'plataforma2', 'interno', hps );
     intermed.callController( 'Home', 'searching', req.body, req, res );
   } );
 
   //Cerrar sesion
   app.get( '/logout', function ( req, res, next ) {
-    routeLife( 'main', 'main', hps );
+    routeDispatcher( 'main', 'main', hps );
     intermed.callController( 'usuarios', 'logout', {}, req, res )
   } );
 
@@ -67,7 +67,7 @@ module.exports = function (object){
     if (!req.session.passport.user){
       res.redirect( '/' );
     }else {
-      routeLife( 'plataforma2', 'plataforma', hps );
+      routeDispatcher( 'plataforma2', 'plataforma', hps );
       intermed.callController('notificaciones','index', req.body, req, res);
     }
   });
@@ -76,7 +76,7 @@ module.exports = function (object){
     if (!req.session.passport.user){
       res.redirect( '/' );
     }else {
-      routeLife( 'plataforma2', 'plataforma', hps );
+      routeDispatcher( 'plataforma2', 'plataforma', hps );
       intermed.callController('inbox','index', req.body, req, res);
     }
   });
@@ -85,7 +85,7 @@ module.exports = function (object){
     if (!req.session.passport.user){
       res.redirect( '/' );
     }else {
-      routeLife( 'plataforma2', 'plataforma', hps );
+      routeDispatcher( 'plataforma2', 'plataforma', hps );
       intermed.callController('inbox','index', req.body, req, res);
     }
   });
@@ -103,7 +103,7 @@ module.exports = function (object){
     if (!req.session.passport.user){
       res.redirect( '/' );
     }else {
-      routeLife( 'plataforma2', 'plataforma', hps );
+      routeDispatcher( 'plataforma2', 'plataforma', hps );
       intermed.callController('notificaciones','configuracion', req.body, req, res);
     }
   });
@@ -113,20 +113,20 @@ module.exports = function (object){
     if (!req.session.passport.user){
       res.redirect( '/' );
     }else {
-      routeLife('plataforma2','plataforma',hps);
+      routeDispatcher('plataforma2','plataforma',hps);
       intermed.callController('/configuracion/configuraciones','index',req, res);
     }
   });
 
   //Vista de historiales
   app.get('/historiales', function( req, res ){
-      routeLife( 'plataforma2', 'plataforma/medico', hps );
+      routeDispatcher( 'plataforma2', 'plataforma/medico', hps );
       intermed.callController('historiales','index', req.body, req, res );
   });
 
   app.get('/control', function (req, res,next){
     if (req.session.passport && req.session.passport.user && req.session.passport.user.tipoUsuario == "A"){
-      routeLife( 'plataforma2', 'plataforma', hps );
+      routeDispatcher( 'plataforma2', 'plataforma', hps );
       res.render('control');
     } else {
       next();
@@ -135,36 +135,36 @@ module.exports = function (object){
 
   /* routers que cargan vista para cargos */
   app.get('/registrarcargorecurrente', function (req, res) {
-    routeLife( 'plataforma2', 'main', hps );
+    routeDispatcher( 'plataforma2', 'main', hps );
     intermed.callController('CargosUsuarios', 'RegistrarCargoRecurrenteDatos', req.body, req, res);
   });
   app.get('/ProcesarCargosClientes', function (req, res) {
-    routeLife( 'plataforma2', 'main', hps );
+    routeDispatcher( 'plataforma2', 'main', hps );
     intermed.callController('CargosUsuarios', 'FormularioCobro', req, res);
   });
   app.get('/registrarnuevatarjeta', function (req, res) {
-    routeLife( 'plataforma2', 'main', hps );
+    routeDispatcher( 'plataforma2', 'main', hps );
     intermed.callController('CargosUsuarios', 'RegistrarNuevaTarjetaDatos', req.body, req, res);
   });
   app.get('/registrarplancargo', function (req, res) {
-    routeLife( 'plataforma2', 'main', hps );
+    routeDispatcher( 'plataforma2', 'main', hps );
     intermed.callController('PlanDeCargo', 'PlanCargoDatosRegistro', req.body, req, res);
   });
   app.get('/suscripcionpausar', function (req, res) {
-    routeLife( 'plataforma2', 'main', hps );
+    routeDispatcher( 'plataforma2', 'main', hps );
     intermed.callController('CargosUsuarios', 'SuscripcionPausarDatos', req, res);
   });
   app.get('/suscripcioncancelar', function (req, res) {
-    routeLife( 'plataforma2', 'main', hps );
+    routeDispatcher( 'plataforma2', 'main', hps );
     intermed.callController('CargosUsuarios', 'SuscripcionCancelarDatos', req, res);
   });
   app.get('/suscripcionreanudar', function (req, res) {
-    routeLife( 'plataforma2', 'main', hps );
+    routeDispatcher( 'plataforma2', 'main', hps );
     intermed.callController('CargosUsuarios', 'SuscripcionReanudarDatos', req, res);
   });
 
   app.get('/control', function (req, res) {
-    routeLife( 'plataforma2', 'plataforma', hps );
+    routeDispatcher( 'plataforma2', 'plataforma', hps );
     if (req.session.passport && req.session.passport.userIntermed && req.session.passport.userIntermed.id>0){
       res.render('control',{
         userIntermed: req.session.passport.userIntermed
@@ -176,7 +176,7 @@ module.exports = function (object){
 
 
   app.get('/secretaria', function (req, res, next) {
-    routeLife( 'plataforma2', 'plataforma', hps );
+    routeDispatcher( 'plataforma2', 'plataforma', hps );
     if (req.session.passport && req.session.passport.user && req.session.passport.user.Medico_id>0 ){
       intermed.callController('secretaria','index',req.body, req, res);
     } else {
@@ -185,7 +185,7 @@ module.exports = function (object){
   });
 
   app.get( '/secretaria/:token', function ( req, res, next ) {
-    routeLife( 'plataforma2', 'plataforma', hps );
+    routeDispatcher( 'plataforma2', 'plataforma', hps );
     if (!(req.session.passport && req.session.passport.user && req.session.passport.user.id>0) || (req.session.passport.user.Secretaria_id>0)){
       intermed.callController('secretaria','registrar', req.params, req, res);
     } else {
@@ -195,7 +195,7 @@ module.exports = function (object){
 
   app.get('/comentarios',function(req, res, next){
     if (req.session.passport && req.session.passport.user && req.session.passport.user.Medico_id>0 ){
-      routeLife( 'plataforma2', 'plataforma', hps );
+      routeDispatcher( 'plataforma2', 'plataforma', hps );
       intermed.callController('medicos','comentarios',req.body, req, res);
     } else {
       next();
@@ -203,7 +203,7 @@ module.exports = function (object){
   });
 
   app.get( '/s/:usuarioUrl', function ( req, res, next ) {
-    routeLife( 'plataforma2', 'plataforma', hps );
+    routeDispatcher( 'plataforma2', 'plataforma', hps );
     if (req.session.passport && req.session.passport.user.id && req.session.passport.user.Secretaria_id>0){
       models.MedicoSecretaria.findOne({
         where: {
@@ -251,7 +251,7 @@ module.exports = function (object){
         )
       }).then(function(us){
         if (us){
-          routeLife( 'plataforma2', 'plataforma/medico', hps );
+          routeDispatcher( 'plataforma2', 'plataforma/medico', hps );
           intermed.callController( 'Home', 'galeria', {usuario: usuario}, req, res );
         } else {
           next();
@@ -283,7 +283,7 @@ module.exports = function (object){
       }).then(function(us){
         app.use( '/'+usuario, express.static( __dirname + '/../public' ) );
         if (us){
-          routeLife( 'plataforma2', 'plataforma', hps );
+          routeDispatcher( 'plataforma2', 'plataforma', hps );
           intermed.callController( 'Home', 'nuevoPerfilMedicos', {usuario: usuario}, req, res );
         } else {
           next();

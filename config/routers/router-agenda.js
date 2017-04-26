@@ -2,14 +2,14 @@ module.exports = function (object){
   var models = object.models;
   var app = object.app;
   var intermed = object.intermed;
-  var routeLife = object.routeLife;
+  var routeDispatcher = object.routeDispatcher;
   var hps = object.hps;
   var express = object.express;
   var passport = object.passport;
   var url = object.url;
 /*
   app.get('/agendaMedicoVer', function(req,res){
-    //routeLife('main','main',hps);
+    //routeDispatcher('main','main',hps);
     if (req.session.passport && req.session.passport.user){
       intermed.callController('agenda', 'seleccionaAgendaMedico', {id: req.session.passport.user.id}, req, res);
     } else {
@@ -28,7 +28,7 @@ module.exports = function (object){
   });
 
   app.get('/agendaPacienteVer', function(req,res){
-    //routeLife('main','main',hps);
+    //routeDispatcher('main','main',hps);
     if (req.session.passport && req.session.passport.user){
       intermed.callController('agenda', 'seleccionaAgendaPaciente', {id: req.session.passport.user.id}, req, res);
     } else {
@@ -39,7 +39,7 @@ module.exports = function (object){
   // Quitar
   app.get('/muestraAgendaMedico', function(req,res){
     var datos =  { id : 1}
-    routeLife('main','main',hps);
+    routeDispatcher('main','main',hps);
     intermed.callController('agenda','muestraAgendaMedico', datos, req, res);
   });
 

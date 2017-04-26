@@ -2,7 +2,7 @@ module.exports = function (object){
   var models = object.models;
   var app = object.app;
   var intermed = object.intermed;
-  var routeLife = object.routeLife;
+  var routeDispatcher = object.routeDispatcher;
   var hps = object.hps;
   var express = object.express;
   var passport = object.passport;
@@ -14,7 +14,7 @@ module.exports = function (object){
 
   //Modificar la información del usuario de la sesión
   app.post( '/perfil', function ( req, res ) {
-    routeLife( 'plataforma', 'plataforma/paciente', hps );
+    routeDispatcher( 'plataforma', 'plataforma/paciente', hps );
     intermed.callController( 'pacientes', 'modificarPerfil', req.body, req, res );
   } );
   //Obtener con ajax la información de la sesión del usuario

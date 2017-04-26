@@ -71,7 +71,7 @@ exports.report = function ( err, req, res, next) {
         } else {
           if (res && !res.headersSent){
             if (req.method == "GET"){
-              req.routeLife( 'plataforma2', 'interno', req.hps );
+              req.routeDispatcher( 'plataforma2', 'interno', req.hps );
               res.render('error',{success:false,error: err});
             } else {
               res.status(200).json({success:false,error: err});

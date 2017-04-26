@@ -66,7 +66,7 @@ app.use( '/:usuario/', express.static( __dirname + '/../public' ) );
 app.use( '/:usuario/galeria', express.static( __dirname + '/../public' ) );
 */
 
-var routeLife = function ( plantilla, carpeta, helpers ) {
+var routeDispatcher = function ( plantilla, carpeta, helpers ) {
     app.set( 'views', __dirname + '/../apps/views/' + carpeta );
     app.engine( 'hbs', exphbs( {
         defaultLayout: __dirname + '/../apps/views/layouts/' +
@@ -80,7 +80,7 @@ var routeLife = function ( plantilla, carpeta, helpers ) {
 var routerObject = {
     app: app,
     intermed: intermed,
-    routeLife: routeLife,
+    routeDispatcher: routeDispatcher,
     hps: hps,
     express: express,
     passport: passport,

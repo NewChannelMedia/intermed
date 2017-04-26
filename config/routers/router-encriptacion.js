@@ -2,7 +2,7 @@ module.exports = function (object){
   var models = object.models;
   var app = object.app;
   var intermed = object.intermed;
-  var routeLife = object.routeLife;
+  var routeDispatcher = object.routeDispatcher;
   var hps = object.hps;
   var express = object.express;
   var passport = object.passport;
@@ -36,11 +36,11 @@ module.exports = function (object){
     var tok = req.params.token;
     switch (req.params.bandera) {
       case 'historial':
-        routeLife( 'plataforma2', 'interno', hps );
+        routeDispatcher( 'plataforma2', 'interno', hps );
         intermed.callController( 'encryption', 'cambiar', {token: tok}, req, res );
         break;
       case 'intermed':
-        routeLife( 'plataforma2', 'interno', hps );
+        routeDispatcher( 'plataforma2', 'interno', hps );
         intermed.callController( 'encryption', 'cambiarIntermedPass', {token: tok}, req, res );
         break;
     }
